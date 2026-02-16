@@ -4,18 +4,12 @@ import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 
 async function ensureAdminExists() {
-  const count = await db.user.count();
-  if (count === 0) {
-    const hash = await bcrypt.hash("admin123", 10);
-    await db.user.create({
-      data: {
-        email: "admin",
-        passwordHash: hash,
-        role: "ADMIN",
-      },
-    });
-    console.log("Auto-created admin user: admin / admin123");
-  }
+  const hash = await bcrypt.hash("admin123", 10);
+  await db.user.upsert({
+    where: { email: "admin" },
+    update: { passwordHash: hash, role: "ADMIN" },
+    create: { email: "admin", passwordHash: hash, role: "ADMIN" },
+  });
 }
 
 export const authOptions: NextAuthOptions = {
