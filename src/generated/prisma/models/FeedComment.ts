@@ -424,7 +424,6 @@ export type FeedCommentCreateOrConnectWithoutAuthorInput = {
 
 export type FeedCommentCreateManyAuthorInputEnvelope = {
   data: Prisma.FeedCommentCreateManyAuthorInput | Prisma.FeedCommentCreateManyAuthorInput[]
-  skipDuplicates?: boolean
 }
 
 export type FeedCommentUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -475,7 +474,6 @@ export type FeedCommentCreateOrConnectWithoutPostInput = {
 
 export type FeedCommentCreateManyPostInputEnvelope = {
   data: Prisma.FeedCommentCreateManyPostInput | Prisma.FeedCommentCreateManyPostInput[]
-  skipDuplicates?: boolean
 }
 
 export type FeedCommentUpsertWithWhereUniqueWithoutPostInput = {
@@ -1275,7 +1273,6 @@ export type FeedCommentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many FeedComments.
    */
   data: Prisma.FeedCommentCreateManyInput | Prisma.FeedCommentCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1294,7 +1291,6 @@ export type FeedCommentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many FeedComments.
    */
   data: Prisma.FeedCommentCreateManyInput | Prisma.FeedCommentCreateManyInput[]
-  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

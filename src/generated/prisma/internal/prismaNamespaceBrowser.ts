@@ -65,7 +65,10 @@ export const ModelName = {
   FeedReaction: 'FeedReaction',
   PostAttachment: 'PostAttachment',
   Notification: 'Notification',
-  Document: 'Document'
+  Document: 'Document',
+  JobTitle: 'JobTitle',
+  Candidate: 'Candidate',
+  Position: 'Position'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,9 +78,6 @@ export type ModelName = (typeof ModelName)[keyof typeof ModelName]
  */
 
 export const TransactionIsolationLevel = runtime.makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 } as const)
 
@@ -119,9 +119,14 @@ export const EmployeeScalarFieldEnum = {
   teamId: 'teamId',
   managerId: 'managerId',
   startDate: 'startDate',
+  endDate: 'endDate',
   birthday: 'birthday',
+  anniversaryDate: 'anniversaryDate',
   hobbies: 'hobbies',
   bio: 'bio',
+  location: 'location',
+  dietaryRestrictions: 'dietaryRestrictions',
+  benefitsEligibleDate: 'benefitsEligibleDate',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -158,7 +163,9 @@ export const ChecklistItemScalarFieldEnum = {
   title: 'title',
   description: 'description',
   requiresDocument: 'requiresDocument',
-  order: 'order'
+  order: 'order',
+  assigneeId: 'assigneeId',
+  dueDay: 'dueDay'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
@@ -278,20 +285,61 @@ export const DocumentScalarFieldEnum = {
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
+export const JobTitleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt'
+} as const
+
+export type JobTitleScalarFieldEnum = (typeof JobTitleScalarFieldEnum)[keyof typeof JobTitleScalarFieldEnum]
+
+
+export const CandidateScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  phone: 'phone',
+  linkedinUrl: 'linkedinUrl',
+  resumeUrl: 'resumeUrl',
+  resumeText: 'resumeText',
+  skills: 'skills',
+  experience: 'experience',
+  status: 'status',
+  source: 'source',
+  notes: 'notes',
+  costOfHire: 'costOfHire',
+  appliedAt: 'appliedAt',
+  hiredAt: 'hiredAt',
+  positionId: 'positionId',
+  recruiterId: 'recruiterId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+export const PositionScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  departmentId: 'departmentId',
+  description: 'description',
+  requirements: 'requirements',
+  salary: 'salary',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
-
-
-export const QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-} as const
-
-export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
 export const NullsOrder = {

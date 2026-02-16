@@ -476,7 +476,6 @@ export type EmployeeTaskCreateOrConnectWithoutEmployeeInput = {
 
 export type EmployeeTaskCreateManyEmployeeInputEnvelope = {
   data: Prisma.EmployeeTaskCreateManyEmployeeInput | Prisma.EmployeeTaskCreateManyEmployeeInput[]
-  skipDuplicates?: boolean
 }
 
 export type EmployeeTaskUpsertWithWhereUniqueWithoutEmployeeInput = {
@@ -533,7 +532,6 @@ export type EmployeeTaskCreateOrConnectWithoutChecklistItemInput = {
 
 export type EmployeeTaskCreateManyChecklistItemInputEnvelope = {
   data: Prisma.EmployeeTaskCreateManyChecklistItemInput | Prisma.EmployeeTaskCreateManyChecklistItemInput[]
-  skipDuplicates?: boolean
 }
 
 export type EmployeeTaskUpsertWithWhereUniqueWithoutChecklistItemInput = {
@@ -1361,7 +1359,6 @@ export type EmployeeTaskCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many EmployeeTasks.
    */
   data: Prisma.EmployeeTaskCreateManyInput | Prisma.EmployeeTaskCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1380,7 +1377,6 @@ export type EmployeeTaskCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * The data used to create many EmployeeTasks.
    */
   data: Prisma.EmployeeTaskCreateManyInput | Prisma.EmployeeTaskCreateManyInput[]
-  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

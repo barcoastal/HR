@@ -1157,7 +1157,6 @@ export type ReviewCycleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * The data used to create many ReviewCycles.
    */
   data: Prisma.ReviewCycleCreateManyInput | Prisma.ReviewCycleCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -1176,7 +1175,6 @@ export type ReviewCycleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * The data used to create many ReviewCycles.
    */
   data: Prisma.ReviewCycleCreateManyInput | Prisma.ReviewCycleCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**

@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 // ---------------------
@@ -78,6 +78,21 @@ enum DocumentCategory {
   GENERAL
 }
 
+enum CandidateStatus {
+  NEW
+  SCREENING
+  INTERVIEW
+  OFFER
+  HIRED
+  REJECTED
+}
+
+enum PositionStatus {
+  OPEN
+  CLOSED
+  FILLED
+}
+
 // ---------------------
 // Models
 // ---------------------
@@ -96,6 +111,7 @@ model Department {
   children           Department[] @relation("DepartmentHierarchy")
   teams              Team[]
   employees          Employee[]   @relation("EmployeeDepartment")
+  positions          Position[]
 
   @@index([headId])
   @@index([parentDepartmentId])
@@ -114,23 +130,28 @@ model Team {
 }
 
 model Employee {
-  id             String         @id @default(uuid())
-  firstName      String
-  lastName       String
-  email          String         @unique
-  phone          String?
-  jobTitle       String
-  profilePhoto   String?
-  departmentId   String?
-  teamId         String?
-  managerId      String?
-  startDate      DateTime
-  birthday       DateTime?
-  hobbies        String?
-  bio            String?
-  status         EmployeeStatus @default(ACTIVE)
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                  String         @id @default(uuid())
+  firstName           String
+  lastName            String
+  email               String         @unique
+  phone               String?
+  jobTitle            String
+  profilePhoto        String?
+  departmentId        String?
+  teamId              String?
+  managerId           String?
+  startDate           DateTime
+  endDate             DateTime?
+  birthday            DateTime?
+  anniversaryDate     DateTime?
+  hobbies             String?
+  bio                 String?
+  location            String?
+  dietaryRestrictions String?
+  benefitsEligibleDate DateTime?
+  status              EmployeeStatus @default(ACTIVE)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 
   department     Department?    @relation("EmployeeDepartment", fields: [departmentId], references: [id], onDelete: SetNull)
   team           Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
@@ -139,14 +160,15 @@ model Employee {
   user           User?
   headOf         Department[]   @relation("DepartmentHead")
 
-  reviewsAsEmployee Review[]        @relation("ReviewEmployee")
-  reviewsAsReviewer Review[]        @relation("ReviewReviewer")
-  feedPosts         FeedPost[]
-  feedComments      FeedComment[]
-  feedReactions     FeedReaction[]
-  employeeTasks     EmployeeTask[]
-  notifications     Notification[]
-  documents         Document[]
+  reviewsAsEmployee  Review[]        @relation("ReviewEmployee")
+  reviewsAsReviewer  Review[]        @relation("ReviewReviewer")
+  feedPosts          FeedPost[]
+  feedComments       FeedComment[]
+  feedReactions      FeedReaction[]
+  employeeTasks      EmployeeTask[]
+  notifications      Notification[]
+  documents          Document[]
+  assignedChecklistItems ChecklistItem[] @relation("ChecklistItemAssignee")
 
   @@index([departmentId])
   @@index([teamId])
@@ -181,11 +203,15 @@ model ChecklistItem {
   description      String?
   requiresDocument Boolean             @default(false)
   order            Int
+  assigneeId       String?
+  dueDay           Int?
 
   checklist        OnboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  assignee         Employee?           @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   employeeTasks    EmployeeTask[]
 
   @@index([checklistId])
+  @@index([assigneeId])
 }
 
 model EmployeeTask {
@@ -321,4 +347,60 @@ model Document {
   employee   Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+}
+
+model JobTitle {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
+// ---------------------
+// CV / Recruitment
+// ---------------------
+
+model Candidate {
+  id            String          @id @default(uuid())
+  firstName     String
+  lastName      String
+  email         String          @unique
+  phone         String?
+  linkedinUrl   String?
+  resumeUrl     String?
+  resumeText    String?
+  skills        String?
+  experience    String?
+  status        CandidateStatus @default(NEW)
+  source        String?
+  notes         String?
+  costOfHire    Float?
+  appliedAt     DateTime        @default(now())
+  hiredAt       DateTime?
+  positionId    String?
+  recruiterId   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  position      Position?       @relation(fields: [positionId], references: [id])
+
+  @@index([positionId])
+  @@index([status])
+  @@index([source])
+}
+
+model Position {
+  id            String         @id @default(uuid())
+  title         String
+  departmentId  String?
+  description   String?
+  requirements  String?
+  salary        String?
+  status        PositionStatus @default(OPEN)
+  candidates    Candidate[]
+  createdAt     DateTime       @default(now())
+
+  department    Department?    @relation(fields: [departmentId], references: [id])
+
+  @@index([departmentId])
+  @@index([status])
 }

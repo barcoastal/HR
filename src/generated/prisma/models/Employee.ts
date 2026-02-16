@@ -36,9 +36,14 @@ export type EmployeeMinAggregateOutputType = {
   teamId: string | null
   managerId: string | null
   startDate: Date | null
+  endDate: Date | null
   birthday: Date | null
+  anniversaryDate: Date | null
   hobbies: string | null
   bio: string | null
+  location: string | null
+  dietaryRestrictions: string | null
+  benefitsEligibleDate: Date | null
   status: $Enums.EmployeeStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -56,9 +61,14 @@ export type EmployeeMaxAggregateOutputType = {
   teamId: string | null
   managerId: string | null
   startDate: Date | null
+  endDate: Date | null
   birthday: Date | null
+  anniversaryDate: Date | null
   hobbies: string | null
   bio: string | null
+  location: string | null
+  dietaryRestrictions: string | null
+  benefitsEligibleDate: Date | null
   status: $Enums.EmployeeStatus | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -76,9 +86,14 @@ export type EmployeeCountAggregateOutputType = {
   teamId: number
   managerId: number
   startDate: number
+  endDate: number
   birthday: number
+  anniversaryDate: number
   hobbies: number
   bio: number
+  location: number
+  dietaryRestrictions: number
+  benefitsEligibleDate: number
   status: number
   createdAt: number
   updatedAt: number
@@ -98,9 +113,14 @@ export type EmployeeMinAggregateInputType = {
   teamId?: true
   managerId?: true
   startDate?: true
+  endDate?: true
   birthday?: true
+  anniversaryDate?: true
   hobbies?: true
   bio?: true
+  location?: true
+  dietaryRestrictions?: true
+  benefitsEligibleDate?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -118,9 +138,14 @@ export type EmployeeMaxAggregateInputType = {
   teamId?: true
   managerId?: true
   startDate?: true
+  endDate?: true
   birthday?: true
+  anniversaryDate?: true
   hobbies?: true
   bio?: true
+  location?: true
+  dietaryRestrictions?: true
+  benefitsEligibleDate?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -138,9 +163,14 @@ export type EmployeeCountAggregateInputType = {
   teamId?: true
   managerId?: true
   startDate?: true
+  endDate?: true
   birthday?: true
+  anniversaryDate?: true
   hobbies?: true
   bio?: true
+  location?: true
+  dietaryRestrictions?: true
+  benefitsEligibleDate?: true
   status?: true
   createdAt?: true
   updatedAt?: true
@@ -231,9 +261,14 @@ export type EmployeeGroupByOutputType = {
   teamId: string | null
   managerId: string | null
   startDate: Date
+  endDate: Date | null
   birthday: Date | null
+  anniversaryDate: Date | null
   hobbies: string | null
   bio: string | null
+  location: string | null
+  dietaryRestrictions: string | null
+  benefitsEligibleDate: Date | null
   status: $Enums.EmployeeStatus
   createdAt: Date
   updatedAt: Date
@@ -272,9 +307,14 @@ export type EmployeeWhereInput = {
   teamId?: Prisma.StringNullableFilter<"Employee"> | string | null
   managerId?: Prisma.StringNullableFilter<"Employee"> | string | null
   startDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
+  endDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   birthday?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  anniversaryDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   hobbies?: Prisma.StringNullableFilter<"Employee"> | string | null
   bio?: Prisma.StringNullableFilter<"Employee"> | string | null
+  location?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dietaryRestrictions?: Prisma.StringNullableFilter<"Employee"> | string | null
+  benefitsEligibleDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -292,6 +332,7 @@ export type EmployeeWhereInput = {
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
+  assignedChecklistItems?: Prisma.ChecklistItemListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
@@ -306,9 +347,14 @@ export type EmployeeOrderByWithRelationInput = {
   teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   birthday?: Prisma.SortOrderInput | Prisma.SortOrder
+  anniversaryDate?: Prisma.SortOrderInput | Prisma.SortOrder
   hobbies?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  dietaryRestrictions?: Prisma.SortOrderInput | Prisma.SortOrder
+  benefitsEligibleDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -326,6 +372,7 @@ export type EmployeeOrderByWithRelationInput = {
   employeeTasks?: Prisma.EmployeeTaskOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   documents?: Prisma.DocumentOrderByRelationAggregateInput
+  assignedChecklistItems?: Prisma.ChecklistItemOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -343,9 +390,14 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   teamId?: Prisma.StringNullableFilter<"Employee"> | string | null
   managerId?: Prisma.StringNullableFilter<"Employee"> | string | null
   startDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
+  endDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   birthday?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  anniversaryDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   hobbies?: Prisma.StringNullableFilter<"Employee"> | string | null
   bio?: Prisma.StringNullableFilter<"Employee"> | string | null
+  location?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dietaryRestrictions?: Prisma.StringNullableFilter<"Employee"> | string | null
+  benefitsEligibleDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -363,6 +415,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
+  assignedChecklistItems?: Prisma.ChecklistItemListRelationFilter
 }, "id" | "email">
 
 export type EmployeeOrderByWithAggregationInput = {
@@ -377,9 +430,14 @@ export type EmployeeOrderByWithAggregationInput = {
   teamId?: Prisma.SortOrderInput | Prisma.SortOrder
   managerId?: Prisma.SortOrderInput | Prisma.SortOrder
   startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrderInput | Prisma.SortOrder
   birthday?: Prisma.SortOrderInput | Prisma.SortOrder
+  anniversaryDate?: Prisma.SortOrderInput | Prisma.SortOrder
   hobbies?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  dietaryRestrictions?: Prisma.SortOrderInput | Prisma.SortOrder
+  benefitsEligibleDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -403,9 +461,14 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   teamId?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   managerId?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   startDate?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
+  endDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   birthday?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
+  anniversaryDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   hobbies?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  dietaryRestrictions?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  benefitsEligibleDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   status?: Prisma.EnumEmployeeStatusWithAggregatesFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -420,9 +483,14 @@ export type EmployeeCreateInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -440,6 +508,7 @@ export type EmployeeCreateInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateInput = {
@@ -454,9 +523,14 @@ export type EmployeeUncheckedCreateInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -471,6 +545,7 @@ export type EmployeeUncheckedCreateInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUpdateInput = {
@@ -482,9 +557,14 @@ export type EmployeeUpdateInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -502,6 +582,7 @@ export type EmployeeUpdateInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
@@ -516,9 +597,14 @@ export type EmployeeUncheckedUpdateInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -533,6 +619,7 @@ export type EmployeeUncheckedUpdateInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateManyInput = {
@@ -547,9 +634,14 @@ export type EmployeeCreateManyInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -564,9 +656,14 @@ export type EmployeeUpdateManyMutationInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -584,9 +681,14 @@ export type EmployeeUncheckedUpdateManyInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -619,9 +721,14 @@ export type EmployeeCountOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  anniversaryDate?: Prisma.SortOrder
   hobbies?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  dietaryRestrictions?: Prisma.SortOrder
+  benefitsEligibleDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -639,9 +746,14 @@ export type EmployeeMaxOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  anniversaryDate?: Prisma.SortOrder
   hobbies?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  dietaryRestrictions?: Prisma.SortOrder
+  benefitsEligibleDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -659,9 +771,14 @@ export type EmployeeMinOrderByAggregateInput = {
   teamId?: Prisma.SortOrder
   managerId?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
+  endDate?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  anniversaryDate?: Prisma.SortOrder
   hobbies?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  dietaryRestrictions?: Prisma.SortOrder
+  benefitsEligibleDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -854,6 +971,22 @@ export type EmployeeUpdateOneWithoutUserNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutUserInput, Prisma.EmployeeUpdateWithoutUserInput>, Prisma.EmployeeUncheckedUpdateWithoutUserInput>
 }
 
+export type EmployeeCreateNestedOneWithoutAssignedChecklistItemsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAssignedChecklistItemsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutAssignedChecklistItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAssignedChecklistItemsInput
+  upsert?: Prisma.EmployeeUpsertWithoutAssignedChecklistItemsInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAssignedChecklistItemsInput, Prisma.EmployeeUpdateWithoutAssignedChecklistItemsInput>, Prisma.EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput>
+}
+
 export type EmployeeCreateNestedOneWithoutEmployeeTasksInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutEmployeeTasksInput, Prisma.EmployeeUncheckedCreateWithoutEmployeeTasksInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutEmployeeTasksInput
@@ -975,9 +1108,14 @@ export type EmployeeCreateWithoutHeadOfInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -994,6 +1132,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutHeadOfInput = {
@@ -1008,9 +1147,14 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1024,6 +1168,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutHeadOfInput = {
@@ -1040,9 +1185,14 @@ export type EmployeeCreateWithoutDepartmentInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1059,6 +1209,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutDepartmentInput = {
@@ -1072,9 +1223,14 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1089,6 +1245,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutDepartmentInput = {
@@ -1098,7 +1255,6 @@ export type EmployeeCreateOrConnectWithoutDepartmentInput = {
 
 export type EmployeeCreateManyDepartmentInputEnvelope = {
   data: Prisma.EmployeeCreateManyDepartmentInput | Prisma.EmployeeCreateManyDepartmentInput[]
-  skipDuplicates?: boolean
 }
 
 export type EmployeeUpsertWithoutHeadOfInput = {
@@ -1121,9 +1277,14 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1140,6 +1301,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
@@ -1154,9 +1316,14 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1170,6 +1337,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -1203,9 +1371,14 @@ export type EmployeeScalarWhereInput = {
   teamId?: Prisma.StringNullableFilter<"Employee"> | string | null
   managerId?: Prisma.StringNullableFilter<"Employee"> | string | null
   startDate?: Prisma.DateTimeFilter<"Employee"> | Date | string
+  endDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   birthday?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
+  anniversaryDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   hobbies?: Prisma.StringNullableFilter<"Employee"> | string | null
   bio?: Prisma.StringNullableFilter<"Employee"> | string | null
+  location?: Prisma.StringNullableFilter<"Employee"> | string | null
+  dietaryRestrictions?: Prisma.StringNullableFilter<"Employee"> | string | null
+  benefitsEligibleDate?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -1220,9 +1393,14 @@ export type EmployeeCreateWithoutTeamInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1239,6 +1417,7 @@ export type EmployeeCreateWithoutTeamInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutTeamInput = {
@@ -1252,9 +1431,14 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   departmentId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1269,6 +1453,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutTeamInput = {
@@ -1278,7 +1463,6 @@ export type EmployeeCreateOrConnectWithoutTeamInput = {
 
 export type EmployeeCreateManyTeamInputEnvelope = {
   data: Prisma.EmployeeCreateManyTeamInput | Prisma.EmployeeCreateManyTeamInput[]
-  skipDuplicates?: boolean
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutTeamInput = {
@@ -1306,9 +1490,14 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1325,6 +1514,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
@@ -1339,9 +1529,14 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1355,6 +1550,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutDirectReportsInput = {
@@ -1371,9 +1567,14 @@ export type EmployeeCreateWithoutManagerInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1390,6 +1591,7 @@ export type EmployeeCreateWithoutManagerInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutManagerInput = {
@@ -1403,9 +1605,14 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   departmentId?: string | null
   teamId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1420,6 +1627,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutManagerInput = {
@@ -1429,7 +1637,6 @@ export type EmployeeCreateOrConnectWithoutManagerInput = {
 
 export type EmployeeCreateManyManagerInputEnvelope = {
   data: Prisma.EmployeeCreateManyManagerInput | Prisma.EmployeeCreateManyManagerInput[]
-  skipDuplicates?: boolean
 }
 
 export type EmployeeUpsertWithoutDirectReportsInput = {
@@ -1452,9 +1659,14 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1471,6 +1683,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
@@ -1485,9 +1698,14 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1501,6 +1719,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutManagerInput = {
@@ -1528,9 +1747,14 @@ export type EmployeeCreateWithoutUserInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1547,6 +1771,7 @@ export type EmployeeCreateWithoutUserInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutUserInput = {
@@ -1561,9 +1786,14 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1577,6 +1807,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutUserInput = {
@@ -1604,9 +1835,14 @@ export type EmployeeUpdateWithoutUserInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1623,6 +1859,7 @@ export type EmployeeUpdateWithoutUserInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutUserInput = {
@@ -1637,13 +1874,179 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+}
+
+export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutAssignedChecklistItemsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput>
+}
+
+export type EmployeeUpsertWithoutAssignedChecklistItemsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutAssignedChecklistItemsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutAssignedChecklistItemsInput, Prisma.EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput>
+}
+
+export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
@@ -1664,9 +2067,14 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1683,6 +2091,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
@@ -1697,9 +2106,14 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1713,6 +2127,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutEmployeeTasksInput = {
@@ -1740,9 +2155,14 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1759,6 +2179,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
@@ -1773,9 +2194,14 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1789,6 +2215,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
@@ -1800,9 +2227,14 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1819,6 +2251,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
@@ -1833,9 +2266,14 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1849,6 +2287,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutReviewsAsEmployeeInput = {
@@ -1865,9 +2304,14 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1884,6 +2328,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
@@ -1898,9 +2343,14 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1914,6 +2364,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutReviewsAsReviewerInput = {
@@ -1941,9 +2392,14 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1960,6 +2416,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
@@ -1974,9 +2431,14 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1990,6 +2452,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUpsertWithoutReviewsAsReviewerInput = {
@@ -2012,9 +2475,14 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2031,6 +2499,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
@@ -2045,9 +2514,14 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2061,6 +2535,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutFeedPostsInput = {
@@ -2072,9 +2547,14 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2091,6 +2571,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
@@ -2105,9 +2586,14 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2121,6 +2607,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedPostsInput = {
@@ -2148,9 +2635,14 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2167,6 +2659,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
@@ -2181,9 +2674,14 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2197,6 +2695,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutFeedCommentsInput = {
@@ -2208,9 +2707,14 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2227,6 +2731,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
@@ -2241,9 +2746,14 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2257,6 +2767,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedCommentsInput = {
@@ -2284,9 +2795,14 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2303,6 +2819,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
@@ -2317,9 +2834,14 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2333,6 +2855,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutFeedReactionsInput = {
@@ -2344,9 +2867,14 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2363,6 +2891,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
@@ -2377,9 +2906,14 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2393,6 +2927,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedReactionsInput = {
@@ -2420,9 +2955,14 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2439,6 +2979,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
@@ -2453,9 +2994,14 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2469,6 +3015,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutNotificationsInput = {
@@ -2480,9 +3027,14 @@ export type EmployeeCreateWithoutNotificationsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2499,6 +3051,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutNotificationsInput = {
@@ -2513,9 +3066,14 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2529,6 +3087,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutNotificationsInput = {
@@ -2556,9 +3115,14 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2575,6 +3139,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
@@ -2589,9 +3154,14 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2605,6 +3175,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateWithoutDocumentsInput = {
@@ -2616,9 +3187,14 @@ export type EmployeeCreateWithoutDocumentsInput = {
   jobTitle: string
   profilePhoto?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2635,6 +3211,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeUncheckedCreateWithoutDocumentsInput = {
@@ -2649,9 +3226,14 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2665,6 +3247,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
 }
 
 export type EmployeeCreateOrConnectWithoutDocumentsInput = {
@@ -2692,9 +3275,14 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2711,6 +3299,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
@@ -2725,9 +3314,14 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2741,6 +3335,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeCreateManyDepartmentInput = {
@@ -2754,9 +3349,14 @@ export type EmployeeCreateManyDepartmentInput = {
   teamId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2771,9 +3371,14 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2790,6 +3395,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
@@ -2803,9 +3409,14 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2820,6 +3431,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
@@ -2833,9 +3445,14 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2852,9 +3469,14 @@ export type EmployeeCreateManyTeamInput = {
   departmentId?: string | null
   managerId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2869,9 +3491,14 @@ export type EmployeeUpdateWithoutTeamInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2888,6 +3515,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutTeamInput = {
@@ -2901,9 +3529,14 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2918,6 +3551,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
@@ -2931,9 +3565,14 @@ export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2950,9 +3589,14 @@ export type EmployeeCreateManyManagerInput = {
   departmentId?: string | null
   teamId?: string | null
   startDate: Date | string
+  endDate?: Date | string | null
   birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
   hobbies?: string | null
   bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
   status?: $Enums.EmployeeStatus
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2967,9 +3611,14 @@ export type EmployeeUpdateWithoutManagerInput = {
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2986,6 +3635,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutManagerInput = {
@@ -2999,9 +3649,14 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3016,6 +3671,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
@@ -3029,9 +3685,14 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3053,6 +3714,7 @@ export type EmployeeCountOutputType = {
   employeeTasks: number
   notifications: number
   documents: number
+  assignedChecklistItems: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3066,6 +3728,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   employeeTasks?: boolean | EmployeeCountOutputTypeCountEmployeeTasksArgs
   notifications?: boolean | EmployeeCountOutputTypeCountNotificationsArgs
   documents?: boolean | EmployeeCountOutputTypeCountDocumentsArgs
+  assignedChecklistItems?: boolean | EmployeeCountOutputTypeCountAssignedChecklistItemsArgs
 }
 
 /**
@@ -3148,6 +3811,13 @@ export type EmployeeCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.DocumentWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountAssignedChecklistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChecklistItemWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3161,9 +3831,14 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   teamId?: boolean
   managerId?: boolean
   startDate?: boolean
+  endDate?: boolean
   birthday?: boolean
+  anniversaryDate?: boolean
   hobbies?: boolean
   bio?: boolean
+  location?: boolean
+  dietaryRestrictions?: boolean
+  benefitsEligibleDate?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3181,6 +3856,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   employeeTasks?: boolean | Prisma.Employee$employeeTasksArgs<ExtArgs>
   notifications?: boolean | Prisma.Employee$notificationsArgs<ExtArgs>
   documents?: boolean | Prisma.Employee$documentsArgs<ExtArgs>
+  assignedChecklistItems?: boolean | Prisma.Employee$assignedChecklistItemsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
@@ -3196,9 +3872,14 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   teamId?: boolean
   managerId?: boolean
   startDate?: boolean
+  endDate?: boolean
   birthday?: boolean
+  anniversaryDate?: boolean
   hobbies?: boolean
   bio?: boolean
+  location?: boolean
+  dietaryRestrictions?: boolean
+  benefitsEligibleDate?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3219,9 +3900,14 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   teamId?: boolean
   managerId?: boolean
   startDate?: boolean
+  endDate?: boolean
   birthday?: boolean
+  anniversaryDate?: boolean
   hobbies?: boolean
   bio?: boolean
+  location?: boolean
+  dietaryRestrictions?: boolean
+  benefitsEligibleDate?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -3242,15 +3928,20 @@ export type EmployeeSelectScalar = {
   teamId?: boolean
   managerId?: boolean
   startDate?: boolean
+  endDate?: boolean
   birthday?: boolean
+  anniversaryDate?: boolean
   hobbies?: boolean
   bio?: boolean
+  location?: boolean
+  dietaryRestrictions?: boolean
+  benefitsEligibleDate?: boolean
   status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "birthday" | "hobbies" | "bio" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
   team?: boolean | Prisma.Employee$teamArgs<ExtArgs>
@@ -3266,6 +3957,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   employeeTasks?: boolean | Prisma.Employee$employeeTasksArgs<ExtArgs>
   notifications?: boolean | Prisma.Employee$notificationsArgs<ExtArgs>
   documents?: boolean | Prisma.Employee$documentsArgs<ExtArgs>
+  assignedChecklistItems?: boolean | Prisma.Employee$assignedChecklistItemsArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3296,6 +3988,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     employeeTasks: Prisma.$EmployeeTaskPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     documents: Prisma.$DocumentPayload<ExtArgs>[]
+    assignedChecklistItems: Prisma.$ChecklistItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3309,9 +4002,14 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     teamId: string | null
     managerId: string | null
     startDate: Date
+    endDate: Date | null
     birthday: Date | null
+    anniversaryDate: Date | null
     hobbies: string | null
     bio: string | null
+    location: string | null
+    dietaryRestrictions: string | null
+    benefitsEligibleDate: Date | null
     status: $Enums.EmployeeStatus
     createdAt: Date
     updatedAt: Date
@@ -3723,6 +4421,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   employeeTasks<T extends Prisma.Employee$employeeTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$employeeTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Employee$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documents<T extends Prisma.Employee$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedChecklistItems<T extends Prisma.Employee$assignedChecklistItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$assignedChecklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3763,9 +4462,14 @@ export interface EmployeeFieldRefs {
   readonly teamId: Prisma.FieldRef<"Employee", 'String'>
   readonly managerId: Prisma.FieldRef<"Employee", 'String'>
   readonly startDate: Prisma.FieldRef<"Employee", 'DateTime'>
+  readonly endDate: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly birthday: Prisma.FieldRef<"Employee", 'DateTime'>
+  readonly anniversaryDate: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly hobbies: Prisma.FieldRef<"Employee", 'String'>
   readonly bio: Prisma.FieldRef<"Employee", 'String'>
+  readonly location: Prisma.FieldRef<"Employee", 'String'>
+  readonly dietaryRestrictions: Prisma.FieldRef<"Employee", 'String'>
+  readonly benefitsEligibleDate: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly status: Prisma.FieldRef<"Employee", 'EmployeeStatus'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>
@@ -3998,7 +4702,6 @@ export type EmployeeCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Employees.
    */
   data: Prisma.EmployeeCreateManyInput | Prisma.EmployeeCreateManyInput[]
-  skipDuplicates?: boolean
 }
 
 /**
@@ -4017,7 +4720,6 @@ export type EmployeeCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Employees.
    */
   data: Prisma.EmployeeCreateManyInput | Prisma.EmployeeCreateManyInput[]
-  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */
@@ -4478,6 +5180,30 @@ export type Employee$documentsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.DocumentScalarFieldEnum | Prisma.DocumentScalarFieldEnum[]
+}
+
+/**
+ * Employee.assignedChecklistItems
+ */
+export type Employee$assignedChecklistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChecklistItem
+   */
+  select?: Prisma.ChecklistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChecklistItem
+   */
+  omit?: Prisma.ChecklistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChecklistItemInclude<ExtArgs> | null
+  where?: Prisma.ChecklistItemWhereInput
+  orderBy?: Prisma.ChecklistItemOrderByWithRelationInput | Prisma.ChecklistItemOrderByWithRelationInput[]
+  cursor?: Prisma.ChecklistItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChecklistItemScalarFieldEnum | Prisma.ChecklistItemScalarFieldEnum[]
 }
 
 /**

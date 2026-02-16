@@ -114,3 +114,18 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type Document = Prisma.DocumentModel
+/**
+ * Model JobTitle
+ * 
+ */
+export type JobTitle = Prisma.JobTitleModel
+/**
+ * Model Candidate
+ * 
+ */
+export type Candidate = Prisma.CandidateModel
+/**
+ * Model Position
+ * 
+ */
+export type Position = Prisma.PositionModel

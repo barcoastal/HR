@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Newspaper,
@@ -14,8 +15,14 @@ import {
   UserMinus,
   Settings,
   X,
+  Briefcase,
+  BarChart3,
+  CalendarDays,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { canAccessSettings, canAccessRecruitment, canAccessAnalytics } from "@/lib/permissions";
+import type { UserRole } from "@/generated/prisma/client";
 
 const tabs = [
   { href: "/", label: "Feed", icon: Newspaper },
@@ -24,16 +31,22 @@ const tabs = [
   { href: "/reviews", label: "Tasks", icon: ClipboardCheck },
 ] as const;
 
-const drawerLinks = [
-  { href: "/onboarding", label: "Onboarding", icon: UserPlus },
-  { href: "/offboarding", label: "Offboarding", icon: UserMinus },
-  { href: "/reviews", label: "Reviews", icon: ClipboardCheck },
-  { href: "/settings", label: "Settings", icon: Settings },
-] as const;
+const allDrawerLinks = [
+  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: () => true },
+  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: () => true },
+  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: () => true },
+  { href: "/calendar", label: "Calendar", icon: CalendarDays, access: () => true },
+  { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r) },
+  { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r) },
+  { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r) },
+];
 
 export function MobileNav() {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const { data: session } = useSession();
+  const role = (session?.user?.role || "EMPLOYEE") as UserRole;
+  const drawerLinks = allDrawerLinks.filter((l) => l.access(role));
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
@@ -42,7 +55,6 @@ export function MobileNav() {
 
   return (
     <>
-      {/* Bottom tab bar */}
       <div
         className={cn(
           "glass fixed bottom-0 left-0 right-0 z-50 flex md:hidden",
@@ -57,9 +69,7 @@ export function MobileNav() {
               href={href}
               className={cn(
                 "flex flex-1 flex-col items-center gap-1 py-2 transition-colors duration-200",
-                active
-                  ? "text-[var(--color-accent)]"
-                  : "text-[var(--color-text-muted)]"
+                active ? "text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"
               )}
             >
               <Icon className="h-5 w-5" />
@@ -67,25 +77,18 @@ export function MobileNav() {
             </Link>
           );
         })}
-
-        {/* More tab */}
         <button
           onClick={() => setDrawerOpen(true)}
-          className={cn(
-            "flex flex-1 flex-col items-center gap-1 py-2 transition-colors duration-200",
-            "text-[var(--color-text-muted)]"
-          )}
+          className="flex flex-1 flex-col items-center gap-1 py-2 text-[var(--color-text-muted)]"
         >
           <Menu className="h-5 w-5" />
           <span className="text-[10px] font-medium">More</span>
         </button>
       </div>
 
-      {/* Slide-up drawer */}
       <AnimatePresence>
         {drawerOpen && (
           <>
-            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -94,8 +97,6 @@ export function MobileNav() {
               className="fixed inset-0 z-50 bg-black/50 md:hidden"
               onClick={() => setDrawerOpen(false)}
             />
-
-            {/* Drawer */}
             <motion.div
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
@@ -106,21 +107,16 @@ export function MobileNav() {
                 "border-t border-[var(--color-border)]"
               )}
             >
-              {/* Drawer handle */}
               <div className="flex items-center justify-between px-5 pb-2 pt-4">
-                <span className="text-sm font-semibold text-[var(--color-text-primary)]">
-                  More
-                </span>
+                <span className="text-sm font-semibold text-[var(--color-text-primary)]">More</span>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="rounded-full p-1 text-[var(--color-text-muted)] transition-colors duration-200 hover:bg-[var(--color-surface-hover)]"
+                  className="rounded-full p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-
-              {/* Drawer links */}
-              <nav className="space-y-1 px-3 pb-8 pt-1">
+              <nav className="space-y-1 px-3 pb-4 pt-1">
                 {drawerLinks.map(({ href, label, icon: Icon }) => {
                   const active = isActive(href);
                   return (
@@ -141,6 +137,16 @@ export function MobileNav() {
                     </Link>
                   );
                 })}
+                <button
+                  onClick={() => { signOut({ callbackUrl: "/login" }); setDrawerOpen(false); }}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium",
+                    "text-red-400 hover:bg-red-500/10"
+                  )}
+                >
+                  <LogOut className="h-[18px] w-[18px]" />
+                  Sign out
+                </button>
               </nav>
             </motion.div>
           </>

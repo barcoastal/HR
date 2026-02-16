@@ -1,8 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bell, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { useSession, signOut } from "next-auth/react";
+import { Bell, Search, Sun, Moon, LogOut } from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
 
 const routeTitles: Record<string, string> = {
   "/": "Feed",
@@ -13,22 +15,27 @@ const routeTitles: Record<string, string> = {
   "/offboarding": "Offboarding",
   "/reviews": "Reviews",
   "/settings": "Settings",
+  "/cv": "Recruitment",
+  "/analytics": "Analytics",
 };
 
 function getPageTitle(pathname: string): string {
   if (routeTitles[pathname]) return routeTitles[pathname];
-
-  // Check for dynamic routes (e.g. /people/123)
   for (const [route, title] of Object.entries(routeTitles)) {
     if (pathname.startsWith(route) && route !== "/") return title;
   }
-
-  return "PeopleHub";
+  return "Coastal HR";
 }
 
 export function TopBar() {
   const pathname = usePathname();
   const title = getPageTitle(pathname);
+  const { theme, setTheme } = useTheme();
+  const { data: session } = useSession();
+
+  const userInitials = session?.user?.name
+    ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
+    : "??";
 
   return (
     <header
@@ -37,21 +44,16 @@ export function TopBar() {
         "border-b border-[var(--color-border)] px-4 md:px-6"
       )}
     >
-      {/* Left section */}
       <div className="flex items-center">
-        {/* Mobile: app name */}
         <span className="text-base font-semibold text-[var(--color-text-primary)] md:hidden">
-          PeopleHub
+          Coastal HR
         </span>
-        {/* Desktop: page title */}
         <h1 className="hidden text-lg font-semibold text-[var(--color-text-primary)] md:block">
           {title}
         </h1>
       </div>
 
-      {/* Right section */}
       <div className="flex items-center gap-3">
-        {/* Search (desktop only) */}
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
@@ -67,7 +69,19 @@ export function TopBar() {
           />
         </div>
 
-        {/* Notification bell */}
+        <button
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          className={cn(
+            "relative flex h-9 w-9 items-center justify-center rounded-full",
+            "text-[var(--color-text-muted)] transition-colors duration-200",
+            "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
+          )}
+          aria-label="Toggle theme"
+        >
+          <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-transform duration-200 dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-transform duration-200 dark:rotate-0 dark:scale-100" />
+        </button>
+
         <button
           className={cn(
             "relative flex h-9 w-9 items-center justify-center rounded-full",
@@ -76,11 +90,9 @@ export function TopBar() {
           )}
         >
           <Bell className="h-[18px] w-[18px]" />
-          {/* Red dot indicator */}
           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
         </button>
 
-        {/* User avatar */}
         <button
           className={cn(
             "flex h-9 w-9 items-center justify-center rounded-full",
@@ -88,7 +100,7 @@ export function TopBar() {
             "text-xs font-semibold text-white transition-opacity duration-200 hover:opacity-90"
           )}
         >
-          JD
+          {userInitials}
         </button>
       </div>
     </header>
