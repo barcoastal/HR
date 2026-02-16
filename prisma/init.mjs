@@ -4,18 +4,26 @@ import bcrypt from "bcryptjs";
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 
 try {
-  const { rows } = await pool.query("SELECT id FROM \"User\" LIMIT 1");
+  const { rows } = await pool.query('SELECT id FROM "User" LIMIT 1');
   if (rows.length === 0) {
     console.log("No users found — creating admin user...");
     const hash = await bcrypt.hash("admin123", 10);
     await pool.query(
-      `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt", "updatedAt")
-       VALUES (gen_random_uuid(), $1, $2, 'ADMIN', NOW(), NOW())`,
+      `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
+       VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
       ["admin@coastalhr.io", hash]
     );
     console.log("Admin created: admin@coastalhr.io / admin123");
   } else {
-    console.log("Users exist — skipping seed.");
+    console.log("Users exist — skipping seed. Deleting and re-creating...");
+    await pool.query('DELETE FROM "User"');
+    const hash = await bcrypt.hash("admin123", 10);
+    await pool.query(
+      `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
+       VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
+      ["admin@coastalhr.io", hash]
+    );
+    console.log("Admin re-created: admin@coastalhr.io / admin123");
   }
 } catch (e) {
   console.error("Init seed error:", e.message);
