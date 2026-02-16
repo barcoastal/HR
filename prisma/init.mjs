@@ -4,29 +4,43 @@ import bcrypt from "bcryptjs";
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 
 try {
-  const { rows } = await pool.query('SELECT id FROM "User" LIMIT 1');
-  if (rows.length === 0) {
-    console.log("No users found — creating admin user...");
-    const hash = await bcrypt.hash("admin123", 10);
+  const hash = await bcrypt.hash("admin123", 10);
+  console.log("Generated hash:", hash);
+
+  // Try to find existing admin user
+  const { rows } = await pool.query(`SELECT id FROM "User" WHERE email = 'admin'`);
+
+  if (rows.length > 0) {
+    // Update password in case it's wrong
     await pool.query(
-      `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
-       VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
-      ["admin", hash]
+      `UPDATE "User" SET "passwordHash" = $1 WHERE email = 'admin'`,
+      [hash]
     );
-    console.log("Admin created: admin@coastalhr.io / admin123");
+    console.log("Updated existing admin user password");
   } else {
-    console.log("Users exist — skipping seed. Deleting and re-creating...");
-    await pool.query('DELETE FROM "User"');
-    const hash = await bcrypt.hash("admin123", 10);
+    // Check what enum values exist
+    const enumCheck = await pool.query(
+      `SELECT enumlabel FROM pg_enum JOIN pg_type ON pg_enum.enumtypid = pg_type.oid WHERE pg_type.typname = 'UserRole'`
+    );
+    console.log("Available UserRole values:", enumCheck.rows.map(r => r.enumlabel));
+
     await pool.query(
       `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
-       VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
-      ["admin", hash]
+       VALUES (gen_random_uuid(), 'admin', $1, 'ADMIN'::"UserRole", NOW())`,
+      [hash]
     );
-    console.log("Admin re-created: admin@coastalhr.io / admin123");
+    console.log("Created admin user: admin / admin123");
   }
+
+  // Verify the user exists
+  const verify = await pool.query(
+    `SELECT id, email, "passwordHash", role FROM "User" WHERE email = 'admin'`
+  );
+  console.log("Verification:", verify.rows[0] ? { id: verify.rows[0].id, email: verify.rows[0].email, role: verify.rows[0].role, hasHash: !!verify.rows[0].passwordHash } : "NOT FOUND");
+
 } catch (e) {
-  console.error("Init seed error:", e.message);
+  console.error("Init seed FAILED:", e.message);
+  console.error(e.stack);
 } finally {
   await pool.end();
 }
