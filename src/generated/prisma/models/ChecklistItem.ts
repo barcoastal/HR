@@ -594,6 +594,7 @@ export type ChecklistItemCreateOrConnectWithoutAssigneeInput = {
 
 export type ChecklistItemCreateManyAssigneeInputEnvelope = {
   data: Prisma.ChecklistItemCreateManyAssigneeInput | Prisma.ChecklistItemCreateManyAssigneeInput[]
+  skipDuplicates?: boolean
 }
 
 export type ChecklistItemUpsertWithWhereUniqueWithoutAssigneeInput = {
@@ -655,6 +656,7 @@ export type ChecklistItemCreateOrConnectWithoutChecklistInput = {
 
 export type ChecklistItemCreateManyChecklistInputEnvelope = {
   data: Prisma.ChecklistItemCreateManyChecklistInput | Prisma.ChecklistItemCreateManyChecklistInput[]
+  skipDuplicates?: boolean
 }
 
 export type ChecklistItemUpsertWithWhereUniqueWithoutChecklistInput = {
@@ -1595,6 +1597,7 @@ export type ChecklistItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions
    * The data used to create many ChecklistItems.
    */
   data: Prisma.ChecklistItemCreateManyInput | Prisma.ChecklistItemCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1613,6 +1616,7 @@ export type ChecklistItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * The data used to create many ChecklistItems.
    */
   data: Prisma.ChecklistItemCreateManyInput | Prisma.ChecklistItemCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

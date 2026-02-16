@@ -408,6 +408,7 @@ export type PostAttachmentCreateOrConnectWithoutPostInput = {
 
 export type PostAttachmentCreateManyPostInputEnvelope = {
   data: Prisma.PostAttachmentCreateManyPostInput | Prisma.PostAttachmentCreateManyPostInput[]
+  skipDuplicates?: boolean
 }
 
 export type PostAttachmentUpsertWithWhereUniqueWithoutPostInput = {
@@ -1193,6 +1194,7 @@ export type PostAttachmentCreateManyArgs<ExtArgs extends runtime.Types.Extension
    * The data used to create many PostAttachments.
    */
   data: Prisma.PostAttachmentCreateManyInput | Prisma.PostAttachmentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1211,6 +1213,7 @@ export type PostAttachmentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.
    * The data used to create many PostAttachments.
    */
   data: Prisma.PostAttachmentCreateManyInput | Prisma.PostAttachmentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

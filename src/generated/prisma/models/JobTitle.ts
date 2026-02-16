@@ -927,6 +927,7 @@ export type JobTitleCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many JobTitles.
    */
   data: Prisma.JobTitleCreateManyInput | Prisma.JobTitleCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -945,6 +946,7 @@ export type JobTitleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many JobTitles.
    */
   data: Prisma.JobTitleCreateManyInput | Prisma.JobTitleCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**

@@ -486,6 +486,7 @@ export type PositionCreateOrConnectWithoutDepartmentInput = {
 
 export type PositionCreateManyDepartmentInputEnvelope = {
   data: Prisma.PositionCreateManyDepartmentInput | Prisma.PositionCreateManyDepartmentInput[]
+  skipDuplicates?: boolean
 }
 
 export type PositionUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -1390,6 +1391,7 @@ export type PositionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Positions.
    */
   data: Prisma.PositionCreateManyInput | Prisma.PositionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1408,6 +1410,7 @@ export type PositionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Positions.
    */
   data: Prisma.PositionCreateManyInput | Prisma.PositionCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -410,6 +410,7 @@ export type FeedReactionCreateOrConnectWithoutEmployeeInput = {
 
 export type FeedReactionCreateManyEmployeeInputEnvelope = {
   data: Prisma.FeedReactionCreateManyEmployeeInput | Prisma.FeedReactionCreateManyEmployeeInput[]
+  skipDuplicates?: boolean
 }
 
 export type FeedReactionUpsertWithWhereUniqueWithoutEmployeeInput = {
@@ -457,6 +458,7 @@ export type FeedReactionCreateOrConnectWithoutPostInput = {
 
 export type FeedReactionCreateManyPostInputEnvelope = {
   data: Prisma.FeedReactionCreateManyPostInput | Prisma.FeedReactionCreateManyPostInput[]
+  skipDuplicates?: boolean
 }
 
 export type FeedReactionUpsertWithWhereUniqueWithoutPostInput = {
@@ -1242,6 +1244,7 @@ export type FeedReactionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.
    * The data used to create many FeedReactions.
    */
   data: Prisma.FeedReactionCreateManyInput | Prisma.FeedReactionCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1260,6 +1263,7 @@ export type FeedReactionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ex
    * The data used to create many FeedReactions.
    */
   data: Prisma.FeedReactionCreateManyInput | Prisma.FeedReactionCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

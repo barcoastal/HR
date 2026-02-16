@@ -506,6 +506,7 @@ export type FeedPostCreateOrConnectWithoutAuthorInput = {
 
 export type FeedPostCreateManyAuthorInputEnvelope = {
   data: Prisma.FeedPostCreateManyAuthorInput | Prisma.FeedPostCreateManyAuthorInput[]
+  skipDuplicates?: boolean
 }
 
 export type FeedPostUpsertWithWhereUniqueWithoutAuthorInput = {
@@ -1561,6 +1562,7 @@ export type FeedPostCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many FeedPosts.
    */
   data: Prisma.FeedPostCreateManyInput | Prisma.FeedPostCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1579,6 +1581,7 @@ export type FeedPostCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many FeedPosts.
    */
   data: Prisma.FeedPostCreateManyInput | Prisma.FeedPostCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

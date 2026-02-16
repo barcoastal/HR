@@ -623,6 +623,7 @@ export type DepartmentCreateOrConnectWithoutParentDepartmentInput = {
 
 export type DepartmentCreateManyParentDepartmentInputEnvelope = {
   data: Prisma.DepartmentCreateManyParentDepartmentInput | Prisma.DepartmentCreateManyParentDepartmentInput[]
+  skipDuplicates?: boolean
 }
 
 export type DepartmentUpsertWithoutChildrenInput = {
@@ -823,6 +824,7 @@ export type DepartmentCreateOrConnectWithoutHeadInput = {
 
 export type DepartmentCreateManyHeadInputEnvelope = {
   data: Prisma.DepartmentCreateManyHeadInput | Prisma.DepartmentCreateManyHeadInput[]
+  skipDuplicates?: boolean
 }
 
 export type DepartmentUpsertWithoutEmployeesInput = {
@@ -1845,6 +1847,7 @@ export type DepartmentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * The data used to create many Departments.
    */
   data: Prisma.DepartmentCreateManyInput | Prisma.DepartmentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1863,6 +1866,7 @@ export type DepartmentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many Departments.
    */
   data: Prisma.DepartmentCreateManyInput | Prisma.DepartmentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

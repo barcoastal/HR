@@ -796,6 +796,7 @@ export type CandidateCreateOrConnectWithoutPositionInput = {
 
 export type CandidateCreateManyPositionInputEnvelope = {
   data: Prisma.CandidateCreateManyPositionInput | Prisma.CandidateCreateManyPositionInput[]
+  skipDuplicates?: boolean
 }
 
 export type CandidateUpsertWithWhereUniqueWithoutPositionInput = {
@@ -1735,6 +1736,7 @@ export type CandidateCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * The data used to create many Candidates.
    */
   data: Prisma.CandidateCreateManyInput | Prisma.CandidateCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1753,6 +1755,7 @@ export type CandidateCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * The data used to create many Candidates.
    */
   data: Prisma.CandidateCreateManyInput | Prisma.CandidateCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

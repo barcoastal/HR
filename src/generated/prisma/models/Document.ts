@@ -408,6 +408,7 @@ export type DocumentCreateOrConnectWithoutEmployeeInput = {
 
 export type DocumentCreateManyEmployeeInputEnvelope = {
   data: Prisma.DocumentCreateManyEmployeeInput | Prisma.DocumentCreateManyEmployeeInput[]
+  skipDuplicates?: boolean
 }
 
 export type DocumentUpsertWithWhereUniqueWithoutEmployeeInput = {
@@ -1193,6 +1194,7 @@ export type DocumentCreateManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * The data used to create many Documents.
    */
   data: Prisma.DocumentCreateManyInput | Prisma.DocumentCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1211,6 +1213,7 @@ export type DocumentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * The data used to create many Documents.
    */
   data: Prisma.DocumentCreateManyInput | Prisma.DocumentCreateManyInput[]
+  skipDuplicates?: boolean
   /**
    * Choose, which related nodes to fetch as well
    */

@@ -1093,6 +1093,7 @@ export type OnboardingChecklistCreateManyArgs<ExtArgs extends runtime.Types.Exte
    * The data used to create many OnboardingChecklists.
    */
   data: Prisma.OnboardingChecklistCreateManyInput | Prisma.OnboardingChecklistCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
@@ -1111,6 +1112,7 @@ export type OnboardingChecklistCreateManyAndReturnArgs<ExtArgs extends runtime.T
    * The data used to create many OnboardingChecklists.
    */
   data: Prisma.OnboardingChecklistCreateManyInput | Prisma.OnboardingChecklistCreateManyInput[]
+  skipDuplicates?: boolean
 }
 
 /**
