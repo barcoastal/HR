@@ -11,7 +11,7 @@ try {
     await pool.query(
       `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
        VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
-      ["admin@coastalhr.io", hash]
+      ["admin", hash]
     );
     console.log("Admin created: admin@coastalhr.io / admin123");
   } else {
@@ -21,7 +21,7 @@ try {
     await pool.query(
       `INSERT INTO "User" (id, email, "passwordHash", role, "createdAt")
        VALUES (gen_random_uuid(), $1, $2, 'ADMIN'::"UserRole", NOW())`,
-      ["admin@coastalhr.io", hash]
+      ["admin", hash]
     );
     console.log("Admin re-created: admin@coastalhr.io / admin123");
   }

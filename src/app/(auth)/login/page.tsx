@@ -60,14 +60,14 @@ function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">
-            Email
+            Username
           </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
             <input
               id="email"
-              type="email"
-              placeholder="you@company.com"
+              type="text"
+              placeholder="Enter your username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -206,10 +206,8 @@ export default function LoginPage() {
 
         {/* Demo credentials hint */}
         <div className="mt-4 p-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">
-          <p className="font-medium text-[var(--color-text-primary)] mb-1">Demo accounts:</p>
-          <p>Admin: admin@coastalhr.io / admin123</p>
-          <p>Manager: manager@coastalhr.io / manager123</p>
-          <p>Employee: employee@coastalhr.io / employee123</p>
+          <p className="font-medium text-[var(--color-text-primary)] mb-1">Demo account:</p>
+          <p>Admin: admin / admin123</p>
         </div>
       </div>
     </div>
