@@ -8,8 +8,9 @@ export async function getFeedPosts() {
   return db.feedPost.findMany({
     include: {
       author: true,
+      mentionedEmployee: true,
       reactions: true,
-      comments: { include: { author: true } },
+      comments: { include: { author: true }, orderBy: { createdAt: "asc" } },
       _count: { select: { comments: true, reactions: true } },
     },
     orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
@@ -26,6 +27,35 @@ export async function createFeedPost(data: {
       authorId: data.authorId,
       content: data.content,
       type: data.type || "GENERAL",
+    },
+  });
+  revalidatePath("/");
+  return post;
+}
+
+export async function createFeedComment(
+  postId: string,
+  authorId: string,
+  content: string
+) {
+  const comment = await db.feedComment.create({
+    data: { postId, authorId, content },
+  });
+  revalidatePath("/");
+  return comment;
+}
+
+export async function createShoutoutPost(
+  authorId: string,
+  mentionedEmployeeId: string,
+  content: string
+) {
+  const post = await db.feedPost.create({
+    data: {
+      authorId,
+      content,
+      type: "SHOUTOUT",
+      mentionedEmployeeId,
     },
   });
   revalidatePath("/");

@@ -75,10 +75,29 @@ export const FeedPostType = {
   BIRTHDAY: 'BIRTHDAY',
   ANNIVERSARY: 'ANNIVERSARY',
   NEW_HIRE: 'NEW_HIRE',
-  DEPARTURE: 'DEPARTURE'
+  DEPARTURE: 'DEPARTURE',
+  SHOUTOUT: 'SHOUTOUT'
 } as const
 
 export type FeedPostType = (typeof FeedPostType)[keyof typeof FeedPostType]
+
+
+export const TimeOffRequestStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  DENIED: 'DENIED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TimeOffRequestStatus = (typeof TimeOffRequestStatus)[keyof typeof TimeOffRequestStatus]
+
+
+export const SurveyStatus = {
+  ACTIVE: 'ACTIVE',
+  CLOSED: 'CLOSED'
+} as const
+
+export type SurveyStatus = (typeof SurveyStatus)[keyof typeof SurveyStatus]
 
 
 export const ReactionType = {

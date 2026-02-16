@@ -57,6 +57,19 @@ enum FeedPostType {
   ANNIVERSARY
   NEW_HIRE
   DEPARTURE
+  SHOUTOUT
+}
+
+enum TimeOffRequestStatus {
+  PENDING
+  APPROVED
+  DENIED
+  CANCELLED
+}
+
+enum SurveyStatus {
+  ACTIVE
+  CLOSED
 }
 
 enum ReactionType {
@@ -149,6 +162,17 @@ model Employee {
   location            String?
   dietaryRestrictions String?
   benefitsEligibleDate DateTime?
+  emergencyContactName     String?
+  emergencyContactPhone    String?
+  emergencyContactRelation String?
+  address             String?
+  city                String?
+  state               String?
+  zipCode             String?
+  country             String?
+  pronouns            String?
+  tShirtSize          String?
+  buddyId             String?
   status              EmployeeStatus @default(ACTIVE)
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
@@ -157,6 +181,8 @@ model Employee {
   team           Team?          @relation(fields: [teamId], references: [id], onDelete: SetNull)
   manager        Employee?      @relation("EmployeeManager", fields: [managerId], references: [id], onDelete: SetNull)
   directReports  Employee[]     @relation("EmployeeManager")
+  buddy          Employee?      @relation("BuddyRelation", fields: [buddyId], references: [id], onDelete: SetNull)
+  buddyOf        Employee[]     @relation("BuddyRelation")
   user           User?
   headOf         Department[]   @relation("DepartmentHead")
 
@@ -169,10 +195,17 @@ model Employee {
   notifications      Notification[]
   documents          Document[]
   assignedChecklistItems ChecklistItem[] @relation("ChecklistItemAssignee")
+  clubMemberships    ClubMember[]
+  pulseResponses     PulseResponse[]
+  timeOffRequests    TimeOffRequest[]  @relation("TimeOffEmployee")
+  timeOffBalances    TimeOffBalance[]
+  approvedRequests   TimeOffRequest[]  @relation("TimeOffApprover")
+  mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
 
   @@index([departmentId])
   @@index([teamId])
   @@index([managerId])
+  @@index([buddyId])
   @@index([email])
 }
 
@@ -265,20 +298,23 @@ model Review {
 }
 
 model FeedPost {
-  id          String         @id @default(uuid())
-  authorId    String
-  content     String
-  type        FeedPostType   @default(GENERAL)
-  pinned      Boolean        @default(false)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id                  String         @id @default(uuid())
+  authorId            String
+  content             String
+  type                FeedPostType   @default(GENERAL)
+  pinned              Boolean        @default(false)
+  mentionedEmployeeId String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
 
-  author      Employee       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  comments    FeedComment[]
-  reactions   FeedReaction[]
-  attachments PostAttachment[]
+  author              Employee       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  mentionedEmployee   Employee?      @relation("FeedPostMention", fields: [mentionedEmployeeId], references: [id], onDelete: SetNull)
+  comments            FeedComment[]
+  reactions           FeedReaction[]
+  attachments         PostAttachment[]
 
   @@index([authorId])
+  @@index([mentionedEmployeeId])
 }
 
 model FeedComment {
@@ -403,4 +439,127 @@ model Position {
 
   @@index([departmentId])
   @@index([status])
+}
+
+// ---------------------
+// Time Off
+// ---------------------
+
+model TimeOffPolicy {
+  id          String   @id @default(uuid())
+  name        String
+  daysPerYear Int
+  isUnlimited Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  balances    TimeOffBalance[]
+  requests    TimeOffRequest[]
+}
+
+model TimeOffBalance {
+  id         String   @id @default(uuid())
+  employeeId String
+  policyId   String
+  year       Int
+  used       Float    @default(0)
+  createdAt  DateTime @default(now())
+
+  employee   Employee       @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  policy     TimeOffPolicy  @relation(fields: [policyId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, policyId, year])
+  @@index([employeeId])
+  @@index([policyId])
+}
+
+model TimeOffRequest {
+  id         String               @id @default(uuid())
+  employeeId String
+  policyId   String
+  startDate  DateTime
+  endDate    DateTime
+  daysCount  Float
+  reason     String?
+  status     TimeOffRequestStatus @default(PENDING)
+  approverId String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  employee   Employee       @relation("TimeOffEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  policy     TimeOffPolicy  @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  approver   Employee?      @relation("TimeOffApprover", fields: [approverId], references: [id], onDelete: SetNull)
+
+  @@index([employeeId])
+  @@index([policyId])
+  @@index([approverId])
+  @@index([status])
+}
+
+// ---------------------
+// Clubs
+// ---------------------
+
+model Club {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  emoji       String       @default("🎯")
+  createdAt   DateTime     @default(now())
+
+  members     ClubMember[]
+}
+
+model ClubMember {
+  id         String   @id @default(uuid())
+  clubId     String
+  employeeId String
+  joinedAt   DateTime @default(now())
+
+  club       Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([clubId, employeeId])
+  @@index([clubId])
+  @@index([employeeId])
+}
+
+// ---------------------
+// Anonymous Feedback
+// ---------------------
+
+model AnonFeedback {
+  id        String   @id @default(uuid())
+  content   String
+  adminReply String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------
+// Pulse Surveys
+// ---------------------
+
+model PulseSurvey {
+  id        String       @id @default(uuid())
+  question  String
+  status    SurveyStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  closedAt  DateTime?
+
+  responses PulseResponse[]
+}
+
+model PulseResponse {
+  id         String      @id @default(uuid())
+  surveyId   String
+  employeeId String
+  mood       Int
+  createdAt  DateTime    @default(now())
+
+  survey     PulseSurvey @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  employee   Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([surveyId, employeeId])
+  @@index([surveyId])
+  @@index([employeeId])
 }

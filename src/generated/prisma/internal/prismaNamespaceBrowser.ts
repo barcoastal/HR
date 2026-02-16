@@ -68,7 +68,15 @@ export const ModelName = {
   Document: 'Document',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
-  Position: 'Position'
+  Position: 'Position',
+  TimeOffPolicy: 'TimeOffPolicy',
+  TimeOffBalance: 'TimeOffBalance',
+  TimeOffRequest: 'TimeOffRequest',
+  Club: 'Club',
+  ClubMember: 'ClubMember',
+  AnonFeedback: 'AnonFeedback',
+  PulseSurvey: 'PulseSurvey',
+  PulseResponse: 'PulseResponse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -130,6 +138,17 @@ export const EmployeeScalarFieldEnum = {
   location: 'location',
   dietaryRestrictions: 'dietaryRestrictions',
   benefitsEligibleDate: 'benefitsEligibleDate',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  zipCode: 'zipCode',
+  country: 'country',
+  pronouns: 'pronouns',
+  tShirtSize: 'tShirtSize',
+  buddyId: 'buddyId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -223,6 +242,7 @@ export const FeedPostScalarFieldEnum = {
   content: 'content',
   type: 'type',
   pinned: 'pinned',
+  mentionedEmployeeId: 'mentionedEmployeeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -335,6 +355,100 @@ export const PositionScalarFieldEnum = {
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
+export const TimeOffPolicyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  daysPerYear: 'daysPerYear',
+  isUnlimited: 'isUnlimited',
+  createdAt: 'createdAt'
+} as const
+
+export type TimeOffPolicyScalarFieldEnum = (typeof TimeOffPolicyScalarFieldEnum)[keyof typeof TimeOffPolicyScalarFieldEnum]
+
+
+export const TimeOffBalanceScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  policyId: 'policyId',
+  year: 'year',
+  used: 'used',
+  createdAt: 'createdAt'
+} as const
+
+export type TimeOffBalanceScalarFieldEnum = (typeof TimeOffBalanceScalarFieldEnum)[keyof typeof TimeOffBalanceScalarFieldEnum]
+
+
+export const TimeOffRequestScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  policyId: 'policyId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  daysCount: 'daysCount',
+  reason: 'reason',
+  status: 'status',
+  approverId: 'approverId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TimeOffRequestScalarFieldEnum = (typeof TimeOffRequestScalarFieldEnum)[keyof typeof TimeOffRequestScalarFieldEnum]
+
+
+export const ClubScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  emoji: 'emoji',
+  createdAt: 'createdAt'
+} as const
+
+export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
+
+
+export const ClubMemberScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  employeeId: 'employeeId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ClubMemberScalarFieldEnum = (typeof ClubMemberScalarFieldEnum)[keyof typeof ClubMemberScalarFieldEnum]
+
+
+export const AnonFeedbackScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  adminReply: 'adminReply',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AnonFeedbackScalarFieldEnum = (typeof AnonFeedbackScalarFieldEnum)[keyof typeof AnonFeedbackScalarFieldEnum]
+
+
+export const PulseSurveyScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  status: 'status',
+  createdAt: 'createdAt',
+  closedAt: 'closedAt'
+} as const
+
+export type PulseSurveyScalarFieldEnum = (typeof PulseSurveyScalarFieldEnum)[keyof typeof PulseSurveyScalarFieldEnum]
+
+
+export const PulseResponseScalarFieldEnum = {
+  id: 'id',
+  surveyId: 'surveyId',
+  employeeId: 'employeeId',
+  mood: 'mood',
+  createdAt: 'createdAt'
+} as const
+
+export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
 
 
 export const SortOrder = {

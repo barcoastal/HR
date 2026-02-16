@@ -21,6 +21,16 @@ type EmployeeData = {
   hobbies: string;
   bio: string;
   dietaryRestrictions: string;
+  pronouns: string;
+  tShirtSize: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+  emergencyContactName: string;
+  emergencyContactPhone: string;
+  emergencyContactRelation: string;
 };
 
 type Department = { id: string; name: string };
@@ -41,6 +51,16 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
     hobbies: employee.hobbies,
     bio: employee.bio,
     dietaryRestrictions: employee.dietaryRestrictions,
+    pronouns: employee.pronouns,
+    tShirtSize: employee.tShirtSize,
+    address: employee.address,
+    city: employee.city,
+    state: employee.state,
+    zipCode: employee.zipCode,
+    country: employee.country,
+    emergencyContactName: employee.emergencyContactName,
+    emergencyContactPhone: employee.emergencyContactPhone,
+    emergencyContactRelation: employee.emergencyContactRelation,
   });
   const router = useRouter();
 
@@ -64,6 +84,16 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
       hobbies: form.hobbies || null,
       bio: form.bio || null,
       dietaryRestrictions: form.dietaryRestrictions || null,
+      pronouns: form.pronouns || null,
+      tShirtSize: form.tShirtSize || null,
+      address: form.address || null,
+      city: form.city || null,
+      state: form.state || null,
+      zipCode: form.zipCode || null,
+      country: form.country || null,
+      emergencyContactName: form.emergencyContactName || null,
+      emergencyContactPhone: form.emergencyContactPhone || null,
+      emergencyContactRelation: form.emergencyContactRelation || null,
     });
     setSaving(false);
     setOpen(false);
@@ -137,10 +167,71 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
               <input value={form.birthday} onChange={(e) => update("birthday", e.target.value)} type="date" className={inputClass} />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Pronouns</label>
+              <input value={form.pronouns} onChange={(e) => update("pronouns", e.target.value)} placeholder="e.g. she/her" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">T-Shirt Size</label>
+              <select value={form.tShirtSize} onChange={(e) => update("tShirtSize", e.target.value)} className={inputClass}>
+                <option value="">Select</option>
+                <option value="XS">XS</option>
+                <option value="S">S</option>
+                <option value="M">M</option>
+                <option value="L">L</option>
+                <option value="XL">XL</option>
+                <option value="XXL">XXL</option>
+              </select>
+            </div>
+          </div>
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Location</label>
             <input value={form.location} onChange={(e) => update("location", e.target.value)} className={inputClass} />
           </div>
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Address</label>
+            <input value={form.address} onChange={(e) => update("address", e.target.value)} className={inputClass} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">City</label>
+              <input value={form.city} onChange={(e) => update("city", e.target.value)} className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">State</label>
+              <input value={form.state} onChange={(e) => update("state", e.target.value)} className={inputClass} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Zip Code</label>
+              <input value={form.zipCode} onChange={(e) => update("zipCode", e.target.value)} className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Country</label>
+              <input value={form.country} onChange={(e) => update("country", e.target.value)} className={inputClass} />
+            </div>
+          </div>
+
+          <div className="border-t border-[var(--color-border)] pt-3 mt-3">
+            <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">Emergency Contact</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Contact Name</label>
+                <input value={form.emergencyContactName} onChange={(e) => update("emergencyContactName", e.target.value)} className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Contact Phone</label>
+                <input value={form.emergencyContactPhone} onChange={(e) => update("emergencyContactPhone", e.target.value)} className={inputClass} />
+              </div>
+            </div>
+            <div className="mt-3">
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Relationship</label>
+              <input value={form.emergencyContactRelation} onChange={(e) => update("emergencyContactRelation", e.target.value)} placeholder="e.g. Spouse" className={inputClass} />
+            </div>
+          </div>
+
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Hobbies</label>
             <input value={form.hobbies} onChange={(e) => update("hobbies", e.target.value)} className={inputClass} />

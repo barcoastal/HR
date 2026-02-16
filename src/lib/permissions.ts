@@ -27,3 +27,15 @@ export function canWriteReviews(role: UserRole) {
 export function canPostToFeed(role: UserRole) {
   return true; // all roles can post
 }
+
+export function canManageTimeOff(role: UserRole) {
+  return role === "ADMIN";
+}
+
+export function canApproveTimeOff(role: UserRole) {
+  return role === "ADMIN" || role === "MANAGER";
+}
+
+export function canManagePulse(role: UserRole) {
+  return role === "ADMIN";
+}

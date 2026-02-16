@@ -129,3 +129,43 @@ export type Candidate = Prisma.CandidateModel
  * 
  */
 export type Position = Prisma.PositionModel
+/**
+ * Model TimeOffPolicy
+ * 
+ */
+export type TimeOffPolicy = Prisma.TimeOffPolicyModel
+/**
+ * Model TimeOffBalance
+ * 
+ */
+export type TimeOffBalance = Prisma.TimeOffBalanceModel
+/**
+ * Model TimeOffRequest
+ * 
+ */
+export type TimeOffRequest = Prisma.TimeOffRequestModel
+/**
+ * Model Club
+ * 
+ */
+export type Club = Prisma.ClubModel
+/**
+ * Model ClubMember
+ * 
+ */
+export type ClubMember = Prisma.ClubMemberModel
+/**
+ * Model AnonFeedback
+ * 
+ */
+export type AnonFeedback = Prisma.AnonFeedbackModel
+/**
+ * Model PulseSurvey
+ * 
+ */
+export type PulseSurvey = Prisma.PulseSurveyModel
+/**
+ * Model PulseResponse
+ * 
+ */
+export type PulseResponse = Prisma.PulseResponseModel

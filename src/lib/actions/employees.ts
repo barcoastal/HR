@@ -42,6 +42,7 @@ export async function getEmployeeById(id: string) {
       department: true,
       team: true,
       manager: true,
+      buddy: true,
       directReports: true,
       documents: true,
       reviewsAsEmployee: {

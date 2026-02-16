@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import {
   Mail, Phone, Calendar, MapPin, Briefcase, Clock, Heart, FileText, Star, ChevronRight, UtensilsCrossed,
+  User, Shield, Shirt, Users,
 } from "lucide-react";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
 
@@ -41,6 +42,9 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
 
   const statusColor = employee.status === "ACTIVE" ? "bg-emerald-500/15 text-emerald-400" : employee.status === "ONBOARDING" ? "bg-blue-500/15 text-blue-400" : "bg-gray-500/15 text-gray-400";
 
+  const addressParts = [employee.address, employee.city, employee.state, employee.zipCode, employee.country].filter(Boolean);
+  const fullAddress = addressParts.join(", ");
+
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
       <div className={cn("rounded-xl overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
@@ -52,6 +56,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{employee.firstName} {employee.lastName}</h1>
+                {employee.pronouns && <span className="text-sm text-[var(--color-text-muted)]">({employee.pronouns})</span>}
                 <span className={cn("inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium w-fit", statusColor)}>{employee.status}</span>
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{employee.jobTitle} · {employee.department?.name || "No department"}</p>
@@ -70,6 +75,16 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
               hobbies: employee.hobbies || "",
               bio: employee.bio || "",
               dietaryRestrictions: employee.dietaryRestrictions || "",
+              pronouns: employee.pronouns || "",
+              tShirtSize: employee.tShirtSize || "",
+              address: employee.address || "",
+              city: employee.city || "",
+              state: employee.state || "",
+              zipCode: employee.zipCode || "",
+              country: employee.country || "",
+              emergencyContactName: employee.emergencyContactName || "",
+              emergencyContactPhone: employee.emergencyContactPhone || "",
+              emergencyContactRelation: employee.emergencyContactRelation || "",
             }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
           </div>
         </div>
@@ -89,14 +104,29 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
               <InfoRow icon={Mail} label="Email" value={employee.email} />
               {employee.phone && <InfoRow icon={Phone} label="Phone" value={employee.phone} />}
+              {employee.pronouns && <InfoRow icon={User} label="Pronouns" value={employee.pronouns} />}
               {employee.birthday && <InfoRow icon={Calendar} label="Birthday" value={formatDate(employee.birthday)} />}
               <InfoRow icon={Briefcase} label="Start Date" value={formatDate(employee.startDate)} />
               {employee.location && <InfoRow icon={MapPin} label="Location" value={employee.location} />}
+              {fullAddress && <InfoRow icon={MapPin} label="Address" value={fullAddress} />}
               <InfoRow icon={Clock} label="Tenure" value={tenure} />
+              {employee.tShirtSize && <InfoRow icon={Shirt} label="T-Shirt Size" value={employee.tShirtSize} />}
               {employee.hobbies && <InfoRow icon={Heart} label="Hobbies" value={employee.hobbies} />}
               {employee.dietaryRestrictions && <InfoRow icon={UtensilsCrossed} label="Dietary Restrictions" value={employee.dietaryRestrictions} />}
             </div>
           </section>
+
+          {/* Emergency Contact */}
+          {employee.emergencyContactName && (
+            <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Emergency Contact</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+                <InfoRow icon={User} label="Name" value={employee.emergencyContactName} />
+                {employee.emergencyContactPhone && <InfoRow icon={Phone} label="Phone" value={employee.emergencyContactPhone} />}
+                {employee.emergencyContactRelation && <InfoRow icon={Shield} label="Relationship" value={employee.emergencyContactRelation} />}
+              </div>
+            </section>
+          )}
 
           {employee.documents.length > 0 && (
             <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
@@ -154,6 +184,21 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 <div>
                   <p className="text-sm font-semibold text-[var(--color-text-primary)]">{employee.manager.firstName} {employee.manager.lastName}</p>
                   <p className="text-xs text-[var(--color-text-muted)]">{employee.manager.jobTitle}</p>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {(employee as any).buddy && (
+            <section className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Onboarding Buddy</h3>
+              <div className="flex items-center gap-3">
+                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[(employee as any).buddy.firstName.charCodeAt(0) % avatarColors.length])}>
+                  {getInitials((employee as any).buddy.firstName, (employee as any).buddy.lastName)}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{(employee as any).buddy.firstName} {(employee as any).buddy.lastName}</p>
+                  <p className="text-xs text-[var(--color-text-muted)]">{(employee as any).buddy.jobTitle}</p>
                 </div>
               </div>
             </section>

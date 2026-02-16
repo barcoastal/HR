@@ -18,6 +18,10 @@ import {
   BarChart3,
   CalendarDays,
   LogOut,
+  Palmtree,
+  Users2,
+  Megaphone,
+  UserCircle,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import {
@@ -35,8 +39,12 @@ const allNavLinks = [
   { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: () => true },
   { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: () => true },
   { href: "/calendar", label: "Calendar", icon: CalendarDays, access: () => true },
+  { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true },
+  { href: "/clubs", label: "Clubs", icon: Users2, access: () => true },
+  { href: "/voice", label: "Your Voice", icon: Megaphone, access: () => true },
   { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r) },
   { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r) },
+  { href: "/my-profile", label: "My Profile", icon: UserCircle, access: () => true },
   { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r) },
 ];
 

@@ -401,7 +401,15 @@ export const ModelName = {
   Document: 'Document',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
-  Position: 'Position'
+  Position: 'Position',
+  TimeOffPolicy: 'TimeOffPolicy',
+  TimeOffBalance: 'TimeOffBalance',
+  TimeOffRequest: 'TimeOffRequest',
+  Club: 'Club',
+  ClubMember: 'ClubMember',
+  AnonFeedback: 'AnonFeedback',
+  PulseSurvey: 'PulseSurvey',
+  PulseResponse: 'PulseResponse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1753,6 +1761,598 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TimeOffPolicy: {
+      payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
+      fields: Prisma.TimeOffPolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TimeOffPolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TimeOffPolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.TimeOffPolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TimeOffPolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        findMany: {
+          args: Prisma.TimeOffPolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>[]
+        }
+        create: {
+          args: Prisma.TimeOffPolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        createMany: {
+          args: Prisma.TimeOffPolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TimeOffPolicyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>[]
+        }
+        delete: {
+          args: Prisma.TimeOffPolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        update: {
+          args: Prisma.TimeOffPolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.TimeOffPolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TimeOffPolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TimeOffPolicyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>[]
+        }
+        upsert: {
+          args: Prisma.TimeOffPolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffPolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.TimeOffPolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTimeOffPolicy>
+        }
+        groupBy: {
+          args: Prisma.TimeOffPolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffPolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TimeOffPolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffPolicyCountAggregateOutputType> | number
+        }
+      }
+    }
+    TimeOffBalance: {
+      payload: Prisma.$TimeOffBalancePayload<ExtArgs>
+      fields: Prisma.TimeOffBalanceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TimeOffBalanceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TimeOffBalanceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        findFirst: {
+          args: Prisma.TimeOffBalanceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TimeOffBalanceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        findMany: {
+          args: Prisma.TimeOffBalanceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>[]
+        }
+        create: {
+          args: Prisma.TimeOffBalanceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        createMany: {
+          args: Prisma.TimeOffBalanceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TimeOffBalanceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>[]
+        }
+        delete: {
+          args: Prisma.TimeOffBalanceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        update: {
+          args: Prisma.TimeOffBalanceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        deleteMany: {
+          args: Prisma.TimeOffBalanceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TimeOffBalanceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TimeOffBalanceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>[]
+        }
+        upsert: {
+          args: Prisma.TimeOffBalanceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffBalancePayload>
+        }
+        aggregate: {
+          args: Prisma.TimeOffBalanceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTimeOffBalance>
+        }
+        groupBy: {
+          args: Prisma.TimeOffBalanceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffBalanceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TimeOffBalanceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffBalanceCountAggregateOutputType> | number
+        }
+      }
+    }
+    TimeOffRequest: {
+      payload: Prisma.$TimeOffRequestPayload<ExtArgs>
+      fields: Prisma.TimeOffRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TimeOffRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TimeOffRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.TimeOffRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TimeOffRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        findMany: {
+          args: Prisma.TimeOffRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>[]
+        }
+        create: {
+          args: Prisma.TimeOffRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        createMany: {
+          args: Prisma.TimeOffRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TimeOffRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.TimeOffRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        update: {
+          args: Prisma.TimeOffRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.TimeOffRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TimeOffRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TimeOffRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.TimeOffRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TimeOffRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.TimeOffRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTimeOffRequest>
+        }
+        groupBy: {
+          args: Prisma.TimeOffRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TimeOffRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TimeOffRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    Club: {
+      payload: Prisma.$ClubPayload<ExtArgs>
+      fields: Prisma.ClubFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClubFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClubFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        findFirst: {
+          args: Prisma.ClubFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClubFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        findMany: {
+          args: Prisma.ClubFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>[]
+        }
+        create: {
+          args: Prisma.ClubCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        createMany: {
+          args: Prisma.ClubCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClubCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>[]
+        }
+        delete: {
+          args: Prisma.ClubDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        update: {
+          args: Prisma.ClubUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClubDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClubUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClubUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClubUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubPayload>
+        }
+        aggregate: {
+          args: Prisma.ClubAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClub>
+        }
+        groupBy: {
+          args: Prisma.ClubGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClubCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubCountAggregateOutputType> | number
+        }
+      }
+    }
+    ClubMember: {
+      payload: Prisma.$ClubMemberPayload<ExtArgs>
+      fields: Prisma.ClubMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ClubMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ClubMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.ClubMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ClubMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        findMany: {
+          args: Prisma.ClubMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        create: {
+          args: Prisma.ClubMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        createMany: {
+          args: Prisma.ClubMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ClubMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.ClubMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        update: {
+          args: Prisma.ClubMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.ClubMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ClubMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ClubMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.ClubMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClubMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.ClubMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateClubMember>
+        }
+        groupBy: {
+          args: Prisma.ClubMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ClubMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ClubMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    AnonFeedback: {
+      payload: Prisma.$AnonFeedbackPayload<ExtArgs>
+      fields: Prisma.AnonFeedbackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnonFeedbackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnonFeedbackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        findFirst: {
+          args: Prisma.AnonFeedbackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnonFeedbackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        findMany: {
+          args: Prisma.AnonFeedbackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>[]
+        }
+        create: {
+          args: Prisma.AnonFeedbackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        createMany: {
+          args: Prisma.AnonFeedbackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnonFeedbackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>[]
+        }
+        delete: {
+          args: Prisma.AnonFeedbackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        update: {
+          args: Prisma.AnonFeedbackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnonFeedbackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnonFeedbackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnonFeedbackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnonFeedbackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnonFeedbackPayload>
+        }
+        aggregate: {
+          args: Prisma.AnonFeedbackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnonFeedback>
+        }
+        groupBy: {
+          args: Prisma.AnonFeedbackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnonFeedbackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnonFeedbackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnonFeedbackCountAggregateOutputType> | number
+        }
+      }
+    }
+    PulseSurvey: {
+      payload: Prisma.$PulseSurveyPayload<ExtArgs>
+      fields: Prisma.PulseSurveyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PulseSurveyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PulseSurveyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        findFirst: {
+          args: Prisma.PulseSurveyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PulseSurveyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        findMany: {
+          args: Prisma.PulseSurveyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>[]
+        }
+        create: {
+          args: Prisma.PulseSurveyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        createMany: {
+          args: Prisma.PulseSurveyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PulseSurveyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>[]
+        }
+        delete: {
+          args: Prisma.PulseSurveyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        update: {
+          args: Prisma.PulseSurveyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        deleteMany: {
+          args: Prisma.PulseSurveyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PulseSurveyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PulseSurveyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>[]
+        }
+        upsert: {
+          args: Prisma.PulseSurveyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseSurveyPayload>
+        }
+        aggregate: {
+          args: Prisma.PulseSurveyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePulseSurvey>
+        }
+        groupBy: {
+          args: Prisma.PulseSurveyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PulseSurveyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PulseSurveyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PulseSurveyCountAggregateOutputType> | number
+        }
+      }
+    }
+    PulseResponse: {
+      payload: Prisma.$PulseResponsePayload<ExtArgs>
+      fields: Prisma.PulseResponseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PulseResponseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PulseResponseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        findFirst: {
+          args: Prisma.PulseResponseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PulseResponseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        findMany: {
+          args: Prisma.PulseResponseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>[]
+        }
+        create: {
+          args: Prisma.PulseResponseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        createMany: {
+          args: Prisma.PulseResponseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PulseResponseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>[]
+        }
+        delete: {
+          args: Prisma.PulseResponseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        update: {
+          args: Prisma.PulseResponseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        deleteMany: {
+          args: Prisma.PulseResponseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PulseResponseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PulseResponseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>[]
+        }
+        upsert: {
+          args: Prisma.PulseResponseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PulseResponsePayload>
+        }
+        aggregate: {
+          args: Prisma.PulseResponseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePulseResponse>
+        }
+        groupBy: {
+          args: Prisma.PulseResponseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PulseResponseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PulseResponseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PulseResponseCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1835,6 +2435,17 @@ export const EmployeeScalarFieldEnum = {
   location: 'location',
   dietaryRestrictions: 'dietaryRestrictions',
   benefitsEligibleDate: 'benefitsEligibleDate',
+  emergencyContactName: 'emergencyContactName',
+  emergencyContactPhone: 'emergencyContactPhone',
+  emergencyContactRelation: 'emergencyContactRelation',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  zipCode: 'zipCode',
+  country: 'country',
+  pronouns: 'pronouns',
+  tShirtSize: 'tShirtSize',
+  buddyId: 'buddyId',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1928,6 +2539,7 @@ export const FeedPostScalarFieldEnum = {
   content: 'content',
   type: 'type',
   pinned: 'pinned',
+  mentionedEmployeeId: 'mentionedEmployeeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2040,6 +2652,100 @@ export const PositionScalarFieldEnum = {
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
+export const TimeOffPolicyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  daysPerYear: 'daysPerYear',
+  isUnlimited: 'isUnlimited',
+  createdAt: 'createdAt'
+} as const
+
+export type TimeOffPolicyScalarFieldEnum = (typeof TimeOffPolicyScalarFieldEnum)[keyof typeof TimeOffPolicyScalarFieldEnum]
+
+
+export const TimeOffBalanceScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  policyId: 'policyId',
+  year: 'year',
+  used: 'used',
+  createdAt: 'createdAt'
+} as const
+
+export type TimeOffBalanceScalarFieldEnum = (typeof TimeOffBalanceScalarFieldEnum)[keyof typeof TimeOffBalanceScalarFieldEnum]
+
+
+export const TimeOffRequestScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  policyId: 'policyId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  daysCount: 'daysCount',
+  reason: 'reason',
+  status: 'status',
+  approverId: 'approverId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TimeOffRequestScalarFieldEnum = (typeof TimeOffRequestScalarFieldEnum)[keyof typeof TimeOffRequestScalarFieldEnum]
+
+
+export const ClubScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  emoji: 'emoji',
+  createdAt: 'createdAt'
+} as const
+
+export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
+
+
+export const ClubMemberScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  employeeId: 'employeeId',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ClubMemberScalarFieldEnum = (typeof ClubMemberScalarFieldEnum)[keyof typeof ClubMemberScalarFieldEnum]
+
+
+export const AnonFeedbackScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  adminReply: 'adminReply',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AnonFeedbackScalarFieldEnum = (typeof AnonFeedbackScalarFieldEnum)[keyof typeof AnonFeedbackScalarFieldEnum]
+
+
+export const PulseSurveyScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  status: 'status',
+  createdAt: 'createdAt',
+  closedAt: 'closedAt'
+} as const
+
+export type PulseSurveyScalarFieldEnum = (typeof PulseSurveyScalarFieldEnum)[keyof typeof PulseSurveyScalarFieldEnum]
+
+
+export const PulseResponseScalarFieldEnum = {
+  id: 'id',
+  surveyId: 'surveyId',
+  employeeId: 'employeeId',
+  mood: 'mood',
+  createdAt: 'createdAt'
+} as const
+
+export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2316,6 +3022,34 @@ export type EnumPositionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 export type ListEnumPositionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PositionStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'TimeOffRequestStatus'
+ */
+export type EnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TimeOffRequestStatus[]'
+ */
+export type ListEnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'SurveyStatus'
+ */
+export type EnumSurveyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SurveyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'SurveyStatus[]'
+ */
+export type ListEnumSurveyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SurveyStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2429,6 +3163,14 @@ export type GlobalOmitConfig = {
   jobTitle?: Prisma.JobTitleOmit
   candidate?: Prisma.CandidateOmit
   position?: Prisma.PositionOmit
+  timeOffPolicy?: Prisma.TimeOffPolicyOmit
+  timeOffBalance?: Prisma.TimeOffBalanceOmit
+  timeOffRequest?: Prisma.TimeOffRequestOmit
+  club?: Prisma.ClubOmit
+  clubMember?: Prisma.ClubMemberOmit
+  anonFeedback?: Prisma.AnonFeedbackOmit
+  pulseSurvey?: Prisma.PulseSurveyOmit
+  pulseResponse?: Prisma.PulseResponseOmit
 }
 
 /* Types for Logging */

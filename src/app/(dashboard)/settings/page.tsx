@@ -4,18 +4,22 @@ import { getUsers } from "@/lib/actions/users";
 import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { getJobTitles } from "@/lib/actions/job-titles";
+import { getTimeOffPolicies } from "@/lib/actions/time-off";
+import { getAllPulseSurveys } from "@/lib/actions/pulse";
 import { db } from "@/lib/db";
 import { SettingsUserManagement } from "@/components/settings/user-management";
 import { CompanyInfo } from "@/components/settings/company-info";
 import { DepartmentManager } from "@/components/settings/department-manager";
 import { JobTitleManager } from "@/components/settings/job-title-manager";
 import { ChecklistManager } from "@/components/settings/checklist-manager";
+import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
+import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
   await requireAdmin();
-  const [users, departments, employees, jobTitles, checklists] = await Promise.all([
+  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -28,6 +32,8 @@ export default async function SettingsPage() {
         },
       },
     }),
+    getTimeOffPolicies(),
+    getAllPulseSurveys(),
   ]);
 
   const userList = users.map((u) => ({
@@ -83,6 +89,25 @@ export default async function SettingsPage() {
               assigneeName: i.assignee ? `${i.assignee.firstName} ${i.assignee.lastName}` : null,
               dueDay: i.dueDay,
             })),
+          }))}
+        />
+
+        <PtoPolicyManager
+          policies={policies.map((p) => ({
+            id: p.id,
+            name: p.name,
+            daysPerYear: p.daysPerYear,
+            isUnlimited: p.isUnlimited,
+          }))}
+        />
+
+        <PulseSurveyManager
+          surveys={pulseSurveys.map((s) => ({
+            id: s.id,
+            question: s.question,
+            status: s.status,
+            createdAt: s.createdAt,
+            _count: s._count,
           }))}
         />
       </div>

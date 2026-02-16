@@ -1,4 +1,5 @@
 import { getFeedPosts } from "@/lib/actions/feed";
+import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
 import { getInitials } from "@/lib/utils";
 import { PostComposer } from "@/components/feed/post-composer";
@@ -6,10 +7,19 @@ import { PostCard } from "@/components/feed/post-card";
 
 export default async function FeedPage() {
   const session = await requireAuth();
-  const posts = await getFeedPosts();
+  const [posts, employees] = await Promise.all([
+    getFeedPosts(),
+    getEmployees(),
+  ]);
   const userInitials = session.user.name
     ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
     : "??";
+
+  const employeeList = employees.map((e) => ({
+    id: e.id,
+    firstName: e.firstName,
+    lastName: e.lastName,
+  }));
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
@@ -19,6 +29,7 @@ export default async function FeedPage() {
         <PostComposer
           employeeId={session.user.employeeId}
           initials={userInitials}
+          employees={employeeList}
         />
       ) : (
         <p className="text-sm text-[var(--color-text-muted)] italic p-4 border border-[var(--color-border)] rounded-md">

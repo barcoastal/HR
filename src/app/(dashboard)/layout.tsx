@@ -1,6 +1,8 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { TopBar } from "@/components/layout/top-bar";
+import { PulseSurveyWrapper } from "@/components/pulse/pulse-survey-wrapper";
+import { Suspense } from "react";
 
 export default function DashboardLayout({
   children,
@@ -15,6 +17,9 @@ export default function DashboardLayout({
         <main className="p-4 pb-24 md:p-6 md:pb-6">{children}</main>
       </div>
       <MobileNav />
+      <Suspense fallback={null}>
+        <PulseSurveyWrapper />
+      </Suspense>
     </div>
   );
 }

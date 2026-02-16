@@ -1,25 +1,37 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Send, Image, Paperclip } from "lucide-react";
+import { Send, Image, Paperclip, Star } from "lucide-react";
 import { useState } from "react";
-import { createFeedPost } from "@/lib/actions/feed";
+import { createFeedPost, createShoutoutPost } from "@/lib/actions/feed";
+
+type EmployeeOption = { id: string; firstName: string; lastName: string };
 
 export function PostComposer({
   employeeId,
   initials,
+  employees,
 }: {
   employeeId: string;
   initials: string;
+  employees?: EmployeeOption[];
 }) {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"general" | "shoutout">("general");
+  const [selectedEmployee, setSelectedEmployee] = useState("");
 
   async function handlePost() {
     if (!content.trim()) return;
     setLoading(true);
-    await createFeedPost({ authorId: employeeId, content: content.trim() });
+    if (mode === "shoutout" && selectedEmployee) {
+      await createShoutoutPost(employeeId, selectedEmployee, content.trim());
+    } else {
+      await createFeedPost({ authorId: employeeId, content: content.trim() });
+    }
     setContent("");
+    setSelectedEmployee("");
+    setMode("general");
     setLoading(false);
   }
 
@@ -37,7 +49,7 @@ export function PostComposer({
         <div className="flex-1">
           <input
             type="text"
-            placeholder="What's on your mind?"
+            placeholder={mode === "shoutout" ? "Give someone a shoutout..." : "What's on your mind?"}
             value={content}
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handlePost()}
@@ -51,6 +63,31 @@ export function PostComposer({
           />
         </div>
       </div>
+
+      {mode === "shoutout" && employees && (
+        <div className="mt-3 pl-[52px]">
+          <select
+            value={selectedEmployee}
+            onChange={(e) => setSelectedEmployee(e.target.value)}
+            className={cn(
+              "w-full rounded-lg px-3 py-2 text-sm",
+              "bg-[var(--color-background)] border border-[var(--color-border)]",
+              "text-[var(--color-text-primary)]",
+              "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
+            )}
+          >
+            <option value="">Select an employee to shoutout...</option>
+            {employees
+              .filter((e) => e.id !== employeeId)
+              .map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.firstName} {e.lastName}
+                </option>
+              ))}
+          </select>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[var(--color-border)]">
         <div className="flex items-center gap-1">
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors">
@@ -61,10 +98,22 @@ export function PostComposer({
             <Paperclip className="h-4 w-4" />
             Attach
           </button>
+          <button
+            onClick={() => setMode(mode === "shoutout" ? "general" : "shoutout")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors",
+              mode === "shoutout"
+                ? "text-yellow-500 bg-yellow-500/10"
+                : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+            )}
+          >
+            <Star className="h-4 w-4" />
+            Shoutout
+          </button>
         </div>
         <button
           onClick={handlePost}
-          disabled={!content.trim() || loading}
+          disabled={!content.trim() || loading || (mode === "shoutout" && !selectedEmployee)}
           className={cn(
             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
             "bg-[var(--color-accent)] text-white",

@@ -30,6 +30,7 @@ export type FeedPostMinAggregateOutputType = {
   content: string | null
   type: $Enums.FeedPostType | null
   pinned: boolean | null
+  mentionedEmployeeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +41,7 @@ export type FeedPostMaxAggregateOutputType = {
   content: string | null
   type: $Enums.FeedPostType | null
   pinned: boolean | null
+  mentionedEmployeeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +52,7 @@ export type FeedPostCountAggregateOutputType = {
   content: number
   type: number
   pinned: number
+  mentionedEmployeeId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,6 +65,7 @@ export type FeedPostMinAggregateInputType = {
   content?: true
   type?: true
   pinned?: true
+  mentionedEmployeeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +76,7 @@ export type FeedPostMaxAggregateInputType = {
   content?: true
   type?: true
   pinned?: true
+  mentionedEmployeeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +87,7 @@ export type FeedPostCountAggregateInputType = {
   content?: true
   type?: true
   pinned?: true
+  mentionedEmployeeId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -165,6 +171,7 @@ export type FeedPostGroupByOutputType = {
   content: string
   type: $Enums.FeedPostType
   pinned: boolean
+  mentionedEmployeeId: string | null
   createdAt: Date
   updatedAt: Date
   _count: FeedPostCountAggregateOutputType | null
@@ -196,9 +203,11 @@ export type FeedPostWhereInput = {
   content?: Prisma.StringFilter<"FeedPost"> | string
   type?: Prisma.EnumFeedPostTypeFilter<"FeedPost"> | $Enums.FeedPostType
   pinned?: Prisma.BoolFilter<"FeedPost"> | boolean
+  mentionedEmployeeId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
   author?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  mentionedEmployee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   comments?: Prisma.FeedCommentListRelationFilter
   reactions?: Prisma.FeedReactionListRelationFilter
   attachments?: Prisma.PostAttachmentListRelationFilter
@@ -210,9 +219,11 @@ export type FeedPostOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   type?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  mentionedEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   author?: Prisma.EmployeeOrderByWithRelationInput
+  mentionedEmployee?: Prisma.EmployeeOrderByWithRelationInput
   comments?: Prisma.FeedCommentOrderByRelationAggregateInput
   reactions?: Prisma.FeedReactionOrderByRelationAggregateInput
   attachments?: Prisma.PostAttachmentOrderByRelationAggregateInput
@@ -227,9 +238,11 @@ export type FeedPostWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"FeedPost"> | string
   type?: Prisma.EnumFeedPostTypeFilter<"FeedPost"> | $Enums.FeedPostType
   pinned?: Prisma.BoolFilter<"FeedPost"> | boolean
+  mentionedEmployeeId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
   author?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  mentionedEmployee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   comments?: Prisma.FeedCommentListRelationFilter
   reactions?: Prisma.FeedReactionListRelationFilter
   attachments?: Prisma.PostAttachmentListRelationFilter
@@ -241,6 +254,7 @@ export type FeedPostOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   type?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  mentionedEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FeedPostCountOrderByAggregateInput
@@ -257,6 +271,7 @@ export type FeedPostScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"FeedPost"> | string
   type?: Prisma.EnumFeedPostTypeWithAggregatesFilter<"FeedPost"> | $Enums.FeedPostType
   pinned?: Prisma.BoolWithAggregatesFilter<"FeedPost"> | boolean
+  mentionedEmployeeId?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FeedPost"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FeedPost"> | Date | string
 }
@@ -269,6 +284,7 @@ export type FeedPostCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
@@ -280,6 +296,7 @@ export type FeedPostUncheckedCreateInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
@@ -295,6 +312,7 @@ export type FeedPostUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
@@ -306,6 +324,7 @@ export type FeedPostUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
@@ -319,6 +338,7 @@ export type FeedPostCreateManyInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -338,6 +358,7 @@ export type FeedPostUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -358,6 +379,7 @@ export type FeedPostCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   type?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  mentionedEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -368,6 +390,7 @@ export type FeedPostMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   type?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  mentionedEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -378,6 +401,7 @@ export type FeedPostMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   type?: Prisma.SortOrder
   pinned?: Prisma.SortOrder
+  mentionedEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -394,10 +418,24 @@ export type FeedPostCreateNestedManyWithoutAuthorInput = {
   connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
 }
 
+export type FeedPostCreateNestedManyWithoutMentionedEmployeeInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput> | Prisma.FeedPostCreateWithoutMentionedEmployeeInput[] | Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput[]
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput | Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput[]
+  createMany?: Prisma.FeedPostCreateManyMentionedEmployeeInputEnvelope
+  connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+}
+
 export type FeedPostUncheckedCreateNestedManyWithoutAuthorInput = {
   create?: Prisma.XOR<Prisma.FeedPostCreateWithoutAuthorInput, Prisma.FeedPostUncheckedCreateWithoutAuthorInput> | Prisma.FeedPostCreateWithoutAuthorInput[] | Prisma.FeedPostUncheckedCreateWithoutAuthorInput[]
   connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutAuthorInput | Prisma.FeedPostCreateOrConnectWithoutAuthorInput[]
   createMany?: Prisma.FeedPostCreateManyAuthorInputEnvelope
+  connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+}
+
+export type FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput> | Prisma.FeedPostCreateWithoutMentionedEmployeeInput[] | Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput[]
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput | Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput[]
+  createMany?: Prisma.FeedPostCreateManyMentionedEmployeeInputEnvelope
   connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
 }
 
@@ -415,6 +453,20 @@ export type FeedPostUpdateManyWithoutAuthorNestedInput = {
   deleteMany?: Prisma.FeedPostScalarWhereInput | Prisma.FeedPostScalarWhereInput[]
 }
 
+export type FeedPostUpdateManyWithoutMentionedEmployeeNestedInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput> | Prisma.FeedPostCreateWithoutMentionedEmployeeInput[] | Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput[]
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput | Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput[]
+  upsert?: Prisma.FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput | Prisma.FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput[]
+  createMany?: Prisma.FeedPostCreateManyMentionedEmployeeInputEnvelope
+  set?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  disconnect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  delete?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  update?: Prisma.FeedPostUpdateWithWhereUniqueWithoutMentionedEmployeeInput | Prisma.FeedPostUpdateWithWhereUniqueWithoutMentionedEmployeeInput[]
+  updateMany?: Prisma.FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput | Prisma.FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput[]
+  deleteMany?: Prisma.FeedPostScalarWhereInput | Prisma.FeedPostScalarWhereInput[]
+}
+
 export type FeedPostUncheckedUpdateManyWithoutAuthorNestedInput = {
   create?: Prisma.XOR<Prisma.FeedPostCreateWithoutAuthorInput, Prisma.FeedPostUncheckedCreateWithoutAuthorInput> | Prisma.FeedPostCreateWithoutAuthorInput[] | Prisma.FeedPostUncheckedCreateWithoutAuthorInput[]
   connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutAuthorInput | Prisma.FeedPostCreateOrConnectWithoutAuthorInput[]
@@ -426,6 +478,20 @@ export type FeedPostUncheckedUpdateManyWithoutAuthorNestedInput = {
   connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
   update?: Prisma.FeedPostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.FeedPostUpdateWithWhereUniqueWithoutAuthorInput[]
   updateMany?: Prisma.FeedPostUpdateManyWithWhereWithoutAuthorInput | Prisma.FeedPostUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.FeedPostScalarWhereInput | Prisma.FeedPostScalarWhereInput[]
+}
+
+export type FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput> | Prisma.FeedPostCreateWithoutMentionedEmployeeInput[] | Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput[]
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput | Prisma.FeedPostCreateOrConnectWithoutMentionedEmployeeInput[]
+  upsert?: Prisma.FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput | Prisma.FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput[]
+  createMany?: Prisma.FeedPostCreateManyMentionedEmployeeInputEnvelope
+  set?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  disconnect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  delete?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  connect?: Prisma.FeedPostWhereUniqueInput | Prisma.FeedPostWhereUniqueInput[]
+  update?: Prisma.FeedPostUpdateWithWhereUniqueWithoutMentionedEmployeeInput | Prisma.FeedPostUpdateWithWhereUniqueWithoutMentionedEmployeeInput[]
+  updateMany?: Prisma.FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput | Prisma.FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput[]
   deleteMany?: Prisma.FeedPostScalarWhereInput | Prisma.FeedPostScalarWhereInput[]
 }
 
@@ -482,6 +548,7 @@ export type FeedPostCreateWithoutAuthorInput = {
   pinned?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
@@ -492,6 +559,7 @@ export type FeedPostUncheckedCreateWithoutAuthorInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
@@ -506,6 +574,42 @@ export type FeedPostCreateOrConnectWithoutAuthorInput = {
 
 export type FeedPostCreateManyAuthorInputEnvelope = {
   data: Prisma.FeedPostCreateManyAuthorInput | Prisma.FeedPostCreateManyAuthorInput[]
+  skipDuplicates?: boolean
+}
+
+export type FeedPostCreateWithoutMentionedEmployeeInput = {
+  id?: string
+  content: string
+  type?: $Enums.FeedPostType
+  pinned?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
+  reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
+  attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
+}
+
+export type FeedPostUncheckedCreateWithoutMentionedEmployeeInput = {
+  id?: string
+  authorId: string
+  content: string
+  type?: $Enums.FeedPostType
+  pinned?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
+  reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
+  attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type FeedPostCreateOrConnectWithoutMentionedEmployeeInput = {
+  where: Prisma.FeedPostWhereUniqueInput
+  create: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput>
+}
+
+export type FeedPostCreateManyMentionedEmployeeInputEnvelope = {
+  data: Prisma.FeedPostCreateManyMentionedEmployeeInput | Prisma.FeedPostCreateManyMentionedEmployeeInput[]
   skipDuplicates?: boolean
 }
 
@@ -534,8 +638,25 @@ export type FeedPostScalarWhereInput = {
   content?: Prisma.StringFilter<"FeedPost"> | string
   type?: Prisma.EnumFeedPostTypeFilter<"FeedPost"> | $Enums.FeedPostType
   pinned?: Prisma.BoolFilter<"FeedPost"> | boolean
+  mentionedEmployeeId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FeedPost"> | Date | string
+}
+
+export type FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput = {
+  where: Prisma.FeedPostWhereUniqueInput
+  update: Prisma.XOR<Prisma.FeedPostUpdateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedUpdateWithoutMentionedEmployeeInput>
+  create: Prisma.XOR<Prisma.FeedPostCreateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedCreateWithoutMentionedEmployeeInput>
+}
+
+export type FeedPostUpdateWithWhereUniqueWithoutMentionedEmployeeInput = {
+  where: Prisma.FeedPostWhereUniqueInput
+  data: Prisma.XOR<Prisma.FeedPostUpdateWithoutMentionedEmployeeInput, Prisma.FeedPostUncheckedUpdateWithoutMentionedEmployeeInput>
+}
+
+export type FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput = {
+  where: Prisma.FeedPostScalarWhereInput
+  data: Prisma.XOR<Prisma.FeedPostUpdateManyMutationInput, Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput>
 }
 
 export type FeedPostCreateWithoutCommentsInput = {
@@ -546,6 +667,7 @@ export type FeedPostCreateWithoutCommentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
 }
@@ -556,6 +678,7 @@ export type FeedPostUncheckedCreateWithoutCommentsInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
@@ -586,6 +709,7 @@ export type FeedPostUpdateWithoutCommentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
 }
@@ -596,6 +720,7 @@ export type FeedPostUncheckedUpdateWithoutCommentsInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
@@ -610,6 +735,7 @@ export type FeedPostCreateWithoutReactionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
 }
@@ -620,6 +746,7 @@ export type FeedPostUncheckedCreateWithoutReactionsInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
@@ -650,6 +777,7 @@ export type FeedPostUpdateWithoutReactionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
 }
@@ -660,6 +788,7 @@ export type FeedPostUncheckedUpdateWithoutReactionsInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
@@ -674,6 +803,7 @@ export type FeedPostCreateWithoutAttachmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
 }
@@ -684,6 +814,7 @@ export type FeedPostUncheckedCreateWithoutAttachmentsInput = {
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
+  mentionedEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
@@ -714,6 +845,7 @@ export type FeedPostUpdateWithoutAttachmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
 }
@@ -724,6 +856,7 @@ export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
@@ -732,6 +865,17 @@ export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
 
 export type FeedPostCreateManyAuthorInput = {
   id?: string
+  content: string
+  type?: $Enums.FeedPostType
+  pinned?: boolean
+  mentionedEmployeeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type FeedPostCreateManyMentionedEmployeeInput = {
+  id?: string
+  authorId: string
   content: string
   type?: $Enums.FeedPostType
   pinned?: boolean
@@ -746,6 +890,7 @@ export type FeedPostUpdateWithoutAuthorInput = {
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
@@ -756,6 +901,7 @@ export type FeedPostUncheckedUpdateWithoutAuthorInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
@@ -765,6 +911,43 @@ export type FeedPostUncheckedUpdateWithoutAuthorInput = {
 
 export type FeedPostUncheckedUpdateManyWithoutAuthorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type FeedPostUpdateWithoutMentionedEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
+  reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
+  attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
+}
+
+export type FeedPostUncheckedUpdateWithoutMentionedEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
+  reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
+  attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
   pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -827,9 +1010,11 @@ export type FeedPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   content?: boolean
   type?: boolean
   pinned?: boolean
+  mentionedEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
   comments?: boolean | Prisma.FeedPost$commentsArgs<ExtArgs>
   reactions?: boolean | Prisma.FeedPost$reactionsArgs<ExtArgs>
   attachments?: boolean | Prisma.FeedPost$attachmentsArgs<ExtArgs>
@@ -842,9 +1027,11 @@ export type FeedPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   content?: boolean
   type?: boolean
   pinned?: boolean
+  mentionedEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }, ExtArgs["result"]["feedPost"]>
 
 export type FeedPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -853,9 +1040,11 @@ export type FeedPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   content?: boolean
   type?: boolean
   pinned?: boolean
+  mentionedEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }, ExtArgs["result"]["feedPost"]>
 
 export type FeedPostSelectScalar = {
@@ -864,13 +1053,15 @@ export type FeedPostSelectScalar = {
   content?: boolean
   type?: boolean
   pinned?: boolean
+  mentionedEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "createdAt" | "updatedAt", ExtArgs["result"]["feedPost"]>
+export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "mentionedEmployeeId" | "createdAt" | "updatedAt", ExtArgs["result"]["feedPost"]>
 export type FeedPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
   comments?: boolean | Prisma.FeedPost$commentsArgs<ExtArgs>
   reactions?: boolean | Prisma.FeedPost$reactionsArgs<ExtArgs>
   attachments?: boolean | Prisma.FeedPost$attachmentsArgs<ExtArgs>
@@ -878,15 +1069,18 @@ export type FeedPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
 }
 export type FeedPostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }
 export type FeedPostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }
 
 export type $FeedPostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FeedPost"
   objects: {
     author: Prisma.$EmployeePayload<ExtArgs>
+    mentionedEmployee: Prisma.$EmployeePayload<ExtArgs> | null
     comments: Prisma.$FeedCommentPayload<ExtArgs>[]
     reactions: Prisma.$FeedReactionPayload<ExtArgs>[]
     attachments: Prisma.$PostAttachmentPayload<ExtArgs>[]
@@ -897,6 +1091,7 @@ export type $FeedPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     content: string
     type: $Enums.FeedPostType
     pinned: boolean
+    mentionedEmployeeId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["feedPost"]>
@@ -1294,6 +1489,7 @@ readonly fields: FeedPostFieldRefs;
 export interface Prisma__FeedPostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  mentionedEmployee<T extends Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   comments<T extends Prisma.FeedPost$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reactions<T extends Prisma.FeedPost$reactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$reactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   attachments<T extends Prisma.FeedPost$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1331,6 +1527,7 @@ export interface FeedPostFieldRefs {
   readonly content: Prisma.FieldRef<"FeedPost", 'String'>
   readonly type: Prisma.FieldRef<"FeedPost", 'FeedPostType'>
   readonly pinned: Prisma.FieldRef<"FeedPost", 'Boolean'>
+  readonly mentionedEmployeeId: Prisma.FieldRef<"FeedPost", 'String'>
   readonly createdAt: Prisma.FieldRef<"FeedPost", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FeedPost", 'DateTime'>
 }
@@ -1726,6 +1923,25 @@ export type FeedPostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many FeedPosts to delete.
    */
   limit?: number
+}
+
+/**
+ * FeedPost.mentionedEmployee
+ */
+export type FeedPost$mentionedEmployeeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Employee
+   */
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Employee
+   */
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
 }
 
 /**
