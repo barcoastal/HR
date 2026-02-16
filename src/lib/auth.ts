@@ -3,17 +3,34 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 
+async function ensureAdminExists() {
+  const count = await db.user.count();
+  if (count === 0) {
+    const hash = await bcrypt.hash("admin123", 10);
+    await db.user.create({
+      data: {
+        email: "admin",
+        passwordHash: hash,
+        role: "ADMIN",
+      },
+    });
+    console.log("Auto-created admin user: admin / admin123");
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        email: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        await ensureAdminExists();
 
         const user = await db.user.findUnique({
           where: { email: credentials.email },

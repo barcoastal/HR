@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
-    "start": "prisma db push --accept-data-loss && node prisma/init.mjs && next start -H 0.0.0.0 -p ${PORT:-3000}",
+    "start": "prisma db push --accept-data-loss && next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
