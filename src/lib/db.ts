@@ -7,12 +7,9 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createClient() {
-  if (process.env.DATABASE_URL) {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const adapter = new PrismaPg(pool);
-    return new PrismaClient({ adapter });
-  }
-  return new PrismaClient();
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const adapter = new PrismaPg(pool);
+  return new PrismaClient({ adapter });
 }
 
 export const db = globalForPrisma.prisma ?? createClient();
