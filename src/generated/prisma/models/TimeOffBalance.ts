@@ -482,14 +482,6 @@ export type TimeOffBalanceUncheckedUpdateManyWithoutPolicyNestedInput = {
   deleteMany?: Prisma.TimeOffBalanceScalarWhereInput | Prisma.TimeOffBalanceScalarWhereInput[]
 }
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type TimeOffBalanceCreateWithoutEmployeeInput = {
   id?: string
   year: number

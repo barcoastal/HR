@@ -69,6 +69,8 @@ export const ModelName = {
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
   Position: 'Position',
+  RecruitmentPlatform: 'RecruitmentPlatform',
+  PlatformCostEntry: 'PlatformCostEntry',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -355,6 +357,35 @@ export const PositionScalarFieldEnum = {
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
+export const RecruitmentPlatformScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  accountIdentifier: 'accountIdentifier',
+  type: 'type',
+  monthlyCost: 'monthlyCost',
+  status: 'status',
+  connectedAt: 'connectedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentPlatformScalarFieldEnum = (typeof RecruitmentPlatformScalarFieldEnum)[keyof typeof RecruitmentPlatformScalarFieldEnum]
+
+
+export const PlatformCostEntryScalarFieldEnum = {
+  id: 'id',
+  platformId: 'platformId',
+  year: 'year',
+  month: 'month',
+  cost: 'cost',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type PlatformCostEntryScalarFieldEnum = (typeof PlatformCostEntryScalarFieldEnum)[keyof typeof PlatformCostEntryScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {

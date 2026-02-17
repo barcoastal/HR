@@ -147,3 +147,22 @@ export const PositionStatus = {
 } as const
 
 export type PositionStatus = (typeof PositionStatus)[keyof typeof PositionStatus]
+
+
+export const PlatformType = {
+  PREMIUM: 'PREMIUM',
+  NICHE: 'NICHE',
+  SOCIAL: 'SOCIAL',
+  JOB_BOARD: 'JOB_BOARD'
+} as const
+
+export type PlatformType = (typeof PlatformType)[keyof typeof PlatformType]
+
+
+export const PlatformStatus = {
+  ACTIVE: 'ACTIVE',
+  PAUSED: 'PAUSED',
+  DISCONNECTED: 'DISCONNECTED'
+} as const
+
+export type PlatformStatus = (typeof PlatformStatus)[keyof typeof PlatformStatus]

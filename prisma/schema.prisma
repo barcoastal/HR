@@ -391,6 +391,19 @@ model JobTitle {
   createdAt DateTime @default(now())
 }
 
+enum PlatformType {
+  PREMIUM
+  NICHE
+  SOCIAL
+  JOB_BOARD
+}
+
+enum PlatformStatus {
+  ACTIVE
+  PAUSED
+  DISCONNECTED
+}
+
 // ---------------------
 // CV / Recruitment
 // ---------------------
@@ -439,6 +452,36 @@ model Position {
 
   @@index([departmentId])
   @@index([status])
+}
+
+model RecruitmentPlatform {
+  id                String           @id @default(uuid())
+  name              String           @unique
+  accountIdentifier String?
+  type              PlatformType     @default(JOB_BOARD)
+  monthlyCost       Float            @default(0)
+  status            PlatformStatus   @default(ACTIVE)
+  connectedAt       DateTime         @default(now())
+  notes             String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  costEntries       PlatformCostEntry[]
+
+  @@index([status])
+}
+
+model PlatformCostEntry {
+  id         String              @id @default(uuid())
+  platformId String
+  year       Int
+  month      Int
+  cost       Float
+  notes      String?
+  createdAt  DateTime            @default(now())
+  platform   RecruitmentPlatform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  @@unique([platformId, year, month])
+  @@index([platformId])
 }
 
 // ---------------------

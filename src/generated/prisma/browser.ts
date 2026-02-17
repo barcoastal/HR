@@ -108,6 +108,16 @@ export type Candidate = Prisma.CandidateModel
  */
 export type Position = Prisma.PositionModel
 /**
+ * Model RecruitmentPlatform
+ * 
+ */
+export type RecruitmentPlatform = Prisma.RecruitmentPlatformModel
+/**
+ * Model PlatformCostEntry
+ * 
+ */
+export type PlatformCostEntry = Prisma.PlatformCostEntryModel
+/**
  * Model TimeOffPolicy
  * 
  */

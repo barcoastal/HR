@@ -450,6 +450,13 @@ export type EnumPositionStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPositionStatusFilter<$PrismaModel>
 }
 
+export type EnumPlatformTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformType | Prisma.EnumPlatformTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel> | $Enums.PlatformType
+}
+
 export type FloatFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
@@ -459,6 +466,23 @@ export type FloatFilter<$PrismaModel = never> = {
   gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type EnumPlatformStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformStatus | Prisma.EnumPlatformStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel> | $Enums.PlatformStatus
+}
+
+export type EnumPlatformTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformType | Prisma.EnumPlatformTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlatformType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel>
 }
 
 export type FloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -475,6 +499,16 @@ export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumPlatformStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformStatus | Prisma.EnumPlatformStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlatformStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
 }
 
 export type EnumTimeOffRequestStatusFilter<$PrismaModel = never> = {
@@ -949,6 +983,30 @@ export type NestedEnumPositionStatusWithAggregatesFilter<$PrismaModel = never> =
   _max?: Prisma.NestedEnumPositionStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumPlatformTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformType | Prisma.EnumPlatformTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel> | $Enums.PlatformType
+}
+
+export type NestedEnumPlatformStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformStatus | Prisma.EnumPlatformStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel> | $Enums.PlatformStatus
+}
+
+export type NestedEnumPlatformTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformType | Prisma.EnumPlatformTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformType[] | Prisma.ListEnumPlatformTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformTypeWithAggregatesFilter<$PrismaModel> | $Enums.PlatformType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlatformTypeFilter<$PrismaModel>
+}
+
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
@@ -963,6 +1021,16 @@ export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatFilter<$PrismaModel>
   _min?: Prisma.NestedFloatFilter<$PrismaModel>
   _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumPlatformStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PlatformStatus | Prisma.EnumPlatformStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PlatformStatus[] | Prisma.ListEnumPlatformStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPlatformStatusWithAggregatesFilter<$PrismaModel> | $Enums.PlatformStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumTimeOffRequestStatusFilter<$PrismaModel = never> = {

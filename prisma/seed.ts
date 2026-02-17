@@ -11,6 +11,8 @@ async function main() {
   console.log("Seeding database (clean slate)...");
 
   // Clear everything
+  await prisma.platformCostEntry.deleteMany();
+  await prisma.recruitmentPlatform.deleteMany();
   await prisma.feedReaction.deleteMany();
   await prisma.feedComment.deleteMany();
   await prisma.postAttachment.deleteMany();
@@ -39,6 +41,40 @@ async function main() {
       role: "ADMIN",
     },
   });
+
+  // --- Recruitment Platforms ---
+  const now = new Date();
+  const platformData = [
+    { name: "LinkedIn Recruiter", type: "PREMIUM" as const, monthlyCost: 825, status: "ACTIVE" as const },
+    { name: "Indeed", type: "PREMIUM" as const, monthlyCost: 300, status: "ACTIVE" as const },
+    { name: "Handshake", type: "NICHE" as const, monthlyCost: 150, status: "ACTIVE" as const },
+    { name: "EmployFL", type: "NICHE" as const, monthlyCost: 0, status: "ACTIVE" as const },
+    { name: "Facebook Jobs", type: "SOCIAL" as const, monthlyCost: 50, status: "PAUSED" as const },
+  ];
+
+  for (const pd of platformData) {
+    const platform = await prisma.recruitmentPlatform.create({
+      data: {
+        name: pd.name,
+        type: pd.type,
+        monthlyCost: pd.monthlyCost,
+        status: pd.status,
+      },
+    });
+
+    // Create 3 months of cost entries
+    for (let i = 2; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      await prisma.platformCostEntry.create({
+        data: {
+          platformId: platform.id,
+          year: d.getFullYear(),
+          month: d.getMonth() + 1,
+          cost: pd.monthlyCost,
+        },
+      });
+    }
+  }
 
   console.log("Done! Login with admin@coastalhr.io / admin123");
 }

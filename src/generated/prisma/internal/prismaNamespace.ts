@@ -402,6 +402,8 @@ export const ModelName = {
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
   Position: 'Position',
+  RecruitmentPlatform: 'RecruitmentPlatform',
+  PlatformCostEntry: 'PlatformCostEntry',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -425,7 +427,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1761,6 +1763,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RecruitmentPlatform: {
+      payload: Prisma.$RecruitmentPlatformPayload<ExtArgs>
+      fields: Prisma.RecruitmentPlatformFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecruitmentPlatformFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecruitmentPlatformFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        findFirst: {
+          args: Prisma.RecruitmentPlatformFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecruitmentPlatformFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        findMany: {
+          args: Prisma.RecruitmentPlatformFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>[]
+        }
+        create: {
+          args: Prisma.RecruitmentPlatformCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        createMany: {
+          args: Prisma.RecruitmentPlatformCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecruitmentPlatformCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>[]
+        }
+        delete: {
+          args: Prisma.RecruitmentPlatformDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        update: {
+          args: Prisma.RecruitmentPlatformUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecruitmentPlatformDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecruitmentPlatformUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecruitmentPlatformUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecruitmentPlatformUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentPlatformPayload>
+        }
+        aggregate: {
+          args: Prisma.RecruitmentPlatformAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecruitmentPlatform>
+        }
+        groupBy: {
+          args: Prisma.RecruitmentPlatformGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentPlatformGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecruitmentPlatformCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentPlatformCountAggregateOutputType> | number
+        }
+      }
+    }
+    PlatformCostEntry: {
+      payload: Prisma.$PlatformCostEntryPayload<ExtArgs>
+      fields: Prisma.PlatformCostEntryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformCostEntryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformCostEntryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformCostEntryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformCostEntryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformCostEntryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformCostEntryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformCostEntryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformCostEntryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformCostEntryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        update: {
+          args: Prisma.PlatformCostEntryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformCostEntryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformCostEntryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformCostEntryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformCostEntryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformCostEntryPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformCostEntryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformCostEntry>
+        }
+        groupBy: {
+          args: Prisma.PlatformCostEntryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformCostEntryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformCostEntryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformCostEntryCountAggregateOutputType> | number
+        }
+      }
+    }
     TimeOffPolicy: {
       payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
       fields: Prisma.TimeOffPolicyFieldRefs
@@ -2654,6 +2804,35 @@ export const PositionScalarFieldEnum = {
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
 
 
+export const RecruitmentPlatformScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  accountIdentifier: 'accountIdentifier',
+  type: 'type',
+  monthlyCost: 'monthlyCost',
+  status: 'status',
+  connectedAt: 'connectedAt',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentPlatformScalarFieldEnum = (typeof RecruitmentPlatformScalarFieldEnum)[keyof typeof RecruitmentPlatformScalarFieldEnum]
+
+
+export const PlatformCostEntryScalarFieldEnum = {
+  id: 'id',
+  platformId: 'platformId',
+  year: 'year',
+  month: 'month',
+  cost: 'cost',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type PlatformCostEntryScalarFieldEnum = (typeof PlatformCostEntryScalarFieldEnum)[keyof typeof PlatformCostEntryScalarFieldEnum]
+
+
 export const TimeOffPolicyScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -3024,6 +3203,34 @@ export type ListEnumPositionStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'PlatformType'
+ */
+export type EnumPlatformTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformType'>
+    
+
+
+/**
+ * Reference to a field of type 'PlatformType[]'
+ */
+export type ListEnumPlatformTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PlatformStatus'
+ */
+export type EnumPlatformStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PlatformStatus[]'
+ */
+export type ListEnumPlatformStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'TimeOffRequestStatus'
  */
 export type EnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus'>
@@ -3163,6 +3370,8 @@ export type GlobalOmitConfig = {
   jobTitle?: Prisma.JobTitleOmit
   candidate?: Prisma.CandidateOmit
   position?: Prisma.PositionOmit
+  recruitmentPlatform?: Prisma.RecruitmentPlatformOmit
+  platformCostEntry?: Prisma.PlatformCostEntryOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit

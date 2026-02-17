@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { getCandidates, getPositions } from "@/lib/actions/candidates";
+import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { Briefcase, Users, Target } from "lucide-react";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
@@ -8,7 +9,7 @@ import { SearchCandidates } from "@/components/cv/search-candidates";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [candidates, positions] = await Promise.all([getCandidates(), getPositions()]);
+  const [candidates, positions, recruitmentPlatforms] = await Promise.all([getCandidates(), getPositions(), getRecruitmentPlatforms()]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
   const totalCandidates = candidates.length;
@@ -21,7 +22,12 @@ export default async function CVPage() {
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Recruitment</h1>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">Manage candidates, positions, and hiring pipeline</p>
         </div>
-        <AddCandidateForm positions={positions.map((p) => ({ id: p.id, title: p.title }))} />
+        <AddCandidateForm
+          positions={positions.map((p) => ({ id: p.id, title: p.title }))}
+          platforms={recruitmentPlatforms
+            .filter((p) => p.status === "ACTIVE")
+            .map((p) => ({ id: p.id, name: p.name }))}
+        />
       </div>
 
       {/* Stats */}

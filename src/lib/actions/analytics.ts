@@ -356,6 +356,30 @@ export async function getRecruiterAnalytics() {
   }));
 }
 
+export async function getBlendedCostPerHire() {
+  const [candidates, activePlatforms] = await Promise.all([
+    db.candidate.findMany({
+      where: { status: "HIRED" },
+      select: { costOfHire: true },
+    }),
+    db.recruitmentPlatform.findMany({
+      where: { status: "ACTIVE" },
+      select: { monthlyCost: true },
+    }),
+  ]);
+
+  const totalHires = candidates.length;
+  const totalDirectCost = candidates.reduce((sum, c) => sum + (c.costOfHire || 0), 0);
+  const totalPlatformCost = activePlatforms.reduce((sum, p) => sum + p.monthlyCost, 0);
+
+  return {
+    totalHires,
+    directCostPerHire: totalHires > 0 ? Math.round(totalDirectCost / totalHires) : 0,
+    platformCostPerHire: totalHires > 0 ? Math.round(totalPlatformCost / totalHires) : 0,
+    blendedCostPerHire: totalHires > 0 ? Math.round((totalDirectCost + totalPlatformCost) / totalHires) : 0,
+  };
+}
+
 export async function getBenefitsEligibility() {
   const employees = await db.employee.findMany({
     where: { status: "ACTIVE" },

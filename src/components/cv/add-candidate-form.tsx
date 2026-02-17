@@ -10,8 +10,9 @@ import { parseLinkedIn } from "@/lib/actions/parse-linkedin";
 import { useRouter } from "next/navigation";
 
 type Position = { id: string; title: string };
+type PlatformOption = { id: string; name: string };
 
-export function AddCandidateForm({ positions }: { positions: Position[] }) {
+export function AddCandidateForm({ positions, platforms = [] }: { positions: Position[]; platforms?: PlatformOption[] }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [parsing, setParsing] = useState(false);
@@ -258,8 +259,9 @@ export function AddCandidateForm({ positions }: { positions: Position[] }) {
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Source</label>
               <select value={form.source} onChange={(e) => update("source", e.target.value)} className={inputClass}>
                 <option value="">Select...</option>
-                <option value="LinkedIn">LinkedIn</option>
-                <option value="Indeed">Indeed</option>
+                {platforms.map((p) => (
+                  <option key={p.id} value={p.name}>{p.name}</option>
+                ))}
                 <option value="Referral">Referral</option>
                 <option value="Company Website">Company Website</option>
                 <option value="Other">Other</option>

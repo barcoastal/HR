@@ -14,12 +14,14 @@ import { JobTitleManager } from "@/components/settings/job-title-manager";
 import { ChecklistManager } from "@/components/settings/checklist-manager";
 import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
+import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
+import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
   await requireAdmin();
-  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys] = await Promise.all([
+  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -34,6 +36,7 @@ export default async function SettingsPage() {
     }),
     getTimeOffPolicies(),
     getAllPulseSurveys(),
+    getRecruitmentPlatforms(),
   ]);
 
   const userList = users.map((u) => ({
@@ -108,6 +111,18 @@ export default async function SettingsPage() {
             status: s.status,
             createdAt: s.createdAt,
             _count: s._count,
+          }))}
+        />
+
+        <PlatformIntegrationManager
+          platforms={recruitmentPlatforms.map((p) => ({
+            id: p.id,
+            name: p.name,
+            accountIdentifier: p.accountIdentifier,
+            type: p.type,
+            monthlyCost: p.monthlyCost,
+            status: p.status,
+            notes: p.notes,
           }))}
         />
       </div>

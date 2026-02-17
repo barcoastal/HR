@@ -16,11 +16,16 @@ import {
   getDietaryRestrictions,
   getRecruiterAnalytics,
   getBenefitsEligibility,
+  getBlendedCostPerHire,
 } from "@/lib/actions/analytics";
+import {
+  getPlatformSpendDashboard,
+  getPlatformSpendVsHiresTrend,
+} from "@/lib/actions/recruitment-platforms";
 import {
   Users, TrendingUp, TrendingDown, UserPlus, UserMinus,
   Cake, CalendarHeart, Clock, DollarSign, Target, Briefcase,
-  UtensilsCrossed, BarChart3, Shield,
+  UtensilsCrossed, BarChart3, Shield, Cable,
 } from "lucide-react";
 import {
   DepartmentBarChart,
@@ -30,6 +35,7 @@ import {
   SourceROIChart,
   DietaryPieChart,
 } from "@/components/analytics/charts";
+import { SpendVsHiresChart } from "@/components/analytics/recruitment-cost-charts";
 
 export default async function AnalyticsPage() {
   await requireManagerOrAdmin();
@@ -50,6 +56,9 @@ export default async function AnalyticsPage() {
     dietary,
     recruiterStats,
     benefitsEligibility,
+    blendedCost,
+    platformSpend,
+    spendTrend,
   ] = await Promise.all([
     getHeadcountStats(),
     getDepartmentBreakdown(),
@@ -66,6 +75,9 @@ export default async function AnalyticsPage() {
     getDietaryRestrictions(),
     getRecruiterAnalytics(),
     getBenefitsEligibility(),
+    getBlendedCostPerHire(),
+    getPlatformSpendDashboard(),
+    getPlatformSpendVsHiresTrend(),
   ]);
 
   return (
@@ -110,11 +122,15 @@ export default async function AnalyticsPage() {
         <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-2 mb-2">
             <DollarSign className="h-4 w-4 text-emerald-400" />
-            <span className="text-sm font-medium text-[var(--color-text-primary)]">Avg Cost per Hire</span>
+            <span className="text-sm font-medium text-[var(--color-text-primary)]">Blended Cost/Hire</span>
           </div>
           <p className="text-3xl font-bold text-[var(--color-text-primary)]">
-            ${sourceROI.length > 0 ? Math.round(sourceROI.reduce((a, s) => a + s.totalCost, 0) / Math.max(sourceROI.reduce((a, s) => a + s.hired, 0), 1)).toLocaleString() : "0"}
+            ${blendedCost.blendedCostPerHire.toLocaleString()}
           </p>
+          <div className="flex items-center gap-3 mt-1.5 text-[10px] text-[var(--color-text-muted)]">
+            <span>Direct: ${blendedCost.directCostPerHire.toLocaleString()}</span>
+            <span>Platform: ${blendedCost.platformCostPerHire.toLocaleString()}</span>
+          </div>
         </div>
         <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-2 mb-2">
@@ -195,6 +211,67 @@ export default async function AnalyticsPage() {
           ) : <p className="text-sm text-[var(--color-text-muted)]">No recruiter data yet</p>}
         </div>
       </div>
+
+      {/* Recruitment Platform Spend */}
+      {platformSpend.platforms.length > 0 && (
+        <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Cable className="h-4 w-4 text-[var(--color-accent)]" />
+              <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Recruitment Platform Spend</h3>
+            </div>
+            <span className={cn("px-2 py-1 rounded-lg text-xs font-medium", "bg-[var(--color-accent)]/10 text-[var(--color-accent)]")}>
+              ${platformSpend.totalMonthlySpend.toLocaleString()}/mo total
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-[var(--color-border)]">
+                  <th className="text-left py-2 pr-4 font-medium text-[var(--color-text-muted)]">Platform</th>
+                  <th className="text-left py-2 pr-4 font-medium text-[var(--color-text-muted)]">Type</th>
+                  <th className="text-right py-2 pr-4 font-medium text-[var(--color-text-muted)]">Monthly Cost</th>
+                  <th className="text-right py-2 pr-4 font-medium text-[var(--color-text-muted)]">Candidates</th>
+                  <th className="text-right py-2 pr-4 font-medium text-[var(--color-text-muted)]">Hires</th>
+                  <th className="text-right py-2 pr-4 font-medium text-[var(--color-text-muted)]">Cost/Hire</th>
+                  <th className="text-right py-2 font-medium text-[var(--color-text-muted)]">ROI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {platformSpend.platforms.map((p) => (
+                  <tr key={p.id} className="border-b border-[var(--color-border)] last:border-0">
+                    <td className="py-2.5 pr-4">
+                      <div className="flex items-center gap-2">
+                        <div className={cn("h-2 w-2 rounded-full", p.status === "ACTIVE" ? "bg-emerald-400" : p.status === "PAUSED" ? "bg-amber-400" : "bg-red-400")} />
+                        <span className="font-medium text-[var(--color-text-primary)]">{p.name}</span>
+                      </div>
+                    </td>
+                    <td className="py-2.5 pr-4 text-[var(--color-text-muted)]">{p.type.replace("_", " ")}</td>
+                    <td className="py-2.5 pr-4 text-right text-[var(--color-text-primary)]">${p.monthlyCost.toLocaleString()}</td>
+                    <td className="py-2.5 pr-4 text-right text-[var(--color-text-primary)]">{p.candidatesSourced}</td>
+                    <td className="py-2.5 pr-4 text-right font-medium text-emerald-400">{p.hired}</td>
+                    <td className="py-2.5 pr-4 text-right text-[var(--color-text-primary)]">${p.blendedCostPerHire.toLocaleString()}</td>
+                    <td className="py-2.5 text-right">
+                      <span className={cn(
+                        "px-1.5 py-0.5 rounded text-[10px] font-medium",
+                        p.roi === "Efficient" ? "bg-emerald-500/15 text-emerald-400" :
+                        p.roi === "Moderate" ? "bg-amber-500/15 text-amber-400" :
+                        "bg-red-500/15 text-red-400"
+                      )}>
+                        {p.roi}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-6">
+            <h4 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Spend vs Hires (12 Months)</h4>
+            <SpendVsHiresChart data={spendTrend} />
+          </div>
+        </div>
+      )}
 
       {/* Review Metrics */}
       {reviews.length > 0 && (
