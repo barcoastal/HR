@@ -66,6 +66,37 @@ export async function connectPlatformByName(
   return { success: true };
 }
 
+export async function oauthConnectPlatform(
+  name: string,
+  type: "PREMIUM" | "NICHE" | "SOCIAL" | "JOB_BOARD",
+  monthlyCost: number,
+  keyPrefix: string
+): Promise<{ success: boolean; error?: string }> {
+  // Simulate OAuth flow — generate a token as if returned by the platform's OAuth callback
+  const token = `${keyPrefix}oauth-${crypto.randomUUID().slice(0, 12)}`;
+
+  await db.recruitmentPlatform.upsert({
+    where: { name },
+    create: {
+      name,
+      type,
+      monthlyCost,
+      status: "ACTIVE",
+      apiKey: token,
+      connectedAt: new Date(),
+    },
+    update: {
+      apiKey: token,
+      status: "ACTIVE",
+      connectedAt: new Date(),
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  return { success: true };
+}
+
 export async function disconnectPlatformByName(
   name: string
 ): Promise<{ success: boolean }> {
