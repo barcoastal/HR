@@ -310,23 +310,31 @@ export function PlatformIntegrationManager({ platforms }: Props) {
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1 ml-3 shrink-0">
+              <div className="flex items-center gap-1.5 ml-3 shrink-0">
                 {p.hasSyncSupport && (
                   isConnected ? (
                     <button
                       onClick={() => setDisconnectPlatform(p)}
-                      className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
-                      title="Disconnect"
+                      className={cn(
+                        "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                        "border border-red-500/30 text-red-400",
+                        "hover:bg-red-500/15 transition-colors"
+                      )}
                     >
                       <Unlink className="h-3.5 w-3.5" />
+                      Disconnect
                     </button>
                   ) : (
                     <button
                       onClick={() => setConnectPlatform(p)}
-                      className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-emerald-500/15 hover:text-emerald-400 transition-colors"
-                      title="Connect"
+                      className={cn(
+                        "flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                        "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30",
+                        "hover:bg-emerald-500/25 transition-colors"
+                      )}
                     >
                       <Link2 className="h-3.5 w-3.5" />
+                      Connect
                     </button>
                   )
                 )}
