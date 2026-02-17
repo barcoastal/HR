@@ -1,23 +1,40 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
-import { execSync } from "child_process";
 
 export async function GET() {
   try {
-    // Ensure DB schema is up to date before seeding
-    try {
-      execSync("npx prisma db push --accept-data-loss --skip-generate", {
-        stdio: "pipe",
-        timeout: 30000,
-      });
-    } catch {
-      // May fail in some environments — schema might already be current
-    }
+    // Ensure new tables/columns exist before seeding
+    await db.$executeRawUnsafe(`
+      ALTER TABLE "RecruitmentPlatform"
+        ADD COLUMN IF NOT EXISTS "apiKey" TEXT,
+        ADD COLUMN IF NOT EXISTS "lastSyncAt" TIMESTAMP(3),
+        ADD COLUMN IF NOT EXISTS "totalSynced" INTEGER NOT NULL DEFAULT 0,
+        ADD COLUMN IF NOT EXISTS "connectedAt" TIMESTAMP(3)
+    `).catch(() => {});
+
+    await db.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "PlatformSyncLog" (
+        "id" TEXT NOT NULL DEFAULT gen_random_uuid(),
+        "platformId" TEXT NOT NULL,
+        "candidatesFound" INTEGER NOT NULL,
+        "candidatesNew" INTEGER NOT NULL,
+        "skippedEmails" TEXT,
+        "status" TEXT NOT NULL DEFAULT 'SUCCESS',
+        "errorMessage" TEXT,
+        "syncedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT "PlatformSyncLog_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "PlatformSyncLog_platformId_fkey" FOREIGN KEY ("platformId") REFERENCES "RecruitmentPlatform"("id") ON DELETE CASCADE
+      )
+    `).catch(() => {});
+
+    await db.$executeRawUnsafe(`
+      CREATE INDEX IF NOT EXISTS "PlatformSyncLog_platformId_idx" ON "PlatformSyncLog"("platformId")
+    `).catch(() => {});
 
     // Clean slate
-    await db.platformSyncLog.deleteMany();
-    await db.platformCostEntry.deleteMany();
-    await db.recruitmentPlatform.deleteMany();
+    await db.$executeRawUnsafe(`DELETE FROM "PlatformSyncLog"`).catch(() => {});
+    await db.$executeRawUnsafe(`DELETE FROM "PlatformCostEntry"`).catch(() => {});
+    await db.$executeRawUnsafe(`DELETE FROM "RecruitmentPlatform"`).catch(() => {});
     await db.feedReaction.deleteMany();
     await db.feedComment.deleteMany();
     await db.postAttachment.deleteMany();
