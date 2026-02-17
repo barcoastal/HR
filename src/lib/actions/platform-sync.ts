@@ -32,6 +32,59 @@ export async function connectPlatform(
   return { success: true };
 }
 
+export async function connectPlatformByName(
+  name: string,
+  type: "PREMIUM" | "NICHE" | "SOCIAL" | "JOB_BOARD",
+  monthlyCost: number,
+  apiKey: string
+): Promise<{ success: boolean; error?: string }> {
+  const client = getPlatformClient(name);
+  if (!client) return { success: false, error: "No integration available for this platform" };
+
+  const valid = await client.validateCredentials(apiKey);
+  if (!valid) return { success: false, error: "Invalid credentials. Check your API key format." };
+
+  await db.recruitmentPlatform.upsert({
+    where: { name },
+    create: {
+      name,
+      type,
+      monthlyCost,
+      status: "ACTIVE",
+      apiKey,
+      connectedAt: new Date(),
+    },
+    update: {
+      apiKey,
+      status: "ACTIVE",
+      connectedAt: new Date(),
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  return { success: true };
+}
+
+export async function disconnectPlatformByName(
+  name: string
+): Promise<{ success: boolean }> {
+  const platform = await db.recruitmentPlatform.findUnique({ where: { name } });
+  if (!platform) return { success: true };
+
+  await db.recruitmentPlatform.update({
+    where: { name },
+    data: {
+      apiKey: null,
+      status: "DISCONNECTED",
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  return { success: true };
+}
+
 export async function disconnectPlatform(
   platformId: string
 ): Promise<{ success: boolean }> {

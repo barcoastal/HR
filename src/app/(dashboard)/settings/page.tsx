@@ -15,8 +15,9 @@ import { ChecklistManager } from "@/components/settings/checklist-manager";
 import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
+import { NativeIntegrations } from "@/components/settings/native-integrations";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
-import { hasSyncSupport } from "@/lib/platform-sync";
+import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -113,6 +114,17 @@ export default async function SettingsPage() {
             createdAt: s.createdAt,
             _count: s._count,
           }))}
+        />
+
+        <NativeIntegrations
+          connected={recruitmentPlatforms
+            .filter((p) => SUPPORTED_PLATFORMS.some((sp) => sp.name === p.name))
+            .map((p) => ({
+              name: p.name,
+              apiKey: p.apiKey,
+              lastSyncAt: p.lastSyncAt,
+              totalSynced: p.totalSynced,
+            }))}
         />
 
         <PlatformIntegrationManager
