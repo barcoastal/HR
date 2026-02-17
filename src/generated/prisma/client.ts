@@ -140,6 +140,11 @@ export type RecruitmentPlatform = Prisma.RecruitmentPlatformModel
  */
 export type PlatformCostEntry = Prisma.PlatformCostEntryModel
 /**
+ * Model PlatformSyncLog
+ * 
+ */
+export type PlatformSyncLog = Prisma.PlatformSyncLogModel
+/**
  * Model TimeOffPolicy
  * 
  */

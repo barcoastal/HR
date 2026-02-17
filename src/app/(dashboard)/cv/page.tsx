@@ -2,14 +2,21 @@ import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { getCandidates, getPositions } from "@/lib/actions/candidates";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
+import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { Briefcase, Users, Target } from "lucide-react";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { SearchCandidates } from "@/components/cv/search-candidates";
+import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [candidates, positions, recruitmentPlatforms] = await Promise.all([getCandidates(), getPositions(), getRecruitmentPlatforms()]);
+  const [candidates, positions, recruitmentPlatforms, syncablePlatforms] = await Promise.all([
+    getCandidates(),
+    getPositions(),
+    getRecruitmentPlatforms(),
+    getSyncablePlatforms(),
+  ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
   const totalCandidates = candidates.length;
@@ -66,6 +73,9 @@ export default async function CVPage() {
           </div>
         </div>
       </div>
+
+      {/* Platform Sync */}
+      <PlatformSyncPanel platforms={syncablePlatforms} />
 
       {/* Search */}
       <SearchCandidates />

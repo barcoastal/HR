@@ -404,6 +404,7 @@ export const ModelName = {
   Position: 'Position',
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
+  PlatformSyncLog: 'PlatformSyncLog',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -427,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1911,6 +1912,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlatformSyncLog: {
+      payload: Prisma.$PlatformSyncLogPayload<ExtArgs>
+      fields: Prisma.PlatformSyncLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformSyncLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformSyncLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformSyncLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformSyncLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformSyncLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformSyncLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformSyncLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformSyncLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformSyncLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        update: {
+          args: Prisma.PlatformSyncLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformSyncLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformSyncLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformSyncLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformSyncLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSyncLogPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformSyncLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformSyncLog>
+        }
+        groupBy: {
+          args: Prisma.PlatformSyncLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformSyncLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformSyncLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformSyncLogCountAggregateOutputType> | number
+        }
+      }
+    }
     TimeOffPolicy: {
       payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
       fields: Prisma.TimeOffPolicyFieldRefs
@@ -2813,6 +2888,9 @@ export const RecruitmentPlatformScalarFieldEnum = {
   status: 'status',
   connectedAt: 'connectedAt',
   notes: 'notes',
+  apiKey: 'apiKey',
+  lastSyncAt: 'lastSyncAt',
+  totalSynced: 'totalSynced',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2831,6 +2909,20 @@ export const PlatformCostEntryScalarFieldEnum = {
 } as const
 
 export type PlatformCostEntryScalarFieldEnum = (typeof PlatformCostEntryScalarFieldEnum)[keyof typeof PlatformCostEntryScalarFieldEnum]
+
+
+export const PlatformSyncLogScalarFieldEnum = {
+  id: 'id',
+  platformId: 'platformId',
+  candidatesFound: 'candidatesFound',
+  candidatesNew: 'candidatesNew',
+  skippedEmails: 'skippedEmails',
+  status: 'status',
+  errorMessage: 'errorMessage',
+  syncedAt: 'syncedAt'
+} as const
+
+export type PlatformSyncLogScalarFieldEnum = (typeof PlatformSyncLogScalarFieldEnum)[keyof typeof PlatformSyncLogScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {
@@ -3372,6 +3464,7 @@ export type GlobalOmitConfig = {
   position?: Prisma.PositionOmit
   recruitmentPlatform?: Prisma.RecruitmentPlatformOmit
   platformCostEntry?: Prisma.PlatformCostEntryOmit
+  platformSyncLog?: Prisma.PlatformSyncLogOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit

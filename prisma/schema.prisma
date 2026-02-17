@@ -463,9 +463,13 @@ model RecruitmentPlatform {
   status            PlatformStatus   @default(ACTIVE)
   connectedAt       DateTime         @default(now())
   notes             String?
+  apiKey            String?
+  lastSyncAt        DateTime?
+  totalSynced       Int              @default(0)
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
   costEntries       PlatformCostEntry[]
+  syncLogs          PlatformSyncLog[]
 
   @@index([status])
 }
@@ -481,6 +485,20 @@ model PlatformCostEntry {
   platform   RecruitmentPlatform @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
   @@unique([platformId, year, month])
+  @@index([platformId])
+}
+
+model PlatformSyncLog {
+  id              String              @id @default(uuid())
+  platformId      String
+  candidatesFound Int
+  candidatesNew   Int
+  skippedEmails   String?
+  status          String              @default("SUCCESS")
+  errorMessage    String?
+  syncedAt        DateTime            @default(now())
+  platform        RecruitmentPlatform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
   @@index([platformId])
 }
 

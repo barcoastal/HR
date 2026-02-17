@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Cable, Plus, Pencil, Trash2, Loader2 } from "lucide-react";
+import { cn, timeAgo } from "@/lib/utils";
+import { Cable, Plus, Pencil, Trash2, Loader2, Link2, Unlink } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -9,6 +9,10 @@ import {
   updateRecruitmentPlatform,
   deleteRecruitmentPlatform,
 } from "@/lib/actions/recruitment-platforms";
+import {
+  ConnectPlatformDialog,
+  DisconnectPlatformDialog,
+} from "@/components/settings/platform-connect-dialog";
 import { useRouter } from "next/navigation";
 
 type Platform = {
@@ -19,6 +23,10 @@ type Platform = {
   monthlyCost: number;
   status: "ACTIVE" | "PAUSED" | "DISCONNECTED";
   notes: string | null;
+  apiKey: string | null;
+  lastSyncAt: Date | null;
+  totalSynced: number;
+  hasSyncSupport: boolean;
 };
 
 type Props = {
@@ -42,6 +50,8 @@ export function PlatformIntegrationManager({ platforms }: Props) {
   const [showAdd, setShowAdd] = useState(false);
   const [editPlatform, setEditPlatform] = useState<Platform | null>(null);
   const [deletePlatformState, setDeletePlatform] = useState<Platform | null>(null);
+  const [connectPlatform, setConnectPlatform] = useState<Platform | null>(null);
+  const [disconnectPlatform, setDisconnectPlatform] = useState<Platform | null>(null);
 
   const [name, setName] = useState("");
   const [accountIdentifier, setAccountIdentifier] = useState("");
@@ -257,6 +267,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
         {platforms.map((p) => {
           const typeInfo = TYPE_LABELS[p.type] || TYPE_LABELS.JOB_BOARD;
           const statusColor = STATUS_COLORS[p.status] || STATUS_COLORS.DISCONNECTED;
+          const isConnected = !!p.apiKey;
           return (
             <div
               key={p.id}
@@ -269,13 +280,18 @@ export function PlatformIntegrationManager({ platforms }: Props) {
               <div className="flex items-center gap-3 min-w-0 flex-1">
                 <div className={cn("h-2.5 w-2.5 rounded-full shrink-0", statusColor)} />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="text-sm font-medium text-[var(--color-text-primary)]">
                       {p.name}
                     </p>
                     <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-medium", typeInfo.color)}>
                       {typeInfo.label}
                     </span>
+                    {p.hasSyncSupport && isConnected && (
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/15 text-emerald-400">
+                        Connected
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     {p.accountIdentifier && (
@@ -286,10 +302,34 @@ export function PlatformIntegrationManager({ platforms }: Props) {
                     <p className="text-xs font-medium text-[var(--color-text-primary)]">
                       ${p.monthlyCost}/mo
                     </p>
+                    {p.lastSyncAt && (
+                      <p className="text-[10px] text-[var(--color-text-muted)]">
+                        Last sync: {timeAgo(p.lastSyncAt)} · {p.totalSynced} imported
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-1 ml-3 shrink-0">
+                {p.hasSyncSupport && (
+                  isConnected ? (
+                    <button
+                      onClick={() => setDisconnectPlatform(p)}
+                      className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
+                      title="Disconnect"
+                    >
+                      <Unlink className="h-3.5 w-3.5" />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setConnectPlatform(p)}
+                      className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-emerald-500/15 hover:text-emerald-400 transition-colors"
+                      title="Connect"
+                    >
+                      <Link2 className="h-3.5 w-3.5" />
+                    </button>
+                  )
+                )}
                 <button
                   onClick={() => openEdit(p)}
                   className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
@@ -422,6 +462,18 @@ export function PlatformIntegrationManager({ platforms }: Props) {
           </button>
         </div>
       </Dialog>
+
+      {/* Connect / Disconnect Dialogs */}
+      <ConnectPlatformDialog
+        platform={connectPlatform}
+        open={!!connectPlatform}
+        onClose={() => setConnectPlatform(null)}
+      />
+      <DisconnectPlatformDialog
+        platform={disconnectPlatform}
+        open={!!disconnectPlatform}
+        onClose={() => setDisconnectPlatform(null)}
+      />
     </section>
   );
 }

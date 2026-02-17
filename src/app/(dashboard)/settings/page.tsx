@@ -16,6 +16,7 @@ import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
+import { hasSyncSupport } from "@/lib/platform-sync";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -123,6 +124,10 @@ export default async function SettingsPage() {
             monthlyCost: p.monthlyCost,
             status: p.status,
             notes: p.notes,
+            apiKey: p.apiKey,
+            lastSyncAt: p.lastSyncAt,
+            totalSynced: p.totalSynced,
+            hasSyncSupport: hasSyncSupport(p.name),
           }))}
         />
       </div>

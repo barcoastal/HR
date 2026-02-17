@@ -28,10 +28,12 @@ export type AggregateRecruitmentPlatform = {
 
 export type RecruitmentPlatformAvgAggregateOutputType = {
   monthlyCost: number | null
+  totalSynced: number | null
 }
 
 export type RecruitmentPlatformSumAggregateOutputType = {
   monthlyCost: number | null
+  totalSynced: number | null
 }
 
 export type RecruitmentPlatformMinAggregateOutputType = {
@@ -43,6 +45,9 @@ export type RecruitmentPlatformMinAggregateOutputType = {
   status: $Enums.PlatformStatus | null
   connectedAt: Date | null
   notes: string | null
+  apiKey: string | null
+  lastSyncAt: Date | null
+  totalSynced: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -56,6 +61,9 @@ export type RecruitmentPlatformMaxAggregateOutputType = {
   status: $Enums.PlatformStatus | null
   connectedAt: Date | null
   notes: string | null
+  apiKey: string | null
+  lastSyncAt: Date | null
+  totalSynced: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -69,6 +77,9 @@ export type RecruitmentPlatformCountAggregateOutputType = {
   status: number
   connectedAt: number
   notes: number
+  apiKey: number
+  lastSyncAt: number
+  totalSynced: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -77,10 +88,12 @@ export type RecruitmentPlatformCountAggregateOutputType = {
 
 export type RecruitmentPlatformAvgAggregateInputType = {
   monthlyCost?: true
+  totalSynced?: true
 }
 
 export type RecruitmentPlatformSumAggregateInputType = {
   monthlyCost?: true
+  totalSynced?: true
 }
 
 export type RecruitmentPlatformMinAggregateInputType = {
@@ -92,6 +105,9 @@ export type RecruitmentPlatformMinAggregateInputType = {
   status?: true
   connectedAt?: true
   notes?: true
+  apiKey?: true
+  lastSyncAt?: true
+  totalSynced?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -105,6 +121,9 @@ export type RecruitmentPlatformMaxAggregateInputType = {
   status?: true
   connectedAt?: true
   notes?: true
+  apiKey?: true
+  lastSyncAt?: true
+  totalSynced?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -118,6 +137,9 @@ export type RecruitmentPlatformCountAggregateInputType = {
   status?: true
   connectedAt?: true
   notes?: true
+  apiKey?: true
+  lastSyncAt?: true
+  totalSynced?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -218,6 +240,9 @@ export type RecruitmentPlatformGroupByOutputType = {
   status: $Enums.PlatformStatus
   connectedAt: Date
   notes: string | null
+  apiKey: string | null
+  lastSyncAt: Date | null
+  totalSynced: number
   createdAt: Date
   updatedAt: Date
   _count: RecruitmentPlatformCountAggregateOutputType | null
@@ -254,9 +279,13 @@ export type RecruitmentPlatformWhereInput = {
   status?: Prisma.EnumPlatformStatusFilter<"RecruitmentPlatform"> | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  apiKey?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  lastSyncAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
+  totalSynced?: Prisma.IntFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   costEntries?: Prisma.PlatformCostEntryListRelationFilter
+  syncLogs?: Prisma.PlatformSyncLogListRelationFilter
 }
 
 export type RecruitmentPlatformOrderByWithRelationInput = {
@@ -268,9 +297,13 @@ export type RecruitmentPlatformOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   costEntries?: Prisma.PlatformCostEntryOrderByRelationAggregateInput
+  syncLogs?: Prisma.PlatformSyncLogOrderByRelationAggregateInput
 }
 
 export type RecruitmentPlatformWhereUniqueInput = Prisma.AtLeast<{
@@ -285,9 +318,13 @@ export type RecruitmentPlatformWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumPlatformStatusFilter<"RecruitmentPlatform"> | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  apiKey?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  lastSyncAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
+  totalSynced?: Prisma.IntFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   costEntries?: Prisma.PlatformCostEntryListRelationFilter
+  syncLogs?: Prisma.PlatformSyncLogListRelationFilter
 }, "id" | "name">
 
 export type RecruitmentPlatformOrderByWithAggregationInput = {
@@ -299,6 +336,9 @@ export type RecruitmentPlatformOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RecruitmentPlatformCountOrderByAggregateInput
@@ -320,6 +360,9 @@ export type RecruitmentPlatformScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumPlatformStatusWithAggregatesFilter<"RecruitmentPlatform"> | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeWithAggregatesFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
+  apiKey?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
+  lastSyncAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RecruitmentPlatform"> | Date | string | null
+  totalSynced?: Prisma.IntWithAggregatesFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RecruitmentPlatform"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RecruitmentPlatform"> | Date | string
 }
@@ -333,9 +376,13 @@ export type RecruitmentPlatformCreateInput = {
   status?: $Enums.PlatformStatus
   connectedAt?: Date | string
   notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   costEntries?: Prisma.PlatformCostEntryCreateNestedManyWithoutPlatformInput
+  syncLogs?: Prisma.PlatformSyncLogCreateNestedManyWithoutPlatformInput
 }
 
 export type RecruitmentPlatformUncheckedCreateInput = {
@@ -347,9 +394,13 @@ export type RecruitmentPlatformUncheckedCreateInput = {
   status?: $Enums.PlatformStatus
   connectedAt?: Date | string
   notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   costEntries?: Prisma.PlatformCostEntryUncheckedCreateNestedManyWithoutPlatformInput
+  syncLogs?: Prisma.PlatformSyncLogUncheckedCreateNestedManyWithoutPlatformInput
 }
 
 export type RecruitmentPlatformUpdateInput = {
@@ -361,9 +412,13 @@ export type RecruitmentPlatformUpdateInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costEntries?: Prisma.PlatformCostEntryUpdateManyWithoutPlatformNestedInput
+  syncLogs?: Prisma.PlatformSyncLogUpdateManyWithoutPlatformNestedInput
 }
 
 export type RecruitmentPlatformUncheckedUpdateInput = {
@@ -375,9 +430,13 @@ export type RecruitmentPlatformUncheckedUpdateInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   costEntries?: Prisma.PlatformCostEntryUncheckedUpdateManyWithoutPlatformNestedInput
+  syncLogs?: Prisma.PlatformSyncLogUncheckedUpdateManyWithoutPlatformNestedInput
 }
 
 export type RecruitmentPlatformCreateManyInput = {
@@ -389,6 +448,9 @@ export type RecruitmentPlatformCreateManyInput = {
   status?: $Enums.PlatformStatus
   connectedAt?: Date | string
   notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -402,6 +464,9 @@ export type RecruitmentPlatformUpdateManyMutationInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -415,6 +480,9 @@ export type RecruitmentPlatformUncheckedUpdateManyInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -428,12 +496,16 @@ export type RecruitmentPlatformCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
+  lastSyncAt?: Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type RecruitmentPlatformAvgOrderByAggregateInput = {
   monthlyCost?: Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
 }
 
 export type RecruitmentPlatformMaxOrderByAggregateInput = {
@@ -445,6 +517,9 @@ export type RecruitmentPlatformMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
+  lastSyncAt?: Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -458,12 +533,16 @@ export type RecruitmentPlatformMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  apiKey?: Prisma.SortOrder
+  lastSyncAt?: Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type RecruitmentPlatformSumOrderByAggregateInput = {
   monthlyCost?: Prisma.SortOrder
+  totalSynced?: Prisma.SortOrder
 }
 
 export type RecruitmentPlatformScalarRelationFilter = {
@@ -501,6 +580,20 @@ export type RecruitmentPlatformUpdateOneRequiredWithoutCostEntriesNestedInput = 
   update?: Prisma.XOR<Prisma.XOR<Prisma.RecruitmentPlatformUpdateToOneWithWhereWithoutCostEntriesInput, Prisma.RecruitmentPlatformUpdateWithoutCostEntriesInput>, Prisma.RecruitmentPlatformUncheckedUpdateWithoutCostEntriesInput>
 }
 
+export type RecruitmentPlatformCreateNestedOneWithoutSyncLogsInput = {
+  create?: Prisma.XOR<Prisma.RecruitmentPlatformCreateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput>
+  connectOrCreate?: Prisma.RecruitmentPlatformCreateOrConnectWithoutSyncLogsInput
+  connect?: Prisma.RecruitmentPlatformWhereUniqueInput
+}
+
+export type RecruitmentPlatformUpdateOneRequiredWithoutSyncLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.RecruitmentPlatformCreateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput>
+  connectOrCreate?: Prisma.RecruitmentPlatformCreateOrConnectWithoutSyncLogsInput
+  upsert?: Prisma.RecruitmentPlatformUpsertWithoutSyncLogsInput
+  connect?: Prisma.RecruitmentPlatformWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RecruitmentPlatformUpdateToOneWithWhereWithoutSyncLogsInput, Prisma.RecruitmentPlatformUpdateWithoutSyncLogsInput>, Prisma.RecruitmentPlatformUncheckedUpdateWithoutSyncLogsInput>
+}
+
 export type RecruitmentPlatformCreateWithoutCostEntriesInput = {
   id?: string
   name: string
@@ -510,8 +603,12 @@ export type RecruitmentPlatformCreateWithoutCostEntriesInput = {
   status?: $Enums.PlatformStatus
   connectedAt?: Date | string
   notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  syncLogs?: Prisma.PlatformSyncLogCreateNestedManyWithoutPlatformInput
 }
 
 export type RecruitmentPlatformUncheckedCreateWithoutCostEntriesInput = {
@@ -523,8 +620,12 @@ export type RecruitmentPlatformUncheckedCreateWithoutCostEntriesInput = {
   status?: $Enums.PlatformStatus
   connectedAt?: Date | string
   notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  syncLogs?: Prisma.PlatformSyncLogUncheckedCreateNestedManyWithoutPlatformInput
 }
 
 export type RecruitmentPlatformCreateOrConnectWithoutCostEntriesInput = {
@@ -552,8 +653,12 @@ export type RecruitmentPlatformUpdateWithoutCostEntriesInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncLogs?: Prisma.PlatformSyncLogUpdateManyWithoutPlatformNestedInput
 }
 
 export type RecruitmentPlatformUncheckedUpdateWithoutCostEntriesInput = {
@@ -565,8 +670,96 @@ export type RecruitmentPlatformUncheckedUpdateWithoutCostEntriesInput = {
   status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  syncLogs?: Prisma.PlatformSyncLogUncheckedUpdateManyWithoutPlatformNestedInput
+}
+
+export type RecruitmentPlatformCreateWithoutSyncLogsInput = {
+  id?: string
+  name: string
+  accountIdentifier?: string | null
+  type?: $Enums.PlatformType
+  monthlyCost?: number
+  status?: $Enums.PlatformStatus
+  connectedAt?: Date | string
+  notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  costEntries?: Prisma.PlatformCostEntryCreateNestedManyWithoutPlatformInput
+}
+
+export type RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput = {
+  id?: string
+  name: string
+  accountIdentifier?: string | null
+  type?: $Enums.PlatformType
+  monthlyCost?: number
+  status?: $Enums.PlatformStatus
+  connectedAt?: Date | string
+  notes?: string | null
+  apiKey?: string | null
+  lastSyncAt?: Date | string | null
+  totalSynced?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  costEntries?: Prisma.PlatformCostEntryUncheckedCreateNestedManyWithoutPlatformInput
+}
+
+export type RecruitmentPlatformCreateOrConnectWithoutSyncLogsInput = {
+  where: Prisma.RecruitmentPlatformWhereUniqueInput
+  create: Prisma.XOR<Prisma.RecruitmentPlatformCreateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput>
+}
+
+export type RecruitmentPlatformUpsertWithoutSyncLogsInput = {
+  update: Prisma.XOR<Prisma.RecruitmentPlatformUpdateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedUpdateWithoutSyncLogsInput>
+  create: Prisma.XOR<Prisma.RecruitmentPlatformCreateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput>
+  where?: Prisma.RecruitmentPlatformWhereInput
+}
+
+export type RecruitmentPlatformUpdateToOneWithWhereWithoutSyncLogsInput = {
+  where?: Prisma.RecruitmentPlatformWhereInput
+  data: Prisma.XOR<Prisma.RecruitmentPlatformUpdateWithoutSyncLogsInput, Prisma.RecruitmentPlatformUncheckedUpdateWithoutSyncLogsInput>
+}
+
+export type RecruitmentPlatformUpdateWithoutSyncLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  accountIdentifier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumPlatformTypeFieldUpdateOperationsInput | $Enums.PlatformType
+  monthlyCost?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
+  connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  costEntries?: Prisma.PlatformCostEntryUpdateManyWithoutPlatformNestedInput
+}
+
+export type RecruitmentPlatformUncheckedUpdateWithoutSyncLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  accountIdentifier?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumPlatformTypeFieldUpdateOperationsInput | $Enums.PlatformType
+  monthlyCost?: Prisma.FloatFieldUpdateOperationsInput | number
+  status?: Prisma.EnumPlatformStatusFieldUpdateOperationsInput | $Enums.PlatformStatus
+  connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  costEntries?: Prisma.PlatformCostEntryUncheckedUpdateManyWithoutPlatformNestedInput
 }
 
 
@@ -576,10 +769,12 @@ export type RecruitmentPlatformUncheckedUpdateWithoutCostEntriesInput = {
 
 export type RecruitmentPlatformCountOutputType = {
   costEntries: number
+  syncLogs: number
 }
 
 export type RecruitmentPlatformCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   costEntries?: boolean | RecruitmentPlatformCountOutputTypeCountCostEntriesArgs
+  syncLogs?: boolean | RecruitmentPlatformCountOutputTypeCountSyncLogsArgs
 }
 
 /**
@@ -599,6 +794,13 @@ export type RecruitmentPlatformCountOutputTypeCountCostEntriesArgs<ExtArgs exten
   where?: Prisma.PlatformCostEntryWhereInput
 }
 
+/**
+ * RecruitmentPlatformCountOutputType without action
+ */
+export type RecruitmentPlatformCountOutputTypeCountSyncLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PlatformSyncLogWhereInput
+}
+
 
 export type RecruitmentPlatformSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -609,9 +811,13 @@ export type RecruitmentPlatformSelect<ExtArgs extends runtime.Types.Extensions.I
   status?: boolean
   connectedAt?: boolean
   notes?: boolean
+  apiKey?: boolean
+  lastSyncAt?: boolean
+  totalSynced?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   costEntries?: boolean | Prisma.RecruitmentPlatform$costEntriesArgs<ExtArgs>
+  syncLogs?: boolean | Prisma.RecruitmentPlatform$syncLogsArgs<ExtArgs>
   _count?: boolean | Prisma.RecruitmentPlatformCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["recruitmentPlatform"]>
 
@@ -624,6 +830,9 @@ export type RecruitmentPlatformSelectCreateManyAndReturn<ExtArgs extends runtime
   status?: boolean
   connectedAt?: boolean
   notes?: boolean
+  apiKey?: boolean
+  lastSyncAt?: boolean
+  totalSynced?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["recruitmentPlatform"]>
@@ -637,6 +846,9 @@ export type RecruitmentPlatformSelectUpdateManyAndReturn<ExtArgs extends runtime
   status?: boolean
   connectedAt?: boolean
   notes?: boolean
+  apiKey?: boolean
+  lastSyncAt?: boolean
+  totalSynced?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["recruitmentPlatform"]>
@@ -650,13 +862,17 @@ export type RecruitmentPlatformSelectScalar = {
   status?: boolean
   connectedAt?: boolean
   notes?: boolean
+  apiKey?: boolean
+  lastSyncAt?: boolean
+  totalSynced?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RecruitmentPlatformOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "accountIdentifier" | "type" | "monthlyCost" | "status" | "connectedAt" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["recruitmentPlatform"]>
+export type RecruitmentPlatformOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "accountIdentifier" | "type" | "monthlyCost" | "status" | "connectedAt" | "notes" | "apiKey" | "lastSyncAt" | "totalSynced" | "createdAt" | "updatedAt", ExtArgs["result"]["recruitmentPlatform"]>
 export type RecruitmentPlatformInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   costEntries?: boolean | Prisma.RecruitmentPlatform$costEntriesArgs<ExtArgs>
+  syncLogs?: boolean | Prisma.RecruitmentPlatform$syncLogsArgs<ExtArgs>
   _count?: boolean | Prisma.RecruitmentPlatformCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RecruitmentPlatformIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -666,6 +882,7 @@ export type $RecruitmentPlatformPayload<ExtArgs extends runtime.Types.Extensions
   name: "RecruitmentPlatform"
   objects: {
     costEntries: Prisma.$PlatformCostEntryPayload<ExtArgs>[]
+    syncLogs: Prisma.$PlatformSyncLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -676,6 +893,9 @@ export type $RecruitmentPlatformPayload<ExtArgs extends runtime.Types.Extensions
     status: $Enums.PlatformStatus
     connectedAt: Date
     notes: string | null
+    apiKey: string | null
+    lastSyncAt: Date | null
+    totalSynced: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["recruitmentPlatform"]>
@@ -1073,6 +1293,7 @@ readonly fields: RecruitmentPlatformFieldRefs;
 export interface Prisma__RecruitmentPlatformClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   costEntries<T extends Prisma.RecruitmentPlatform$costEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RecruitmentPlatform$costEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformCostEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  syncLogs<T extends Prisma.RecruitmentPlatform$syncLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RecruitmentPlatform$syncLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PlatformSyncLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1110,6 +1331,9 @@ export interface RecruitmentPlatformFieldRefs {
   readonly status: Prisma.FieldRef<"RecruitmentPlatform", 'PlatformStatus'>
   readonly connectedAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
   readonly notes: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
+  readonly apiKey: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
+  readonly lastSyncAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
+  readonly totalSynced: Prisma.FieldRef<"RecruitmentPlatform", 'Int'>
   readonly createdAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
 }
@@ -1521,6 +1745,30 @@ export type RecruitmentPlatform$costEntriesArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.PlatformCostEntryScalarFieldEnum | Prisma.PlatformCostEntryScalarFieldEnum[]
+}
+
+/**
+ * RecruitmentPlatform.syncLogs
+ */
+export type RecruitmentPlatform$syncLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlatformSyncLog
+   */
+  select?: Prisma.PlatformSyncLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlatformSyncLog
+   */
+  omit?: Prisma.PlatformSyncLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlatformSyncLogInclude<ExtArgs> | null
+  where?: Prisma.PlatformSyncLogWhereInput
+  orderBy?: Prisma.PlatformSyncLogOrderByWithRelationInput | Prisma.PlatformSyncLogOrderByWithRelationInput[]
+  cursor?: Prisma.PlatformSyncLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PlatformSyncLogScalarFieldEnum | Prisma.PlatformSyncLogScalarFieldEnum[]
 }
 
 /**

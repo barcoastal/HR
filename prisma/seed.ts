@@ -11,6 +11,7 @@ async function main() {
   console.log("Seeding database (clean slate)...");
 
   // Clear everything
+  await prisma.platformSyncLog.deleteMany();
   await prisma.platformCostEntry.deleteMany();
   await prisma.recruitmentPlatform.deleteMany();
   await prisma.feedReaction.deleteMany();
@@ -45,11 +46,11 @@ async function main() {
   // --- Recruitment Platforms ---
   const now = new Date();
   const platformData = [
-    { name: "LinkedIn Recruiter", type: "PREMIUM" as const, monthlyCost: 825, status: "ACTIVE" as const },
-    { name: "Indeed", type: "PREMIUM" as const, monthlyCost: 300, status: "ACTIVE" as const },
-    { name: "Handshake", type: "NICHE" as const, monthlyCost: 150, status: "ACTIVE" as const },
-    { name: "EmployFL", type: "NICHE" as const, monthlyCost: 0, status: "ACTIVE" as const },
-    { name: "Facebook Jobs", type: "SOCIAL" as const, monthlyCost: 50, status: "PAUSED" as const },
+    { name: "LinkedIn Recruiter", type: "PREMIUM" as const, monthlyCost: 825, status: "ACTIVE" as const, apiKey: "li-demo-key-2024" },
+    { name: "Indeed", type: "PREMIUM" as const, monthlyCost: 300, status: "ACTIVE" as const, apiKey: "indeed-demo-key-2024" },
+    { name: "Handshake", type: "NICHE" as const, monthlyCost: 150, status: "ACTIVE" as const, apiKey: null },
+    { name: "EmployFL", type: "NICHE" as const, monthlyCost: 0, status: "ACTIVE" as const, apiKey: null },
+    { name: "Facebook Jobs", type: "SOCIAL" as const, monthlyCost: 50, status: "PAUSED" as const, apiKey: null },
   ];
 
   for (const pd of platformData) {
@@ -59,6 +60,8 @@ async function main() {
         type: pd.type,
         monthlyCost: pd.monthlyCost,
         status: pd.status,
+        apiKey: pd.apiKey,
+        connectedAt: pd.apiKey ? now : undefined,
       },
     });
 
