@@ -184,3 +184,8 @@ export type PulseSurvey = Prisma.PulseSurveyModel
  * 
  */
 export type PulseResponse = Prisma.PulseResponseModel
+/**
+ * Model OAuthState
+ * 
+ */
+export type OAuthState = Prisma.OAuthStateModel

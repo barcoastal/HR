@@ -464,6 +464,10 @@ model RecruitmentPlatform {
   connectedAt       DateTime         @default(now())
   notes             String?
   apiKey            String?
+  refreshToken      String?
+  tokenExpiresAt    DateTime?
+  tokenScopes       String?
+  oauthProvider     String?
   lastSyncAt        DateTime?
   totalSynced       Int              @default(0)
   createdAt         DateTime         @default(now())
@@ -623,4 +627,22 @@ model PulseResponse {
   @@unique([surveyId, employeeId])
   @@index([surveyId])
   @@index([employeeId])
+}
+
+// ---------------------
+// OAuth State (CSRF)
+// ---------------------
+
+model OAuthState {
+  id          String   @id @default(uuid())
+  state       String   @unique
+  provider    String
+  platformId  String?
+  userId      String
+  redirectUri String
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([state])
+  @@index([expiresAt])
 }

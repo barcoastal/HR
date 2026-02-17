@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getInitials } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { getUsers } from "@/lib/actions/users";
@@ -116,16 +117,18 @@ export default async function SettingsPage() {
           }))}
         />
 
-        <NativeIntegrations
-          connected={recruitmentPlatforms
-            .filter((p) => SUPPORTED_PLATFORMS.some((sp) => sp.name === p.name))
-            .map((p) => ({
-              name: p.name,
-              apiKey: p.apiKey,
-              lastSyncAt: p.lastSyncAt,
-              totalSynced: p.totalSynced,
-            }))}
-        />
+        <Suspense>
+          <NativeIntegrations
+            connected={recruitmentPlatforms
+              .filter((p) => SUPPORTED_PLATFORMS.some((sp) => sp.name === p.name))
+              .map((p) => ({
+                name: p.name,
+                apiKey: p.apiKey,
+                lastSyncAt: p.lastSyncAt,
+                totalSynced: p.totalSynced,
+              }))}
+          />
+        </Suspense>
 
         <PlatformIntegrationManager
           platforms={recruitmentPlatforms.map((p) => ({

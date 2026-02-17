@@ -46,6 +46,10 @@ export type RecruitmentPlatformMinAggregateOutputType = {
   connectedAt: Date | null
   notes: string | null
   apiKey: string | null
+  refreshToken: string | null
+  tokenExpiresAt: Date | null
+  tokenScopes: string | null
+  oauthProvider: string | null
   lastSyncAt: Date | null
   totalSynced: number | null
   createdAt: Date | null
@@ -62,6 +66,10 @@ export type RecruitmentPlatformMaxAggregateOutputType = {
   connectedAt: Date | null
   notes: string | null
   apiKey: string | null
+  refreshToken: string | null
+  tokenExpiresAt: Date | null
+  tokenScopes: string | null
+  oauthProvider: string | null
   lastSyncAt: Date | null
   totalSynced: number | null
   createdAt: Date | null
@@ -78,6 +86,10 @@ export type RecruitmentPlatformCountAggregateOutputType = {
   connectedAt: number
   notes: number
   apiKey: number
+  refreshToken: number
+  tokenExpiresAt: number
+  tokenScopes: number
+  oauthProvider: number
   lastSyncAt: number
   totalSynced: number
   createdAt: number
@@ -106,6 +118,10 @@ export type RecruitmentPlatformMinAggregateInputType = {
   connectedAt?: true
   notes?: true
   apiKey?: true
+  refreshToken?: true
+  tokenExpiresAt?: true
+  tokenScopes?: true
+  oauthProvider?: true
   lastSyncAt?: true
   totalSynced?: true
   createdAt?: true
@@ -122,6 +138,10 @@ export type RecruitmentPlatformMaxAggregateInputType = {
   connectedAt?: true
   notes?: true
   apiKey?: true
+  refreshToken?: true
+  tokenExpiresAt?: true
+  tokenScopes?: true
+  oauthProvider?: true
   lastSyncAt?: true
   totalSynced?: true
   createdAt?: true
@@ -138,6 +158,10 @@ export type RecruitmentPlatformCountAggregateInputType = {
   connectedAt?: true
   notes?: true
   apiKey?: true
+  refreshToken?: true
+  tokenExpiresAt?: true
+  tokenScopes?: true
+  oauthProvider?: true
   lastSyncAt?: true
   totalSynced?: true
   createdAt?: true
@@ -241,6 +265,10 @@ export type RecruitmentPlatformGroupByOutputType = {
   connectedAt: Date
   notes: string | null
   apiKey: string | null
+  refreshToken: string | null
+  tokenExpiresAt: Date | null
+  tokenScopes: string | null
+  oauthProvider: string | null
   lastSyncAt: Date | null
   totalSynced: number
   createdAt: Date
@@ -280,6 +308,10 @@ export type RecruitmentPlatformWhereInput = {
   connectedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
   apiKey?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  refreshToken?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  tokenExpiresAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
+  tokenScopes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  oauthProvider?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
   lastSyncAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
   totalSynced?: Prisma.IntFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
@@ -298,6 +330,10 @@ export type RecruitmentPlatformOrderByWithRelationInput = {
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenScopes?: Prisma.SortOrderInput | Prisma.SortOrder
+  oauthProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -319,6 +355,10 @@ export type RecruitmentPlatformWhereUniqueInput = Prisma.AtLeast<{
   connectedAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
   apiKey?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  refreshToken?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  tokenExpiresAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
+  tokenScopes?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
+  oauthProvider?: Prisma.StringNullableFilter<"RecruitmentPlatform"> | string | null
   lastSyncAt?: Prisma.DateTimeNullableFilter<"RecruitmentPlatform"> | Date | string | null
   totalSynced?: Prisma.IntFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeFilter<"RecruitmentPlatform"> | Date | string
@@ -337,6 +377,10 @@ export type RecruitmentPlatformOrderByWithAggregationInput = {
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   apiKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  tokenScopes?: Prisma.SortOrderInput | Prisma.SortOrder
+  oauthProvider?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrderInput | Prisma.SortOrder
   totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -361,6 +405,10 @@ export type RecruitmentPlatformScalarWhereWithAggregatesInput = {
   connectedAt?: Prisma.DateTimeWithAggregatesFilter<"RecruitmentPlatform"> | Date | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
   apiKey?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
+  refreshToken?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
+  tokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RecruitmentPlatform"> | Date | string | null
+  tokenScopes?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
+  oauthProvider?: Prisma.StringNullableWithAggregatesFilter<"RecruitmentPlatform"> | string | null
   lastSyncAt?: Prisma.DateTimeNullableWithAggregatesFilter<"RecruitmentPlatform"> | Date | string | null
   totalSynced?: Prisma.IntWithAggregatesFilter<"RecruitmentPlatform"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RecruitmentPlatform"> | Date | string
@@ -377,6 +425,10 @@ export type RecruitmentPlatformCreateInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -395,6 +447,10 @@ export type RecruitmentPlatformUncheckedCreateInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -413,6 +469,10 @@ export type RecruitmentPlatformUpdateInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -431,6 +491,10 @@ export type RecruitmentPlatformUncheckedUpdateInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -449,6 +513,10 @@ export type RecruitmentPlatformCreateManyInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -465,6 +533,10 @@ export type RecruitmentPlatformUpdateManyMutationInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,6 +553,10 @@ export type RecruitmentPlatformUncheckedUpdateManyInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -497,6 +573,10 @@ export type RecruitmentPlatformCountOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenExpiresAt?: Prisma.SortOrder
+  tokenScopes?: Prisma.SortOrder
+  oauthProvider?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
   totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -518,6 +598,10 @@ export type RecruitmentPlatformMaxOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenExpiresAt?: Prisma.SortOrder
+  tokenScopes?: Prisma.SortOrder
+  oauthProvider?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
   totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -534,6 +618,10 @@ export type RecruitmentPlatformMinOrderByAggregateInput = {
   connectedAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   apiKey?: Prisma.SortOrder
+  refreshToken?: Prisma.SortOrder
+  tokenExpiresAt?: Prisma.SortOrder
+  tokenScopes?: Prisma.SortOrder
+  oauthProvider?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
   totalSynced?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -604,6 +692,10 @@ export type RecruitmentPlatformCreateWithoutCostEntriesInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -621,6 +713,10 @@ export type RecruitmentPlatformUncheckedCreateWithoutCostEntriesInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -654,6 +750,10 @@ export type RecruitmentPlatformUpdateWithoutCostEntriesInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -671,6 +771,10 @@ export type RecruitmentPlatformUncheckedUpdateWithoutCostEntriesInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -688,6 +792,10 @@ export type RecruitmentPlatformCreateWithoutSyncLogsInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -705,6 +813,10 @@ export type RecruitmentPlatformUncheckedCreateWithoutSyncLogsInput = {
   connectedAt?: Date | string
   notes?: string | null
   apiKey?: string | null
+  refreshToken?: string | null
+  tokenExpiresAt?: Date | string | null
+  tokenScopes?: string | null
+  oauthProvider?: string | null
   lastSyncAt?: Date | string | null
   totalSynced?: number
   createdAt?: Date | string
@@ -738,6 +850,10 @@ export type RecruitmentPlatformUpdateWithoutSyncLogsInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -755,6 +871,10 @@ export type RecruitmentPlatformUncheckedUpdateWithoutSyncLogsInput = {
   connectedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   apiKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  tokenScopes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  oauthProvider?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   totalSynced?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -812,6 +932,10 @@ export type RecruitmentPlatformSelect<ExtArgs extends runtime.Types.Extensions.I
   connectedAt?: boolean
   notes?: boolean
   apiKey?: boolean
+  refreshToken?: boolean
+  tokenExpiresAt?: boolean
+  tokenScopes?: boolean
+  oauthProvider?: boolean
   lastSyncAt?: boolean
   totalSynced?: boolean
   createdAt?: boolean
@@ -831,6 +955,10 @@ export type RecruitmentPlatformSelectCreateManyAndReturn<ExtArgs extends runtime
   connectedAt?: boolean
   notes?: boolean
   apiKey?: boolean
+  refreshToken?: boolean
+  tokenExpiresAt?: boolean
+  tokenScopes?: boolean
+  oauthProvider?: boolean
   lastSyncAt?: boolean
   totalSynced?: boolean
   createdAt?: boolean
@@ -847,6 +975,10 @@ export type RecruitmentPlatformSelectUpdateManyAndReturn<ExtArgs extends runtime
   connectedAt?: boolean
   notes?: boolean
   apiKey?: boolean
+  refreshToken?: boolean
+  tokenExpiresAt?: boolean
+  tokenScopes?: boolean
+  oauthProvider?: boolean
   lastSyncAt?: boolean
   totalSynced?: boolean
   createdAt?: boolean
@@ -863,13 +995,17 @@ export type RecruitmentPlatformSelectScalar = {
   connectedAt?: boolean
   notes?: boolean
   apiKey?: boolean
+  refreshToken?: boolean
+  tokenExpiresAt?: boolean
+  tokenScopes?: boolean
+  oauthProvider?: boolean
   lastSyncAt?: boolean
   totalSynced?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RecruitmentPlatformOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "accountIdentifier" | "type" | "monthlyCost" | "status" | "connectedAt" | "notes" | "apiKey" | "lastSyncAt" | "totalSynced" | "createdAt" | "updatedAt", ExtArgs["result"]["recruitmentPlatform"]>
+export type RecruitmentPlatformOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "accountIdentifier" | "type" | "monthlyCost" | "status" | "connectedAt" | "notes" | "apiKey" | "refreshToken" | "tokenExpiresAt" | "tokenScopes" | "oauthProvider" | "lastSyncAt" | "totalSynced" | "createdAt" | "updatedAt", ExtArgs["result"]["recruitmentPlatform"]>
 export type RecruitmentPlatformInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   costEntries?: boolean | Prisma.RecruitmentPlatform$costEntriesArgs<ExtArgs>
   syncLogs?: boolean | Prisma.RecruitmentPlatform$syncLogsArgs<ExtArgs>
@@ -894,6 +1030,10 @@ export type $RecruitmentPlatformPayload<ExtArgs extends runtime.Types.Extensions
     connectedAt: Date
     notes: string | null
     apiKey: string | null
+    refreshToken: string | null
+    tokenExpiresAt: Date | null
+    tokenScopes: string | null
+    oauthProvider: string | null
     lastSyncAt: Date | null
     totalSynced: number
     createdAt: Date
@@ -1332,6 +1472,10 @@ export interface RecruitmentPlatformFieldRefs {
   readonly connectedAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
   readonly notes: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
   readonly apiKey: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
+  readonly refreshToken: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
+  readonly tokenExpiresAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
+  readonly tokenScopes: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
+  readonly oauthProvider: Prisma.FieldRef<"RecruitmentPlatform", 'String'>
   readonly lastSyncAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>
   readonly totalSynced: Prisma.FieldRef<"RecruitmentPlatform", 'Int'>
   readonly createdAt: Prisma.FieldRef<"RecruitmentPlatform", 'DateTime'>

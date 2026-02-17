@@ -31,6 +31,8 @@ export const SUPPORTED_PLATFORMS = [
     textColor: "text-blue-600",
     bgLight: "bg-blue-50",
     permissions: ["Access your recruiter seat", "View candidate profiles", "Export candidate data"],
+    oauthProviderId: "linkedin",
+    hasRealOAuth: true,
   },
   {
     name: "Indeed",
@@ -42,6 +44,8 @@ export const SUPPORTED_PLATFORMS = [
     textColor: "text-[#2164f3]",
     bgLight: "bg-indigo-50",
     permissions: ["Access your employer account", "View applicant data", "Read resume database"],
+    oauthProviderId: "indeed",
+    hasRealOAuth: true,
   },
   {
     name: "Handshake",
@@ -53,6 +57,8 @@ export const SUPPORTED_PLATFORMS = [
     textColor: "text-[#e4533d]",
     bgLight: "bg-red-50",
     permissions: ["Access employer portal", "View student profiles", "Sync applicants"],
+    oauthProviderId: "handshake",
+    hasRealOAuth: false,
   },
   {
     name: "EmployFL",
@@ -64,5 +70,7 @@ export const SUPPORTED_PLATFORMS = [
     textColor: "text-emerald-600",
     bgLight: "bg-emerald-50",
     permissions: ["Access employer account", "View candidate pool", "Export candidate data"],
+    oauthProviderId: "employfl",
+    hasRealOAuth: false,
   },
 ];

@@ -13,5 +13,5 @@ export type MockCandidate = {
 export interface PlatformClient {
   readonly platformName: string;
   validateCredentials(apiKey: string): Promise<boolean>;
-  fetchCandidates(): Promise<MockCandidate[]>;
+  fetchCandidates(accessToken?: string): Promise<MockCandidate[]>;
 }

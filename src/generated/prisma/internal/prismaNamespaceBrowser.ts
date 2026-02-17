@@ -79,7 +79,8 @@ export const ModelName = {
   ClubMember: 'ClubMember',
   AnonFeedback: 'AnonFeedback',
   PulseSurvey: 'PulseSurvey',
-  PulseResponse: 'PulseResponse'
+  PulseResponse: 'PulseResponse',
+  OAuthState: 'OAuthState'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -370,6 +371,10 @@ export const RecruitmentPlatformScalarFieldEnum = {
   connectedAt: 'connectedAt',
   notes: 'notes',
   apiKey: 'apiKey',
+  refreshToken: 'refreshToken',
+  tokenExpiresAt: 'tokenExpiresAt',
+  tokenScopes: 'tokenScopes',
+  oauthProvider: 'oauthProvider',
   lastSyncAt: 'lastSyncAt',
   totalSynced: 'totalSynced',
   createdAt: 'createdAt',
@@ -498,6 +503,20 @@ export const PulseResponseScalarFieldEnum = {
 } as const
 
 export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
+
+
+export const OAuthStateScalarFieldEnum = {
+  id: 'id',
+  state: 'state',
+  provider: 'provider',
+  platformId: 'platformId',
+  userId: 'userId',
+  redirectUri: 'redirectUri',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OAuthStateScalarFieldEnum = (typeof OAuthStateScalarFieldEnum)[keyof typeof OAuthStateScalarFieldEnum]
 
 
 export const SortOrder = {

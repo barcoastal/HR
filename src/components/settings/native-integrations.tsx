@@ -1,15 +1,15 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { Cable, Loader2, CheckCircle2, Unlink, Shield, LogIn } from "lucide-react";
-import { useState } from "react";
+import { Cable, Loader2, CheckCircle2, Unlink, Shield, LogIn, AlertCircle, X } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import {
   oauthConnectPlatform,
   disconnectPlatformByName,
 } from "@/lib/actions/platform-sync";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type ConnectedPlatform = {
   name: string;
@@ -29,7 +29,24 @@ export function NativeIntegrations({ connected }: Props) {
   const [disconnectingName, setDisconnectingName] = useState<string | null>(null);
   const [oauthStep, setOauthStep] = useState<OAuthStep>("consent");
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Read URL params on mount for OAuth callback notifications
+  useEffect(() => {
+    const oauthSuccess = searchParams.get("oauth_success");
+    const oauthError = searchParams.get("oauth_error");
+
+    if (oauthSuccess) {
+      setNotification({ type: "success", message: `${oauthSuccess} connected successfully!` });
+      window.history.replaceState({}, "", "/settings");
+      router.refresh();
+    } else if (oauthError) {
+      setNotification({ type: "error", message: oauthError });
+      window.history.replaceState({}, "", "/settings");
+    }
+  }, [searchParams, router]);
 
   const connectedMap = new Map(connected.map((c) => [c.name, c]));
 
@@ -55,6 +72,15 @@ export function NativeIntegrations({ connected }: Props) {
 
   async function handleAuthorize() {
     if (!connectingPlatform) return;
+
+    // Real OAuth: full page redirect to provider
+    if (connectingPlatform.hasRealOAuth) {
+      closeConnect();
+      window.location.href = `/api/platforms/${connectingPlatform.oauthProviderId}/authorize`;
+      return;
+    }
+
+    // Simulated flow for platforms without real OAuth
     setOauthStep("authenticating");
 
     const result = await oauthConnectPlatform(
@@ -98,6 +124,31 @@ export function NativeIntegrations({ connected }: Props) {
       <p className="text-xs text-[var(--color-text-muted)] mb-5">
         Connect your recruitment accounts to sync candidates automatically
       </p>
+
+      {/* OAuth callback notification banner */}
+      {notification && (
+        <div
+          className={cn(
+            "flex items-center gap-2 px-4 py-3 rounded-lg mb-5 text-sm",
+            notification.type === "success"
+              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              : "bg-red-500/10 text-red-400 border border-red-500/20"
+          )}
+        >
+          {notification.type === "success" ? (
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+          ) : (
+            <AlertCircle className="h-4 w-4 shrink-0" />
+          )}
+          <span className="flex-1">{notification.message}</span>
+          <button
+            onClick={() => setNotification(null)}
+            className="shrink-0 hover:opacity-70 transition-opacity"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {SUPPORTED_PLATFORMS.map((platform) => {
@@ -207,7 +258,9 @@ export function NativeIntegrations({ connected }: Props) {
                   Sign in to {connectingPlatform.name}
                 </p>
                 <p className="text-xs text-[var(--color-text-muted)] mt-1">
-                  CoastalHR wants to connect to your account
+                  {connectingPlatform.hasRealOAuth
+                    ? `You'll be redirected to ${connectingPlatform.name} to sign in`
+                    : "CoastalHR wants to connect to your account"}
                 </p>
               </div>
             </div>
@@ -254,7 +307,7 @@ export function NativeIntegrations({ connected }: Props) {
         )}
       </Dialog>
 
-      {/* Authenticating Dialog */}
+      {/* Authenticating Dialog (only for simulated flow) */}
       <Dialog
         open={!!connectingName && oauthStep === "authenticating"}
         onClose={() => {}}
@@ -273,7 +326,7 @@ export function NativeIntegrations({ connected }: Props) {
         </div>
       </Dialog>
 
-      {/* Success Dialog */}
+      {/* Success Dialog (only for simulated flow) */}
       <Dialog
         open={!!connectingName && oauthStep === "success"}
         onClose={closeConnect}

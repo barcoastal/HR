@@ -412,7 +412,8 @@ export const ModelName = {
   ClubMember: 'ClubMember',
   AnonFeedback: 'AnonFeedback',
   PulseSurvey: 'PulseSurvey',
-  PulseResponse: 'PulseResponse'
+  PulseResponse: 'PulseResponse',
+  OAuthState: 'OAuthState'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2578,6 +2579,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OAuthState: {
+      payload: Prisma.$OAuthStatePayload<ExtArgs>
+      fields: Prisma.OAuthStateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OAuthStateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OAuthStateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        findFirst: {
+          args: Prisma.OAuthStateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OAuthStateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        findMany: {
+          args: Prisma.OAuthStateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>[]
+        }
+        create: {
+          args: Prisma.OAuthStateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        createMany: {
+          args: Prisma.OAuthStateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OAuthStateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>[]
+        }
+        delete: {
+          args: Prisma.OAuthStateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        update: {
+          args: Prisma.OAuthStateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        deleteMany: {
+          args: Prisma.OAuthStateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OAuthStateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OAuthStateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>[]
+        }
+        upsert: {
+          args: Prisma.OAuthStateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthStatePayload>
+        }
+        aggregate: {
+          args: Prisma.OAuthStateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOAuthState>
+        }
+        groupBy: {
+          args: Prisma.OAuthStateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthStateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OAuthStateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthStateCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2889,6 +2964,10 @@ export const RecruitmentPlatformScalarFieldEnum = {
   connectedAt: 'connectedAt',
   notes: 'notes',
   apiKey: 'apiKey',
+  refreshToken: 'refreshToken',
+  tokenExpiresAt: 'tokenExpiresAt',
+  tokenScopes: 'tokenScopes',
+  oauthProvider: 'oauthProvider',
   lastSyncAt: 'lastSyncAt',
   totalSynced: 'totalSynced',
   createdAt: 'createdAt',
@@ -3017,6 +3096,20 @@ export const PulseResponseScalarFieldEnum = {
 } as const
 
 export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
+
+
+export const OAuthStateScalarFieldEnum = {
+  id: 'id',
+  state: 'state',
+  provider: 'provider',
+  platformId: 'platformId',
+  userId: 'userId',
+  redirectUri: 'redirectUri',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OAuthStateScalarFieldEnum = (typeof OAuthStateScalarFieldEnum)[keyof typeof OAuthStateScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3473,6 +3566,7 @@ export type GlobalOmitConfig = {
   anonFeedback?: Prisma.AnonFeedbackOmit
   pulseSurvey?: Prisma.PulseSurveyOmit
   pulseResponse?: Prisma.PulseResponseOmit
+  oAuthState?: Prisma.OAuthStateOmit
 }
 
 /* Types for Logging */

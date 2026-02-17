@@ -4,12 +4,50 @@ export class LinkedInRecruiterClient implements PlatformClient {
   readonly platformName = "LinkedIn Recruiter";
 
   async validateCredentials(apiKey: string): Promise<boolean> {
-    await new Promise((r) => setTimeout(r, 600));
-    return apiKey.startsWith("li-") && apiKey.length > 5;
+    // Accept OAuth tokens (any non-empty string) or legacy prefix-based keys
+    if (!apiKey) return false;
+    if (apiKey.startsWith("li-") && apiKey.length > 5) return true;
+    // OAuth tokens are typically longer opaque strings
+    if (apiKey.length > 20) return true;
+    return false;
   }
 
-  async fetchCandidates(): Promise<MockCandidate[]> {
+  async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
+    // If a real OAuth token is provided and LinkedIn RSC API creds exist,
+    // attempt real API call. This serves as the hook point for when
+    // LinkedIn Recruiter System Connect access is granted.
+    if (accessToken && process.env.LINKEDIN_CLIENT_ID) {
+      try {
+        const candidates = await this.fetchFromLinkedInAPI(accessToken);
+        if (candidates.length > 0) return candidates;
+      } catch {
+        // Fall through to mock data
+      }
+    }
+
+    // Mock fallback
     await new Promise((r) => setTimeout(r, 1200));
+    return this.getMockCandidates();
+  }
+
+  private async fetchFromLinkedInAPI(accessToken: string): Promise<MockCandidate[]> {
+    // LinkedIn RSC (Recruiter System Connect) API requires partner approval.
+    // When approved, this would call:
+    // GET https://api.linkedin.com/v2/hiringContext with the accessToken
+    // For now, validate the token is still active via userinfo
+    const res = await fetch("https://api.linkedin.com/v2/userinfo", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!res.ok) return [];
+
+    // Token is valid but we don't have RSC access yet — return empty
+    // to trigger mock fallback. When RSC access is granted, implement
+    // actual candidate fetching here.
+    return [];
+  }
+
+  private getMockCandidates(): MockCandidate[] {
     return [
       {
         firstName: "Sarah",

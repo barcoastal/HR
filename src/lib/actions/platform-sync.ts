@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { getPlatformClient, hasSyncSupport } from "@/lib/platform-sync";
 import { createCandidate } from "./candidates";
+import { getOAuthProvider } from "@/lib/oauth/config";
+import { refreshAccessToken } from "@/lib/oauth/utils";
 
 export async function connectPlatform(
   platformId: string,
@@ -107,6 +109,10 @@ export async function disconnectPlatformByName(
     where: { name },
     data: {
       apiKey: null,
+      refreshToken: null,
+      tokenExpiresAt: null,
+      tokenScopes: null,
+      oauthProvider: null,
       status: "DISCONNECTED",
     },
   });
@@ -132,6 +138,54 @@ export async function disconnectPlatform(
   return { success: true };
 }
 
+export async function ensureValidToken(
+  platformId: string
+): Promise<{ valid: boolean; accessToken?: string; error?: string }> {
+  const platform = await db.recruitmentPlatform.findUnique({ where: { id: platformId } });
+  if (!platform || !platform.apiKey) return { valid: false, error: "No token available" };
+
+  // If no OAuth provider or no expiry tracked, assume token is valid
+  if (!platform.oauthProvider || !platform.tokenExpiresAt) {
+    return { valid: true, accessToken: platform.apiKey };
+  }
+
+  // Check if token is still valid (with 5 min buffer)
+  const bufferMs = 5 * 60 * 1000;
+  if (platform.tokenExpiresAt.getTime() > Date.now() + bufferMs) {
+    return { valid: true, accessToken: platform.apiKey };
+  }
+
+  // Token expired — attempt refresh
+  if (!platform.refreshToken) {
+    return { valid: false, error: "Token expired and no refresh token available. Please reconnect." };
+  }
+
+  const provider = getOAuthProvider(platform.oauthProvider);
+  if (!provider) {
+    return { valid: false, error: "Unknown OAuth provider" };
+  }
+
+  const tokens = await refreshAccessToken(provider, platform.refreshToken);
+  if (!tokens) {
+    return { valid: false, error: "Failed to refresh token. Please reconnect." };
+  }
+
+  const tokenExpiresAt = tokens.expires_in
+    ? new Date(Date.now() + tokens.expires_in * 1000)
+    : null;
+
+  await db.recruitmentPlatform.update({
+    where: { id: platformId },
+    data: {
+      apiKey: tokens.access_token,
+      refreshToken: tokens.refresh_token ?? platform.refreshToken,
+      tokenExpiresAt,
+    },
+  });
+
+  return { valid: true, accessToken: tokens.access_token };
+}
+
 export async function syncCandidatesFromPlatform(
   platformId: string
 ): Promise<{
@@ -148,8 +202,14 @@ export async function syncCandidatesFromPlatform(
   const client = getPlatformClient(platform.name);
   if (!client) return { success: false, candidatesFound: 0, candidatesCreated: 0, skippedEmails: [], error: "No integration available" };
 
+  // Ensure OAuth token is valid before syncing
+  const tokenResult = await ensureValidToken(platformId);
+  if (!tokenResult.valid) {
+    return { success: false, candidatesFound: 0, candidatesCreated: 0, skippedEmails: [], error: tokenResult.error };
+  }
+
   try {
-    const mockCandidates = await client.fetchCandidates();
+    const mockCandidates = await client.fetchCandidates(tokenResult.accessToken);
     let created = 0;
     const skipped: string[] = [];
 
