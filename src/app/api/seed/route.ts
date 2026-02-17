@@ -4,6 +4,9 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     // Clean slate
+    await db.platformSyncLog.deleteMany();
+    await db.platformCostEntry.deleteMany();
+    await db.recruitmentPlatform.deleteMany();
     await db.feedReaction.deleteMany();
     await db.feedComment.deleteMany();
     await db.postAttachment.deleteMany();
@@ -276,6 +279,41 @@ export async function GET() {
     await db.feedPost.create({ data: { authorId: michaelD.id, content: "Q4 numbers are in — we hit 142% of our annual target! Every single person on this team contributed to this milestone. Celebrating this Friday! 🥂", type: "ANNOUNCEMENT" } });
     await db.feedPost.create({ data: { authorId: feedEmps[2].id, content: "Anyone interested in starting a lunch running club? Thinking Tuesdays and Thursdays. Drop a comment if you're in!", type: "GENERAL" } });
 
+    // --- Recruitment Platforms ---
+    const now = new Date();
+    const platformData = [
+      { name: "LinkedIn Recruiter", type: "PREMIUM" as const, monthlyCost: 825, status: "ACTIVE" as const, apiKey: "li-demo-key-2024" },
+      { name: "Indeed", type: "PREMIUM" as const, monthlyCost: 300, status: "ACTIVE" as const, apiKey: "indeed-demo-key-2024" },
+      { name: "Handshake", type: "NICHE" as const, monthlyCost: 150, status: "ACTIVE" as const, apiKey: null as string | null },
+      { name: "EmployFL", type: "NICHE" as const, monthlyCost: 0, status: "ACTIVE" as const, apiKey: null as string | null },
+      { name: "Facebook Jobs", type: "SOCIAL" as const, monthlyCost: 50, status: "PAUSED" as const, apiKey: null as string | null },
+    ];
+
+    for (const pd of platformData) {
+      const platform = await db.recruitmentPlatform.create({
+        data: {
+          name: pd.name,
+          type: pd.type,
+          monthlyCost: pd.monthlyCost,
+          status: pd.status,
+          apiKey: pd.apiKey,
+          connectedAt: pd.apiKey ? now : undefined,
+        },
+      });
+
+      for (let i = 2; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        await db.platformCostEntry.create({
+          data: {
+            platformId: platform.id,
+            year: d.getFullYear(),
+            month: d.getMonth() + 1,
+            cost: pd.monthlyCost,
+          },
+        });
+      }
+    }
+
     return NextResponse.json({
       success: true,
       counts: {
@@ -288,6 +326,7 @@ export async function GET() {
         candidates: candidateData.length,
         reviewCycles: 2,
         feedPosts: 8,
+        recruitmentPlatforms: platformData.length,
       },
     });
   } catch (e: unknown) {
