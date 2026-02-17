@@ -1,8 +1,19 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { execSync } from "child_process";
 
 export async function GET() {
   try {
+    // Ensure DB schema is up to date before seeding
+    try {
+      execSync("npx prisma db push --accept-data-loss --skip-generate", {
+        stdio: "pipe",
+        timeout: 30000,
+      });
+    } catch {
+      // May fail in some environments — schema might already be current
+    }
+
     // Clean slate
     await db.platformSyncLog.deleteMany();
     await db.platformCostEntry.deleteMany();
