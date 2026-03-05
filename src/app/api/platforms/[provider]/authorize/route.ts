@@ -13,7 +13,9 @@ export async function GET(
   const { provider: providerId } = await params;
   // Derive base URL from the actual request so it works on any domain
   const requestUrl = new URL(_request.url);
-  const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+  // Railway/proxies terminate SSL, so check x-forwarded-proto for the real protocol
+  const proto = _request.headers.get("x-forwarded-proto") ?? requestUrl.protocol.replace(":", "");
+  const baseUrl = `${proto}://${requestUrl.host}`;
 
   // 1. Verify session (use mock admin fallback)
   const session = await getServerSession(authOptions);

@@ -12,7 +12,8 @@ export async function GET(
 ) {
   const { provider: providerId } = await params;
   const url = new URL(request.url);
-  const baseUrl = `${url.protocol}//${url.host}`;
+  const proto = request.headers.get("x-forwarded-proto") ?? url.protocol.replace(":", "");
+  const baseUrl = `${proto}://${url.host}`;
   const settingsUrl = new URL("/settings", baseUrl);
 
   // 1. Handle error from provider (user denied, etc.)
