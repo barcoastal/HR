@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getOAuthProvider, getOAuthCredentials } from "@/lib/oauth/config";
-import { createOAuthState, getCallbackUrl } from "@/lib/oauth/utils";
+import { createOAuthState } from "@/lib/oauth/utils";
 import { db } from "@/lib/db";
 import { SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 
@@ -11,7 +11,9 @@ export async function GET(
   { params }: { params: Promise<{ provider: string }> }
 ) {
   const { provider: providerId } = await params;
-  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  // Derive base URL from the actual request so it works on any domain
+  const requestUrl = new URL(_request.url);
+  const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
 
   // 1. Verify session (use mock admin fallback)
   const session = await getServerSession(authOptions);
@@ -67,7 +69,7 @@ export async function GET(
   const state = await createOAuthState(providerId, userId);
 
   // 5. Build authorization URL and redirect to provider
-  const redirectUri = getCallbackUrl(providerId);
+  const redirectUri = `${baseUrl}/api/platforms/${providerId}/callback`;
   const authUrl = new URL(provider.authorizationUrl);
   authUrl.searchParams.set("response_type", "code");
   authUrl.searchParams.set("client_id", creds.clientId);

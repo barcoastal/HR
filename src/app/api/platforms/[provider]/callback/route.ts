@@ -4,7 +4,6 @@ import { getOAuthProvider } from "@/lib/oauth/config";
 import {
   validateAndConsumeState,
   exchangeCodeForTokens,
-  getBaseUrl,
 } from "@/lib/oauth/utils";
 
 export async function GET(
@@ -13,7 +12,8 @@ export async function GET(
 ) {
   const { provider: providerId } = await params;
   const url = new URL(request.url);
-  const settingsUrl = new URL("/settings", getBaseUrl());
+  const baseUrl = `${url.protocol}//${url.host}`;
+  const settingsUrl = new URL("/settings", baseUrl);
 
   // 1. Handle error from provider (user denied, etc.)
   const error = url.searchParams.get("error");
