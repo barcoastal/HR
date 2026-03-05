@@ -30,6 +30,69 @@ export async function GET(
   // 3. Check if real OAuth credentials exist in env
   const creds = getOAuthCredentials(provider);
 
+  // Indeed: use client credentials flow directly (no redirect URI needed)
+  if (providerId === "indeed" && creds) {
+    try {
+      const tokenRes = await fetch("https://apis.indeed.com/oauth/v2/tokens", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${Buffer.from(`${creds.clientId}:${creds.clientSecret}`).toString("base64")}`,
+        },
+        body: new URLSearchParams({
+          grant_type: "client_credentials",
+          scope: "employer_access",
+        }).toString(),
+      });
+
+      if (!tokenRes.ok) {
+        const errText = await tokenRes.text().catch(() => "");
+        const url = new URL("/settings", baseUrl);
+        url.searchParams.set("oauth_error", `Indeed token error: ${errText.slice(0, 100)}`);
+        return NextResponse.redirect(url);
+      }
+
+      const tokens = await tokenRes.json();
+
+      const tokenExpiresAt = tokens.expires_in
+        ? new Date(Date.now() + tokens.expires_in * 1000)
+        : null;
+
+      await db.recruitmentPlatform.upsert({
+        where: { name: provider.platformName },
+        create: {
+          name: provider.platformName,
+          type: "PREMIUM",
+          monthlyCost: 300,
+          status: "ACTIVE",
+          apiKey: tokens.access_token,
+          refreshToken: null,
+          tokenExpiresAt,
+          tokenScopes: tokens.scope ?? "employer_access",
+          oauthProvider: providerId,
+          connectedAt: new Date(),
+        },
+        update: {
+          apiKey: tokens.access_token,
+          refreshToken: null,
+          tokenExpiresAt,
+          tokenScopes: tokens.scope ?? "employer_access",
+          oauthProvider: providerId,
+          status: "ACTIVE",
+          connectedAt: new Date(),
+        },
+      });
+
+      const url = new URL("/settings", baseUrl);
+      url.searchParams.set("oauth_success", provider.platformName);
+      return NextResponse.redirect(url);
+    } catch (err) {
+      const url = new URL("/settings", baseUrl);
+      url.searchParams.set("oauth_error", `Indeed connection failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+      return NextResponse.redirect(url);
+    }
+  }
+
   if (!creds) {
     // No real credentials — fall back to simulated connection
     const platformConfig = SUPPORTED_PLATFORMS.find(
@@ -76,11 +139,6 @@ export async function GET(
   authUrl.searchParams.set("redirect_uri", redirectUri);
   authUrl.searchParams.set("state", state);
   authUrl.searchParams.set("scope", provider.scopes.join(" "));
-
-  // Indeed requires prompt=select_employer so the user picks which employer account to authorize
-  if (providerId === "indeed") {
-    authUrl.searchParams.set("prompt", "select_employer");
-  }
 
   return NextResponse.redirect(authUrl.toString());
 }

@@ -156,6 +156,33 @@ export async function ensureValidToken(
   }
 
   // Token expired — attempt refresh
+  // Indeed uses client credentials (no refresh token), so re-fetch directly
+  if (!platform.refreshToken && platform.oauthProvider === "indeed") {
+    const clientId = process.env.INDEED_CLIENT_ID;
+    const clientSecret = process.env.INDEED_CLIENT_SECRET;
+    if (!clientId || !clientSecret) {
+      return { valid: false, error: "Indeed credentials not configured. Please reconnect." };
+    }
+    const tokenRes = await fetch("https://apis.indeed.com/oauth/v2/tokens", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
+      },
+      body: new URLSearchParams({ grant_type: "client_credentials", scope: "employer_access" }).toString(),
+    });
+    if (!tokenRes.ok) {
+      return { valid: false, error: "Failed to refresh Indeed token. Please reconnect." };
+    }
+    const newTokens = await tokenRes.json();
+    const newExpiry = newTokens.expires_in ? new Date(Date.now() + newTokens.expires_in * 1000) : null;
+    await db.recruitmentPlatform.update({
+      where: { id: platformId },
+      data: { apiKey: newTokens.access_token, tokenExpiresAt: newExpiry },
+    });
+    return { valid: true, accessToken: newTokens.access_token };
+  }
+
   if (!platform.refreshToken) {
     return { valid: false, error: "Token expired and no refresh token available. Please reconnect." };
   }
