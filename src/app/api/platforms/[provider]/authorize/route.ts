@@ -75,5 +75,10 @@ export async function GET(
   authUrl.searchParams.set("state", state);
   authUrl.searchParams.set("scope", provider.scopes.join(" "));
 
+  // Indeed requires prompt=select_employer so the user picks which employer account to authorize
+  if (providerId === "indeed") {
+    authUrl.searchParams.set("prompt", "select_employer");
+  }
+
   return NextResponse.redirect(authUrl.toString());
 }

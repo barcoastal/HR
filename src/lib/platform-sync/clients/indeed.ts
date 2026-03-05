@@ -1,53 +1,8 @@
 import type { PlatformClient, MockCandidate, CandidatePage } from "../types";
 
 const INDEED_GRAPHQL_URL = "https://apis.indeed.com/graphql";
-const INDEED_TOKEN_URL = "https://apis.indeed.com/oauth/v2/tokens";
 const PAGE_SIZE = 50;
 const RATE_LIMIT_DELAY_MS = 500;
-
-// Cache the two-legged token in memory (it lasts ~1 hour)
-let cachedApiToken: { token: string; expiresAt: number } | null = null;
-
-async function getTwoLeggedToken(): Promise<string> {
-  // Return cached token if still valid (with 5 min buffer)
-  if (cachedApiToken && cachedApiToken.expiresAt > Date.now() + 5 * 60 * 1000) {
-    return cachedApiToken.token;
-  }
-
-  const clientId = process.env.INDEED_CLIENT_ID;
-  const clientSecret = process.env.INDEED_CLIENT_SECRET;
-  if (!clientId || !clientSecret) {
-    throw new Error("INDEED_CLIENT_ID and INDEED_CLIENT_SECRET are required");
-  }
-
-  const res = await fetch(INDEED_TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
-    },
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-      scope: "employer_access",
-    }).toString(),
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Indeed token exchange failed ${res.status}: ${text.slice(0, 200)}`);
-  }
-
-  const data = await res.json();
-  const token = data.access_token;
-  const expiresIn = data.expires_in ?? 3600;
-
-  cachedApiToken = {
-    token,
-    expiresAt: Date.now() + expiresIn * 1000,
-  };
-
-  return token;
-}
 
 export class IndeedClient implements PlatformClient {
   readonly platformName = "Indeed";
@@ -81,12 +36,11 @@ export class IndeedClient implements PlatformClient {
   }
 
   async fetchCandidatesPaginated(
-    _accessToken: string,
+    accessToken: string,
     cursor?: string | null
   ): Promise<CandidatePage> {
-    // Use two-legged client credentials token for GraphQL API
-    const apiToken = await getTwoLeggedToken();
-
+    // Use the 3-legged OAuth token — it represents a specific employer
+    // after the user selected their employer via prompt=select_employer
     const query = `
       query GetApplications($after: String, $first: Int) {
         applicationVersions(after: $after, first: $first) {
@@ -129,7 +83,7 @@ export class IndeedClient implements PlatformClient {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({ query, variables }),
     });
