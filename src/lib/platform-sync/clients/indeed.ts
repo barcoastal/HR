@@ -1,50 +1,118 @@
-import type { PlatformClient, MockCandidate } from "../types";
+import type { PlatformClient, MockCandidate, CandidatePage } from "../types";
+
+const INDEED_GRAPHQL_URL = "https://apis.indeed.com/graphql";
+const PAGE_SIZE = 50;
+const RATE_LIMIT_DELAY_MS = 500;
 
 export class IndeedClient implements PlatformClient {
   readonly platformName = "Indeed";
 
   async validateCredentials(apiKey: string): Promise<boolean> {
-    // Accept OAuth tokens (any non-empty string) or legacy prefix-based keys
     if (!apiKey) return false;
     if (apiKey.startsWith("indeed-") && apiKey.length > 9) return true;
-    // OAuth tokens are typically longer opaque strings
     if (apiKey.length > 20) return true;
     return false;
   }
 
   async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
-    // If a real OAuth token is provided and Indeed API creds exist,
-    // attempt real API call. This serves as the hook point for when
-    // Indeed Partner API access is granted.
     if (accessToken && process.env.INDEED_CLIENT_ID) {
       try {
-        const candidates = await this.fetchFromIndeedAPI(accessToken);
-        if (candidates.length > 0) return candidates;
+        const all: MockCandidate[] = [];
+        let cursor: string | null = null;
+        do {
+          const page = await this.fetchCandidatesPaginated(accessToken, cursor);
+          all.push(...page.candidates);
+          cursor = page.nextCursor;
+          if (cursor) await delay(RATE_LIMIT_DELAY_MS);
+        } while (cursor);
+        if (all.length > 0) return all;
       } catch {
         // Fall through to mock data
       }
     }
 
-    // Mock fallback
-    await new Promise((r) => setTimeout(r, 1000));
+    await delay(1000);
     return this.getMockCandidates();
   }
 
-  private async fetchFromIndeedAPI(accessToken: string): Promise<MockCandidate[]> {
-    // Indeed Employer API requires Partner approval.
-    // When approved, this would call:
-    // GET https://apis.indeed.com/employer/v1/applications with the accessToken
-    // For now, validate the token is still active
-    const res = await fetch("https://apis.indeed.com/oauth/v2/userinfo", {
-      headers: { Authorization: `Bearer ${accessToken}` },
+  async fetchCandidatesPaginated(
+    accessToken: string,
+    cursor?: string | null
+  ): Promise<CandidatePage> {
+    const query = `
+      query GetApplications($after: String, $first: Int) {
+        applicationVersions(after: $after, first: $first) {
+          totalCount
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+          edges {
+            node {
+              id
+              status
+              candidate {
+                name {
+                  first
+                  last
+                }
+                email
+                phoneNumber
+                resumeUrl
+              }
+              job {
+                title
+                location {
+                  city
+                  region
+                }
+              }
+              createdAt
+            }
+          }
+        }
+      }
+    `;
+
+    const variables: Record<string, unknown> = { first: PAGE_SIZE };
+    if (cursor) variables.after = cursor;
+
+    const res = await fetchWithRetry(INDEED_GRAPHQL_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ query, variables }),
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(`Indeed API ${res.status}: ${text.slice(0, 200)}`);
+    }
 
-    // Token is valid but we don't have Employer API access yet — return empty
-    // to trigger mock fallback. When Partner access is granted, implement
-    // actual candidate fetching here.
-    return [];
+    const json = await res.json();
+
+    if (json.errors?.length) {
+      throw new Error(`Indeed GraphQL error: ${json.errors[0].message}`);
+    }
+
+    const appVersions = json.data?.applicationVersions;
+    if (!appVersions) {
+      throw new Error("Unexpected Indeed API response shape");
+    }
+
+    const candidates: MockCandidate[] = (appVersions.edges ?? [])
+      .map((edge: IndeedEdge) => mapIndeedNode(edge.node))
+      .filter((c: MockCandidate | null): c is MockCandidate => c !== null);
+
+    return {
+      candidates,
+      nextCursor: appVersions.pageInfo?.hasNextPage
+        ? appVersions.pageInfo.endCursor
+        : null,
+      totalEstimate: appVersions.totalCount ?? 0,
+    };
   }
 
   private getMockCandidates(): MockCandidate[] {
@@ -101,4 +169,76 @@ export class IndeedClient implements PlatformClient {
       },
     ];
   }
+}
+
+// --- Helpers ---
+
+type IndeedEdge = {
+  node: {
+    id: string;
+    status?: string;
+    candidate?: {
+      name?: { first?: string; last?: string };
+      email?: string;
+      phoneNumber?: string;
+      resumeUrl?: string;
+    };
+    job?: {
+      title?: string;
+      location?: { city?: string; region?: string };
+    };
+    createdAt?: string;
+  };
+};
+
+function mapIndeedNode(node: IndeedEdge["node"]): MockCandidate | null {
+  const c = node.candidate;
+  if (!c?.email) return null;
+
+  const firstName = c.name?.first ?? "";
+  const lastName = c.name?.last ?? "";
+  if (!firstName && !lastName) return null;
+
+  const jobTitle = node.job?.title ?? "";
+  const location = [node.job?.location?.city, node.job?.location?.region]
+    .filter(Boolean)
+    .join(", ");
+
+  const notes = [
+    "Applied via Indeed",
+    node.status ? `Status: ${node.status}` : "",
+    location ? `Location: ${location}` : "",
+    node.createdAt ? `Applied: ${node.createdAt.slice(0, 10)}` : "",
+  ]
+    .filter(Boolean)
+    .join(". ");
+
+  return {
+    firstName,
+    lastName,
+    email: c.email,
+    phone: c.phoneNumber ?? undefined,
+    skills: jobTitle ? [jobTitle] : [],
+    experience: jobTitle || undefined,
+    notes: notes || undefined,
+    source: "Indeed",
+  };
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function fetchWithRetry(
+  url: string,
+  init: RequestInit,
+  retries = 1
+): Promise<Response> {
+  const res = await fetch(url, init);
+  if (res.status === 429 && retries > 0) {
+    const retryAfter = parseInt(res.headers.get("Retry-After") ?? "2", 10);
+    await delay(retryAfter * 1000);
+    return fetchWithRetry(url, init, retries - 1);
+  }
+  return res;
 }

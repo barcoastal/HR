@@ -2,10 +2,10 @@
 
 import { cn, timeAgo } from "@/lib/utils";
 import { RefreshCw, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { syncCandidatesFromPlatform } from "@/lib/actions/platform-sync";
 import { useRouter } from "next/navigation";
+import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 
 type SyncablePlatform = {
   id: string;
@@ -37,27 +37,80 @@ const STATUS_COLORS: Record<string, string> = {
 
 export function PlatformSyncPanel({ platforms }: Props) {
   const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [progress, setProgress] = useState<SyncProgressEvent | null>(null);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [resultPlatformName, setResultPlatformName] = useState("");
+  const eventSourceRef = useRef<EventSource | null>(null);
   const router = useRouter();
 
   const connected = platforms.filter((p) => p.isConnected);
+
+  useEffect(() => {
+    return () => {
+      eventSourceRef.current?.close();
+    };
+  }, []);
+
   if (connected.length === 0) return null;
 
-  async function handleSync(platform: SyncablePlatform) {
+  function handleSync(platform: SyncablePlatform) {
     setSyncingId(platform.id);
-    const res = await syncCandidatesFromPlatform(platform.id);
-    setSyncingId(null);
+    setProgress(null);
     setResultPlatformName(platform.name);
-    setResult(res);
-    if (res.success) {
-      router.refresh();
-    }
+
+    const es = new EventSource(
+      `/api/platforms/sync-stream?platformId=${encodeURIComponent(platform.id)}`
+    );
+    eventSourceRef.current = es;
+
+    es.onmessage = (event) => {
+      const data: SyncProgressEvent = JSON.parse(event.data);
+      setProgress(data);
+
+      if (data.type === "complete") {
+        es.close();
+        eventSourceRef.current = null;
+        setSyncingId(null);
+        setResult({
+          success: true,
+          candidatesFound: data.fetched,
+          candidatesCreated: data.created,
+          skippedEmails: Array(data.skipped).fill(""),
+          error: undefined,
+        });
+        router.refresh();
+      } else if (data.type === "error") {
+        es.close();
+        eventSourceRef.current = null;
+        setSyncingId(null);
+        setResult({
+          success: false,
+          candidatesFound: data.fetched,
+          candidatesCreated: data.created,
+          skippedEmails: [],
+          error: data.detail ?? "Sync failed",
+        });
+      }
+    };
+
+    es.onerror = () => {
+      es.close();
+      eventSourceRef.current = null;
+      setSyncingId(null);
+      setResult({
+        success: false,
+        candidatesFound: 0,
+        candidatesCreated: 0,
+        skippedEmails: [],
+        error: "Connection lost during sync",
+      });
+    };
   }
 
   function closeResult() {
     setResult(null);
     setResultPlatformName("");
+    setProgress(null);
   }
 
   return (
@@ -95,6 +148,29 @@ export function PlatformSyncPanel({ platforms }: Props) {
                   {p.totalSynced} candidate{p.totalSynced !== 1 ? "s" : ""} imported
                 </p>
               </div>
+
+              {/* Progress bar during sync */}
+              {isSyncing && progress && (
+                <div className="mb-3 space-y-1.5">
+                  <div className="w-full h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-[var(--color-accent)] rounded-full transition-all duration-300"
+                      style={{
+                        width: progress.total > 0
+                          ? `${Math.min(100, (progress.fetched / progress.total) * 100)}%`
+                          : "100%",
+                      }}
+                    />
+                  </div>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">
+                    Page {progress.page}
+                    {progress.total > 0 ? ` — ${progress.fetched}/${progress.total}` : ""}
+                    {" | "}
+                    {progress.created} new, {progress.skipped} skipped
+                  </p>
+                </div>
+              )}
+
               <button
                 onClick={() => handleSync(p)}
                 disabled={isSyncing || !!syncingId}
