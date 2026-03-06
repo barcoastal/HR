@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { pullCandidateToRecruitment } from "@/lib/actions/candidates";
@@ -15,11 +15,17 @@ type CandidateItem = {
   lastName: string;
   email: string;
   phone: string | null;
+  linkedinUrl: string | null;
+  skills: string | null;
+  experience: string | null;
   source: string | null;
+  notes: string | null;
   resumeUrl: string | null;
   resumeText: string | null;
   inPipeline: boolean;
   status: CandidateStatus;
+  positionId: string | null;
+  position: { title: string } | null;
   createdAt: Date;
 };
 
@@ -29,6 +35,11 @@ type Props = {
   candidates: CandidateItem[];
   positions: Position[];
 };
+
+function parseSkills(skills: string | null): string[] {
+  if (!skills) return [];
+  try { return JSON.parse(skills); } catch { return skills.split(",").map((s) => s.trim()).filter(Boolean); }
+}
 
 export function CandidateDatabase({ candidates, positions }: Props) {
   const router = useRouter();
@@ -56,7 +67,10 @@ export function CandidateDatabase({ candidates, positions }: Props) {
         const match =
           c.firstName.toLowerCase().includes(q) ||
           c.lastName.toLowerCase().includes(q) ||
-          c.email.toLowerCase().includes(q);
+          c.email.toLowerCase().includes(q) ||
+          (c.skills && c.skills.toLowerCase().includes(q)) ||
+          (c.experience && c.experience.toLowerCase().includes(q)) ||
+          (c.resumeText && c.resumeText.toLowerCase().includes(q));
         if (!match) return false;
       }
       return true;
@@ -96,7 +110,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder="Search by name, email, skills, or resume content..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(inputClass, "w-full pl-9")}
@@ -130,27 +144,22 @@ export function CandidateDatabase({ candidates, positions }: Props) {
           <tbody>
             {filtered.map((c) => {
               const isExpanded = expandedId === c.id;
-              const hasResume = !!(c.resumeText || c.resumeUrl);
+              const skills = parseSkills(c.skills);
               return (
                 <React.Fragment key={c.id}>
                   <tr
                     className={cn(
-                      "border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/30 transition-colors",
-                      hasResume && "cursor-pointer",
+                      "border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/30 transition-colors cursor-pointer",
                       isExpanded && "bg-[var(--color-border)]/20"
                     )}
-                    onClick={() => hasResume && setExpandedId(isExpanded ? null : c.id)}
+                    onClick={() => setExpandedId(isExpanded ? null : c.id)}
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {hasResume ? (
-                          isExpanded ? (
-                            <ChevronUp className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
-                          ) : (
-                            <ChevronDown className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
-                          )
+                        {isExpanded ? (
+                          <ChevronUp className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
                         ) : (
-                          <div className="w-3.5 shrink-0" />
+                          <ChevronDown className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
                         )}
                         <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
                           <FileText className="h-3.5 w-3.5 text-blue-400" />
@@ -228,33 +237,96 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                       )}
                     </td>
                   </tr>
-                  {isExpanded && hasResume && (
+                  {isExpanded && (
                     <tr className="border-b border-[var(--color-border)]">
-                      <td colSpan={7} className="px-4 py-4 bg-[var(--color-background)]">
-                        {c.resumeUrl && (
-                          <div className="mb-3">
-                            <a
-                              href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={cn(
-                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                      <td colSpan={7} className="px-6 py-4 bg-[var(--color-background)]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Left: Contact & Details */}
+                          <div className="space-y-3">
+                            <div className="space-y-1.5 text-xs text-[var(--color-text-muted)]">
+                              <div className="flex items-center gap-2">
+                                <Mail className="h-3.5 w-3.5 shrink-0" />
+                                <span>{c.email}</span>
+                              </div>
+                              {c.phone && (
+                                <div className="flex items-center gap-2">
+                                  <Phone className="h-3.5 w-3.5 shrink-0" />
+                                  <span>{c.phone}</span>
+                                </div>
                               )}
-                            >
-                              <Download className="h-3.5 w-3.5" />
-                              Download Resume PDF
-                            </a>
+                              {c.linkedinUrl && (
+                                <div className="flex items-center gap-2">
+                                  <Linkedin className="h-3.5 w-3.5 shrink-0" />
+                                  <a
+                                    href={c.linkedinUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[var(--color-accent)] hover:underline truncate"
+                                  >
+                                    {c.linkedinUrl}
+                                  </a>
+                                </div>
+                              )}
+                              {c.experience && (
+                                <div className="flex items-center gap-2">
+                                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                  <span>{c.experience}</span>
+                                </div>
+                              )}
+                              {c.position && (
+                                <div className="flex items-center gap-2">
+                                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                  <span>Position: {c.position.title}</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {skills.length > 0 && (
+                              <div>
+                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Skills</p>
+                                <div className="flex flex-wrap gap-1">
+                                  {skills.map((s) => (
+                                    <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{s}</span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {c.notes && (
+                              <div>
+                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1">Notes</p>
+                                <p className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap">{c.notes}</p>
+                              </div>
+                            )}
+
+                            {c.resumeUrl && (
+                              <a
+                                href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className={cn(
+                                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                                  "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                                )}
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                                Download Resume PDF
+                              </a>
+                            )}
                           </div>
-                        )}
-                        {c.resumeText && (
-                          <div className="max-h-64 overflow-y-auto">
-                            <p className="text-xs font-medium text-[var(--color-text-primary)] mb-2">Resume Content</p>
-                            <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
-                              {c.resumeText}
-                            </pre>
-                          </div>
-                        )}
+
+                          {/* Right: Resume Text */}
+                          {c.resumeText && (
+                            <div>
+                              <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Resume Content</p>
+                              <div className="max-h-48 overflow-y-auto rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] p-3">
+                                <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
+                                  {c.resumeText}
+                                </pre>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )}
