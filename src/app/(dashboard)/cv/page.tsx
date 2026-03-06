@@ -3,19 +3,23 @@ import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { getCandidates, getPositions } from "@/lib/actions/candidates";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
-import { Briefcase, Users, Target } from "lucide-react";
+import { db } from "@/lib/db";
+import { Briefcase, Users, Target, FileText } from "lucide-react";
+import Link from "next/link";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
+import { JobingJobsPanel } from "@/components/cv/jobing-jobs-panel";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [candidates, positions, recruitmentPlatforms, syncablePlatforms] = await Promise.all([
+  const [candidates, positions, recruitmentPlatforms, syncablePlatforms, resumeCount] = await Promise.all([
     getCandidates(),
     getPositions(),
     getRecruitmentPlatforms(),
     getSyncablePlatforms(),
+    db.candidate.count({ where: { resumeUrl: { not: null } } }),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
@@ -38,7 +42,7 @@ export default async function CVPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
         <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -72,10 +76,24 @@ export default async function CVPage() {
             </div>
           </div>
         </div>
+        <Link href="/cv/resumes" className={cn("rounded-xl p-5 group", "bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-orange-500/30 transition-colors")}>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
+              <FileText className="h-5 w-5 text-orange-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{resumeCount}</p>
+              <p className="text-sm text-[var(--color-text-muted)] group-hover:text-orange-400 transition-colors">Resumes</p>
+            </div>
+          </div>
+        </Link>
       </div>
 
       {/* Platform Sync */}
       <PlatformSyncPanel platforms={syncablePlatforms} />
+
+      {/* Jobing Jobs */}
+      <JobingJobsPanel />
 
       {/* Search */}
       <SearchCandidates />

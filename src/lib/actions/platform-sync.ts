@@ -257,6 +257,7 @@ export async function syncCandidatesFromPlatform(
         source: mc.source,
         linkedinUrl: mc.linkedinUrl,
         notes: mc.notes,
+        resumeUrl: mc.resumeUrl,
       });
       created++;
     }
@@ -304,7 +305,27 @@ export async function syncCandidatesFromPlatform(
   }
 }
 
+export async function ensureJobingPlatform() {
+  const apiKey = process.env.NOLIG_API_KEY;
+  if (!apiKey) return;
+
+  const existing = await db.recruitmentPlatform.findUnique({ where: { name: "Jobing" } });
+  if (existing) return;
+
+  await db.recruitmentPlatform.create({
+    data: {
+      name: "Jobing",
+      type: "JOB_BOARD",
+      monthlyCost: 0,
+      status: "ACTIVE",
+      apiKey,
+      connectedAt: new Date(),
+    },
+  });
+}
+
 export async function getSyncablePlatforms() {
+  await ensureJobingPlatform();
   const platforms = await db.recruitmentPlatform.findMany({
     include: {
       syncLogs: {

@@ -8,6 +8,8 @@ export type MockCandidate = {
   experience?: string;
   notes?: string;
   source: string;
+  resumeUrl?: string;
+  appliedAt?: string;
 };
 
 export type CandidatePage = {

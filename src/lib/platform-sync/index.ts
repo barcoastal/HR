@@ -3,12 +3,14 @@ import { LinkedInRecruiterClient } from "./clients/linkedin";
 import { IndeedClient } from "./clients/indeed";
 import { HandshakeClient } from "./clients/handshake";
 import { EmployFLClient } from "./clients/employfl";
+import { JobingClient } from "./clients/jobing";
 
 const CLIENT_REGISTRY: Record<string, () => PlatformClient> = {
   "LinkedIn Recruiter": () => new LinkedInRecruiterClient(),
   Indeed: () => new IndeedClient(),
   Handshake: () => new HandshakeClient(),
   EmployFL: () => new EmployFLClient(),
+  Jobing: () => new JobingClient(),
 };
 
 export function getPlatformClient(platformName: string): PlatformClient | null {
@@ -71,6 +73,19 @@ export const SUPPORTED_PLATFORMS = [
     bgLight: "bg-emerald-50",
     permissions: ["Access employer account", "View candidate pool", "Export candidate data"],
     oauthProviderId: "employfl",
+    hasRealOAuth: false,
+  },
+  {
+    name: "Jobing",
+    description: "Import applicants from Jobing/NOLIG job board",
+    type: "JOB_BOARD" as const,
+    monthlyCost: 0,
+    keyPrefix: "jobing-",
+    color: "bg-orange-500",
+    textColor: "text-orange-500",
+    bgLight: "bg-orange-50",
+    permissions: ["Access applicant data", "View job listings", "Download resumes"],
+    oauthProviderId: "jobing",
     hasRealOAuth: false,
   },
 ];

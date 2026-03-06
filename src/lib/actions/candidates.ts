@@ -44,6 +44,7 @@ export async function createCandidate(data: {
   linkedinUrl?: string;
   costOfHire?: number;
   notes?: string;
+  resumeUrl?: string;
 }) {
   const { skills, ...rest } = data;
   const candidate = await db.candidate.create({
@@ -82,6 +83,133 @@ export async function searchCandidates(query: string) {
     orderBy: { createdAt: "desc" },
   });
   return candidates;
+}
+
+export async function advancedSearchCandidates(params: {
+  query?: string;
+  status?: string;
+  source?: string;
+  positionId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}) {
+  const where: Record<string, unknown> = {};
+  const andConditions: Record<string, unknown>[] = [];
+
+  if (params.query) {
+    andConditions.push({
+      OR: [
+        { firstName: { contains: params.query, mode: "insensitive" } },
+        { lastName: { contains: params.query, mode: "insensitive" } },
+        { email: { contains: params.query, mode: "insensitive" } },
+        { resumeText: { contains: params.query, mode: "insensitive" } },
+        { skills: { contains: params.query, mode: "insensitive" } },
+        { experience: { contains: params.query, mode: "insensitive" } },
+        { notes: { contains: params.query, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (params.status) {
+    andConditions.push({ status: params.status });
+  }
+
+  if (params.source) {
+    andConditions.push({ source: params.source });
+  }
+
+  if (params.positionId) {
+    andConditions.push({ positionId: params.positionId });
+  }
+
+  if (params.dateFrom) {
+    andConditions.push({ createdAt: { gte: new Date(params.dateFrom) } });
+  }
+
+  if (params.dateTo) {
+    andConditions.push({ createdAt: { lte: new Date(params.dateTo) } });
+  }
+
+  if (andConditions.length > 0) {
+    where.AND = andConditions;
+  }
+
+  const candidates = await db.candidate.findMany({
+    where,
+    include: { position: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  return candidates;
+}
+
+export async function bulkImportCandidates(
+  candidates: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone?: string;
+    skills?: string;
+    experience?: string;
+    source?: string;
+    linkedinUrl?: string;
+    notes?: string;
+  }[]
+): Promise<{ created: number; skipped: string[]; errors: string[] }> {
+  let created = 0;
+  const skipped: string[] = [];
+  const errors: string[] = [];
+
+  for (const candidate of candidates) {
+    try {
+      const existing = await db.candidate.findUnique({
+        where: { email: candidate.email },
+      });
+
+      if (existing) {
+        skipped.push(candidate.email);
+        continue;
+      }
+
+      const skillsArray = candidate.skills
+        ? candidate.skills.split(",").map((s) => s.trim()).filter(Boolean)
+        : [];
+
+      await db.candidate.create({
+        data: {
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          email: candidate.email,
+          phone: candidate.phone,
+          skills: JSON.stringify(skillsArray),
+          experience: candidate.experience,
+          source: candidate.source,
+          linkedinUrl: candidate.linkedinUrl,
+          notes: candidate.notes,
+        },
+      });
+
+      created++;
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Unknown error";
+      errors.push(`Failed to import ${candidate.email}: ${message}`);
+    }
+  }
+
+  revalidatePath("/cv");
+
+  return { created, skipped, errors };
+}
+
+export async function getDistinctSources(): Promise<string[]> {
+  const results = await db.candidate.findMany({
+    where: { source: { not: null } },
+    select: { source: true },
+    distinct: ["source"],
+  });
+
+  return results.map((r) => r.source).filter((s): s is string => s !== null);
 }
 
 export async function updateCandidate(
