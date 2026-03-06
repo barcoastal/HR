@@ -122,6 +122,7 @@ export function CVTabs({
               source: c.source,
               notes: c.notes,
               resumeText: c.resumeText,
+              resumeUrl: c.resumeUrl,
               status: c.status,
               positionId: c.positionId,
               costOfHire: c.costOfHire,

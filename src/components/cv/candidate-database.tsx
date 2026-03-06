@@ -178,23 +178,35 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                       {formatDate(c.createdAt)}
                     </td>
                     <td className="px-4 py-3">
-                      {c.resumeUrl ? (
-                        <a
-                          href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className={cn(
+                      <div className="flex items-center gap-1.5">
+                        {c.resumeUrl && (
+                          <a
+                            href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className={cn(
+                              "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
+                              "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                            )}
+                          >
+                            <Download className="h-3 w-3" />
+                            PDF
+                          </a>
+                        )}
+                        {c.resumeText && (
+                          <span className={cn(
                             "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
-                            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
-                          )}
-                        >
-                          <Download className="h-3 w-3" />
-                          PDF
-                        </a>
-                      ) : (
-                        <span className="text-xs text-[var(--color-text-muted)]">—</span>
-                      )}
+                            "bg-purple-500/10 text-purple-400"
+                          )}>
+                            <FileText className="h-3 w-3" />
+                            Text
+                          </span>
+                        )}
+                        {!c.resumeUrl && !c.resumeText && (
+                          <span className="text-xs text-[var(--color-text-muted)]">—</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-right">
                       {c.inPipeline ? (
@@ -216,15 +228,33 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                       )}
                     </td>
                   </tr>
-                  {isExpanded && c.resumeText && (
+                  {isExpanded && hasResume && (
                     <tr className="border-b border-[var(--color-border)]">
                       <td colSpan={7} className="px-4 py-4 bg-[var(--color-background)]">
-                        <div className="max-h-64 overflow-y-auto">
-                          <p className="text-xs font-medium text-[var(--color-text-primary)] mb-2">Resume</p>
-                          <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
-                            {c.resumeText}
-                          </pre>
-                        </div>
+                        {c.resumeUrl && (
+                          <div className="mb-3">
+                            <a
+                              href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={cn(
+                                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                              )}
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                              Download Resume PDF
+                            </a>
+                          </div>
+                        )}
+                        {c.resumeText && (
+                          <div className="max-h-64 overflow-y-auto">
+                            <p className="text-xs font-medium text-[var(--color-text-primary)] mb-2">Resume Content</p>
+                            <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
+                              {c.resumeText}
+                            </pre>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   )}

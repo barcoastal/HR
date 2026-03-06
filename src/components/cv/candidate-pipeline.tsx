@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
-import { Mail, Phone, Linkedin, Briefcase } from "lucide-react";
+import { Mail, Phone, Linkedin, Briefcase, FileText, Download } from "lucide-react";
 
 type CandidateItem = {
   id: string;
@@ -20,6 +20,7 @@ type CandidateItem = {
   source: string | null;
   notes: string | null;
   resumeText: string | null;
+  resumeUrl: string | null;
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
@@ -144,6 +145,31 @@ export function CandidatePipeline({ candidates, positions }: { candidates: Candi
                           </div>
                         )}
                       </div>
+                      {(candidate.resumeUrl || candidate.resumeText) && (
+                        <div className="flex items-center gap-1.5 mb-2">
+                          {candidate.resumeUrl && (
+                            <a
+                              href={`/api/platforms/jobing/resume?url=${encodeURIComponent(candidate.resumeUrl)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className={cn(
+                                "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium",
+                                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                              )}
+                            >
+                              <Download className="h-2.5 w-2.5" />
+                              Resume PDF
+                            </a>
+                          )}
+                          {candidate.resumeText && !candidate.resumeUrl && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">
+                              <FileText className="h-2.5 w-2.5" />
+                              Resume
+                            </span>
+                          )}
+                        </div>
+                      )}
                       {candidate.notes && (
                         <p className="text-[10px] text-[var(--color-text-muted)] mb-2 line-clamp-2 italic">
                           {candidate.notes}
