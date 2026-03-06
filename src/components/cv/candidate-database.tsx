@@ -25,6 +25,7 @@ type CandidateItem = {
   inPipeline: boolean;
   status: CandidateStatus;
   positionId: string | null;
+  jobAppliedTo: string | null;
   position: { title: string } | null;
   createdAt: Date;
 };
@@ -161,6 +162,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
           c.email.toLowerCase().includes(q) ||
           (c.skills && c.skills.toLowerCase().includes(q)) ||
           (c.experience && c.experience.toLowerCase().includes(q)) ||
+          (c.jobAppliedTo && c.jobAppliedTo.toLowerCase().includes(q)) ||
           (c.resumeText && c.resumeText.toLowerCase().includes(q));
         if (!match) return false;
       }
@@ -227,6 +229,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Email</th>
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Phone</th>
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Source</th>
+              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Job Applied</th>
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Date</th>
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Resume</th>
               <th className="text-right text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Action</th>
@@ -273,6 +276,9 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                           {c.source}
                         </span>
                       )}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)] max-w-[160px] truncate">
+                      {c.jobAppliedTo || "\u2014"}
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">
                       {formatDate(c.createdAt)}
@@ -330,7 +336,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                   </tr>
                   {isExpanded && (
                     <tr className="border-b border-[var(--color-border)]">
-                      <td colSpan={7} className="px-6 py-5 bg-[var(--color-background)]">
+                      <td colSpan={8} className="px-6 py-5 bg-[var(--color-background)]">
                         <div className="space-y-5">
                           {/* Contact & Skills */}
                           <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-[var(--color-text-muted)]">
@@ -362,6 +368,12 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                               <div className="flex items-center gap-2">
                                 <Briefcase className="h-3.5 w-3.5 shrink-0" />
                                 <span>Position: {c.position.title}</span>
+                              </div>
+                            )}
+                            {c.jobAppliedTo && (
+                              <div className="flex items-center gap-2">
+                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <span className="font-medium text-[var(--color-text-primary)]">Applied for: {c.jobAppliedTo}</span>
                               </div>
                             )}
                           </div>
@@ -404,7 +416,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
             })}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">
+                <td colSpan={8} className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">
                   No candidates found matching your filters
                 </td>
               </tr>

@@ -36,12 +36,21 @@ export async function* syncCandidatesStreaming(
     let skipped = 0;
     for (const mc of candidates) {
       const existing = await db.candidate.findUnique({ where: { email: mc.email } });
-      if (existing) { skipped++; continue; }
+      if (existing) {
+        const updates: Record<string, unknown> = {};
+        if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
+        if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
+        if (!existing.experience && mc.experience) updates.experience = mc.experience;
+        if (Object.keys(updates).length > 0) {
+          await db.candidate.update({ where: { id: existing.id }, data: updates });
+        }
+        skipped++; continue;
+      }
       await createCandidate({
         firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
         phone: mc.phone, skills: mc.skills, experience: mc.experience,
         source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-        resumeUrl: mc.resumeUrl, inPipeline: false,
+        resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
       });
       created++;
     }
@@ -71,13 +80,22 @@ export async function* syncCandidatesStreaming(
         seenEmails.add(mc.email);
 
         const existing = await db.candidate.findUnique({ where: { email: mc.email } });
-        if (existing) { totalSkipped++; continue; }
+        if (existing) {
+          const updates: Record<string, unknown> = {};
+          if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
+          if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
+          if (!existing.experience && mc.experience) updates.experience = mc.experience;
+          if (Object.keys(updates).length > 0) {
+            await db.candidate.update({ where: { id: existing.id }, data: updates });
+          }
+          totalSkipped++; continue;
+        }
 
         await createCandidate({
           firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
           phone: mc.phone, skills: mc.skills, experience: mc.experience,
           source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-          resumeUrl: mc.resumeUrl,
+          resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
         });
         totalCreated++;
       }

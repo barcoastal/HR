@@ -45,11 +45,8 @@ export async function GET(request: NextRequest) {
     const headers: Record<string, string> = {
       "Content-Type": contentType,
     };
-    if (contentDisposition) {
-      headers["Content-Disposition"] = contentDisposition;
-    } else {
-      headers["Content-Disposition"] = "attachment; filename=resume.pdf";
-    }
+    // Use inline disposition so PDFs can be viewed in iframe
+    headers["Content-Disposition"] = "inline; filename=resume.pdf";
 
     return new NextResponse(body, { headers });
   } catch (err) {

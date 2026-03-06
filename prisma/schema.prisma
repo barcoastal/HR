@@ -423,6 +423,7 @@ model Candidate {
   inPipeline    Boolean         @default(false)
   source        String?
   notes         String?
+  jobAppliedTo  String?
   costOfHire    Float?
   appliedAt     DateTime        @default(now())
   hiredAt       DateTime?

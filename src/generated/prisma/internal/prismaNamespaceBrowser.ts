@@ -336,6 +336,7 @@ export const CandidateScalarFieldEnum = {
   inPipeline: 'inPipeline',
   source: 'source',
   notes: 'notes',
+  jobAppliedTo: 'jobAppliedTo',
   costOfHire: 'costOfHire',
   appliedAt: 'appliedAt',
   hiredAt: 'hiredAt',

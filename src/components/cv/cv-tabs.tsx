@@ -24,6 +24,7 @@ type CandidateItem = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  jobAppliedTo: string | null;
   inPipeline: boolean;
   position: { title: string } | null;
   resumeUrl: string | null;

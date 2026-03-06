@@ -49,6 +49,7 @@ export type CandidateMinAggregateOutputType = {
   inPipeline: boolean | null
   source: string | null
   notes: string | null
+  jobAppliedTo: string | null
   costOfHire: number | null
   appliedAt: Date | null
   hiredAt: Date | null
@@ -73,6 +74,7 @@ export type CandidateMaxAggregateOutputType = {
   inPipeline: boolean | null
   source: string | null
   notes: string | null
+  jobAppliedTo: string | null
   costOfHire: number | null
   appliedAt: Date | null
   hiredAt: Date | null
@@ -97,6 +99,7 @@ export type CandidateCountAggregateOutputType = {
   inPipeline: number
   source: number
   notes: number
+  jobAppliedTo: number
   costOfHire: number
   appliedAt: number
   hiredAt: number
@@ -131,6 +134,7 @@ export type CandidateMinAggregateInputType = {
   inPipeline?: true
   source?: true
   notes?: true
+  jobAppliedTo?: true
   costOfHire?: true
   appliedAt?: true
   hiredAt?: true
@@ -155,6 +159,7 @@ export type CandidateMaxAggregateInputType = {
   inPipeline?: true
   source?: true
   notes?: true
+  jobAppliedTo?: true
   costOfHire?: true
   appliedAt?: true
   hiredAt?: true
@@ -179,6 +184,7 @@ export type CandidateCountAggregateInputType = {
   inPipeline?: true
   source?: true
   notes?: true
+  jobAppliedTo?: true
   costOfHire?: true
   appliedAt?: true
   hiredAt?: true
@@ -290,6 +296,7 @@ export type CandidateGroupByOutputType = {
   inPipeline: boolean
   source: string | null
   notes: string | null
+  jobAppliedTo: string | null
   costOfHire: number | null
   appliedAt: Date
   hiredAt: Date | null
@@ -337,6 +344,7 @@ export type CandidateWhereInput = {
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -362,6 +370,7 @@ export type CandidateOrderByWithRelationInput = {
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobAppliedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -390,6 +399,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -415,6 +425,7 @@ export type CandidateOrderByWithAggregationInput = {
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobAppliedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -447,6 +458,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   inPipeline?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  jobAppliedTo?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableWithAggregatesFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
@@ -471,6 +483,7 @@ export type CandidateCreateInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -495,6 +508,7 @@ export type CandidateUncheckedCreateInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -519,6 +533,7 @@ export type CandidateUpdateInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -543,6 +558,7 @@ export type CandidateUncheckedUpdateInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -567,6 +583,7 @@ export type CandidateCreateManyInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -591,6 +608,7 @@ export type CandidateUpdateManyMutationInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -614,6 +632,7 @@ export type CandidateUncheckedUpdateManyInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -638,6 +657,7 @@ export type CandidateCountOrderByAggregateInput = {
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
@@ -666,6 +686,7 @@ export type CandidateMaxOrderByAggregateInput = {
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
@@ -690,6 +711,7 @@ export type CandidateMinOrderByAggregateInput = {
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
@@ -782,6 +804,7 @@ export type CandidateCreateWithoutPositionInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -805,6 +828,7 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -857,6 +881,7 @@ export type CandidateScalarWhereInput = {
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -881,6 +906,7 @@ export type CandidateCreateManyPositionInput = {
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
+  jobAppliedTo?: string | null
   costOfHire?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
@@ -904,6 +930,7 @@ export type CandidateUpdateWithoutPositionInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -927,6 +954,7 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -950,6 +978,7 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -975,6 +1004,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
+  jobAppliedTo?: boolean
   costOfHire?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
@@ -1000,6 +1030,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
+  jobAppliedTo?: boolean
   costOfHire?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
@@ -1025,6 +1056,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
+  jobAppliedTo?: boolean
   costOfHire?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
@@ -1050,6 +1082,7 @@ export type CandidateSelectScalar = {
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
+  jobAppliedTo?: boolean
   costOfHire?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
@@ -1059,7 +1092,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "costOfHire" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
 }
@@ -1090,6 +1123,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     inPipeline: boolean
     source: string | null
     notes: string | null
+    jobAppliedTo: string | null
     costOfHire: number | null
     appliedAt: Date
     hiredAt: Date | null
@@ -1535,6 +1569,7 @@ export interface CandidateFieldRefs {
   readonly inPipeline: Prisma.FieldRef<"Candidate", 'Boolean'>
   readonly source: Prisma.FieldRef<"Candidate", 'String'>
   readonly notes: Prisma.FieldRef<"Candidate", 'String'>
+  readonly jobAppliedTo: Prisma.FieldRef<"Candidate", 'String'>
   readonly costOfHire: Prisma.FieldRef<"Candidate", 'Float'>
   readonly appliedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly hiredAt: Prisma.FieldRef<"Candidate", 'DateTime'>

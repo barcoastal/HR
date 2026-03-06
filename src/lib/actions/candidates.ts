@@ -48,6 +48,7 @@ export async function createCandidate(data: {
   notes?: string;
   resumeUrl?: string;
   inPipeline?: boolean;
+  jobAppliedTo?: string;
 }) {
   const { skills, inPipeline = true, ...rest } = data;
   const candidate = await db.candidate.create({

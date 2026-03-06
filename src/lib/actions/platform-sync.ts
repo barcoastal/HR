@@ -243,6 +243,14 @@ export async function syncCandidatesFromPlatform(
     for (const mc of mockCandidates) {
       const existing = await db.candidate.findUnique({ where: { email: mc.email } });
       if (existing) {
+        // Update existing candidates with missing data (resume URL, job applied to)
+        const updates: Record<string, unknown> = {};
+        if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
+        if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
+        if (!existing.experience && mc.experience) updates.experience = mc.experience;
+        if (Object.keys(updates).length > 0) {
+          await db.candidate.update({ where: { id: existing.id }, data: updates });
+        }
         skipped.push(mc.email);
         continue;
       }
@@ -258,6 +266,7 @@ export async function syncCandidatesFromPlatform(
         linkedinUrl: mc.linkedinUrl,
         notes: mc.notes,
         resumeUrl: mc.resumeUrl,
+        jobAppliedTo: mc.jobAppliedTo,
         inPipeline: false,
       });
       created++;

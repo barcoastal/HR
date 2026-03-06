@@ -10,6 +10,7 @@ export type MockCandidate = {
   source: string;
   resumeUrl?: string;
   appliedAt?: string;
+  jobAppliedTo?: string;
 };
 
 export type CandidatePage = {
