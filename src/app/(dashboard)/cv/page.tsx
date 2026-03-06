@@ -1,20 +1,23 @@
 import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { getCandidates, getPositions, getAllCandidatesForDatabase } from "@/lib/actions/candidates";
+import { getDepartments } from "@/lib/actions/departments";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { Briefcase, Target } from "lucide-react";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
+import { AddPositionForm } from "@/components/cv/add-position-form";
 import { CVTabs } from "@/components/cv/cv-tabs";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms] = await Promise.all([
+  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments] = await Promise.all([
     getCandidates({ inPipeline: true }),
     getAllCandidatesForDatabase(),
     getPositions(),
     getRecruitmentPlatforms(),
     getSyncablePlatforms(),
+    getDepartments(),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
@@ -27,12 +30,15 @@ export default async function CVPage() {
           <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Recruitment</h1>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">Manage candidates, positions, and hiring pipeline</p>
         </div>
-        <AddCandidateForm
-          positions={positions.map((p) => ({ id: p.id, title: p.title }))}
-          platforms={recruitmentPlatforms
-            .filter((p) => p.status === "ACTIVE")
-            .map((p) => ({ id: p.id, name: p.name }))}
-        />
+        <div className="flex items-center gap-2">
+          <AddPositionForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+          <AddCandidateForm
+            positions={positions.map((p) => ({ id: p.id, title: p.title }))}
+            platforms={recruitmentPlatforms
+              .filter((p) => p.status === "ACTIVE")
+              .map((p) => ({ id: p.id, name: p.name }))}
+          />
+        </div>
       </div>
 
       {/* Stats */}

@@ -336,6 +336,26 @@ export async function createPosition(data: {
   return position;
 }
 
+export async function findMatchingCandidates(keywords: string[]) {
+  if (keywords.length === 0) return [];
+  const orConditions = keywords.flatMap((kw) => [
+    { skills: { contains: kw, mode: "insensitive" as const } },
+    { experience: { contains: kw, mode: "insensitive" as const } },
+    { resumeText: { contains: kw, mode: "insensitive" as const } },
+    { notes: { contains: kw, mode: "insensitive" as const } },
+  ]);
+  return db.candidate.findMany({
+    where: {
+      inPipeline: false,
+      status: { notIn: ["HIRED", "REJECTED"] },
+      OR: orConditions,
+    },
+    include: { position: true },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+}
+
 export async function getAllCandidatesForDatabase() {
   return db.candidate.findMany({
     include: { position: true },

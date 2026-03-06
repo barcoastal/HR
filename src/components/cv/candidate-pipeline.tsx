@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
+import { Mail, Phone, Linkedin, Briefcase } from "lucide-react";
 
 type CandidateItem = {
   id: string;
@@ -109,6 +110,38 @@ export function CandidatePipeline({ candidates, positions }: { candidates: Candi
                           <span className="px-1.5 py-0.5 rounded text-[10px] text-[var(--color-text-muted)]">
                             +{parseSkills(candidate.skills).length - 3}
                           </span>
+                        )}
+                      </div>
+                      <div className="space-y-1 mb-2 text-[10px] text-[var(--color-text-muted)]">
+                        <div className="flex items-center gap-1.5 truncate">
+                          <Mail className="h-3 w-3 shrink-0" />
+                          <span className="truncate">{candidate.email}</span>
+                        </div>
+                        {candidate.phone && (
+                          <div className="flex items-center gap-1.5">
+                            <Phone className="h-3 w-3 shrink-0" />
+                            <span>{candidate.phone}</span>
+                          </div>
+                        )}
+                        {candidate.experience && (
+                          <div className="flex items-center gap-1.5">
+                            <Briefcase className="h-3 w-3 shrink-0" />
+                            <span>{candidate.experience}</span>
+                          </div>
+                        )}
+                        {candidate.linkedinUrl && (
+                          <div className="flex items-center gap-1.5">
+                            <Linkedin className="h-3 w-3 shrink-0" />
+                            <a
+                              href={candidate.linkedinUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="text-[var(--color-accent)] hover:underline truncate"
+                            >
+                              LinkedIn
+                            </a>
+                          </div>
                         )}
                       </div>
                       {candidate.notes && (
