@@ -101,34 +101,93 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
   );
 }
 
-function ResumeViewer({ resumeUrl }: { resumeUrl: string }) {
+function ResumeViewer({ resumeUrl, candidateName }: { resumeUrl: string; candidateName: string }) {
   const pdfSrc = `/api/platforms/jobing/resume?url=${encodeURIComponent(resumeUrl)}`;
+  const [loadError, setLoadError] = useState(false);
+
+  // Extract applicant ID from Jobing resume URL for a direct link
+  // URL format: https://pro.jobing.com/api/jobs/{jobId}/applicants/{applicantId}/resume?company=...
+  const jobingMatch = resumeUrl.match(/jobs\/(\d+)\/applicants\/(\d+)/);
+  const jobingLink = jobingMatch
+    ? `https://pro.jobing.com/applicants/${jobingMatch[2]}`
+    : null;
 
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
         <FileText className="h-3.5 w-3.5 text-[var(--color-accent)]" />
-        <p className="text-xs font-semibold text-[var(--color-text-primary)]">Resume PDF</p>
-        <a
-          href={pdfSrc}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className={cn(
-            "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium ml-auto",
-            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+        <p className="text-xs font-semibold text-[var(--color-text-primary)]">Resume</p>
+        <div className="flex items-center gap-2 ml-auto">
+          {jobingLink && (
+            <a
+              href={jobingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className={cn(
+                "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium",
+                "bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 transition-colors"
+              )}
+            >
+              <ArrowUpRight className="h-3 w-3" />
+              View on Jobing
+            </a>
           )}
-        >
-          <Download className="h-3 w-3" />
-          Download
-        </a>
+          <a
+            href={pdfSrc}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className={cn(
+              "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium",
+              "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+            )}
+          >
+            <Download className="h-3 w-3" />
+            Download PDF
+          </a>
+        </div>
       </div>
-      <iframe
-        src={pdfSrc}
-        className="w-full rounded-lg border-2 border-[var(--color-border)]"
-        style={{ height: "600px" }}
-        title="Resume PDF"
-      />
+      {loadError ? (
+        <div className="rounded-lg border-2 border-dashed border-[var(--color-border)] p-6 text-center">
+          <FileText className="h-8 w-8 text-[var(--color-text-muted)] mx-auto mb-2" />
+          <p className="text-sm text-[var(--color-text-muted)]">
+            Resume PDF could not be loaded from Jobing API.
+          </p>
+          {jobingLink && (
+            <a
+              href={jobingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 mt-2 text-sm text-orange-400 hover:underline"
+            >
+              <ArrowUpRight className="h-3.5 w-3.5" />
+              View {candidateName}&apos;s resume on Jobing
+            </a>
+          )}
+        </div>
+      ) : (
+        <iframe
+          src={pdfSrc}
+          className="w-full rounded-lg border-2 border-[var(--color-border)]"
+          style={{ height: "600px" }}
+          title="Resume PDF"
+          onError={() => setLoadError(true)}
+          onLoad={(e) => {
+            // Check if iframe loaded an error page (non-PDF)
+            try {
+              const iframe = e.target as HTMLIFrameElement;
+              const contentType = iframe.contentDocument?.contentType;
+              if (contentType && !contentType.includes("pdf")) {
+                setLoadError(true);
+              }
+            } catch {
+              // Cross-origin — can't check, assume it might work
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -391,7 +450,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
 
                           {/* PDF Resume Viewer — auto-shown */}
                           {c.resumeUrl ? (
-                            <ResumeViewer resumeUrl={c.resumeUrl} />
+                            <ResumeViewer resumeUrl={c.resumeUrl} candidateName={`${c.firstName} ${c.lastName}`} />
                           ) : (
                             <p className="text-xs text-[var(--color-text-muted)] italic">No resume PDF available for this candidate.</p>
                           )}

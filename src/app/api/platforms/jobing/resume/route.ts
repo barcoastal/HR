@@ -32,14 +32,14 @@ export async function GET(request: NextRequest) {
     });
 
     if (!res.ok) {
+      // Jobing API resume endpoint may return 500 — return clear error
       return NextResponse.json(
-        { error: `Failed to fetch resume: ${res.status}` },
-        { status: res.status }
+        { error: `Jobing resume endpoint returned ${res.status}. View the resume directly on pro.jobing.com.` },
+        { status: 502 }
       );
     }
 
     const contentType = res.headers.get("content-type") || "application/octet-stream";
-    const contentDisposition = res.headers.get("content-disposition");
     const body = await res.arrayBuffer();
 
     const headers: Record<string, string> = {
