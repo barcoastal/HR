@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase, Save, Loader2, Eye, EyeOff } from "lucide-react";
+import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase, Save, Loader2, Pencil } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { pullCandidateToRecruitment, updateCandidateNotes } from "@/lib/actions/candidates";
@@ -56,41 +56,44 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-1.5">
-        <p className="text-xs font-medium text-[var(--color-text-primary)]">Notes</p>
+    <div className="rounded-lg border-2 border-dashed border-[var(--color-border)] p-3 bg-[var(--color-surface)]">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1.5">
+          <Pencil className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+          <p className="text-xs font-semibold text-[var(--color-text-primary)]">Notes</p>
+        </div>
         <div className="flex items-center gap-2">
           {saved && (
             <span className="text-[10px] text-emerald-400 flex items-center gap-1">
               <Check className="h-3 w-3" /> Saved
             </span>
           )}
-          {hasChanged && !saving && (
-            <button
-              onClick={handleSave}
-              className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
-                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
-              )}
-            >
-              <Save className="h-3 w-3" />
-              Save
-            </button>
-          )}
-          {saving && <Loader2 className="h-3 w-3 animate-spin text-[var(--color-accent)]" />}
+          <button
+            onClick={(e) => { e.stopPropagation(); handleSave(); }}
+            disabled={!hasChanged || saving}
+            className={cn(
+              "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium transition-colors",
+              hasChanged && !saving
+                ? "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]"
+                : "bg-[var(--color-border)] text-[var(--color-text-muted)] cursor-not-allowed"
+            )}
+          >
+            {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+            {saving ? "Saving..." : "Save Note"}
+          </button>
         </div>
       </div>
       <textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         onClick={(e) => e.stopPropagation()}
-        rows={3}
-        placeholder="Add notes about this candidate..."
+        rows={4}
+        placeholder="Write notes about this candidate here..."
         className={cn(
-          "w-full px-3 py-2 rounded-lg text-xs resize-none",
-          "bg-[var(--color-surface)] border border-[var(--color-border)]",
+          "w-full px-3 py-2 rounded-lg text-sm",
+          "bg-white dark:bg-[var(--color-background)] border-2 border-[var(--color-border)]",
           "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
-          "focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+          "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
         )}
       />
     </div>
@@ -98,30 +101,20 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
 }
 
 function ResumeViewer({ resumeUrl }: { resumeUrl: string }) {
-  const [showPdf, setShowPdf] = useState(false);
   const pdfSrc = `/api/platforms/jobing/resume?url=${encodeURIComponent(resumeUrl)}`;
 
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <p className="text-xs font-medium text-[var(--color-text-primary)]">Resume PDF</p>
-        <button
-          onClick={(e) => { e.stopPropagation(); setShowPdf(!showPdf); }}
-          className={cn(
-            "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
-            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
-          )}
-        >
-          {showPdf ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-          {showPdf ? "Hide" : "View"}
-        </button>
+        <FileText className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+        <p className="text-xs font-semibold text-[var(--color-text-primary)]">Resume PDF</p>
         <a
           href={pdfSrc}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
           className={cn(
-            "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
+            "inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-medium ml-auto",
             "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
           )}
         >
@@ -129,14 +122,12 @@ function ResumeViewer({ resumeUrl }: { resumeUrl: string }) {
           Download
         </a>
       </div>
-      {showPdf && (
-        <iframe
-          src={pdfSrc}
-          className="w-full rounded-lg border border-[var(--color-border)]"
-          style={{ height: "500px" }}
-          title="Resume PDF"
-        />
-      )}
+      <iframe
+        src={pdfSrc}
+        className="w-full rounded-lg border-2 border-[var(--color-border)]"
+        style={{ height: "600px" }}
+        title="Resume PDF"
+      />
     </div>
   );
 }
@@ -339,80 +330,70 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                   </tr>
                   {isExpanded && (
                     <tr className="border-b border-[var(--color-border)]">
-                      <td colSpan={7} className="px-6 py-4 bg-[var(--color-background)]">
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {/* Left: Contact & Details */}
-                            <div className="space-y-3">
-                              <div className="space-y-1.5 text-xs text-[var(--color-text-muted)]">
-                                <div className="flex items-center gap-2">
-                                  <Mail className="h-3.5 w-3.5 shrink-0" />
-                                  <span>{c.email}</span>
-                                </div>
-                                {c.phone && (
-                                  <div className="flex items-center gap-2">
-                                    <Phone className="h-3.5 w-3.5 shrink-0" />
-                                    <span>{c.phone}</span>
-                                  </div>
-                                )}
-                                {c.linkedinUrl && (
-                                  <div className="flex items-center gap-2">
-                                    <Linkedin className="h-3.5 w-3.5 shrink-0" />
-                                    <a
-                                      href={c.linkedinUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-[var(--color-accent)] hover:underline truncate"
-                                    >
-                                      {c.linkedinUrl}
-                                    </a>
-                                  </div>
-                                )}
-                                {c.experience && (
-                                  <div className="flex items-center gap-2">
-                                    <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                                    <span>{c.experience}</span>
-                                  </div>
-                                )}
-                                {c.position && (
-                                  <div className="flex items-center gap-2">
-                                    <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                                    <span>Position: {c.position.title}</span>
-                                  </div>
-                                )}
-                              </div>
-
-                              {skills.length > 0 && (
-                                <div>
-                                  <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Skills</p>
-                                  <div className="flex flex-wrap gap-1">
-                                    {skills.map((s) => (
-                                      <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{s}</span>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
+                      <td colSpan={7} className="px-6 py-5 bg-[var(--color-background)]">
+                        <div className="space-y-5">
+                          {/* Contact & Skills */}
+                          <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-[var(--color-text-muted)]">
+                            <div className="flex items-center gap-2">
+                              <Mail className="h-3.5 w-3.5 shrink-0" />
+                              <span>{c.email}</span>
                             </div>
-
-                            {/* Right: Resume Text */}
-                            {c.resumeText && (
-                              <div>
-                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Resume Content</p>
-                                <div className="max-h-48 overflow-y-auto rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] p-3">
-                                  <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
-                                    {c.resumeText}
-                                  </pre>
-                                </div>
+                            {c.phone && (
+                              <div className="flex items-center gap-2">
+                                <Phone className="h-3.5 w-3.5 shrink-0" />
+                                <span>{c.phone}</span>
+                              </div>
+                            )}
+                            {c.linkedinUrl && (
+                              <div className="flex items-center gap-2">
+                                <Linkedin className="h-3.5 w-3.5 shrink-0" />
+                                <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline truncate">
+                                  LinkedIn Profile
+                                </a>
+                              </div>
+                            )}
+                            {c.experience && (
+                              <div className="flex items-center gap-2">
+                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <span>{c.experience}</span>
+                              </div>
+                            )}
+                            {c.position && (
+                              <div className="flex items-center gap-2">
+                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <span>Position: {c.position.title}</span>
                               </div>
                             )}
                           </div>
 
-                          {/* Notes Editor */}
+                          {skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {skills.map((s) => (
+                                <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{s}</span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Notes Editor — always visible */}
                           <NotesEditor candidateId={c.id} initialNotes={c.notes} />
 
-                          {/* PDF Resume Viewer */}
-                          {c.resumeUrl && (
+                          {/* PDF Resume Viewer — auto-shown */}
+                          {c.resumeUrl ? (
                             <ResumeViewer resumeUrl={c.resumeUrl} />
+                          ) : (
+                            <p className="text-xs text-[var(--color-text-muted)] italic">No resume PDF available for this candidate.</p>
+                          )}
+
+                          {/* Resume Text */}
+                          {c.resumeText && (
+                            <div>
+                              <p className="text-xs font-semibold text-[var(--color-text-primary)] mb-1.5">Parsed Resume Text</p>
+                              <div className="max-h-48 overflow-y-auto rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] p-3">
+                                <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
+                                  {c.resumeText}
+                                </pre>
+                              </div>
+                            </div>
                           )}
                         </div>
                       </td>
