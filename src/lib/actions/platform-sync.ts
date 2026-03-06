@@ -359,3 +359,63 @@ export async function getSyncablePlatforms() {
       lastSyncLog: p.syncLogs[0] || null,
     }));
 }
+
+export async function forceResyncPlatform(platformId: string): Promise<{ success: boolean; updated: number; error?: string }> {
+  const platform = await db.recruitmentPlatform.findUnique({ where: { id: platformId } });
+  if (!platform || !platform.apiKey) return { success: false, updated: 0, error: "Platform not connected" };
+
+  const client = getPlatformClient(platform.name);
+  if (!client) return { success: false, updated: 0, error: "No integration available" };
+
+  const tokenResult = await ensureValidToken(platformId);
+  if (!tokenResult.valid) return { success: false, updated: 0, error: tokenResult.error };
+
+  try {
+    const mockCandidates = await client.fetchCandidates(tokenResult.accessToken);
+    let updated = 0;
+    let created = 0;
+
+    for (const mc of mockCandidates) {
+      const existing = await db.candidate.findUnique({ where: { email: mc.email } });
+      if (existing) {
+        // Force update ALL fields from the platform
+        const data: Record<string, unknown> = {};
+        if (mc.resumeUrl) data.resumeUrl = mc.resumeUrl;
+        if (mc.jobAppliedTo) data.jobAppliedTo = mc.jobAppliedTo;
+        if (mc.experience) data.experience = mc.experience;
+        if (mc.phone && !existing.phone) data.phone = mc.phone;
+        if (Object.keys(data).length > 0) {
+          await db.candidate.update({ where: { id: existing.id }, data });
+          updated++;
+        }
+        continue;
+      }
+
+      await createCandidate({
+        firstName: mc.firstName,
+        lastName: mc.lastName,
+        email: mc.email,
+        phone: mc.phone,
+        skills: mc.skills,
+        experience: mc.experience,
+        source: mc.source,
+        linkedinUrl: mc.linkedinUrl,
+        notes: mc.notes,
+        resumeUrl: mc.resumeUrl,
+        jobAppliedTo: mc.jobAppliedTo,
+        inPipeline: false,
+      });
+      created++;
+    }
+
+    await db.recruitmentPlatform.update({
+      where: { id: platformId },
+      data: { lastSyncAt: new Date(), totalSynced: { increment: created } },
+    });
+
+    revalidatePath("/cv");
+    return { success: true, updated };
+  } catch {
+    return { success: false, updated: 0, error: "Re-sync failed" };
+  }
+}

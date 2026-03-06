@@ -1,10 +1,11 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { RefreshCw, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { RefreshCw, Loader2, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { forceResyncPlatform } from "@/lib/actions/platform-sync";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 
 type SyncablePlatform = {
@@ -38,6 +39,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 export function PlatformSyncPanel({ platforms }: Props) {
   const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [resyncingId, setResyncingId] = useState<string | null>(null);
   const [progress, setProgress] = useState<SyncProgressEvent | null>(null);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [resultPlatformName, setResultPlatformName] = useState("");
@@ -111,6 +113,22 @@ export function PlatformSyncPanel({ platforms }: Props) {
     };
   }
 
+  async function handleForceResync(platform: SyncablePlatform) {
+    setResyncingId(platform.id);
+    setResultPlatformName(platform.name);
+    const res = await forceResyncPlatform(platform.id);
+    setResyncingId(null);
+    setResult({
+      success: res.success,
+      candidatesFound: 0,
+      candidatesCreated: 0,
+      candidatesUpdated: res.updated,
+      skippedEmails: [],
+      error: res.error,
+    });
+    router.refresh();
+  }
+
   function closeResult() {
     setResult(null);
     setResultPlatformName("");
@@ -175,28 +193,52 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 </div>
               )}
 
-              <button
-                onClick={() => handleSync(p)}
-                disabled={isSyncing || !!syncingId}
-                className={cn(
-                  "w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                  "bg-[var(--color-accent)] text-white",
-                  "hover:bg-[var(--color-accent-hover)] transition-colors",
-                  "disabled:opacity-50"
-                )}
-              >
-                {isSyncing ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Syncing...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="h-3.5 w-3.5" />
-                    Sync Candidates
-                  </>
-                )}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleSync(p)}
+                  disabled={isSyncing || !!syncingId || !!resyncingId}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                    "bg-[var(--color-accent)] text-white",
+                    "hover:bg-[var(--color-accent-hover)] transition-colors",
+                    "disabled:opacity-50"
+                  )}
+                >
+                  {isSyncing ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Syncing...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Sync New
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleForceResync(p)}
+                  disabled={isSyncing || !!syncingId || !!resyncingId}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                    "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+                    "hover:bg-amber-500/20 transition-colors",
+                    "disabled:opacity-50"
+                  )}
+                >
+                  {resyncingId === p.id ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Re-syncing...
+                    </>
+                  ) : (
+                    <>
+                      <RotateCcw className="h-3.5 w-3.5" />
+                      Re-sync All
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           );
         })}
