@@ -41,7 +41,7 @@ export async function* syncCandidatesStreaming(
         firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
         phone: mc.phone, skills: mc.skills, experience: mc.experience,
         source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-        resumeUrl: mc.resumeUrl,
+        resumeUrl: mc.resumeUrl, inPipeline: false,
       });
       created++;
     }

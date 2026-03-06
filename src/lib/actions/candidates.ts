@@ -8,11 +8,13 @@ export async function getCandidates(filters?: {
   status?: CandidateStatus;
   positionId?: string;
   search?: string;
+  inPipeline?: boolean;
 }) {
   const where: Record<string, unknown> = {};
 
   if (filters?.status) where.status = filters.status;
   if (filters?.positionId) where.positionId = filters.positionId;
+  if (filters?.inPipeline !== undefined) where.inPipeline = filters.inPipeline;
   if (filters?.search) {
     where.OR = [
       { firstName: { contains: filters.search } },
@@ -45,12 +47,14 @@ export async function createCandidate(data: {
   costOfHire?: number;
   notes?: string;
   resumeUrl?: string;
+  inPipeline?: boolean;
 }) {
-  const { skills, ...rest } = data;
+  const { skills, inPipeline = true, ...rest } = data;
   const candidate = await db.candidate.create({
     data: {
       ...rest,
       skills: JSON.stringify(skills),
+      inPipeline,
     },
   });
   revalidatePath("/cv");
@@ -330,4 +334,29 @@ export async function createPosition(data: {
   const position = await db.position.create({ data });
   revalidatePath("/cv");
   return position;
+}
+
+export async function getAllCandidatesForDatabase() {
+  return db.candidate.findMany({
+    include: { position: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function pullCandidateToRecruitment(
+  candidateId: string,
+  positionId?: string
+) {
+  const data: Record<string, unknown> = {
+    inPipeline: true,
+    status: "NEW",
+  };
+  if (positionId) data.positionId = positionId;
+
+  const candidate = await db.candidate.update({
+    where: { id: candidateId },
+    data,
+  });
+  revalidatePath("/cv");
+  return candidate;
 }

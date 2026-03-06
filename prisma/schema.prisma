@@ -420,6 +420,7 @@ model Candidate {
   skills        String?
   experience    String?
   status        CandidateStatus @default(NEW)
+  inPipeline    Boolean         @default(false)
   source        String?
   notes         String?
   costOfHire    Float?

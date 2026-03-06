@@ -258,6 +258,7 @@ export async function syncCandidatesFromPlatform(
         linkedinUrl: mc.linkedinUrl,
         notes: mc.notes,
         resumeUrl: mc.resumeUrl,
+        inPipeline: false,
       });
       created++;
     }

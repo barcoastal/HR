@@ -1,30 +1,24 @@
 import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
-import { getCandidates, getPositions } from "@/lib/actions/candidates";
-import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
+import { getCandidates, getPositions, getAllCandidatesForDatabase } from "@/lib/actions/candidates";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
-import { db } from "@/lib/db";
-import { Briefcase, Users, Target, FileText } from "lucide-react";
-import Link from "next/link";
-import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
+import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
+import { Briefcase, Target } from "lucide-react";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
-import { SearchCandidates } from "@/components/cv/search-candidates";
-import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
-import { JobingJobsPanel } from "@/components/cv/jobing-jobs-panel";
+import { CVTabs } from "@/components/cv/cv-tabs";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [candidates, positions, recruitmentPlatforms, syncablePlatforms, resumeCount] = await Promise.all([
-    getCandidates(),
+  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms] = await Promise.all([
+    getCandidates({ inPipeline: true }),
+    getAllCandidatesForDatabase(),
     getPositions(),
     getRecruitmentPlatforms(),
     getSyncablePlatforms(),
-    db.candidate.count({ where: { resumeUrl: { not: null } } }),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
-  const totalCandidates = candidates.length;
-  const activeCandidates = candidates.filter((c) => !["HIRED", "REJECTED"].includes(c.status)).length;
+  const activeCandidates = pipelineCandidates.filter((c) => !["HIRED", "REJECTED"].includes(c.status)).length;
 
   return (
     <div className="max-w-full mx-auto py-8 px-4">
@@ -42,7 +36,7 @@ export default async function CVPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
@@ -51,17 +45,6 @@ export default async function CVPage() {
             <div>
               <p className="text-2xl font-bold text-[var(--color-text-primary)]">{openPositions.length}</p>
               <p className="text-sm text-[var(--color-text-muted)]">Open Positions</p>
-            </div>
-          </div>
-        </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <Users className="h-5 w-5 text-purple-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{totalCandidates}</p>
-              <p className="text-sm text-[var(--color-text-muted)]">Total Candidates</p>
             </div>
           </div>
         </div>
@@ -76,52 +59,10 @@ export default async function CVPage() {
             </div>
           </div>
         </div>
-        <Link href="/cv/resumes" className={cn("rounded-xl p-5 group", "bg-[var(--color-surface)] border border-[var(--color-border)] hover:border-orange-500/30 transition-colors")}>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-              <FileText className="h-5 w-5 text-orange-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{resumeCount}</p>
-              <p className="text-sm text-[var(--color-text-muted)] group-hover:text-orange-400 transition-colors">Resumes</p>
-            </div>
-          </div>
-        </Link>
       </div>
 
-      {/* Platform Sync */}
-      <PlatformSyncPanel platforms={syncablePlatforms} />
-
-      {/* Jobing Jobs */}
-      <JobingJobsPanel />
-
-      {/* Search */}
-      <SearchCandidates />
-
-      {/* Open Positions */}
-      {openPositions.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">Open Positions</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {openPositions.map((pos) => (
-              <div key={pos.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-                <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{pos.title}</h3>
-                <p className="text-xs text-[var(--color-text-muted)] mt-1">{pos.department?.name || "No department"}</p>
-                {pos.salary && <p className="text-xs text-[var(--color-accent)] mt-1">{pos.salary}</p>}
-                <div className="flex items-center gap-1.5 mt-2">
-                  <Users className="h-3 w-3 text-[var(--color-text-muted)]" />
-                  <span className="text-xs text-[var(--color-text-muted)]">{pos._count.candidates} candidate{pos._count.candidates !== 1 ? "s" : ""}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Pipeline */}
-      <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">Candidate Pipeline</h2>
-      <CandidatePipeline
-        candidates={candidates.map((c) => ({
+      <CVTabs
+        pipelineCandidates={pipelineCandidates.map((c) => ({
           id: c.id,
           firstName: c.firstName,
           lastName: c.lastName,
@@ -136,9 +77,40 @@ export default async function CVPage() {
           status: c.status,
           positionId: c.positionId,
           costOfHire: c.costOfHire,
+          inPipeline: c.inPipeline,
           position: c.position ? { title: c.position.title } : null,
+          resumeUrl: c.resumeUrl,
+          createdAt: c.createdAt,
+        }))}
+        allCandidates={allCandidates.map((c) => ({
+          id: c.id,
+          firstName: c.firstName,
+          lastName: c.lastName,
+          email: c.email,
+          phone: c.phone,
+          linkedinUrl: c.linkedinUrl,
+          skills: c.skills,
+          experience: c.experience,
+          source: c.source,
+          notes: c.notes,
+          resumeText: c.resumeText,
+          status: c.status,
+          positionId: c.positionId,
+          costOfHire: c.costOfHire,
+          inPipeline: c.inPipeline,
+          position: c.position ? { title: c.position.title } : null,
+          resumeUrl: c.resumeUrl,
+          createdAt: c.createdAt,
         }))}
         positions={positions.map((p) => ({ id: p.id, title: p.title }))}
+        openPositions={openPositions.map((p) => ({
+          id: p.id,
+          title: p.title,
+          department: p.department ? { name: p.department.name } : null,
+          salary: p.salary,
+          _count: p._count,
+        }))}
+        syncablePlatforms={syncablePlatforms}
       />
     </div>
   );

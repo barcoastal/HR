@@ -46,6 +46,7 @@ export type CandidateMinAggregateOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus | null
+  inPipeline: boolean | null
   source: string | null
   notes: string | null
   costOfHire: number | null
@@ -69,6 +70,7 @@ export type CandidateMaxAggregateOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus | null
+  inPipeline: boolean | null
   source: string | null
   notes: string | null
   costOfHire: number | null
@@ -92,6 +94,7 @@ export type CandidateCountAggregateOutputType = {
   skills: number
   experience: number
   status: number
+  inPipeline: number
   source: number
   notes: number
   costOfHire: number
@@ -125,6 +128,7 @@ export type CandidateMinAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  inPipeline?: true
   source?: true
   notes?: true
   costOfHire?: true
@@ -148,6 +152,7 @@ export type CandidateMaxAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  inPipeline?: true
   source?: true
   notes?: true
   costOfHire?: true
@@ -171,6 +176,7 @@ export type CandidateCountAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  inPipeline?: true
   source?: true
   notes?: true
   costOfHire?: true
@@ -281,6 +287,7 @@ export type CandidateGroupByOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus
+  inPipeline: boolean
   source: string | null
   notes: string | null
   costOfHire: number | null
@@ -327,6 +334,7 @@ export type CandidateWhereInput = {
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
@@ -351,6 +359,7 @@ export type CandidateOrderByWithRelationInput = {
   skills?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -378,6 +387,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
@@ -402,6 +412,7 @@ export type CandidateOrderByWithAggregationInput = {
   skills?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -433,6 +444,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   skills?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusWithAggregatesFilter<"Candidate"> | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableWithAggregatesFilter<"Candidate"> | number | null
@@ -456,6 +468,7 @@ export type CandidateCreateInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -479,6 +492,7 @@ export type CandidateUncheckedCreateInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -502,6 +516,7 @@ export type CandidateUpdateInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -525,6 +540,7 @@ export type CandidateUncheckedUpdateInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -548,6 +564,7 @@ export type CandidateCreateManyInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -571,6 +588,7 @@ export type CandidateUpdateManyMutationInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -593,6 +611,7 @@ export type CandidateUncheckedUpdateManyInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -616,6 +635,7 @@ export type CandidateCountOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
@@ -643,6 +663,7 @@ export type CandidateMaxOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
@@ -666,6 +687,7 @@ export type CandidateMinOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
@@ -757,6 +779,7 @@ export type CandidateCreateWithoutPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -779,6 +802,7 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -830,6 +854,7 @@ export type CandidateScalarWhereInput = {
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
@@ -853,6 +878,7 @@ export type CandidateCreateManyPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  inPipeline?: boolean
   source?: string | null
   notes?: string | null
   costOfHire?: number | null
@@ -875,6 +901,7 @@ export type CandidateUpdateWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -897,6 +924,7 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -919,6 +947,7 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -943,6 +972,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   skills?: boolean
   experience?: boolean
   status?: boolean
+  inPipeline?: boolean
   source?: boolean
   notes?: boolean
   costOfHire?: boolean
@@ -967,6 +997,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   skills?: boolean
   experience?: boolean
   status?: boolean
+  inPipeline?: boolean
   source?: boolean
   notes?: boolean
   costOfHire?: boolean
@@ -991,6 +1022,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   skills?: boolean
   experience?: boolean
   status?: boolean
+  inPipeline?: boolean
   source?: boolean
   notes?: boolean
   costOfHire?: boolean
@@ -1015,6 +1047,7 @@ export type CandidateSelectScalar = {
   skills?: boolean
   experience?: boolean
   status?: boolean
+  inPipeline?: boolean
   source?: boolean
   notes?: boolean
   costOfHire?: boolean
@@ -1026,7 +1059,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "source" | "notes" | "costOfHire" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "costOfHire" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
 }
@@ -1054,6 +1087,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     skills: string | null
     experience: string | null
     status: $Enums.CandidateStatus
+    inPipeline: boolean
     source: string | null
     notes: string | null
     costOfHire: number | null
@@ -1498,6 +1532,7 @@ export interface CandidateFieldRefs {
   readonly skills: Prisma.FieldRef<"Candidate", 'String'>
   readonly experience: Prisma.FieldRef<"Candidate", 'String'>
   readonly status: Prisma.FieldRef<"Candidate", 'CandidateStatus'>
+  readonly inPipeline: Prisma.FieldRef<"Candidate", 'Boolean'>
   readonly source: Prisma.FieldRef<"Candidate", 'String'>
   readonly notes: Prisma.FieldRef<"Candidate", 'String'>
   readonly costOfHire: Prisma.FieldRef<"Candidate", 'Float'>
