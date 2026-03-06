@@ -1,7 +1,8 @@
 "use client";
 
+import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { Search, Download, ArrowUpRight, FileText, Check } from "lucide-react";
+import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { pullCandidateToRecruitment } from "@/lib/actions/candidates";
@@ -16,6 +17,7 @@ type CandidateItem = {
   phone: string | null;
   source: string | null;
   resumeUrl: string | null;
+  resumeText: string | null;
   inPipeline: boolean;
   status: CandidateStatus;
   createdAt: Date;
@@ -36,6 +38,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [selectedPosition, setSelectedPosition] = useState("");
   const [pulling, setPulling] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const distinctSources = useMemo(() => {
     const sources = new Set<string>();
@@ -125,74 +128,109 @@ export function CandidateDatabase({ candidates, positions }: Props) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((c) => (
-              <tr key={c.id} className="border-b border-[var(--color-border)] last:border-b-0 hover:bg-[var(--color-border)]/30 transition-colors">
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <FileText className="h-3.5 w-3.5 text-blue-400" />
-                    </div>
-                    <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                      {c.firstName} {c.lastName}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.email}</td>
-                <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.phone || "—"}</td>
-                <td className="px-4 py-3">
-                  {c.source && (
-                    <span className={cn(
-                      "text-[10px] px-2 py-0.5 rounded-full font-medium",
-                      c.source === "pro.jobing"
-                        ? "bg-orange-500/10 text-orange-400"
-                        : "bg-blue-500/10 text-blue-400"
-                    )}>
-                      {c.source}
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">
-                  {formatDate(c.createdAt)}
-                </td>
-                <td className="px-4 py-3">
-                  {c.resumeUrl ? (
-                    <a
-                      href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
-                        "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+            {filtered.map((c) => {
+              const isExpanded = expandedId === c.id;
+              const hasResume = !!(c.resumeText || c.resumeUrl);
+              return (
+                <React.Fragment key={c.id}>
+                  <tr
+                    className={cn(
+                      "border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/30 transition-colors",
+                      hasResume && "cursor-pointer",
+                      isExpanded && "bg-[var(--color-border)]/20"
+                    )}
+                    onClick={() => hasResume && setExpandedId(isExpanded ? null : c.id)}
+                  >
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        {hasResume ? (
+                          isExpanded ? (
+                            <ChevronUp className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
+                          ) : (
+                            <ChevronDown className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
+                          )
+                        ) : (
+                          <div className="w-3.5 shrink-0" />
+                        )}
+                        <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                          <FileText className="h-3.5 w-3.5 text-blue-400" />
+                        </div>
+                        <span className="text-sm font-medium text-[var(--color-text-primary)]">
+                          {c.firstName} {c.lastName}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.email}</td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.phone || "—"}</td>
+                    <td className="px-4 py-3">
+                      {c.source && (
+                        <span className={cn(
+                          "text-[10px] px-2 py-0.5 rounded-full font-medium",
+                          c.source === "pro.jobing"
+                            ? "bg-orange-500/10 text-orange-400"
+                            : "bg-blue-500/10 text-blue-400"
+                        )}>
+                          {c.source}
+                        </span>
                       )}
-                    >
-                      <Download className="h-3 w-3" />
-                      PDF
-                    </a>
-                  ) : (
-                    <span className="text-xs text-[var(--color-text-muted)]">—</span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-right">
-                  {c.inPipeline ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                      <Check className="h-3 w-3" />
-                      In Pipeline
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => openPullDialog(c)}
-                      className={cn(
-                        "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
-                        "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                    </td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">
+                      {formatDate(c.createdAt)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {c.resumeUrl ? (
+                        <a
+                          href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className={cn(
+                            "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
+                            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                          )}
+                        >
+                          <Download className="h-3 w-3" />
+                          PDF
+                        </a>
+                      ) : (
+                        <span className="text-xs text-[var(--color-text-muted)]">—</span>
                       )}
-                    >
-                      <ArrowUpRight className="h-3 w-3" />
-                      Pull to Recruitment
-                    </button>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      {c.inPipeline ? (
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">
+                          <Check className="h-3 w-3" />
+                          In Pipeline
+                        </span>
+                      ) : (
+                        <button
+                          onClick={(e) => { e.stopPropagation(); openPullDialog(c); }}
+                          className={cn(
+                            "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
+                            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                          )}
+                        >
+                          <ArrowUpRight className="h-3 w-3" />
+                          Pull to Recruitment
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                  {isExpanded && c.resumeText && (
+                    <tr className="border-b border-[var(--color-border)]">
+                      <td colSpan={7} className="px-4 py-4 bg-[var(--color-background)]">
+                        <div className="max-h-64 overflow-y-auto">
+                          <p className="text-xs font-medium text-[var(--color-text-primary)] mb-2">Resume</p>
+                          <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
+                            {c.resumeText}
+                          </pre>
+                        </div>
+                      </td>
+                    </tr>
                   )}
-                </td>
-              </tr>
-            ))}
+                </React.Fragment>
+              );
+            })}
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">
