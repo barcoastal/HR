@@ -2,10 +2,10 @@
 
 import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase } from "lucide-react";
+import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase, Save, Loader2, Eye, EyeOff } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { pullCandidateToRecruitment } from "@/lib/actions/candidates";
+import { pullCandidateToRecruitment, updateCandidateNotes } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 
@@ -39,6 +39,106 @@ type Props = {
 function parseSkills(skills: string | null): string[] {
   if (!skills) return [];
   try { return JSON.parse(skills); } catch { return skills.split(",").map((s) => s.trim()).filter(Boolean); }
+}
+
+function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initialNotes: string | null }) {
+  const [notes, setNotes] = useState(initialNotes || "");
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const hasChanged = notes !== (initialNotes || "");
+
+  async function handleSave() {
+    setSaving(true);
+    await updateCandidateNotes(candidateId, notes);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-xs font-medium text-[var(--color-text-primary)]">Notes</p>
+        <div className="flex items-center gap-2">
+          {saved && (
+            <span className="text-[10px] text-emerald-400 flex items-center gap-1">
+              <Check className="h-3 w-3" /> Saved
+            </span>
+          )}
+          {hasChanged && !saving && (
+            <button
+              onClick={handleSave}
+              className={cn(
+                "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
+                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+              )}
+            >
+              <Save className="h-3 w-3" />
+              Save
+            </button>
+          )}
+          {saving && <Loader2 className="h-3 w-3 animate-spin text-[var(--color-accent)]" />}
+        </div>
+      </div>
+      <textarea
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        onClick={(e) => e.stopPropagation()}
+        rows={3}
+        placeholder="Add notes about this candidate..."
+        className={cn(
+          "w-full px-3 py-2 rounded-lg text-xs resize-none",
+          "bg-[var(--color-surface)] border border-[var(--color-border)]",
+          "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
+          "focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+        )}
+      />
+    </div>
+  );
+}
+
+function ResumeViewer({ resumeUrl }: { resumeUrl: string }) {
+  const [showPdf, setShowPdf] = useState(false);
+  const pdfSrc = `/api/platforms/jobing/resume?url=${encodeURIComponent(resumeUrl)}`;
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <p className="text-xs font-medium text-[var(--color-text-primary)]">Resume PDF</p>
+        <button
+          onClick={(e) => { e.stopPropagation(); setShowPdf(!showPdf); }}
+          className={cn(
+            "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
+            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+          )}
+        >
+          {showPdf ? <EyeOff className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
+          {showPdf ? "Hide" : "View"}
+        </button>
+        <a
+          href={pdfSrc}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className={cn(
+            "inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium",
+            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+          )}
+        >
+          <Download className="h-3 w-3" />
+          Download
+        </a>
+      </div>
+      {showPdf && (
+        <iframe
+          src={pdfSrc}
+          className="w-full rounded-lg border border-[var(--color-border)]"
+          style={{ height: "500px" }}
+          title="Resume PDF"
+        />
+      )}
+    </div>
+  );
 }
 
 export function CandidateDatabase({ candidates, positions }: Props) {
@@ -170,7 +270,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.email}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.phone || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.phone || "\u2014"}</td>
                     <td className="px-4 py-3">
                       {c.source && (
                         <span className={cn(
@@ -213,7 +313,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                           </span>
                         )}
                         {!c.resumeUrl && !c.resumeText && (
-                          <span className="text-xs text-[var(--color-text-muted)]">—</span>
+                          <span className="text-xs text-[var(--color-text-muted)]">{"\u2014"}</span>
                         )}
                       </div>
                     </td>
@@ -240,91 +340,79 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                   {isExpanded && (
                     <tr className="border-b border-[var(--color-border)]">
                       <td colSpan={7} className="px-6 py-4 bg-[var(--color-background)]">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Left: Contact & Details */}
-                          <div className="space-y-3">
-                            <div className="space-y-1.5 text-xs text-[var(--color-text-muted)]">
-                              <div className="flex items-center gap-2">
-                                <Mail className="h-3.5 w-3.5 shrink-0" />
-                                <span>{c.email}</span>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Left: Contact & Details */}
+                            <div className="space-y-3">
+                              <div className="space-y-1.5 text-xs text-[var(--color-text-muted)]">
+                                <div className="flex items-center gap-2">
+                                  <Mail className="h-3.5 w-3.5 shrink-0" />
+                                  <span>{c.email}</span>
+                                </div>
+                                {c.phone && (
+                                  <div className="flex items-center gap-2">
+                                    <Phone className="h-3.5 w-3.5 shrink-0" />
+                                    <span>{c.phone}</span>
+                                  </div>
+                                )}
+                                {c.linkedinUrl && (
+                                  <div className="flex items-center gap-2">
+                                    <Linkedin className="h-3.5 w-3.5 shrink-0" />
+                                    <a
+                                      href={c.linkedinUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-[var(--color-accent)] hover:underline truncate"
+                                    >
+                                      {c.linkedinUrl}
+                                    </a>
+                                  </div>
+                                )}
+                                {c.experience && (
+                                  <div className="flex items-center gap-2">
+                                    <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                    <span>{c.experience}</span>
+                                  </div>
+                                )}
+                                {c.position && (
+                                  <div className="flex items-center gap-2">
+                                    <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                    <span>Position: {c.position.title}</span>
+                                  </div>
+                                )}
                               </div>
-                              {c.phone && (
-                                <div className="flex items-center gap-2">
-                                  <Phone className="h-3.5 w-3.5 shrink-0" />
-                                  <span>{c.phone}</span>
-                                </div>
-                              )}
-                              {c.linkedinUrl && (
-                                <div className="flex items-center gap-2">
-                                  <Linkedin className="h-3.5 w-3.5 shrink-0" />
-                                  <a
-                                    href={c.linkedinUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-[var(--color-accent)] hover:underline truncate"
-                                  >
-                                    {c.linkedinUrl}
-                                  </a>
-                                </div>
-                              )}
-                              {c.experience && (
-                                <div className="flex items-center gap-2">
-                                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                                  <span>{c.experience}</span>
-                                </div>
-                              )}
-                              {c.position && (
-                                <div className="flex items-center gap-2">
-                                  <Briefcase className="h-3.5 w-3.5 shrink-0" />
-                                  <span>Position: {c.position.title}</span>
+
+                              {skills.length > 0 && (
+                                <div>
+                                  <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Skills</p>
+                                  <div className="flex flex-wrap gap-1">
+                                    {skills.map((s) => (
+                                      <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{s}</span>
+                                    ))}
+                                  </div>
                                 </div>
                               )}
                             </div>
 
-                            {skills.length > 0 && (
+                            {/* Right: Resume Text */}
+                            {c.resumeText && (
                               <div>
-                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Skills</p>
-                                <div className="flex flex-wrap gap-1">
-                                  {skills.map((s) => (
-                                    <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">{s}</span>
-                                  ))}
+                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Resume Content</p>
+                                <div className="max-h-48 overflow-y-auto rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] p-3">
+                                  <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
+                                    {c.resumeText}
+                                  </pre>
                                 </div>
                               </div>
-                            )}
-
-                            {c.notes && (
-                              <div>
-                                <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1">Notes</p>
-                                <p className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap">{c.notes}</p>
-                              </div>
-                            )}
-
-                            {c.resumeUrl && (
-                              <a
-                                href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={cn(
-                                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                                  "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
-                                )}
-                              >
-                                <Download className="h-3.5 w-3.5" />
-                                Download Resume PDF
-                              </a>
                             )}
                           </div>
 
-                          {/* Right: Resume Text */}
-                          {c.resumeText && (
-                            <div>
-                              <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Resume Content</p>
-                              <div className="max-h-48 overflow-y-auto rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] p-3">
-                                <pre className="text-xs text-[var(--color-text-muted)] whitespace-pre-wrap font-sans leading-relaxed">
-                                  {c.resumeText}
-                                </pre>
-                              </div>
-                            </div>
+                          {/* Notes Editor */}
+                          <NotesEditor candidateId={c.id} initialNotes={c.notes} />
+
+                          {/* PDF Resume Viewer */}
+                          {c.resumeUrl && (
+                            <ResumeViewer resumeUrl={c.resumeUrl} />
                           )}
                         </div>
                       </td>

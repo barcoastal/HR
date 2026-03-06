@@ -245,6 +245,15 @@ export async function updateCandidate(
   return candidate;
 }
 
+export async function updateCandidateNotes(id: string, notes: string) {
+  const candidate = await db.candidate.update({
+    where: { id },
+    data: { notes },
+  });
+  revalidatePath("/cv");
+  return candidate;
+}
+
 export async function hireCandidateAndStartOnboarding(candidateId: string) {
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
