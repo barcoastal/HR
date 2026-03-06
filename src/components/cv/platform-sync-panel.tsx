@@ -21,6 +21,7 @@ type SyncResult = {
   success: boolean;
   candidatesFound: number;
   candidatesCreated: number;
+  candidatesUpdated: number;
   skippedEmails: string[];
   error?: string;
 };
@@ -75,6 +76,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
           success: true,
           candidatesFound: data.fetched,
           candidatesCreated: data.created,
+          candidatesUpdated: data.updated || 0,
           skippedEmails: Array(data.skipped).fill(""),
           error: undefined,
         });
@@ -87,6 +89,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
           success: false,
           candidatesFound: data.fetched,
           candidatesCreated: data.created,
+          candidatesUpdated: data.updated || 0,
           skippedEmails: [],
           error: data.detail ?? "Sync failed",
         });
@@ -101,6 +104,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
         success: false,
         candidatesFound: 0,
         candidatesCreated: 0,
+        candidatesUpdated: 0,
         skippedEmails: [],
         error: "Connection lost during sync",
       });
@@ -166,7 +170,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
                     Page {progress.page}
                     {progress.total > 0 ? ` — ${progress.fetched}/${progress.total}` : ""}
                     {" | "}
-                    {progress.created} new, {progress.skipped} skipped
+                    {progress.created} new, {(progress as SyncProgressEvent & { updated?: number }).updated || 0} updated, {progress.skipped} skipped
                   </p>
                 </div>
               )}
@@ -213,6 +217,14 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 </span>{" "}
                 new candidate{result.candidatesCreated !== 1 ? "s" : ""} imported
               </p>
+              {result.candidatesUpdated > 0 && (
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  <span className="font-medium text-[var(--color-accent)]">
+                    {result.candidatesUpdated}
+                  </span>{" "}
+                  existing candidate{result.candidatesUpdated !== 1 ? "s" : ""} updated with new data
+                </p>
+              )}
               {result.skippedEmails.length > 0 && (
                 <p className="text-xs text-[var(--color-text-muted)]">
                   {result.skippedEmails.length} duplicate{result.skippedEmails.length !== 1 ? "s" : ""} skipped

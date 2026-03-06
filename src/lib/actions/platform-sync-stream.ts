@@ -5,6 +5,21 @@ import { ensureValidToken } from "./platform-sync";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 import { revalidatePath } from "next/cache";
 
+async function updateExistingCandidate(
+  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null },
+  mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string }
+): Promise<boolean> {
+  const updates: Record<string, unknown> = {};
+  if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
+  if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
+  if (!existing.experience && mc.experience) updates.experience = mc.experience;
+  if (Object.keys(updates).length > 0) {
+    await db.candidate.update({ where: { id: existing.id }, data: updates });
+    return true;
+  }
+  return false;
+}
+
 export async function* syncCandidatesStreaming(
   platformId: string
 ): AsyncGenerator<SyncProgressEvent> {
@@ -12,39 +27,36 @@ export async function* syncCandidatesStreaming(
     where: { id: platformId },
   });
   if (!platform || !platform.apiKey) {
-    yield { type: "error", detail: "Platform not found or not connected", fetched: 0, created: 0, skipped: 0, page: 0, total: 0 };
+    yield { type: "error", detail: "Platform not found or not connected", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
     return;
   }
 
   const client = getPlatformClient(platform.name);
   if (!client) {
-    yield { type: "error", detail: "No integration available", fetched: 0, created: 0, skipped: 0, page: 0, total: 0 };
+    yield { type: "error", detail: "No integration available", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
     return;
   }
 
   const tokenResult = await ensureValidToken(platformId);
   if (!tokenResult.valid || !tokenResult.accessToken) {
-    yield { type: "error", detail: tokenResult.error ?? "Invalid token", fetched: 0, created: 0, skipped: 0, page: 0, total: 0 };
+    yield { type: "error", detail: tokenResult.error ?? "Invalid token", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
     return;
   }
 
   // If the client doesn't support pagination, fall back to batch
   if (!client.fetchCandidatesPaginated) {
-    yield { type: "progress", detail: "Fetching all candidates...", fetched: 0, created: 0, skipped: 0, page: 1, total: 0 };
+    yield { type: "progress", detail: "Fetching all candidates...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 1, total: 0 };
     const candidates = await client.fetchCandidates(tokenResult.accessToken);
     let created = 0;
+    let updated = 0;
     let skipped = 0;
     for (const mc of candidates) {
       const existing = await db.candidate.findUnique({ where: { email: mc.email } });
       if (existing) {
-        const updates: Record<string, unknown> = {};
-        if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
-        if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
-        if (!existing.experience && mc.experience) updates.experience = mc.experience;
-        if (Object.keys(updates).length > 0) {
-          await db.candidate.update({ where: { id: existing.id }, data: updates });
-        }
-        skipped++; continue;
+        const wasUpdated = await updateExistingCandidate(existing, mc);
+        if (wasUpdated) updated++;
+        skipped++;
+        continue;
       }
       await createCandidate({
         firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
@@ -54,7 +66,7 @@ export async function* syncCandidatesStreaming(
       });
       created++;
     }
-    yield { type: "complete", fetched: candidates.length, created, skipped, page: 1, total: candidates.length };
+    yield { type: "complete", fetched: candidates.length, created, updated, skipped, page: 1, total: candidates.length };
     await finalizeSyncLog(platformId, candidates.length, created, skipped);
     return;
   }
@@ -64,6 +76,7 @@ export async function* syncCandidatesStreaming(
   let page = 0;
   let totalFetched = 0;
   let totalCreated = 0;
+  let totalUpdated = 0;
   let totalSkipped = 0;
   let totalEstimate = 0;
   const seenEmails = new Set<string>();
@@ -81,14 +94,10 @@ export async function* syncCandidatesStreaming(
 
         const existing = await db.candidate.findUnique({ where: { email: mc.email } });
         if (existing) {
-          const updates: Record<string, unknown> = {};
-          if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
-          if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
-          if (!existing.experience && mc.experience) updates.experience = mc.experience;
-          if (Object.keys(updates).length > 0) {
-            await db.candidate.update({ where: { id: existing.id }, data: updates });
-          }
-          totalSkipped++; continue;
+          const wasUpdated = await updateExistingCandidate(existing, mc);
+          if (wasUpdated) totalUpdated++;
+          totalSkipped++;
+          continue;
         }
 
         await createCandidate({
@@ -105,6 +114,7 @@ export async function* syncCandidatesStreaming(
         detail: `Page ${page} processed (${result.candidates.length} candidates)`,
         fetched: totalFetched,
         created: totalCreated,
+        updated: totalUpdated,
         skipped: totalSkipped,
         page,
         total: totalEstimate,
@@ -117,6 +127,7 @@ export async function* syncCandidatesStreaming(
       type: "complete",
       fetched: totalFetched,
       created: totalCreated,
+      updated: totalUpdated,
       skipped: totalSkipped,
       page,
       total: totalEstimate,
@@ -130,6 +141,7 @@ export async function* syncCandidatesStreaming(
       detail: message,
       fetched: totalFetched,
       created: totalCreated,
+      updated: totalUpdated,
       skipped: totalSkipped,
       page,
       total: totalEstimate,

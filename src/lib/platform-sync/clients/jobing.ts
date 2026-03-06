@@ -54,6 +54,7 @@ async function fetchJobMap(apiKey: string): Promise<Record<string, string>> {
 
 export class JobingClient implements PlatformClient {
   readonly platformName = "Jobing";
+  private jobMap: Record<string, string> = {};
 
   async validateCredentials(apiKey: string): Promise<boolean> {
     try {
@@ -104,10 +105,9 @@ export class JobingClient implements PlatformClient {
   ): Promise<CandidatePage> {
     const page = cursor ? parseInt(cursor, 10) : 1;
 
-    // Fetch job map on first page
-    let jobMap: Record<string, string> = {};
-    if (page <= 1) {
-      jobMap = await fetchJobMap(accessToken);
+    // Fetch job map on first page, reuse cached for subsequent pages
+    if (page <= 1 || Object.keys(this.jobMap).length === 0) {
+      this.jobMap = await fetchJobMap(accessToken);
     }
 
     const res = await fetch(
@@ -125,7 +125,7 @@ export class JobingClient implements PlatformClient {
       : data.results || data.applicants || [];
 
     const totalEstimate = data.total || data.count || 0;
-    const candidates = applicants.map((a) => mapApplicant(a, jobMap));
+    const candidates = applicants.map((a) => mapApplicant(a, this.jobMap));
 
     const hasMore = applicants.length > 0;
     const nextCursor = hasMore ? String(page + 1) : null;

@@ -24,6 +24,7 @@ export type SyncProgressEvent = {
   detail?: string;
   fetched: number;
   created: number;
+  updated: number;
   skipped: number;
   page: number;
   total: number;
