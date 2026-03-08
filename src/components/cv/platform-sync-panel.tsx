@@ -5,7 +5,6 @@ import { RefreshCw, Loader2, CheckCircle2, AlertCircle, RotateCcw, FileDown } fr
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { forceResyncPlatform } from "@/lib/actions/platform-sync";
 import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 
@@ -118,20 +117,60 @@ export function PlatformSyncPanel({ platforms }: Props) {
     };
   }
 
-  async function handleForceResync(platform: SyncablePlatform) {
+  function handleForceResync(platform: SyncablePlatform) {
     setResyncingId(platform.id);
+    setProgress(null);
     setResultPlatformName(platform.name);
-    const res = await forceResyncPlatform(platform.id);
-    setResyncingId(null);
-    setResult({
-      success: res.success,
-      candidatesFound: 0,
-      candidatesCreated: 0,
-      candidatesUpdated: res.updated,
-      skippedEmails: [],
-      error: res.error,
-    });
-    router.refresh();
+
+    const es = new EventSource(
+      `/api/platforms/sync-stream?platformId=${encodeURIComponent(platform.id)}&force=1`
+    );
+    eventSourceRef.current = es;
+
+    es.onmessage = (event) => {
+      const data: SyncProgressEvent = JSON.parse(event.data);
+      setProgress(data);
+
+      if (data.type === "complete") {
+        es.close();
+        eventSourceRef.current = null;
+        setResyncingId(null);
+        setResult({
+          success: true,
+          candidatesFound: data.fetched,
+          candidatesCreated: data.created,
+          candidatesUpdated: data.updated || 0,
+          skippedEmails: [],
+        });
+        router.refresh();
+      } else if (data.type === "error") {
+        es.close();
+        eventSourceRef.current = null;
+        setResyncingId(null);
+        setResult({
+          success: false,
+          candidatesFound: 0,
+          candidatesCreated: 0,
+          candidatesUpdated: 0,
+          skippedEmails: [],
+          error: data.detail ?? "Re-sync failed",
+        });
+      }
+    };
+
+    es.onerror = () => {
+      es.close();
+      eventSourceRef.current = null;
+      setResyncingId(null);
+      setResult({
+        success: false,
+        candidatesFound: 0,
+        candidatesCreated: 0,
+        candidatesUpdated: 0,
+        skippedEmails: [],
+        error: "Connection lost during re-sync",
+      });
+    };
   }
 
   async function handleDownloadResumes() {
@@ -194,8 +233,8 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 </p>
               </div>
 
-              {/* Progress bar during sync */}
-              {isSyncing && progress && (
+              {/* Progress bar during sync or re-sync */}
+              {(isSyncing || resyncingId === p.id) && progress && (
                 <div className="mb-3 space-y-1.5">
                   <div className="w-full h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
                     <div

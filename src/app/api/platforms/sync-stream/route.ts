@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { syncCandidatesStreaming } from "@/lib/actions/platform-sync-stream";
+import { syncCandidatesStreaming, resyncCandidatesStreaming } from "@/lib/actions/platform-sync-stream";
 
 export const runtime = "nodejs";
 
@@ -16,11 +16,16 @@ export async function GET(request: NextRequest) {
     return new Response("Missing platformId", { status: 400 });
   }
 
+  const forceUpdate = request.nextUrl.searchParams.get("force") === "1";
+
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        for await (const event of syncCandidatesStreaming(platformId)) {
+        const generator = forceUpdate
+          ? resyncCandidatesStreaming(platformId)
+          : syncCandidatesStreaming(platformId);
+        for await (const event of generator) {
           const data = `data: ${JSON.stringify(event)}\n\n`;
           controller.enqueue(encoder.encode(data));
         }
