@@ -1,11 +1,12 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { RefreshCw, Loader2, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
+import { RefreshCw, Loader2, CheckCircle2, AlertCircle, RotateCcw, FileDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { forceResyncPlatform } from "@/lib/actions/platform-sync";
+import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 
 type SyncablePlatform = {
@@ -25,6 +26,9 @@ type SyncResult = {
   candidatesUpdated: number;
   skippedEmails: string[];
   error?: string;
+  resumesDownloaded?: number;
+  resumesFailed?: number;
+  resumesAlreadyLocal?: number;
 };
 
 type Props = {
@@ -40,6 +44,7 @@ const STATUS_COLORS: Record<string, string> = {
 export function PlatformSyncPanel({ platforms }: Props) {
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [resyncingId, setResyncingId] = useState<string | null>(null);
+  const [downloadingResumes, setDownloadingResumes] = useState(false);
   const [progress, setProgress] = useState<SyncProgressEvent | null>(null);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [resultPlatformName, setResultPlatformName] = useState("");
@@ -125,6 +130,24 @@ export function PlatformSyncPanel({ platforms }: Props) {
       candidatesUpdated: res.updated,
       skippedEmails: [],
       error: res.error,
+    });
+    router.refresh();
+  }
+
+  async function handleDownloadResumes() {
+    setDownloadingResumes(true);
+    setResultPlatformName("All Platforms");
+    const res = await batchDownloadResumes();
+    setDownloadingResumes(false);
+    setResult({
+      success: true,
+      candidatesFound: res.total,
+      candidatesCreated: 0,
+      candidatesUpdated: 0,
+      skippedEmails: [],
+      resumesDownloaded: res.downloaded,
+      resumesFailed: res.failed,
+      resumesAlreadyLocal: res.alreadyLocal,
     });
     router.refresh();
   }
@@ -244,6 +267,32 @@ export function PlatformSyncPanel({ platforms }: Props) {
         })}
       </div>
 
+      {/* Fetch All Resumes button */}
+      <div className="mt-3">
+        <button
+          onClick={handleDownloadResumes}
+          disabled={downloadingResumes || !!syncingId || !!resyncingId}
+          className={cn(
+            "inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium",
+            "bg-purple-500/10 text-purple-400 border border-purple-500/20",
+            "hover:bg-purple-500/20 transition-colors",
+            "disabled:opacity-50"
+          )}
+        >
+          {downloadingResumes ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              Downloading Resumes...
+            </>
+          ) : (
+            <>
+              <FileDown className="h-3.5 w-3.5" />
+              Fetch All Resume PDFs
+            </>
+          )}
+        </button>
+      </div>
+
       {/* Sync Result Dialog */}
       <Dialog open={!!result} onClose={closeResult} title="Sync Results">
         {result?.success ? (
@@ -271,6 +320,26 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 <p className="text-xs text-[var(--color-text-muted)]">
                   {result.skippedEmails.length} duplicate{result.skippedEmails.length !== 1 ? "s" : ""} skipped
                 </p>
+              )}
+              {result.resumesDownloaded !== undefined && (
+                <>
+                  <p className="text-sm text-[var(--color-text-muted)]">
+                    <span className="font-medium text-purple-400">
+                      {result.resumesDownloaded}
+                    </span>{" "}
+                    resume{result.resumesDownloaded !== 1 ? "s" : ""} downloaded
+                  </p>
+                  {(result.resumesAlreadyLocal || 0) > 0 && (
+                    <p className="text-xs text-[var(--color-text-muted)]">
+                      {result.resumesAlreadyLocal} already stored locally
+                    </p>
+                  )}
+                  {(result.resumesFailed || 0) > 0 && (
+                    <p className="text-xs text-amber-400">
+                      {result.resumesFailed} failed to download
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </div>

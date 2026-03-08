@@ -31,25 +31,30 @@ type JobingApplicant = {
 type JobingJob = {
   id: string;
   title: string;
+  applicants?: string;
 };
 
-async function fetchJobMap(apiKey: string): Promise<Record<string, string>> {
+async function fetchJobs(apiKey: string): Promise<JobingJob[]> {
   try {
     const res = await fetch(
       `${BASE_URL}/jobs?company=${getCompany()}`,
       { headers: authHeaders(apiKey) }
     );
-    if (!res.ok) return {};
+    if (!res.ok) return [];
     const data = await res.json();
-    const jobs: JobingJob[] = Array.isArray(data) ? data : data.results || data.jobs || [];
-    const map: Record<string, string> = {};
-    for (const j of jobs) {
-      map[j.id] = j.title;
-    }
-    return map;
+    return Array.isArray(data) ? data : data.results || data.jobs || [];
   } catch {
-    return {};
+    return [];
   }
+}
+
+async function fetchJobMap(apiKey: string): Promise<Record<string, string>> {
+  const jobs = await fetchJobs(apiKey);
+  const map: Record<string, string> = {};
+  for (const j of jobs) {
+    map[j.id] = j.title;
+  }
+  return map;
 }
 
 export class JobingClient implements PlatformClient {
@@ -70,10 +75,15 @@ export class JobingClient implements PlatformClient {
 
   async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
     const token = accessToken || process.env.NOLIG_API_KEY || "";
-    const jobMap = await fetchJobMap(token);
-    const all: MockCandidate[] = [];
-    let page = 1;
+    const jobs = await fetchJobs(token);
+    const jobMap: Record<string, string> = {};
+    for (const j of jobs) jobMap[j.id] = j.title;
 
+    const seenEmails = new Set<string>();
+    const all: MockCandidate[] = [];
+
+    // First: pull from bulk endpoint (up to 1000)
+    let page = 1;
     while (true) {
       const res = await fetch(
         `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
@@ -89,11 +99,38 @@ export class JobingClient implements PlatformClient {
       if (applicants.length === 0) break;
 
       for (const a of applicants) {
-        all.push(mapApplicant(a, jobMap));
+        const mc = mapApplicant(a, jobMap);
+        if (!seenEmails.has(mc.email)) {
+          seenEmails.add(mc.email);
+          all.push(mc);
+        }
       }
 
       page++;
-      if (page > 100) break; // safety limit
+      if (page > 100) break;
+    }
+
+    // Second: pull from each job's applicants endpoint to catch those beyond bulk limit
+    for (const job of jobs) {
+      const appUrl = job.applicants;
+      if (!appUrl) continue;
+      try {
+        const res = await fetch(appUrl, { headers: authHeaders(token) });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const applicants: JobingApplicant[] = Array.isArray(data)
+          ? data
+          : data.results || data.applicants || [];
+        for (const a of applicants) {
+          const mc = mapApplicant(a, jobMap);
+          if (!seenEmails.has(mc.email)) {
+            seenEmails.add(mc.email);
+            all.push(mc);
+          }
+        }
+      } catch {
+        // Skip failed job fetches
+      }
     }
 
     return all;
