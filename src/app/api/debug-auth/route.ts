@@ -2,7 +2,28 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+
+  // ?fix=1 will create the Jobing platform if missing
+  if (url.searchParams.get("fix") === "1") {
+    const apiKey = process.env.NOLIG_API_KEY;
+    if (apiKey) {
+      await db.recruitmentPlatform.upsert({
+        where: { name: "Jobing" },
+        create: {
+          name: "Jobing",
+          type: "JOB_BOARD",
+          monthlyCost: 0,
+          status: "ACTIVE",
+          apiKey,
+          connectedAt: new Date(),
+        },
+        update: { apiKey, status: "ACTIVE" },
+      });
+    }
+  }
+
   const platforms = await db.recruitmentPlatform.findMany({
     select: { id: true, name: true, status: true, apiKey: true, totalSynced: true },
   });
