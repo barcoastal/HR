@@ -6,10 +6,13 @@ function getCompany() {
   return process.env.NOLIG_COMPANY || "coastal-debt-resolve";
 }
 
-function authHeaders(apiKey: string) {
+function fetchOpts(apiKey: string): RequestInit {
   return {
-    Authorization: `Bearer token=${apiKey}`,
-    Accept: "application/json",
+    headers: {
+      Authorization: `Bearer token=${apiKey}`,
+      Accept: "application/json",
+    },
+    cache: "no-store",
   };
 }
 
@@ -38,7 +41,7 @@ async function fetchJobs(apiKey: string): Promise<JobingJob[]> {
   try {
     const res = await fetch(
       `${BASE_URL}/jobs?company=${getCompany()}`,
-      { headers: authHeaders(apiKey) }
+      fetchOpts(apiKey)
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -65,7 +68,7 @@ export class JobingClient implements PlatformClient {
     try {
       const res = await fetch(
         `${BASE_URL}/jobs?company=${getCompany()}`,
-        { headers: authHeaders(apiKey) }
+        fetchOpts(apiKey)
       );
       return res.ok;
     } catch {
@@ -87,7 +90,7 @@ export class JobingClient implements PlatformClient {
     while (true) {
       const res = await fetch(
         `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
-        { headers: authHeaders(token) }
+        fetchOpts(token)
       );
       if (!res.ok) break;
 
@@ -115,7 +118,7 @@ export class JobingClient implements PlatformClient {
       const appUrl = job.applicants;
       if (!appUrl) continue;
       try {
-        const res = await fetch(appUrl, { headers: authHeaders(token) });
+        const res = await fetch(appUrl, fetchOpts(token));
         if (!res.ok) continue;
         const data = await res.json();
         const applicants: JobingApplicant[] = Array.isArray(data)
@@ -149,7 +152,7 @@ export class JobingClient implements PlatformClient {
 
     const res = await fetch(
       `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
-      { headers: authHeaders(accessToken) }
+      fetchOpts(accessToken)
     );
 
     if (!res.ok) {
