@@ -2,6 +2,21 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 
+export async function GET() {
+  const platforms = await db.recruitmentPlatform.findMany({
+    select: { id: true, name: true, status: true, apiKey: true, totalSynced: true },
+  });
+  const candidateCount = await db.candidate.count();
+  return NextResponse.json({
+    platforms: platforms.map(p => ({ ...p, apiKey: p.apiKey ? p.apiKey.slice(0, 8) + "..." : null })),
+    candidateCount,
+    env: {
+      NOLIG_API_KEY: process.env.NOLIG_API_KEY ? process.env.NOLIG_API_KEY.slice(0, 8) + "..." : "NOT SET",
+      NOLIG_COMPANY: process.env.NOLIG_COMPANY || "NOT SET",
+    },
+  });
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
