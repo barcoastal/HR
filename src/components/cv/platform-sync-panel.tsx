@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { RefreshCw, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { RefreshCw, Loader2, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
@@ -42,6 +42,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
   const [progress, setProgress] = useState<SyncProgressEvent | null>(null);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [resultPlatformName, setResultPlatformName] = useState("");
+  const [confirmPurge, setConfirmPurge] = useState<SyncablePlatform | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const router = useRouter();
 
@@ -55,14 +56,19 @@ export function PlatformSyncPanel({ platforms }: Props) {
 
   if (connected.length === 0) return null;
 
-  function handleSync(platform: SyncablePlatform) {
+  function startSync(platform: SyncablePlatform, purge: boolean) {
     setSyncingId(platform.id);
     setProgress(null);
     setResultPlatformName(platform.name);
+    setConfirmPurge(null);
 
-    const es = new EventSource(
-      `/api/platforms/sync-stream?platformId=${encodeURIComponent(platform.id)}&force=1`
-    );
+    const params = new URLSearchParams({
+      platformId: platform.id,
+      force: "1",
+    });
+    if (purge) params.set("purge", "1");
+
+    const es = new EventSource(`/api/platforms/sync-stream?${params}`);
     eventSourceRef.current = es;
 
     es.onmessage = (event) => {
@@ -175,32 +181,80 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 </div>
               )}
 
-              <button
-                onClick={() => handleSync(p)}
-                disabled={!!syncingId}
-                className={cn(
-                  "w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                  "bg-[var(--color-accent)] text-white",
-                  "hover:bg-[var(--color-accent-hover)] transition-colors",
-                  "disabled:opacity-50"
-                )}
-              >
-                {isSyncing ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Syncing...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="h-3.5 w-3.5" />
-                    Sync All
-                  </>
-                )}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startSync(p, false)}
+                  disabled={!!syncingId}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                    "bg-[var(--color-accent)] text-white",
+                    "hover:bg-[var(--color-accent-hover)] transition-colors",
+                    "disabled:opacity-50"
+                  )}
+                >
+                  {isSyncing ? (
+                    <>
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Syncing...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Sync
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => setConfirmPurge(p)}
+                  disabled={!!syncingId}
+                  title="Delete all & re-import from scratch"
+                  className={cn(
+                    "flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                    "bg-red-500/10 text-red-400 border border-red-500/20",
+                    "hover:bg-red-500/20 transition-colors",
+                    "disabled:opacity-50"
+                  )}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
           );
         })}
       </div>
+
+      {/* Confirm Purge Dialog */}
+      <Dialog
+        open={!!confirmPurge}
+        onClose={() => setConfirmPurge(null)}
+        title="Clean Sync"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-[var(--color-text-muted)]">
+            This will <span className="font-medium text-red-400">delete all existing candidates</span> from{" "}
+            <span className="font-medium text-[var(--color-text-primary)]">{confirmPurge?.name}</span>{" "}
+            and their downloaded resumes, then re-import everything fresh with complete data.
+          </p>
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              onClick={() => setConfirmPurge(null)}
+              className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => confirmPurge && startSync(confirmPurge, true)}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium",
+                "bg-red-500 text-white",
+                "hover:bg-red-600 transition-colors"
+              )}
+            >
+              Delete All & Re-sync
+            </button>
+          </div>
+        </div>
+      </Dialog>
 
       {/* Sync Result Dialog */}
       <Dialog open={!!result} onClose={closeResult} title="Sync Results">

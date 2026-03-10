@@ -17,13 +17,14 @@ export async function GET(request: NextRequest) {
   }
 
   const forceUpdate = request.nextUrl.searchParams.get("force") === "1";
+  const purge = request.nextUrl.searchParams.get("purge") === "1";
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
       try {
         const generator = forceUpdate
-          ? resyncCandidatesStreaming(platformId)
+          ? resyncCandidatesStreaming(platformId, purge)
           : syncCandidatesStreaming(platformId);
         for await (const event of generator) {
           const data = `data: ${JSON.stringify(event)}\n\n`;

@@ -4,7 +4,7 @@ import { createCandidate } from "./candidates";
 import { ensureValidToken } from "./platform-sync";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 import { revalidatePath } from "next/cache";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, readdir, unlink } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 
@@ -183,7 +183,8 @@ async function downloadResumePdf(resumeUrl: string, candidateId: string): Promis
 }
 
 export async function* resyncCandidatesStreaming(
-  platformId: string
+  platformId: string,
+  purge = false
 ): AsyncGenerator<SyncProgressEvent> {
   const platform = await db.recruitmentPlatform.findUnique({ where: { id: platformId } });
   if (!platform || !platform.apiKey) {
@@ -203,7 +204,45 @@ export async function* resyncCandidatesStreaming(
     return;
   }
 
-  yield { type: "progress", detail: "Fetching all candidates...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
+  // Phase 0: Purge existing candidates from this platform
+  if (purge) {
+    yield { type: "progress", detail: "Deleting existing candidates...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
+
+    // Find candidates by source — try both platform name and known source strings
+    const sourceNames = [platform.name, client.platformName];
+    // Jobing uses "pro.jobing" as source instead of "Jobing"
+    if (platform.name === "Jobing") sourceNames.push("pro.jobing");
+
+    const existing = await db.candidate.findMany({
+      where: { source: { in: sourceNames } },
+      select: { id: true },
+    });
+
+    // Delete local resume PDFs
+    if (existsSync(RESUMES_DIR)) {
+      for (const c of existing) {
+        const pdfPath = path.join(RESUMES_DIR, `${c.id}.pdf`);
+        if (existsSync(pdfPath)) {
+          await unlink(pdfPath);
+        }
+      }
+    }
+
+    // Delete candidates from DB
+    const deleted = await db.candidate.deleteMany({
+      where: { source: { in: sourceNames } },
+    });
+
+    // Reset platform sync count
+    await db.recruitmentPlatform.update({
+      where: { id: platformId },
+      data: { totalSynced: 0 },
+    });
+
+    yield { type: "progress", detail: `Deleted ${deleted.count} existing candidates. Fetching fresh data...`, fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
+  } else {
+    yield { type: "progress", detail: "Fetching all candidates...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
+  }
 
   try {
     const allCandidates = await client.fetchCandidates(tokenResult.accessToken);
@@ -212,8 +251,7 @@ export async function* resyncCandidatesStreaming(
     let updated = 0;
     let created = 0;
 
-    // Phase 1: Re-sync candidate data
-    // Track candidates that need resume download: { candidateId, resumeUrl }
+    // Phase 1: Import candidate data
     const needsResume: { id: string; url: string }[] = [];
 
     for (const mc of allCandidates) {
@@ -249,7 +287,7 @@ export async function* resyncCandidatesStreaming(
       if (processed % 50 === 0 || processed === total) {
         yield {
           type: "progress",
-          detail: `Syncing candidates ${processed}/${total}...`,
+          detail: `Importing candidates ${processed}/${total}...`,
           fetched: processed, created, updated, skipped: 0, page: 1, total,
         };
       }
@@ -257,7 +295,7 @@ export async function* resyncCandidatesStreaming(
 
     await db.recruitmentPlatform.update({
       where: { id: platformId },
-      data: { lastSyncAt: new Date(), totalSynced: { increment: created } },
+      data: { lastSyncAt: new Date(), totalSynced: created },
     });
 
     // Phase 2: Download resume PDFs
