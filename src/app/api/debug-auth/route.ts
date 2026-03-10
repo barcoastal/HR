@@ -24,6 +24,28 @@ export async function GET(req: Request) {
     }
   }
 
+  // ?test=api will test the Jobing API directly
+  if (url.searchParams.get("test") === "api") {
+    const apiKey = process.env.NOLIG_API_KEY || "";
+    const company = process.env.NOLIG_COMPANY || "coastal-debt-resolve";
+    const apiUrl = `https://pro.jobing.com/api/applicants/bulk?company=${company}&page=1`;
+    try {
+      const res = await fetch(apiUrl, {
+        headers: { Authorization: `Bearer token=${apiKey}`, Accept: "application/json" },
+      });
+      const text = await res.text();
+      return NextResponse.json({
+        status: res.status,
+        url: apiUrl,
+        bodyLength: text.length,
+        bodyPreview: text.slice(0, 500),
+        headers: Object.fromEntries(res.headers.entries()),
+      });
+    } catch (err) {
+      return NextResponse.json({ error: String(err) });
+    }
+  }
+
   const platforms = await db.recruitmentPlatform.findMany({
     select: { id: true, name: true, status: true, apiKey: true, totalSynced: true },
   });
