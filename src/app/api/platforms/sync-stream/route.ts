@@ -1,15 +1,10 @@
 import { NextRequest } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { syncCandidatesStreaming, resyncCandidatesStreaming } from "@/lib/actions/platform-sync-stream";
 
 export const runtime = "nodejs";
+export const maxDuration = 300; // 5 min timeout for long syncs
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id && process.env.NODE_ENV === "production") {
-    return new Response("Unauthorized", { status: 401 });
-  }
 
   const platformId = request.nextUrl.searchParams.get("platformId");
   if (!platformId) {
