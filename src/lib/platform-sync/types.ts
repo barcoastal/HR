@@ -28,6 +28,8 @@ export type SyncProgressEvent = {
   skipped: number;
   page: number;
   total: number;
+  resumesDownloaded?: number;
+  resumesFailed?: number;
 };
 
 export interface PlatformClient {

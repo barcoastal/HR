@@ -4,6 +4,9 @@ import { createCandidate } from "./candidates";
 import { ensureValidToken } from "./platform-sync";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 import { revalidatePath } from "next/cache";
+import { writeFile, mkdir } from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
 
 async function updateExistingCandidate(
   existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null },
@@ -159,6 +162,26 @@ export async function* syncCandidatesStreaming(
   }
 }
 
+const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
+
+async function downloadResumePdf(resumeUrl: string, candidateId: string): Promise<boolean> {
+  try {
+    const apiKey = process.env.NOLIG_API_KEY || "";
+    const res = await fetch(resumeUrl, {
+      headers: { Authorization: `Bearer token=${apiKey}` },
+    });
+    if (!res.ok) return false;
+    const ct = res.headers.get("content-type") || "";
+    if (!ct.includes("pdf") && !ct.includes("octet-stream")) return false;
+    const buffer = Buffer.from(await res.arrayBuffer());
+    if (buffer.length < 100) return false;
+    await writeFile(path.join(RESUMES_DIR, `${candidateId}.pdf`), buffer);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function* resyncCandidatesStreaming(
   platformId: string
 ): AsyncGenerator<SyncProgressEvent> {
@@ -180,7 +203,7 @@ export async function* resyncCandidatesStreaming(
     return;
   }
 
-  yield { type: "progress", detail: "Fetching all candidates for re-sync...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
+  yield { type: "progress", detail: "Fetching all candidates...", fetched: 0, created: 0, updated: 0, skipped: 0, page: 0, total: 0 };
 
   try {
     const allCandidates = await client.fetchCandidates(tokenResult.accessToken);
@@ -189,12 +212,15 @@ export async function* resyncCandidatesStreaming(
     let updated = 0;
     let created = 0;
 
+    // Phase 1: Re-sync candidate data
+    // Track candidates that need resume download: { candidateId, resumeUrl }
+    const needsResume: { id: string; url: string }[] = [];
+
     for (const mc of allCandidates) {
       processed++;
       const existing = await db.candidate.findUnique({ where: { email: mc.email } });
 
       if (existing) {
-        // Force update fields from platform
         const data: Record<string, unknown> = {};
         if (mc.resumeUrl) data.resumeUrl = mc.resumeUrl;
         if (mc.jobAppliedTo) data.jobAppliedTo = mc.jobAppliedTo;
@@ -204,27 +230,27 @@ export async function* resyncCandidatesStreaming(
           await db.candidate.update({ where: { id: existing.id }, data });
           updated++;
         }
+        if (mc.resumeUrl && !existing.resumeUrl?.startsWith("/api/resumes/")) {
+          needsResume.push({ id: existing.id, url: mc.resumeUrl });
+        }
       } else {
-        await createCandidate({
+        const newCandidate = await createCandidate({
           firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
           phone: mc.phone, skills: mc.skills, experience: mc.experience,
           source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
           resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
         });
         created++;
+        if (mc.resumeUrl && newCandidate?.id) {
+          needsResume.push({ id: newCandidate.id, url: mc.resumeUrl });
+        }
       }
 
-      // Yield progress every 50 candidates
       if (processed % 50 === 0 || processed === total) {
         yield {
           type: "progress",
-          detail: `Re-syncing ${processed}/${total}...`,
-          fetched: processed,
-          created,
-          updated,
-          skipped: 0,
-          page: 1,
-          total,
+          detail: `Syncing candidates ${processed}/${total}...`,
+          fetched: processed, created, updated, skipped: 0, page: 1, total,
         };
       }
     }
@@ -234,16 +260,47 @@ export async function* resyncCandidatesStreaming(
       data: { lastSyncAt: new Date(), totalSynced: { increment: created } },
     });
 
+    // Phase 2: Download resume PDFs
+    if (!existsSync(RESUMES_DIR)) {
+      await mkdir(RESUMES_DIR, { recursive: true });
+    }
+
+    let resumesDownloaded = 0;
+    let resumesFailed = 0;
+
+    for (let i = 0; i < needsResume.length; i++) {
+      const { id, url } = needsResume[i];
+
+      // Skip if already downloaded
+      if (existsSync(path.join(RESUMES_DIR, `${id}.pdf`))) {
+        await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
+        resumesDownloaded++;
+      } else {
+        const ok = await downloadResumePdf(url, id);
+        if (ok) {
+          await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
+          resumesDownloaded++;
+        } else {
+          resumesFailed++;
+        }
+      }
+
+      if ((i + 1) % 20 === 0 || i === needsResume.length - 1) {
+        yield {
+          type: "progress",
+          detail: `Downloading resumes ${i + 1}/${needsResume.length}...`,
+          fetched: processed, created, updated, skipped: 0, page: 2, total,
+          resumesDownloaded, resumesFailed,
+        };
+      }
+    }
+
     revalidatePath("/cv");
 
     yield {
       type: "complete",
-      fetched: processed,
-      created,
-      updated,
-      skipped: 0,
-      page: 1,
-      total,
+      fetched: processed, created, updated, skipped: 0, page: 2, total,
+      resumesDownloaded, resumesFailed,
     };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

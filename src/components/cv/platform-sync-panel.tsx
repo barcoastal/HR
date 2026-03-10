@@ -1,11 +1,10 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { RefreshCw, Loader2, CheckCircle2, AlertCircle, RotateCcw, FileDown } from "lucide-react";
+import { RefreshCw, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
 
 type SyncablePlatform = {
@@ -20,14 +19,12 @@ type SyncablePlatform = {
 
 type SyncResult = {
   success: boolean;
-  candidatesFound: number;
-  candidatesCreated: number;
-  candidatesUpdated: number;
-  skippedEmails: string[];
+  created: number;
+  updated: number;
+  resumesDownloaded: number;
+  resumesFailed: number;
+  total: number;
   error?: string;
-  resumesDownloaded?: number;
-  resumesFailed?: number;
-  resumesAlreadyLocal?: number;
 };
 
 type Props = {
@@ -42,8 +39,6 @@ const STATUS_COLORS: Record<string, string> = {
 
 export function PlatformSyncPanel({ platforms }: Props) {
   const [syncingId, setSyncingId] = useState<string | null>(null);
-  const [resyncingId, setResyncingId] = useState<string | null>(null);
-  const [downloadingResumes, setDownloadingResumes] = useState(false);
   const [progress, setProgress] = useState<SyncProgressEvent | null>(null);
   const [result, setResult] = useState<SyncResult | null>(null);
   const [resultPlatformName, setResultPlatformName] = useState("");
@@ -66,63 +61,6 @@ export function PlatformSyncPanel({ platforms }: Props) {
     setResultPlatformName(platform.name);
 
     const es = new EventSource(
-      `/api/platforms/sync-stream?platformId=${encodeURIComponent(platform.id)}`
-    );
-    eventSourceRef.current = es;
-
-    es.onmessage = (event) => {
-      const data: SyncProgressEvent = JSON.parse(event.data);
-      setProgress(data);
-
-      if (data.type === "complete") {
-        es.close();
-        eventSourceRef.current = null;
-        setSyncingId(null);
-        setResult({
-          success: true,
-          candidatesFound: data.fetched,
-          candidatesCreated: data.created,
-          candidatesUpdated: data.updated || 0,
-          skippedEmails: Array(data.skipped).fill(""),
-          error: undefined,
-        });
-        router.refresh();
-      } else if (data.type === "error") {
-        es.close();
-        eventSourceRef.current = null;
-        setSyncingId(null);
-        setResult({
-          success: false,
-          candidatesFound: data.fetched,
-          candidatesCreated: data.created,
-          candidatesUpdated: data.updated || 0,
-          skippedEmails: [],
-          error: data.detail ?? "Sync failed",
-        });
-      }
-    };
-
-    es.onerror = () => {
-      es.close();
-      eventSourceRef.current = null;
-      setSyncingId(null);
-      setResult({
-        success: false,
-        candidatesFound: 0,
-        candidatesCreated: 0,
-        candidatesUpdated: 0,
-        skippedEmails: [],
-        error: "Connection lost during sync",
-      });
-    };
-  }
-
-  function handleForceResync(platform: SyncablePlatform) {
-    setResyncingId(platform.id);
-    setProgress(null);
-    setResultPlatformName(platform.name);
-
-    const es = new EventSource(
       `/api/platforms/sync-stream?platformId=${encodeURIComponent(platform.id)}&force=1`
     );
     eventSourceRef.current = es;
@@ -134,26 +72,28 @@ export function PlatformSyncPanel({ platforms }: Props) {
       if (data.type === "complete") {
         es.close();
         eventSourceRef.current = null;
-        setResyncingId(null);
+        setSyncingId(null);
         setResult({
           success: true,
-          candidatesFound: data.fetched,
-          candidatesCreated: data.created,
-          candidatesUpdated: data.updated || 0,
-          skippedEmails: [],
+          created: data.created,
+          updated: data.updated || 0,
+          resumesDownloaded: data.resumesDownloaded || 0,
+          resumesFailed: data.resumesFailed || 0,
+          total: data.fetched,
         });
         router.refresh();
       } else if (data.type === "error") {
         es.close();
         eventSourceRef.current = null;
-        setResyncingId(null);
+        setSyncingId(null);
         setResult({
           success: false,
-          candidatesFound: 0,
-          candidatesCreated: 0,
-          candidatesUpdated: 0,
-          skippedEmails: [],
-          error: data.detail ?? "Re-sync failed",
+          created: 0,
+          updated: 0,
+          resumesDownloaded: 0,
+          resumesFailed: 0,
+          total: 0,
+          error: data.detail ?? "Sync failed",
         });
       }
     };
@@ -161,34 +101,17 @@ export function PlatformSyncPanel({ platforms }: Props) {
     es.onerror = () => {
       es.close();
       eventSourceRef.current = null;
-      setResyncingId(null);
+      setSyncingId(null);
       setResult({
         success: false,
-        candidatesFound: 0,
-        candidatesCreated: 0,
-        candidatesUpdated: 0,
-        skippedEmails: [],
-        error: "Connection lost during re-sync",
+        created: 0,
+        updated: 0,
+        resumesDownloaded: 0,
+        resumesFailed: 0,
+        total: 0,
+        error: "Connection lost during sync",
       });
     };
-  }
-
-  async function handleDownloadResumes() {
-    setDownloadingResumes(true);
-    setResultPlatformName("All Platforms");
-    const res = await batchDownloadResumes();
-    setDownloadingResumes(false);
-    setResult({
-      success: true,
-      candidatesFound: res.total,
-      candidatesCreated: 0,
-      candidatesUpdated: 0,
-      skippedEmails: [],
-      resumesDownloaded: res.downloaded,
-      resumesFailed: res.failed,
-      resumesAlreadyLocal: res.alreadyLocal,
-    });
-    router.refresh();
   }
 
   function closeResult() {
@@ -233,8 +156,8 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 </p>
               </div>
 
-              {/* Progress bar during sync or re-sync */}
-              {(isSyncing || resyncingId === p.id) && progress && (
+              {/* Progress bar during sync */}
+              {isSyncing && progress && (
                 <div className="mb-3 space-y-1.5">
                   <div className="w-full h-1.5 bg-[var(--color-border)] rounded-full overflow-hidden">
                     <div
@@ -247,89 +170,36 @@ export function PlatformSyncPanel({ platforms }: Props) {
                     />
                   </div>
                   <p className="text-[10px] text-[var(--color-text-muted)]">
-                    Page {progress.page}
-                    {progress.total > 0 ? ` — ${progress.fetched}/${progress.total}` : ""}
-                    {" | "}
-                    {progress.created} new, {(progress as SyncProgressEvent & { updated?: number }).updated || 0} updated, {progress.skipped} skipped
+                    {progress.detail || `${progress.fetched}/${progress.total}`}
                   </p>
                 </div>
               )}
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleSync(p)}
-                  disabled={isSyncing || !!syncingId || !!resyncingId}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                    "bg-[var(--color-accent)] text-white",
-                    "hover:bg-[var(--color-accent-hover)] transition-colors",
-                    "disabled:opacity-50"
-                  )}
-                >
-                  {isSyncing ? (
-                    <>
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      Syncing...
-                    </>
-                  ) : (
-                    <>
-                      <RefreshCw className="h-3.5 w-3.5" />
-                      Sync New
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => handleForceResync(p)}
-                  disabled={isSyncing || !!syncingId || !!resyncingId}
-                  className={cn(
-                    "flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                    "bg-amber-500/10 text-amber-400 border border-amber-500/20",
-                    "hover:bg-amber-500/20 transition-colors",
-                    "disabled:opacity-50"
-                  )}
-                >
-                  {resyncingId === p.id ? (
-                    <>
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      Re-syncing...
-                    </>
-                  ) : (
-                    <>
-                      <RotateCcw className="h-3.5 w-3.5" />
-                      Re-sync All
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                onClick={() => handleSync(p)}
+                disabled={!!syncingId}
+                className={cn(
+                  "w-full flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                  "bg-[var(--color-accent)] text-white",
+                  "hover:bg-[var(--color-accent-hover)] transition-colors",
+                  "disabled:opacity-50"
+                )}
+              >
+                {isSyncing ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5" />
+                    Sync All
+                  </>
+                )}
+              </button>
             </div>
           );
         })}
-      </div>
-
-      {/* Fetch All Resumes button */}
-      <div className="mt-3">
-        <button
-          onClick={handleDownloadResumes}
-          disabled={downloadingResumes || !!syncingId || !!resyncingId}
-          className={cn(
-            "inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-medium",
-            "bg-purple-500/10 text-purple-400 border border-purple-500/20",
-            "hover:bg-purple-500/20 transition-colors",
-            "disabled:opacity-50"
-          )}
-        >
-          {downloadingResumes ? (
-            <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              Downloading Resumes...
-            </>
-          ) : (
-            <>
-              <FileDown className="h-3.5 w-3.5" />
-              Fetch All Resume PDFs
-            </>
-          )}
-        </button>
       </div>
 
       {/* Sync Result Dialog */}
@@ -341,44 +211,39 @@ export function PlatformSyncPanel({ platforms }: Props) {
               Sync from {resultPlatformName} complete
             </p>
             <div className="text-center space-y-1">
-              <p className="text-sm text-[var(--color-text-muted)]">
-                <span className="font-medium text-[var(--color-text-primary)]">
-                  {result.candidatesCreated}
-                </span>{" "}
-                new candidate{result.candidatesCreated !== 1 ? "s" : ""} imported
-              </p>
-              {result.candidatesUpdated > 0 && (
+              {result.created > 0 && (
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  <span className="font-medium text-[var(--color-text-primary)]">
+                    {result.created}
+                  </span>{" "}
+                  new candidate{result.created !== 1 ? "s" : ""} imported
+                </p>
+              )}
+              {result.updated > 0 && (
                 <p className="text-sm text-[var(--color-text-muted)]">
                   <span className="font-medium text-[var(--color-accent)]">
-                    {result.candidatesUpdated}
+                    {result.updated}
                   </span>{" "}
-                  existing candidate{result.candidatesUpdated !== 1 ? "s" : ""} updated with new data
+                  candidate{result.updated !== 1 ? "s" : ""} updated
                 </p>
               )}
-              {result.skippedEmails.length > 0 && (
-                <p className="text-xs text-[var(--color-text-muted)]">
-                  {result.skippedEmails.length} duplicate{result.skippedEmails.length !== 1 ? "s" : ""} skipped
+              {result.resumesDownloaded > 0 && (
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  <span className="font-medium text-purple-400">
+                    {result.resumesDownloaded}
+                  </span>{" "}
+                  resume{result.resumesDownloaded !== 1 ? "s" : ""} downloaded
                 </p>
               )}
-              {result.resumesDownloaded !== undefined && (
-                <>
-                  <p className="text-sm text-[var(--color-text-muted)]">
-                    <span className="font-medium text-purple-400">
-                      {result.resumesDownloaded}
-                    </span>{" "}
-                    resume{result.resumesDownloaded !== 1 ? "s" : ""} downloaded
-                  </p>
-                  {(result.resumesAlreadyLocal || 0) > 0 && (
-                    <p className="text-xs text-[var(--color-text-muted)]">
-                      {result.resumesAlreadyLocal} already stored locally
-                    </p>
-                  )}
-                  {(result.resumesFailed || 0) > 0 && (
-                    <p className="text-xs text-amber-400">
-                      {result.resumesFailed} failed to download
-                    </p>
-                  )}
-                </>
+              {result.resumesFailed > 0 && (
+                <p className="text-xs text-amber-400">
+                  {result.resumesFailed} resume{result.resumesFailed !== 1 ? "s" : ""} failed to download
+                </p>
+              )}
+              {result.created === 0 && result.updated === 0 && result.resumesDownloaded === 0 && (
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Everything is up to date ({result.total} candidates checked)
+                </p>
               )}
             </div>
           </div>
