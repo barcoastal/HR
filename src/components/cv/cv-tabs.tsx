@@ -6,7 +6,8 @@ import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
-import { Users } from "lucide-react";
+import { Users, Sparkles } from "lucide-react";
+import { AIMatchDialog } from "@/components/cv/add-position-form";
 import type { CandidateStatus } from "@/generated/prisma/client";
 
 type CandidateItem = {
@@ -64,6 +65,7 @@ export function CVTabs({
   ];
 
   const [activeTab, setActiveTab] = useState("recruitment");
+  const [matchDialogPosition, setMatchDialogPosition] = useState<{ id: string; title: string } | null>(null);
 
   return (
     <div>
@@ -96,8 +98,22 @@ export function CVTabs({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {openPositions.map((pos) => (
                   <div key={pos.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-                    <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{pos.title}</h3>
-                    <p className="text-xs text-[var(--color-text-muted)] mt-1">{pos.department?.name || "No department"}</p>
+                    <div className="flex items-start justify-between">
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{pos.title}</h3>
+                        <p className="text-xs text-[var(--color-text-muted)] mt-1">{pos.department?.name || "No department"}</p>
+                      </div>
+                      <button
+                        onClick={() => setMatchDialogPosition({ id: pos.id, title: pos.title })}
+                        title="Find matching candidates with AI"
+                        className={cn(
+                          "shrink-0 p-1.5 rounded-lg transition-colors",
+                          "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10"
+                        )}
+                      >
+                        <Sparkles className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                     {pos.salary && <p className="text-xs text-[var(--color-accent)] mt-1">{pos.salary}</p>}
                     <div className="flex items-center gap-1.5 mt-2">
                       <Users className="h-3 w-3 text-[var(--color-text-muted)]" />
@@ -131,6 +147,15 @@ export function CVTabs({
             }))}
             positions={positions}
           />
+
+          {matchDialogPosition && (
+            <AIMatchDialog
+              positionId={matchDialogPosition.id}
+              positionTitle={matchDialogPosition.title}
+              open={true}
+              onClose={() => setMatchDialogPosition(null)}
+            />
+          )}
         </div>
       )}
 
