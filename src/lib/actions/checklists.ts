@@ -77,3 +77,83 @@ export async function deleteChecklistItem(id: string) {
   await db.checklistItem.delete({ where: { id } });
   revalidatePath("/settings");
 }
+
+export async function createOverrideChecklist(
+  departmentId: string,
+  jobTitleId: string
+) {
+  const jobTitle = await db.jobTitle.findUnique({ where: { id: jobTitleId } });
+  if (!jobTitle) throw new Error("Job title not found");
+
+  const existing = await db.onboardingChecklist.findFirst({
+    where: { departmentId, jobTitleId, isOverride: true, type: "ONBOARDING" },
+  });
+  if (existing) return existing;
+
+  const checklist = await db.onboardingChecklist.create({
+    data: {
+      name: `${jobTitle.name} Override`,
+      type: "ONBOARDING",
+      departmentId,
+      jobTitleId,
+      isOverride: true,
+    },
+  });
+  revalidatePath("/settings");
+  return checklist;
+}
+
+export async function deleteOverrideChecklist(id: string) {
+  await db.onboardingChecklist.delete({ where: { id } });
+  revalidatePath("/settings");
+}
+
+export async function addExclusion(overrideChecklistId: string, excludedItemId: string) {
+  await db.checklistOverrideExclusion.create({
+    data: { overrideChecklistId, excludedItemId },
+  });
+  revalidatePath("/settings");
+}
+
+export async function removeExclusion(overrideChecklistId: string, excludedItemId: string) {
+  await db.checklistOverrideExclusion.deleteMany({
+    where: { overrideChecklistId, excludedItemId },
+  });
+  revalidatePath("/settings");
+}
+
+export async function getChecklistsForDepartment(departmentId: string | null) {
+  return db.onboardingChecklist.findMany({
+    where: {
+      type: "ONBOARDING",
+      departmentId,
+      isOverride: false,
+    },
+    include: {
+      items: {
+        orderBy: { order: "asc" },
+        include: { assignee: true },
+      },
+    },
+    orderBy: { name: "asc" },
+  });
+}
+
+export async function getOverridesForDepartment(departmentId: string) {
+  return db.onboardingChecklist.findMany({
+    where: {
+      type: "ONBOARDING",
+      departmentId,
+      isOverride: true,
+    },
+    include: {
+      jobTitle: true,
+      items: {
+        orderBy: { order: "asc" },
+        include: { assignee: true },
+      },
+      exclusions: { include: { excludedItem: true } },
+    },
+    orderBy: { name: "asc" },
+  });
+}
