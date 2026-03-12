@@ -47,3 +47,106 @@ export async function sendOnboardingEmail({
     console.error(`[email] Failed to send to ${to}:`, error);
   }
 }
+
+export async function sendSigningRequestEmail({
+  to,
+  firstName,
+  documentName,
+  signingUrl,
+}: {
+  to: string;
+  firstName: string;
+  documentName: string;
+  signingUrl: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("RESEND_API_KEY not set, skipping signing request email");
+    return;
+  }
+
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to,
+      subject: `Please sign: ${documentName}`,
+      html: `
+        <p>Hi ${firstName},</p>
+        <p>Please review and sign <strong>${documentName}</strong> for your onboarding.</p>
+        <p><a href="${signingUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;">Review & Sign Document</a></p>
+        <p>This link expires in 30 days.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Failed to send signing request email:", error);
+  }
+}
+
+export async function sendTaskAssignmentEmail({
+  to,
+  assigneeName,
+  newHireName,
+  taskTitle,
+  taskDescription,
+}: {
+  to: string;
+  assigneeName: string;
+  newHireName: string;
+  taskTitle: string;
+  taskDescription?: string | null;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("RESEND_API_KEY not set, skipping task assignment email");
+    return;
+  }
+
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to,
+      subject: `Onboarding task assigned: ${taskTitle}`,
+      html: `
+        <p>Hi ${assigneeName},</p>
+        <p>You've been assigned to help <strong>${newHireName}</strong> with:</p>
+        <p><strong>${taskTitle}</strong></p>
+        ${taskDescription ? `<p>${taskDescription}</p>` : ""}
+      `,
+    });
+  } catch (error) {
+    console.error("Failed to send task assignment email:", error);
+  }
+}
+
+export async function sendSigningConfirmationEmail({
+  to,
+  firstName,
+  documentName,
+}: {
+  to: string;
+  firstName: string;
+  documentName: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return;
+
+  try {
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to,
+      subject: `Document signed: ${documentName}`,
+      html: `
+        <p>Hi ${firstName},</p>
+        <p>Thanks for signing <strong>${documentName}</strong>. A copy has been saved to your file.</p>
+      `,
+    });
+  } catch (error) {
+    console.error("Failed to send signing confirmation email:", error);
+  }
+}
