@@ -1,8 +1,6 @@
-"use client";
-
 import { cn } from "@/lib/utils";
-import { type LucideIcon } from "lucide-react";
-import { AnimatedCounter } from "./motion";
+import { AnimatedCounterClient } from "./stat-card-client";
+import type { ReactNode } from "react";
 
 const colorSchemes = {
   blue: {
@@ -42,12 +40,13 @@ const colorSchemes = {
   },
 } as const;
 
-type ColorScheme = keyof typeof colorSchemes;
+export type ColorScheme = keyof typeof colorSchemes;
+export { colorSchemes };
 
 interface StatCardProps {
   title: string;
   value: number | string;
-  icon: LucideIcon;
+  icon: ReactNode;
   color?: ColorScheme;
   suffix?: string;
   description?: string;
@@ -59,7 +58,7 @@ interface StatCardProps {
 export function StatCard({
   title,
   value,
-  icon: Icon,
+  icon,
   color = "blue",
   suffix,
   description,
@@ -84,7 +83,7 @@ export function StatCard({
           </p>
           <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
             {animate && numValue !== null ? (
-              <AnimatedCounter value={numValue} />
+              <AnimatedCounterClient value={numValue} />
             ) : (
               value
             )}
@@ -116,10 +115,11 @@ export function StatCard({
         <div
           className={cn(
             "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
-            scheme.iconBg
+            scheme.iconBg,
+            scheme.iconColor
           )}
         >
-          <Icon className={cn("h-5 w-5", scheme.iconColor)} />
+          {icon}
         </div>
       </div>
     </div>

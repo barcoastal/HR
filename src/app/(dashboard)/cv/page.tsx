@@ -45,8 +45,8 @@ export default async function CVPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
-        <StatCard title="Open Positions" value={openPositions.length} icon={Briefcase} color="blue" />
-        <StatCard title="Active in Pipeline" value={activeCandidates} icon={Target} color="emerald" />
+        <StatCard title="Open Positions" value={openPositions.length} icon={<Briefcase className="h-5 w-5" />} color="blue" />
+        <StatCard title="Active in Pipeline" value={activeCandidates} icon={<Target className="h-5 w-5" />} color="emerald" />
       </div>
 
       <CVTabs

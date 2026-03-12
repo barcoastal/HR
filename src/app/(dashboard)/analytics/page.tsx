@@ -89,19 +89,19 @@ export default async function AnalyticsPage() {
 
       {/* Headcount Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-        <StatCard title="Total Employees" value={headcount.total} icon={Users} color="blue" />
-        <StatCard title="Active" value={headcount.active} icon={Users} color="emerald" />
-        <StatCard title="New This Month" value={headcount.newThisMonth} icon={UserPlus} color="emerald" />
-        <StatCard title="Departed" value={headcount.departedThisMonth} icon={UserMinus} color="red" />
-        <StatCard title="Net Growth" value={headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth)} icon={headcount.netGrowthMonth >= 0 ? TrendingUp : TrendingDown} color={headcount.netGrowthMonth >= 0 ? "emerald" : "red"} animate={false} />
-        <StatCard title="Retention" value={`${retention.retentionRate}%`} icon={Target} color="purple" animate={false} />
+        <StatCard title="Total Employees" value={headcount.total} icon={<Users className="h-5 w-5" />} color="blue" />
+        <StatCard title="Active" value={headcount.active} icon={<Users className="h-5 w-5" />} color="emerald" />
+        <StatCard title="New This Month" value={headcount.newThisMonth} icon={<UserPlus className="h-5 w-5" />} color="emerald" />
+        <StatCard title="Departed" value={headcount.departedThisMonth} icon={<UserMinus className="h-5 w-5" />} color="red" />
+        <StatCard title="Net Growth" value={headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth)} icon={headcount.netGrowthMonth >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />} color={headcount.netGrowthMonth >= 0 ? "emerald" : "red"} animate={false} />
+        <StatCard title="Retention" value={`${retention.retentionRate}%`} icon={<Target className="h-5 w-5" />} color="purple" animate={false} />
       </div>
 
       {/* Recruitment KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <StatCard title="Avg Time to Hire" value={timeToHire.avgDays} icon={Clock} color="amber" suffix="days" />
-        <StatCard title="Blended Cost/Hire" value={`$${blendedCost.blendedCostPerHire.toLocaleString()}`} icon={DollarSign} color="emerald" animate={false} description={`Direct: $${blendedCost.directCostPerHire.toLocaleString()} · Platform: $${blendedCost.platformCostPerHire.toLocaleString()}`} />
-        <StatCard title="Open Positions" value={pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)} icon={Briefcase} color="blue" description="active candidates" />
+        <StatCard title="Avg Time to Hire" value={timeToHire.avgDays} icon={<Clock className="h-5 w-5" />} color="amber" suffix="days" />
+        <StatCard title="Blended Cost/Hire" value={`$${blendedCost.blendedCostPerHire.toLocaleString()}`} icon={<DollarSign className="h-5 w-5" />} color="emerald" animate={false} description={`Direct: $${blendedCost.directCostPerHire.toLocaleString()} · Platform: $${blendedCost.platformCostPerHire.toLocaleString()}`} />
+        <StatCard title="Open Positions" value={pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)} icon={<Briefcase className="h-5 w-5" />} color="blue" description="active candidates" />
       </div>
 
       {/* Charts Row 1 */}

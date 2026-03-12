@@ -51,9 +51,9 @@ export default async function OnboardingPage() {
       <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={UserPlus} color="blue" />
-        <StatCard title="Completed This Month" value={completedEmployees.length} icon={CheckCircle2} color="emerald" />
-        <StatCard title="Pending Tasks" value={pendingTasks} icon={ClipboardList} color="amber" />
+        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<UserPlus className="h-5 w-5" />} color="blue" />
+        <StatCard title="Completed This Month" value={completedEmployees.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
+        <StatCard title="Pending Tasks" value={pendingTasks} icon={<ClipboardList className="h-5 w-5" />} color="amber" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>

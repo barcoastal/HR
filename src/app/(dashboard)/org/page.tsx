@@ -35,10 +35,10 @@ export default async function OrgPage() {
       <PageHeader title="Organization" description="Overview of your company structure and departments" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Total Employees" value={activeEmployees.length} icon={Users} color="blue" />
-        <StatCard title="Departments" value={departments.length} icon={Building2} color="purple" />
-        <StatCard title="Teams" value={teamCount} icon={Layers} color="emerald" />
-        <StatCard title="Avg Tenure" value={avgTenure} icon={Clock} color="amber" animate={false} />
+        <StatCard title="Total Employees" value={activeEmployees.length} icon={<Users className="h-5 w-5" />} color="blue" />
+        <StatCard title="Departments" value={departments.length} icon={<Building2 className="h-5 w-5" />} color="purple" />
+        <StatCard title="Teams" value={teamCount} icon={<Layers className="h-5 w-5" />} color="emerald" />
+        <StatCard title="Avg Tenure" value={avgTenure} icon={<Clock className="h-5 w-5" />} color="amber" animate={false} />
       </div>
 
       <div className="mb-4">

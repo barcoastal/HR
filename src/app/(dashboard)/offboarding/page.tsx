@@ -57,8 +57,8 @@ export default async function OffboardingPage() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <StatCard title="Active Offboarding" value={offboardingEmployees.length} icon={UserMinus} color="amber" />
-        <StatCard title="Completed This Month" value={completedOffboarding.length} icon={CheckCircle2} color="emerald" />
+        <StatCard title="Active Offboarding" value={offboardingEmployees.length} icon={<UserMinus className="h-5 w-5" />} color="amber" />
+        <StatCard title="Completed This Month" value={completedOffboarding.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Offboarding</h2></div>
