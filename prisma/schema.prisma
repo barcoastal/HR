@@ -217,6 +217,8 @@ model Employee {
   timeOffBalances    TimeOffBalance[]
   approvedRequests   TimeOffRequest[]  @relation("TimeOffApprover")
   mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
+  assignedTasks      EmployeeTask[]    @relation("TaskAssignee")
+  signingRequests    SigningRequest[]
 
   @@index([departmentId])
   @@index([teamId])
@@ -241,12 +243,17 @@ model OnboardingChecklist {
   name         String
   type         ChecklistType
   departmentId String?
+  jobTitleId   String?
+  isOverride   Boolean             @default(false)
   createdAt    DateTime       @default(now())
 
   department   Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  jobTitle     JobTitle?           @relation(fields: [jobTitleId], references: [id], onDelete: SetNull)
   items        ChecklistItem[]
+  exclusions   ChecklistOverrideExclusion[]
 
   @@index([departmentId])
+  @@index([jobTitleId])
 }
 
 model ChecklistItem {
@@ -263,29 +270,52 @@ model ChecklistItem {
   emailBody        String?
   documentUrl      String?
   documentName     String?
+  documentAction   String              @default("NONE") // NONE | SEND | SIGN
 
   checklist        OnboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   assignee         Employee?           @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   employeeTasks    EmployeeTask[]
+  excludedBy       ChecklistOverrideExclusion[]
 
   @@index([checklistId])
   @@index([assigneeId])
 }
 
+model ChecklistOverrideExclusion {
+  id                   String              @id @default(uuid())
+  overrideChecklistId  String
+  excludedItemId       String
+
+  overrideChecklist    OnboardingChecklist @relation(fields: [overrideChecklistId], references: [id], onDelete: Cascade)
+  excludedItem         ChecklistItem       @relation(fields: [excludedItemId], references: [id], onDelete: Cascade)
+
+  @@unique([overrideChecklistId, excludedItemId])
+  @@index([overrideChecklistId])
+  @@index([excludedItemId])
+}
+
 model EmployeeTask {
   id              String        @id @default(uuid())
   employeeId      String
-  checklistItemId String
+  checklistItemId String?
   status          TaskStatus    @default(PENDING)
   documentUrl     String?
   completedAt     DateTime?
+  title            String?
+  description      String?
+  documentAction   String?
+  documentName     String?
+  assigneeId       String?
   createdAt       DateTime      @default(now())
 
   employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+  checklistItem   ChecklistItem? @relation(fields: [checklistItemId], references: [id], onDelete: SetNull)
+  assignee         Employee?     @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  signingRequest   SigningRequest?
 
   @@index([employeeId])
   @@index([checklistItemId])
+  @@index([assigneeId])
 }
 
 model ReviewCycle {
@@ -414,6 +444,8 @@ model JobTitle {
   id        String   @id @default(uuid())
   name      String   @unique
   createdAt DateTime @default(now())
+
+  checklists    OnboardingChecklist[]
 }
 
 enum PlatformType {
@@ -554,6 +586,26 @@ model Interview {
 
   @@index([candidateId])
   @@index([scheduledAt])
+}
+
+model SigningRequest {
+  id              String       @id @default(uuid())
+  employeeTaskId  String       @unique
+  employeeId      String
+  token           String       @unique
+  documentUrl     String
+  documentName    String
+  status          String       @default("PENDING") // PENDING | VIEWED | SIGNED
+  signedDocUrl    String?
+  signedAt        DateTime?
+  viewedAt        DateTime?
+  expiresAt       DateTime
+  createdAt       DateTime     @default(now())
+
+  employeeTask    EmployeeTask @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
+  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
 }
 
 // ---------------------
