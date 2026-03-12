@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import type { EmployeeStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { sendOnboardingEmail } from "@/lib/email";
 
 export async function getEmployees(filters?: {
   search?: string;
@@ -87,7 +88,13 @@ export async function createEmployee(data: {
   // Auto-assign onboarding checklist tasks when status is ONBOARDING
   if (status === "ONBOARDING") {
     const onboardingChecklists = await db.onboardingChecklist.findMany({
-      where: { type: "ONBOARDING" },
+      where: {
+        type: "ONBOARDING",
+        OR: [
+          { departmentId: null },
+          ...(data.departmentId ? [{ departmentId: data.departmentId }] : []),
+        ],
+      },
       include: { items: { orderBy: { order: "asc" } } },
     });
     const allItems = onboardingChecklists.flatMap((c) => c.items);
@@ -99,6 +106,19 @@ export async function createEmployee(data: {
           status: "PENDING",
         })),
       });
+
+      // Send emails for items that have sendEmail enabled
+      for (const item of allItems) {
+        if (item.sendEmail && item.emailSubject && item.emailBody) {
+          sendOnboardingEmail({
+            to: data.email,
+            subject: item.emailSubject,
+            body: item.emailBody,
+            documentUrl: item.documentUrl,
+            documentName: item.documentName,
+          });
+        }
+      }
     }
     revalidatePath("/onboarding");
   }

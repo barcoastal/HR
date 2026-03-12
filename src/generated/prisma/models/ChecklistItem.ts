@@ -45,6 +45,11 @@ export type ChecklistItemMinAggregateOutputType = {
   order: number | null
   assigneeId: string | null
   dueDay: number | null
+  sendEmail: boolean | null
+  emailSubject: string | null
+  emailBody: string | null
+  documentUrl: string | null
+  documentName: string | null
 }
 
 export type ChecklistItemMaxAggregateOutputType = {
@@ -56,6 +61,11 @@ export type ChecklistItemMaxAggregateOutputType = {
   order: number | null
   assigneeId: string | null
   dueDay: number | null
+  sendEmail: boolean | null
+  emailSubject: string | null
+  emailBody: string | null
+  documentUrl: string | null
+  documentName: string | null
 }
 
 export type ChecklistItemCountAggregateOutputType = {
@@ -67,6 +77,11 @@ export type ChecklistItemCountAggregateOutputType = {
   order: number
   assigneeId: number
   dueDay: number
+  sendEmail: number
+  emailSubject: number
+  emailBody: number
+  documentUrl: number
+  documentName: number
   _all: number
 }
 
@@ -90,6 +105,11 @@ export type ChecklistItemMinAggregateInputType = {
   order?: true
   assigneeId?: true
   dueDay?: true
+  sendEmail?: true
+  emailSubject?: true
+  emailBody?: true
+  documentUrl?: true
+  documentName?: true
 }
 
 export type ChecklistItemMaxAggregateInputType = {
@@ -101,6 +121,11 @@ export type ChecklistItemMaxAggregateInputType = {
   order?: true
   assigneeId?: true
   dueDay?: true
+  sendEmail?: true
+  emailSubject?: true
+  emailBody?: true
+  documentUrl?: true
+  documentName?: true
 }
 
 export type ChecklistItemCountAggregateInputType = {
@@ -112,6 +137,11 @@ export type ChecklistItemCountAggregateInputType = {
   order?: true
   assigneeId?: true
   dueDay?: true
+  sendEmail?: true
+  emailSubject?: true
+  emailBody?: true
+  documentUrl?: true
+  documentName?: true
   _all?: true
 }
 
@@ -210,6 +240,11 @@ export type ChecklistItemGroupByOutputType = {
   order: number
   assigneeId: string | null
   dueDay: number | null
+  sendEmail: boolean
+  emailSubject: string | null
+  emailBody: string | null
+  documentUrl: string | null
+  documentName: string | null
   _count: ChecklistItemCountAggregateOutputType | null
   _avg: ChecklistItemAvgAggregateOutputType | null
   _sum: ChecklistItemSumAggregateOutputType | null
@@ -244,6 +279,11 @@ export type ChecklistItemWhereInput = {
   order?: Prisma.IntFilter<"ChecklistItem"> | number
   assigneeId?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   dueDay?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
+  sendEmail?: Prisma.BoolFilter<"ChecklistItem"> | boolean
+  emailSubject?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  emailBody?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentUrl?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   checklist?: Prisma.XOR<Prisma.OnboardingChecklistScalarRelationFilter, Prisma.OnboardingChecklistWhereInput>
   assignee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
@@ -258,6 +298,11 @@ export type ChecklistItemOrderByWithRelationInput = {
   order?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  sendEmail?: Prisma.SortOrder
+  emailSubject?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailBody?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   checklist?: Prisma.OnboardingChecklistOrderByWithRelationInput
   assignee?: Prisma.EmployeeOrderByWithRelationInput
   employeeTasks?: Prisma.EmployeeTaskOrderByRelationAggregateInput
@@ -275,6 +320,11 @@ export type ChecklistItemWhereUniqueInput = Prisma.AtLeast<{
   order?: Prisma.IntFilter<"ChecklistItem"> | number
   assigneeId?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   dueDay?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
+  sendEmail?: Prisma.BoolFilter<"ChecklistItem"> | boolean
+  emailSubject?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  emailBody?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentUrl?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   checklist?: Prisma.XOR<Prisma.OnboardingChecklistScalarRelationFilter, Prisma.OnboardingChecklistWhereInput>
   assignee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
@@ -289,6 +339,11 @@ export type ChecklistItemOrderByWithAggregationInput = {
   order?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   dueDay?: Prisma.SortOrderInput | Prisma.SortOrder
+  sendEmail?: Prisma.SortOrder
+  emailSubject?: Prisma.SortOrderInput | Prisma.SortOrder
+  emailBody?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChecklistItemCountOrderByAggregateInput
   _avg?: Prisma.ChecklistItemAvgOrderByAggregateInput
   _max?: Prisma.ChecklistItemMaxOrderByAggregateInput
@@ -308,6 +363,11 @@ export type ChecklistItemScalarWhereWithAggregatesInput = {
   order?: Prisma.IntWithAggregatesFilter<"ChecklistItem"> | number
   assigneeId?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
   dueDay?: Prisma.IntNullableWithAggregatesFilter<"ChecklistItem"> | number | null
+  sendEmail?: Prisma.BoolWithAggregatesFilter<"ChecklistItem"> | boolean
+  emailSubject?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
+  emailBody?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
+  documentUrl?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
+  documentName?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
 }
 
 export type ChecklistItemCreateInput = {
@@ -317,6 +377,11 @@ export type ChecklistItemCreateInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   checklist: Prisma.OnboardingChecklistCreateNestedOneWithoutItemsInput
   assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedChecklistItemsInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutChecklistItemInput
@@ -331,6 +396,11 @@ export type ChecklistItemUncheckedCreateInput = {
   order: number
   assigneeId?: string | null
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutChecklistItemInput
 }
 
@@ -341,6 +411,11 @@ export type ChecklistItemUpdateInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklist?: Prisma.OnboardingChecklistUpdateOneRequiredWithoutItemsNestedInput
   assignee?: Prisma.EmployeeUpdateOneWithoutAssignedChecklistItemsNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutChecklistItemNestedInput
@@ -355,6 +430,11 @@ export type ChecklistItemUncheckedUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutChecklistItemNestedInput
 }
 
@@ -367,6 +447,11 @@ export type ChecklistItemCreateManyInput = {
   order: number
   assigneeId?: string | null
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
 }
 
 export type ChecklistItemUpdateManyMutationInput = {
@@ -376,6 +461,11 @@ export type ChecklistItemUpdateManyMutationInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemUncheckedUpdateManyInput = {
@@ -387,6 +477,11 @@ export type ChecklistItemUncheckedUpdateManyInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemListRelationFilter = {
@@ -408,6 +503,11 @@ export type ChecklistItemCountOrderByAggregateInput = {
   order?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   dueDay?: Prisma.SortOrder
+  sendEmail?: Prisma.SortOrder
+  emailSubject?: Prisma.SortOrder
+  emailBody?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
 }
 
 export type ChecklistItemAvgOrderByAggregateInput = {
@@ -424,6 +524,11 @@ export type ChecklistItemMaxOrderByAggregateInput = {
   order?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   dueDay?: Prisma.SortOrder
+  sendEmail?: Prisma.SortOrder
+  emailSubject?: Prisma.SortOrder
+  emailBody?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
 }
 
 export type ChecklistItemMinOrderByAggregateInput = {
@@ -435,6 +540,11 @@ export type ChecklistItemMinOrderByAggregateInput = {
   order?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   dueDay?: Prisma.SortOrder
+  sendEmail?: Prisma.SortOrder
+  emailSubject?: Prisma.SortOrder
+  emailBody?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
 }
 
 export type ChecklistItemSumOrderByAggregateInput = {
@@ -572,6 +682,11 @@ export type ChecklistItemCreateWithoutAssigneeInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   checklist: Prisma.OnboardingChecklistCreateNestedOneWithoutItemsInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutChecklistItemInput
 }
@@ -584,6 +699,11 @@ export type ChecklistItemUncheckedCreateWithoutAssigneeInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutChecklistItemInput
 }
 
@@ -625,6 +745,11 @@ export type ChecklistItemScalarWhereInput = {
   order?: Prisma.IntFilter<"ChecklistItem"> | number
   assigneeId?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   dueDay?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
+  sendEmail?: Prisma.BoolFilter<"ChecklistItem"> | boolean
+  emailSubject?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  emailBody?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentUrl?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
+  documentName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
 }
 
 export type ChecklistItemCreateWithoutChecklistInput = {
@@ -634,6 +759,11 @@ export type ChecklistItemCreateWithoutChecklistInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedChecklistItemsInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutChecklistItemInput
 }
@@ -646,6 +776,11 @@ export type ChecklistItemUncheckedCreateWithoutChecklistInput = {
   order: number
   assigneeId?: string | null
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutChecklistItemInput
 }
 
@@ -682,6 +817,11 @@ export type ChecklistItemCreateWithoutEmployeeTasksInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
   checklist: Prisma.OnboardingChecklistCreateNestedOneWithoutItemsInput
   assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedChecklistItemsInput
 }
@@ -695,6 +835,11 @@ export type ChecklistItemUncheckedCreateWithoutEmployeeTasksInput = {
   order: number
   assigneeId?: string | null
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
 }
 
 export type ChecklistItemCreateOrConnectWithoutEmployeeTasksInput = {
@@ -720,6 +865,11 @@ export type ChecklistItemUpdateWithoutEmployeeTasksInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklist?: Prisma.OnboardingChecklistUpdateOneRequiredWithoutItemsNestedInput
   assignee?: Prisma.EmployeeUpdateOneWithoutAssignedChecklistItemsNestedInput
 }
@@ -733,6 +883,11 @@ export type ChecklistItemUncheckedUpdateWithoutEmployeeTasksInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemCreateManyAssigneeInput = {
@@ -743,6 +898,11 @@ export type ChecklistItemCreateManyAssigneeInput = {
   requiresDocument?: boolean
   order: number
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
 }
 
 export type ChecklistItemUpdateWithoutAssigneeInput = {
@@ -752,6 +912,11 @@ export type ChecklistItemUpdateWithoutAssigneeInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklist?: Prisma.OnboardingChecklistUpdateOneRequiredWithoutItemsNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutChecklistItemNestedInput
 }
@@ -764,6 +929,11 @@ export type ChecklistItemUncheckedUpdateWithoutAssigneeInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutChecklistItemNestedInput
 }
 
@@ -775,6 +945,11 @@ export type ChecklistItemUncheckedUpdateManyWithoutAssigneeInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemCreateManyChecklistInput = {
@@ -785,6 +960,11 @@ export type ChecklistItemCreateManyChecklistInput = {
   order: number
   assigneeId?: string | null
   dueDay?: number | null
+  sendEmail?: boolean
+  emailSubject?: string | null
+  emailBody?: string | null
+  documentUrl?: string | null
+  documentName?: string | null
 }
 
 export type ChecklistItemUpdateWithoutChecklistInput = {
@@ -794,6 +974,11 @@ export type ChecklistItemUpdateWithoutChecklistInput = {
   requiresDocument?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignee?: Prisma.EmployeeUpdateOneWithoutAssignedChecklistItemsNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutChecklistItemNestedInput
 }
@@ -806,6 +991,11 @@ export type ChecklistItemUncheckedUpdateWithoutChecklistInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutChecklistItemNestedInput
 }
 
@@ -817,6 +1007,11 @@ export type ChecklistItemUncheckedUpdateManyWithoutChecklistInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dueDay?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  sendEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailSubject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailBody?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -859,6 +1054,11 @@ export type ChecklistItemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   order?: boolean
   assigneeId?: boolean
   dueDay?: boolean
+  sendEmail?: boolean
+  emailSubject?: boolean
+  emailBody?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   checklist?: boolean | Prisma.OnboardingChecklistDefaultArgs<ExtArgs>
   assignee?: boolean | Prisma.ChecklistItem$assigneeArgs<ExtArgs>
   employeeTasks?: boolean | Prisma.ChecklistItem$employeeTasksArgs<ExtArgs>
@@ -874,6 +1074,11 @@ export type ChecklistItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   order?: boolean
   assigneeId?: boolean
   dueDay?: boolean
+  sendEmail?: boolean
+  emailSubject?: boolean
+  emailBody?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   checklist?: boolean | Prisma.OnboardingChecklistDefaultArgs<ExtArgs>
   assignee?: boolean | Prisma.ChecklistItem$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["checklistItem"]>
@@ -887,6 +1092,11 @@ export type ChecklistItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   order?: boolean
   assigneeId?: boolean
   dueDay?: boolean
+  sendEmail?: boolean
+  emailSubject?: boolean
+  emailBody?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   checklist?: boolean | Prisma.OnboardingChecklistDefaultArgs<ExtArgs>
   assignee?: boolean | Prisma.ChecklistItem$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["checklistItem"]>
@@ -900,9 +1110,14 @@ export type ChecklistItemSelectScalar = {
   order?: boolean
   assigneeId?: boolean
   dueDay?: boolean
+  sendEmail?: boolean
+  emailSubject?: boolean
+  emailBody?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
 }
 
-export type ChecklistItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checklistId" | "title" | "description" | "requiresDocument" | "order" | "assigneeId" | "dueDay", ExtArgs["result"]["checklistItem"]>
+export type ChecklistItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "checklistId" | "title" | "description" | "requiresDocument" | "order" | "assigneeId" | "dueDay" | "sendEmail" | "emailSubject" | "emailBody" | "documentUrl" | "documentName", ExtArgs["result"]["checklistItem"]>
 export type ChecklistItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   checklist?: boolean | Prisma.OnboardingChecklistDefaultArgs<ExtArgs>
   assignee?: boolean | Prisma.ChecklistItem$assigneeArgs<ExtArgs>
@@ -934,6 +1149,11 @@ export type $ChecklistItemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     order: number
     assigneeId: string | null
     dueDay: number | null
+    sendEmail: boolean
+    emailSubject: string | null
+    emailBody: string | null
+    documentUrl: string | null
+    documentName: string | null
   }, ExtArgs["result"]["checklistItem"]>
   composites: {}
 }
@@ -1368,6 +1588,11 @@ export interface ChecklistItemFieldRefs {
   readonly order: Prisma.FieldRef<"ChecklistItem", 'Int'>
   readonly assigneeId: Prisma.FieldRef<"ChecklistItem", 'String'>
   readonly dueDay: Prisma.FieldRef<"ChecklistItem", 'Int'>
+  readonly sendEmail: Prisma.FieldRef<"ChecklistItem", 'Boolean'>
+  readonly emailSubject: Prisma.FieldRef<"ChecklistItem", 'String'>
+  readonly emailBody: Prisma.FieldRef<"ChecklistItem", 'String'>
+  readonly documentUrl: Prisma.FieldRef<"ChecklistItem", 'String'>
+  readonly documentName: Prisma.FieldRef<"ChecklistItem", 'String'>
 }
     
 

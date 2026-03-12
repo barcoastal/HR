@@ -207,6 +207,7 @@ export type PositionWhereInput = {
   status?: Prisma.EnumPositionStatusFilter<"Position"> | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   candidates?: Prisma.CandidateListRelationFilter
+  interviews?: Prisma.InterviewListRelationFilter
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
 }
 
@@ -220,6 +221,7 @@ export type PositionOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   candidates?: Prisma.CandidateOrderByRelationAggregateInput
+  interviews?: Prisma.InterviewOrderByRelationAggregateInput
   department?: Prisma.DepartmentOrderByWithRelationInput
 }
 
@@ -236,6 +238,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumPositionStatusFilter<"Position"> | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   candidates?: Prisma.CandidateListRelationFilter
+  interviews?: Prisma.InterviewListRelationFilter
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
 }, "id">
 
@@ -276,6 +279,7 @@ export type PositionCreateInput = {
   status?: $Enums.PositionStatus
   createdAt?: Date | string
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -289,6 +293,7 @@ export type PositionUncheckedCreateInput = {
   status?: $Enums.PositionStatus
   createdAt?: Date | string
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionUpdateInput = {
@@ -300,6 +305,7 @@ export type PositionUpdateInput = {
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -313,6 +319,7 @@ export type PositionUncheckedUpdateInput = {
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateManyInput = {
@@ -457,6 +464,22 @@ export type EnumPositionStatusFieldUpdateOperationsInput = {
   set?: $Enums.PositionStatus
 }
 
+export type PositionCreateNestedOneWithoutInterviewsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutInterviewsInput, Prisma.PositionUncheckedCreateWithoutInterviewsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutInterviewsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneWithoutInterviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutInterviewsInput, Prisma.PositionUncheckedCreateWithoutInterviewsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutInterviewsInput
+  upsert?: Prisma.PositionUpsertWithoutInterviewsInput
+  disconnect?: Prisma.PositionWhereInput | boolean
+  delete?: Prisma.PositionWhereInput | boolean
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutInterviewsInput, Prisma.PositionUpdateWithoutInterviewsInput>, Prisma.PositionUncheckedUpdateWithoutInterviewsInput>
+}
+
 export type PositionCreateWithoutDepartmentInput = {
   id?: string
   title: string
@@ -466,6 +489,7 @@ export type PositionCreateWithoutDepartmentInput = {
   status?: $Enums.PositionStatus
   createdAt?: Date | string
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
 }
 
 export type PositionUncheckedCreateWithoutDepartmentInput = {
@@ -477,6 +501,7 @@ export type PositionUncheckedCreateWithoutDepartmentInput = {
   status?: $Enums.PositionStatus
   createdAt?: Date | string
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutDepartmentInput = {
@@ -527,6 +552,7 @@ export type PositionCreateWithoutCandidatesInput = {
   salary?: string | null
   status?: $Enums.PositionStatus
   createdAt?: Date | string
+  interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -539,6 +565,7 @@ export type PositionUncheckedCreateWithoutCandidatesInput = {
   salary?: string | null
   status?: $Enums.PositionStatus
   createdAt?: Date | string
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutCandidatesInput = {
@@ -565,6 +592,7 @@ export type PositionUpdateWithoutCandidatesInput = {
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -577,6 +605,71 @@ export type PositionUncheckedUpdateWithoutCandidatesInput = {
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
+}
+
+export type PositionCreateWithoutInterviewsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  requirements?: string | null
+  salary?: string | null
+  status?: $Enums.PositionStatus
+  createdAt?: Date | string
+  candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+}
+
+export type PositionUncheckedCreateWithoutInterviewsInput = {
+  id?: string
+  title: string
+  departmentId?: string | null
+  description?: string | null
+  requirements?: string | null
+  salary?: string | null
+  status?: $Enums.PositionStatus
+  createdAt?: Date | string
+  candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
+}
+
+export type PositionCreateOrConnectWithoutInterviewsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutInterviewsInput, Prisma.PositionUncheckedCreateWithoutInterviewsInput>
+}
+
+export type PositionUpsertWithoutInterviewsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutInterviewsInput, Prisma.PositionUncheckedUpdateWithoutInterviewsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutInterviewsInput, Prisma.PositionUncheckedCreateWithoutInterviewsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutInterviewsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutInterviewsInput, Prisma.PositionUncheckedUpdateWithoutInterviewsInput>
+}
+
+export type PositionUpdateWithoutInterviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutInterviewsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateManyDepartmentInput = {
@@ -598,6 +691,7 @@ export type PositionUpdateWithoutDepartmentInput = {
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutDepartmentInput = {
@@ -609,6 +703,7 @@ export type PositionUncheckedUpdateWithoutDepartmentInput = {
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
@@ -628,10 +723,12 @@ export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
 
 export type PositionCountOutputType = {
   candidates: number
+  interviews: number
 }
 
 export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidates?: boolean | PositionCountOutputTypeCountCandidatesArgs
+  interviews?: boolean | PositionCountOutputTypeCountInterviewsArgs
 }
 
 /**
@@ -651,6 +748,13 @@ export type PositionCountOutputTypeCountCandidatesArgs<ExtArgs extends runtime.T
   where?: Prisma.CandidateWhereInput
 }
 
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountInterviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InterviewWhereInput
+}
+
 
 export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -662,6 +766,7 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   createdAt?: boolean
   candidates?: boolean | Prisma.Position$candidatesArgs<ExtArgs>
+  interviews?: boolean | Prisma.Position$interviewsArgs<ExtArgs>
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
@@ -704,6 +809,7 @@ export type PositionSelectScalar = {
 export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "departmentId" | "description" | "requirements" | "salary" | "status" | "createdAt", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidates?: boolean | Prisma.Position$candidatesArgs<ExtArgs>
+  interviews?: boolean | Prisma.Position$interviewsArgs<ExtArgs>
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -718,6 +824,7 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Position"
   objects: {
     candidates: Prisma.$CandidatePayload<ExtArgs>[]
+    interviews: Prisma.$InterviewPayload<ExtArgs>[]
     department: Prisma.$DepartmentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1124,6 +1231,7 @@ readonly fields: PositionFieldRefs;
 export interface Prisma__PositionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   candidates<T extends Prisma.Position$candidatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$candidatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  interviews<T extends Prisma.Position$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   department<T extends Prisma.Position$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1579,6 +1687,30 @@ export type Position$candidatesArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.CandidateScalarFieldEnum | Prisma.CandidateScalarFieldEnum[]
+}
+
+/**
+ * Position.interviews
+ */
+export type Position$interviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Interview
+   */
+  select?: Prisma.InterviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Interview
+   */
+  omit?: Prisma.InterviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InterviewInclude<ExtArgs> | null
+  where?: Prisma.InterviewWhereInput
+  orderBy?: Prisma.InterviewOrderByWithRelationInput | Prisma.InterviewOrderByWithRelationInput[]
+  cursor?: Prisma.InterviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InterviewScalarFieldEnum | Prisma.InterviewScalarFieldEnum[]
 }
 
 /**

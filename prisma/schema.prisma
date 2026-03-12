@@ -106,6 +106,21 @@ enum PositionStatus {
   FILLED
 }
 
+enum InterviewType {
+  PHONE_SCREEN
+  VIDEO
+  TECHNICAL
+  BEHAVIORAL
+  PANEL
+  FINAL
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
 // ---------------------
 // Models
 // ---------------------
@@ -125,6 +140,7 @@ model Department {
   teams              Team[]
   employees          Employee[]   @relation("EmployeeDepartment")
   positions          Position[]
+  checklists         OnboardingChecklist[]
 
   @@index([headId])
   @@index([parentDepartmentId])
@@ -221,12 +237,16 @@ model User {
 }
 
 model OnboardingChecklist {
-  id        String         @id @default(uuid())
-  name      String
-  type      ChecklistType
-  createdAt DateTime       @default(now())
+  id           String         @id @default(uuid())
+  name         String
+  type         ChecklistType
+  departmentId String?
+  createdAt    DateTime       @default(now())
 
-  items     ChecklistItem[]
+  department   Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  items        ChecklistItem[]
+
+  @@index([departmentId])
 }
 
 model ChecklistItem {
@@ -238,6 +258,11 @@ model ChecklistItem {
   order            Int
   assigneeId       String?
   dueDay           Int?
+  sendEmail        Boolean             @default(false)
+  emailSubject     String?
+  emailBody        String?
+  documentUrl      String?
+  documentName     String?
 
   checklist        OnboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   assignee         Employee?           @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
@@ -433,6 +458,7 @@ model Candidate {
   updatedAt     DateTime        @updatedAt
 
   position      Position?       @relation(fields: [positionId], references: [id])
+  interviews    Interview[]
 
   @@index([positionId])
   @@index([status])
@@ -448,6 +474,7 @@ model Position {
   salary        String?
   status        PositionStatus @default(OPEN)
   candidates    Candidate[]
+  interviews    Interview[]
   createdAt     DateTime       @default(now())
 
   department    Department?    @relation(fields: [departmentId], references: [id])
@@ -506,6 +533,27 @@ model PlatformSyncLog {
   platform        RecruitmentPlatform @relation(fields: [platformId], references: [id], onDelete: Cascade)
 
   @@index([platformId])
+}
+
+model Interview {
+  id              String          @id @default(uuid())
+  candidateId     String
+  positionId      String?
+  scheduledAt     DateTime
+  duration        Int             // minutes
+  type            InterviewType   @default(VIDEO)
+  status          InterviewStatus @default(SCHEDULED)
+  googleEventId   String?
+  googleMeetLink  String?
+  notes           String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  candidate       Candidate       @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position        Position?       @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  @@index([candidateId])
+  @@index([scheduledAt])
 }
 
 // ---------------------

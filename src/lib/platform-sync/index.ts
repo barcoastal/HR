@@ -88,4 +88,17 @@ export const SUPPORTED_PLATFORMS = [
     oauthProviderId: "jobing",
     hasRealOAuth: false,
   },
+  {
+    name: "Google Calendar",
+    description: "Schedule interviews with automatic Google Meet links",
+    type: "PREMIUM" as const,
+    monthlyCost: 0,
+    keyPrefix: "gcal-",
+    color: "bg-[#4285f4]",
+    textColor: "text-[#4285f4]",
+    bgLight: "bg-blue-50",
+    permissions: ["Create calendar events", "Generate Google Meet links", "Send calendar invites"],
+    oauthProviderId: "google_calendar",
+    hasRealOAuth: true,
+  },
 ];

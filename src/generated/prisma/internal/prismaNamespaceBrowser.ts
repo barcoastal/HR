@@ -72,6 +72,7 @@ export const ModelName = {
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
+  Interview: 'Interview',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -177,6 +178,7 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   name: 'name',
   type: 'type',
+  departmentId: 'departmentId',
   createdAt: 'createdAt'
 } as const
 
@@ -191,7 +193,12 @@ export const ChecklistItemScalarFieldEnum = {
   requiresDocument: 'requiresDocument',
   order: 'order',
   assigneeId: 'assigneeId',
-  dueDay: 'dueDay'
+  dueDay: 'dueDay',
+  sendEmail: 'sendEmail',
+  emailSubject: 'emailSubject',
+  emailBody: 'emailBody',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
@@ -411,6 +418,24 @@ export const PlatformSyncLogScalarFieldEnum = {
 } as const
 
 export type PlatformSyncLogScalarFieldEnum = (typeof PlatformSyncLogScalarFieldEnum)[keyof typeof PlatformSyncLogScalarFieldEnum]
+
+
+export const InterviewScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  positionId: 'positionId',
+  scheduledAt: 'scheduledAt',
+  duration: 'duration',
+  type: 'type',
+  status: 'status',
+  googleEventId: 'googleEventId',
+  googleMeetLink: 'googleMeetLink',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {

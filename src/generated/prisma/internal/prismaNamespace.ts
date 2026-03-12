@@ -405,6 +405,7 @@ export const ModelName = {
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
+  Interview: 'Interview',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1987,6 +1988,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Interview: {
+      payload: Prisma.$InterviewPayload<ExtArgs>
+      fields: Prisma.InterviewFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.InterviewFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.InterviewFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        findFirst: {
+          args: Prisma.InterviewFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.InterviewFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        findMany: {
+          args: Prisma.InterviewFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+        }
+        create: {
+          args: Prisma.InterviewCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        createMany: {
+          args: Prisma.InterviewCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.InterviewCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+        }
+        delete: {
+          args: Prisma.InterviewDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        update: {
+          args: Prisma.InterviewUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        deleteMany: {
+          args: Prisma.InterviewDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.InterviewUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.InterviewUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+        }
+        upsert: {
+          args: Prisma.InterviewUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$InterviewPayload>
+        }
+        aggregate: {
+          args: Prisma.InterviewAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateInterview>
+        }
+        groupBy: {
+          args: Prisma.InterviewGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InterviewGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.InterviewCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.InterviewCountAggregateOutputType> | number
+        }
+      }
+    }
     TimeOffPolicy: {
       payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
       fields: Prisma.TimeOffPolicyFieldRefs
@@ -2770,6 +2845,7 @@ export const OnboardingChecklistScalarFieldEnum = {
   id: 'id',
   name: 'name',
   type: 'type',
+  departmentId: 'departmentId',
   createdAt: 'createdAt'
 } as const
 
@@ -2784,7 +2860,12 @@ export const ChecklistItemScalarFieldEnum = {
   requiresDocument: 'requiresDocument',
   order: 'order',
   assigneeId: 'assigneeId',
-  dueDay: 'dueDay'
+  dueDay: 'dueDay',
+  sendEmail: 'sendEmail',
+  emailSubject: 'emailSubject',
+  emailBody: 'emailBody',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
@@ -3004,6 +3085,24 @@ export const PlatformSyncLogScalarFieldEnum = {
 } as const
 
 export type PlatformSyncLogScalarFieldEnum = (typeof PlatformSyncLogScalarFieldEnum)[keyof typeof PlatformSyncLogScalarFieldEnum]
+
+
+export const InterviewScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  positionId: 'positionId',
+  scheduledAt: 'scheduledAt',
+  duration: 'duration',
+  type: 'type',
+  status: 'status',
+  googleEventId: 'googleEventId',
+  googleMeetLink: 'googleMeetLink',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {
@@ -3418,6 +3517,34 @@ export type ListEnumPlatformStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'InterviewType'
+ */
+export type EnumInterviewTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InterviewType'>
+    
+
+
+/**
+ * Reference to a field of type 'InterviewType[]'
+ */
+export type ListEnumInterviewTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InterviewType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'InterviewStatus'
+ */
+export type EnumInterviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InterviewStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'InterviewStatus[]'
+ */
+export type ListEnumInterviewStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InterviewStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'TimeOffRequestStatus'
  */
 export type EnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus'>
@@ -3560,6 +3687,7 @@ export type GlobalOmitConfig = {
   recruitmentPlatform?: Prisma.RecruitmentPlatformOmit
   platformCostEntry?: Prisma.PlatformCostEntryOmit
   platformSyncLog?: Prisma.PlatformSyncLogOmit
+  interview?: Prisma.InterviewOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit

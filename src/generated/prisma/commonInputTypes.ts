@@ -511,6 +511,40 @@ export type EnumPlatformStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
 }
 
+export type EnumInterviewTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewType | Prisma.EnumInterviewTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel> | $Enums.InterviewType
+}
+
+export type EnumInterviewStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewStatus | Prisma.EnumInterviewStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel> | $Enums.InterviewStatus
+}
+
+export type EnumInterviewTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewType | Prisma.EnumInterviewTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewTypeWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel>
+}
+
+export type EnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewStatus | Prisma.EnumInterviewStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewStatusWithAggregatesFilter<$PrismaModel> | $Enums.InterviewStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
+}
+
 export type EnumTimeOffRequestStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.TimeOffRequestStatus | Prisma.EnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.TimeOffRequestStatus[] | Prisma.ListEnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
@@ -1031,6 +1065,40 @@ export type NestedEnumPlatformStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPlatformStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumInterviewTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewType | Prisma.EnumInterviewTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel> | $Enums.InterviewType
+}
+
+export type NestedEnumInterviewStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewStatus | Prisma.EnumInterviewStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel> | $Enums.InterviewStatus
+}
+
+export type NestedEnumInterviewTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewType | Prisma.EnumInterviewTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewType[] | Prisma.ListEnumInterviewTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewTypeWithAggregatesFilter<$PrismaModel> | $Enums.InterviewType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.InterviewStatus | Prisma.EnumInterviewStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.InterviewStatus[] | Prisma.ListEnumInterviewStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumInterviewStatusWithAggregatesFilter<$PrismaModel> | $Enums.InterviewStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumTimeOffRequestStatusFilter<$PrismaModel = never> = {

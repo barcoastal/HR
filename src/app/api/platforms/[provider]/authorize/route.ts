@@ -84,5 +84,11 @@ export async function GET(
     authUrl.searchParams.set("prompt", "select_employer");
   }
 
+  // Google requires access_type=offline to get a refresh token, and prompt=consent to force re-consent
+  if (providerId === "google_calendar") {
+    authUrl.searchParams.set("access_type", "offline");
+    authUrl.searchParams.set("prompt", "consent");
+  }
+
   return NextResponse.redirect(authUrl.toString());
 }

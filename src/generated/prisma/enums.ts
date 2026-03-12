@@ -149,6 +149,27 @@ export const PositionStatus = {
 export type PositionStatus = (typeof PositionStatus)[keyof typeof PositionStatus]
 
 
+export const InterviewType = {
+  PHONE_SCREEN: 'PHONE_SCREEN',
+  VIDEO: 'VIDEO',
+  TECHNICAL: 'TECHNICAL',
+  BEHAVIORAL: 'BEHAVIORAL',
+  PANEL: 'PANEL',
+  FINAL: 'FINAL'
+} as const
+
+export type InterviewType = (typeof InterviewType)[keyof typeof InterviewType]
+
+
+export const InterviewStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus]
+
+
 export const PlatformType = {
   PREMIUM: 'PREMIUM',
   NICHE: 'NICHE',

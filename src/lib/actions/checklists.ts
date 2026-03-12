@@ -4,8 +4,10 @@ import { db } from "@/lib/db";
 import type { ChecklistType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 
-export async function createChecklist(name: string, type: ChecklistType) {
-  const checklist = await db.onboardingChecklist.create({ data: { name, type } });
+export async function createChecklist(name: string, type: ChecklistType, departmentId?: string) {
+  const checklist = await db.onboardingChecklist.create({
+    data: { name, type, departmentId: departmentId || null },
+  });
   revalidatePath("/settings");
   return checklist;
 }
@@ -20,7 +22,12 @@ export async function addChecklistItem(
   title: string,
   description?: string,
   assigneeId?: string,
-  dueDay?: number
+  dueDay?: number,
+  sendEmail?: boolean,
+  emailSubject?: string,
+  emailBody?: string,
+  documentUrl?: string,
+  documentName?: string
 ) {
   const maxOrder = await db.checklistItem.findFirst({
     where: { checklistId },
@@ -36,6 +43,11 @@ export async function addChecklistItem(
       assigneeId: assigneeId || null,
       dueDay: dueDay ?? null,
       order: (maxOrder?.order ?? -1) + 1,
+      sendEmail: sendEmail ?? false,
+      emailSubject: emailSubject || null,
+      emailBody: emailBody || null,
+      documentUrl: documentUrl || null,
+      documentName: documentName || null,
     },
   });
   revalidatePath("/settings");
@@ -44,7 +56,17 @@ export async function addChecklistItem(
 
 export async function updateChecklistItem(
   id: string,
-  data: { title?: string; description?: string | null; assigneeId?: string | null; dueDay?: number | null }
+  data: {
+    title?: string;
+    description?: string | null;
+    assigneeId?: string | null;
+    dueDay?: number | null;
+    sendEmail?: boolean;
+    emailSubject?: string | null;
+    emailBody?: string | null;
+    documentUrl?: string | null;
+    documentName?: string | null;
+  }
 ) {
   const item = await db.checklistItem.update({ where: { id }, data });
   revalidatePath("/settings");

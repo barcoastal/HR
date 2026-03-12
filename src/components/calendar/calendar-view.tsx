@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type CalendarEvent = {
   id: string;
   name: string;
   date: string; // ISO string
-  type: "birthday" | "anniversary" | "benefits";
+  type: "birthday" | "anniversary" | "benefits" | "interview";
   department?: string;
   years?: number; // for anniversaries
+  meetLink?: string | null; // for interviews
+  time?: string; // display time for interviews
 };
 
 type Props = {
@@ -23,6 +25,7 @@ const eventColors: Record<CalendarEvent["type"], { dot: string; bg: string; text
   birthday: { dot: "bg-amber-400", bg: "bg-amber-500/15", text: "text-amber-400", label: "Birthday" },
   anniversary: { dot: "bg-rose-400", bg: "bg-rose-500/15", text: "text-rose-400", label: "Anniversary" },
   benefits: { dot: "bg-emerald-400", bg: "bg-emerald-500/15", text: "text-emerald-400", label: "Benefits Eligible" },
+  interview: { dot: "bg-purple-400", bg: "bg-purple-500/15", text: "text-purple-400", label: "Interview" },
 };
 
 function getDaysInMonth(year: number, month: number) {
@@ -278,8 +281,23 @@ export function CalendarView({ events }: Props) {
                     <span className="text-sm font-medium text-[var(--color-text-primary)]">{event.name}</span>
                   </div>
                   <div className="flex items-center gap-2">
+                    {event.time && (
+                      <span className="text-xs text-[var(--color-text-muted)]">{event.time}</span>
+                    )}
                     {event.department && (
                       <span className="text-xs text-[var(--color-text-muted)]">{event.department}</span>
+                    )}
+                    {event.meetLink && (
+                      <a
+                        href={event.meetLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Meet
+                      </a>
                     )}
                     <span className={cn("text-xs font-medium", config.text)}>
                       {event.type === "anniversary" && event.years !== undefined

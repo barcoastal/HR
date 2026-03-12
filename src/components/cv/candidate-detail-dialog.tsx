@@ -2,12 +2,34 @@
 
 import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { updateCandidate, hireCandidateAndStartOnboarding } from "@/lib/actions/candidates";
+import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
 import { useRouter } from "next/navigation";
-import type { CandidateStatus } from "@/generated/prisma/client";
-import { CheckCircle2, Loader2 } from "lucide-react";
+import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
+import { CheckCircle2, Loader2, Calendar, Video, X as XIcon, ExternalLink } from "lucide-react";
 import Link from "next/link";
+import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
+
+type InterviewForDisplay = {
+  id: string;
+  scheduledAt: Date;
+  duration: number;
+  type: InterviewType;
+  status: InterviewStatus;
+  googleMeetLink: string | null;
+  notes: string | null;
+  position: { title: string } | null;
+};
+
+const interviewTypeLabels: Record<InterviewType, string> = {
+  PHONE_SCREEN: "Phone Screen",
+  VIDEO: "Video",
+  TECHNICAL: "Technical",
+  BEHAVIORAL: "Behavioral",
+  PANEL: "Panel",
+  FINAL: "Final",
+};
 
 type CandidateForDialog = {
   id: string;
@@ -77,6 +99,26 @@ export function CandidateDetailDialog({
     status: "NEW" as CandidateStatus,
   });
   const router = useRouter();
+
+  const [interviews, setInterviews] = useState<InterviewForDisplay[]>([]);
+  const [calendarConnected, setCalendarConnected] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
+
+  const loadInterviews = useCallback(async (candidateId: string) => {
+    const [data, connected] = await Promise.all([
+      getInterviewsForCandidate(candidateId),
+      isCalendarConnected(),
+    ]);
+    setInterviews(data as unknown as InterviewForDisplay[]);
+    setCalendarConnected(connected);
+  }, []);
+
+  useEffect(() => {
+    if (candidate && open) {
+      loadInterviews(candidate.id);
+    }
+  }, [candidate, open, loadInterviews]);
 
   useEffect(() => {
     if (candidate) {
@@ -156,7 +198,18 @@ export function CandidateDetailDialog({
 
   function handleClose() {
     setHireResult(null);
+    setScheduleOpen(false);
     onClose();
+  }
+
+  async function handleCancelInterview(interviewId: string) {
+    setCancellingId(interviewId);
+    try {
+      await cancelInterview(interviewId);
+      if (candidate) await loadInterviews(candidate.id);
+    } finally {
+      setCancellingId(null);
+    }
   }
 
   const inputClass = cn(
@@ -169,6 +222,7 @@ export function CandidateDetailDialog({
   if (!candidate) return null;
 
   return (
+  <>
     <Dialog open={open} onClose={handleClose} title={hireResult ? "Candidate Hired" : "Edit Candidate"}>
       {hireResult ? (
         <div className="flex flex-col items-center gap-4 py-4">
@@ -219,6 +273,85 @@ export function CandidateDetailDialog({
                 ))}
               </div>
             </div>
+
+            {/* Schedule Interview */}
+            {(form.status === "SCREENING" || form.status === "INTERVIEW") && (
+              <div>
+                <button
+                  onClick={() => setScheduleOpen(true)}
+                  className={cn(
+                    "flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm font-medium",
+                    "bg-[var(--color-accent)] text-white",
+                    "hover:bg-[var(--color-accent-hover)] transition-colors"
+                  )}
+                >
+                  <Calendar className="h-4 w-4" />
+                  Schedule Interview
+                </button>
+              </div>
+            )}
+
+            {/* Scheduled Interviews */}
+            {interviews.filter((i) => i.status !== "CANCELLED").length > 0 && (
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1.5">
+                  Interviews
+                </label>
+                <div className="space-y-2">
+                  {interviews
+                    .filter((i) => i.status !== "CANCELLED")
+                    .map((interview) => (
+                      <div
+                        key={interview.id}
+                        className="flex items-center justify-between rounded-lg px-3 py-2 bg-purple-500/10 border border-purple-500/20"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Video className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                          <div className="min-w-0">
+                            <span className="text-xs font-medium text-purple-300">
+                              {interviewTypeLabels[interview.type]}
+                            </span>
+                            <p className="text-xs text-[var(--color-text-muted)]">
+                              {new Date(interview.scheduledAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                hour: "numeric",
+                                minute: "2-digit",
+                              })}{" "}
+                              · {interview.duration}min
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {interview.googleMeetLink && (
+                            <a
+                              href={interview.googleMeetLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-blue-400 hover:bg-blue-500/10 transition-colors"
+                            >
+                              <ExternalLink className="h-3 w-3" />
+                              Join
+                            </a>
+                          )}
+                          <button
+                            onClick={() => handleCancelInterview(interview.id)}
+                            disabled={cancellingId === interview.id}
+                            className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors disabled:opacity-50"
+                            title="Cancel interview"
+                          >
+                            {cancellingId === interview.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <XIcon className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
 
             {/* Notes - prominent */}
             <div>
@@ -332,5 +465,21 @@ export function CandidateDetailDialog({
         </>
       )}
     </Dialog>
+
+    {candidate && (
+      <ScheduleInterviewDialog
+        candidateName={`${candidate.firstName} ${candidate.lastName}`}
+        candidateId={candidate.id}
+        positionId={candidate.positionId}
+        calendarConnected={calendarConnected}
+        open={scheduleOpen}
+        onClose={() => setScheduleOpen(false)}
+        onScheduled={() => {
+          loadInterviews(candidate.id);
+          router.refresh();
+        }}
+      />
+    )}
+  </>
   );
 }

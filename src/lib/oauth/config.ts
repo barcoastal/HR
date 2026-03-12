@@ -50,6 +50,19 @@ export const OAUTH_PROVIDERS: Record<string, OAuthProviderConfig> = {
     clientSecretEnvVar: "",
     isAvailable: false,
   },
+  google_calendar: {
+    providerId: "google_calendar",
+    platformName: "Google Calendar",
+    authorizationUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+    tokenUrl: "https://oauth2.googleapis.com/token",
+    scopes: [
+      "https://www.googleapis.com/auth/calendar.events",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+    clientIdEnvVar: "GOOGLE_CALENDAR_CLIENT_ID",
+    clientSecretEnvVar: "GOOGLE_CALENDAR_CLIENT_SECRET",
+    isAvailable: true,
+  },
 };
 
 export function getOAuthProvider(id: string): OAuthProviderConfig | null {

@@ -12,6 +12,9 @@ import {
   X,
   Calendar,
   UserCircle,
+  Mail,
+  Paperclip,
+  Upload,
 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
@@ -33,12 +36,19 @@ type ChecklistItem = {
   assigneeId: string | null;
   assigneeName: string | null;
   dueDay: number | null;
+  sendEmail: boolean;
+  emailSubject: string | null;
+  emailBody: string | null;
+  documentUrl: string | null;
+  documentName: string | null;
 };
 
 type Checklist = {
   id: string;
   name: string;
   type: "ONBOARDING" | "OFFBOARDING";
+  departmentId: string | null;
+  departmentName: string | null;
   items: ChecklistItem[];
 };
 
@@ -46,6 +56,11 @@ type Employee = {
   id: string;
   firstName: string;
   lastName: string;
+};
+
+type Department = {
+  id: string;
+  name: string;
 };
 
 const DUE_DAY_OPTIONS = [
@@ -71,9 +86,11 @@ function getDueDayLabel(dueDay: number | null): string {
 export function ChecklistManager({
   checklists,
   employees,
+  departments,
 }: {
   checklists: Checklist[];
   employees: Employee[];
+  departments: Department[];
 }) {
   const [selectedChecklist, setSelectedChecklist] = useState<Checklist | null>(
     null
@@ -83,6 +100,7 @@ export function ChecklistManager({
   const [newType, setNewType] = useState<"ONBOARDING" | "OFFBOARDING">(
     "ONBOARDING"
   );
+  const [newDepartmentId, setNewDepartmentId] = useState("");
   const [creating, setCreating] = useState(false);
 
   // Add item state
@@ -90,7 +108,13 @@ export function ChecklistManager({
   const [newItemDesc, setNewItemDesc] = useState("");
   const [newItemAssigneeId, setNewItemAssigneeId] = useState("");
   const [newItemDueDay, setNewItemDueDay] = useState(0);
+  const [newItemSendEmail, setNewItemSendEmail] = useState(false);
+  const [newItemEmailSubject, setNewItemEmailSubject] = useState("");
+  const [newItemEmailBody, setNewItemEmailBody] = useState("");
+  const [newItemDocUrl, setNewItemDocUrl] = useState("");
+  const [newItemDocName, setNewItemDocName] = useState("");
   const [addingItem, setAddingItem] = useState(false);
+  const [uploadingNewDoc, setUploadingNewDoc] = useState(false);
 
   // Delete state
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -101,7 +125,13 @@ export function ChecklistManager({
   const [editDesc, setEditDesc] = useState("");
   const [editAssigneeId, setEditAssigneeId] = useState("");
   const [editDueDay, setEditDueDay] = useState(0);
+  const [editSendEmail, setEditSendEmail] = useState(false);
+  const [editEmailSubject, setEditEmailSubject] = useState("");
+  const [editEmailBody, setEditEmailBody] = useState("");
+  const [editDocUrl, setEditDocUrl] = useState("");
+  const [editDocName, setEditDocName] = useState("");
   const [savingEdit, setSavingEdit] = useState(false);
+  const [uploadingEditDoc, setUploadingEditDoc] = useState(false);
 
   const router = useRouter();
 
@@ -119,13 +149,29 @@ export function ChecklistManager({
     "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
   );
 
+  async function uploadDocument(file: File): Promise<{ url: string; name: string } | null> {
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await fetch("/api/onboarding-docs/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) return null;
+      return res.json();
+    } catch {
+      return null;
+    }
+  }
+
   async function handleCreateChecklist() {
     if (!newName) return;
     setCreating(true);
-    await createChecklist(newName, newType);
+    await createChecklist(newName, newType, newDepartmentId || undefined);
     setCreating(false);
     setShowCreate(false);
     setNewName("");
+    setNewDepartmentId("");
     router.refresh();
   }
 
@@ -137,14 +183,50 @@ export function ChecklistManager({
       newItemTitle,
       newItemDesc || undefined,
       newItemAssigneeId || undefined,
-      newItemDueDay || undefined
+      newItemDueDay || undefined,
+      newItemSendEmail || undefined,
+      newItemEmailSubject || undefined,
+      newItemEmailBody || undefined,
+      newItemDocUrl || undefined,
+      newItemDocName || undefined
     );
     setAddingItem(false);
     setNewItemTitle("");
     setNewItemDesc("");
     setNewItemAssigneeId("");
     setNewItemDueDay(0);
+    setNewItemSendEmail(false);
+    setNewItemEmailSubject("");
+    setNewItemEmailBody("");
+    setNewItemDocUrl("");
+    setNewItemDocName("");
     router.refresh();
+  }
+
+  async function handleNewDocUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingNewDoc(true);
+    const result = await uploadDocument(file);
+    if (result) {
+      setNewItemDocUrl(result.url);
+      setNewItemDocName(result.name);
+    }
+    setUploadingNewDoc(false);
+    e.target.value = "";
+  }
+
+  async function handleEditDocUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingEditDoc(true);
+    const result = await uploadDocument(file);
+    if (result) {
+      setEditDocUrl(result.url);
+      setEditDocName(result.name);
+    }
+    setUploadingEditDoc(false);
+    e.target.value = "";
   }
 
   async function handleDeleteItem(itemId: string) {
@@ -169,6 +251,11 @@ export function ChecklistManager({
     setEditDesc(item.description || "");
     setEditAssigneeId(item.assigneeId || "");
     setEditDueDay(item.dueDay || 0);
+    setEditSendEmail(item.sendEmail);
+    setEditEmailSubject(item.emailSubject || "");
+    setEditEmailBody(item.emailBody || "");
+    setEditDocUrl(item.documentUrl || "");
+    setEditDocName(item.documentName || "");
   }
 
   function cancelEditing() {
@@ -177,6 +264,11 @@ export function ChecklistManager({
     setEditDesc("");
     setEditAssigneeId("");
     setEditDueDay(0);
+    setEditSendEmail(false);
+    setEditEmailSubject("");
+    setEditEmailBody("");
+    setEditDocUrl("");
+    setEditDocName("");
   }
 
   async function handleSaveEdit() {
@@ -184,9 +276,14 @@ export function ChecklistManager({
     setSavingEdit(true);
     await updateChecklistItem(editingItemId, {
       title: editTitle,
-      description: editDesc || undefined,
-      assigneeId: editAssigneeId || undefined,
-      dueDay: editDueDay || undefined,
+      description: editDesc || null,
+      assigneeId: editAssigneeId || null,
+      dueDay: editDueDay || null,
+      sendEmail: editSendEmail,
+      emailSubject: editEmailSubject || null,
+      emailBody: editEmailBody || null,
+      documentUrl: editDocUrl || null,
+      documentName: editDocName || null,
     });
     setSavingEdit(false);
     setEditingItemId(null);
@@ -237,9 +334,21 @@ export function ChecklistManager({
             )}
           >
             <div>
-              <p className="text-sm font-medium text-[var(--color-text-primary)]">
-                {template.name}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium text-[var(--color-text-primary)]">
+                  {template.name}
+                </p>
+                <span
+                  className={cn(
+                    "inline-flex px-2 py-0.5 rounded-full text-xs font-medium",
+                    template.departmentName
+                      ? "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
+                      : "bg-[var(--color-surface-hover)] text-[var(--color-text-muted)]"
+                  )}
+                >
+                  {template.departmentName || "All Departments"}
+                </span>
+              </div>
               <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
                 {template.items.length} items · {template.type}
               </p>
@@ -294,6 +403,23 @@ export function ChecklistManager({
             >
               <option value="ONBOARDING">Onboarding</option>
               <option value="OFFBOARDING">Offboarding</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+              Department
+            </label>
+            <select
+              value={newDepartmentId}
+              onChange={(e) => setNewDepartmentId(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">All Departments (global)</option>
+              {departments.map((dept) => (
+                <option key={dept.id} value={dept.id}>
+                  {dept.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -408,6 +534,84 @@ export function ChecklistManager({
                             </select>
                           </div>
                         </div>
+
+                        {/* Email toggle */}
+                        <div className="pt-1 border-t border-[var(--color-border)]">
+                          <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={editSendEmail}
+                              onChange={(e) => setEditSendEmail(e.target.checked)}
+                              className="rounded border-[var(--color-border)]"
+                            />
+                            <Mail className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                            <span className="text-xs font-medium text-[var(--color-text-primary)]">
+                              Send email to new hire
+                            </span>
+                          </label>
+                          {editSendEmail && (
+                            <div className="mt-2 space-y-2 pl-6">
+                              <input
+                                value={editEmailSubject}
+                                onChange={(e) => setEditEmailSubject(e.target.value)}
+                                className={inputClass}
+                                placeholder="Email subject"
+                              />
+                              <textarea
+                                value={editEmailBody}
+                                onChange={(e) => setEditEmailBody(e.target.value)}
+                                className={cn(inputClass, "resize-none")}
+                                rows={3}
+                                placeholder="Email body"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Document upload */}
+                        <div className="pt-1 border-t border-[var(--color-border)]">
+                          <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                            <Paperclip className="inline h-3 w-3 mr-1" />
+                            Document
+                          </label>
+                          {editDocName ? (
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-[var(--color-text-primary)] truncate flex-1">
+                                {editDocName}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => { setEditDocUrl(""); setEditDocName(""); }}
+                                className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ) : (
+                            <label
+                              className={cn(
+                                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer w-fit",
+                                "border border-dashed border-[var(--color-border)]",
+                                "text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+                              )}
+                            >
+                              {uploadingEditDoc ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <Upload className="h-3 w-3" />
+                              )}
+                              {uploadingEditDoc ? "Uploading..." : "Upload file"}
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt"
+                                onChange={handleEditDocUpload}
+                                disabled={uploadingEditDoc}
+                              />
+                            </label>
+                          )}
+                        </div>
+
                         <div className="flex items-center gap-2 pt-1">
                           <button
                             onClick={handleSaveEdit}
@@ -466,6 +670,28 @@ export function ChecklistManager({
                               >
                                 <Calendar className="h-3 w-3 mr-1" />
                                 {getDueDayLabel(item.dueDay)}
+                              </span>
+                            )}
+                            {item.sendEmail && (
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium",
+                                  "bg-blue-500/10 text-blue-500"
+                                )}
+                              >
+                                <Mail className="h-3 w-3" />
+                                Email
+                              </span>
+                            )}
+                            {item.documentName && (
+                              <span
+                                className={cn(
+                                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium",
+                                  "bg-amber-500/10 text-amber-600"
+                                )}
+                              >
+                                <Paperclip className="h-3 w-3" />
+                                {item.documentName}
                               </span>
                             )}
                           </div>
@@ -560,6 +786,84 @@ export function ChecklistManager({
                   </select>
                 </div>
               </div>
+
+              {/* Email toggle */}
+              <div className="pt-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newItemSendEmail}
+                    onChange={(e) => setNewItemSendEmail(e.target.checked)}
+                    className="rounded border-[var(--color-border)]"
+                  />
+                  <Mail className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                  <span className="text-xs font-medium text-[var(--color-text-primary)]">
+                    Send email to new hire
+                  </span>
+                </label>
+                {newItemSendEmail && (
+                  <div className="mt-2 space-y-2 pl-6">
+                    <input
+                      value={newItemEmailSubject}
+                      onChange={(e) => setNewItemEmailSubject(e.target.value)}
+                      className={inputClass}
+                      placeholder="Email subject"
+                    />
+                    <textarea
+                      value={newItemEmailBody}
+                      onChange={(e) => setNewItemEmailBody(e.target.value)}
+                      className={cn(inputClass, "resize-none")}
+                      rows={3}
+                      placeholder="Email body"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Document upload */}
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                  <Paperclip className="inline h-3 w-3 mr-1" />
+                  Document
+                </label>
+                {newItemDocName ? (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-[var(--color-text-primary)] truncate flex-1">
+                      {newItemDocName}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => { setNewItemDocUrl(""); setNewItemDocName(""); }}
+                      className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <label
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer w-fit",
+                      "border border-dashed border-[var(--color-border)]",
+                      "text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+                    )}
+                  >
+                    {uploadingNewDoc ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Upload className="h-3 w-3" />
+                    )}
+                    {uploadingNewDoc ? "Uploading..." : "Upload file"}
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt"
+                      onChange={handleNewDocUpload}
+                      disabled={uploadingNewDoc}
+                    />
+                  </label>
+                )}
+              </div>
+
               <button
                 onClick={handleAddItem}
                 disabled={!newItemTitle || addingItem}

@@ -1,23 +1,27 @@
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
+import { getUpcomingInterviews } from "@/lib/actions/interviews";
 
 export default async function CalendarPage() {
   await requireAuth();
 
-  const employees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      birthday: true,
-      anniversaryDate: true,
-      benefitsEligibleDate: true,
-      startDate: true,
-      department: { select: { name: true } },
-    },
-  });
+  const [employees, interviews] = await Promise.all([
+    db.employee.findMany({
+      where: { status: "ACTIVE" },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        birthday: true,
+        anniversaryDate: true,
+        benefitsEligibleDate: true,
+        startDate: true,
+        department: { select: { name: true } },
+      },
+    }),
+    getUpcomingInterviews(),
+  ]);
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -66,12 +70,26 @@ export default async function CalendarPage() {
     }
   }
 
+  // Interview events
+  for (const interview of interviews) {
+    const candidateName = `${interview.candidate.firstName} ${interview.candidate.lastName}`;
+    const d = new Date(interview.scheduledAt);
+    events.push({
+      id: `interview-${interview.id}`,
+      name: candidateName,
+      date: d.toISOString(),
+      type: "interview",
+      meetLink: interview.googleMeetLink,
+      time: d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+    });
+  }
+
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
         <p className="text-sm text-[var(--color-text-muted)] mt-1">
-          Birthdays, work anniversaries, and benefits eligibility dates
+          Birthdays, work anniversaries, benefits eligibility, and interviews
         </p>
       </div>
 

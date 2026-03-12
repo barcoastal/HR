@@ -31,6 +31,7 @@ export default async function SettingsPage() {
     getJobTitles(),
     db.onboardingChecklist.findMany({
       include: {
+        department: true,
         items: {
           orderBy: { order: "asc" },
           include: { assignee: true },
@@ -81,10 +82,13 @@ export default async function SettingsPage() {
 
         <ChecklistManager
           employees={employeeList}
+          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
           checklists={checklists.map((c) => ({
             id: c.id,
             name: c.name,
             type: c.type as "ONBOARDING" | "OFFBOARDING",
+            departmentId: c.departmentId,
+            departmentName: c.department?.name || null,
             items: c.items.map((i) => ({
               id: i.id,
               title: i.title,
@@ -94,6 +98,11 @@ export default async function SettingsPage() {
               assigneeId: i.assigneeId,
               assigneeName: i.assignee ? `${i.assignee.firstName} ${i.assignee.lastName}` : null,
               dueDay: i.dueDay,
+              sendEmail: i.sendEmail,
+              emailSubject: i.emailSubject,
+              emailBody: i.emailBody,
+              documentUrl: i.documentUrl,
+              documentName: i.documentName,
             })),
           }))}
         />

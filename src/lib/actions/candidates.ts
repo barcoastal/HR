@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { sendOnboardingEmail } from "@/lib/email";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -262,8 +263,16 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
   });
   if (!candidate) throw new Error("Candidate not found");
 
+  const employeeDeptId = candidate.position?.departmentId || null;
+
   const onboardingChecklists = await db.onboardingChecklist.findMany({
-    where: { type: "ONBOARDING" },
+    where: {
+      type: "ONBOARDING",
+      OR: [
+        { departmentId: null },
+        ...(employeeDeptId ? [{ departmentId: employeeDeptId }] : []),
+      ],
+    },
     include: { items: { orderBy: { order: "asc" } } },
   });
   const allChecklistItems = onboardingChecklists.flatMap((c) => c.items);
@@ -309,6 +318,19 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
         status: "PENDING",
       })),
     });
+
+    // Send emails for items that have sendEmail enabled
+    for (const item of allChecklistItems) {
+      if (item.sendEmail && item.emailSubject && item.emailBody) {
+        sendOnboardingEmail({
+          to: candidate.email,
+          subject: item.emailSubject,
+          body: item.emailBody,
+          documentUrl: item.documentUrl,
+          documentName: item.documentName,
+        });
+      }
+    }
   }
 
   await db.candidate.update({

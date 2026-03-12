@@ -123,6 +123,11 @@ export type PlatformCostEntry = Prisma.PlatformCostEntryModel
  */
 export type PlatformSyncLog = Prisma.PlatformSyncLogModel
 /**
+ * Model Interview
+ * 
+ */
+export type Interview = Prisma.InterviewModel
+/**
  * Model TimeOffPolicy
  * 
  */
