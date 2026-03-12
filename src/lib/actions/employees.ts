@@ -85,37 +85,69 @@ export async function createEmployee(data: {
     },
   });
 
-  // Auto-assign onboarding checklist tasks when status is ONBOARDING
+  // If onboarding, resolve and create tasks
   if (status === "ONBOARDING") {
-    const onboardingChecklists = await db.onboardingChecklist.findMany({
-      where: {
-        type: "ONBOARDING",
-        OR: [
-          { departmentId: null },
-          ...(data.departmentId ? [{ departmentId: data.departmentId }] : []),
-        ],
-      },
-      include: { items: { orderBy: { order: "asc" } } },
-    });
-    const allItems = onboardingChecklists.flatMap((c) => c.items);
-    if (allItems.length > 0) {
-      await db.employeeTask.createMany({
-        data: allItems.map((item) => ({
+    const { resolveOnboardingTasks } = await import("./onboarding-resolution");
+    const { createSigningRequest } = await import("./signing");
+    const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
+
+    const resolvedTasks = await resolveOnboardingTasks(employee.departmentId, employee.jobTitle);
+    const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+    for (const task of resolvedTasks) {
+      const employeeTask = await db.employeeTask.create({
+        data: {
           employeeId: employee.id,
-          checklistItemId: item.id,
-          status: "PENDING",
-        })),
+          checklistItemId: task.checklistItemId,
+          title: task.title,
+          description: task.description,
+          documentAction: task.documentAction,
+          documentUrl: task.documentUrl,
+          documentName: task.documentName,
+          assigneeId: task.assigneeId,
+        },
       });
 
-      // Send emails for items that have sendEmail enabled
-      for (const item of allItems) {
-        if (item.sendEmail && item.emailSubject && item.emailBody) {
-          sendOnboardingEmail({
-            to: data.email,
-            subject: item.emailSubject,
-            body: item.emailBody,
-            documentUrl: item.documentUrl,
-            documentName: item.documentName,
+      // Handle document actions
+      if (task.documentAction === "SEND" && task.sendEmail && task.emailSubject && task.emailBody) {
+        sendOnboardingEmail({
+          to: data.email,
+          subject: task.emailSubject,
+          body: task.emailBody,
+          documentUrl: task.documentUrl,
+          documentName: task.documentName,
+        });
+      } else if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
+        const signingReq = await createSigningRequest(
+          employeeTask.id,
+          employee.id,
+          task.documentUrl,
+          task.documentName
+        );
+        sendSigningRequestEmail({
+          to: data.email,
+          firstName: data.firstName,
+          documentName: task.documentName,
+          signingUrl: `${baseUrl}/sign/${signingReq.token}`,
+        });
+      } else if (task.sendEmail && task.emailSubject && task.emailBody) {
+        sendOnboardingEmail({
+          to: data.email,
+          subject: task.emailSubject,
+          body: task.emailBody,
+        });
+      }
+
+      // Notify assigned employee
+      if (task.assigneeId) {
+        const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
+        if (assignee) {
+          sendTaskAssignmentEmail({
+            to: assignee.email,
+            assigneeName: assignee.firstName,
+            newHireName: `${data.firstName} ${data.lastName}`,
+            taskTitle: task.title,
+            taskDescription: task.description,
           });
         }
       }
@@ -191,8 +223,23 @@ export async function setEmployeeManager(employeeId: string, managerId: string |
 }
 
 export async function toggleEmployeeTask(taskId: string) {
-  const task = await db.employeeTask.findUnique({ where: { id: taskId } });
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const task = await db.employeeTask.findUnique({
+    where: { id: taskId },
+    include: { employee: true },
+  });
   if (!task) return null;
+
+  // Allow: assigned employee, manager of the new hire, or admin
+  const userEmployeeId = session.user?.employeeId;
+  const isAssignee = task.assigneeId && task.assigneeId === userEmployeeId;
+  const isManager = task.employee.managerId === userEmployeeId;
+  const isAdmin = session.user?.role === "ADMIN";
+  if (!isAssignee && !isManager && !isAdmin) {
+    throw new Error("Not authorized to update this task");
+  }
+
   const updated = await db.employeeTask.update({
     where: { id: taskId },
     data: {

@@ -263,20 +263,6 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
   });
   if (!candidate) throw new Error("Candidate not found");
 
-  const employeeDeptId = candidate.position?.departmentId || null;
-
-  const onboardingChecklists = await db.onboardingChecklist.findMany({
-    where: {
-      type: "ONBOARDING",
-      OR: [
-        { departmentId: null },
-        ...(employeeDeptId ? [{ departmentId: employeeDeptId }] : []),
-      ],
-    },
-    include: { items: { orderBy: { order: "asc" } } },
-  });
-  const allChecklistItems = onboardingChecklists.flatMap((c) => c.items);
-
   let skillsText = "";
   if (candidate.skills) {
     try {
@@ -310,24 +296,71 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
     },
   });
 
-  if (allChecklistItems.length > 0) {
-    await db.employeeTask.createMany({
-      data: allChecklistItems.map((item) => ({
+  // Resolve and create onboarding tasks
+  const { resolveOnboardingTasks } = await import("./onboarding-resolution");
+  const { createSigningRequest } = await import("./signing");
+  const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
+
+  const resolvedTasks = await resolveOnboardingTasks(
+    candidate.position?.departmentId || null,
+    candidate.position?.title || null
+  );
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  for (const task of resolvedTasks) {
+    const employeeTask = await db.employeeTask.create({
+      data: {
         employeeId: employee.id,
-        checklistItemId: item.id,
-        status: "PENDING",
-      })),
+        checklistItemId: task.checklistItemId,
+        title: task.title,
+        description: task.description,
+        documentAction: task.documentAction,
+        documentUrl: task.documentUrl,
+        documentName: task.documentName,
+        assigneeId: task.assigneeId,
+      },
     });
 
-    // Send emails for items that have sendEmail enabled
-    for (const item of allChecklistItems) {
-      if (item.sendEmail && item.emailSubject && item.emailBody) {
-        sendOnboardingEmail({
-          to: candidate.email,
-          subject: item.emailSubject,
-          body: item.emailBody,
-          documentUrl: item.documentUrl,
-          documentName: item.documentName,
+    // Handle document actions
+    if (task.documentAction === "SEND" && task.sendEmail && task.emailSubject && task.emailBody) {
+      sendOnboardingEmail({
+        to: candidate.email,
+        subject: task.emailSubject,
+        body: task.emailBody,
+        documentUrl: task.documentUrl,
+        documentName: task.documentName,
+      });
+    } else if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
+      const signingReq = await createSigningRequest(
+        employeeTask.id,
+        employee.id,
+        task.documentUrl,
+        task.documentName
+      );
+      sendSigningRequestEmail({
+        to: candidate.email,
+        firstName: candidate.firstName,
+        documentName: task.documentName,
+        signingUrl: `${baseUrl}/sign/${signingReq.token}`,
+      });
+    } else if (task.sendEmail && task.emailSubject && task.emailBody) {
+      sendOnboardingEmail({
+        to: candidate.email,
+        subject: task.emailSubject,
+        body: task.emailBody,
+      });
+    }
+
+    // Notify assigned employee
+    if (task.assigneeId) {
+      const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
+      if (assignee) {
+        sendTaskAssignmentEmail({
+          to: assignee.email,
+          assigneeName: assignee.firstName,
+          newHireName: `${candidate.firstName} ${candidate.lastName}`,
+          taskTitle: task.title,
+          taskDescription: task.description,
         });
       }
     }
@@ -343,7 +376,7 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
   revalidatePath("/org");
   revalidatePath("/onboarding");
 
-  return { employee, taskCount: allChecklistItems.length };
+  return { employee, taskCount: resolvedTasks.length };
 }
 
 export async function getPositions() {
