@@ -4,6 +4,8 @@ import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
 import { Users, Building2, Layers, Clock, ChevronRight } from "lucide-react";
 import { ManagerAssignment } from "@/components/org/manager-assignment";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatCard } from "@/components/ui/stat-card";
 
 const borderColors: Record<string, string> = {
   Engineering: "border-l-blue-500",
@@ -26,35 +28,17 @@ export default async function OrgPage() {
     return `${(totalMonths / activeEmployees.length / 12).toFixed(1)} yrs`;
   })();
 
-  const stats = [
-    { label: "Total Employees", value: String(activeEmployees.length), icon: Users },
-    { label: "Departments", value: String(departments.length), icon: Building2 },
-    { label: "Teams", value: String(departments.reduce((acc, d) => acc + d.teams.length, 0)), icon: Layers },
-    { label: "Avg Tenure", value: avgTenure, icon: Clock },
-  ];
+  const teamCount = departments.reduce((acc, d) => acc + d.teams.length, 0);
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Organization</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Overview of your company structure and departments</p>
-      </div>
+      <PageHeader title="Organization" description="Overview of your company structure and departments" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.label} className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-              <div className="flex items-center justify-between mb-3">
-                <div className="h-10 w-10 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center">
-                  <Icon className="h-5 w-5 text-[var(--color-accent)]" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{stat.value}</p>
-              <p className="text-sm text-[var(--color-text-muted)] mt-0.5">{stat.label}</p>
-            </div>
-          );
-        })}
+        <StatCard title="Total Employees" value={activeEmployees.length} icon={Users} color="blue" />
+        <StatCard title="Departments" value={departments.length} icon={Building2} color="purple" />
+        <StatCard title="Teams" value={teamCount} icon={Layers} color="emerald" />
+        <StatCard title="Avg Tenure" value={avgTenure} icon={Clock} color="amber" animate={false} />
       </div>
 
       <div className="mb-4">
@@ -66,7 +50,7 @@ export default async function OrgPage() {
           const colorIdx = dept.head ? dept.head.firstName.charCodeAt(0) % avatarColors.length : 0;
           const memberCount = dept.employees.length;
           return (
-            <div key={dept.id} className={cn("rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-4", borderColors[dept.name] || "border-l-gray-500", "hover:bg-[var(--color-surface-hover)] transition-colors group cursor-pointer")}>
+            <div key={dept.id} className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-[3px]", borderColors[dept.name] || "border-l-gray-500", "hover:bg-[var(--color-surface-hover)] transition-colors group cursor-pointer")}>
               <div className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-base font-semibold text-[var(--color-text-primary)]">{dept.name}</h3>

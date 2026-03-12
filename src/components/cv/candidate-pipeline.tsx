@@ -185,7 +185,7 @@ export function CandidatePipeline({ candidates, positions }: { candidates: Candi
                           <button
                             onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextStatus); }}
                             disabled={hiringId === candidate.id}
-                            className="text-[10px] font-medium text-[var(--color-accent)] hover:underline disabled:opacity-50"
+                            className="text-[10px] font-medium text-[var(--color-accent)] hover:underline disabled:opacity-50 py-2 px-1 min-h-[44px]"
                           >
                             {hiringId === candidate.id ? "Hiring..." : `Move to ${columns.find((c) => c.status === nextStatus)?.label} →`}
                           </button>

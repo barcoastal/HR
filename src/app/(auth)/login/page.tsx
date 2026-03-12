@@ -27,6 +27,14 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
 
+  const googleError = searchParams.get("error");
+  const googleErrorMessage =
+    googleError === "domain"
+      ? "Only @coastaldebt.com accounts can sign in."
+      : googleError === "not-invited"
+        ? "You haven't been invited yet. Ask your admin for access."
+        : null;
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -50,6 +58,13 @@ function LoginForm() {
 
   return (
     <>
+      {googleErrorMessage && (
+        <div className="flex items-center gap-2 p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+          <AlertCircle className="h-4 w-4 shrink-0" />
+          {googleErrorMessage}
+        </div>
+      )}
+
       {error && (
         <div className="flex items-center gap-2 p-3 mb-4 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
           <AlertCircle className="h-4 w-4 shrink-0" />
@@ -143,6 +158,7 @@ function LoginForm() {
 
       <div className="grid grid-cols-2 gap-3">
         <button
+          onClick={() => signIn("google", { callbackUrl })}
           className={cn(
             "flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium",
             "bg-[var(--color-background)] border border-[var(--color-border)]",
@@ -174,16 +190,20 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
       <div className="fixed inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 via-transparent to-purple-500/5 pointer-events-none" />
 
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -left-40 w-80 h-80 bg-[var(--color-accent)]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl" />
+      </div>
+
       <div className="relative w-full max-w-md">
         <div
           className={cn(
-            "rounded-2xl p-8",
-            "bg-[var(--color-surface)] border border-[var(--color-border)]",
+            "glass-card rounded-3xl p-8",
             "shadow-xl shadow-black/10"
           )}
         >
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 mb-4 shadow-[0_0_20px_var(--color-accent-glow)]">
+            <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 mb-4 shadow-[0_0_20px_var(--color-accent-glow)] animate-glow-pulse">
               <span className="text-white font-bold text-lg">C</span>
             </div>
             <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Coastal HR</h1>

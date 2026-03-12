@@ -47,15 +47,15 @@ export default async function MyProfilePage() {
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
       {/* Header */}
-      <div className={cn("rounded-xl overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className={cn("rounded-2xl gradient-border overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className={cn("h-16 w-16 rounded-xl flex items-center justify-center text-white text-xl font-bold", avatarColors[colorIdx])}>
+            <div className={cn("h-20 w-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold", avatarColors[colorIdx])}>
               {initials}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">{profile.firstName} {profile.lastName}</h1>
+                <h1 className="text-2xl font-bold text-gradient">{profile.firstName} {profile.lastName}</h1>
                 {profile.pronouns && <span className="text-sm text-[var(--color-text-muted)]">({profile.pronouns})</span>}
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{profile.jobTitle} · {profile.department?.name || "No department"}</p>
@@ -67,7 +67,7 @@ export default async function MyProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {/* About */}
-          <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">About</h2>
               <EditAboutDialog data={{
@@ -87,7 +87,7 @@ export default async function MyProfilePage() {
           </section>
 
           {/* Personal Info */}
-          <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Personal Info</h2>
               <EditPersonalInfoDialog data={{
@@ -113,7 +113,7 @@ export default async function MyProfilePage() {
           </section>
 
           {/* Emergency Contact */}
-          <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Emergency Contact</h2>
               <EditEmergencyContactDialog data={{
@@ -138,7 +138,7 @@ export default async function MyProfilePage() {
         {/* Sidebar */}
         <div className="space-y-6">
           {profile.buddy && (
-            <section className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Your Buddy</h3>
               <div className="flex items-center gap-3">
                 <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[profile.buddy.firstName.charCodeAt(0) % avatarColors.length])}>
@@ -153,7 +153,7 @@ export default async function MyProfilePage() {
           )}
 
           {profile.manager && (
-            <section className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Reports To</h3>
               <div className="flex items-center gap-3">
                 <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[profile.manager.firstName.charCodeAt(0) % avatarColors.length])}>
@@ -168,7 +168,7 @@ export default async function MyProfilePage() {
           )}
 
           {profile.clubMemberships.length > 0 && (
-            <section className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">My Clubs</h3>
               <div className="space-y-2">
                 {profile.clubMemberships.map((m) => (

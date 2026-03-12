@@ -8,6 +8,8 @@ import { Briefcase, Target } from "lucide-react";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { AddPositionForm } from "@/components/cv/add-position-form";
 import { CVTabs } from "@/components/cv/cv-tabs";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatCard } from "@/components/ui/stat-card";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
@@ -25,46 +27,26 @@ export default async function CVPage() {
 
   return (
     <div className="max-w-full mx-auto py-8 px-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Recruitment</h1>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">Manage candidates, positions, and hiring pipeline</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <AddPositionForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
-          <AddCandidateForm
-            positions={positions.map((p) => ({ id: p.id, title: p.title }))}
-            platforms={recruitmentPlatforms
-              .filter((p) => p.status === "ACTIVE")
-              .map((p) => ({ id: p.id, name: p.name }))}
-          />
-        </div>
-      </div>
+      <PageHeader
+        title="Recruitment"
+        description="Manage candidates, positions, and hiring pipeline"
+        action={
+          <div className="flex items-center gap-2">
+            <AddPositionForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+            <AddCandidateForm
+              positions={positions.map((p) => ({ id: p.id, title: p.title }))}
+              platforms={recruitmentPlatforms
+                .filter((p) => p.status === "ACTIVE")
+                .map((p) => ({ id: p.id, name: p.name }))}
+            />
+          </div>
+        }
+      />
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <Briefcase className="h-5 w-5 text-blue-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{openPositions.length}</p>
-              <p className="text-sm text-[var(--color-text-muted)]">Open Positions</p>
-            </div>
-          </div>
-        </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <Target className="h-5 w-5 text-emerald-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-[var(--color-text-primary)]">{activeCandidates}</p>
-              <p className="text-sm text-[var(--color-text-muted)]">Active in Pipeline</p>
-            </div>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
+        <StatCard title="Open Positions" value={openPositions.length} icon={Briefcase} color="blue" />
+        <StatCard title="Active in Pipeline" value={activeCandidates} icon={Target} color="emerald" />
       </div>
 
       <CVTabs

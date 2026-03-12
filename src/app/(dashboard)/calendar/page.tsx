@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function CalendarPage() {
   await requireAuth();
@@ -86,14 +87,11 @@ export default async function CalendarPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">
-          Birthdays, work anniversaries, benefits eligibility, and interviews
-        </p>
-      </div>
+      <PageHeader title="Calendar" description="Birthdays, work anniversaries, benefits eligibility, and interviews" />
 
-      <CalendarView events={events} />
+      <div className="glass-card p-1">
+        <CalendarView events={events} />
+      </div>
     </div>
   );
 }

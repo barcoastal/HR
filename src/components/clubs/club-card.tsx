@@ -39,9 +39,9 @@ export function ClubCard({
   }
 
   return (
-    <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]", "hover:border-[var(--color-accent)]/30 transition-colors")}>
+    <div className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]", "hover:border-[var(--color-accent)]/30 transition-colors")}>
       <div className="flex items-start gap-3 mb-3">
-        <span className="text-3xl">{club.emoji}</span>
+        <span className="text-4xl">{club.emoji}</span>
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{club.name}</h3>
           {club.description && (
@@ -59,10 +59,10 @@ export function ClubCard({
             onClick={handleToggle}
             disabled={loading}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+              "px-3 py-1.5 rounded-xl text-xs font-medium transition-colors",
               isMember
                 ? "text-red-400 hover:bg-red-500/10"
-                : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",
+                : "bg-gradient-to-r from-[var(--color-accent)] to-purple-600 text-white hover:brightness-110",
               "disabled:opacity-50"
             )}
           >

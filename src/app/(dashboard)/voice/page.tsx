@@ -4,6 +4,7 @@ import { canAccessSettings } from "@/lib/permissions";
 import type { UserRole } from "@/generated/prisma/client";
 import { FeedbackForm } from "@/components/voice/feedback-form";
 import { FeedbackList } from "@/components/voice/feedback-list";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function VoicePage() {
   const session = await requireAuth();
@@ -14,14 +15,12 @@ export default async function VoicePage() {
 
   return (
     <div className="max-w-2xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Your Voice</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">
-          {isAdmin
-            ? "View and respond to anonymous feedback from your team"
-            : "Share anonymous feedback — your identity is never recorded"}
-        </p>
-      </div>
+      <PageHeader
+        title="Your Voice"
+        description={isAdmin
+          ? "View and respond to anonymous feedback from your team"
+          : "Share anonymous feedback — your identity is never recorded"}
+      />
 
       <div className="space-y-6">
         <FeedbackForm />

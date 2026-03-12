@@ -14,11 +14,11 @@ export async function getUsers() {
 
 export async function inviteUser(data: {
   email: string;
-  password: string;
+  password?: string;
   role: UserRole;
   employeeId?: string;
 }) {
-  const hash = await bcrypt.hash(data.password, 10);
+  const hash = data.password ? await bcrypt.hash(data.password, 10) : null;
   const user = await db.user.create({
     data: {
       email: data.email,

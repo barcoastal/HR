@@ -2,9 +2,10 @@
 
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useSession, signOut } from "next-auth/react";
-import { Bell, Search, Sun, Moon, LogOut } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { Bell, Search, Sun, Moon } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const routeTitles: Record<string, string> = {
   "/": "Feed",
@@ -17,6 +18,11 @@ const routeTitles: Record<string, string> = {
   "/settings": "Settings",
   "/cv": "Recruitment",
   "/analytics": "Analytics",
+  "/calendar": "Calendar",
+  "/time-off": "Time Off",
+  "/clubs": "Clubs",
+  "/voice": "Your Voice",
+  "/my-profile": "My Profile",
 };
 
 function getPageTitle(pathname: string): string {
@@ -41,11 +47,11 @@ export function TopBar() {
     <header
       className={cn(
         "glass sticky top-0 z-40 flex h-16 items-center justify-between",
-        "border-b border-[var(--color-border)] px-4 md:px-6"
+        "border-b border-[var(--color-border)]/60 px-4 md:px-6"
       )}
     >
       <div className="flex items-center">
-        <span className="text-base font-semibold text-[var(--color-text-primary)] md:hidden">
+        <span className="text-base font-bold text-gradient md:hidden">
           Coastal HR
         </span>
         <h1 className="hidden text-lg font-semibold text-[var(--color-text-primary)] md:block">
@@ -60,11 +66,11 @@ export function TopBar() {
             type="text"
             placeholder="Search..."
             className={cn(
-              "h-9 w-64 rounded-full border border-[var(--color-border)]",
-              "bg-[var(--color-surface)] pl-9 pr-4 text-sm text-[var(--color-text-primary)]",
+              "glass h-10 w-80 rounded-xl border border-[var(--color-border)]/60",
+              "pl-9 pr-4 text-sm text-[var(--color-text-primary)]",
               "placeholder:text-[var(--color-text-muted)]",
-              "transition-colors duration-200",
-              "focus:border-[var(--color-accent)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
+              "transition-all duration-200",
+              "focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-light)]"
             )}
           />
         </div>
@@ -72,7 +78,7 @@ export function TopBar() {
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className={cn(
-            "relative flex h-9 w-9 items-center justify-center rounded-full",
+            "relative flex h-10 w-10 items-center justify-center rounded-xl",
             "text-[var(--color-text-muted)] transition-colors duration-200",
             "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
           )}
@@ -84,19 +90,23 @@ export function TopBar() {
 
         <button
           className={cn(
-            "relative flex h-9 w-9 items-center justify-center rounded-full",
+            "relative flex h-10 w-10 items-center justify-center rounded-xl",
             "text-[var(--color-text-muted)] transition-colors duration-200",
             "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
           )}
         >
           <Bell className="h-[18px] w-[18px]" />
-          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
+          <motion.span
+            className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          />
         </button>
 
         <button
           className={cn(
             "flex h-9 w-9 items-center justify-center rounded-full",
-            "bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)]",
+            "bg-gradient-to-br from-[var(--color-accent)] to-purple-600",
             "text-xs font-semibold text-white transition-opacity duration-200 hover:opacity-90"
           )}
         >

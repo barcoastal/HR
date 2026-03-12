@@ -225,7 +225,115 @@ export function CandidateDatabase({ candidates, positions }: Props) {
         </select>
       </div>
 
-      <div className={cn("rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      {/* Mobile Card View */}
+      <div className="sm:hidden space-y-3">
+        {filtered.map((c) => {
+          const skills = parseSkills(c.skills);
+          return (
+            <div key={c.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2 flex-1 min-w-0">
+                  <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                    <FileText className="h-4 w-4 text-blue-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                      {c.firstName} {c.lastName}
+                    </p>
+                    <p className="text-xs text-[var(--color-text-muted)] truncate">{c.email}</p>
+                  </div>
+                </div>
+                {c.source && (
+                  <span className={cn(
+                    "text-[10px] px-2 py-0.5 rounded-full font-medium shrink-0 ml-2",
+                    c.source === "pro.jobing"
+                      ? "bg-orange-500/10 text-orange-400"
+                      : "bg-blue-500/10 text-blue-400"
+                  )}>
+                    {c.source}
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-2 mb-3 text-xs">
+                {c.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="h-3 w-3 text-[var(--color-text-muted)]" />
+                    <span className="text-[var(--color-text-muted)]">{c.phone}</span>
+                  </div>
+                )}
+                {c.jobAppliedTo && (
+                  <div className="flex items-center gap-2">
+                    <Briefcase className="h-3 w-3 text-[var(--color-text-muted)]" />
+                    <span className="text-[var(--color-text-muted)] truncate">{c.jobAppliedTo}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-[var(--color-text-muted)]">Added: {formatDate(c.createdAt)}</span>
+                </div>
+              </div>
+
+              {skills.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {skills.slice(0, 3).map((s) => (
+                    <span key={s} className="px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                      {s}
+                    </span>
+                  ))}
+                  {skills.length > 3 && (
+                    <span className="text-[10px] text-[var(--color-text-muted)]">+{skills.length - 3} more</span>
+                  )}
+                </div>
+              )}
+
+              <div className="flex items-center justify-between gap-2 pt-3 border-t border-[var(--color-border)]">
+                <div className="flex items-center gap-2">
+                  {c.resumeUrl && (
+                    <a
+                      href={`/api/platforms/jobing/resume?url=${encodeURIComponent(c.resumeUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className={cn(
+                        "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium h-11",
+                        "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                      )}
+                    >
+                      <Download className="h-3 w-3" />
+                      Resume
+                    </a>
+                  )}
+                </div>
+                {c.inPipeline ? (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 h-11">
+                    <Check className="h-3 w-3" />
+                    In Pipeline
+                  </span>
+                ) : (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); openPullDialog(c); }}
+                    className={cn(
+                      "inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium h-11",
+                      "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                    )}
+                  >
+                    <ArrowUpRight className="h-3 w-3" />
+                    Pull to Recruitment
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="text-center py-8 text-sm text-[var(--color-text-muted)]">
+            No candidates found matching your filters
+          </div>
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className={cn("hidden sm:block rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <table className="w-full">
           <thead>
             <tr className="border-b border-[var(--color-border)]">
@@ -453,7 +561,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setPullDialogOpen(false)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+                className="px-4 py-3 h-11 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
               >
                 Cancel
               </button>
@@ -461,7 +569,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                 onClick={handlePull}
                 disabled={pulling}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-sm font-medium",
+                  "px-4 py-3 h-11 rounded-lg text-sm font-medium",
                   "bg-[var(--color-accent)] text-white",
                   "hover:bg-[var(--color-accent-hover)]",
                   "disabled:opacity-50"

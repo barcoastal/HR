@@ -107,7 +107,7 @@ export function PostCard({
     const mentionedInitials = getInitials(mentioned.firstName, mentioned.lastName);
     const mentionedColorIdx = mentioned.firstName.charCodeAt(0) % avatarColors.length;
     return (
-      <article className={cn("rounded-xl overflow-hidden", "bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-rose-500/10", "border border-yellow-400/20")}>
+      <article className={cn("rounded-2xl overflow-hidden", "bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-rose-500/10", "border border-yellow-400/20")}>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-4">
             <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
@@ -140,7 +140,7 @@ export function PostCard({
 
   if (post.type === "BIRTHDAY") {
     return (
-      <article className={cn("rounded-xl overflow-hidden", "bg-gradient-to-br from-amber-500/10 via-pink-500/10 to-purple-500/10", "border border-amber-400/20")}>
+      <article className={cn("rounded-2xl overflow-hidden", "bg-gradient-to-br from-amber-500/10 via-pink-500/10 to-purple-500/10", "border border-amber-400/20")}>
         <div className="p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>
@@ -167,7 +167,7 @@ export function PostCard({
 
   if (post.type === "NEW_HIRE") {
     return (
-      <article className={cn("rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-4 border-l-emerald-500")}>
+      <article className={cn("rounded-2xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-4 border-l-emerald-500")}>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-4">
             <UserPlus className="h-5 w-5 text-emerald-500" />
@@ -192,7 +192,7 @@ export function PostCard({
   }
 
   return (
-    <article className={cn("rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", post.pinned && "border-l-4 border-l-[var(--color-accent)]")}>
+    <article className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]", post.pinned && "border-l-4 border-l-[var(--color-accent)]")}>
       <div className="p-5">
         <div className="flex items-center gap-3 mb-4">
           <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>

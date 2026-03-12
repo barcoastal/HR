@@ -18,6 +18,7 @@ import { TeamCalendar } from "@/components/time-off/team-calendar";
 import { BurnoutAlerts } from "@/components/time-off/burnout-alerts";
 import { Palmtree } from "lucide-react";
 import { TimeOffTabs } from "@/components/time-off/time-off-tabs";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function TimeOffPage() {
   const session = await requireAuth();
@@ -50,27 +51,27 @@ export default async function TimeOffPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Time Off</h1>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">Manage your time off and view team availability</p>
-        </div>
-        {employeeId && policies.length > 0 && (
-          <RequestTimeOffDialog
-            employeeId={employeeId}
-            policies={policies.map((p) => ({ id: p.id, name: p.name, daysPerYear: p.daysPerYear, isUnlimited: p.isUnlimited }))}
-            balances={balances.map((b) => ({ policyId: b.policyId, used: b.used, policy: { id: b.policy.id, name: b.policy.name, daysPerYear: b.policy.daysPerYear, isUnlimited: b.policy.isUnlimited } }))}
-          />
-        )}
-      </div>
+      <PageHeader
+        title="Time Off"
+        description="Manage your time off and view team availability"
+        action={
+          employeeId && policies.length > 0 ? (
+            <RequestTimeOffDialog
+              employeeId={employeeId}
+              policies={policies.map((p) => ({ id: p.id, name: p.name, daysPerYear: p.daysPerYear, isUnlimited: p.isUnlimited }))}
+              balances={balances.map((b) => ({ policyId: b.policyId, used: b.used, policy: { id: b.policy.id, name: b.policy.name, daysPerYear: b.policy.daysPerYear, isUnlimited: b.policy.isUnlimited } }))}
+            />
+          ) : undefined
+        }
+      />
 
       {/* Balance Stats */}
       {balances.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {balances.map((b) => {
             const remaining = b.policy.isUnlimited ? null : b.policy.daysPerYear - b.used;
             return (
-              <div key={b.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <div key={b.id} className={cn("rounded-2xl gradient-border p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
                 <div className="flex items-center gap-2 mb-2">
                   <Palmtree className="h-4 w-4 text-emerald-500" />
                   <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{b.policy.name}</p>
@@ -88,7 +89,7 @@ export default async function TimeOffPage() {
       )}
 
       {policies.length === 0 && (
-        <div className={cn("rounded-xl p-8 text-center mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className={cn("rounded-2xl p-8 text-center mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <Palmtree className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
           <p className="text-[var(--color-text-muted)]">No time off policies configured yet. Ask your admin to set them up in Settings.</p>
         </div>

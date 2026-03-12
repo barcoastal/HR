@@ -93,24 +93,24 @@ export function RequestList({
                   <>
                     <button
                       onClick={() => handleApprove(req.id)}
-                      className="p-1.5 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors"
+                      className="p-2.5 h-11 w-11 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors flex items-center justify-center"
                       title="Approve"
                     >
-                      <Check className="h-4 w-4" />
+                      <Check className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDeny(req.id)}
-                      className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
+                      className="p-2.5 h-11 w-11 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors flex items-center justify-center"
                       title="Deny"
                     >
-                      <X className="h-4 w-4" />
+                      <X className="h-5 w-5" />
                     </button>
                   </>
                 )}
                 {req.status === "PENDING" && isOwn && (
                   <button
                     onClick={() => handleCancel(req.id)}
-                    className="px-3 py-1 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+                    className="px-3 py-3 h-11 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
                   >
                     Cancel
                   </button>

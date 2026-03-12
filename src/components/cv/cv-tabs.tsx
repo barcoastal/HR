@@ -75,7 +75,7 @@ export function CVTabs({
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={cn(
-              "px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
+              "px-4 py-3 h-11 rounded-lg text-sm font-medium whitespace-nowrap transition-colors",
               activeTab === tab.id
                 ? "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"

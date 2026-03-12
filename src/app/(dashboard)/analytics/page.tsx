@@ -36,6 +36,9 @@ import {
   DietaryPieChart,
 } from "@/components/analytics/charts";
 import { SpendVsHiresChart } from "@/components/analytics/recruitment-cost-charts";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatCard } from "@/components/ui/stat-card";
+import { AIAnalyticsBar } from "@/components/analytics/ai-analytics-bar";
 
 export default async function AnalyticsPage() {
   await requireManagerOrAdmin();
@@ -82,98 +85,70 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Analytics</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Comprehensive HR metrics and recruitment analytics</p>
-      </div>
+      <PageHeader title="Analytics" description="Comprehensive HR metrics and recruitment analytics" />
 
       {/* Headcount Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-        {[
-          { label: "Total Employees", value: headcount.total, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
-          { label: "Active", value: headcount.active, icon: Users, color: "text-emerald-400", bg: "bg-emerald-500/10" },
-          { label: "New This Month", value: headcount.newThisMonth, icon: UserPlus, color: "text-green-400", bg: "bg-green-500/10" },
-          { label: "Departed", value: headcount.departedThisMonth, icon: UserMinus, color: "text-red-400", bg: "bg-red-500/10" },
-          { label: "Net Growth", value: headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth), icon: headcount.netGrowthMonth >= 0 ? TrendingUp : TrendingDown, color: headcount.netGrowthMonth >= 0 ? "text-emerald-400" : "text-red-400", bg: headcount.netGrowthMonth >= 0 ? "bg-emerald-500/10" : "bg-red-500/10" },
-          { label: "Retention", value: `${retention.retentionRate}%`, icon: Target, color: "text-purple-400", bg: "bg-purple-500/10" },
-        ].map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.label} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-              <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center mb-2", stat.bg)}>
-                <Icon className={cn("h-4 w-4", stat.color)} />
-              </div>
-              <p className="text-xl font-bold text-[var(--color-text-primary)]">{stat.value}</p>
-              <p className="text-xs text-[var(--color-text-muted)]">{stat.label}</p>
-            </div>
-          );
-        })}
+        <StatCard title="Total Employees" value={headcount.total} icon={Users} color="blue" />
+        <StatCard title="Active" value={headcount.active} icon={Users} color="emerald" />
+        <StatCard title="New This Month" value={headcount.newThisMonth} icon={UserPlus} color="emerald" />
+        <StatCard title="Departed" value={headcount.departedThisMonth} icon={UserMinus} color="red" />
+        <StatCard title="Net Growth" value={headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth)} icon={headcount.netGrowthMonth >= 0 ? TrendingUp : TrendingDown} color={headcount.netGrowthMonth >= 0 ? "emerald" : "red"} animate={false} />
+        <StatCard title="Retention" value={`${retention.retentionRate}%`} icon={Target} color="purple" animate={false} />
       </div>
 
       {/* Recruitment KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-2">
-            <Clock className="h-4 w-4 text-amber-400" />
-            <span className="text-sm font-medium text-[var(--color-text-primary)]">Avg Time to Hire</span>
-          </div>
-          <p className="text-3xl font-bold text-[var(--color-text-primary)]">{timeToHire.avgDays}<span className="text-sm font-normal text-[var(--color-text-muted)] ml-1">days</span></p>
-        </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-2">
-            <DollarSign className="h-4 w-4 text-emerald-400" />
-            <span className="text-sm font-medium text-[var(--color-text-primary)]">Blended Cost/Hire</span>
-          </div>
-          <p className="text-3xl font-bold text-[var(--color-text-primary)]">
-            ${blendedCost.blendedCostPerHire.toLocaleString()}
-          </p>
-          <div className="flex items-center gap-3 mt-1.5 text-[10px] text-[var(--color-text-muted)]">
-            <span>Direct: ${blendedCost.directCostPerHire.toLocaleString()}</span>
-            <span>Platform: ${blendedCost.platformCostPerHire.toLocaleString()}</span>
-          </div>
-        </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-2">
-            <Briefcase className="h-4 w-4 text-blue-400" />
-            <span className="text-sm font-medium text-[var(--color-text-primary)]">Open Positions</span>
-          </div>
-          <p className="text-3xl font-bold text-[var(--color-text-primary)]">{pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)}<span className="text-sm font-normal text-[var(--color-text-muted)] ml-1">active candidates</span></p>
-        </div>
+        <StatCard title="Avg Time to Hire" value={timeToHire.avgDays} icon={Clock} color="amber" suffix="days" />
+        <StatCard title="Blended Cost/Hire" value={`$${blendedCost.blendedCostPerHire.toLocaleString()}`} icon={DollarSign} color="emerald" animate={false} description={`Direct: $${blendedCost.directCostPerHire.toLocaleString()} · Platform: $${blendedCost.platformCostPerHire.toLocaleString()}`} />
+        <StatCard title="Open Positions" value={pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)} icon={Briefcase} color="blue" description="active candidates" />
       </div>
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="glass-card rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Department Breakdown</h3>
-          <DepartmentBarChart data={deptBreakdown} />
+          <div className="min-h-[200px]">
+            <DepartmentBarChart data={deptBreakdown} />
+          </div>
         </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="glass-card rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Turnover Trend (6 Months)</h3>
-          <TurnoverLineChart data={turnover} />
+          <div className="min-h-[200px]">
+            <TurnoverLineChart data={turnover} />
+          </div>
         </div>
       </div>
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="glass-card rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Tenure Distribution</h3>
-          <TenureBarChart data={tenure} />
+          <div className="min-h-[200px]">
+            <TenureBarChart data={tenure} />
+          </div>
         </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="glass-card rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Hiring Pipeline</h3>
-          <PipelinePieChart data={pipeline} />
+          <div className="min-h-[200px]">
+            <PipelinePieChart data={pipeline} />
+          </div>
         </div>
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="glass-card rounded-2xl p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Dietary Restrictions</h3>
-          <DietaryPieChart data={dietary.summary} />
+          <div className="min-h-[200px]">
+            <DietaryPieChart data={dietary.summary} />
+          </div>
         </div>
       </div>
 
       {/* Source ROI */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Source ROI</h3>
-          <SourceROIChart data={sourceROI} />
+          <div className="min-h-[200px]">
+            <SourceROIChart data={sourceROI} />
+          </div>
           <div className="mt-4 space-y-2">
             {sourceROI.map((s) => (
               <div key={s.source} className="flex items-center justify-between text-xs">
@@ -188,7 +163,7 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Recruiter Analytics */}
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="h-4 w-4 text-[var(--color-accent)]" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Recruiter Performance</h3>
@@ -214,7 +189,7 @@ export default async function AnalyticsPage() {
 
       {/* Recruitment Platform Spend */}
       {platformSpend.platforms.length > 0 && (
-        <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Cable className="h-4 w-4 text-[var(--color-accent)]" />
@@ -224,7 +199,53 @@ export default async function AnalyticsPage() {
               ${platformSpend.totalMonthlySpend.toLocaleString()}/mo total
             </span>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Mobile Card View */}
+          <div className="sm:hidden space-y-3 mb-6">
+            {platformSpend.platforms.map((p) => (
+              <div key={p.id} className="rounded-lg p-3 bg-[var(--color-background)] border border-[var(--color-border)]">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("h-2 w-2 rounded-full", p.status === "ACTIVE" ? "bg-emerald-400" : p.status === "PAUSED" ? "bg-amber-400" : "bg-red-400")} />
+                    <span className="font-medium text-sm text-[var(--color-text-primary)]">{p.name}</span>
+                  </div>
+                  <span className={cn(
+                    "px-1.5 py-0.5 rounded text-[10px] font-medium",
+                    p.roi === "Efficient" ? "bg-emerald-500/15 text-emerald-400" :
+                    p.roi === "Moderate" ? "bg-amber-500/15 text-amber-400" :
+                    "bg-red-500/15 text-red-400"
+                  )}>
+                    {p.roi}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-[var(--color-text-muted)]">Type:</span>
+                    <span className="ml-1 text-[var(--color-text-primary)]">{p.type.replace("_", " ")}</span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--color-text-muted)]">Monthly:</span>
+                    <span className="ml-1 text-[var(--color-text-primary)]">${p.monthlyCost.toLocaleString()}</span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--color-text-muted)]">Candidates:</span>
+                    <span className="ml-1 text-[var(--color-text-primary)]">{p.candidatesSourced}</span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--color-text-muted)]">Hires:</span>
+                    <span className="ml-1 font-medium text-emerald-400">{p.hired}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-[var(--color-text-muted)]">Cost/Hire:</span>
+                    <span className="ml-1 text-[var(--color-text-primary)]">${p.blendedCostPerHire.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-[var(--color-border)]">
@@ -266,18 +287,21 @@ export default async function AnalyticsPage() {
               </tbody>
             </table>
           </div>
+
           <div className="mt-6">
             <h4 className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Spend vs Hires (12 Months)</h4>
-            <SpendVsHiresChart data={spendTrend} />
+            <div className="min-h-[200px]">
+              <SpendVsHiresChart data={spendTrend} />
+            </div>
           </div>
         </div>
       )}
 
       {/* Review Metrics */}
       {reviews.length > 0 && (
-        <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Review Completion</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {reviews.map((r) => (
               <div key={r.name} className="p-3 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)]">
                 <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1">{r.name}</p>
@@ -295,7 +319,7 @@ export default async function AnalyticsPage() {
       )}
 
       {/* Onboarding Metrics */}
-      <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
         <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Onboarding Pipeline</h3>
         <div className="flex items-center gap-6 mb-3">
           <div>
@@ -323,7 +347,7 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Benefits Eligibility */}
-      <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
         <div className="flex items-center gap-2 mb-4">
           <Shield className="h-4 w-4 text-emerald-400" />
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Benefits Eligibility</h3>
@@ -370,7 +394,7 @@ export default async function AnalyticsPage() {
 
       {/* Birthdays & Anniversaries */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <div className="flex items-center gap-2 mb-4">
             <Cake className="h-4 w-4 text-amber-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Birthdays</h3>
@@ -395,7 +419,7 @@ export default async function AnalyticsPage() {
           ) : <p className="text-sm text-[var(--color-text-muted)]">No upcoming birthdays</p>}
         </div>
 
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
           <div className="flex items-center gap-2 mb-4">
             <CalendarHeart className="h-4 w-4 text-rose-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Work Anniversaries</h3>
@@ -418,6 +442,22 @@ export default async function AnalyticsPage() {
           ) : <p className="text-sm text-[var(--color-text-muted)]">No upcoming anniversaries</p>}
         </div>
       </div>
+
+      {/* AI Analytics Assistant */}
+      <AIAnalyticsBar
+        context={{
+          headcount,
+          retention,
+          timeToHire,
+          departments: deptBreakdown,
+          turnover,
+          pipeline,
+          blendedCost,
+          onboarding,
+          reviews,
+          recruiterStats,
+        }}
+      />
     </div>
   );
 }

@@ -38,7 +38,7 @@ export function PostComposer({
   return (
     <div
       className={cn(
-        "rounded-xl p-4 mb-6",
+        "rounded-2xl p-4 mb-6",
         "bg-[var(--color-surface)] border border-[var(--color-border)]"
       )}
     >
@@ -54,7 +54,7 @@ export function PostComposer({
             onChange={(e) => setContent(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handlePost()}
             className={cn(
-              "w-full rounded-lg px-4 py-2.5 text-sm",
+              "w-full rounded-xl px-4 py-2.5 text-sm",
               "bg-[var(--color-background)] border border-[var(--color-border)]",
               "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
               "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]",

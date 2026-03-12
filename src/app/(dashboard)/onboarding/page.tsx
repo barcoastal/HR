@@ -2,7 +2,9 @@ import { cn, formatDate } from "@/lib/utils";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
-import { OnboardingTaskManager } from "@/components/onboarding/onboarding-task-manager";
+import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline";
+import { PageHeader } from "@/components/ui/page-header";
+import { StatCard } from "@/components/ui/stat-card";
 
 export default async function OnboardingPage() {
   await requireAuth();
@@ -44,36 +46,14 @@ export default async function OnboardingPage() {
 
   const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
 
-  const stats = [
-    { label: "Active Onboarding", value: String(onboardingEmployees.length), icon: UserPlus, color: "text-blue-400", bg: "bg-blue-500/10" },
-    { label: "Completed This Month", value: String(completedEmployees.length), icon: CheckCircle2, color: "text-emerald-400", bg: "bg-emerald-500/10" },
-    { label: "Pending Tasks", value: String(pendingTasks), icon: ClipboardList, color: "text-amber-400", bg: "bg-amber-500/10" },
-  ];
-
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Onboarding</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Track and manage new employee onboarding progress</p>
-      </div>
+      <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.label} className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-              <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-lg flex items-center justify-center", stat.bg)}>
-                  <Icon className={cn("h-5 w-5", stat.color)} />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-[var(--color-text-primary)]">{stat.value}</p>
-                  <p className="text-sm text-[var(--color-text-muted)]">{stat.label}</p>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={UserPlus} color="blue" />
+        <StatCard title="Completed This Month" value={completedEmployees.length} icon={CheckCircle2} color="emerald" />
+        <StatCard title="Pending Tasks" value={pendingTasks} icon={ClipboardList} color="amber" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>
@@ -92,7 +72,7 @@ export default async function OnboardingPage() {
             }));
 
           return (
-            <OnboardingTaskManager
+            <OnboardingTimeline
               key={emp.id}
               employee={{
                 id: emp.id,
@@ -106,6 +86,7 @@ export default async function OnboardingPage() {
                 description: t.checklistItem.description,
                 status: t.status as "PENDING" | "DONE",
                 completedAt: t.completedAt?.toISOString() || null,
+                dueDay: t.checklistItem.dueDay,
               }))}
               availableItems={availableItems}
               type="ONBOARDING"
@@ -120,7 +101,7 @@ export default async function OnboardingPage() {
           <div className="mt-8 mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Recently Completed</h2></div>
           <div className="space-y-3">
             {completedEmployees.map((emp) => (
-              <div key={emp.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <div key={emp.id} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">{emp.firstName[0]}{emp.lastName[0]}</div>
                   <div className="flex-1 min-w-0">

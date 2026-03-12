@@ -2,6 +2,7 @@ import { cn, getInitials, formatDate } from "@/lib/utils";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { ClipboardCheck, Clock, CheckCircle2, BarChart3, Calendar } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 const statusConfig: Record<string, { color: string; bg: string; icon: React.ElementType }> = {
   SUBMITTED: { color: "text-emerald-400", bg: "bg-emerald-500/15", icon: CheckCircle2 },
@@ -30,7 +31,7 @@ export default async function ReviewsPage() {
   if (!cycle) {
     return (
       <div className="max-w-5xl mx-auto py-8 px-4">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Reviews</h1>
+        <PageHeader title="Reviews" description="Performance review cycles and submissions" />
         <p className="text-[var(--color-text-muted)]">No active review cycle.</p>
       </div>
     );
@@ -42,12 +43,9 @@ export default async function ReviewsPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Reviews</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Performance review cycles and submissions</p>
-      </div>
+      <PageHeader title="Reviews" description="Performance review cycles and submissions" />
 
-      <div className={cn("rounded-xl p-6 mb-8", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className={cn("glass-card rounded-2xl p-6 mb-8")}>
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
           <div>
             <div className="flex items-center gap-2 mb-1">
@@ -68,7 +66,7 @@ export default async function ReviewsPage() {
             <span className="text-sm text-[var(--color-text-muted)]">{submitted}/{cycle.reviews.length} completed ({progressPercent}%)</span>
           </div>
           <div className="w-full h-3 rounded-full bg-[var(--color-background)] overflow-hidden">
-            <div className="h-full rounded-full bg-[var(--color-accent)] transition-all" style={{ width: `${progressPercent}%` }} />
+            <div className="h-full rounded-full bg-gradient-to-r from-[var(--color-accent)] to-purple-500 transition-all" style={{ width: `${progressPercent}%` }} />
           </div>
         </div>
 
@@ -91,7 +89,7 @@ export default async function ReviewsPage() {
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Recent Reviews</h2></div>
-      <div className={cn("rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="hidden md:block">
           <table className="w-full">
             <thead>
@@ -110,17 +108,17 @@ export default async function ReviewsPage() {
                 const colorIdx = review.employee.firstName.charCodeAt(0) % avatarColors.length;
                 return (
                   <tr key={review.id} className="hover:bg-[var(--color-surface-hover)] transition-colors">
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{empInitials}</div>
                         <span className="text-sm font-medium text-[var(--color-text-primary)]">{review.employee.firstName} {review.employee.lastName}</span>
                       </div>
                     </td>
-                    <td className="px-5 py-3.5 text-sm text-[var(--color-text-primary)]">{review.reviewer.firstName} {review.reviewer.lastName}</td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-4 text-sm text-[var(--color-text-primary)]">{review.reviewer.firstName} {review.reviewer.lastName}</td>
+                    <td className="px-5 py-4">
                       <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium", typeConfig[review.type] || "")}>{review.type}</span>
                     </td>
-                    <td className="px-5 py-3.5">
+                    <td className="px-5 py-4">
                       <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium", cfg.bg, cfg.color)}>
                         <StatusIcon className="h-3 w-3" />{review.status}
                       </div>

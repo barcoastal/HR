@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface TabsContextValue {
   activeTab: string;
   setActiveTab: (value: string) => void;
+  layoutId: string;
 }
 
 const TabsContext = React.createContext<TabsContextValue | undefined>(undefined);
@@ -24,9 +26,12 @@ interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
   onValueChange?: (value: string) => void;
 }
 
+let tabsIdCounter = 0;
+
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
   ({ className, defaultValue, value, onValueChange, children, ...props }, ref) => {
     const [internalValue, setInternalValue] = React.useState(defaultValue);
+    const layoutId = React.useMemo(() => `tabs-pill-${++tabsIdCounter}`, []);
     const activeTab = value ?? internalValue;
 
     const setActiveTab = React.useCallback(
@@ -40,7 +45,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     );
 
     return (
-      <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+      <TabsContext.Provider value={{ activeTab, setActiveTab, layoutId }}>
         <div ref={ref} className={cn("w-full", className)} {...props}>
           {children}
         </div>
@@ -57,7 +62,7 @@ const TabsList = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "inline-flex items-center gap-1 rounded-lg bg-[var(--color-surface)] p-1 border border-[var(--color-border)]",
+      "glass inline-flex items-center gap-1 rounded-xl p-1 border border-[var(--color-border)]/60",
       className
     )}
     {...props}
@@ -70,8 +75,8 @@ interface TabsTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
-  ({ className, value, ...props }, ref) => {
-    const { activeTab, setActiveTab } = useTabsContext();
+  ({ className, value, children, ...props }, ref) => {
+    const { activeTab, setActiveTab, layoutId } = useTabsContext();
     const isActive = activeTab === value;
 
     return (
@@ -81,15 +86,24 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         role="tab"
         aria-selected={isActive}
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50 disabled:pointer-events-none disabled:opacity-50",
+          "relative inline-flex items-center justify-center whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]/50 disabled:pointer-events-none disabled:opacity-50",
           isActive
-            ? "bg-[var(--color-accent)] text-white shadow-sm"
-            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)]",
+            ? "text-white"
+            : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
           className
         )}
         onClick={() => setActiveTab(value)}
         {...props}
-      />
+      >
+        {isActive && (
+          <motion.span
+            layoutId={layoutId}
+            className="absolute inset-0 rounded-lg bg-[var(--color-accent)]"
+            transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+          />
+        )}
+        <span className="relative z-10">{children}</span>
+      </button>
     );
   }
 );

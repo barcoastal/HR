@@ -3,6 +3,7 @@ import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function PeoplePage() {
   await requireAuth();
@@ -15,15 +16,11 @@ export default async function PeoplePage() {
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">People</h1>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">
-            {employees.length} team member{employees.length !== 1 ? "s" : ""} across the organization
-          </p>
-        </div>
-        <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
-      </div>
+      <PageHeader
+        title="People"
+        description={`${employees.length} team member${employees.length !== 1 ? "s" : ""} across the organization`}
+        action={<AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />}
+      />
 
       {employees.length === 0 ? (
         <div className="text-center py-16">

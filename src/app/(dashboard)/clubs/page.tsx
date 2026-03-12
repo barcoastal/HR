@@ -4,6 +4,7 @@ import { getClubs } from "@/lib/actions/clubs";
 import { ClubCard } from "@/components/clubs/club-card";
 import { CreateClubDialog } from "@/components/clubs/create-club-dialog";
 import { Users2 } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default async function ClubsPage() {
   const session = await requireAuth();
@@ -12,13 +13,7 @@ export default async function ClubsPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Clubs</h1>
-          <p className="text-sm text-[var(--color-text-muted)] mt-1">Join interest groups and connect with colleagues</p>
-        </div>
-        <CreateClubDialog />
-      </div>
+      <PageHeader title="Clubs" description="Join interest groups and connect with colleagues" action={<CreateClubDialog />} />
 
       {clubs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -31,7 +26,7 @@ export default async function ClubsPage() {
           ))}
         </div>
       ) : (
-        <div className={cn("rounded-xl p-12 text-center", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <div className={cn("rounded-2xl p-12 text-center", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <Users2 className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
           <p className="text-[var(--color-text-muted)]">No clubs yet. Be the first to create one!</p>
         </div>

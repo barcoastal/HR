@@ -14,7 +14,7 @@ export default function DashboardLayout({
       <Sidebar />
       <div className="flex-1 md:ml-64">
         <TopBar />
-        <main className="p-4 pb-24 md:p-6 md:pb-6">{children}</main>
+        <main className="p-5 pb-28 md:p-8 md:pb-8">{children}</main>
       </div>
       <MobileNav />
       <Suspense fallback={null}>

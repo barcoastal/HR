@@ -19,6 +19,7 @@ import { PlatformIntegrationManager } from "@/components/settings/platform-integ
 import { NativeIntegrations } from "@/components/settings/native-integrations";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
+import { PageHeader } from "@/components/ui/page-header";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -60,10 +61,7 @@ export default async function SettingsPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Settings</h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-1">Manage your company settings, users, and templates</p>
-      </div>
+      <PageHeader title="Settings" description="Manage your company settings, users, and templates" />
 
       <div className="space-y-8">
         <CompanyInfo />

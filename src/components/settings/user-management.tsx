@@ -27,17 +27,15 @@ type UserItem = {
 export function SettingsUserManagement({ users }: { users: UserItem[] }) {
   const [inviteOpen, setInviteOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("EMPLOYEE");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   async function handleInvite() {
-    if (!email || !password) return;
+    if (!email) return;
     setLoading(true);
-    await inviteUser({ email, password, role });
+    await inviteUser({ email, role });
     setEmail("");
-    setPassword("");
     setRole("EMPLOYEE");
     setLoading(false);
     setInviteOpen(false);
@@ -137,11 +135,8 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">Email</label>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@company.com" className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")} />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">Temporary Password</label>
-            <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Initial password" className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")} />
+            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@coastaldebt.com" className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")} />
+            <p className="text-xs text-[var(--color-text-muted)] mt-1">User will sign in with Google using this email.</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">Role</label>
@@ -153,7 +148,7 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button onClick={() => setInviteOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
-            <button onClick={handleInvite} disabled={!email || !password || loading} className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
+            <button onClick={handleInvite} disabled={!email || loading} className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
               {loading ? "Inviting..." : "Invite"}
             </button>
           </div>
