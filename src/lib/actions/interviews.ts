@@ -6,7 +6,7 @@ import type { InterviewType } from "@/generated/prisma/client";
 import {
   createInterviewEvent,
   cancelInterviewEvent,
-  isCalendarConnected,
+  isCalendarConnected as checkCalendarConnected,
 } from "@/lib/google-calendar";
 
 export async function scheduleInterview(data: {
@@ -35,7 +35,7 @@ export async function scheduleInterview(data: {
   let googleEventId: string | null = null;
   let googleMeetLink: string | null = null;
 
-  const connected = await isCalendarConnected();
+  const connected = await checkCalendarConnected();
   if (connected) {
     const positionTitle = candidate.position?.title ?? "Open Position";
     const result = await createInterviewEvent({
@@ -119,4 +119,7 @@ export async function getUpcomingInterviews() {
   });
 }
 
-export { isCalendarConnected } from "@/lib/google-calendar";
+export async function isCalendarConnected(): Promise<boolean> {
+  const { isCalendarConnected: check } = await import("@/lib/google-calendar");
+  return check();
+}
