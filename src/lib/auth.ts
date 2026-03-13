@@ -81,6 +81,9 @@ export const authOptions: NextAuthOptions = {
         return "/login?error=domain";
       }
 
+      // Ensure seeded admins exist before checking
+      await ensureAdminExists();
+
       // Only allow pre-invited users (no auto-creation)
       const dbUser = await db.user.findUnique({
         where: { email },
