@@ -243,7 +243,7 @@ export function OnboardingTimeline({
   }
 
   return (
-    <div className="gradient-border rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+    <div className="gradient-border rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
       {/* Employee Header — always visible, click to expand */}
       <button
         onClick={() => setExpanded(!expanded)}
