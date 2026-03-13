@@ -6,11 +6,25 @@ import { revalidatePath } from "next/cache";
 const SINGLETON_ID = "singleton";
 
 export async function getCompanySettings() {
-  return db.companySettings.upsert({
-    where: { id: SINGLETON_ID },
-    update: {},
-    create: { id: SINGLETON_ID },
-  });
+  try {
+    return await db.companySettings.upsert({
+      where: { id: SINGLETON_ID },
+      update: {},
+      create: { id: SINGLETON_ID },
+    });
+  } catch {
+    // DB unreachable during build — return defaults
+    return {
+      id: SINGLETON_ID,
+      companyName: "Coastal HR",
+      domain: "",
+      industry: "",
+      companySize: "",
+      logoUrl: null,
+      faviconUrl: null,
+      updatedAt: new Date(),
+    };
+  }
 }
 
 export async function updateCompanySettings(data: {
