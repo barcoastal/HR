@@ -94,6 +94,33 @@ export const authOptions: NextAuthOptions = {
         return "/login?error=not-invited";
       }
 
+      // Auto-create employee profile if missing
+      if (!dbUser.employeeId) {
+        const googleName = (profile as { name?: string })?.name || email.split("@")[0];
+        const nameParts = googleName.split(" ");
+        const firstName = nameParts[0] || email.split("@")[0];
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        const employee = await db.employee.create({
+          data: {
+            firstName,
+            lastName,
+            email,
+            jobTitle: "",
+            startDate: new Date(),
+            status: "ACTIVE",
+          },
+        });
+
+        await db.user.update({
+          where: { id: dbUser.id },
+          data: { employeeId: employee.id },
+        });
+
+        dbUser.employeeId = employee.id;
+        dbUser.employee = employee;
+      }
+
       // Populate the user object so the jwt callback can read it
       user.id = dbUser.id;
       user.role = dbUser.role;
