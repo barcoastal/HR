@@ -64,8 +64,8 @@ export default async function OffboardingPage() {
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Offboarding</h2></div>
       <div className="space-y-3">
         {offboardingEmployees.map((emp) => {
-          const offTasks = emp.employeeTasks.filter((t) => t.checklistItem.checklist?.type === "OFFBOARDING");
-          const assignedItemIds = new Set(offTasks.map((t) => t.checklistItemId));
+          const offTasks = emp.employeeTasks.filter((t) => t.checklistItem?.checklist?.type === "OFFBOARDING");
+          const assignedItemIds = new Set(offTasks.map((t) => t.checklistItemId).filter(Boolean));
           const availableItems = allOffboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
             .map((item) => ({
@@ -88,8 +88,8 @@ export default async function OffboardingPage() {
               }}
               tasks={offTasks.map((t) => ({
                 id: t.id,
-                title: t.checklistItem.title,
-                description: t.checklistItem.description,
+                title: t.title || t.checklistItem?.title || "Untitled",
+                description: t.description || t.checklistItem?.description || null,
                 status: t.status as "PENDING" | "DONE",
                 completedAt: t.completedAt?.toISOString() || null,
               }))}

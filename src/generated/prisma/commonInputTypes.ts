@@ -176,6 +176,11 @@ export type EnumChecklistTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumChecklistTypeFilter<$PrismaModel> | $Enums.ChecklistType
 }
 
+export type BoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type EnumChecklistTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ChecklistType | Prisma.EnumChecklistTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ChecklistType[] | Prisma.ListEnumChecklistTypeFieldRefInput<$PrismaModel>
@@ -186,9 +191,12 @@ export type EnumChecklistTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumChecklistTypeFilter<$PrismaModel>
 }
 
-export type BoolFilter<$PrismaModel = never> = {
+export type BoolWithAggregatesFilter<$PrismaModel = never> = {
   equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
 export type IntFilter<$PrismaModel = never> = {
@@ -211,14 +219,6 @@ export type IntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
-}
-
-export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedBoolFilter<$PrismaModel>
-  _max?: Prisma.NestedBoolFilter<$PrismaModel>
 }
 
 export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -754,6 +754,11 @@ export type NestedEnumChecklistTypeFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumChecklistTypeFilter<$PrismaModel> | $Enums.ChecklistType
 }
 
+export type NestedBoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
+}
+
 export type NestedEnumChecklistTypeWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.ChecklistType | Prisma.EnumChecklistTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ChecklistType[] | Prisma.ListEnumChecklistTypeFieldRefInput<$PrismaModel>
@@ -762,11 +767,6 @@ export type NestedEnumChecklistTypeWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumChecklistTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumChecklistTypeFilter<$PrismaModel>
-}
-
-export type NestedBoolFilter<$PrismaModel = never> = {
-  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean
 }
 
 export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {

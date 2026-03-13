@@ -29,6 +29,8 @@ export type OnboardingChecklistMinAggregateOutputType = {
   name: string | null
   type: $Enums.ChecklistType | null
   departmentId: string | null
+  jobTitleId: string | null
+  isOverride: boolean | null
   createdAt: Date | null
 }
 
@@ -37,6 +39,8 @@ export type OnboardingChecklistMaxAggregateOutputType = {
   name: string | null
   type: $Enums.ChecklistType | null
   departmentId: string | null
+  jobTitleId: string | null
+  isOverride: boolean | null
   createdAt: Date | null
 }
 
@@ -45,6 +49,8 @@ export type OnboardingChecklistCountAggregateOutputType = {
   name: number
   type: number
   departmentId: number
+  jobTitleId: number
+  isOverride: number
   createdAt: number
   _all: number
 }
@@ -55,6 +61,8 @@ export type OnboardingChecklistMinAggregateInputType = {
   name?: true
   type?: true
   departmentId?: true
+  jobTitleId?: true
+  isOverride?: true
   createdAt?: true
 }
 
@@ -63,6 +71,8 @@ export type OnboardingChecklistMaxAggregateInputType = {
   name?: true
   type?: true
   departmentId?: true
+  jobTitleId?: true
+  isOverride?: true
   createdAt?: true
 }
 
@@ -71,6 +81,8 @@ export type OnboardingChecklistCountAggregateInputType = {
   name?: true
   type?: true
   departmentId?: true
+  jobTitleId?: true
+  isOverride?: true
   createdAt?: true
   _all?: true
 }
@@ -152,6 +164,8 @@ export type OnboardingChecklistGroupByOutputType = {
   name: string
   type: $Enums.ChecklistType
   departmentId: string | null
+  jobTitleId: string | null
+  isOverride: boolean
   createdAt: Date
   _count: OnboardingChecklistCountAggregateOutputType | null
   _min: OnboardingChecklistMinAggregateOutputType | null
@@ -181,9 +195,13 @@ export type OnboardingChecklistWhereInput = {
   name?: Prisma.StringFilter<"OnboardingChecklist"> | string
   type?: Prisma.EnumChecklistTypeFilter<"OnboardingChecklist"> | $Enums.ChecklistType
   departmentId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  jobTitleId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  isOverride?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  jobTitle?: Prisma.XOR<Prisma.JobTitleNullableScalarRelationFilter, Prisma.JobTitleWhereInput> | null
   items?: Prisma.ChecklistItemListRelationFilter
+  exclusions?: Prisma.ChecklistOverrideExclusionListRelationFilter
 }
 
 export type OnboardingChecklistOrderByWithRelationInput = {
@@ -191,9 +209,13 @@ export type OnboardingChecklistOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobTitleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
+  jobTitle?: Prisma.JobTitleOrderByWithRelationInput
   items?: Prisma.ChecklistItemOrderByRelationAggregateInput
+  exclusions?: Prisma.ChecklistOverrideExclusionOrderByRelationAggregateInput
 }
 
 export type OnboardingChecklistWhereUniqueInput = Prisma.AtLeast<{
@@ -204,9 +226,13 @@ export type OnboardingChecklistWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"OnboardingChecklist"> | string
   type?: Prisma.EnumChecklistTypeFilter<"OnboardingChecklist"> | $Enums.ChecklistType
   departmentId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  jobTitleId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  isOverride?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  jobTitle?: Prisma.XOR<Prisma.JobTitleNullableScalarRelationFilter, Prisma.JobTitleWhereInput> | null
   items?: Prisma.ChecklistItemListRelationFilter
+  exclusions?: Prisma.ChecklistOverrideExclusionListRelationFilter
 }, "id">
 
 export type OnboardingChecklistOrderByWithAggregationInput = {
@@ -214,6 +240,8 @@ export type OnboardingChecklistOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobTitleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OnboardingChecklistCountOrderByAggregateInput
   _max?: Prisma.OnboardingChecklistMaxOrderByAggregateInput
@@ -228,6 +256,8 @@ export type OnboardingChecklistScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"OnboardingChecklist"> | string
   type?: Prisma.EnumChecklistTypeWithAggregatesFilter<"OnboardingChecklist"> | $Enums.ChecklistType
   departmentId?: Prisma.StringNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
+  jobTitleId?: Prisma.StringNullableWithAggregatesFilter<"OnboardingChecklist"> | string | null
+  isOverride?: Prisma.BoolWithAggregatesFilter<"OnboardingChecklist"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OnboardingChecklist"> | Date | string
 }
 
@@ -235,9 +265,12 @@ export type OnboardingChecklistCreateInput = {
   id?: string
   name: string
   type: $Enums.ChecklistType
+  isOverride?: boolean
   createdAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutChecklistsInput
+  jobTitle?: Prisma.JobTitleCreateNestedOneWithoutChecklistsInput
   items?: Prisma.ChecklistItemCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistUncheckedCreateInput = {
@@ -245,17 +278,23 @@ export type OnboardingChecklistUncheckedCreateInput = {
   name: string
   type: $Enums.ChecklistType
   departmentId?: string | null
+  jobTitleId?: string | null
+  isOverride?: boolean
   createdAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutChecklistsNestedInput
+  jobTitle?: Prisma.JobTitleUpdateOneWithoutChecklistsNestedInput
   items?: Prisma.ChecklistItemUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUpdateManyWithoutOverrideChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateInput = {
@@ -263,8 +302,11 @@ export type OnboardingChecklistUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedUpdateManyWithoutOverrideChecklistNestedInput
 }
 
 export type OnboardingChecklistCreateManyInput = {
@@ -272,6 +314,8 @@ export type OnboardingChecklistCreateManyInput = {
   name: string
   type: $Enums.ChecklistType
   departmentId?: string | null
+  jobTitleId?: string | null
+  isOverride?: boolean
   createdAt?: Date | string
 }
 
@@ -279,6 +323,7 @@ export type OnboardingChecklistUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -287,6 +332,8 @@ export type OnboardingChecklistUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -305,6 +352,8 @@ export type OnboardingChecklistCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  jobTitleId?: Prisma.SortOrder
+  isOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -313,6 +362,8 @@ export type OnboardingChecklistMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  jobTitleId?: Prisma.SortOrder
+  isOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -321,6 +372,8 @@ export type OnboardingChecklistMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   type?: Prisma.SortOrder
   departmentId?: Prisma.SortOrder
+  jobTitleId?: Prisma.SortOrder
+  isOverride?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -375,6 +428,10 @@ export type EnumChecklistTypeFieldUpdateOperationsInput = {
   set?: $Enums.ChecklistType
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type OnboardingChecklistCreateNestedOneWithoutItemsInput = {
   create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutItemsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutItemsInput>
   connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutItemsInput
@@ -389,20 +446,82 @@ export type OnboardingChecklistUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingChecklistUpdateToOneWithWhereWithoutItemsInput, Prisma.OnboardingChecklistUpdateWithoutItemsInput>, Prisma.OnboardingChecklistUncheckedUpdateWithoutItemsInput>
 }
 
+export type OnboardingChecklistCreateNestedOneWithoutExclusionsInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutExclusionsInput>
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutExclusionsInput
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput
+}
+
+export type OnboardingChecklistUpdateOneRequiredWithoutExclusionsNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutExclusionsInput>
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutExclusionsInput
+  upsert?: Prisma.OnboardingChecklistUpsertWithoutExclusionsInput
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OnboardingChecklistUpdateToOneWithWhereWithoutExclusionsInput, Prisma.OnboardingChecklistUpdateWithoutExclusionsInput>, Prisma.OnboardingChecklistUncheckedUpdateWithoutExclusionsInput>
+}
+
+export type OnboardingChecklistCreateNestedManyWithoutJobTitleInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput> | Prisma.OnboardingChecklistCreateWithoutJobTitleInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput | Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyJobTitleInputEnvelope
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+}
+
+export type OnboardingChecklistUncheckedCreateNestedManyWithoutJobTitleInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput> | Prisma.OnboardingChecklistCreateWithoutJobTitleInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput | Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyJobTitleInputEnvelope
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+}
+
+export type OnboardingChecklistUpdateManyWithoutJobTitleNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput> | Prisma.OnboardingChecklistCreateWithoutJobTitleInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput | Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput[]
+  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutJobTitleInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutJobTitleInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyJobTitleInputEnvelope
+  set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutJobTitleInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutJobTitleInput[]
+  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutJobTitleInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutJobTitleInput[]
+  deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
+}
+
+export type OnboardingChecklistUncheckedUpdateManyWithoutJobTitleNestedInput = {
+  create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput> | Prisma.OnboardingChecklistCreateWithoutJobTitleInput[] | Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput[]
+  connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput | Prisma.OnboardingChecklistCreateOrConnectWithoutJobTitleInput[]
+  upsert?: Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutJobTitleInput | Prisma.OnboardingChecklistUpsertWithWhereUniqueWithoutJobTitleInput[]
+  createMany?: Prisma.OnboardingChecklistCreateManyJobTitleInputEnvelope
+  set?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  disconnect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  delete?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  connect?: Prisma.OnboardingChecklistWhereUniqueInput | Prisma.OnboardingChecklistWhereUniqueInput[]
+  update?: Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutJobTitleInput | Prisma.OnboardingChecklistUpdateWithWhereUniqueWithoutJobTitleInput[]
+  updateMany?: Prisma.OnboardingChecklistUpdateManyWithWhereWithoutJobTitleInput | Prisma.OnboardingChecklistUpdateManyWithWhereWithoutJobTitleInput[]
+  deleteMany?: Prisma.OnboardingChecklistScalarWhereInput | Prisma.OnboardingChecklistScalarWhereInput[]
+}
+
 export type OnboardingChecklistCreateWithoutDepartmentInput = {
   id?: string
   name: string
   type: $Enums.ChecklistType
+  isOverride?: boolean
   createdAt?: Date | string
+  jobTitle?: Prisma.JobTitleCreateNestedOneWithoutChecklistsInput
   items?: Prisma.ChecklistItemCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistUncheckedCreateWithoutDepartmentInput = {
   id?: string
   name: string
   type: $Enums.ChecklistType
+  jobTitleId?: string | null
+  isOverride?: boolean
   createdAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistCreateOrConnectWithoutDepartmentInput = {
@@ -439,6 +558,8 @@ export type OnboardingChecklistScalarWhereInput = {
   name?: Prisma.StringFilter<"OnboardingChecklist"> | string
   type?: Prisma.EnumChecklistTypeFilter<"OnboardingChecklist"> | $Enums.ChecklistType
   departmentId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  jobTitleId?: Prisma.StringNullableFilter<"OnboardingChecklist"> | string | null
+  isOverride?: Prisma.BoolFilter<"OnboardingChecklist"> | boolean
   createdAt?: Prisma.DateTimeFilter<"OnboardingChecklist"> | Date | string
 }
 
@@ -446,8 +567,11 @@ export type OnboardingChecklistCreateWithoutItemsInput = {
   id?: string
   name: string
   type: $Enums.ChecklistType
+  isOverride?: boolean
   createdAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutChecklistsInput
+  jobTitle?: Prisma.JobTitleCreateNestedOneWithoutChecklistsInput
+  exclusions?: Prisma.ChecklistOverrideExclusionCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistUncheckedCreateWithoutItemsInput = {
@@ -455,7 +579,10 @@ export type OnboardingChecklistUncheckedCreateWithoutItemsInput = {
   name: string
   type: $Enums.ChecklistType
   departmentId?: string | null
+  jobTitleId?: string | null
+  isOverride?: boolean
   createdAt?: Date | string
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedCreateNestedManyWithoutOverrideChecklistInput
 }
 
 export type OnboardingChecklistCreateOrConnectWithoutItemsInput = {
@@ -478,8 +605,11 @@ export type OnboardingChecklistUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutChecklistsNestedInput
+  jobTitle?: Prisma.JobTitleUpdateOneWithoutChecklistsNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUpdateManyWithoutOverrideChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateWithoutItemsInput = {
@@ -487,13 +617,126 @@ export type OnboardingChecklistUncheckedUpdateWithoutItemsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
   departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedUpdateManyWithoutOverrideChecklistNestedInput
+}
+
+export type OnboardingChecklistCreateWithoutExclusionsInput = {
+  id?: string
+  name: string
+  type: $Enums.ChecklistType
+  isOverride?: boolean
+  createdAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecklistsInput
+  jobTitle?: Prisma.JobTitleCreateNestedOneWithoutChecklistsInput
+  items?: Prisma.ChecklistItemCreateNestedManyWithoutChecklistInput
+}
+
+export type OnboardingChecklistUncheckedCreateWithoutExclusionsInput = {
+  id?: string
+  name: string
+  type: $Enums.ChecklistType
+  departmentId?: string | null
+  jobTitleId?: string | null
+  isOverride?: boolean
+  createdAt?: Date | string
+  items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutChecklistInput
+}
+
+export type OnboardingChecklistCreateOrConnectWithoutExclusionsInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutExclusionsInput>
+}
+
+export type OnboardingChecklistUpsertWithoutExclusionsInput = {
+  update: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutExclusionsInput>
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutExclusionsInput>
+  where?: Prisma.OnboardingChecklistWhereInput
+}
+
+export type OnboardingChecklistUpdateToOneWithWhereWithoutExclusionsInput = {
+  where?: Prisma.OnboardingChecklistWhereInput
+  data: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutExclusionsInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutExclusionsInput>
+}
+
+export type OnboardingChecklistUpdateWithoutExclusionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutChecklistsNestedInput
+  jobTitle?: Prisma.JobTitleUpdateOneWithoutChecklistsNestedInput
+  items?: Prisma.ChecklistItemUpdateManyWithoutChecklistNestedInput
+}
+
+export type OnboardingChecklistUncheckedUpdateWithoutExclusionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutChecklistNestedInput
+}
+
+export type OnboardingChecklistCreateWithoutJobTitleInput = {
+  id?: string
+  name: string
+  type: $Enums.ChecklistType
+  isOverride?: boolean
+  createdAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecklistsInput
+  items?: Prisma.ChecklistItemCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionCreateNestedManyWithoutOverrideChecklistInput
+}
+
+export type OnboardingChecklistUncheckedCreateWithoutJobTitleInput = {
+  id?: string
+  name: string
+  type: $Enums.ChecklistType
+  departmentId?: string | null
+  isOverride?: boolean
+  createdAt?: Date | string
+  items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutChecklistInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedCreateNestedManyWithoutOverrideChecklistInput
+}
+
+export type OnboardingChecklistCreateOrConnectWithoutJobTitleInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput>
+}
+
+export type OnboardingChecklistCreateManyJobTitleInputEnvelope = {
+  data: Prisma.OnboardingChecklistCreateManyJobTitleInput | Prisma.OnboardingChecklistCreateManyJobTitleInput[]
+  skipDuplicates?: boolean
+}
+
+export type OnboardingChecklistUpsertWithWhereUniqueWithoutJobTitleInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  update: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutJobTitleInput>
+  create: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedCreateWithoutJobTitleInput>
+}
+
+export type OnboardingChecklistUpdateWithWhereUniqueWithoutJobTitleInput = {
+  where: Prisma.OnboardingChecklistWhereUniqueInput
+  data: Prisma.XOR<Prisma.OnboardingChecklistUpdateWithoutJobTitleInput, Prisma.OnboardingChecklistUncheckedUpdateWithoutJobTitleInput>
+}
+
+export type OnboardingChecklistUpdateManyWithWhereWithoutJobTitleInput = {
+  where: Prisma.OnboardingChecklistScalarWhereInput
+  data: Prisma.XOR<Prisma.OnboardingChecklistUpdateManyMutationInput, Prisma.OnboardingChecklistUncheckedUpdateManyWithoutJobTitleInput>
 }
 
 export type OnboardingChecklistCreateManyDepartmentInput = {
   id?: string
   name: string
   type: $Enums.ChecklistType
+  jobTitleId?: string | null
+  isOverride?: boolean
   createdAt?: Date | string
 }
 
@@ -501,22 +744,70 @@ export type OnboardingChecklistUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  jobTitle?: Prisma.JobTitleUpdateOneWithoutChecklistsNestedInput
   items?: Prisma.ChecklistItemUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUpdateManyWithoutOverrideChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedUpdateManyWithoutOverrideChecklistNestedInput
 }
 
 export type OnboardingChecklistUncheckedUpdateManyWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  jobTitleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type OnboardingChecklistCreateManyJobTitleInput = {
+  id?: string
+  name: string
+  type: $Enums.ChecklistType
+  departmentId?: string | null
+  isOverride?: boolean
+  createdAt?: Date | string
+}
+
+export type OnboardingChecklistUpdateWithoutJobTitleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutChecklistsNestedInput
+  items?: Prisma.ChecklistItemUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUpdateManyWithoutOverrideChecklistNestedInput
+}
+
+export type OnboardingChecklistUncheckedUpdateWithoutJobTitleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutChecklistNestedInput
+  exclusions?: Prisma.ChecklistOverrideExclusionUncheckedUpdateManyWithoutOverrideChecklistNestedInput
+}
+
+export type OnboardingChecklistUncheckedUpdateManyWithoutJobTitleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumChecklistTypeFieldUpdateOperationsInput | $Enums.ChecklistType
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOverride?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -527,10 +818,12 @@ export type OnboardingChecklistUncheckedUpdateManyWithoutDepartmentInput = {
 
 export type OnboardingChecklistCountOutputType = {
   items: number
+  exclusions: number
 }
 
 export type OnboardingChecklistCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | OnboardingChecklistCountOutputTypeCountItemsArgs
+  exclusions?: boolean | OnboardingChecklistCountOutputTypeCountExclusionsArgs
 }
 
 /**
@@ -550,15 +843,26 @@ export type OnboardingChecklistCountOutputTypeCountItemsArgs<ExtArgs extends run
   where?: Prisma.ChecklistItemWhereInput
 }
 
+/**
+ * OnboardingChecklistCountOutputType without action
+ */
+export type OnboardingChecklistCountOutputTypeCountExclusionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChecklistOverrideExclusionWhereInput
+}
+
 
 export type OnboardingChecklistSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   type?: boolean
   departmentId?: boolean
+  jobTitleId?: boolean
+  isOverride?: boolean
   createdAt?: boolean
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
   items?: boolean | Prisma.OnboardingChecklist$itemsArgs<ExtArgs>
+  exclusions?: boolean | Prisma.OnboardingChecklist$exclusionsArgs<ExtArgs>
   _count?: boolean | Prisma.OnboardingChecklistCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
@@ -567,8 +871,11 @@ export type OnboardingChecklistSelectCreateManyAndReturn<ExtArgs extends runtime
   name?: boolean
   type?: boolean
   departmentId?: boolean
+  jobTitleId?: boolean
+  isOverride?: boolean
   createdAt?: boolean
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
 export type OnboardingChecklistSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -576,8 +883,11 @@ export type OnboardingChecklistSelectUpdateManyAndReturn<ExtArgs extends runtime
   name?: boolean
   type?: boolean
   departmentId?: boolean
+  jobTitleId?: boolean
+  isOverride?: boolean
   createdAt?: boolean
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
 }, ExtArgs["result"]["onboardingChecklist"]>
 
 export type OnboardingChecklistSelectScalar = {
@@ -585,33 +895,43 @@ export type OnboardingChecklistSelectScalar = {
   name?: boolean
   type?: boolean
   departmentId?: boolean
+  jobTitleId?: boolean
+  isOverride?: boolean
   createdAt?: boolean
 }
 
-export type OnboardingChecklistOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "departmentId" | "createdAt", ExtArgs["result"]["onboardingChecklist"]>
+export type OnboardingChecklistOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "departmentId" | "jobTitleId" | "isOverride" | "createdAt", ExtArgs["result"]["onboardingChecklist"]>
 export type OnboardingChecklistInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
   items?: boolean | Prisma.OnboardingChecklist$itemsArgs<ExtArgs>
+  exclusions?: boolean | Prisma.OnboardingChecklist$exclusionsArgs<ExtArgs>
   _count?: boolean | Prisma.OnboardingChecklistCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OnboardingChecklistIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
 }
 export type OnboardingChecklistIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.OnboardingChecklist$departmentArgs<ExtArgs>
+  jobTitle?: boolean | Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>
 }
 
 export type $OnboardingChecklistPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OnboardingChecklist"
   objects: {
     department: Prisma.$DepartmentPayload<ExtArgs> | null
+    jobTitle: Prisma.$JobTitlePayload<ExtArgs> | null
     items: Prisma.$ChecklistItemPayload<ExtArgs>[]
+    exclusions: Prisma.$ChecklistOverrideExclusionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     type: $Enums.ChecklistType
     departmentId: string | null
+    jobTitleId: string | null
+    isOverride: boolean
     createdAt: Date
   }, ExtArgs["result"]["onboardingChecklist"]>
   composites: {}
@@ -1008,7 +1328,9 @@ readonly fields: OnboardingChecklistFieldRefs;
 export interface Prisma__OnboardingChecklistClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   department<T extends Prisma.OnboardingChecklist$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  jobTitle<T extends Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$jobTitleArgs<ExtArgs>>): Prisma.Prisma__JobTitleClient<runtime.Types.Result.GetResult<Prisma.$JobTitlePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   items<T extends Prisma.OnboardingChecklist$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  exclusions<T extends Prisma.OnboardingChecklist$exclusionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OnboardingChecklist$exclusionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistOverrideExclusionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1042,6 +1364,8 @@ export interface OnboardingChecklistFieldRefs {
   readonly name: Prisma.FieldRef<"OnboardingChecklist", 'String'>
   readonly type: Prisma.FieldRef<"OnboardingChecklist", 'ChecklistType'>
   readonly departmentId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
+  readonly jobTitleId: Prisma.FieldRef<"OnboardingChecklist", 'String'>
+  readonly isOverride: Prisma.FieldRef<"OnboardingChecklist", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"OnboardingChecklist", 'DateTime'>
 }
     
@@ -1458,6 +1782,25 @@ export type OnboardingChecklist$departmentArgs<ExtArgs extends runtime.Types.Ext
 }
 
 /**
+ * OnboardingChecklist.jobTitle
+ */
+export type OnboardingChecklist$jobTitleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobTitle
+   */
+  select?: Prisma.JobTitleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the JobTitle
+   */
+  omit?: Prisma.JobTitleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  where?: Prisma.JobTitleWhereInput
+}
+
+/**
  * OnboardingChecklist.items
  */
 export type OnboardingChecklist$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1479,6 +1822,30 @@ export type OnboardingChecklist$itemsArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.ChecklistItemScalarFieldEnum | Prisma.ChecklistItemScalarFieldEnum[]
+}
+
+/**
+ * OnboardingChecklist.exclusions
+ */
+export type OnboardingChecklist$exclusionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChecklistOverrideExclusion
+   */
+  select?: Prisma.ChecklistOverrideExclusionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChecklistOverrideExclusion
+   */
+  omit?: Prisma.ChecklistOverrideExclusionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChecklistOverrideExclusionInclude<ExtArgs> | null
+  where?: Prisma.ChecklistOverrideExclusionWhereInput
+  orderBy?: Prisma.ChecklistOverrideExclusionOrderByWithRelationInput | Prisma.ChecklistOverrideExclusionOrderByWithRelationInput[]
+  cursor?: Prisma.ChecklistOverrideExclusionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChecklistOverrideExclusionScalarFieldEnum | Prisma.ChecklistOverrideExclusionScalarFieldEnum[]
 }
 
 /**

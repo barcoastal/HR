@@ -101,7 +101,7 @@ export async function submitSignature(
 
     // Store signed PDF via upload
     const formData = new FormData();
-    const signedBlob = new Blob([signedPdfBytes], { type: "application/pdf" });
+    const signedBlob = new Blob([signedPdfBytes as BlobPart], { type: "application/pdf" });
     formData.append("file", signedBlob, `signed-${request.documentName}`);
 
     const uploadResponse = await fetch(`${baseUrl}/api/onboarding-docs/upload`, {

@@ -57,6 +57,7 @@ export const ModelName = {
   User: 'User',
   OnboardingChecklist: 'OnboardingChecklist',
   ChecklistItem: 'ChecklistItem',
+  ChecklistOverrideExclusion: 'ChecklistOverrideExclusion',
   EmployeeTask: 'EmployeeTask',
   ReviewCycle: 'ReviewCycle',
   Review: 'Review',
@@ -73,6 +74,7 @@ export const ModelName = {
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
   Interview: 'Interview',
+  SigningRequest: 'SigningRequest',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -179,6 +181,8 @@ export const OnboardingChecklistScalarFieldEnum = {
   name: 'name',
   type: 'type',
   departmentId: 'departmentId',
+  jobTitleId: 'jobTitleId',
+  isOverride: 'isOverride',
   createdAt: 'createdAt'
 } as const
 
@@ -198,10 +202,20 @@ export const ChecklistItemScalarFieldEnum = {
   emailSubject: 'emailSubject',
   emailBody: 'emailBody',
   documentUrl: 'documentUrl',
-  documentName: 'documentName'
+  documentName: 'documentName',
+  documentAction: 'documentAction'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const ChecklistOverrideExclusionScalarFieldEnum = {
+  id: 'id',
+  overrideChecklistId: 'overrideChecklistId',
+  excludedItemId: 'excludedItemId'
+} as const
+
+export type ChecklistOverrideExclusionScalarFieldEnum = (typeof ChecklistOverrideExclusionScalarFieldEnum)[keyof typeof ChecklistOverrideExclusionScalarFieldEnum]
 
 
 export const EmployeeTaskScalarFieldEnum = {
@@ -211,6 +225,11 @@ export const EmployeeTaskScalarFieldEnum = {
   status: 'status',
   documentUrl: 'documentUrl',
   completedAt: 'completedAt',
+  title: 'title',
+  description: 'description',
+  documentAction: 'documentAction',
+  documentName: 'documentName',
+  assigneeId: 'assigneeId',
   createdAt: 'createdAt'
 } as const
 
@@ -436,6 +455,24 @@ export const InterviewScalarFieldEnum = {
 } as const
 
 export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
+
+
+export const SigningRequestScalarFieldEnum = {
+  id: 'id',
+  employeeTaskId: 'employeeTaskId',
+  employeeId: 'employeeId',
+  token: 'token',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName',
+  status: 'status',
+  signedDocUrl: 'signedDocUrl',
+  signedAt: 'signedAt',
+  viewedAt: 'viewedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {

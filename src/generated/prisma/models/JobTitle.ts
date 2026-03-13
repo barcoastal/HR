@@ -166,12 +166,14 @@ export type JobTitleWhereInput = {
   id?: Prisma.StringFilter<"JobTitle"> | string
   name?: Prisma.StringFilter<"JobTitle"> | string
   createdAt?: Prisma.DateTimeFilter<"JobTitle"> | Date | string
+  checklists?: Prisma.OnboardingChecklistListRelationFilter
 }
 
 export type JobTitleOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  checklists?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
 }
 
 export type JobTitleWhereUniqueInput = Prisma.AtLeast<{
@@ -181,6 +183,7 @@ export type JobTitleWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.JobTitleWhereInput[]
   NOT?: Prisma.JobTitleWhereInput | Prisma.JobTitleWhereInput[]
   createdAt?: Prisma.DateTimeFilter<"JobTitle"> | Date | string
+  checklists?: Prisma.OnboardingChecklistListRelationFilter
 }, "id" | "name">
 
 export type JobTitleOrderByWithAggregationInput = {
@@ -205,24 +208,28 @@ export type JobTitleCreateInput = {
   id?: string
   name: string
   createdAt?: Date | string
+  checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutJobTitleInput
 }
 
 export type JobTitleUncheckedCreateInput = {
   id?: string
   name: string
   createdAt?: Date | string
+  checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutJobTitleInput
 }
 
 export type JobTitleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checklists?: Prisma.OnboardingChecklistUpdateManyWithoutJobTitleNestedInput
 }
 
 export type JobTitleUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutJobTitleNestedInput
 }
 
 export type JobTitleCreateManyInput = {
@@ -243,6 +250,11 @@ export type JobTitleUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type JobTitleNullableScalarRelationFilter = {
+  is?: Prisma.JobTitleWhereInput | null
+  isNot?: Prisma.JobTitleWhereInput | null
+}
+
 export type JobTitleCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -261,12 +273,99 @@ export type JobTitleMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type JobTitleCreateNestedOneWithoutChecklistsInput = {
+  create?: Prisma.XOR<Prisma.JobTitleCreateWithoutChecklistsInput, Prisma.JobTitleUncheckedCreateWithoutChecklistsInput>
+  connectOrCreate?: Prisma.JobTitleCreateOrConnectWithoutChecklistsInput
+  connect?: Prisma.JobTitleWhereUniqueInput
+}
+
+export type JobTitleUpdateOneWithoutChecklistsNestedInput = {
+  create?: Prisma.XOR<Prisma.JobTitleCreateWithoutChecklistsInput, Prisma.JobTitleUncheckedCreateWithoutChecklistsInput>
+  connectOrCreate?: Prisma.JobTitleCreateOrConnectWithoutChecklistsInput
+  upsert?: Prisma.JobTitleUpsertWithoutChecklistsInput
+  disconnect?: Prisma.JobTitleWhereInput | boolean
+  delete?: Prisma.JobTitleWhereInput | boolean
+  connect?: Prisma.JobTitleWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobTitleUpdateToOneWithWhereWithoutChecklistsInput, Prisma.JobTitleUpdateWithoutChecklistsInput>, Prisma.JobTitleUncheckedUpdateWithoutChecklistsInput>
+}
+
+export type JobTitleCreateWithoutChecklistsInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+}
+
+export type JobTitleUncheckedCreateWithoutChecklistsInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+}
+
+export type JobTitleCreateOrConnectWithoutChecklistsInput = {
+  where: Prisma.JobTitleWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobTitleCreateWithoutChecklistsInput, Prisma.JobTitleUncheckedCreateWithoutChecklistsInput>
+}
+
+export type JobTitleUpsertWithoutChecklistsInput = {
+  update: Prisma.XOR<Prisma.JobTitleUpdateWithoutChecklistsInput, Prisma.JobTitleUncheckedUpdateWithoutChecklistsInput>
+  create: Prisma.XOR<Prisma.JobTitleCreateWithoutChecklistsInput, Prisma.JobTitleUncheckedCreateWithoutChecklistsInput>
+  where?: Prisma.JobTitleWhereInput
+}
+
+export type JobTitleUpdateToOneWithWhereWithoutChecklistsInput = {
+  where?: Prisma.JobTitleWhereInput
+  data: Prisma.XOR<Prisma.JobTitleUpdateWithoutChecklistsInput, Prisma.JobTitleUncheckedUpdateWithoutChecklistsInput>
+}
+
+export type JobTitleUpdateWithoutChecklistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type JobTitleUncheckedUpdateWithoutChecklistsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type JobTitleCountOutputType
+ */
+
+export type JobTitleCountOutputType = {
+  checklists: number
+}
+
+export type JobTitleCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  checklists?: boolean | JobTitleCountOutputTypeCountChecklistsArgs
+}
+
+/**
+ * JobTitleCountOutputType without action
+ */
+export type JobTitleCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the JobTitleCountOutputType
+   */
+  select?: Prisma.JobTitleCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * JobTitleCountOutputType without action
+ */
+export type JobTitleCountOutputTypeCountChecklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OnboardingChecklistWhereInput
+}
 
 
 export type JobTitleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   createdAt?: boolean
+  checklists?: boolean | Prisma.JobTitle$checklistsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobTitleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["jobTitle"]>
 
 export type JobTitleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -288,10 +387,18 @@ export type JobTitleSelectScalar = {
 }
 
 export type JobTitleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "createdAt", ExtArgs["result"]["jobTitle"]>
+export type JobTitleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  checklists?: boolean | Prisma.JobTitle$checklistsArgs<ExtArgs>
+  _count?: boolean | Prisma.JobTitleCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type JobTitleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type JobTitleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $JobTitlePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "JobTitle"
-  objects: {}
+  objects: {
+    checklists: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
@@ -690,6 +797,7 @@ readonly fields: JobTitleFieldRefs;
  */
 export interface Prisma__JobTitleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  checklists<T extends Prisma.JobTitle$checklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobTitle$checklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -739,6 +847,10 @@ export type JobTitleFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * Filter, which JobTitle to fetch.
    */
   where: Prisma.JobTitleWhereUniqueInput
@@ -757,6 +869,10 @@ export type JobTitleFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * Filter, which JobTitle to fetch.
    */
   where: Prisma.JobTitleWhereUniqueInput
@@ -774,6 +890,10 @@ export type JobTitleFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the JobTitle
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
   /**
    * Filter, which JobTitle to fetch.
    */
@@ -823,6 +943,10 @@ export type JobTitleFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * Filter, which JobTitle to fetch.
    */
   where?: Prisma.JobTitleWhereInput
@@ -871,6 +995,10 @@ export type JobTitleFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * Filter, which JobTitles to fetch.
    */
   where?: Prisma.JobTitleWhereInput
@@ -913,6 +1041,10 @@ export type JobTitleCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the JobTitle
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
   /**
    * The data needed to create a JobTitle.
    */
@@ -961,6 +1093,10 @@ export type JobTitleUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the JobTitle
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
   /**
    * The data needed to update a JobTitle.
    */
@@ -1028,6 +1164,10 @@ export type JobTitleUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * The filter to search for the JobTitle to update in case it exists.
    */
   where: Prisma.JobTitleWhereUniqueInput
@@ -1054,6 +1194,10 @@ export type JobTitleDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
+  /**
    * Filter which JobTitle to delete.
    */
   where: Prisma.JobTitleWhereUniqueInput
@@ -1074,6 +1218,30 @@ export type JobTitleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 /**
+ * JobTitle.checklists
+ */
+export type JobTitle$checklistsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OnboardingChecklist
+   */
+  select?: Prisma.OnboardingChecklistSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OnboardingChecklist
+   */
+  omit?: Prisma.OnboardingChecklistOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OnboardingChecklistInclude<ExtArgs> | null
+  where?: Prisma.OnboardingChecklistWhereInput
+  orderBy?: Prisma.OnboardingChecklistOrderByWithRelationInput | Prisma.OnboardingChecklistOrderByWithRelationInput[]
+  cursor?: Prisma.OnboardingChecklistWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
+}
+
+/**
  * JobTitle without action
  */
 export type JobTitleDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1085,4 +1253,8 @@ export type JobTitleDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the JobTitle
    */
   omit?: Prisma.JobTitleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobTitleInclude<ExtArgs> | null
 }

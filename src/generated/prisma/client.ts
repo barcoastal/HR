@@ -70,6 +70,11 @@ export type OnboardingChecklist = Prisma.OnboardingChecklistModel
  */
 export type ChecklistItem = Prisma.ChecklistItemModel
 /**
+ * Model ChecklistOverrideExclusion
+ * 
+ */
+export type ChecklistOverrideExclusion = Prisma.ChecklistOverrideExclusionModel
+/**
  * Model EmployeeTask
  * 
  */
@@ -149,6 +154,11 @@ export type PlatformSyncLog = Prisma.PlatformSyncLogModel
  * 
  */
 export type Interview = Prisma.InterviewModel
+/**
+ * Model SigningRequest
+ * 
+ */
+export type SigningRequest = Prisma.SigningRequestModel
 /**
  * Model TimeOffPolicy
  * 

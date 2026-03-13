@@ -31,6 +31,11 @@ export type EmployeeTaskMinAggregateOutputType = {
   status: $Enums.TaskStatus | null
   documentUrl: string | null
   completedAt: Date | null
+  title: string | null
+  description: string | null
+  documentAction: string | null
+  documentName: string | null
+  assigneeId: string | null
   createdAt: Date | null
 }
 
@@ -41,6 +46,11 @@ export type EmployeeTaskMaxAggregateOutputType = {
   status: $Enums.TaskStatus | null
   documentUrl: string | null
   completedAt: Date | null
+  title: string | null
+  description: string | null
+  documentAction: string | null
+  documentName: string | null
+  assigneeId: string | null
   createdAt: Date | null
 }
 
@@ -51,6 +61,11 @@ export type EmployeeTaskCountAggregateOutputType = {
   status: number
   documentUrl: number
   completedAt: number
+  title: number
+  description: number
+  documentAction: number
+  documentName: number
+  assigneeId: number
   createdAt: number
   _all: number
 }
@@ -63,6 +78,11 @@ export type EmployeeTaskMinAggregateInputType = {
   status?: true
   documentUrl?: true
   completedAt?: true
+  title?: true
+  description?: true
+  documentAction?: true
+  documentName?: true
+  assigneeId?: true
   createdAt?: true
 }
 
@@ -73,6 +93,11 @@ export type EmployeeTaskMaxAggregateInputType = {
   status?: true
   documentUrl?: true
   completedAt?: true
+  title?: true
+  description?: true
+  documentAction?: true
+  documentName?: true
+  assigneeId?: true
   createdAt?: true
 }
 
@@ -83,6 +108,11 @@ export type EmployeeTaskCountAggregateInputType = {
   status?: true
   documentUrl?: true
   completedAt?: true
+  title?: true
+  description?: true
+  documentAction?: true
+  documentName?: true
+  assigneeId?: true
   createdAt?: true
   _all?: true
 }
@@ -162,10 +192,15 @@ export type EmployeeTaskGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 export type EmployeeTaskGroupByOutputType = {
   id: string
   employeeId: string
-  checklistItemId: string
+  checklistItemId: string | null
   status: $Enums.TaskStatus
   documentUrl: string | null
   completedAt: Date | null
+  title: string | null
+  description: string | null
+  documentAction: string | null
+  documentName: string | null
+  assigneeId: string | null
   createdAt: Date
   _count: EmployeeTaskCountAggregateOutputType | null
   _min: EmployeeTaskMinAggregateOutputType | null
@@ -193,25 +228,39 @@ export type EmployeeTaskWhereInput = {
   NOT?: Prisma.EmployeeTaskWhereInput | Prisma.EmployeeTaskWhereInput[]
   id?: Prisma.StringFilter<"EmployeeTask"> | string
   employeeId?: Prisma.StringFilter<"EmployeeTask"> | string
-  checklistItemId?: Prisma.StringFilter<"EmployeeTask"> | string
+  checklistItemId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   status?: Prisma.EnumTaskStatusFilter<"EmployeeTask"> | $Enums.TaskStatus
   documentUrl?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeTask"> | Date | string | null
+  title?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  description?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-  checklistItem?: Prisma.XOR<Prisma.ChecklistItemScalarRelationFilter, Prisma.ChecklistItemWhereInput>
+  checklistItem?: Prisma.XOR<Prisma.ChecklistItemNullableScalarRelationFilter, Prisma.ChecklistItemWhereInput> | null
+  assignee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  signingRequest?: Prisma.XOR<Prisma.SigningRequestNullableScalarRelationFilter, Prisma.SigningRequestWhereInput> | null
 }
 
 export type EmployeeTaskOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
-  checklistItemId?: Prisma.SortOrder
+  checklistItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentAction?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
   checklistItem?: Prisma.ChecklistItemOrderByWithRelationInput
+  assignee?: Prisma.EmployeeOrderByWithRelationInput
+  signingRequest?: Prisma.SigningRequestOrderByWithRelationInput
 }
 
 export type EmployeeTaskWhereUniqueInput = Prisma.AtLeast<{
@@ -220,22 +269,34 @@ export type EmployeeTaskWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmployeeTaskWhereInput[]
   NOT?: Prisma.EmployeeTaskWhereInput | Prisma.EmployeeTaskWhereInput[]
   employeeId?: Prisma.StringFilter<"EmployeeTask"> | string
-  checklistItemId?: Prisma.StringFilter<"EmployeeTask"> | string
+  checklistItemId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   status?: Prisma.EnumTaskStatusFilter<"EmployeeTask"> | $Enums.TaskStatus
   documentUrl?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeTask"> | Date | string | null
+  title?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  description?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-  checklistItem?: Prisma.XOR<Prisma.ChecklistItemScalarRelationFilter, Prisma.ChecklistItemWhereInput>
+  checklistItem?: Prisma.XOR<Prisma.ChecklistItemNullableScalarRelationFilter, Prisma.ChecklistItemWhereInput> | null
+  assignee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  signingRequest?: Prisma.XOR<Prisma.SigningRequestNullableScalarRelationFilter, Prisma.SigningRequestWhereInput> | null
 }, "id">
 
 export type EmployeeTaskOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
-  checklistItemId?: Prisma.SortOrder
+  checklistItemId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentAction?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
+  assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeTaskCountOrderByAggregateInput
   _max?: Prisma.EmployeeTaskMaxOrderByAggregateInput
@@ -248,10 +309,15 @@ export type EmployeeTaskScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EmployeeTaskScalarWhereWithAggregatesInput | Prisma.EmployeeTaskScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EmployeeTask"> | string
   employeeId?: Prisma.StringWithAggregatesFilter<"EmployeeTask"> | string
-  checklistItemId?: Prisma.StringWithAggregatesFilter<"EmployeeTask"> | string
+  checklistItemId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   status?: Prisma.EnumTaskStatusWithAggregatesFilter<"EmployeeTask"> | $Enums.TaskStatus
   documentUrl?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EmployeeTask"> | Date | string | null
+  title?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
+  description?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
+  documentAction?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
+  documentName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
+  assigneeId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeTask"> | Date | string
 }
 
@@ -260,19 +326,31 @@ export type EmployeeTaskCreateInput = {
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
-  checklistItem: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
+  signingRequest?: Prisma.SigningRequestCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskUncheckedCreateInput = {
   id?: string
   employeeId: string
-  checklistItemId: string
+  checklistItemId?: string | null
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
   createdAt?: Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskUpdateInput = {
@@ -280,28 +358,45 @@ export type EmployeeTaskUpdateInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
-  checklistItem?: Prisma.ChecklistItemUpdateOneRequiredWithoutEmployeeTasksNestedInput
+  checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
+  assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
+  signingRequest?: Prisma.SigningRequestUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  checklistItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskCreateManyInput = {
   id?: string
   employeeId: string
-  checklistItemId: string
+  checklistItemId?: string | null
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
   createdAt?: Date | string
 }
 
@@ -310,16 +405,25 @@ export type EmployeeTaskUpdateManyMutationInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EmployeeTaskUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
-  checklistItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -340,6 +444,11 @@ export type EmployeeTaskCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   documentUrl?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  documentAction?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -350,6 +459,11 @@ export type EmployeeTaskMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   documentUrl?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  documentAction?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -360,7 +474,17 @@ export type EmployeeTaskMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   documentUrl?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  description?: Prisma.SortOrder
+  documentAction?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
+  assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type EmployeeTaskScalarRelationFilter = {
+  is?: Prisma.EmployeeTaskWhereInput
+  isNot?: Prisma.EmployeeTaskWhereInput
 }
 
 export type EmployeeTaskCreateNestedManyWithoutEmployeeInput = {
@@ -370,10 +494,24 @@ export type EmployeeTaskCreateNestedManyWithoutEmployeeInput = {
   connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
 }
 
+export type EmployeeTaskCreateNestedManyWithoutAssigneeInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeTaskCreateManyAssigneeInputEnvelope
+  connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+}
+
 export type EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput = {
   create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutEmployeeInput, Prisma.EmployeeTaskUncheckedCreateWithoutEmployeeInput> | Prisma.EmployeeTaskCreateWithoutEmployeeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutEmployeeInput[]
   connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutEmployeeInput | Prisma.EmployeeTaskCreateOrConnectWithoutEmployeeInput[]
   createMany?: Prisma.EmployeeTaskCreateManyEmployeeInputEnvelope
+  connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+}
+
+export type EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeTaskCreateManyAssigneeInputEnvelope
   connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
 }
 
@@ -391,6 +529,20 @@ export type EmployeeTaskUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.EmployeeTaskScalarWhereInput | Prisma.EmployeeTaskScalarWhereInput[]
 }
 
+export type EmployeeTaskUpdateManyWithoutAssigneeNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput[]
+  upsert?: Prisma.EmployeeTaskUpsertWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeTaskUpsertWithWhereUniqueWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeTaskCreateManyAssigneeInputEnvelope
+  set?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  delete?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  update?: Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutAssigneeInput[]
+  updateMany?: Prisma.EmployeeTaskUpdateManyWithWhereWithoutAssigneeInput | Prisma.EmployeeTaskUpdateManyWithWhereWithoutAssigneeInput[]
+  deleteMany?: Prisma.EmployeeTaskScalarWhereInput | Prisma.EmployeeTaskScalarWhereInput[]
+}
+
 export type EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutEmployeeInput, Prisma.EmployeeTaskUncheckedCreateWithoutEmployeeInput> | Prisma.EmployeeTaskCreateWithoutEmployeeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutEmployeeInput[]
   connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutEmployeeInput | Prisma.EmployeeTaskCreateOrConnectWithoutEmployeeInput[]
@@ -402,6 +554,20 @@ export type EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput = {
   connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
   update?: Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutEmployeeInput[]
   updateMany?: Prisma.EmployeeTaskUpdateManyWithWhereWithoutEmployeeInput | Prisma.EmployeeTaskUpdateManyWithWhereWithoutEmployeeInput[]
+  deleteMany?: Prisma.EmployeeTaskScalarWhereInput | Prisma.EmployeeTaskScalarWhereInput[]
+}
+
+export type EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput> | Prisma.EmployeeTaskCreateWithoutAssigneeInput[] | Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput[]
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput | Prisma.EmployeeTaskCreateOrConnectWithoutAssigneeInput[]
+  upsert?: Prisma.EmployeeTaskUpsertWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeTaskUpsertWithWhereUniqueWithoutAssigneeInput[]
+  createMany?: Prisma.EmployeeTaskCreateManyAssigneeInputEnvelope
+  set?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  disconnect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  delete?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  connect?: Prisma.EmployeeTaskWhereUniqueInput | Prisma.EmployeeTaskWhereUniqueInput[]
+  update?: Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutAssigneeInput | Prisma.EmployeeTaskUpdateWithWhereUniqueWithoutAssigneeInput[]
+  updateMany?: Prisma.EmployeeTaskUpdateManyWithWhereWithoutAssigneeInput | Prisma.EmployeeTaskUpdateManyWithWhereWithoutAssigneeInput[]
   deleteMany?: Prisma.EmployeeTaskScalarWhereInput | Prisma.EmployeeTaskScalarWhereInput[]
 }
 
@@ -451,22 +617,48 @@ export type EnumTaskStatusFieldUpdateOperationsInput = {
   set?: $Enums.TaskStatus
 }
 
+export type EmployeeTaskCreateNestedOneWithoutSigningRequestInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedCreateWithoutSigningRequestInput>
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutSigningRequestInput
+  connect?: Prisma.EmployeeTaskWhereUniqueInput
+}
+
+export type EmployeeTaskUpdateOneRequiredWithoutSigningRequestNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedCreateWithoutSigningRequestInput>
+  connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutSigningRequestInput
+  upsert?: Prisma.EmployeeTaskUpsertWithoutSigningRequestInput
+  connect?: Prisma.EmployeeTaskWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeTaskUpdateToOneWithWhereWithoutSigningRequestInput, Prisma.EmployeeTaskUpdateWithoutSigningRequestInput>, Prisma.EmployeeTaskUncheckedUpdateWithoutSigningRequestInput>
+}
+
 export type EmployeeTaskCreateWithoutEmployeeInput = {
   id?: string
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
   createdAt?: Date | string
-  checklistItem: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
+  signingRequest?: Prisma.SigningRequestCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskUncheckedCreateWithoutEmployeeInput = {
   id?: string
-  checklistItemId: string
+  checklistItemId?: string | null
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
   createdAt?: Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskCreateOrConnectWithoutEmployeeInput = {
@@ -476,6 +668,46 @@ export type EmployeeTaskCreateOrConnectWithoutEmployeeInput = {
 
 export type EmployeeTaskCreateManyEmployeeInputEnvelope = {
   data: Prisma.EmployeeTaskCreateManyEmployeeInput | Prisma.EmployeeTaskCreateManyEmployeeInput[]
+  skipDuplicates?: boolean
+}
+
+export type EmployeeTaskCreateWithoutAssigneeInput = {
+  id?: string
+  status?: $Enums.TaskStatus
+  documentUrl?: string | null
+  completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  createdAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
+  checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  signingRequest?: Prisma.SigningRequestCreateNestedOneWithoutEmployeeTaskInput
+}
+
+export type EmployeeTaskUncheckedCreateWithoutAssigneeInput = {
+  id?: string
+  employeeId: string
+  checklistItemId?: string | null
+  status?: $Enums.TaskStatus
+  documentUrl?: string | null
+  completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  createdAt?: Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
+}
+
+export type EmployeeTaskCreateOrConnectWithoutAssigneeInput = {
+  where: Prisma.EmployeeTaskWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput>
+}
+
+export type EmployeeTaskCreateManyAssigneeInputEnvelope = {
+  data: Prisma.EmployeeTaskCreateManyAssigneeInput | Prisma.EmployeeTaskCreateManyAssigneeInput[]
   skipDuplicates?: boolean
 }
 
@@ -501,11 +733,32 @@ export type EmployeeTaskScalarWhereInput = {
   NOT?: Prisma.EmployeeTaskScalarWhereInput | Prisma.EmployeeTaskScalarWhereInput[]
   id?: Prisma.StringFilter<"EmployeeTask"> | string
   employeeId?: Prisma.StringFilter<"EmployeeTask"> | string
-  checklistItemId?: Prisma.StringFilter<"EmployeeTask"> | string
+  checklistItemId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   status?: Prisma.EnumTaskStatusFilter<"EmployeeTask"> | $Enums.TaskStatus
   documentUrl?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"EmployeeTask"> | Date | string | null
+  title?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  description?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
+}
+
+export type EmployeeTaskUpsertWithWhereUniqueWithoutAssigneeInput = {
+  where: Prisma.EmployeeTaskWhereUniqueInput
+  update: Prisma.XOR<Prisma.EmployeeTaskUpdateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedUpdateWithoutAssigneeInput>
+  create: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedCreateWithoutAssigneeInput>
+}
+
+export type EmployeeTaskUpdateWithWhereUniqueWithoutAssigneeInput = {
+  where: Prisma.EmployeeTaskWhereUniqueInput
+  data: Prisma.XOR<Prisma.EmployeeTaskUpdateWithoutAssigneeInput, Prisma.EmployeeTaskUncheckedUpdateWithoutAssigneeInput>
+}
+
+export type EmployeeTaskUpdateManyWithWhereWithoutAssigneeInput = {
+  where: Prisma.EmployeeTaskScalarWhereInput
+  data: Prisma.XOR<Prisma.EmployeeTaskUpdateManyMutationInput, Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeInput>
 }
 
 export type EmployeeTaskCreateWithoutChecklistItemInput = {
@@ -513,8 +766,14 @@ export type EmployeeTaskCreateWithoutChecklistItemInput = {
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
+  assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
+  signingRequest?: Prisma.SigningRequestCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskUncheckedCreateWithoutChecklistItemInput = {
@@ -523,7 +782,13 @@ export type EmployeeTaskUncheckedCreateWithoutChecklistItemInput = {
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
   createdAt?: Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
 }
 
 export type EmployeeTaskCreateOrConnectWithoutChecklistItemInput = {
@@ -552,12 +817,107 @@ export type EmployeeTaskUpdateManyWithWhereWithoutChecklistItemInput = {
   data: Prisma.XOR<Prisma.EmployeeTaskUpdateManyMutationInput, Prisma.EmployeeTaskUncheckedUpdateManyWithoutChecklistItemInput>
 }
 
-export type EmployeeTaskCreateManyEmployeeInput = {
+export type EmployeeTaskCreateWithoutSigningRequestInput = {
   id?: string
-  checklistItemId: string
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  createdAt?: Date | string
+  employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
+  checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
+  assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
+}
+
+export type EmployeeTaskUncheckedCreateWithoutSigningRequestInput = {
+  id?: string
+  employeeId: string
+  checklistItemId?: string | null
+  status?: $Enums.TaskStatus
+  documentUrl?: string | null
+  completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
+  createdAt?: Date | string
+}
+
+export type EmployeeTaskCreateOrConnectWithoutSigningRequestInput = {
+  where: Prisma.EmployeeTaskWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedCreateWithoutSigningRequestInput>
+}
+
+export type EmployeeTaskUpsertWithoutSigningRequestInput = {
+  update: Prisma.XOR<Prisma.EmployeeTaskUpdateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedUpdateWithoutSigningRequestInput>
+  create: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedCreateWithoutSigningRequestInput>
+  where?: Prisma.EmployeeTaskWhereInput
+}
+
+export type EmployeeTaskUpdateToOneWithWhereWithoutSigningRequestInput = {
+  where?: Prisma.EmployeeTaskWhereInput
+  data: Prisma.XOR<Prisma.EmployeeTaskUpdateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedUpdateWithoutSigningRequestInput>
+}
+
+export type EmployeeTaskUpdateWithoutSigningRequestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
+  checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
+  assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
+}
+
+export type EmployeeTaskUncheckedUpdateWithoutSigningRequestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeTaskCreateManyEmployeeInput = {
+  id?: string
+  checklistItemId?: string | null
+  status?: $Enums.TaskStatus
+  documentUrl?: string | null
+  completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
+  createdAt?: Date | string
+}
+
+export type EmployeeTaskCreateManyAssigneeInput = {
+  id?: string
+  employeeId: string
+  checklistItemId?: string | null
+  status?: $Enums.TaskStatus
+  documentUrl?: string | null
+  completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
   createdAt?: Date | string
 }
 
@@ -566,25 +926,86 @@ export type EmployeeTaskUpdateWithoutEmployeeInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  checklistItem?: Prisma.ChecklistItemUpdateOneRequiredWithoutEmployeeTasksNestedInput
+  checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
+  assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
+  signingRequest?: Prisma.SigningRequestUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  checklistItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  checklistItemId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EmployeeTaskUpdateWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
+  checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
+  signingRequest?: Prisma.SigningRequestUpdateOneWithoutEmployeeTaskNestedInput
+}
+
+export type EmployeeTaskUncheckedUpdateWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
+}
+
+export type EmployeeTaskUncheckedUpdateManyWithoutAssigneeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistItemId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -594,6 +1015,11 @@ export type EmployeeTaskCreateManyChecklistItemInput = {
   status?: $Enums.TaskStatus
   documentUrl?: string | null
   completedAt?: Date | string | null
+  title?: string | null
+  description?: string | null
+  documentAction?: string | null
+  documentName?: string | null
+  assigneeId?: string | null
   createdAt?: Date | string
 }
 
@@ -602,8 +1028,14 @@ export type EmployeeTaskUpdateWithoutChecklistItemInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
+  assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
+  signingRequest?: Prisma.SigningRequestUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskUncheckedUpdateWithoutChecklistItemInput = {
@@ -612,7 +1044,13 @@ export type EmployeeTaskUncheckedUpdateWithoutChecklistItemInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
 }
 
 export type EmployeeTaskUncheckedUpdateManyWithoutChecklistItemInput = {
@@ -621,6 +1059,11 @@ export type EmployeeTaskUncheckedUpdateManyWithoutChecklistItemInput = {
   status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
   documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -633,9 +1076,16 @@ export type EmployeeTaskSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   documentUrl?: boolean
   completedAt?: boolean
+  title?: boolean
+  description?: boolean
+  documentAction?: boolean
+  documentName?: boolean
+  assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
+  signingRequest?: boolean | Prisma.EmployeeTask$signingRequestArgs<ExtArgs>
 }, ExtArgs["result"]["employeeTask"]>
 
 export type EmployeeTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -645,9 +1095,15 @@ export type EmployeeTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   documentUrl?: boolean
   completedAt?: boolean
+  title?: boolean
+  description?: boolean
+  documentAction?: boolean
+  documentName?: boolean
+  assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["employeeTask"]>
 
 export type EmployeeTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -657,9 +1113,15 @@ export type EmployeeTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   documentUrl?: boolean
   completedAt?: boolean
+  title?: boolean
+  description?: boolean
+  documentAction?: boolean
+  documentName?: boolean
+  assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
 }, ExtArgs["result"]["employeeTask"]>
 
 export type EmployeeTaskSelectScalar = {
@@ -669,36 +1131,52 @@ export type EmployeeTaskSelectScalar = {
   status?: boolean
   documentUrl?: boolean
   completedAt?: boolean
+  title?: boolean
+  description?: boolean
+  documentAction?: boolean
+  documentName?: boolean
+  assigneeId?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "checklistItemId" | "status" | "documentUrl" | "completedAt" | "createdAt", ExtArgs["result"]["employeeTask"]>
+export type EmployeeTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "checklistItemId" | "status" | "documentUrl" | "completedAt" | "title" | "description" | "documentAction" | "documentName" | "assigneeId" | "createdAt", ExtArgs["result"]["employeeTask"]>
 export type EmployeeTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
+  signingRequest?: boolean | Prisma.EmployeeTask$signingRequestArgs<ExtArgs>
 }
 export type EmployeeTaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
 }
 export type EmployeeTaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
-  checklistItem?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
+  assignee?: boolean | Prisma.EmployeeTask$assigneeArgs<ExtArgs>
 }
 
 export type $EmployeeTaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "EmployeeTask"
   objects: {
     employee: Prisma.$EmployeePayload<ExtArgs>
-    checklistItem: Prisma.$ChecklistItemPayload<ExtArgs>
+    checklistItem: Prisma.$ChecklistItemPayload<ExtArgs> | null
+    assignee: Prisma.$EmployeePayload<ExtArgs> | null
+    signingRequest: Prisma.$SigningRequestPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     employeeId: string
-    checklistItemId: string
+    checklistItemId: string | null
     status: $Enums.TaskStatus
     documentUrl: string | null
     completedAt: Date | null
+    title: string | null
+    description: string | null
+    documentAction: string | null
+    documentName: string | null
+    assigneeId: string | null
     createdAt: Date
   }, ExtArgs["result"]["employeeTask"]>
   composites: {}
@@ -1095,7 +1573,9 @@ readonly fields: EmployeeTaskFieldRefs;
 export interface Prisma__EmployeeTaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  checklistItem<T extends Prisma.ChecklistItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ChecklistItemClient<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  checklistItem<T extends Prisma.EmployeeTask$checklistItemArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTask$checklistItemArgs<ExtArgs>>): Prisma.Prisma__ChecklistItemClient<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  assignee<T extends Prisma.EmployeeTask$assigneeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTask$assigneeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  signingRequest<T extends Prisma.EmployeeTask$signingRequestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeTask$signingRequestArgs<ExtArgs>>): Prisma.Prisma__SigningRequestClient<runtime.Types.Result.GetResult<Prisma.$SigningRequestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1131,6 +1611,11 @@ export interface EmployeeTaskFieldRefs {
   readonly status: Prisma.FieldRef<"EmployeeTask", 'TaskStatus'>
   readonly documentUrl: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly completedAt: Prisma.FieldRef<"EmployeeTask", 'DateTime'>
+  readonly title: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly description: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly documentAction: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly documentName: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly assigneeId: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmployeeTask", 'DateTime'>
 }
     
@@ -1525,6 +2010,63 @@ export type EmployeeTaskDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
    * Limit how many EmployeeTasks to delete.
    */
   limit?: number
+}
+
+/**
+ * EmployeeTask.checklistItem
+ */
+export type EmployeeTask$checklistItemArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChecklistItem
+   */
+  select?: Prisma.ChecklistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChecklistItem
+   */
+  omit?: Prisma.ChecklistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChecklistItemInclude<ExtArgs> | null
+  where?: Prisma.ChecklistItemWhereInput
+}
+
+/**
+ * EmployeeTask.assignee
+ */
+export type EmployeeTask$assigneeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Employee
+   */
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Employee
+   */
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
+}
+
+/**
+ * EmployeeTask.signingRequest
+ */
+export type EmployeeTask$signingRequestArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SigningRequest
+   */
+  select?: Prisma.SigningRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SigningRequest
+   */
+  omit?: Prisma.SigningRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SigningRequestInclude<ExtArgs> | null
+  where?: Prisma.SigningRequestWhereInput
 }
 
 /**

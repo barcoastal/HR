@@ -111,10 +111,10 @@ export default async function WelcomePage() {
               )}
               <div className="flex-1 min-w-0">
                 <p className={cn("text-sm", task.status === "DONE" ? "text-[var(--color-text-muted)] line-through" : "text-[var(--color-text-primary)]")}>
-                  {task.checklistItem.title}
+                  {task.title || task.checklistItem?.title || "Untitled"}
                 </p>
-                {task.checklistItem.description && (
-                  <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{task.checklistItem.description}</p>
+                {(task.description || task.checklistItem?.description) && (
+                  <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{task.description || task.checklistItem?.description}</p>
                 )}
               </div>
             </div>

@@ -390,6 +390,7 @@ export const ModelName = {
   User: 'User',
   OnboardingChecklist: 'OnboardingChecklist',
   ChecklistItem: 'ChecklistItem',
+  ChecklistOverrideExclusion: 'ChecklistOverrideExclusion',
   EmployeeTask: 'EmployeeTask',
   ReviewCycle: 'ReviewCycle',
   Review: 'Review',
@@ -406,6 +407,7 @@ export const ModelName = {
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
   Interview: 'Interview',
+  SigningRequest: 'SigningRequest',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -430,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -875,6 +877,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ChecklistItemCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ChecklistItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    ChecklistOverrideExclusion: {
+      payload: Prisma.$ChecklistOverrideExclusionPayload<ExtArgs>
+      fields: Prisma.ChecklistOverrideExclusionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChecklistOverrideExclusionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChecklistOverrideExclusionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        findFirst: {
+          args: Prisma.ChecklistOverrideExclusionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChecklistOverrideExclusionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        findMany: {
+          args: Prisma.ChecklistOverrideExclusionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>[]
+        }
+        create: {
+          args: Prisma.ChecklistOverrideExclusionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        createMany: {
+          args: Prisma.ChecklistOverrideExclusionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChecklistOverrideExclusionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>[]
+        }
+        delete: {
+          args: Prisma.ChecklistOverrideExclusionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        update: {
+          args: Prisma.ChecklistOverrideExclusionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChecklistOverrideExclusionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChecklistOverrideExclusionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChecklistOverrideExclusionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChecklistOverrideExclusionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistOverrideExclusionPayload>
+        }
+        aggregate: {
+          args: Prisma.ChecklistOverrideExclusionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChecklistOverrideExclusion>
+        }
+        groupBy: {
+          args: Prisma.ChecklistOverrideExclusionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistOverrideExclusionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChecklistOverrideExclusionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistOverrideExclusionCountAggregateOutputType> | number
         }
       }
     }
@@ -2062,6 +2138,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SigningRequest: {
+      payload: Prisma.$SigningRequestPayload<ExtArgs>
+      fields: Prisma.SigningRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SigningRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SigningRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.SigningRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SigningRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        findMany: {
+          args: Prisma.SigningRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>[]
+        }
+        create: {
+          args: Prisma.SigningRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        createMany: {
+          args: Prisma.SigningRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SigningRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.SigningRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        update: {
+          args: Prisma.SigningRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.SigningRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SigningRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SigningRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.SigningRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SigningRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.SigningRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSigningRequest>
+        }
+        groupBy: {
+          args: Prisma.SigningRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SigningRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SigningRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SigningRequestCountAggregateOutputType> | number
+        }
+      }
+    }
     TimeOffPolicy: {
       payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
       fields: Prisma.TimeOffPolicyFieldRefs
@@ -2846,6 +2996,8 @@ export const OnboardingChecklistScalarFieldEnum = {
   name: 'name',
   type: 'type',
   departmentId: 'departmentId',
+  jobTitleId: 'jobTitleId',
+  isOverride: 'isOverride',
   createdAt: 'createdAt'
 } as const
 
@@ -2865,10 +3017,20 @@ export const ChecklistItemScalarFieldEnum = {
   emailSubject: 'emailSubject',
   emailBody: 'emailBody',
   documentUrl: 'documentUrl',
-  documentName: 'documentName'
+  documentName: 'documentName',
+  documentAction: 'documentAction'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const ChecklistOverrideExclusionScalarFieldEnum = {
+  id: 'id',
+  overrideChecklistId: 'overrideChecklistId',
+  excludedItemId: 'excludedItemId'
+} as const
+
+export type ChecklistOverrideExclusionScalarFieldEnum = (typeof ChecklistOverrideExclusionScalarFieldEnum)[keyof typeof ChecklistOverrideExclusionScalarFieldEnum]
 
 
 export const EmployeeTaskScalarFieldEnum = {
@@ -2878,6 +3040,11 @@ export const EmployeeTaskScalarFieldEnum = {
   status: 'status',
   documentUrl: 'documentUrl',
   completedAt: 'completedAt',
+  title: 'title',
+  description: 'description',
+  documentAction: 'documentAction',
+  documentName: 'documentName',
+  assigneeId: 'assigneeId',
   createdAt: 'createdAt'
 } as const
 
@@ -3103,6 +3270,24 @@ export const InterviewScalarFieldEnum = {
 } as const
 
 export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
+
+
+export const SigningRequestScalarFieldEnum = {
+  id: 'id',
+  employeeTaskId: 'employeeTaskId',
+  employeeId: 'employeeId',
+  token: 'token',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName',
+  status: 'status',
+  signedDocUrl: 'signedDocUrl',
+  signedAt: 'signedAt',
+  viewedAt: 'viewedAt',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {
@@ -3672,6 +3857,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   onboardingChecklist?: Prisma.OnboardingChecklistOmit
   checklistItem?: Prisma.ChecklistItemOmit
+  checklistOverrideExclusion?: Prisma.ChecklistOverrideExclusionOmit
   employeeTask?: Prisma.EmployeeTaskOmit
   reviewCycle?: Prisma.ReviewCycleOmit
   review?: Prisma.ReviewOmit
@@ -3688,6 +3874,7 @@ export type GlobalOmitConfig = {
   platformCostEntry?: Prisma.PlatformCostEntryOmit
   platformSyncLog?: Prisma.PlatformSyncLogOmit
   interview?: Prisma.InterviewOmit
+  signingRequest?: Prisma.SigningRequestOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit
