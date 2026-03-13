@@ -13,6 +13,8 @@ type CompanySettingsData = {
   companySize: string;
   logoUrl: string | null;
   faviconUrl: string | null;
+  senderEmail: string;
+  senderName: string;
 };
 
 function InputField({
@@ -153,7 +155,7 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
-  function update(field: keyof Pick<CompanySettingsData, "companyName" | "domain" | "industry" | "companySize">) {
+  function update(field: keyof Pick<CompanySettingsData, "companyName" | "domain" | "industry" | "companySize" | "senderEmail" | "senderName">) {
     return (value: string) => {
       setInfo((prev) => ({ ...prev, [field]: value }));
       setSaved(false);
@@ -169,6 +171,8 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
       companySize: info.companySize,
       logoUrl: info.logoUrl,
       faviconUrl: info.faviconUrl,
+      senderEmail: info.senderEmail,
+      senderName: info.senderName,
     });
     setSaved(true);
     setSaving(false);
@@ -210,6 +214,14 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
           onRemoved={() => { setInfo((p) => ({ ...p, faviconUrl: null })); setSaved(false); }}
         />
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+        <InputField label="Sender Email" placeholder="hr@yourdomain.com" value={info.senderEmail} onChange={update("senderEmail")} />
+        <InputField label="Sender Name" placeholder="Company HR" value={info.senderName} onChange={update("senderName")} />
+      </div>
+      <p className="text-xs text-[var(--color-text-muted)] mb-5">
+        The sender email must be from a domain verified in your Resend account.
+      </p>
 
       <div className="flex justify-end">
         <button
