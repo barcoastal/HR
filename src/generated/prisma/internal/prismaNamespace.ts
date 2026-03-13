@@ -400,6 +400,7 @@ export const ModelName = {
   PostAttachment: 'PostAttachment',
   Notification: 'Notification',
   Document: 'Document',
+  HRNote: 'HRNote',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
   Position: 'Position',
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "oAuthState"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "oAuthState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1619,6 +1620,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DocumentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    HRNote: {
+      payload: Prisma.$HRNotePayload<ExtArgs>
+      fields: Prisma.HRNoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HRNoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HRNoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        findFirst: {
+          args: Prisma.HRNoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HRNoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        findMany: {
+          args: Prisma.HRNoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>[]
+        }
+        create: {
+          args: Prisma.HRNoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        createMany: {
+          args: Prisma.HRNoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HRNoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>[]
+        }
+        delete: {
+          args: Prisma.HRNoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        update: {
+          args: Prisma.HRNoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        deleteMany: {
+          args: Prisma.HRNoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HRNoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HRNoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>[]
+        }
+        upsert: {
+          args: Prisma.HRNoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HRNotePayload>
+        }
+        aggregate: {
+          args: Prisma.HRNoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHRNote>
+        }
+        groupBy: {
+          args: Prisma.HRNoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HRNoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HRNoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HRNoteCountAggregateOutputType> | number
         }
       }
     }
@@ -3297,10 +3372,23 @@ export const DocumentScalarFieldEnum = {
   name: 'name',
   url: 'url',
   category: 'category',
+  visibility: 'visibility',
   uploadedAt: 'uploadedAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const HRNoteScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HRNoteScalarFieldEnum = (typeof HRNoteScalarFieldEnum)[keyof typeof HRNoteScalarFieldEnum]
 
 
 export const JobTitleScalarFieldEnum = {
@@ -3544,6 +3632,8 @@ export const CompanySettingsScalarFieldEnum = {
   companySize: 'companySize',
   logoUrl: 'logoUrl',
   faviconUrl: 'faviconUrl',
+  senderEmail: 'senderEmail',
+  senderName: 'senderName',
   updatedAt: 'updatedAt'
 } as const
 
@@ -3809,6 +3899,20 @@ export type ListEnumDocumentCategoryFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'DocumentVisibility'
+ */
+export type EnumDocumentVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentVisibility'>
+    
+
+
+/**
+ * Reference to a field of type 'DocumentVisibility[]'
+ */
+export type ListEnumDocumentVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentVisibility[]'>
+    
+
+
+/**
  * Reference to a field of type 'CandidateStatus'
  */
 export type EnumCandidateStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CandidateStatus'>
@@ -4044,6 +4148,7 @@ export type GlobalOmitConfig = {
   postAttachment?: Prisma.PostAttachmentOmit
   notification?: Prisma.NotificationOmit
   document?: Prisma.DocumentOmit
+  hRNote?: Prisma.HRNoteOmit
   jobTitle?: Prisma.JobTitleOmit
   candidate?: Prisma.CandidateOmit
   position?: Prisma.PositionOmit

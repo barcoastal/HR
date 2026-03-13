@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
-import { sendOnboardingEmail } from "@/lib/email";
+import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -296,6 +296,30 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
     },
   });
 
+  // Create user account and send welcome email
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const existingUser = await db.user.findUnique({ where: { email: candidate.email } });
+  if (!existingUser) {
+    await db.user.create({
+      data: {
+        email: candidate.email,
+        role: "EMPLOYEE",
+        employeeId: employee.id,
+      },
+    });
+  } else if (!existingUser.employeeId) {
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: { employeeId: employee.id },
+    });
+  }
+
+  sendWelcomeEmail({
+    to: candidate.email,
+    role: "Employee",
+    loginUrl: `${baseUrl}/login`,
+  });
+
   // Resolve and create onboarding tasks
   const { resolveOnboardingTasks } = await import("./onboarding-resolution");
   const { createSigningRequest } = await import("./signing");
@@ -305,7 +329,6 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
     candidate.position?.departmentId || null,
     candidate.position?.title || null
   );
-  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   for (const task of resolvedTasks) {
     const employeeTask = await db.employeeTask.create({

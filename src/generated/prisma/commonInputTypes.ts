@@ -379,6 +379,13 @@ export type EnumDocumentCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel> | $Enums.DocumentCategory
 }
 
+export type EnumDocumentVisibilityFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocumentVisibility | Prisma.EnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel> | $Enums.DocumentVisibility
+}
+
 export type EnumDocumentCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.DocumentCategory | Prisma.EnumDocumentCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.DocumentCategory[] | Prisma.ListEnumDocumentCategoryFieldRefInput<$PrismaModel>
@@ -387,6 +394,16 @@ export type EnumDocumentCategoryWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel>
+}
+
+export type EnumDocumentVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocumentVisibility | Prisma.EnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocumentVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.DocumentVisibility
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel>
 }
 
 export type EnumCandidateStatusFilter<$PrismaModel = never> = {
@@ -957,6 +974,13 @@ export type NestedEnumDocumentCategoryFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel> | $Enums.DocumentCategory
 }
 
+export type NestedEnumDocumentVisibilityFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocumentVisibility | Prisma.EnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel> | $Enums.DocumentVisibility
+}
+
 export type NestedEnumDocumentCategoryWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.DocumentCategory | Prisma.EnumDocumentCategoryFieldRefInput<$PrismaModel>
   in?: $Enums.DocumentCategory[] | Prisma.ListEnumDocumentCategoryFieldRefInput<$PrismaModel>
@@ -965,6 +989,16 @@ export type NestedEnumDocumentCategoryWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel>
   _max?: Prisma.NestedEnumDocumentCategoryFilter<$PrismaModel>
+}
+
+export type NestedEnumDocumentVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DocumentVisibility | Prisma.EnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DocumentVisibility[] | Prisma.ListEnumDocumentVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDocumentVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.DocumentVisibility
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDocumentVisibilityFilter<$PrismaModel>
 }
 
 export type NestedEnumCandidateStatusFilter<$PrismaModel = never> = {

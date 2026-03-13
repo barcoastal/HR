@@ -67,6 +67,7 @@ export const ModelName = {
   PostAttachment: 'PostAttachment',
   Notification: 'Notification',
   Document: 'Document',
+  HRNote: 'HRNote',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
   Position: 'Position',
@@ -334,10 +335,23 @@ export const DocumentScalarFieldEnum = {
   name: 'name',
   url: 'url',
   category: 'category',
+  visibility: 'visibility',
   uploadedAt: 'uploadedAt'
 } as const
 
 export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
+export const HRNoteScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  authorId: 'authorId',
+  content: 'content',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HRNoteScalarFieldEnum = (typeof HRNoteScalarFieldEnum)[keyof typeof HRNoteScalarFieldEnum]
 
 
 export const JobTitleScalarFieldEnum = {
@@ -581,6 +595,8 @@ export const CompanySettingsScalarFieldEnum = {
   companySize: 'companySize',
   logoUrl: 'logoUrl',
   faviconUrl: 'faviconUrl',
+  senderEmail: 'senderEmail',
+  senderName: 'senderName',
   updatedAt: 'updatedAt'
 } as const
 

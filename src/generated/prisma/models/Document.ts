@@ -30,6 +30,7 @@ export type DocumentMinAggregateOutputType = {
   name: string | null
   url: string | null
   category: $Enums.DocumentCategory | null
+  visibility: $Enums.DocumentVisibility | null
   uploadedAt: Date | null
 }
 
@@ -39,6 +40,7 @@ export type DocumentMaxAggregateOutputType = {
   name: string | null
   url: string | null
   category: $Enums.DocumentCategory | null
+  visibility: $Enums.DocumentVisibility | null
   uploadedAt: Date | null
 }
 
@@ -48,6 +50,7 @@ export type DocumentCountAggregateOutputType = {
   name: number
   url: number
   category: number
+  visibility: number
   uploadedAt: number
   _all: number
 }
@@ -59,6 +62,7 @@ export type DocumentMinAggregateInputType = {
   name?: true
   url?: true
   category?: true
+  visibility?: true
   uploadedAt?: true
 }
 
@@ -68,6 +72,7 @@ export type DocumentMaxAggregateInputType = {
   name?: true
   url?: true
   category?: true
+  visibility?: true
   uploadedAt?: true
 }
 
@@ -77,6 +82,7 @@ export type DocumentCountAggregateInputType = {
   name?: true
   url?: true
   category?: true
+  visibility?: true
   uploadedAt?: true
   _all?: true
 }
@@ -159,6 +165,7 @@ export type DocumentGroupByOutputType = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility: $Enums.DocumentVisibility
   uploadedAt: Date
   _count: DocumentCountAggregateOutputType | null
   _min: DocumentMinAggregateOutputType | null
@@ -189,6 +196,7 @@ export type DocumentWhereInput = {
   name?: Prisma.StringFilter<"Document"> | string
   url?: Prisma.StringFilter<"Document"> | string
   category?: Prisma.EnumDocumentCategoryFilter<"Document"> | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFilter<"Document"> | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
 }
@@ -199,6 +207,7 @@ export type DocumentOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
 }
@@ -212,6 +221,7 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Document"> | string
   url?: Prisma.StringFilter<"Document"> | string
   category?: Prisma.EnumDocumentCategoryFilter<"Document"> | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFilter<"Document"> | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
 }, "id">
@@ -222,6 +232,7 @@ export type DocumentOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   _count?: Prisma.DocumentCountOrderByAggregateInput
   _max?: Prisma.DocumentMaxOrderByAggregateInput
@@ -237,6 +248,7 @@ export type DocumentScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Document"> | string
   url?: Prisma.StringWithAggregatesFilter<"Document"> | string
   category?: Prisma.EnumDocumentCategoryWithAggregatesFilter<"Document"> | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityWithAggregatesFilter<"Document"> | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
 }
 
@@ -245,6 +257,7 @@ export type DocumentCreateInput = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutDocumentsInput
 }
@@ -255,6 +268,7 @@ export type DocumentUncheckedCreateInput = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
 }
 
@@ -263,6 +277,7 @@ export type DocumentUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutDocumentsNestedInput
 }
@@ -273,6 +288,7 @@ export type DocumentUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -282,6 +298,7 @@ export type DocumentCreateManyInput = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
 }
 
@@ -290,6 +307,7 @@ export type DocumentUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,6 +317,7 @@ export type DocumentUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -318,6 +337,7 @@ export type DocumentCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -327,6 +347,7 @@ export type DocumentMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -336,6 +357,7 @@ export type DocumentMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   url?: Prisma.SortOrder
   category?: Prisma.SortOrder
+  visibility?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -385,11 +407,16 @@ export type EnumDocumentCategoryFieldUpdateOperationsInput = {
   set?: $Enums.DocumentCategory
 }
 
+export type EnumDocumentVisibilityFieldUpdateOperationsInput = {
+  set?: $Enums.DocumentVisibility
+}
+
 export type DocumentCreateWithoutEmployeeInput = {
   id?: string
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
 }
 
@@ -398,6 +425,7 @@ export type DocumentUncheckedCreateWithoutEmployeeInput = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
 }
 
@@ -436,6 +464,7 @@ export type DocumentScalarWhereInput = {
   name?: Prisma.StringFilter<"Document"> | string
   url?: Prisma.StringFilter<"Document"> | string
   category?: Prisma.EnumDocumentCategoryFilter<"Document"> | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFilter<"Document"> | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
 }
 
@@ -444,6 +473,7 @@ export type DocumentCreateManyEmployeeInput = {
   name: string
   url: string
   category: $Enums.DocumentCategory
+  visibility?: $Enums.DocumentVisibility
   uploadedAt?: Date | string
 }
 
@@ -452,6 +482,7 @@ export type DocumentUpdateWithoutEmployeeInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -460,6 +491,7 @@ export type DocumentUncheckedUpdateWithoutEmployeeInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -468,6 +500,7 @@ export type DocumentUncheckedUpdateManyWithoutEmployeeInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   category?: Prisma.EnumDocumentCategoryFieldUpdateOperationsInput | $Enums.DocumentCategory
+  visibility?: Prisma.EnumDocumentVisibilityFieldUpdateOperationsInput | $Enums.DocumentVisibility
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -479,6 +512,7 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   url?: boolean
   category?: boolean
+  visibility?: boolean
   uploadedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
@@ -489,6 +523,7 @@ export type DocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   url?: boolean
   category?: boolean
+  visibility?: boolean
   uploadedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
@@ -499,6 +534,7 @@ export type DocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   url?: boolean
   category?: boolean
+  visibility?: boolean
   uploadedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
@@ -509,10 +545,11 @@ export type DocumentSelectScalar = {
   name?: boolean
   url?: boolean
   category?: boolean
+  visibility?: boolean
   uploadedAt?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "name" | "url" | "category" | "uploadedAt", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "name" | "url" | "category" | "visibility" | "uploadedAt", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -534,6 +571,7 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     url: string
     category: $Enums.DocumentCategory
+    visibility: $Enums.DocumentVisibility
     uploadedAt: Date
   }, ExtArgs["result"]["document"]>
   composites: {}
@@ -964,6 +1002,7 @@ export interface DocumentFieldRefs {
   readonly name: Prisma.FieldRef<"Document", 'String'>
   readonly url: Prisma.FieldRef<"Document", 'String'>
   readonly category: Prisma.FieldRef<"Document", 'DocumentCategory'>
+  readonly visibility: Prisma.FieldRef<"Document", 'DocumentVisibility'>
   readonly uploadedAt: Prisma.FieldRef<"Document", 'DateTime'>
 }
     

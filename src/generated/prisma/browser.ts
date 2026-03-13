@@ -98,6 +98,11 @@ export type Notification = Prisma.NotificationModel
  */
 export type Document = Prisma.DocumentModel
 /**
+ * Model HRNote
+ * 
+ */
+export type HRNote = Prisma.HRNoteModel
+/**
  * Model JobTitle
  * 
  */

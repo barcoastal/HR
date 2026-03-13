@@ -8,6 +8,10 @@ import {
   User, Shield, Shirt, Users,
 } from "lucide-react";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
+import { HRNotesSection } from "@/components/people/hr-notes-section";
+import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
+import { getHRNotes } from "@/lib/actions/hr-notes";
+import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -26,9 +30,14 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
 }
 
 export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAuth();
+  const session = await requireAuth();
+  const isAdmin = session.user?.role === "ADMIN";
   const { id } = await params;
-  const employee = await getEmployeeById(id);
+  const [employee, hrNotes, documents] = await Promise.all([
+    getEmployeeById(id),
+    getHRNotes(id),
+    getEmployeeDocuments(id),
+  ]);
   if (!employee) notFound();
 
   const initials = getInitials(employee.firstName, employee.lastName);
@@ -128,22 +137,29 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             </section>
           )}
 
-          {employee.documents.length > 0 && (
-            <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-              <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Documents</h2>
-              <div className="space-y-2">
-                {employee.documents.map((doc) => (
-                  <div key={doc.id} className={cn("flex items-center gap-3 p-3 rounded-lg", "hover:bg-[var(--color-surface-hover)] transition-colors cursor-pointer group")}>
-                    <div className="h-9 w-9 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0"><FileText className="h-4 w-4 text-red-400" /></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
-                      <p className="text-xs text-[var(--color-text-muted)]">{doc.category} · {formatDate(doc.uploadedAt)}</p>
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                ))}
-              </div>
-            </section>
+          <EmployeeDocumentsSection
+            employeeId={employee.id}
+            documents={documents.map((d) => ({
+              id: d.id,
+              name: d.name,
+              url: d.url,
+              category: d.category,
+              visibility: d.visibility,
+              uploadedAt: d.uploadedAt.toISOString(),
+            }))}
+            isAdmin={isAdmin}
+          />
+
+          {isAdmin && (
+            <HRNotesSection
+              employeeId={employee.id}
+              notes={hrNotes.map((n) => ({
+                id: n.id,
+                content: n.content,
+                createdAt: n.createdAt.toISOString(),
+                author: n.author,
+              }))}
+            />
           )}
 
           {employee.reviewsAsEmployee.length > 0 && (

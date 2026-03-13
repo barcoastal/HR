@@ -128,6 +128,14 @@ export const DocumentCategory = {
 export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCategory]
 
 
+export const DocumentVisibility = {
+  EVERYONE: 'EVERYONE',
+  HR_ONLY: 'HR_ONLY'
+} as const
+
+export type DocumentVisibility = (typeof DocumentVisibility)[keyof typeof DocumentVisibility]
+
+
 export const CandidateStatus = {
   NEW: 'NEW',
   SCREENING: 'SCREENING',

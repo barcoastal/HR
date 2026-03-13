@@ -32,6 +32,8 @@ export type CompanySettingsMinAggregateOutputType = {
   companySize: string | null
   logoUrl: string | null
   faviconUrl: string | null
+  senderEmail: string | null
+  senderName: string | null
   updatedAt: Date | null
 }
 
@@ -43,6 +45,8 @@ export type CompanySettingsMaxAggregateOutputType = {
   companySize: string | null
   logoUrl: string | null
   faviconUrl: string | null
+  senderEmail: string | null
+  senderName: string | null
   updatedAt: Date | null
 }
 
@@ -54,6 +58,8 @@ export type CompanySettingsCountAggregateOutputType = {
   companySize: number
   logoUrl: number
   faviconUrl: number
+  senderEmail: number
+  senderName: number
   updatedAt: number
   _all: number
 }
@@ -67,6 +73,8 @@ export type CompanySettingsMinAggregateInputType = {
   companySize?: true
   logoUrl?: true
   faviconUrl?: true
+  senderEmail?: true
+  senderName?: true
   updatedAt?: true
 }
 
@@ -78,6 +86,8 @@ export type CompanySettingsMaxAggregateInputType = {
   companySize?: true
   logoUrl?: true
   faviconUrl?: true
+  senderEmail?: true
+  senderName?: true
   updatedAt?: true
 }
 
@@ -89,6 +99,8 @@ export type CompanySettingsCountAggregateInputType = {
   companySize?: true
   logoUrl?: true
   faviconUrl?: true
+  senderEmail?: true
+  senderName?: true
   updatedAt?: true
   _all?: true
 }
@@ -173,6 +185,8 @@ export type CompanySettingsGroupByOutputType = {
   companySize: string
   logoUrl: string | null
   faviconUrl: string | null
+  senderEmail: string
+  senderName: string
   updatedAt: Date
   _count: CompanySettingsCountAggregateOutputType | null
   _min: CompanySettingsMinAggregateOutputType | null
@@ -205,6 +219,8 @@ export type CompanySettingsWhereInput = {
   companySize?: Prisma.StringFilter<"CompanySettings"> | string
   logoUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
   faviconUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
+  senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
+  senderName?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }
 
@@ -216,6 +232,8 @@ export type CompanySettingsOrderByWithRelationInput = {
   companySize?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   faviconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  senderEmail?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -230,6 +248,8 @@ export type CompanySettingsWhereUniqueInput = Prisma.AtLeast<{
   companySize?: Prisma.StringFilter<"CompanySettings"> | string
   logoUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
   faviconUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
+  senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
+  senderName?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }, "id">
 
@@ -241,6 +261,8 @@ export type CompanySettingsOrderByWithAggregationInput = {
   companySize?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   faviconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  senderEmail?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanySettingsCountOrderByAggregateInput
   _max?: Prisma.CompanySettingsMaxOrderByAggregateInput
@@ -258,6 +280,8 @@ export type CompanySettingsScalarWhereWithAggregatesInput = {
   companySize?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   logoUrl?: Prisma.StringNullableWithAggregatesFilter<"CompanySettings"> | string | null
   faviconUrl?: Prisma.StringNullableWithAggregatesFilter<"CompanySettings"> | string | null
+  senderEmail?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
+  senderName?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
 }
 
@@ -269,6 +293,8 @@ export type CompanySettingsCreateInput = {
   companySize?: string
   logoUrl?: string | null
   faviconUrl?: string | null
+  senderEmail?: string
+  senderName?: string
   updatedAt?: Date | string
 }
 
@@ -280,6 +306,8 @@ export type CompanySettingsUncheckedCreateInput = {
   companySize?: string
   logoUrl?: string | null
   faviconUrl?: string | null
+  senderEmail?: string
+  senderName?: string
   updatedAt?: Date | string
 }
 
@@ -291,6 +319,8 @@ export type CompanySettingsUpdateInput = {
   companySize?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -302,6 +332,8 @@ export type CompanySettingsUncheckedUpdateInput = {
   companySize?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -313,6 +345,8 @@ export type CompanySettingsCreateManyInput = {
   companySize?: string
   logoUrl?: string | null
   faviconUrl?: string | null
+  senderEmail?: string
+  senderName?: string
   updatedAt?: Date | string
 }
 
@@ -324,6 +358,8 @@ export type CompanySettingsUpdateManyMutationInput = {
   companySize?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -335,6 +371,8 @@ export type CompanySettingsUncheckedUpdateManyInput = {
   companySize?: Prisma.StringFieldUpdateOperationsInput | string
   logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  senderName?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -346,6 +384,8 @@ export type CompanySettingsCountOrderByAggregateInput = {
   companySize?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   faviconUrl?: Prisma.SortOrder
+  senderEmail?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -357,6 +397,8 @@ export type CompanySettingsMaxOrderByAggregateInput = {
   companySize?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   faviconUrl?: Prisma.SortOrder
+  senderEmail?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -368,6 +410,8 @@ export type CompanySettingsMinOrderByAggregateInput = {
   companySize?: Prisma.SortOrder
   logoUrl?: Prisma.SortOrder
   faviconUrl?: Prisma.SortOrder
+  senderEmail?: Prisma.SortOrder
+  senderName?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -381,6 +425,8 @@ export type CompanySettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   companySize?: boolean
   logoUrl?: boolean
   faviconUrl?: boolean
+  senderEmail?: boolean
+  senderName?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -392,6 +438,8 @@ export type CompanySettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   companySize?: boolean
   logoUrl?: boolean
   faviconUrl?: boolean
+  senderEmail?: boolean
+  senderName?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -403,6 +451,8 @@ export type CompanySettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   companySize?: boolean
   logoUrl?: boolean
   faviconUrl?: boolean
+  senderEmail?: boolean
+  senderName?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -414,10 +464,12 @@ export type CompanySettingsSelectScalar = {
   companySize?: boolean
   logoUrl?: boolean
   faviconUrl?: boolean
+  senderEmail?: boolean
+  senderName?: boolean
   updatedAt?: boolean
 }
 
-export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "updatedAt", ExtArgs["result"]["companySettings"]>
+export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "updatedAt", ExtArgs["result"]["companySettings"]>
 
 export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CompanySettings"
@@ -430,6 +482,8 @@ export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     companySize: string
     logoUrl: string | null
     faviconUrl: string | null
+    senderEmail: string
+    senderName: string
     updatedAt: Date
   }, ExtArgs["result"]["companySettings"]>
   composites: {}
@@ -861,6 +915,8 @@ export interface CompanySettingsFieldRefs {
   readonly companySize: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly logoUrl: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly faviconUrl: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly senderEmail: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly senderName: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly updatedAt: Prisma.FieldRef<"CompanySettings", 'DateTime'>
 }
     
