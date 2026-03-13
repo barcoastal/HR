@@ -3,11 +3,13 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
 import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline";
+import { MyOnboardingTasks } from "@/components/onboarding/my-onboarding-tasks";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 
 export default async function OnboardingPage() {
-  await requireAuth();
+  const session = await requireAuth();
+  const currentEmployeeId = session.user?.employeeId;
 
   const onboardingEmployees = await db.employee.findMany({
     where: { status: "ONBOARDING" },
@@ -55,6 +57,20 @@ export default async function OnboardingPage() {
   });
 
   const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
+
+  const myAssignedTasks = currentEmployeeId
+    ? await db.employeeTask.findMany({
+        where: {
+          assigneeId: currentEmployeeId,
+          employee: { status: "ONBOARDING" },
+        },
+        include: {
+          employee: true,
+          checklistItem: true,
+        },
+        orderBy: { createdAt: "asc" },
+      })
+    : [];
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
@@ -132,6 +148,19 @@ export default async function OnboardingPage() {
           </div>
         </>
       )}
+
+      <MyOnboardingTasks
+        tasks={myAssignedTasks.map((t) => ({
+          id: t.id,
+          title: t.title || t.checklistItem?.title || "Untitled",
+          description: t.description || t.checklistItem?.description || null,
+          status: t.status as "PENDING" | "DONE",
+          completedAt: t.completedAt?.toISOString() || null,
+          dueDay: t.checklistItem?.dueDay || null,
+          employeeName: `${t.employee.firstName} ${t.employee.lastName}`,
+          employeeId: t.employee.id,
+        }))}
+      />
     </div>
   );
 }
