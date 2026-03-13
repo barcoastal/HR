@@ -6,12 +6,14 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createEmployee } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { OnboardingPreview } from "@/components/onboarding/onboarding-preview";
 
 type Department = { id: string; name: string };
 
 export function AddEmployeeForm({ departments }: { departments: Department[] }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -136,11 +138,38 @@ export function AddEmployeeForm({ departments }: { departments: Department[] }) 
         </div>
         <div className="flex justify-end gap-2 pt-4">
           <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
-          <button onClick={handleSubmit} disabled={!form.firstName || !form.lastName || !form.email || !form.jobTitle || !form.startDate || loading} className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
-            {loading ? "Adding..." : "Add Employee"}
-          </button>
+          {form.status === "ONBOARDING" && form.departmentId && form.jobTitle ? (
+            <button
+              onClick={() => setShowPreview(true)}
+              disabled={!form.firstName || !form.lastName || !form.email || !form.jobTitle || !form.startDate}
+              className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
+            >
+              Preview & Start Onboarding
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={!form.firstName || !form.lastName || !form.email || !form.jobTitle || !form.startDate || loading}
+              className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
+            >
+              {loading ? "Adding..." : "Add Employee"}
+            </button>
+          )}
         </div>
       </Dialog>
+
+      <OnboardingPreview
+        open={showPreview}
+        onClose={() => setShowPreview(false)}
+        onConfirm={() => {
+          setShowPreview(false);
+          handleSubmit();
+        }}
+        departmentId={form.departmentId || null}
+        jobTitle={form.jobTitle}
+        departmentName={departments.find(d => d.id === form.departmentId)?.name || "Global"}
+        loading={loading}
+      />
     </>
   );
 }
