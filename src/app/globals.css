@@ -103,22 +103,11 @@ body {
 /* Gradient border on hover */
 .gradient-border {
   position: relative;
-  isolation: isolate;
   transition: all 0.3s ease;
 }
-.gradient-border::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  background: var(--gradient-brand);
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-.gradient-border:hover::before {
-  opacity: 1;
+.gradient-border:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent), 0 4px 16px rgba(99, 102, 241, 0.15);
 }
 
 /* Text gradient */
