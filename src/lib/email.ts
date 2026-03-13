@@ -13,17 +13,19 @@ async function getTemplate(type: string): Promise<{ subject: string; body: strin
   }
 }
 
-async function getCompanyBranding(): Promise<{ companyName: string; logoUrl: string | null }> {
+async function getCompanyBranding(): Promise<{ companyName: string; logoUrl: string | null; senderEmail: string; senderName: string }> {
   try {
-    const { getCompanySettings } = await import("@/lib/actions/company-settings");
-    const settings = await getCompanySettings();
+    const { db } = await import("@/lib/db");
+    const settings = await db.companySettings.findUnique({ where: { id: "singleton" } });
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     return {
-      companyName: settings.companyName || "Coastal HR",
-      logoUrl: settings.logoUrl ? `${baseUrl}${settings.logoUrl}` : null,
+      companyName: settings?.companyName || "Coastal HR",
+      logoUrl: settings?.logoUrl ? `${baseUrl}${settings.logoUrl}` : null,
+      senderEmail: settings?.senderEmail || "onboarding@resend.dev",
+      senderName: settings?.senderName || settings?.companyName || "Coastal HR",
     };
   } catch {
-    return { companyName: "Coastal HR", logoUrl: null };
+    return { companyName: "Coastal HR", logoUrl: null, senderEmail: "onboarding@resend.dev", senderName: "Coastal HR" };
   }
 }
 
@@ -64,7 +66,7 @@ async function sendEmail(to: string, subject: string, html: string) {
   const branding = await getCompanyBranding();
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: `${branding.senderName} <${branding.senderEmail}>`,
       to,
       subject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
@@ -104,7 +106,7 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
 
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: `${branding.companyName} <${branding.senderEmail}>`,
       to,
       subject: `[TEST] ${interpolatedSubject}`,
       html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
