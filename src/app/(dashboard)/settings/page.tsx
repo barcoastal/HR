@@ -13,6 +13,7 @@ import { CompanyInfo } from "@/components/settings/company-info";
 import { DepartmentManager } from "@/components/settings/department-manager";
 import { JobTitleManager } from "@/components/settings/job-title-manager";
 import { ChecklistManager } from "@/components/settings/checklist-manager";
+import { OnboardingSetup } from "@/components/settings/onboarding-setup";
 import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
@@ -31,6 +32,7 @@ export default async function SettingsPage() {
     getEmployees(),
     getJobTitles(),
     db.onboardingChecklist.findMany({
+      where: { type: "OFFBOARDING" },
       include: {
         department: true,
         items: {
@@ -77,6 +79,12 @@ export default async function SettingsPage() {
         />
 
         <JobTitleManager jobTitles={jobTitles} />
+
+        <OnboardingSetup
+          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+          employees={employeeList}
+          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+        />
 
         <ChecklistManager
           employees={employeeList}
