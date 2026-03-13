@@ -616,8 +616,10 @@ model TimeOffPolicy {
   id          String   @id @default(uuid())
   name        String
   daysPerYear Int
-  isUnlimited Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isUnlimited  Boolean  @default(false)
+  documentUrl  String?
+  documentName String?
+  createdAt    DateTime @default(now())
 
   balances    TimeOffBalance[]
   requests    TimeOffRequest[]

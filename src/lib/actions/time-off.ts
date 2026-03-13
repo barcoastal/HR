@@ -11,8 +11,20 @@ export async function createTimeOffPolicy(data: {
   name: string;
   daysPerYear: number;
   isUnlimited: boolean;
+  documentUrl?: string;
+  documentName?: string;
 }) {
   const policy = await db.timeOffPolicy.create({ data });
+  revalidatePath("/settings");
+  revalidatePath("/time-off");
+  return policy;
+}
+
+export async function updateTimeOffPolicy(
+  id: string,
+  data: { documentUrl?: string | null; documentName?: string | null }
+) {
+  const policy = await db.timeOffPolicy.update({ where: { id }, data });
   revalidatePath("/settings");
   revalidatePath("/time-off");
   return policy;

@@ -119,6 +119,8 @@ export default async function SettingsPage() {
             name: p.name,
             daysPerYear: p.daysPerYear,
             isUnlimited: p.isUnlimited,
+            documentUrl: p.documentUrl,
+            documentName: p.documentName,
           }))}
         />
 

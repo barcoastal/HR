@@ -39,6 +39,8 @@ export type TimeOffPolicyMinAggregateOutputType = {
   name: string | null
   daysPerYear: number | null
   isUnlimited: boolean | null
+  documentUrl: string | null
+  documentName: string | null
   createdAt: Date | null
 }
 
@@ -47,6 +49,8 @@ export type TimeOffPolicyMaxAggregateOutputType = {
   name: string | null
   daysPerYear: number | null
   isUnlimited: boolean | null
+  documentUrl: string | null
+  documentName: string | null
   createdAt: Date | null
 }
 
@@ -55,6 +59,8 @@ export type TimeOffPolicyCountAggregateOutputType = {
   name: number
   daysPerYear: number
   isUnlimited: number
+  documentUrl: number
+  documentName: number
   createdAt: number
   _all: number
 }
@@ -73,6 +79,8 @@ export type TimeOffPolicyMinAggregateInputType = {
   name?: true
   daysPerYear?: true
   isUnlimited?: true
+  documentUrl?: true
+  documentName?: true
   createdAt?: true
 }
 
@@ -81,6 +89,8 @@ export type TimeOffPolicyMaxAggregateInputType = {
   name?: true
   daysPerYear?: true
   isUnlimited?: true
+  documentUrl?: true
+  documentName?: true
   createdAt?: true
 }
 
@@ -89,6 +99,8 @@ export type TimeOffPolicyCountAggregateInputType = {
   name?: true
   daysPerYear?: true
   isUnlimited?: true
+  documentUrl?: true
+  documentName?: true
   createdAt?: true
   _all?: true
 }
@@ -184,6 +196,8 @@ export type TimeOffPolicyGroupByOutputType = {
   name: string
   daysPerYear: number
   isUnlimited: boolean
+  documentUrl: string | null
+  documentName: string | null
   createdAt: Date
   _count: TimeOffPolicyCountAggregateOutputType | null
   _avg: TimeOffPolicyAvgAggregateOutputType | null
@@ -215,6 +229,8 @@ export type TimeOffPolicyWhereInput = {
   name?: Prisma.StringFilter<"TimeOffPolicy"> | string
   daysPerYear?: Prisma.IntFilter<"TimeOffPolicy"> | number
   isUnlimited?: Prisma.BoolFilter<"TimeOffPolicy"> | boolean
+  documentUrl?: Prisma.StringNullableFilter<"TimeOffPolicy"> | string | null
+  documentName?: Prisma.StringNullableFilter<"TimeOffPolicy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TimeOffPolicy"> | Date | string
   balances?: Prisma.TimeOffBalanceListRelationFilter
   requests?: Prisma.TimeOffRequestListRelationFilter
@@ -225,6 +241,8 @@ export type TimeOffPolicyOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   daysPerYear?: Prisma.SortOrder
   isUnlimited?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   balances?: Prisma.TimeOffBalanceOrderByRelationAggregateInput
   requests?: Prisma.TimeOffRequestOrderByRelationAggregateInput
@@ -238,6 +256,8 @@ export type TimeOffPolicyWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"TimeOffPolicy"> | string
   daysPerYear?: Prisma.IntFilter<"TimeOffPolicy"> | number
   isUnlimited?: Prisma.BoolFilter<"TimeOffPolicy"> | boolean
+  documentUrl?: Prisma.StringNullableFilter<"TimeOffPolicy"> | string | null
+  documentName?: Prisma.StringNullableFilter<"TimeOffPolicy"> | string | null
   createdAt?: Prisma.DateTimeFilter<"TimeOffPolicy"> | Date | string
   balances?: Prisma.TimeOffBalanceListRelationFilter
   requests?: Prisma.TimeOffRequestListRelationFilter
@@ -248,6 +268,8 @@ export type TimeOffPolicyOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   daysPerYear?: Prisma.SortOrder
   isUnlimited?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.TimeOffPolicyCountOrderByAggregateInput
   _avg?: Prisma.TimeOffPolicyAvgOrderByAggregateInput
@@ -264,6 +286,8 @@ export type TimeOffPolicyScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"TimeOffPolicy"> | string
   daysPerYear?: Prisma.IntWithAggregatesFilter<"TimeOffPolicy"> | number
   isUnlimited?: Prisma.BoolWithAggregatesFilter<"TimeOffPolicy"> | boolean
+  documentUrl?: Prisma.StringNullableWithAggregatesFilter<"TimeOffPolicy"> | string | null
+  documentName?: Prisma.StringNullableWithAggregatesFilter<"TimeOffPolicy"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TimeOffPolicy"> | Date | string
 }
 
@@ -272,6 +296,8 @@ export type TimeOffPolicyCreateInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   balances?: Prisma.TimeOffBalanceCreateNestedManyWithoutPolicyInput
   requests?: Prisma.TimeOffRequestCreateNestedManyWithoutPolicyInput
@@ -282,6 +308,8 @@ export type TimeOffPolicyUncheckedCreateInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   balances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutPolicyInput
   requests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutPolicyInput
@@ -292,6 +320,8 @@ export type TimeOffPolicyUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   balances?: Prisma.TimeOffBalanceUpdateManyWithoutPolicyNestedInput
   requests?: Prisma.TimeOffRequestUpdateManyWithoutPolicyNestedInput
@@ -302,6 +332,8 @@ export type TimeOffPolicyUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   balances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutPolicyNestedInput
   requests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutPolicyNestedInput
@@ -312,6 +344,8 @@ export type TimeOffPolicyCreateManyInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
 }
 
@@ -320,6 +354,8 @@ export type TimeOffPolicyUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -328,6 +364,8 @@ export type TimeOffPolicyUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -336,6 +374,8 @@ export type TimeOffPolicyCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   daysPerYear?: Prisma.SortOrder
   isUnlimited?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -348,6 +388,8 @@ export type TimeOffPolicyMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   daysPerYear?: Prisma.SortOrder
   isUnlimited?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -356,6 +398,8 @@ export type TimeOffPolicyMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   daysPerYear?: Prisma.SortOrder
   isUnlimited?: Prisma.SortOrder
+  documentUrl?: Prisma.SortOrder
+  documentName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -401,6 +445,8 @@ export type TimeOffPolicyCreateWithoutBalancesInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   requests?: Prisma.TimeOffRequestCreateNestedManyWithoutPolicyInput
 }
@@ -410,6 +456,8 @@ export type TimeOffPolicyUncheckedCreateWithoutBalancesInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   requests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutPolicyInput
 }
@@ -435,6 +483,8 @@ export type TimeOffPolicyUpdateWithoutBalancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requests?: Prisma.TimeOffRequestUpdateManyWithoutPolicyNestedInput
 }
@@ -444,6 +494,8 @@ export type TimeOffPolicyUncheckedUpdateWithoutBalancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   requests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutPolicyNestedInput
 }
@@ -453,6 +505,8 @@ export type TimeOffPolicyCreateWithoutRequestsInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   balances?: Prisma.TimeOffBalanceCreateNestedManyWithoutPolicyInput
 }
@@ -462,6 +516,8 @@ export type TimeOffPolicyUncheckedCreateWithoutRequestsInput = {
   name: string
   daysPerYear: number
   isUnlimited?: boolean
+  documentUrl?: string | null
+  documentName?: string | null
   createdAt?: Date | string
   balances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutPolicyInput
 }
@@ -487,6 +543,8 @@ export type TimeOffPolicyUpdateWithoutRequestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   balances?: Prisma.TimeOffBalanceUpdateManyWithoutPolicyNestedInput
 }
@@ -496,6 +554,8 @@ export type TimeOffPolicyUncheckedUpdateWithoutRequestsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   daysPerYear?: Prisma.IntFieldUpdateOperationsInput | number
   isUnlimited?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   balances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutPolicyNestedInput
 }
@@ -545,6 +605,8 @@ export type TimeOffPolicySelect<ExtArgs extends runtime.Types.Extensions.Interna
   name?: boolean
   daysPerYear?: boolean
   isUnlimited?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   createdAt?: boolean
   balances?: boolean | Prisma.TimeOffPolicy$balancesArgs<ExtArgs>
   requests?: boolean | Prisma.TimeOffPolicy$requestsArgs<ExtArgs>
@@ -556,6 +618,8 @@ export type TimeOffPolicySelectCreateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   daysPerYear?: boolean
   isUnlimited?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["timeOffPolicy"]>
 
@@ -564,6 +628,8 @@ export type TimeOffPolicySelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   daysPerYear?: boolean
   isUnlimited?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["timeOffPolicy"]>
 
@@ -572,10 +638,12 @@ export type TimeOffPolicySelectScalar = {
   name?: boolean
   daysPerYear?: boolean
   isUnlimited?: boolean
+  documentUrl?: boolean
+  documentName?: boolean
   createdAt?: boolean
 }
 
-export type TimeOffPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "daysPerYear" | "isUnlimited" | "createdAt", ExtArgs["result"]["timeOffPolicy"]>
+export type TimeOffPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "daysPerYear" | "isUnlimited" | "documentUrl" | "documentName" | "createdAt", ExtArgs["result"]["timeOffPolicy"]>
 export type TimeOffPolicyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   balances?: boolean | Prisma.TimeOffPolicy$balancesArgs<ExtArgs>
   requests?: boolean | Prisma.TimeOffPolicy$requestsArgs<ExtArgs>
@@ -595,6 +663,8 @@ export type $TimeOffPolicyPayload<ExtArgs extends runtime.Types.Extensions.Inter
     name: string
     daysPerYear: number
     isUnlimited: boolean
+    documentUrl: string | null
+    documentName: string | null
     createdAt: Date
   }, ExtArgs["result"]["timeOffPolicy"]>
   composites: {}
@@ -1025,6 +1095,8 @@ export interface TimeOffPolicyFieldRefs {
   readonly name: Prisma.FieldRef<"TimeOffPolicy", 'String'>
   readonly daysPerYear: Prisma.FieldRef<"TimeOffPolicy", 'Int'>
   readonly isUnlimited: Prisma.FieldRef<"TimeOffPolicy", 'Boolean'>
+  readonly documentUrl: Prisma.FieldRef<"TimeOffPolicy", 'String'>
+  readonly documentName: Prisma.FieldRef<"TimeOffPolicy", 'String'>
   readonly createdAt: Prisma.FieldRef<"TimeOffPolicy", 'DateTime'>
 }
     

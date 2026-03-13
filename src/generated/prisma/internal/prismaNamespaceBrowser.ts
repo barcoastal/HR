@@ -480,6 +480,8 @@ export const TimeOffPolicyScalarFieldEnum = {
   name: 'name',
   daysPerYear: 'daysPerYear',
   isUnlimited: 'isUnlimited',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName',
   createdAt: 'createdAt'
 } as const
 
