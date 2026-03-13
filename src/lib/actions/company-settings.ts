@@ -6,15 +6,11 @@ import { revalidatePath } from "next/cache";
 const SINGLETON_ID = "singleton";
 
 export async function getCompanySettings() {
-  let settings = await db.companySettings.findUnique({
+  return db.companySettings.upsert({
     where: { id: SINGLETON_ID },
+    update: {},
+    create: { id: SINGLETON_ID },
   });
-  if (!settings) {
-    settings = await db.companySettings.create({
-      data: { id: SINGLETON_ID },
-    });
-  }
-  return settings;
 }
 
 export async function updateCompanySettings(data: {
