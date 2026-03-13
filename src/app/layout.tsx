@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Coastal HR - HR Management",
   description: "Internal HR management platform",
+  icons: {
+    icon: "/api/favicon",
+  },
 };
 
 export default function RootLayout({

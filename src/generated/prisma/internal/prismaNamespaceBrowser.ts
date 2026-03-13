@@ -83,6 +83,7 @@ export const ModelName = {
   AnonFeedback: 'AnonFeedback',
   PulseSurvey: 'PulseSurvey',
   PulseResponse: 'PulseResponse',
+  CompanySettings: 'CompanySettings',
   OAuthState: 'OAuthState'
 } as const
 
@@ -569,6 +570,20 @@ export const PulseResponseScalarFieldEnum = {
 } as const
 
 export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
+
+
+export const CompanySettingsScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  domain: 'domain',
+  industry: 'industry',
+  companySize: 'companySize',
+  logoUrl: 'logoUrl',
+  faviconUrl: 'faviconUrl',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
 
 
 export const OAuthStateScalarFieldEnum = {

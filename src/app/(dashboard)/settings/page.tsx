@@ -19,6 +19,7 @@ import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
 import { NativeIntegrations } from "@/components/settings/native-integrations";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
+import { getCompanySettings } from "@/lib/actions/company-settings";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -26,7 +27,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   await requireAdmin();
-  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms] = await Promise.all([
+  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms, companySettings] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -44,6 +45,7 @@ export default async function SettingsPage() {
     getTimeOffPolicies(),
     getAllPulseSurveys(),
     getRecruitmentPlatforms(),
+    getCompanySettings(),
   ]);
 
   const userList = users.map((u) => ({
@@ -66,7 +68,14 @@ export default async function SettingsPage() {
       <PageHeader title="Settings" description="Manage your company settings, users, and templates" />
 
       <div className="space-y-8">
-        <CompanyInfo />
+        <CompanyInfo settings={{
+          companyName: companySettings.companyName,
+          domain: companySettings.domain,
+          industry: companySettings.industry,
+          companySize: companySettings.companySize,
+          logoUrl: companySettings.logoUrl,
+          faviconUrl: companySettings.faviconUrl,
+        }} />
 
         <SettingsUserManagement users={userList} />
 

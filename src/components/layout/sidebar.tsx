@@ -48,7 +48,7 @@ const allNavLinks = [
   { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r) },
 ];
 
-export function Sidebar() {
+export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; companyName?: string }) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
@@ -75,12 +75,18 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex items-center gap-3 px-5 py-6">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 shadow-lg shadow-[var(--color-accent-glow)]">
-          <Users className="h-5 w-5 text-white" />
-        </div>
-        <span className="text-lg font-bold text-gradient">
-          Coastal HR
-        </span>
+        {logoUrl ? (
+          <img src={logoUrl} alt={companyName || "Logo"} className="h-10 w-auto max-w-[180px] object-contain" />
+        ) : (
+          <>
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 shadow-lg shadow-[var(--color-accent-glow)]">
+              <Users className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-lg font-bold text-gradient">
+              {companyName || "Coastal HR"}
+            </span>
+          </>
+        )}
       </div>
 
       {/* Navigation */}

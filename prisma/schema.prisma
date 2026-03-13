@@ -737,6 +737,17 @@ model PulseResponse {
 // OAuth State (CSRF)
 // ---------------------
 
+model CompanySettings {
+  id          String  @id @default("singleton")
+  companyName String  @default("Coastal HR")
+  domain      String  @default("")
+  industry    String  @default("")
+  companySize String  @default("")
+  logoUrl     String?
+  faviconUrl  String?
+  updatedAt   DateTime @updatedAt
+}
+
 model OAuthState {
   id          String   @id @default(uuid())
   state       String   @unique

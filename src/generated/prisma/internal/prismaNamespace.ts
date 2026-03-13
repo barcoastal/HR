@@ -416,6 +416,7 @@ export const ModelName = {
   AnonFeedback: 'AnonFeedback',
   PulseSurvey: 'PulseSurvey',
   PulseResponse: 'PulseResponse',
+  CompanySettings: 'CompanySettings',
   OAuthState: 'OAuthState'
 } as const
 
@@ -432,7 +433,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "oAuthState"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "oAuthState"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2804,6 +2805,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CompanySettings: {
+      payload: Prisma.$CompanySettingsPayload<ExtArgs>
+      fields: Prisma.CompanySettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CompanySettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CompanySettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.CompanySettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CompanySettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        findMany: {
+          args: Prisma.CompanySettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+        }
+        create: {
+          args: Prisma.CompanySettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        createMany: {
+          args: Prisma.CompanySettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CompanySettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.CompanySettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        update: {
+          args: Prisma.CompanySettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.CompanySettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CompanySettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CompanySettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.CompanySettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CompanySettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.CompanySettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCompanySettings>
+        }
+        groupBy: {
+          args: Prisma.CompanySettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanySettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CompanySettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CompanySettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     OAuthState: {
       payload: Prisma.$OAuthStatePayload<ExtArgs>
       fields: Prisma.OAuthStateFieldRefs
@@ -3386,6 +3461,20 @@ export const PulseResponseScalarFieldEnum = {
 export type PulseResponseScalarFieldEnum = (typeof PulseResponseScalarFieldEnum)[keyof typeof PulseResponseScalarFieldEnum]
 
 
+export const CompanySettingsScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  domain: 'domain',
+  industry: 'industry',
+  companySize: 'companySize',
+  logoUrl: 'logoUrl',
+  faviconUrl: 'faviconUrl',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
+
+
 export const OAuthStateScalarFieldEnum = {
   id: 'id',
   state: 'state',
@@ -3885,6 +3974,7 @@ export type GlobalOmitConfig = {
   anonFeedback?: Prisma.AnonFeedbackOmit
   pulseSurvey?: Prisma.PulseSurveyOmit
   pulseResponse?: Prisma.PulseResponseOmit
+  companySettings?: Prisma.CompanySettingsOmit
   oAuthState?: Prisma.OAuthStateOmit
 }
 
