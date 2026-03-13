@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import type { UserRole } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function getUsers() {
   return db.user.findMany({
@@ -28,6 +29,14 @@ export async function inviteUser(data: {
     },
   });
   revalidatePath("/settings");
+
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  await sendWelcomeEmail({
+    to: data.email,
+    role: data.role,
+    loginUrl: `${baseUrl}/login`,
+  });
+
   return user;
 }
 

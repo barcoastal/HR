@@ -122,6 +122,47 @@ export async function sendTaskAssignmentEmail({
   }
 }
 
+export async function sendWelcomeEmail({
+  to,
+  role,
+  loginUrl,
+}: {
+  to: string;
+  role: string;
+  loginUrl: string;
+}) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("RESEND_API_KEY not set, skipping welcome email");
+    return;
+  }
+
+  try {
+    const { Resend } = await import("resend");
+    const r = new Resend(apiKey);
+    await r.emails.send({
+      from: "onboarding@resend.dev",
+      to,
+      subject: "Welcome to Coastal HR",
+      html: `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px">
+          <h2 style="color:#1a1a2e;margin-bottom:16px">Welcome to Coastal HR!</h2>
+          <p>You've been invited to join the Coastal HR platform as <strong>${role}</strong>.</p>
+          <p>Sign in with your Google account to get started:</p>
+          <p style="margin:24px 0">
+            <a href="${loginUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">
+              Sign In to Coastal HR
+            </a>
+          </p>
+          <p style="color:#666;font-size:14px">If you have any questions, reach out to your HR administrator.</p>
+        </div>
+      `,
+    });
+  } catch (error) {
+    console.error("Failed to send welcome email:", error);
+  }
+}
+
 export async function sendSigningConfirmationEmail({
   to,
   firstName,
