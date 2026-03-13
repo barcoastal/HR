@@ -91,6 +91,11 @@ enum DocumentCategory {
   GENERAL
 }
 
+enum DocumentVisibility {
+  EVERYONE
+  HR_ONLY
+}
+
 enum CandidateStatus {
   NEW
   SCREENING
@@ -219,6 +224,8 @@ model Employee {
   mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
   assignedTasks      EmployeeTask[]    @relation("TaskAssignee")
   signingRequests    SigningRequest[]
+  hrNotes            HRNote[]
+  authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
 
   @@index([departmentId])
   @@index([teamId])
@@ -428,16 +435,32 @@ model Notification {
 }
 
 model Document {
-  id         String           @id @default(uuid())
+  id         String             @id @default(uuid())
   employeeId String
   name       String
   url        String
   category   DocumentCategory
-  uploadedAt DateTime         @default(now())
+  visibility DocumentVisibility @default(EVERYONE)
+  uploadedAt DateTime           @default(now())
 
-  employee   Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employee   Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+}
+
+model HRNote {
+  id         String   @id @default(uuid())
+  employeeId String
+  authorId   String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  author     Employee @relation("HRNoteAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([authorId])
 }
 
 model JobTitle {
@@ -738,14 +761,16 @@ model PulseResponse {
 // ---------------------
 
 model CompanySettings {
-  id          String  @id @default("singleton")
-  companyName String  @default("Coastal HR")
-  domain      String  @default("")
-  industry    String  @default("")
-  companySize String  @default("")
-  logoUrl     String?
-  faviconUrl  String?
-  updatedAt   DateTime @updatedAt
+  id            String  @id @default("singleton")
+  companyName   String  @default("Coastal HR")
+  domain        String  @default("")
+  industry      String  @default("")
+  companySize   String  @default("")
+  logoUrl       String?
+  faviconUrl    String?
+  senderEmail   String  @default("onboarding@resend.dev")
+  senderName    String  @default("Coastal HR")
+  updatedAt     DateTime @updatedAt
 }
 
 model EmailTemplate {
