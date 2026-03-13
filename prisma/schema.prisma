@@ -748,6 +748,14 @@ model CompanySettings {
   updatedAt   DateTime @updatedAt
 }
 
+model EmailTemplate {
+  id        String   @id @default(uuid())
+  type      String   @unique // WELCOME, SIGNING_REQUEST, TASK_ASSIGNMENT, SIGNING_CONFIRMATION, ONBOARDING
+  subject   String
+  body      String   // HTML with {{variable}} placeholders
+  updatedAt DateTime @updatedAt
+}
+
 model OAuthState {
   id          String   @id @default(uuid())
   state       String   @unique

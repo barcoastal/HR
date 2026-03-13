@@ -183,6 +183,11 @@ export type PulseResponse = Prisma.PulseResponseModel
  */
 export type CompanySettings = Prisma.CompanySettingsModel
 /**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = Prisma.EmailTemplateModel
+/**
  * Model OAuthState
  * 
  */

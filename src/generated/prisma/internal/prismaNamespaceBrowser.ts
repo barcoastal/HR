@@ -84,6 +84,7 @@ export const ModelName = {
   PulseSurvey: 'PulseSurvey',
   PulseResponse: 'PulseResponse',
   CompanySettings: 'CompanySettings',
+  EmailTemplate: 'EmailTemplate',
   OAuthState: 'OAuthState'
 } as const
 
@@ -584,6 +585,17 @@ export const CompanySettingsScalarFieldEnum = {
 } as const
 
 export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
+
+
+export const EmailTemplateScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  subject: 'subject',
+  body: 'body',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
 
 
 export const OAuthStateScalarFieldEnum = {

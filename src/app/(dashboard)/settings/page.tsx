@@ -20,6 +20,8 @@ import { PlatformIntegrationManager } from "@/components/settings/platform-integ
 import { NativeIntegrations } from "@/components/settings/native-integrations";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { getCompanySettings } from "@/lib/actions/company-settings";
+import { getEmailTemplates } from "@/lib/actions/email-templates";
+import { EmailTemplateManager } from "@/components/settings/email-template-manager";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -27,7 +29,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   await requireAdmin();
-  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms, companySettings] = await Promise.all([
+  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -46,6 +48,7 @@ export default async function SettingsPage() {
     getAllPulseSurveys(),
     getRecruitmentPlatforms(),
     getCompanySettings(),
+    getEmailTemplates(),
   ]);
 
   const userList = users.map((u) => ({
@@ -132,6 +135,8 @@ export default async function SettingsPage() {
             documentName: p.documentName,
           }))}
         />
+
+        <EmailTemplateManager templates={emailTemplates} />
 
         <PulseSurveyManager
           surveys={pulseSurveys.map((s) => ({
