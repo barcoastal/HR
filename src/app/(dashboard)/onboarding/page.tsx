@@ -13,7 +13,13 @@ export default async function OnboardingPage() {
     where: { status: "ONBOARDING" },
     include: {
       department: true,
-      employeeTasks: { include: { checklistItem: { include: { checklist: true } } } },
+      employeeTasks: {
+        include: {
+          checklistItem: { include: { checklist: true } },
+          signingRequest: true,
+          assignee: true,
+        },
+      },
     },
     orderBy: { startDate: "desc" },
   });
@@ -32,7 +38,11 @@ export default async function OnboardingPage() {
     include: {
       department: true,
       employeeTasks: {
-        include: { checklistItem: { include: { checklist: true } } },
+        include: {
+          checklistItem: { include: { checklist: true } },
+          signingRequest: true,
+          assignee: true,
+        },
       },
     },
     orderBy: { startDate: "desc" },
@@ -40,7 +50,7 @@ export default async function OnboardingPage() {
   });
 
   const completedEmployees = recentlyCompleted.filter((emp) => {
-    const tasks = emp.employeeTasks.filter((t) => t.checklistItem.checklist?.type === "ONBOARDING");
+    const tasks = emp.employeeTasks.filter((t) => t.checklistItem?.checklist?.type === "ONBOARDING");
     return tasks.length > 0 && tasks.every((t) => t.status === "DONE");
   });
 
@@ -59,7 +69,7 @@ export default async function OnboardingPage() {
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>
       <div className="space-y-3">
         {onboardingEmployees.map((emp) => {
-          const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId));
+          const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
           const availableItems = allOnboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
             .map((item) => ({
@@ -82,11 +92,15 @@ export default async function OnboardingPage() {
               }}
               tasks={emp.employeeTasks.map((t) => ({
                 id: t.id,
-                title: t.checklistItem.title,
-                description: t.checklistItem.description,
+                title: t.title || t.checklistItem?.title || "Untitled",
+                description: t.description || t.checklistItem?.description || null,
                 status: t.status as "PENDING" | "DONE",
                 completedAt: t.completedAt?.toISOString() || null,
-                dueDay: t.checklistItem.dueDay,
+                dueDay: t.checklistItem?.dueDay || null,
+                documentAction: t.documentAction || null,
+                documentName: t.documentName || null,
+                assigneeName: t.assignee ? `${t.assignee.firstName} ${t.assignee.lastName}` : null,
+                signingStatus: t.signingRequest?.status || null,
               }))}
               availableItems={availableItems}
               type="ONBOARDING"

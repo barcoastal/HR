@@ -12,6 +12,9 @@ import {
   UserCircle,
   ChevronDown,
   ChevronRight,
+  FileText,
+  Send,
+  PenLine,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +33,10 @@ type TaskItem = {
   status: "PENDING" | "DONE";
   completedAt: string | null;
   dueDay: number | null;
+  documentAction?: string | null;
+  documentName?: string | null;
+  assigneeName?: string | null;
+  signingStatus?: string | null; // PENDING | VIEWED | SIGNED
 };
 
 type AvailableChecklistItem = {
@@ -388,6 +395,30 @@ export function OnboardingTimeline({
                                             Completed {new Date(task.completedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                                           </p>
                                         )}
+                                        {/* Document status indicators */}
+                                        <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                          {task.documentAction === "SEND" && (
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-500">
+                                              <Send className="h-3 w-3" />Sent
+                                            </span>
+                                          )}
+                                          {task.documentAction === "SIGN" && (
+                                            <span className={cn(
+                                              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                                              task.signingStatus === "SIGNED" ? "bg-emerald-500/10 text-emerald-500" :
+                                              task.signingStatus === "VIEWED" ? "bg-blue-500/10 text-blue-500" :
+                                              "bg-amber-500/10 text-amber-500"
+                                            )}>
+                                              <PenLine className="h-3 w-3" />
+                                              {task.signingStatus === "SIGNED" ? "Signed" : task.signingStatus === "VIEWED" ? "Viewed" : "Pending Signature"}
+                                            </span>
+                                          )}
+                                          {task.assigneeName && (
+                                            <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                                              <UserCircle className="h-3 w-3" />Assigned to: {task.assigneeName}
+                                            </span>
+                                          )}
+                                        </div>
                                       </div>
                                     </motion.button>
                                   );
