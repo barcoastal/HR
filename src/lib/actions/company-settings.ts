@@ -22,6 +22,8 @@ export async function getCompanySettings() {
       companySize: "",
       logoUrl: null,
       faviconUrl: null,
+      senderEmail: "onboarding@resend.dev",
+      senderName: "Coastal HR",
       updatedAt: new Date(),
     };
   }
@@ -34,6 +36,8 @@ export async function updateCompanySettings(data: {
   companySize?: string;
   logoUrl?: string | null;
   faviconUrl?: string | null;
+  senderEmail?: string;
+  senderName?: string;
 }) {
   const settings = await db.companySettings.upsert({
     where: { id: SINGLETON_ID },

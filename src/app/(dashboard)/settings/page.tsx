@@ -78,6 +78,8 @@ export default async function SettingsPage() {
           companySize: companySettings.companySize,
           logoUrl: companySettings.logoUrl,
           faviconUrl: companySettings.faviconUrl,
+          senderEmail: companySettings.senderEmail,
+          senderName: companySettings.senderName,
         }} />
 
         <SettingsUserManagement users={userList} />
