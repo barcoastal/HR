@@ -28,7 +28,7 @@ import { PageHeader } from "@/components/ui/page-header";
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
-  await requireAdmin();
+  const session = await requireAdmin();
   const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates] = await Promise.all([
     getUsers(),
     getDepartments(),
@@ -136,7 +136,7 @@ export default async function SettingsPage() {
           }))}
         />
 
-        <EmailTemplateManager templates={emailTemplates} />
+        <EmailTemplateManager templates={emailTemplates} userEmail={session.user.email || ""} />
 
         <PulseSurveyManager
           surveys={pulseSurveys.map((s) => ({

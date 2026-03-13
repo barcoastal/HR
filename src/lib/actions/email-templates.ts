@@ -49,6 +49,11 @@ export async function resetEmailTemplate(type: string) {
   revalidatePath("/settings");
 }
 
+export async function sendTestEmailAction(to: string, type: string, subject: string, body: string) {
+  const { sendTestEmail } = await import("@/lib/email");
+  return sendTestEmail(to, type, subject, body);
+}
+
 export async function getEmailTemplate(type: EmailTemplateType) {
   const template = await db.emailTemplate.findUnique({
     where: { type },

@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Mail, ChevronDown, ChevronUp, Save, Check, RotateCcw, Eye, Code, Copy } from "lucide-react";
+import { Mail, ChevronDown, ChevronUp, Save, Check, RotateCcw, Eye, Code, Copy, Send, AlertCircle } from "lucide-react";
 import { useState } from "react";
-import { upsertEmailTemplate, resetEmailTemplate } from "@/lib/actions/email-templates";
+import { upsertEmailTemplate, resetEmailTemplate, sendTestEmailAction } from "@/lib/actions/email-templates";
 import { useRouter } from "next/navigation";
 
 type TemplateData = {
@@ -16,13 +16,15 @@ type TemplateData = {
   id: string | null;
 };
 
-function TemplateEditor({ template }: { template: TemplateData }) {
+function TemplateEditor({ template, userEmail }: { template: TemplateData; userEmail: string }) {
   const [subject, setSubject] = useState(template.subject);
   const [body, setBody] = useState(template.body);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
+  const [testResult, setTestResult] = useState<{ success: boolean; error?: string } | null>(null);
   const router = useRouter();
 
   const hasChanges = subject !== template.subject || body !== template.body;
@@ -42,8 +44,19 @@ function TemplateEditor({ template }: { template: TemplateData }) {
     router.refresh();
   }
 
+  async function handleSendTest() {
+    setSendingTest(true);
+    setTestResult(null);
+    const result = await sendTestEmailAction(userEmail, template.type, subject, body);
+    setTestResult(result);
+    setSendingTest(false);
+    setTimeout(() => setTestResult(null), 5000);
+  }
+
   function getPreviewHtml() {
     const sampleVars: Record<string, string> = {
+      companyName: "Coastal HR",
+      logoUrl: "",
       firstName: "John",
       role: "Employee",
       loginUrl: "https://hr.example.com/login",
@@ -62,7 +75,6 @@ function TemplateEditor({ template }: { template: TemplateData }) {
     for (const [key, value] of Object.entries(sampleVars)) {
       html = html.replace(new RegExp(`\\{\\{${key}\\}\\}`, "g"), value);
     }
-    // Remove mustache-style conditionals for preview
     html = html.replace(/\{\{#\w+\}\}/g, "").replace(/\{\{\/\w+\}\}/g, "");
     return html;
   }
@@ -190,20 +202,52 @@ function TemplateEditor({ template }: { template: TemplateData }) {
             )}
           </div>
 
+          {/* Test result */}
+          {testResult && (
+            <div className={cn(
+              "flex items-center gap-2 p-3 rounded-lg text-sm",
+              testResult.success
+                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                : "bg-red-500/10 text-red-600 dark:text-red-400"
+            )}>
+              {testResult.success ? (
+                <><Check className="h-4 w-4 shrink-0" />Test email sent to {userEmail}</>
+              ) : (
+                <><AlertCircle className="h-4 w-4 shrink-0" />{testResult.error}</>
+              )}
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex items-center justify-between pt-2">
-            <button
-              onClick={handleReset}
-              disabled={!template.isCustomized && !hasChanges}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
-                "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
-                "hover:bg-[var(--color-surface-hover)] transition-colors",
-                "disabled:opacity-40 disabled:cursor-not-allowed"
-              )}
-            >
-              <RotateCcw className="h-3.5 w-3.5" />Reset to Default
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleReset}
+                disabled={!template.isCustomized && !hasChanges}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
+                  "hover:bg-[var(--color-surface-hover)] transition-colors",
+                  "disabled:opacity-40 disabled:cursor-not-allowed"
+                )}
+              >
+                <RotateCcw className="h-3.5 w-3.5" />Reset
+              </button>
+              <button
+                onClick={handleSendTest}
+                disabled={sendingTest}
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+                  "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
+                  "border border-[var(--color-border)]",
+                  "hover:bg-[var(--color-surface-hover)] transition-colors",
+                  "disabled:opacity-50"
+                )}
+              >
+                <Send className="h-3.5 w-3.5" />
+                {sendingTest ? "Sending..." : "Send Test Email"}
+              </button>
+            </div>
             <button
               onClick={handleSave}
               disabled={!hasChanges || saving}
@@ -229,7 +273,7 @@ function TemplateEditor({ template }: { template: TemplateData }) {
   );
 }
 
-export function EmailTemplateManager({ templates }: { templates: TemplateData[] }) {
+export function EmailTemplateManager({ templates, userEmail }: { templates: TemplateData[]; userEmail: string }) {
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-2">
@@ -237,12 +281,12 @@ export function EmailTemplateManager({ templates }: { templates: TemplateData[] 
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Email Templates</h2>
       </div>
       <p className="text-xs text-[var(--color-text-muted)] mb-4">
-        Customize the emails sent by the system. Use {"{{variable}}"} placeholders for dynamic content.
+        Customize the emails sent by the system. Use {"{{variable}}"} placeholders for dynamic content. Test emails are sent to {userEmail}.
       </p>
 
       <div className="space-y-2">
         {templates.map((t) => (
-          <TemplateEditor key={t.type} template={t} />
+          <TemplateEditor key={t.type} template={t} userEmail={userEmail} />
         ))}
       </div>
     </section>
