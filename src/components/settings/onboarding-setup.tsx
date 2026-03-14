@@ -18,6 +18,7 @@ import {
   Send,
   ShieldCheck,
   Briefcase,
+  Eye,
 } from "lucide-react";
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -581,17 +582,28 @@ export function OnboardingSetup({
                           )}
                         </div>
                       </div>
-                      <button
-                        onClick={() => handleDeleteItem(item.id)}
-                        disabled={deletingItemId === item.id}
-                        className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors shrink-0"
-                      >
-                        {deletingItemId === item.id ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        ) : (
-                          <Trash2 className="h-3.5 w-3.5" />
+                      <div className="flex items-center gap-1 shrink-0">
+                        {item.documentUrl && item.documentAction !== "NONE" && (
+                          <button
+                            onClick={() => window.open(item.documentUrl!, "_blank")}
+                            className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-accent)]/15 hover:text-[var(--color-accent)] transition-colors"
+                            title={`Preview ${item.documentAction === "SIGN" ? "signing" : "send"} document`}
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
                         )}
-                      </button>
+                        <button
+                          onClick={() => handleDeleteItem(item.id)}
+                          disabled={deletingItemId === item.id}
+                          className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
+                        >
+                          {deletingItemId === item.id ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
@@ -911,17 +923,28 @@ export function OnboardingSetup({
                                   </span>
                                 </div>
                               </div>
-                              <button
-                                onClick={() => handleDeleteItem(item.id)}
-                                disabled={deletingItemId === item.id}
-                                className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 transition-colors shrink-0"
-                              >
-                                {deletingItemId === item.id ? (
-                                  <Loader2 className="h-3 w-3 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-3 w-3" />
+                              <div className="flex items-center gap-1 shrink-0">
+                                {item.documentUrl && item.documentAction !== "NONE" && (
+                                  <button
+                                    onClick={() => window.open(item.documentUrl!, "_blank")}
+                                    className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
+                                    title={`Preview ${item.documentAction === "SIGN" ? "signing" : "send"} document`}
+                                  >
+                                    <Eye className="h-3 w-3" />
+                                  </button>
                                 )}
-                              </button>
+                                <button
+                                  onClick={() => handleDeleteItem(item.id)}
+                                  disabled={deletingItemId === item.id}
+                                  className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
+                                >
+                                  {deletingItemId === item.id ? (
+                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="h-3 w-3" />
+                                  )}
+                                </button>
+                              </div>
                             </div>
                           ))}
                         </div>
