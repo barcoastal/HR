@@ -11,7 +11,7 @@ type SigningData = {
   status: string;
 };
 
-export function SigningPage({ token, data }: { token: string; data: SigningData }) {
+export function SigningPage({ token, data, testMode }: { token: string; data: SigningData; testMode?: boolean }) {
   const [mode, setMode] = useState<"view" | "sign" | "done">("view");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -63,6 +63,15 @@ export function SigningPage({ token, data }: { token: string; data: SigningData 
     setSubmitting(true);
     setError(null);
 
+    if (testMode) {
+      // In test mode, just show success without actually signing
+      setTimeout(() => {
+        setSubmitting(false);
+        setMode("done");
+      }, 1000);
+      return;
+    }
+
     try {
       const signatureBase64 = canvas.toDataURL("image/png");
       const res = await fetch(`/api/sign/${token}`, {
@@ -86,12 +95,30 @@ export function SigningPage({ token, data }: { token: string; data: SigningData 
   if (mode === "done") {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        {testMode && (
+          <div className="fixed top-0 left-0 right-0 bg-amber-50 border-b border-amber-200 px-6 py-2 text-center">
+            <span className="text-sm font-medium text-amber-800">Test Mode — No documents were actually signed.</span>
+          </div>
+        )}
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
           <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="h-8 w-8 text-emerald-600" />
           </div>
-          <h1 className="text-xl font-bold text-gray-900 mb-2">Document Signed</h1>
-          <p className="text-gray-600">Thanks for signing <strong>{data.documentName}</strong>. A copy has been saved to your file.</p>
+          <h1 className="text-xl font-bold text-gray-900 mb-2">{testMode ? "Test Complete" : "Document Signed"}</h1>
+          <p className="text-gray-600">
+            {testMode
+              ? <>This is what employees see after signing <strong>{data.documentName}</strong>.</>
+              : <>Thanks for signing <strong>{data.documentName}</strong>. A copy has been saved to your file.</>
+            }
+          </p>
+          {testMode && (
+            <button
+              onClick={() => window.close()}
+              className="mt-4 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              Close Preview
+            </button>
+          )}
         </div>
       </div>
     );
@@ -99,6 +126,11 @@ export function SigningPage({ token, data }: { token: string; data: SigningData 
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {testMode && (
+        <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 text-center">
+          <span className="text-sm font-medium text-amber-800">Test Mode — This is a preview of what employees will see. No documents will be signed.</span>
+        </div>
+      )}
       <header className="bg-white border-b px-6 py-4">
         <h1 className="text-lg font-semibold text-gray-900">Document Signing</h1>
         <p className="text-sm text-gray-500">Hi {data.employeeName}, please review and sign the document below.</p>

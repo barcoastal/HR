@@ -585,9 +585,15 @@ export function OnboardingSetup({
                       <div className="flex items-center gap-1 shrink-0">
                         {item.documentUrl && item.documentAction !== "NONE" && (
                           <button
-                            onClick={() => window.open(item.documentUrl!, "_blank")}
+                            onClick={() => {
+                              if (item.documentAction === "SIGN") {
+                                window.open(`/sign/test?doc=${encodeURIComponent(item.documentUrl!)}&name=${encodeURIComponent(item.documentName || "Document")}`, "_blank");
+                              } else {
+                                window.open(item.documentUrl!, "_blank");
+                              }
+                            }}
                             className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-accent)]/15 hover:text-[var(--color-accent)] transition-colors"
-                            title={`Preview ${item.documentAction === "SIGN" ? "signing" : "send"} document`}
+                            title={item.documentAction === "SIGN" ? "Test signing flow" : "Preview document"}
                           >
                             <Eye className="h-3.5 w-3.5" />
                           </button>
@@ -926,9 +932,15 @@ export function OnboardingSetup({
                               <div className="flex items-center gap-1 shrink-0">
                                 {item.documentUrl && item.documentAction !== "NONE" && (
                                   <button
-                                    onClick={() => window.open(item.documentUrl!, "_blank")}
+                                    onClick={() => {
+                                      if (item.documentAction === "SIGN") {
+                                        window.open(`/sign/test?doc=${encodeURIComponent(item.documentUrl!)}&name=${encodeURIComponent(item.documentName || "Document")}`, "_blank");
+                                      } else {
+                                        window.open(item.documentUrl!, "_blank");
+                                      }
+                                    }}
                                     className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
-                                    title={`Preview ${item.documentAction === "SIGN" ? "signing" : "send"} document`}
+                                    title={item.documentAction === "SIGN" ? "Test signing flow" : "Preview document"}
                                   >
                                     <Eye className="h-3 w-3" />
                                   </button>
