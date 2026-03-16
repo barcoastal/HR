@@ -97,6 +97,8 @@ export function CandidateDetailDialog({
     positionId: "",
     costOfHire: "",
     status: "NEW" as CandidateStatus,
+    companyEmail: "",
+    startDate: "",
   });
   const router = useRouter();
 
@@ -135,6 +137,8 @@ export function CandidateDetailDialog({
         positionId: candidate.positionId || "",
         costOfHire: candidate.costOfHire?.toString() || "",
         status: candidate.status,
+        companyEmail: "",
+        startDate: new Date().toISOString().split("T")[0],
       });
       setHireResult(null);
     }
@@ -164,7 +168,10 @@ export function CandidateDetailDialog({
           positionId: form.positionId || undefined,
           costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
         });
-        const result = await hireCandidateAndStartOnboarding(candidate.id);
+        const result = await hireCandidateAndStartOnboarding(candidate.id, {
+          companyEmail: form.companyEmail || undefined,
+          startDate: form.startDate || undefined,
+        });
         setHireResult({
           employeeId: result.employee.id,
           name: `${form.firstName} ${form.lastName}`,
@@ -237,16 +244,16 @@ export function CandidateDetailDialog({
           </div>
           <div className="flex gap-2 mt-2">
             <Link
-              href="/onboarding"
+              href={`/people/${hireResult.employeeId}`}
               className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]")}
             >
-              View Onboarding
+              Complete Employee Profile
             </Link>
             <Link
-              href={`/people/${hireResult.employeeId}`}
+              href="/onboarding"
               className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             >
-              View Employee
+              View Onboarding
             </Link>
           </div>
         </div>
@@ -273,6 +280,41 @@ export function CandidateDetailDialog({
                 ))}
               </div>
             </div>
+
+            {/* Hire fields - shown when switching to HIRED */}
+            {form.status === "HIRED" && candidate.status !== "HIRED" && (
+              <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-3 space-y-3">
+                <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Hiring Details</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                      Company Email
+                    </label>
+                    <input
+                      value={form.companyEmail}
+                      onChange={(e) => update("companyEmail", e.target.value)}
+                      type="email"
+                      placeholder={`${form.firstName.toLowerCase()}.${form.lastName.toLowerCase()}@coastaldebt.com`}
+                      className={inputClass}
+                    />
+                    <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
+                      Used for system login & internal comms
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                      Start Date
+                    </label>
+                    <input
+                      value={form.startDate}
+                      onChange={(e) => update("startDate", e.target.value)}
+                      type="date"
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Schedule Interview */}
             {(form.status === "SCREENING" || form.status === "INTERVIEW") && (

@@ -256,7 +256,10 @@ export async function updateCandidateNotes(id: string, notes: string) {
   return candidate;
 }
 
-export async function hireCandidateAndStartOnboarding(candidateId: string) {
+export async function hireCandidateAndStartOnboarding(
+  candidateId: string,
+  options?: { companyEmail?: string; startDate?: string }
+) {
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: { include: { department: true } } },
@@ -281,28 +284,32 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
     .filter(Boolean)
     .join("\n");
 
+  // Use company email if provided, otherwise fall back to candidate's personal email
+  const employeeEmail = options?.companyEmail?.trim() || candidate.email;
+  const startDate = options?.startDate ? new Date(options.startDate) : new Date();
+
   const employee = await db.employee.create({
     data: {
       firstName: candidate.firstName,
       lastName: candidate.lastName,
-      email: candidate.email,
+      email: employeeEmail,
       phone: candidate.phone,
       jobTitle: candidate.position?.title || "New Hire",
       departmentId: candidate.position?.departmentId || null,
-      startDate: new Date(),
-      anniversaryDate: new Date(),
+      startDate,
+      anniversaryDate: startDate,
       bio: bio || null,
       status: "ONBOARDING",
     },
   });
 
-  // Create user account and send welcome email
+  // Create user account with company email and send welcome email
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const existingUser = await db.user.findUnique({ where: { email: candidate.email } });
+  const existingUser = await db.user.findUnique({ where: { email: employeeEmail } });
   if (!existingUser) {
     await db.user.create({
       data: {
-        email: candidate.email,
+        email: employeeEmail,
         role: "EMPLOYEE",
         employeeId: employee.id,
       },
@@ -315,7 +322,7 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
   }
 
   sendWelcomeEmail({
-    to: candidate.email,
+    to: employeeEmail,
     role: "Employee",
     loginUrl: `${baseUrl}/login`,
   });
@@ -344,10 +351,10 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
       },
     });
 
-    // Handle document actions
+    // Handle document actions — send to company email
     if (task.documentAction === "SEND" && task.sendEmail && task.emailSubject && task.emailBody) {
       sendOnboardingEmail({
-        to: candidate.email,
+        to: employeeEmail,
         subject: task.emailSubject,
         body: task.emailBody,
         documentUrl: task.documentUrl,
@@ -361,14 +368,14 @@ export async function hireCandidateAndStartOnboarding(candidateId: string) {
         task.documentName
       );
       sendSigningRequestEmail({
-        to: candidate.email,
+        to: employeeEmail,
         firstName: candidate.firstName,
         documentName: task.documentName,
         signingUrl: `${baseUrl}/sign/${signingReq.token}`,
       });
     } else if (task.sendEmail && task.emailSubject && task.emailBody) {
       sendOnboardingEmail({
-        to: candidate.email,
+        to: employeeEmail,
         subject: task.emailSubject,
         body: task.emailBody,
       });

@@ -72,7 +72,7 @@ function wrapHtml(content: string, companyName: string, logoUrl: string | null):
 </div>`;
 }
 
-async function sendEmail(to: string, subject: string, html: string) {
+export async function sendEmail(to: string, subject: string, html: string) {
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
     return;

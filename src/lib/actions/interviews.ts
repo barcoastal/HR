@@ -68,6 +68,41 @@ export async function scheduleInterview(data: {
     },
   });
 
+  // Send interview confirmation email to candidate
+  try {
+    const { sendEmail } = await import("@/lib/email");
+    const scheduledDate = new Date(data.scheduledAt);
+    const dateStr = scheduledDate.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+    const timeStr = scheduledDate.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    const positionTitle = candidate.position?.title ?? "Open Position";
+    const meetLinkHtml = googleMeetLink
+      ? `<p style="margin-top:16px"><a href="${googleMeetLink}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
+      : "";
+
+    await sendEmail(candidate.email, `Interview Scheduled: ${typeLabels[data.type]}`, `
+      <p>Hi ${candidate.firstName},</p>
+      <p>Your <strong>${typeLabels[data.type]}</strong> for the <strong>${positionTitle}</strong> position has been scheduled.</p>
+      <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
+        <p style="margin:0"><strong>Date:</strong> ${dateStr}</p>
+        <p style="margin:4px 0 0"><strong>Time:</strong> ${timeStr}</p>
+        <p style="margin:4px 0 0"><strong>Duration:</strong> ${data.duration} minutes</p>
+      </div>
+      ${meetLinkHtml}
+      ${data.notes ? `<p style="margin-top:12px;color:#666"><em>Notes: ${data.notes}</em></p>` : ""}
+      <p style="margin-top:16px">We look forward to speaking with you!</p>
+    `);
+  } catch (e) {
+    console.error("[interview] Failed to send confirmation email:", e);
+  }
+
   revalidatePath("/cv");
   revalidatePath("/calendar");
 
