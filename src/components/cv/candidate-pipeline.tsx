@@ -1,12 +1,12 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { updateCandidateStatus, hireCandidateAndStartOnboarding } from "@/lib/actions/candidates";
+import { updateCandidateStatus, hireCandidateAndStartOnboarding, deleteCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
-import { Mail, Phone, Linkedin, Briefcase, FileText, Download } from "lucide-react";
+import { Mail, Phone, Linkedin, Briefcase, FileText, Download, Trash2 } from "lucide-react";
 
 type CandidateItem = {
   id: string;
@@ -187,11 +187,25 @@ export function CandidatePipeline({ candidates, positions, employees }: { candid
                         </p>
                       )}
                       <div className="flex items-center justify-between">
-                        {candidate.source && (
-                          <span className="text-[10px] text-[var(--color-text-muted)]">
-                            via {candidate.source}
-                          </span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {candidate.source && (
+                            <span className="text-[10px] text-[var(--color-text-muted)]">
+                              via {candidate.source}
+                            </span>
+                          )}
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              if (!confirm(`Delete ${candidate.firstName} ${candidate.lastName}?`)) return;
+                              await deleteCandidate(candidate.id);
+                              router.refresh();
+                            }}
+                            className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                            title="Delete candidate"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                         {nextStatus && (
                           <button
                             onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextStatus); }}

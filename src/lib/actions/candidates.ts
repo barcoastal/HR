@@ -484,6 +484,12 @@ export async function getAllCandidatesForDatabase() {
   });
 }
 
+export async function deleteCandidate(id: string) {
+  await db.interview.deleteMany({ where: { candidateId: id } });
+  await db.candidate.delete({ where: { id } });
+  revalidatePath("/cv");
+}
+
 export async function pullCandidateToRecruitment(
   candidateId: string,
   positionId?: string
