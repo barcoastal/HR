@@ -2,6 +2,9 @@
 
 import { db } from "@/lib/db";
 
+// Only count employees with user accounts
+const hasUser = { user: { isNot: null } } as const;
+
 export async function getHeadcountStats() {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -9,18 +12,18 @@ export async function getHeadcountStats() {
 
   const [total, active, onboarding, offboarded, newThisMonth, newThisQuarter, departedThisMonth] =
     await Promise.all([
-      db.employee.count(),
-      db.employee.count({ where: { status: "ACTIVE" } }),
-      db.employee.count({ where: { status: "ONBOARDING" } }),
-      db.employee.count({ where: { status: "OFFBOARDED" } }),
+      db.employee.count({ where: { ...hasUser } }),
+      db.employee.count({ where: { status: "ACTIVE", ...hasUser } }),
+      db.employee.count({ where: { status: "ONBOARDING", ...hasUser } }),
+      db.employee.count({ where: { status: "OFFBOARDED", ...hasUser } }),
       db.employee.count({
-        where: { startDate: { gte: startOfMonth }, status: { not: "OFFBOARDED" } },
+        where: { startDate: { gte: startOfMonth }, status: { not: "OFFBOARDED" }, ...hasUser },
       }),
       db.employee.count({
-        where: { startDate: { gte: startOfQuarter }, status: { not: "OFFBOARDED" } },
+        where: { startDate: { gte: startOfQuarter }, status: { not: "OFFBOARDED" }, ...hasUser },
       }),
       db.employee.count({
-        where: { status: "OFFBOARDED", endDate: { gte: startOfMonth } },
+        where: { status: "OFFBOARDED", endDate: { gte: startOfMonth }, ...hasUser },
       }),
     ]);
 
@@ -39,22 +42,20 @@ export async function getHeadcountStats() {
 export async function getDepartmentBreakdown() {
   const departments = await db.department.findMany({
     include: {
-      _count: {
-        select: { employees: true },
-      },
+      employees: { where: { status: { not: "OFFBOARDED" }, ...hasUser }, select: { id: true } },
     },
     orderBy: { name: "asc" },
   });
 
   return departments.map((d) => ({
     name: d.name,
-    count: d._count.employees,
+    count: d.employees.length,
   }));
 }
 
 export async function getTenureDistribution() {
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
+    where: { status: "ACTIVE", ...hasUser },
     select: { startDate: true },
   });
 
@@ -76,7 +77,7 @@ export async function getTenureDistribution() {
 
 export async function getOnboardingMetrics() {
   const onboardingEmployees = await db.employee.findMany({
-    where: { status: "ONBOARDING" },
+    where: { status: "ONBOARDING", ...hasUser },
     include: {
       employeeTasks: true,
     },
@@ -183,8 +184,8 @@ export async function getTimeToHire() {
 }
 
 export async function getRetentionRate() {
-  const totalEver = await db.employee.count();
-  const departed = await db.employee.count({ where: { status: "OFFBOARDED" } });
+  const totalEver = await db.employee.count({ where: { ...hasUser } });
+  const departed = await db.employee.count({ where: { status: "OFFBOARDED", ...hasUser } });
   const current = totalEver - departed;
 
   return {
@@ -206,10 +207,10 @@ export async function getTurnoverByMonth() {
 
     const [departures, hires] = await Promise.all([
       db.employee.count({
-        where: { status: "OFFBOARDED", endDate: { gte: start, lt: end } },
+        where: { status: "OFFBOARDED", endDate: { gte: start, lt: end }, ...hasUser },
       }),
       db.employee.count({
-        where: { startDate: { gte: start, lt: end } },
+        where: { startDate: { gte: start, lt: end }, ...hasUser },
       }),
     ]);
 
@@ -221,7 +222,7 @@ export async function getTurnoverByMonth() {
 
 export async function getUpcomingBirthdays() {
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE", birthday: { not: null } },
+    where: { status: "ACTIVE", birthday: { not: null }, ...hasUser },
     select: { id: true, firstName: true, lastName: true, birthday: true, department: { select: { name: true } } },
   });
 
@@ -250,7 +251,7 @@ export async function getUpcomingBirthdays() {
 
 export async function getUpcomingAnniversaries() {
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE", anniversaryDate: { not: null } },
+    where: { status: "ACTIVE", anniversaryDate: { not: null }, ...hasUser },
     select: {
       id: true,
       firstName: true,
@@ -285,7 +286,7 @@ export async function getUpcomingAnniversaries() {
 
 export async function getDietaryRestrictions() {
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE", dietaryRestrictions: { not: null } },
+    where: { status: "ACTIVE", dietaryRestrictions: { not: null }, ...hasUser },
     select: { firstName: true, lastName: true, dietaryRestrictions: true },
   });
 
@@ -310,7 +311,6 @@ export async function getRecruiterAnalytics() {
     select: { recruiterId: true, status: true, costOfHire: true, appliedAt: true, hiredAt: true },
   });
 
-  // Group by recruiter (for now we just track by recruiterId)
   const recruiterMap: Record<string, {
     total: number;
     hired: number;
@@ -335,7 +335,6 @@ export async function getRecruiterAnalytics() {
     if (c.costOfHire) recruiterMap[rid].totalCost += c.costOfHire;
   }
 
-  // Resolve recruiter names
   const recruiterIds = Object.keys(recruiterMap);
   const employees = await db.employee.findMany({
     where: { id: { in: recruiterIds } },
@@ -382,7 +381,7 @@ export async function getBlendedCostPerHire() {
 
 export async function getBenefitsEligibility() {
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
+    where: { status: "ACTIVE", ...hasUser },
     select: {
       id: true,
       firstName: true,
