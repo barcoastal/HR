@@ -46,10 +46,13 @@ type CandidateForDialog = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  managerId: string | null;
+  backgroundCheckStatus: string | null;
   position: { title: string } | null;
 };
 
 type Position = { id: string; title: string };
+type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 
 function parseSkills(skills: string | null): string {
   if (!skills) return "";
@@ -66,6 +69,7 @@ const statuses: { value: CandidateStatus; label: string; color: string }[] = [
   { value: "SCREENING", label: "Screening", color: "bg-amber-500" },
   { value: "INTERVIEW", label: "Interview", color: "bg-purple-500" },
   { value: "OFFER", label: "Offer", color: "bg-emerald-500" },
+  { value: "BACKGROUND_CHECK", label: "BG Check", color: "bg-orange-500" },
   { value: "HIRED", label: "Hired", color: "bg-green-500" },
   { value: "REJECTED", label: "Rejected", color: "bg-red-500" },
 ];
@@ -73,11 +77,13 @@ const statuses: { value: CandidateStatus; label: string; color: string }[] = [
 export function CandidateDetailDialog({
   candidate,
   positions,
+  employees,
   open,
   onClose,
 }: {
   candidate: CandidateForDialog | null;
   positions: Position[];
+  employees?: EmployeeOption[];
   open: boolean;
   onClose: () => void;
 }) {
@@ -96,10 +102,13 @@ export function CandidateDetailDialog({
     notes: "",
     positionId: "",
     costOfHire: "",
+    managerId: "",
     status: "NEW" as CandidateStatus,
     companyEmail: "",
     startDate: "",
   });
+  const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
+  const [bgCheckLoading, setBgCheckLoading] = useState(false);
   const router = useRouter();
 
   const [interviews, setInterviews] = useState<InterviewForDisplay[]>([]);
@@ -136,10 +145,12 @@ export function CandidateDetailDialog({
         notes: candidate.notes || "",
         positionId: candidate.positionId || "",
         costOfHire: candidate.costOfHire?.toString() || "",
+        managerId: candidate.managerId || "",
         status: candidate.status,
         companyEmail: "",
         startDate: new Date().toISOString().split("T")[0],
       });
+      setBgCheckStatus(candidate.backgroundCheckStatus || null);
       setHireResult(null);
     }
   }, [candidate]);
@@ -167,10 +178,12 @@ export function CandidateDetailDialog({
           notes: form.notes || undefined,
           positionId: form.positionId || undefined,
           costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+          managerId: form.managerId || undefined,
         });
         const result = await hireCandidateAndStartOnboarding(candidate.id, {
           companyEmail: form.companyEmail || undefined,
           startDate: form.startDate || undefined,
+          managerId: form.managerId || undefined,
         });
         setHireResult({
           employeeId: result.employee.id,
@@ -184,6 +197,20 @@ export function CandidateDetailDialog({
     }
 
     setSaving(true);
+
+    // If moving to BACKGROUND_CHECK, initiate the check via API
+    if (form.status === "BACKGROUND_CHECK" && candidate.status !== "BACKGROUND_CHECK") {
+      await fetch("/api/background-check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidateId: candidate.id }),
+      });
+      setSaving(false);
+      router.refresh();
+      onClose();
+      return;
+    }
+
     await updateCandidate(candidate.id, {
       firstName: form.firstName,
       lastName: form.lastName,
@@ -196,6 +223,7 @@ export function CandidateDetailDialog({
       notes: form.notes || undefined,
       positionId: form.positionId || undefined,
       costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+      managerId: form.managerId || undefined,
       status: form.status,
     });
     setSaving(false);
@@ -313,6 +341,84 @@ export function CandidateDetailDialog({
                     />
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Background Check section — shown when in BG CHECK status */}
+            {(form.status === "BACKGROUND_CHECK" || candidate.status === "BACKGROUND_CHECK") && (
+              <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-2">
+                <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      "h-2.5 w-2.5 rounded-full",
+                      bgCheckStatus === "PASSED" ? "bg-green-500" :
+                      bgCheckStatus === "FAILED" ? "bg-red-500" :
+                      bgCheckStatus === "ERROR" ? "bg-red-500" :
+                      "bg-orange-400 animate-pulse"
+                    )} />
+                    <span className="text-sm text-[var(--color-text-primary)]">
+                      {bgCheckStatus === "PASSED" ? "Passed" :
+                       bgCheckStatus === "FAILED" ? "Failed" :
+                       bgCheckStatus === "ERROR" ? "Error" :
+                       "Pending"}
+                    </span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    {bgCheckStatus === "PENDING" && (
+                      <>
+                        <button
+                          onClick={async () => {
+                            setBgCheckLoading(true);
+                            await fetch("/api/background-check", {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ candidateId: candidate.id, status: "PASSED" }),
+                            });
+                            setBgCheckStatus("PASSED");
+                            setBgCheckLoading(false);
+                          }}
+                          disabled={bgCheckLoading}
+                          className="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
+                        >
+                          Mark Passed
+                        </button>
+                        <button
+                          onClick={async () => {
+                            setBgCheckLoading(true);
+                            await fetch("/api/background-check", {
+                              method: "PATCH",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ candidateId: candidate.id, status: "FAILED" }),
+                            });
+                            setBgCheckStatus("FAILED");
+                            setBgCheckLoading(false);
+                          }}
+                          disabled={bgCheckLoading}
+                          className="px-2 py-1 rounded text-xs font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
+                        >
+                          Mark Failed
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <p className="text-[10px] text-[var(--color-text-muted)]">
+                  via backgroundchecks.com {bgCheckStatus === "PASSED" && "— ready to hire"}
+                </p>
+              </div>
+            )}
+
+            {/* Manager selector */}
+            {employees && employees.length > 0 && (
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Reporting Manager</label>
+                <select value={form.managerId} onChange={(e) => update("managerId", e.target.value)} className={inputClass}>
+                  <option value="">Select manager...</option>
+                  {employees.map((e) => (
+                    <option key={e.id} value={e.id}>{e.firstName} {e.lastName} — {e.jobTitle}</option>
+                  ))}
+                </select>
               </div>
             )}
 

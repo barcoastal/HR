@@ -28,6 +28,8 @@ type CandidateItem = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  managerId: string | null;
+  backgroundCheckStatus: string | null;
   jobAppliedTo: string | null;
   inPipeline: boolean;
   position: { title: string } | null;
@@ -57,6 +59,8 @@ type SyncablePlatform = {
   lastSyncLog: unknown;
 };
 
+type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
+
 type Props = {
   pipelineCandidates: CandidateItem[];
   allCandidates: CandidateItem[];
@@ -64,6 +68,7 @@ type Props = {
   openPositions: PositionFull[];
   closedPositions: PositionFull[];
   syncablePlatforms: SyncablePlatform[];
+  employees?: EmployeeOption[];
 };
 
 function PositionPipeline({
@@ -71,12 +76,14 @@ function PositionPipeline({
   candidates,
   allPositions,
   allCandidates,
+  employees,
   isArchived,
 }: {
   position: PositionFull;
   candidates: CandidateItem[];
   allPositions: Position[];
   allCandidates: CandidateItem[];
+  employees?: EmployeeOption[];
   isArchived: boolean;
 }) {
   const [expanded, setExpanded] = useState(!isArchived);
@@ -241,9 +248,12 @@ function PositionPipeline({
                 status: c.status,
                 positionId: c.positionId,
                 costOfHire: c.costOfHire,
+                managerId: c.managerId || null,
+                backgroundCheckStatus: c.backgroundCheckStatus || null,
                 position: c.position,
               }))}
               positions={allPositions}
+              employees={employees}
             />
           ) : (
             <p className="text-center text-sm text-[var(--color-text-muted)] py-8">
@@ -273,6 +283,7 @@ export function CVTabs({
   openPositions,
   closedPositions,
   syncablePlatforms,
+  employees,
 }: Props) {
   const tabs = [
     { id: "recruitment", label: "Recruitment" },
@@ -328,6 +339,7 @@ export function CVTabs({
                       candidates={posCandidates}
                       allPositions={positions}
                       allCandidates={allCandidates}
+                      employees={employees}
                       isArchived={false}
                     />
                   );
@@ -375,9 +387,12 @@ export function CVTabs({
                       status: c.status,
                       positionId: c.positionId,
                       costOfHire: c.costOfHire,
+                      managerId: c.managerId || null,
+                      backgroundCheckStatus: c.backgroundCheckStatus || null,
                       position: c.position,
                     }))}
                     positions={positions}
+                    employees={employees}
                   />
                 </div>
               </div>
@@ -412,6 +427,7 @@ export function CVTabs({
                         candidates={posCandidates}
                         allPositions={positions}
                         allCandidates={allCandidates}
+                        employees={employees}
                         isArchived={true}
                       />
                     );

@@ -385,6 +385,10 @@ export const CandidateScalarFieldEnum = {
   hiredAt: 'hiredAt',
   positionId: 'positionId',
   recruiterId: 'recruiterId',
+  managerId: 'managerId',
+  backgroundCheckStatus: 'backgroundCheckStatus',
+  backgroundCheckId: 'backgroundCheckId',
+  backgroundCheckDate: 'backgroundCheckDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

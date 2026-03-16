@@ -24,6 +24,8 @@ type CandidateItem = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  managerId: string | null;
+  backgroundCheckStatus: string | null;
   position: { title: string } | null;
 };
 
@@ -39,13 +41,16 @@ const columns: { status: CandidateStatus; label: string; color: string; bg: stri
   { status: "SCREENING", label: "Screening", color: "text-amber-400", bg: "bg-amber-500/10" },
   { status: "INTERVIEW", label: "Interview", color: "text-purple-400", bg: "bg-purple-500/10" },
   { status: "OFFER", label: "Offer", color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  { status: "BACKGROUND_CHECK", label: "BG Check", color: "text-orange-400", bg: "bg-orange-500/10" },
   { status: "HIRED", label: "Hired", color: "text-green-400", bg: "bg-green-500/10" },
   { status: "REJECTED", label: "Rejected", color: "text-red-400", bg: "bg-red-500/10" },
 ];
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
-export function CandidatePipeline({ candidates, positions }: { candidates: CandidateItem[]; positions: Position[] }) {
+type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
+
+export function CandidatePipeline({ candidates, positions, employees }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[] }) {
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [hiringId, setHiringId] = useState<string | null>(null);
@@ -55,6 +60,20 @@ export function CandidatePipeline({ candidates, positions }: { candidates: Candi
       setHiringId(id);
       await hireCandidateAndStartOnboarding(id);
       setHiringId(null);
+      router.refresh();
+      return;
+    }
+    if (newStatus === "BACKGROUND_CHECK") {
+      setHiringId(id);
+      try {
+        await fetch("/api/background-check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ candidateId: id }),
+        });
+      } finally {
+        setHiringId(null);
+      }
       router.refresh();
       return;
     }
@@ -206,6 +225,7 @@ export function CandidatePipeline({ candidates, positions }: { candidates: Candi
       <CandidateDetailDialog
         candidate={selectedCandidate}
         positions={positions}
+        employees={employees}
         open={!!selectedCandidate}
         onClose={() => setSelectedCandidate(null)}
       />

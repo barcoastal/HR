@@ -128,7 +128,7 @@ export async function getReviewMetrics() {
 }
 
 export async function getHiringPipelineStats() {
-  const statuses = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "HIRED", "REJECTED"] as const;
+  const statuses = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "BACKGROUND_CHECK", "HIRED", "REJECTED"] as const;
   const counts = await Promise.all(
     statuses.map(async (status) => ({
       status,

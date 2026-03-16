@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { getCandidates, getPositions, getAllCandidatesForDatabase } from "@/lib/actions/candidates";
 import { getDepartments } from "@/lib/actions/departments";
+import { getEmployees } from "@/lib/actions/employees";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { Briefcase, Target, Users, Archive } from "lucide-react";
@@ -13,13 +14,14 @@ import { StatCard } from "@/components/ui/stat-card";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments] = await Promise.all([
+  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees] = await Promise.all([
     getCandidates({ inPipeline: true }),
     getAllCandidatesForDatabase(),
     getPositions(),
     getRecruitmentPlatforms(),
     getSyncablePlatforms(),
     getDepartments(),
+    getEmployees(),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
@@ -68,6 +70,8 @@ export default async function CVPage() {
           status: c.status,
           positionId: c.positionId,
           costOfHire: c.costOfHire,
+          managerId: c.managerId || null,
+          backgroundCheckStatus: c.backgroundCheckStatus || null,
           jobAppliedTo: c.jobAppliedTo,
           inPipeline: c.inPipeline,
           position: c.position ? { title: c.position.title } : null,
@@ -89,6 +93,8 @@ export default async function CVPage() {
           status: c.status,
           positionId: c.positionId,
           costOfHire: c.costOfHire,
+          managerId: c.managerId || null,
+          backgroundCheckStatus: c.backgroundCheckStatus || null,
           jobAppliedTo: c.jobAppliedTo,
           inPipeline: c.inPipeline,
           position: c.position ? { title: c.position.title } : null,
@@ -115,6 +121,7 @@ export default async function CVPage() {
           _count: p._count,
         }))}
         syncablePlatforms={syncablePlatforms}
+        employees={allEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, jobTitle: e.jobTitle }))}
       />
     </div>
   );

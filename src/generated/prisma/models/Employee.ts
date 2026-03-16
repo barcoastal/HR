@@ -431,6 +431,7 @@ export type EmployeeWhereInput = {
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
   assignedTasks?: Prisma.EmployeeTaskListRelationFilter
   signingRequests?: Prisma.SigningRequestListRelationFilter
+  managedCandidates?: Prisma.CandidateListRelationFilter
   hrNotes?: Prisma.HRNoteListRelationFilter
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
 }
@@ -494,6 +495,7 @@ export type EmployeeOrderByWithRelationInput = {
   mentionedInPosts?: Prisma.FeedPostOrderByRelationAggregateInput
   assignedTasks?: Prisma.EmployeeTaskOrderByRelationAggregateInput
   signingRequests?: Prisma.SigningRequestOrderByRelationAggregateInput
+  managedCandidates?: Prisma.CandidateOrderByRelationAggregateInput
   hrNotes?: Prisma.HRNoteOrderByRelationAggregateInput
   authoredHRNotes?: Prisma.HRNoteOrderByRelationAggregateInput
 }
@@ -560,6 +562,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
   assignedTasks?: Prisma.EmployeeTaskListRelationFilter
   signingRequests?: Prisma.SigningRequestListRelationFilter
+  managedCandidates?: Prisma.CandidateListRelationFilter
   hrNotes?: Prisma.HRNoteListRelationFilter
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
 }, "id" | "email">
@@ -697,6 +700,7 @@ export type EmployeeCreateInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -756,6 +760,7 @@ export type EmployeeUncheckedCreateInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -815,6 +820,7 @@ export type EmployeeUpdateInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -874,6 +880,7 @@ export type EmployeeUncheckedUpdateInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -1538,6 +1545,22 @@ export type EmployeeUpdateOneRequiredWithoutAuthoredHRNotesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAuthoredHRNotesInput, Prisma.EmployeeUpdateWithoutAuthoredHRNotesInput>, Prisma.EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput>
 }
 
+export type EmployeeCreateNestedOneWithoutManagedCandidatesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedCreateWithoutManagedCandidatesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutManagedCandidatesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutManagedCandidatesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedCreateWithoutManagedCandidatesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutManagedCandidatesInput
+  upsert?: Prisma.EmployeeUpsertWithoutManagedCandidatesInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutManagedCandidatesInput, Prisma.EmployeeUpdateWithoutManagedCandidatesInput>, Prisma.EmployeeUncheckedUpdateWithoutManagedCandidatesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutSigningRequestsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSigningRequestsInput, Prisma.EmployeeUncheckedCreateWithoutSigningRequestsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSigningRequestsInput
@@ -1678,6 +1701,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -1736,6 +1760,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -1799,6 +1824,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -1857,6 +1883,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -1936,6 +1963,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -1994,6 +2022,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -2107,6 +2136,7 @@ export type EmployeeCreateWithoutTeamInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -2165,6 +2195,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -2249,6 +2280,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -2307,6 +2339,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -2370,6 +2403,7 @@ export type EmployeeCreateWithoutManagerInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -2428,6 +2462,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -2496,6 +2531,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -2554,6 +2590,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -2617,6 +2654,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -2675,6 +2713,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -2754,6 +2793,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -2812,6 +2852,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -2897,6 +2938,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -2955,6 +2997,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -3029,6 +3072,7 @@ export type EmployeeCreateWithoutUserInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -3087,6 +3131,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -3161,6 +3206,7 @@ export type EmployeeUpdateWithoutUserInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -3219,6 +3265,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -3277,6 +3324,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -3335,6 +3383,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -3409,6 +3458,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -3467,6 +3517,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -3525,6 +3576,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -3583,6 +3635,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -3646,6 +3699,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -3704,6 +3758,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -3778,6 +3833,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -3836,6 +3892,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -3905,6 +3962,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -3963,6 +4021,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -4021,6 +4080,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -4079,6 +4139,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -4142,6 +4203,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -4200,6 +4262,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -4274,6 +4337,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -4332,6 +4396,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -4401,6 +4466,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -4459,6 +4525,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -4517,6 +4584,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -4575,6 +4643,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -4638,6 +4707,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -4696,6 +4766,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -4770,6 +4841,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -4828,6 +4900,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -4897,6 +4970,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -4955,6 +5029,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -5013,6 +5088,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -5071,6 +5147,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -5145,6 +5222,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -5203,6 +5281,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -5261,6 +5340,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -5319,6 +5399,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -5393,6 +5474,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -5451,6 +5533,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -5509,6 +5592,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -5567,6 +5651,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -5641,6 +5726,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -5699,6 +5785,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -5757,6 +5844,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -5815,6 +5903,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -5889,6 +5978,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -5947,6 +6037,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -6006,6 +6097,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
 
@@ -6064,6 +6156,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
 
@@ -6127,6 +6220,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
 }
 
@@ -6185,6 +6279,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
@@ -6259,6 +6354,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
 
@@ -6317,6 +6413,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
@@ -6386,6 +6483,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
 }
 
@@ -6444,7 +6542,260 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutManagedCandidatesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+}
+
+export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+}
+
+export type EmployeeCreateOrConnectWithoutManagedCandidatesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedCreateWithoutManagedCandidatesInput>
+}
+
+export type EmployeeUpsertWithoutManagedCandidatesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedUpdateWithoutManagedCandidatesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedCreateWithoutManagedCandidatesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutManagedCandidatesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutManagedCandidatesInput, Prisma.EmployeeUncheckedUpdateWithoutManagedCandidatesInput>
+}
+
+export type EmployeeUpdateWithoutManagedCandidatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
 
 export type EmployeeCreateWithoutSigningRequestsInput = {
@@ -6501,6 +6852,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -6559,6 +6911,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -6633,6 +6986,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -6691,6 +7045,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -6749,6 +7104,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -6807,6 +7163,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -6881,6 +7238,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -6939,6 +7297,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -6997,6 +7356,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -7055,6 +7415,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -7118,6 +7479,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -7176,6 +7538,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -7250,6 +7613,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -7308,6 +7672,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -7377,6 +7742,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -7435,6 +7801,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -7493,6 +7860,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -7551,6 +7919,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -7625,6 +7994,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -7683,6 +8053,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -7741,6 +8112,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
 }
@@ -7799,6 +8171,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
 }
@@ -7873,6 +8246,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -7931,6 +8305,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -8024,6 +8399,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -8082,6 +8458,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -8210,6 +8587,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -8268,6 +8646,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -8431,6 +8810,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -8489,6 +8869,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -8582,6 +8963,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
 }
@@ -8640,6 +9022,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
 }
@@ -8705,6 +9088,7 @@ export type EmployeeCountOutputType = {
   mentionedInPosts: number
   assignedTasks: number
   signingRequests: number
+  managedCandidates: number
   hrNotes: number
   authoredHRNotes: number
 }
@@ -8730,6 +9114,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   mentionedInPosts?: boolean | EmployeeCountOutputTypeCountMentionedInPostsArgs
   assignedTasks?: boolean | EmployeeCountOutputTypeCountAssignedTasksArgs
   signingRequests?: boolean | EmployeeCountOutputTypeCountSigningRequestsArgs
+  managedCandidates?: boolean | EmployeeCountOutputTypeCountManagedCandidatesArgs
   hrNotes?: boolean | EmployeeCountOutputTypeCountHrNotesArgs
   authoredHRNotes?: boolean | EmployeeCountOutputTypeCountAuthoredHRNotesArgs
 }
@@ -8887,6 +9272,13 @@ export type EmployeeCountOutputTypeCountSigningRequestsArgs<ExtArgs extends runt
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountManagedCandidatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CandidateWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountHrNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.HRNoteWhereInput
 }
@@ -8958,6 +9350,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
   assignedTasks?: boolean | Prisma.Employee$assignedTasksArgs<ExtArgs>
   signingRequests?: boolean | Prisma.Employee$signingRequestsArgs<ExtArgs>
+  managedCandidates?: boolean | Prisma.Employee$managedCandidatesArgs<ExtArgs>
   hrNotes?: boolean | Prisma.Employee$hrNotesArgs<ExtArgs>
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
@@ -9106,6 +9499,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
   assignedTasks?: boolean | Prisma.Employee$assignedTasksArgs<ExtArgs>
   signingRequests?: boolean | Prisma.Employee$signingRequestsArgs<ExtArgs>
+  managedCandidates?: boolean | Prisma.Employee$managedCandidatesArgs<ExtArgs>
   hrNotes?: boolean | Prisma.Employee$hrNotesArgs<ExtArgs>
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
@@ -9151,6 +9545,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     mentionedInPosts: Prisma.$FeedPostPayload<ExtArgs>[]
     assignedTasks: Prisma.$EmployeeTaskPayload<ExtArgs>[]
     signingRequests: Prisma.$SigningRequestPayload<ExtArgs>[]
+    managedCandidates: Prisma.$CandidatePayload<ExtArgs>[]
     hrNotes: Prisma.$HRNotePayload<ExtArgs>[]
     authoredHRNotes: Prisma.$HRNotePayload<ExtArgs>[]
   }
@@ -9607,6 +10002,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   mentionedInPosts<T extends Prisma.Employee$mentionedInPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$mentionedInPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignedTasks<T extends Prisma.Employee$assignedTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$assignedTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   signingRequests<T extends Prisma.Employee$signingRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$signingRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SigningRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  managedCandidates<T extends Prisma.Employee$managedCandidatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$managedCandidatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   hrNotes<T extends Prisma.Employee$hrNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$hrNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HRNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authoredHRNotes<T extends Prisma.Employee$authoredHRNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$authoredHRNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HRNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -10639,6 +11035,30 @@ export type Employee$signingRequestsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.SigningRequestScalarFieldEnum | Prisma.SigningRequestScalarFieldEnum[]
+}
+
+/**
+ * Employee.managedCandidates
+ */
+export type Employee$managedCandidatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Candidate
+   */
+  select?: Prisma.CandidateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Candidate
+   */
+  omit?: Prisma.CandidateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateInclude<ExtArgs> | null
+  where?: Prisma.CandidateWhereInput
+  orderBy?: Prisma.CandidateOrderByWithRelationInput | Prisma.CandidateOrderByWithRelationInput[]
+  cursor?: Prisma.CandidateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CandidateScalarFieldEnum | Prisma.CandidateScalarFieldEnum[]
 }
 
 /**

@@ -103,6 +103,7 @@ enum CandidateStatus {
   SCREENING
   INTERVIEW
   OFFER
+  BACKGROUND_CHECK
   HIRED
   REJECTED
 }
@@ -226,6 +227,7 @@ model Employee {
   mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
   assignedTasks      EmployeeTask[]    @relation("TaskAssignee")
   signingRequests    SigningRequest[]
+  managedCandidates  Candidate[]       @relation("CandidateManager")
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
 
@@ -509,17 +511,23 @@ model Candidate {
   costOfHire    Float?
   appliedAt     DateTime        @default(now())
   hiredAt       DateTime?
-  positionId    String?
-  recruiterId   String?
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  positionId              String?
+  recruiterId             String?
+  managerId               String?
+  backgroundCheckStatus   String?           // PENDING, PASSED, FAILED, ERROR
+  backgroundCheckId       String?           // External ID from backgroundchecks.com
+  backgroundCheckDate     DateTime?
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
 
   position      Position?       @relation(fields: [positionId], references: [id])
+  manager       Employee?       @relation("CandidateManager", fields: [managerId], references: [id])
   interviews    Interview[]
 
   @@index([positionId])
   @@index([status])
   @@index([source])
+  @@index([managerId])
 }
 
 model Position {

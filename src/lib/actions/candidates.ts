@@ -232,6 +232,7 @@ export async function updateCandidate(
     notes?: string;
     positionId?: string;
     costOfHire?: number;
+    managerId?: string;
     status?: CandidateStatus;
   }
 ) {
@@ -258,7 +259,7 @@ export async function updateCandidateNotes(id: string, notes: string) {
 
 export async function hireCandidateAndStartOnboarding(
   candidateId: string,
-  options?: { companyEmail?: string; startDate?: string }
+  options?: { companyEmail?: string; startDate?: string; managerId?: string }
 ) {
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
@@ -296,6 +297,7 @@ export async function hireCandidateAndStartOnboarding(
       phone: candidate.phone,
       jobTitle: candidate.position?.title || "New Hire",
       departmentId: candidate.position?.departmentId || null,
+      managerId: options?.managerId || candidate.managerId || null,
       startDate,
       anniversaryDate: startDate,
       bio: bio || null,
