@@ -4,6 +4,7 @@ import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
 import { Users, Building2, Layers, Clock, ChevronRight } from "lucide-react";
 import { ManagerAssignment } from "@/components/org/manager-assignment";
+import { OrgTree } from "@/components/org/org-tree";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 
@@ -83,6 +84,25 @@ export default async function OrgPage() {
       </div>
 
       <div className="mt-8">
+        <section className={cn("rounded-xl p-6 mb-8", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-5 w-5 text-[var(--color-accent)]" />
+            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Organization Tree</h2>
+          </div>
+          <p className="text-sm text-[var(--color-text-muted)] mb-4">Reporting structure based on manager assignments.</p>
+          <OrgTree
+            employees={activeEmployees.map((e) => ({
+              id: e.id,
+              firstName: e.firstName,
+              lastName: e.lastName,
+              jobTitle: e.jobTitle,
+              profilePhoto: e.profilePhoto,
+              departmentName: e.department?.name || null,
+              managerId: e.managerId,
+            }))}
+          />
+        </section>
+
         <ManagerAssignment
           employees={activeEmployees.map((e) => ({
             id: e.id,

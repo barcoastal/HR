@@ -29,6 +29,9 @@ export async function getEmployees(filters?: {
     ];
   }
 
+  // Only show employees who have an associated user account
+  where.user = { isNot: null };
+
   return db.employee.findMany({
     where,
     include: { department: true, team: true },
