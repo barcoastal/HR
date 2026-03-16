@@ -64,9 +64,13 @@ async function sendEmail(to: string, subject: string, html: string) {
     return;
   }
   const branding = await getCompanyBranding();
+  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const senderEmail = branding.senderEmail.trim();
+  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  console.log(`[email] Sending from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
-      from: `${branding.senderName} <${branding.senderEmail}>`,
+      from,
       to,
       subject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
@@ -109,9 +113,13 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
   const interpolatedSubject = interpolate(subject, sampleVars);
   const interpolatedBody = interpolate(body, sampleVars);
 
+  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const senderEmail = branding.senderEmail.trim();
+  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  console.log(`[email] Test email from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
-      from: `${branding.companyName} <${branding.senderEmail}>`,
+      from,
       to,
       subject: `[TEST] ${interpolatedSubject}`,
       html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
