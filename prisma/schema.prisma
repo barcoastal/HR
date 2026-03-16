@@ -612,23 +612,25 @@ model Interview {
 }
 
 model SigningRequest {
-  id              String       @id @default(uuid())
-  employeeTaskId  String       @unique
+  id              String        @id @default(uuid())
+  employeeTaskId  String?       @unique
   employeeId      String
-  token           String       @unique
+  token           String        @unique
   documentUrl     String
   documentName    String
-  status          String       @default("PENDING") // PENDING | VIEWED | SIGNED
+  status          String        @default("PENDING") // PENDING | VIEWED | SIGNED | VOIDED
   signedDocUrl    String?
   signedAt        DateTime?
   viewedAt        DateTime?
   expiresAt       DateTime
-  createdAt       DateTime     @default(now())
+  createdAt       DateTime      @default(now())
+  message         String?
 
-  employeeTask    EmployeeTask @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
-  employee        Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employeeTask    EmployeeTask? @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
+  employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+  @@index([status])
 }
 
 // ---------------------

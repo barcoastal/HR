@@ -22,6 +22,7 @@ import {
   Users2,
   Megaphone,
   UserCircle,
+  FileSignature,
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import {
@@ -42,6 +43,7 @@ const allNavLinks = [
   { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true },
   { href: "/clubs", label: "Clubs", icon: Users2, access: () => true },
   { href: "/voice", label: "Your Voice", icon: Megaphone, access: () => true },
+  { href: "/documents", label: "Documents", icon: FileSignature, access: () => true },
   { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r) },
   { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r) },
   { href: "/my-profile", label: "My Profile", icon: UserCircle, access: () => true },

@@ -26,6 +26,86 @@ export async function createSigningRequest(
   });
 }
 
+export async function createStandaloneSigningRequest(data: {
+  employeeId: string;
+  documentUrl: string;
+  documentName: string;
+  message?: string;
+}) {
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  const request = await db.signingRequest.create({
+    data: {
+      employeeId: data.employeeId,
+      token,
+      documentUrl: data.documentUrl,
+      documentName: data.documentName,
+      message: data.message || null,
+      expiresAt,
+    },
+    include: { employee: true },
+  });
+
+  // Send signing request email
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const signingUrl = `${baseUrl}/sign/${token}`;
+  try {
+    const { sendSigningRequestEmail } = await import("@/lib/email");
+    await sendSigningRequestEmail({
+      to: request.employee.email,
+      firstName: request.employee.firstName,
+      documentName: data.documentName,
+      signingUrl,
+    });
+  } catch (e) {
+    console.error("[signing] Failed to send email:", e);
+  }
+
+  revalidatePath("/documents");
+  return request;
+}
+
+export async function getAllSigningRequests() {
+  return db.signingRequest.findMany({
+    include: {
+      employee: { select: { id: true, firstName: true, lastName: true, email: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function resendSigningRequest(id: string) {
+  const request = await db.signingRequest.findUnique({
+    where: { id },
+    include: { employee: true },
+  });
+  if (!request || request.status === "SIGNED") return { success: false };
+
+  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const signingUrl = `${baseUrl}/sign/${request.token}`;
+  try {
+    const { sendSigningRequestEmail } = await import("@/lib/email");
+    await sendSigningRequestEmail({
+      to: request.employee.email,
+      firstName: request.employee.firstName,
+      documentName: request.documentName,
+      signingUrl,
+    });
+  } catch (e) {
+    console.error("[signing] Failed to resend email:", e);
+  }
+  return { success: true };
+}
+
+export async function voidSigningRequest(id: string) {
+  await db.signingRequest.update({
+    where: { id },
+    data: { status: "VOIDED", expiresAt: new Date() },
+  });
+  revalidatePath("/documents");
+}
+
 export async function getSigningRequestByToken(token: string) {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -34,7 +114,7 @@ export async function getSigningRequestByToken(token: string) {
 
   if (!request) return null;
   if (request.expiresAt < new Date()) return null;
-  if (request.status === "SIGNED") return null;
+  if (request.status === "SIGNED" || request.status === "VOIDED") return null;
 
   // Mark as viewed
   if (request.status === "PENDING") {
@@ -121,11 +201,13 @@ export async function submitSignature(
       data: { status: "SIGNED", signedAt: new Date(), signedDocUrl },
     });
 
-    // Auto-complete the employee task
-    await db.employeeTask.update({
-      where: { id: request.employeeTaskId },
-      data: { status: "DONE", completedAt: new Date() },
-    });
+    // Auto-complete the employee task (if linked to one)
+    if (request.employeeTaskId) {
+      await db.employeeTask.update({
+        where: { id: request.employeeTaskId },
+        data: { status: "DONE", completedAt: new Date() },
+      });
+    }
 
     // Store in employee documents
     await db.document.create({
@@ -138,6 +220,7 @@ export async function submitSignature(
     });
 
     revalidatePath("/onboarding");
+    revalidatePath("/documents");
     return { success: true };
   } catch (error) {
     console.error("Signing error:", error);
