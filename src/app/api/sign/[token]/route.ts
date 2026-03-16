@@ -27,13 +27,13 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { signatureBase64 } = body;
+  const { signatureBase64, signaturePosition } = body;
 
   if (!signatureBase64) {
     return NextResponse.json({ error: "Signature required" }, { status: 400 });
   }
 
-  const result = await submitSignature(token, signatureBase64);
+  const result = await submitSignature(token, signatureBase64, signaturePosition);
 
   if (result.success) {
     // Send confirmation email (fire and forget)

@@ -129,7 +129,8 @@ export async function getSigningRequestByToken(token: string) {
 
 export async function submitSignature(
   token: string,
-  signatureBase64: string
+  signatureBase64: string,
+  signaturePosition?: { xPercent: number; yPercent: number; page: number }
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -158,23 +159,56 @@ export async function submitSignature(
     const sigImageBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
     const sigImage = await pdfDoc.embedPng(sigImageBytes);
 
-    // Draw signature on last page (bottom area)
-    const sigWidth = 200;
+    // Determine which page and position to place signature
+    const targetPage = signaturePosition?.page !== undefined && signaturePosition.page < pages.length
+      ? pages[signaturePosition.page]
+      : lastPage;
+    const { width: pageWidth, height: pageHeight } = targetPage.getSize();
+
+    const sigWidth = 180;
     const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
-    lastPage.drawImage(sigImage, {
-      x: 50,
-      y: 50,
+
+    // If position provided from client, use percentage-based coordinates
+    // Otherwise default to a sensible position (where signature lines typically are)
+    const sigX = signaturePosition
+      ? (signaturePosition.xPercent / 100) * pageWidth
+      : 72; // ~1 inch from left
+    const sigY = signaturePosition
+      ? pageHeight - (signaturePosition.yPercent / 100) * pageHeight - sigHeight
+      : pageHeight * 0.30; // ~30% from bottom — where most signature lines are
+
+    targetPage.drawImage(sigImage, {
+      x: sigX,
+      y: sigY,
       width: sigWidth,
       height: sigHeight,
     });
 
-    // Add timestamp text
+    // Add printed name below signature
     const { rgb } = await import("pdf-lib");
-    lastPage.drawText(`Signed: ${new Date().toISOString()} by ${request.employee.firstName} ${request.employee.lastName}`, {
-      x: 50,
-      y: 40,
-      size: 8,
-      color: rgb(0.4, 0.4, 0.4),
+    const employeeName = `${request.employee.firstName} ${request.employee.lastName}`;
+    targetPage.drawText(employeeName, {
+      x: sigX,
+      y: sigY - 14,
+      size: 10,
+      color: rgb(0.1, 0.1, 0.1),
+    });
+
+    // Add date to the right of the signature
+    const signDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    targetPage.drawText(signDate, {
+      x: sigX + sigWidth + 40,
+      y: sigY + sigHeight / 2,
+      size: 10,
+      color: rgb(0.1, 0.1, 0.1),
+    });
+
+    // Add small timestamp at the very bottom
+    targetPage.drawText(`Digitally signed: ${new Date().toISOString()} by ${employeeName}`, {
+      x: 72,
+      y: 20,
+      size: 7,
+      color: rgb(0.6, 0.6, 0.6),
     });
 
     const signedPdfBytes = await pdfDoc.save();
