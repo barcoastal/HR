@@ -62,6 +62,17 @@ export async function createShoutoutPost(
   return post;
 }
 
+export async function deleteFeedPost(postId: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
+    throw new Error("Not authorized to delete posts");
+  }
+  await db.feedPost.delete({ where: { id: postId } });
+  revalidatePath("/");
+}
+
 export async function toggleReaction(
   postId: string,
   employeeId: string,

@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Heart, PartyPopper, ThumbsUp, MessageCircle, Pin, Cake, UserPlus, Star } from "lucide-react";
+import { Heart, PartyPopper, ThumbsUp, MessageCircle, Pin, Cake, UserPlus, Star, Trash2 } from "lucide-react";
 import { timeAgo, getInitials } from "@/lib/utils";
-import { toggleReaction } from "@/lib/actions/feed";
+import { toggleReaction, deleteFeedPost } from "@/lib/actions/feed";
 import { CommentSection } from "@/components/feed/comment-section";
 import type { ReactionType } from "@/generated/prisma/client";
 import { useState } from "react";
@@ -54,9 +54,11 @@ function ReactionButton({
 export function PostCard({
   post,
   currentEmployeeId,
+  userRole,
 }: {
   post: PostWithRelations;
   currentEmployeeId: string;
+  userRole?: string;
 }) {
   const [showComments, setShowComments] = useState(false);
   const initials = getInitials(post.author.firstName, post.author.lastName);
@@ -68,6 +70,12 @@ export function PostCard({
 
   async function handleReaction(type: ReactionType) {
     await toggleReaction(post.id, currentEmployeeId, type);
+  }
+
+  const canDelete = userRole === "SUPER_ADMIN" || userRole === "ADMIN";
+  async function handleDelete() {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+    await deleteFeedPost(post.id);
   }
 
   const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
@@ -91,6 +99,15 @@ export function PostCard({
         <MessageCircle className="h-4 w-4" />
         <span>{post._count.comments}</span>
       </button>
+      {canDelete && (
+        <button
+          onClick={handleDelete}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-red-400 hover:bg-red-500/10 transition-colors"
+          aria-label="Delete post"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      )}
     </div>
   );
 

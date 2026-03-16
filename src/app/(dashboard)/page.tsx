@@ -44,6 +44,7 @@ export default async function FeedPage() {
             key={post.id}
             post={post as any}
             currentEmployeeId={session.user.employeeId || ""}
+            userRole={session.user.role}
           />
         ))}
         {posts.length === 0 && (
