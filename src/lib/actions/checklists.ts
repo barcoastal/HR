@@ -122,10 +122,10 @@ export async function removeExclusion(overrideChecklistId: string, excludedItemI
   revalidatePath("/settings");
 }
 
-export async function getChecklistsForDepartment(departmentId: string | null) {
+export async function getChecklistsForDepartment(departmentId: string | null, type: "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
   return db.onboardingChecklist.findMany({
     where: {
-      type: "ONBOARDING",
+      type,
       departmentId,
       isOverride: false,
     },
@@ -139,10 +139,10 @@ export async function getChecklistsForDepartment(departmentId: string | null) {
   });
 }
 
-export async function getOverridesForDepartment(departmentId: string) {
+export async function getOverridesForDepartment(departmentId: string, type: "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
   return db.onboardingChecklist.findMany({
     where: {
-      type: "ONBOARDING",
+      type,
       departmentId,
       isOverride: true,
     },

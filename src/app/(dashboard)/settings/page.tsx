@@ -7,12 +7,11 @@ import { getDepartments } from "@/lib/actions/departments";
 import { getJobTitles } from "@/lib/actions/job-titles";
 import { getTimeOffPolicies } from "@/lib/actions/time-off";
 import { getAllPulseSurveys } from "@/lib/actions/pulse";
-import { db } from "@/lib/db";
 import { SettingsUserManagement } from "@/components/settings/user-management";
 import { CompanyInfo } from "@/components/settings/company-info";
 import { DepartmentManager } from "@/components/settings/department-manager";
 import { JobTitleManager } from "@/components/settings/job-title-manager";
-import { ChecklistManager } from "@/components/settings/checklist-manager";
+import { OffboardingSetup } from "@/components/settings/offboarding-setup";
 import { OnboardingSetup } from "@/components/settings/onboarding-setup";
 import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
@@ -29,21 +28,11 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, checklists, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
     getJobTitles(),
-    db.onboardingChecklist.findMany({
-      where: { type: "OFFBOARDING" },
-      include: {
-        department: true,
-        items: {
-          orderBy: { order: "asc" },
-          include: { assignee: true },
-        },
-      },
-    }),
     getTimeOffPolicies(),
     getAllPulseSurveys(),
     getRecruitmentPlatforms(),
@@ -100,31 +89,10 @@ export default async function SettingsPage() {
           jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
         />
 
-        <ChecklistManager
-          employees={employeeList}
+        <OffboardingSetup
           departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-          checklists={checklists.map((c) => ({
-            id: c.id,
-            name: c.name,
-            type: c.type as "ONBOARDING" | "OFFBOARDING",
-            departmentId: c.departmentId,
-            departmentName: c.department?.name || null,
-            items: c.items.map((i) => ({
-              id: i.id,
-              title: i.title,
-              description: i.description,
-              requiresDocument: i.requiresDocument,
-              order: i.order,
-              assigneeId: i.assigneeId,
-              assigneeName: i.assignee ? `${i.assignee.firstName} ${i.assignee.lastName}` : null,
-              dueDay: i.dueDay,
-              sendEmail: i.sendEmail,
-              emailSubject: i.emailSubject,
-              emailBody: i.emailBody,
-              documentUrl: i.documentUrl,
-              documentName: i.documentName,
-            })),
-          }))}
+          employees={employeeList}
+          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
         />
 
         <PtoPolicyManager
