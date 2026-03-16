@@ -18,6 +18,7 @@ enum EmployeeStatus {
 }
 
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   HR
   MANAGER
@@ -782,6 +783,16 @@ model EmailTemplate {
   subject   String
   body      String   // HTML with {{variable}} placeholders
   updatedAt DateTime @updatedAt
+}
+
+model RolePermission {
+  id         String   @id @default(uuid())
+  role       UserRole
+  permission String   // e.g. "settings", "people", "recruitment", etc.
+  granted    Boolean  @default(true)
+
+  @@unique([role, permission])
+  @@index([role])
 }
 
 model OAuthState {

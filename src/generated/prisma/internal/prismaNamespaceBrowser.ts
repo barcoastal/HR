@@ -86,6 +86,7 @@ export const ModelName = {
   PulseResponse: 'PulseResponse',
   CompanySettings: 'CompanySettings',
   EmailTemplate: 'EmailTemplate',
+  RolePermission: 'RolePermission',
   OAuthState: 'OAuthState'
 } as const
 
@@ -613,6 +614,16 @@ export const EmailTemplateScalarFieldEnum = {
 } as const
 
 export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
+export const RolePermissionScalarFieldEnum = {
+  id: 'id',
+  role: 'role',
+  permission: 'permission',
+  granted: 'granted'
+} as const
+
+export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
 
 
 export const OAuthStateScalarFieldEnum = {

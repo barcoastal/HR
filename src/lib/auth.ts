@@ -11,11 +11,11 @@ async function ensureAdminExists() {
     update: { passwordHash: hash, role: "ADMIN" },
     create: { email: "admin", passwordHash: hash, role: "ADMIN" },
   });
-  // Ensure Google OAuth admin exists
+  // Ensure Google OAuth super admin exists
   await db.user.upsert({
     where: { email: "bar@coastaldebt.com" },
-    update: { role: "ADMIN" },
-    create: { email: "bar@coastaldebt.com", role: "ADMIN" },
+    update: { role: "SUPER_ADMIN" },
+    create: { email: "bar@coastaldebt.com", role: "SUPER_ADMIN" },
   });
 }
 

@@ -21,6 +21,8 @@ import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { getCompanySettings } from "@/lib/actions/company-settings";
 import { getEmailTemplates } from "@/lib/actions/email-templates";
 import { EmailTemplateManager } from "@/components/settings/email-template-manager";
+import { getRolePermissions } from "@/lib/actions/role-permissions";
+import { PermissionsManager } from "@/components/settings/permissions-manager";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -28,7 +30,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -38,6 +40,7 @@ export default async function SettingsPage() {
     getRecruitmentPlatforms(),
     getCompanySettings(),
     getEmailTemplates(),
+    getRolePermissions(),
   ]);
 
   const userList = users.map((u) => ({
@@ -72,6 +75,8 @@ export default async function SettingsPage() {
         }} />
 
         <SettingsUserManagement users={userList} />
+
+        <PermissionsManager permissions={rolePermissions} />
 
         <DepartmentManager
           departments={departments.map((d) => ({

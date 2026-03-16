@@ -31,7 +31,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
 
 export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireAuth();
-  const isAdmin = session.user?.role === "ADMIN" || session.user?.role === "HR";
+  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
   const { id } = await params;
   const [employee, hrNotes, documents] = await Promise.all([
     getEmployeeById(id),

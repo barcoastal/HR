@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import type { UserRole } from "@/generated/prisma/client";
 
 const roleColors: Record<string, string> = {
+  SUPER_ADMIN: "bg-amber-500/15 text-amber-400",
   ADMIN: "bg-red-500/15 text-red-400",
   HR: "bg-purple-500/15 text-purple-400",
   MANAGER: "bg-blue-500/15 text-blue-400",
@@ -96,6 +97,7 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
                       onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
                       className={cn("px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer", roleColors[user.role])}
                     >
+                      <option value="SUPER_ADMIN">Super Admin</option>
                       <option value="ADMIN">Admin</option>
                       <option value="HR">HR</option>
                       <option value="MANAGER">Manager</option>

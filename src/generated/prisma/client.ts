@@ -215,6 +215,11 @@ export type CompanySettings = Prisma.CompanySettingsModel
  */
 export type EmailTemplate = Prisma.EmailTemplateModel
 /**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
  * Model OAuthState
  * 
  */

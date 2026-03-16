@@ -9,7 +9,7 @@ import crypto from "crypto";
 
 export async function getEmployeeDocuments(employeeId: string) {
   const session = await requireAuth();
-  const isAdmin = session.user?.role === "ADMIN" || session.user?.role === "HR";
+  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
 
   return db.document.findMany({
     where: {
@@ -29,7 +29,7 @@ export async function addEmployeeDocument(data: {
   requireSignature?: boolean;
 }) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
   const doc = await db.document.create({
     data: {
@@ -51,7 +51,7 @@ export async function addEmployeeDocument(data: {
 
 export async function sendDocForSigning(employeeId: string, documentUrl: string, documentName: string) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
   const employee = await db.employee.findUnique({ where: { id: employeeId } });
   if (!employee) throw new Error("Employee not found");
@@ -101,7 +101,7 @@ export async function sendDocForSigning(employeeId: string, documentUrl: string,
 
 export async function deleteEmployeeDocument(docId: string) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
   const doc = await db.document.findUnique({ where: { id: docId } });
   if (!doc) throw new Error("Document not found");

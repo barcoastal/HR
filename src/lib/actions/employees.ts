@@ -263,7 +263,7 @@ export async function toggleEmployeeTask(taskId: string) {
   const userEmployeeId = session.user?.employeeId;
   const isAssignee = task.assigneeId && task.assigneeId === userEmployeeId;
   const isManager = task.employee.managerId === userEmployeeId;
-  const isAdmin = session.user?.role === "ADMIN" || session.user?.role === "HR";
+  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
   if (!isAssignee && !isManager && !isAdmin) {
     throw new Error("Not authorized to update this task");
   }
