@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
+import { sendSigningRequestEmail } from "@/lib/email";
+import crypto from "crypto";
 
 export async function getEmployeeDocuments(employeeId: string) {
   const session = await requireAuth();
@@ -24,6 +26,7 @@ export async function addEmployeeDocument(data: {
   url: string;
   category: DocumentCategory;
   visibility: DocumentVisibility;
+  requireSignature?: boolean;
 }) {
   const session = await requireAuth();
   if (session.user?.role !== "ADMIN") throw new Error("Not authorized");
@@ -38,8 +41,61 @@ export async function addEmployeeDocument(data: {
     },
   });
 
+  if (data.requireSignature) {
+    await sendDocForSigning(data.employeeId, data.url, data.name);
+  }
+
   revalidatePath(`/people/${data.employeeId}`);
   return doc;
+}
+
+export async function sendDocForSigning(employeeId: string, documentUrl: string, documentName: string) {
+  const session = await requireAuth();
+  if (session.user?.role !== "ADMIN") throw new Error("Not authorized");
+
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+
+  // Create an employee task for this signing
+  const employeeTask = await db.employeeTask.create({
+    data: {
+      employeeId,
+      title: `Sign: ${documentName}`,
+      description: `Please review and sign ${documentName}`,
+      documentAction: "SIGN",
+      documentUrl,
+      documentName,
+      status: "PENDING",
+    },
+  });
+
+  // Create signing request
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  await db.signingRequest.create({
+    data: {
+      employeeTaskId: employeeTask.id,
+      employeeId,
+      token,
+      documentUrl,
+      documentName,
+      expiresAt,
+    },
+  });
+
+  // Send signing email
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  sendSigningRequestEmail({
+    to: employee.email,
+    firstName: employee.firstName,
+    documentName,
+    signingUrl: `${baseUrl}/sign/${token}`,
+  });
+
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/onboarding");
+  return { success: true };
 }
 
 export async function deleteEmployeeDocument(docId: string) {

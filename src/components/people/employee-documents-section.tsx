@@ -1,9 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { FileText, Upload, Trash2, ChevronRight, Eye, EyeOff, Lock } from "lucide-react";
+import { FileText, Upload, Trash2, ChevronRight, Eye, EyeOff, Lock, PenTool, Send } from "lucide-react";
 import { useState, useRef } from "react";
-import { addEmployeeDocument, deleteEmployeeDocument } from "@/lib/actions/employee-documents";
+import { addEmployeeDocument, deleteEmployeeDocument, sendDocForSigning } from "@/lib/actions/employee-documents";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
@@ -30,12 +30,19 @@ export function EmployeeDocumentsSection({
   const [uploading, setUploading] = useState(false);
   const [category, setCategory] = useState<DocumentCategory>("GENERAL");
   const [visibility, setVisibility] = useState<DocumentVisibility>("EVERYONE");
+  const [requireSignature, setRequireSignature] = useState(false);
+  const [sendingDocId, setSendingDocId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   async function handleUpload() {
     const file = fileRef.current?.files?.[0];
     if (!file) return;
+
+    if (requireSignature && !file.name.toLowerCase().endsWith(".pdf")) {
+      alert("Only PDF files can be sent for signing.");
+      return;
+    }
 
     setUploading(true);
     try {
@@ -51,17 +58,31 @@ export function EmployeeDocumentsSection({
         url: data.url,
         category,
         visibility,
+        requireSignature,
       });
 
       setUploadOpen(false);
       setCategory("GENERAL");
       setVisibility("EVERYONE");
+      setRequireSignature(false);
       if (fileRef.current) fileRef.current.value = "";
       router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Upload failed");
     }
     setUploading(false);
+  }
+
+  async function handleSendForSigning(doc: Doc) {
+    if (!confirm(`Send "${doc.name}" to this employee for signing?`)) return;
+    setSendingDocId(doc.id);
+    try {
+      await sendDocForSigning(employeeId, doc.url, doc.name);
+      router.refresh();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to send for signing");
+    }
+    setSendingDocId(null);
   }
 
   async function handleDelete(docId: string) {
@@ -72,6 +93,8 @@ export function EmployeeDocumentsSection({
 
   const formatDate = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+  const isPdf = (name: string) => name.toLowerCase().endsWith(".pdf");
 
   return (
     <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
@@ -102,38 +125,49 @@ export function EmployeeDocumentsSection({
       ) : (
         <div className="space-y-2">
           {documents.map((doc) => (
-            <a
+            <div
               key={doc.id}
-              href={doc.url}
-              target="_blank"
-              rel="noopener noreferrer"
               className={cn(
                 "flex items-center gap-3 p-3 rounded-lg group",
                 "hover:bg-[var(--color-surface-hover)] transition-colors"
               )}
             >
-              <div className="h-9 w-9 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
-                <FileText className="h-4 w-4 text-red-400" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
-                  {doc.visibility === "HR_ONLY" && (
-                    <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium shrink-0">
-                      <Lock className="h-2.5 w-2.5" />
-                      HR Only
-                    </span>
-                  )}
+              <a
+                href={doc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 flex-1 min-w-0"
+              >
+                <div className="h-9 w-9 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
+                  <FileText className="h-4 w-4 text-red-400" />
                 </div>
-                <p className="text-xs text-[var(--color-text-muted)]">{doc.category} &middot; {formatDate(doc.uploadedAt)}</p>
-              </div>
-              <div className="flex items-center gap-1">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
+                    {doc.visibility === "HR_ONLY" && (
+                      <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium shrink-0">
+                        <Lock className="h-2.5 w-2.5" />
+                        HR Only
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-[var(--color-text-muted)]">{doc.category} &middot; {formatDate(doc.uploadedAt)}</p>
+                </div>
+              </a>
+              <div className="flex items-center gap-1 shrink-0">
+                {isAdmin && isPdf(doc.name) && (
+                  <button
+                    onClick={() => handleSendForSigning(doc)}
+                    disabled={sendingDocId === doc.id}
+                    className="p-1.5 rounded-lg text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 hover:bg-emerald-500/15 hover:text-emerald-400 transition-all"
+                    title="Send for signing"
+                  >
+                    <PenTool className="h-3.5 w-3.5" />
+                  </button>
+                )}
                 {isAdmin && (
                   <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleDelete(doc.id);
-                    }}
+                    onClick={() => handleDelete(doc.id)}
                     className="p-1.5 rounded-lg text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 hover:bg-red-500/15 hover:text-red-400 transition-all"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -141,7 +175,7 @@ export function EmployeeDocumentsSection({
                 )}
                 <ChevronRight className="h-4 w-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-            </a>
+            </div>
           ))}
         </div>
       )}
@@ -214,9 +248,44 @@ export function EmployeeDocumentsSection({
             </div>
           </div>
 
+          {/* Require Signature toggle */}
+          <div
+            onClick={() => setRequireSignature(!requireSignature)}
+            className={cn(
+              "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+              requireSignature
+                ? "border-emerald-400 bg-emerald-500/10"
+                : "border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]"
+            )}
+          >
+            <div className={cn(
+              "h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
+              requireSignature ? "bg-emerald-500/20" : "bg-[var(--color-surface-hover)]"
+            )}>
+              <PenTool className={cn("h-4 w-4", requireSignature ? "text-emerald-400" : "text-[var(--color-text-muted)]")} />
+            </div>
+            <div className="flex-1">
+              <p className={cn("text-sm font-medium", requireSignature ? "text-emerald-400" : "text-[var(--color-text-primary)]")}>
+                Require Signature
+              </p>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Send this document to the employee for signing (PDF only)
+              </p>
+            </div>
+            <div className={cn(
+              "h-5 w-9 rounded-full transition-colors relative",
+              requireSignature ? "bg-emerald-500" : "bg-[var(--color-border)]"
+            )}>
+              <div className={cn(
+                "absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform",
+                requireSignature ? "translate-x-4" : "translate-x-0.5"
+              )} />
+            </div>
+          </div>
+
           <div className="flex justify-end gap-2 pt-2">
             <button
-              onClick={() => setUploadOpen(false)}
+              onClick={() => { setUploadOpen(false); setRequireSignature(false); }}
               className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             >
               Cancel
@@ -225,13 +294,15 @@ export function EmployeeDocumentsSection({
               onClick={handleUpload}
               disabled={uploading}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium",
-                "bg-[var(--color-accent)] text-white",
-                "hover:bg-[var(--color-accent-hover)]",
-                "disabled:opacity-50"
+                "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium",
+                requireSignature
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",
+                "disabled:opacity-50 transition-colors"
               )}
             >
-              {uploading ? "Uploading..." : "Upload"}
+              {requireSignature && <PenTool className="h-3.5 w-3.5" />}
+              {uploading ? "Uploading..." : requireSignature ? "Upload & Send for Signing" : "Upload"}
             </button>
           </div>
         </div>
