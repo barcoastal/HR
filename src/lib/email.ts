@@ -65,14 +65,15 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
   const branding = await getCompanyBranding();
   try {
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: `${branding.senderName} <${branding.senderEmail}>`,
       to,
       subject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
     });
+    console.log(`[email] Sent to ${to}: "${subject}"`, result);
   } catch (error) {
-    console.error(`[email] Failed to send to ${to}:`, error);
+    console.error(`[email] Failed to send to ${to}: "${subject}"`, error);
   }
 }
 

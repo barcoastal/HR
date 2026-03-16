@@ -86,12 +86,13 @@ export async function sendDocForSigning(employeeId: string, documentUrl: string,
 
   // Send signing email
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  sendSigningRequestEmail({
+  await sendSigningRequestEmail({
     to: employee.email,
     firstName: employee.firstName,
     documentName,
     signingUrl: `${baseUrl}/sign/${token}`,
   });
+  console.log(`[signing] Sent signing request to ${employee.email} for "${documentName}" — link: ${baseUrl}/sign/${token}`);
 
   revalidatePath(`/people/${employeeId}`);
   revalidatePath("/onboarding");
