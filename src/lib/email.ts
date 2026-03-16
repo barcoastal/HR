@@ -65,13 +65,17 @@ async function sendEmail(to: string, subject: string, html: string) {
   }
   const branding = await getCompanyBranding();
   try {
-    const result = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: `${branding.senderName} <${branding.senderEmail}>`,
       to,
       subject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
     });
-    console.log(`[email] Sent to ${to}: "${subject}"`, result);
+    if (error) {
+      console.error(`[email] Resend error for ${to}: "${subject}"`, error);
+    } else {
+      console.log(`[email] Sent to ${to}: "${subject}"`, data);
+    }
   } catch (error) {
     console.error(`[email] Failed to send to ${to}: "${subject}"`, error);
   }
@@ -106,12 +110,16 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
   const interpolatedBody = interpolate(body, sampleVars);
 
   try {
-    await resend.emails.send({
+    const { data, error } = await resend.emails.send({
       from: `${branding.companyName} <${branding.senderEmail}>`,
       to,
       subject: `[TEST] ${interpolatedSubject}`,
       html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
     });
+    if (error) {
+      console.error(`[email] Resend test email error:`, error);
+      return { success: false, error: error.message };
+    }
     return { success: true };
   } catch (error) {
     return { success: false, error: String(error) };
