@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Heart, PartyPopper, ThumbsUp, MessageCircle, Pin, Cake, UserPlus, Star, Trash2 } from "lucide-react";
+import { Heart, PartyPopper, ThumbsUp, MessageCircle, Pin, Cake, UserPlus, Star, Trash2, Paperclip, Download } from "lucide-react";
 import { timeAgo, getInitials } from "@/lib/utils";
 import { toggleReaction, deleteFeedPost } from "@/lib/actions/feed";
 import { CommentSection } from "@/components/feed/comment-section";
@@ -18,6 +18,7 @@ type PostWithRelations = {
   mentionedEmployee?: { id: string; firstName: string; lastName: string; jobTitle: string } | null;
   reactions: { id: string; type: string; employeeId: string }[];
   comments: { id: string; content: string; createdAt: Date; author: { id: string; firstName: string; lastName: string } }[];
+  attachments?: { id: string; url: string; type: string; name: string }[];
   _count: { comments: number; reactions: number };
 };
 
@@ -48,6 +49,42 @@ function ReactionButton({
       <Icon className="h-4 w-4" />
       <span>{count}</span>
     </button>
+  );
+}
+
+function AttachmentGallery({ attachments }: { attachments?: { id: string; url: string; type: string; name: string }[] }) {
+  if (!attachments || attachments.length === 0) return null;
+  const images = attachments.filter((a) => a.type === "IMAGE");
+  const files = attachments.filter((a) => a.type === "FILE");
+  return (
+    <div className="mt-3">
+      {images.length > 0 && (
+        <div className={cn("grid gap-2", images.length === 1 ? "grid-cols-1" : images.length === 2 ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3")}>
+          {images.map((img) => (
+            <a key={img.id} href={img.url} target="_blank" rel="noopener noreferrer" className="block rounded-lg overflow-hidden border border-[var(--color-border)]">
+              <img src={img.url} alt={img.name} className="w-full max-h-80 object-cover" loading="lazy" />
+            </a>
+          ))}
+        </div>
+      )}
+      {files.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {files.map((file) => (
+            <a
+              key={file.id}
+              href={file.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] hover:bg-[var(--color-surface-hover)] transition-colors text-sm text-[var(--color-text-primary)]"
+            >
+              <Paperclip className="h-4 w-4 text-[var(--color-text-muted)]" />
+              <span className="truncate max-w-[200px]">{file.name}</span>
+              <Download className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -139,6 +176,7 @@ export function PostCard({
             </div>
           </div>
           <p className="text-[var(--color-text-primary)] leading-relaxed mb-3">{post.content}</p>
+          <AttachmentGallery attachments={post.attachments} />
           <div className={cn("flex items-center gap-3 p-3 rounded-lg", "bg-[var(--color-surface)]/50 border border-yellow-400/10")}>
             <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0", avatarColors[mentionedColorIdx])}>{mentionedInitials}</div>
             <div>
@@ -231,6 +269,7 @@ export function PostCard({
           )}
         </div>
         <p className="text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line">{post.content}</p>
+        <AttachmentGallery attachments={post.attachments} />
         <div className="pt-3 mt-3 border-t border-[var(--color-border)]">
           {reactionsBar}
           {commentsSection}

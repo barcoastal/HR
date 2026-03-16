@@ -16,6 +16,10 @@ export default async function FeedPage() {
     ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
     : "??";
 
+  const currentEmployee = session.user.employeeId
+    ? employees.find((e) => e.id === session.user.employeeId)
+    : null;
+
   const employeeList = employees.map((e) => ({
     id: e.id,
     firstName: e.firstName,
@@ -30,6 +34,7 @@ export default async function FeedPage() {
         <PostComposer
           employeeId={session.user.employeeId}
           initials={userInitials}
+          profilePhoto={currentEmployee?.profilePhoto || session.user.profilePhoto || null}
           employees={employeeList}
         />
       ) : (

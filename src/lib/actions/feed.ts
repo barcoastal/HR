@@ -11,6 +11,7 @@ export async function getFeedPosts() {
       mentionedEmployee: true,
       reactions: true,
       comments: { include: { author: true }, orderBy: { createdAt: "asc" } },
+      attachments: { orderBy: { createdAt: "asc" } },
       _count: { select: { comments: true, reactions: true } },
     },
     orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
@@ -21,6 +22,7 @@ export async function createFeedPost(data: {
   authorId: string;
   content: string;
   type?: FeedPostType;
+  attachments?: { url: string; type: "IMAGE" | "FILE"; name: string }[];
 }) {
   const post = await db.feedPost.create({
     data: {
@@ -29,6 +31,18 @@ export async function createFeedPost(data: {
       type: data.type || "GENERAL",
     },
   });
+
+  if (data.attachments && data.attachments.length > 0) {
+    await db.postAttachment.createMany({
+      data: data.attachments.map((a) => ({
+        postId: post.id,
+        url: a.url,
+        type: a.type,
+        name: a.name,
+      })),
+    });
+  }
+
   revalidatePath("/");
   return post;
 }
