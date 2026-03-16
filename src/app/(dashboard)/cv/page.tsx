@@ -4,7 +4,7 @@ import { getCandidates, getPositions, getAllCandidatesForDatabase } from "@/lib/
 import { getDepartments } from "@/lib/actions/departments";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
-import { Briefcase, Target } from "lucide-react";
+import { Briefcase, Target, Users, Archive } from "lucide-react";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { AddPositionForm } from "@/components/cv/add-position-form";
 import { CVTabs } from "@/components/cv/cv-tabs";
@@ -23,6 +23,7 @@ export default async function CVPage() {
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
+  const closedPositions = positions.filter((p) => p.status === "FILLED" || p.status === "CLOSED");
   const activeCandidates = pipelineCandidates.filter((c) => !["HIRED", "REJECTED"].includes(c.status)).length;
 
   return (
@@ -44,9 +45,11 @@ export default async function CVPage() {
       />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <StatCard title="Open Positions" value={openPositions.length} icon={<Briefcase className="h-5 w-5" />} color="blue" />
         <StatCard title="Active in Pipeline" value={activeCandidates} icon={<Target className="h-5 w-5" />} color="emerald" />
+        <StatCard title="Total Candidates" value={allCandidates.length} icon={<Users className="h-5 w-5" />} color="purple" />
+        <StatCard title="Archived Positions" value={closedPositions.length} icon={<Archive className="h-5 w-5" />} color="amber" />
       </div>
 
       <CVTabs
@@ -96,6 +99,17 @@ export default async function CVPage() {
         openPositions={openPositions.map((p) => ({
           id: p.id,
           title: p.title,
+          status: p.status,
+          description: p.description,
+          department: p.department ? { name: p.department.name } : null,
+          salary: p.salary,
+          _count: p._count,
+        }))}
+        closedPositions={closedPositions.map((p) => ({
+          id: p.id,
+          title: p.title,
+          status: p.status,
+          description: p.description,
           department: p.department ? { name: p.department.name } : null,
           salary: p.salary,
           _count: p._count,

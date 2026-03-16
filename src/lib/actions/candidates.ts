@@ -431,6 +431,30 @@ export async function createPosition(data: {
   return position;
 }
 
+export async function updatePositionStatus(
+  id: string,
+  status: "OPEN" | "CLOSED" | "FILLED"
+) {
+  const position = await db.position.update({
+    where: { id },
+    data: { status },
+  });
+  revalidatePath("/cv");
+  return position;
+}
+
+export async function assignCandidateToPosition(
+  candidateId: string,
+  positionId: string
+) {
+  const candidate = await db.candidate.update({
+    where: { id: candidateId },
+    data: { positionId, inPipeline: true, status: "NEW" },
+  });
+  revalidatePath("/cv");
+  return candidate;
+}
+
 export async function findMatchingCandidates(keywords: string[]) {
   if (keywords.length === 0) return [];
   const orConditions = keywords.flatMap((kw) => [
