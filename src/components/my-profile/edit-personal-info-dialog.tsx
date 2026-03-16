@@ -75,7 +75,30 @@ export function EditPersonalInfoDialog({ data }: { data: PersonalInfo }) {
         <div className="space-y-3">
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Pronouns</label>
-            <input value={form.pronouns} onChange={(e) => update("pronouns", e.target.value)} placeholder="e.g. she/her, he/him, they/them" className={inputClass} />
+            <select
+              value={["he/him", "she/her", "they/them", "he/they", "she/they", ""].includes(form.pronouns) ? form.pronouns : "custom"}
+              onChange={(e) => {
+                if (e.target.value === "custom") update("pronouns", "");
+                else update("pronouns", e.target.value);
+              }}
+              className={inputClass}
+            >
+              <option value="">Prefer not to say</option>
+              <option value="he/him">he/him</option>
+              <option value="she/her">she/her</option>
+              <option value="they/them">they/them</option>
+              <option value="he/they">he/they</option>
+              <option value="she/they">she/they</option>
+              <option value="custom">Custom...</option>
+            </select>
+            {!["he/him", "she/her", "they/them", "he/they", "she/they", ""].includes(form.pronouns) && (
+              <input
+                value={form.pronouns}
+                onChange={(e) => update("pronouns", e.target.value)}
+                placeholder="Enter your pronouns"
+                className={cn(inputClass, "mt-2")}
+              />
+            )}
           </div>
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">T-Shirt Size</label>

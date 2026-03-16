@@ -37,6 +37,8 @@ export default async function PeoplePage() {
             email: e.email,
             jobTitle: e.jobTitle,
             status: e.status,
+            pronouns: e.pronouns,
+            profilePhoto: e.profilePhoto,
             department: e.department ? { name: e.department.name } : null,
           }))}
           departments={deptNames}

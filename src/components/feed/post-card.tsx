@@ -14,7 +14,7 @@ type PostWithRelations = {
   type: string;
   pinned: boolean;
   createdAt: Date;
-  author: { id: string; firstName: string; lastName: string; jobTitle: string };
+  author: { id: string; firstName: string; lastName: string; jobTitle: string; pronouns?: string | null; profilePhoto?: string | null };
   mentionedEmployee?: { id: string; firstName: string; lastName: string; jobTitle: string } | null;
   reactions: { id: string; type: string; employeeId: string }[];
   comments: { id: string; content: string; createdAt: Date; author: { id: string; firstName: string; lastName: string } }[];
@@ -195,9 +195,16 @@ export function PostCard({
     <article className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]", post.pinned && "border-l-4 border-l-[var(--color-accent)]")}>
       <div className="p-5">
         <div className="flex items-center gap-3 mb-4">
-          <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>
+          {post.author.profilePhoto ? (
+            <img src={post.author.profilePhoto} alt="" className="h-10 w-10 rounded-full object-cover shrink-0" />
+          ) : (
+            <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>
+          )}
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[var(--color-text-primary)]">{post.author.firstName} {post.author.lastName}</p>
+            <p className="font-semibold text-[var(--color-text-primary)]">
+              {post.author.firstName} {post.author.lastName}
+              {post.author.pronouns && <span className="text-xs font-normal text-[var(--color-text-muted)] ml-1">({post.author.pronouns})</span>}
+            </p>
             <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle} · {timeAgo(post.createdAt)}</p>
           </div>
           {post.pinned && (

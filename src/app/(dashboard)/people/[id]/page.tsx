@@ -59,9 +59,13 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
       <div className={cn("rounded-2xl gradient-border overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className={cn("h-20 w-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold", avatarColors[colorIdx])}>
-              {initials}
-            </div>
+            {employee.profilePhoto ? (
+              <img src={employee.profilePhoto} alt="" className="h-20 w-20 rounded-2xl object-cover" />
+            ) : (
+              <div className={cn("h-20 w-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold", avatarColors[colorIdx])}>
+                {initials}
+              </div>
+            )}
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <h1 className="text-2xl font-bold text-gradient">{employee.firstName} {employee.lastName}</h1>

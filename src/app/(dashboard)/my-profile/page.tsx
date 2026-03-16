@@ -8,6 +8,7 @@ import {
 import { EditPersonalInfoDialog } from "@/components/my-profile/edit-personal-info-dialog";
 import { EditEmergencyContactDialog } from "@/components/my-profile/edit-emergency-contact-dialog";
 import { EditAboutDialog } from "@/components/my-profile/edit-about-dialog";
+import { ProfilePhotoUpload } from "@/components/my-profile/profile-photo-upload";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -50,9 +51,12 @@ export default async function MyProfilePage() {
       <div className={cn("rounded-2xl gradient-border overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className={cn("h-20 w-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold", avatarColors[colorIdx])}>
-              {initials}
-            </div>
+            <ProfilePhotoUpload
+              employeeId={profile.id}
+              currentPhoto={profile.profilePhoto}
+              initials={initials}
+              colorClass={avatarColors[colorIdx]}
+            />
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold text-gradient">{profile.firstName} {profile.lastName}</h1>

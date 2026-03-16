@@ -12,6 +12,8 @@ type Employee = {
   email: string;
   jobTitle: string;
   status: string;
+  pronouns: string | null;
+  profilePhoto: string | null;
   department: { name: string } | null;
 };
 
@@ -108,14 +110,19 @@ export function PeopleList({
             >
               <div className="flex items-start gap-4">
                 <div className="relative shrink-0">
-                  <div className={cn("h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold", avatarColors[colorIdx])}>
-                    {initials}
-                  </div>
+                  {employee.profilePhoto ? (
+                    <img src={employee.profilePhoto} alt="" className="h-12 w-12 rounded-full object-cover" />
+                  ) : (
+                    <div className={cn("h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold", avatarColors[colorIdx])}>
+                      {initials}
+                    </div>
+                  )}
                   <div className={cn("absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-[var(--color-surface)]", statusColors[employee.status] || "bg-gray-400")} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors truncate">
                     {employee.firstName} {employee.lastName}
+                    {employee.pronouns && <span className="text-xs font-normal text-[var(--color-text-muted)] ml-1">({employee.pronouns})</span>}
                   </p>
                   <p className="text-sm text-[var(--color-text-muted)] truncate">{employee.jobTitle}</p>
                   {deptName && (

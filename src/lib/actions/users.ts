@@ -78,6 +78,19 @@ export async function updateUserRole(id: string, role: UserRole) {
 }
 
 export async function deleteUser(id: string) {
+  // Only SUPER_ADMIN and ADMIN can delete users
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
+    throw new Error("Not authorized to delete users");
+  }
+
+  // Prevent deleting yourself
+  if (session.user?.id === id) {
+    throw new Error("You cannot delete your own account");
+  }
+
   await db.user.delete({ where: { id } });
   revalidatePath("/settings");
 }

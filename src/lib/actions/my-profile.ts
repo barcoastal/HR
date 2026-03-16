@@ -44,6 +44,17 @@ export async function updateMyProfile(
   return employee;
 }
 
+export async function updateProfilePhoto(employeeId: string, photoUrl: string) {
+  await db.employee.update({
+    where: { id: employeeId },
+    data: { profilePhoto: photoUrl },
+  });
+  revalidatePath("/my-profile");
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/people");
+  revalidatePath("/");
+}
+
 export async function getWelcomeData(employeeId: string) {
   const employee = await db.employee.findUnique({
     where: { id: employeeId },
