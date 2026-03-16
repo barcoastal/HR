@@ -103,15 +103,19 @@ export function TopBar() {
           />
         </button>
 
-        <button
-          className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-full",
-            "bg-gradient-to-br from-[var(--color-accent)] to-purple-600",
-            "text-xs font-semibold text-white transition-opacity duration-200 hover:opacity-90"
-          )}
-        >
-          {userInitials}
-        </button>
+        {session?.user?.profilePhoto ? (
+          <img src={session.user.profilePhoto} alt="" className="h-9 w-9 rounded-full object-cover shrink-0" />
+        ) : (
+          <button
+            className={cn(
+              "flex h-9 w-9 items-center justify-center rounded-full",
+              "bg-gradient-to-br from-[var(--color-accent)] to-purple-600",
+              "text-xs font-semibold text-white transition-opacity duration-200 hover:opacity-90"
+            )}
+          >
+            {userInitials}
+          </button>
+        )}
       </div>
     </header>
   );

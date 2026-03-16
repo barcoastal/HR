@@ -51,6 +51,7 @@ export const authOptions: NextAuthOptions = {
             : user.email,
           role: user.role,
           employeeId: user.employeeId,
+          profilePhoto: user.employee?.profilePhoto || null,
         };
       },
     }),
@@ -125,6 +126,7 @@ export const authOptions: NextAuthOptions = {
       user.id = dbUser.id;
       user.role = dbUser.role;
       user.employeeId = dbUser.employeeId;
+      user.profilePhoto = dbUser.employee?.profilePhoto || null;
       user.name = dbUser.employee
         ? `${dbUser.employee.firstName} ${dbUser.employee.lastName}`
         : dbUser.email;
@@ -136,6 +138,16 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.employeeId = user.employeeId;
+        token.profilePhoto = user.profilePhoto;
+      }
+
+      // Refresh profile photo from DB on each token refresh
+      if (token.employeeId) {
+        const emp = await db.employee.findUnique({
+          where: { id: token.employeeId as string },
+          select: { profilePhoto: true },
+        });
+        token.profilePhoto = emp?.profilePhoto || null;
       }
 
       // Persist Google OAuth tokens to RecruitmentPlatform for calendar access
@@ -171,6 +183,7 @@ export const authOptions: NextAuthOptions = {
       session.user.id = token.id;
       session.user.role = token.role;
       session.user.employeeId = token.employeeId;
+      session.user.profilePhoto = token.profilePhoto;
       return session;
     },
   },

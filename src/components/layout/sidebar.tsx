@@ -121,9 +121,13 @@ export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; com
       <div className="border-t border-[var(--color-border)]/60 px-3 py-4 space-y-2">
         {session?.user && (
           <div className="flex items-center gap-3 px-3 py-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-purple-600 text-xs font-semibold text-white">
-              {userInitials}
-            </div>
+            {session.user.profilePhoto ? (
+              <img src={session.user.profilePhoto} alt="" className="h-8 w-8 rounded-full object-cover shrink-0" />
+            ) : (
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-purple-600 text-xs font-semibold text-white">
+                {userInitials}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
                 {session.user.name}
