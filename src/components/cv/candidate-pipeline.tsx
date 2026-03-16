@@ -64,17 +64,9 @@ export function CandidatePipeline({ candidates, positions, employees }: { candid
       return;
     }
     if (newStatus === "BACKGROUND_CHECK") {
-      setHiringId(id);
-      try {
-        await fetch("/api/background-check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ candidateId: id }),
-        });
-      } finally {
-        setHiringId(null);
-      }
-      router.refresh();
+      // Open the detail dialog so user can configure BG check options
+      const c = candidates.find((c) => c.id === id);
+      if (c) setSelectedCandidate(c);
       return;
     }
     await updateCandidateStatus(id, newStatus);

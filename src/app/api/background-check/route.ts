@@ -1,12 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-const BG_CHECK_API_URL = "https://app.backgroundchecks.com/api/v1";
+const BG_CHECK_API_URL = "https://app.backgroundchecks.com";
 const BG_CHECK_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
 
-// POST /api/background-check  — initiate a background check
+// POST /api/background-check  — initiate a background check order
 export async function POST(req: NextRequest) {
-  const { candidateId } = await req.json();
+  const body = await req.json();
+  const { candidateId, options } = body as {
+    candidateId: string;
+    options?: {
+      report_sku?: "HIRE1" | "HIRE2" | "HIRE3";
+      drug_test?: "Y" | "N";
+      drug_sku?: "drug" | "drug9" | "drug10";
+      mvr?: "Y" | "N";
+      employment?: "Y" | "N";
+      education?: "Y" | "N";
+      blj?: "Y" | "N";
+      federal_criminal?: "Y" | "N";
+    };
+  };
 
   if (!candidateId) {
     return NextResponse.json({ error: "candidateId is required" }, { status: 400 });
@@ -22,25 +35,31 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${BG_CHECK_API_URL}/checks`, {
+    const payload = {
+      report_sku: options?.report_sku || "HIRE1",
+      order_quantity: "1",
+      applicant_emails: [candidate.email],
+      drug_test: options?.drug_test || "N",
+      drug_sku: options?.drug_test === "Y" ? (options?.drug_sku || "drug") : "drug",
+      mvr: options?.mvr || "N",
+      employment: options?.employment || "Y",
+      education: options?.education || "Y",
+      blj: options?.blj || "Y",
+      federal_criminal: options?.federal_criminal || "Y",
+      terms_agree: "Y",
+    };
+
+    const response = await fetch(`${BG_CHECK_API_URL}/orders/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${BG_CHECK_API_KEY}`,
       },
-      body: JSON.stringify({
-        first_name: candidate.firstName,
-        last_name: candidate.lastName,
-        email: candidate.email,
-        phone: candidate.phone || undefined,
-        position: candidate.position?.title || undefined,
-        package: "standard",
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      // If no API key configured, store as pending anyway (manual mode)
       if (!BG_CHECK_API_KEY) {
         await db.candidate.update({
           where: { id: candidateId },
@@ -69,14 +88,14 @@ export async function POST(req: NextRequest) {
       data: {
         status: "BACKGROUND_CHECK",
         backgroundCheckStatus: "PENDING",
-        backgroundCheckId: data.id || data.check_id || null,
+        backgroundCheckId: data.applicants?.[0]?.id || data.id || null,
         backgroundCheckDate: new Date(),
       },
     });
 
     return NextResponse.json({
       success: true,
-      checkId: data.id || data.check_id,
+      checkId: data.applicants?.[0]?.id || data.id,
       status: "PENDING",
     });
   } catch (error) {
@@ -123,7 +142,7 @@ export async function GET(req: NextRequest) {
   if (candidate.backgroundCheckId && BG_CHECK_API_KEY) {
     try {
       const response = await fetch(
-        `${BG_CHECK_API_URL}/checks/${candidate.backgroundCheckId}`,
+        `${BG_CHECK_API_URL}/orders/${candidate.backgroundCheckId}`,
         {
           headers: { Authorization: `Bearer ${BG_CHECK_API_KEY}` },
         }
@@ -153,7 +172,7 @@ export async function GET(req: NextRequest) {
   });
 }
 
-// PATCH /api/background-check  — manually update status (for when no API key)
+// PATCH /api/background-check  — manually update status
 export async function PATCH(req: NextRequest) {
   const { candidateId, status } = await req.json();
 
@@ -175,7 +194,7 @@ export async function PATCH(req: NextRequest) {
 
 function mapExternalStatus(externalStatus: string): string {
   const s = externalStatus?.toLowerCase();
-  if (s === "clear" || s === "passed" || s === "complete") return "PASSED";
+  if (s === "clear" || s === "passed" || s === "complete" || s === "completed") return "PASSED";
   if (s === "failed" || s === "alert" || s === "flagged") return "FAILED";
   if (s === "error") return "ERROR";
   return "PENDING";

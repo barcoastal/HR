@@ -109,6 +109,16 @@ export function CandidateDetailDialog({
   });
   const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
   const [bgCheckLoading, setBgCheckLoading] = useState(false);
+  const [bgCheckOptions, setBgCheckOptions] = useState({
+    report_sku: "HIRE1",
+    drug_test: "N",
+    drug_sku: "drug",
+    mvr: "N",
+    employment: "Y",
+    education: "Y",
+    blj: "Y",
+    federal_criminal: "Y",
+  });
   const router = useRouter();
 
   const [interviews, setInterviews] = useState<InterviewForDisplay[]>([]);
@@ -203,7 +213,7 @@ export function CandidateDetailDialog({
       await fetch("/api/background-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ candidateId: candidate.id }),
+        body: JSON.stringify({ candidateId: candidate.id, options: bgCheckOptions }),
       });
       setSaving(false);
       router.refresh();
@@ -344,8 +354,56 @@ export function CandidateDetailDialog({
               </div>
             )}
 
-            {/* Background Check section — shown when in BG CHECK status */}
-            {(form.status === "BACKGROUND_CHECK" || candidate.status === "BACKGROUND_CHECK") && (
+            {/* Background Check — options when about to initiate */}
+            {form.status === "BACKGROUND_CHECK" && candidate.status !== "BACKGROUND_CHECK" && (
+              <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-3">
+                <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check Options</p>
+                <div>
+                  <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Report Package</label>
+                  <select value={bgCheckOptions.report_sku} onChange={(e) => setBgCheckOptions((o) => ({ ...o, report_sku: e.target.value }))} className={inputClass}>
+                    <option value="HIRE1">HIRE1 — Basic</option>
+                    <option value="HIRE2">HIRE2 — Standard</option>
+                    <option value="HIRE3">HIRE3 — Comprehensive</option>
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {([
+                    { key: "federal_criminal", label: "Federal Criminal" },
+                    { key: "employment", label: "Employment Verification" },
+                    { key: "education", label: "Education Verification" },
+                    { key: "mvr", label: "Motor Vehicle Record" },
+                    { key: "blj", label: "County Criminal" },
+                    { key: "drug_test", label: "Drug Test" },
+                  ] as const).map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={bgCheckOptions[key] === "Y"}
+                        onChange={(e) => setBgCheckOptions((o) => ({ ...o, [key]: e.target.checked ? "Y" : "N" }))}
+                        className="rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+                {bgCheckOptions.drug_test === "Y" && (
+                  <div>
+                    <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Drug Test Panel</label>
+                    <select value={bgCheckOptions.drug_sku} onChange={(e) => setBgCheckOptions((o) => ({ ...o, drug_sku: e.target.value }))} className={inputClass}>
+                      <option value="drug">Standard Panel</option>
+                      <option value="drug9">9-Panel</option>
+                      <option value="drug10">10-Panel</option>
+                    </select>
+                  </div>
+                )}
+                <p className="text-[10px] text-[var(--color-text-muted)]">
+                  An email will be sent to {form.email || "the candidate"} via backgroundchecks.com
+                </p>
+              </div>
+            )}
+
+            {/* Background Check — status when already initiated */}
+            {candidate.status === "BACKGROUND_CHECK" && (
               <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-2">
                 <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check</p>
                 <div className="flex items-center justify-between">
