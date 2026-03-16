@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-const BG_CHECK_API_URL = "https://app.backgroundchecks.com";
+// Auth: query param ?api_token=XXX
+// Base: https://app.backgroundchecks.com/api
+const BG_CHECK_BASE = "https://app.backgroundchecks.com/api";
 const BG_CHECK_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
+
+function apiUrl(path: string) {
+  const sep = path.includes("?") ? "&" : "?";
+  return `${BG_CHECK_BASE}${path}${sep}api_token=${BG_CHECK_API_KEY}`;
+}
 
 // POST /api/background-check  — initiate a background check order
 export async function POST(req: NextRequest) {
@@ -37,7 +44,7 @@ export async function POST(req: NextRequest) {
   try {
     const payload = {
       report_sku: options?.report_sku || "HIRE1",
-      order_quantity: "1",
+      order_quantity: 1,
       applicant_emails: [candidate.email],
       drug_test: options?.drug_test || "N",
       drug_sku: options?.drug_test === "Y" ? (options?.drug_sku || "drug") : "drug",
@@ -49,12 +56,9 @@ export async function POST(req: NextRequest) {
       terms_agree: "Y",
     };
 
-    const response = await fetch(`${BG_CHECK_API_URL}/orders/new`, {
+    const response = await fetch(apiUrl("/orders/new"), {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${BG_CHECK_API_KEY}`,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
@@ -81,22 +85,25 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Response: { applicants: [{ applicant_email, report_key, applicant_invite_url }] }
     const data = await response.json();
+    const reportKey = data.applicants?.[0]?.report_key || null;
 
     await db.candidate.update({
       where: { id: candidateId },
       data: {
         status: "BACKGROUND_CHECK",
-        backgroundCheckStatus: "PENDING",
-        backgroundCheckId: data.applicants?.[0]?.id || data.id || null,
+        backgroundCheckStatus: "AWAITING_APPLICANT",
+        backgroundCheckId: reportKey,
         backgroundCheckDate: new Date(),
       },
     });
 
     return NextResponse.json({
       success: true,
-      checkId: data.applicants?.[0]?.id || data.id,
-      status: "PENDING",
+      reportKey,
+      inviteUrl: data.applicants?.[0]?.applicant_invite_url || null,
+      status: "AWAITING_APPLICANT",
     });
   } catch (error) {
     // Fallback: still move candidate to BACKGROUND_CHECK status
@@ -117,7 +124,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET /api/background-check?candidateId=xxx  — check status
+// GET /api/background-check?candidateId=xxx  — check/refresh status from API
 export async function GET(req: NextRequest) {
   const candidateId = req.nextUrl.searchParams.get("candidateId");
 
@@ -138,27 +145,36 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
   }
 
-  // If we have an external check ID, try to fetch latest status
+  // If we have a report_key, poll the actual status from backgroundchecks.com
   if (candidate.backgroundCheckId && BG_CHECK_API_KEY) {
     try {
+      // GET /reports/{report_key}/status
       const response = await fetch(
-        `${BG_CHECK_API_URL}/orders/${candidate.backgroundCheckId}`,
-        {
-          headers: { Authorization: `Bearer ${BG_CHECK_API_KEY}` },
-        }
+        apiUrl(`/reports/${candidate.backgroundCheckId}/status`),
+        { method: "GET" }
       );
 
       if (response.ok) {
         const data = await response.json();
-        const newStatus = mapExternalStatus(data.status);
+        // status: "A" = Awaiting Applicant, "P" = Pending, "C" = Complete
+        // flagged_for_end_user_review: boolean
+        const newStatus = mapApiStatus(data.status, data.flagged_for_end_user_review);
 
         if (newStatus !== candidate.backgroundCheckStatus) {
           await db.candidate.update({
             where: { id: candidateId },
             data: { backgroundCheckStatus: newStatus },
           });
-          return NextResponse.json({ status: newStatus, externalStatus: data.status });
         }
+
+        return NextResponse.json({
+          status: newStatus,
+          apiStatus: data.status,
+          flagged: data.flagged_for_end_user_review || false,
+          reports: data.reports || null,
+          checkId: candidate.backgroundCheckId,
+          date: candidate.backgroundCheckDate,
+        });
       }
     } catch {
       // API unreachable — return cached status
@@ -192,10 +208,17 @@ export async function PATCH(req: NextRequest) {
   return NextResponse.json({ success: true, status });
 }
 
-function mapExternalStatus(externalStatus: string): string {
-  const s = externalStatus?.toLowerCase();
-  if (s === "clear" || s === "passed" || s === "complete" || s === "completed") return "PASSED";
-  if (s === "failed" || s === "alert" || s === "flagged") return "FAILED";
-  if (s === "error") return "ERROR";
-  return "PENDING";
+// Map API status codes to our internal statuses
+// A = Awaiting Applicant, P = Pending (processing), C = Complete
+function mapApiStatus(apiStatus: string, flagged?: boolean): string {
+  switch (apiStatus) {
+    case "A":
+      return "AWAITING_APPLICANT";
+    case "P":
+      return "PENDING";
+    case "C":
+      return flagged ? "FAILED" : "PASSED";
+    default:
+      return "PENDING";
+  }
 }

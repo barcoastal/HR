@@ -412,18 +412,31 @@ export function CandidateDetailDialog({
                       "h-2.5 w-2.5 rounded-full",
                       bgCheckStatus === "PASSED" ? "bg-green-500" :
                       bgCheckStatus === "FAILED" ? "bg-red-500" :
-                      bgCheckStatus === "ERROR" ? "bg-red-500" :
+                      bgCheckStatus === "AWAITING_APPLICANT" ? "bg-yellow-400 animate-pulse" :
                       "bg-orange-400 animate-pulse"
                     )} />
                     <span className="text-sm text-[var(--color-text-primary)]">
-                      {bgCheckStatus === "PASSED" ? "Passed" :
-                       bgCheckStatus === "FAILED" ? "Failed" :
-                       bgCheckStatus === "ERROR" ? "Error" :
-                       "Pending"}
+                      {bgCheckStatus === "PASSED" ? "Passed — Clear" :
+                       bgCheckStatus === "FAILED" ? "Flagged for Review" :
+                       bgCheckStatus === "AWAITING_APPLICANT" ? "Awaiting Applicant" :
+                       "Processing"}
                     </span>
                   </div>
                   <div className="flex gap-1.5">
-                    {bgCheckStatus === "PENDING" && (
+                    <button
+                      onClick={async () => {
+                        setBgCheckLoading(true);
+                        const res = await fetch(`/api/background-check?candidateId=${candidate.id}`);
+                        const data = await res.json();
+                        setBgCheckStatus(data.status);
+                        setBgCheckLoading(false);
+                      }}
+                      disabled={bgCheckLoading}
+                      className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-primary)] hover:bg-[var(--color-border)] disabled:opacity-50"
+                    >
+                      {bgCheckLoading ? "Checking..." : "Refresh Status"}
+                    </button>
+                    {(bgCheckStatus === "PENDING" || bgCheckStatus === "AWAITING_APPLICANT") && (
                       <>
                         <button
                           onClick={async () => {
@@ -462,7 +475,10 @@ export function CandidateDetailDialog({
                   </div>
                 </div>
                 <p className="text-[10px] text-[var(--color-text-muted)]">
-                  via backgroundchecks.com {bgCheckStatus === "PASSED" && "— ready to hire"}
+                  via backgroundchecks.com
+                  {bgCheckStatus === "AWAITING_APPLICANT" && " — candidate needs to complete their form"}
+                  {bgCheckStatus === "PASSED" && " — ready to hire"}
+                  {bgCheckStatus === "FAILED" && " — review required before proceeding"}
                 </p>
               </div>
             )}
