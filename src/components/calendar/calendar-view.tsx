@@ -8,7 +8,7 @@ export type CalendarEvent = {
   id: string;
   name: string;
   date: string; // ISO string
-  type: "birthday" | "anniversary" | "benefits" | "interview";
+  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american";
   department?: string;
   years?: number; // for anniversaries
   meetLink?: string | null; // for interviews
@@ -26,6 +26,10 @@ const eventColors: Record<CalendarEvent["type"], { dot: string; bg: string; text
   anniversary: { dot: "bg-rose-400", bg: "bg-rose-500/15", text: "text-rose-400", label: "Anniversary" },
   benefits: { dot: "bg-emerald-400", bg: "bg-emerald-500/15", text: "text-emerald-400", label: "Benefits Eligible" },
   interview: { dot: "bg-purple-400", bg: "bg-purple-500/15", text: "text-purple-400", label: "Interview" },
+  "holiday-jewish": { dot: "bg-blue-400", bg: "bg-blue-500/15", text: "text-blue-400", label: "Jewish Holiday" },
+  "holiday-muslim": { dot: "bg-green-400", bg: "bg-green-500/15", text: "text-green-400", label: "Muslim Holiday" },
+  "holiday-christian": { dot: "bg-violet-400", bg: "bg-violet-500/15", text: "text-violet-400", label: "Christian Holiday" },
+  "holiday-american": { dot: "bg-red-400", bg: "bg-red-500/15", text: "text-red-400", label: "US Holiday" },
 };
 
 function getDaysInMonth(year: number, month: number) {
@@ -88,6 +92,14 @@ export function CalendarView({ events }: Props) {
     () => events.filter((e) => {
       const d = new Date(e.date);
       return e.type === "benefits" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
+    [events, currentMonth, currentYear]
+  );
+
+  const monthHolidays = useMemo(
+    () => events.filter((e) => {
+      const d = new Date(e.date);
+      return e.type.startsWith("holiday-") && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
     }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
     [events, currentMonth, currentYear]
   );
@@ -180,7 +192,7 @@ export function CalendarView({ events }: Props) {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mb-4">
         {Object.entries(eventColors).map(([type, config]) => (
           <div key={type} className="flex items-center gap-1.5">
             <div className={cn("h-2.5 w-2.5 rounded-full", config.dot)} />
@@ -313,7 +325,7 @@ export function CalendarView({ events }: Props) {
       )}
 
       {/* Monthly Summary Lists */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
         {/* Birthdays */}
         <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-2 mb-4">
@@ -406,6 +418,37 @@ export function CalendarView({ events }: Props) {
             </div>
           ) : (
             <p className="text-sm text-[var(--color-text-muted)]">No benefits dates this month</p>
+          )}
+        </div>
+
+        {/* Holidays */}
+        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <div className="flex items-center gap-2 mb-4">
+            <div className="h-2.5 w-2.5 rounded-full bg-blue-400" />
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
+              Holidays This Month
+            </h3>
+            <span className="ml-auto text-xs text-[var(--color-text-muted)]">{monthHolidays.length}</span>
+          </div>
+          {monthHolidays.length > 0 ? (
+            <div className="space-y-2.5">
+              {monthHolidays.map((h) => {
+                const config = eventColors[h.type];
+                return (
+                  <div key={h.id} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={cn("h-2 w-2 rounded-full", config.dot)} />
+                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{h.name}</p>
+                    </div>
+                    <span className={cn("text-xs font-medium", config.text)}>
+                      {new Date(h.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--color-text-muted)]">No holidays this month</p>
           )}
         </div>
       </div>

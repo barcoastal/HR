@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
+import { getHolidaysForYear } from "@/lib/holidays";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default async function CalendarPage() {
@@ -85,9 +86,20 @@ export default async function CalendarPage() {
     });
   }
 
+  // Holidays (Jewish, Muslim, Christian, American)
+  const holidays = getHolidaysForYear(currentYear);
+  for (const h of holidays) {
+    events.push({
+      id: `holiday-${h.category}-${h.name.replace(/\s/g, "-").toLowerCase()}`,
+      name: h.name,
+      date: h.date.toISOString(),
+      type: `holiday-${h.category}` as CalendarEvent["type"],
+    });
+  }
+
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <PageHeader title="Calendar" description="Birthdays, work anniversaries, benefits eligibility, and interviews" />
+      <PageHeader title="Calendar" description="Birthdays, anniversaries, interviews, and holidays" />
 
       <div className="glass-card p-1">
         <CalendarView events={events} />
