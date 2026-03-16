@@ -25,8 +25,10 @@ async function getCompanyBranding(): Promise<{ companyName: string; logoUrl: str
     const { db } = await import("@/lib/db");
     const settings = await db.companySettings.findUnique({ where: { id: "singleton" } });
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-    const senderEmail = settings?.senderEmail && isValidEmail(settings.senderEmail.trim())
-      ? settings.senderEmail.trim()
+    // If DB still has the old Resend test domain, treat it as unset
+    const dbEmail = settings?.senderEmail?.trim();
+    const senderEmail = dbEmail && isValidEmail(dbEmail) && !dbEmail.endsWith("@resend.dev")
+      ? dbEmail
       : DEFAULT_SENDER_EMAIL;
     console.log(`[email] Branding loaded — senderEmail: ${senderEmail}, dbValue: ${settings?.senderEmail}`);
     return {
