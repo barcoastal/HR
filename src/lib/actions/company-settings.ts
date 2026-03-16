@@ -22,7 +22,7 @@ export async function getCompanySettings() {
       companySize: "",
       logoUrl: null,
       faviconUrl: null,
-      senderEmail: "onboarding@resend.dev",
+      senderEmail: "noreply@hr.coastaldebt-tools.com",
       senderName: "Coastal HR",
       updatedAt: new Date(),
     };

@@ -770,7 +770,7 @@ model CompanySettings {
   companySize   String  @default("")
   logoUrl       String?
   faviconUrl    String?
-  senderEmail   String  @default("onboarding@resend.dev")
+  senderEmail   String  @default("noreply@hr.coastaldebt-tools.com")
   senderName    String  @default("Coastal HR")
   updatedAt     DateTime @updatedAt
 }

@@ -13,19 +13,31 @@ async function getTemplate(type: string): Promise<{ subject: string; body: strin
   }
 }
 
+const DEFAULT_SENDER_EMAIL = process.env.SENDER_EMAIL || "noreply@hr.coastaldebt-tools.com";
+const DEFAULT_SENDER_NAME = "Coastal HR";
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 async function getCompanyBranding(): Promise<{ companyName: string; logoUrl: string | null; senderEmail: string; senderName: string }> {
   try {
     const { db } = await import("@/lib/db");
     const settings = await db.companySettings.findUnique({ where: { id: "singleton" } });
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const senderEmail = settings?.senderEmail && isValidEmail(settings.senderEmail.trim())
+      ? settings.senderEmail.trim()
+      : DEFAULT_SENDER_EMAIL;
+    console.log(`[email] Branding loaded — senderEmail: ${senderEmail}, dbValue: ${settings?.senderEmail}`);
     return {
       companyName: settings?.companyName || "Coastal HR",
       logoUrl: settings?.logoUrl ? `${baseUrl}${settings.logoUrl}` : null,
-      senderEmail: settings?.senderEmail || "onboarding@resend.dev",
-      senderName: settings?.senderName || settings?.companyName || "Coastal HR",
+      senderEmail,
+      senderName: settings?.senderName || settings?.companyName || DEFAULT_SENDER_NAME,
     };
-  } catch {
-    return { companyName: "Coastal HR", logoUrl: null, senderEmail: "onboarding@resend.dev", senderName: "Coastal HR" };
+  } catch (e) {
+    console.error("[email] Failed to load branding:", e);
+    return { companyName: "Coastal HR", logoUrl: null, senderEmail: DEFAULT_SENDER_EMAIL, senderName: DEFAULT_SENDER_NAME };
   }
 }
 
