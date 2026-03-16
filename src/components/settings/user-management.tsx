@@ -10,6 +10,7 @@ import type { UserRole } from "@/generated/prisma/client";
 
 const roleColors: Record<string, string> = {
   ADMIN: "bg-red-500/15 text-red-400",
+  HR: "bg-purple-500/15 text-purple-400",
   MANAGER: "bg-blue-500/15 text-blue-400",
   EMPLOYEE: "bg-[var(--color-surface-hover)] text-[var(--color-text-muted)]",
 };
@@ -96,6 +97,7 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
                       className={cn("px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer", roleColors[user.role])}
                     >
                       <option value="ADMIN">Admin</option>
+                      <option value="HR">HR</option>
                       <option value="MANAGER">Manager</option>
                       <option value="EMPLOYEE">Employee</option>
                     </select>

@@ -39,7 +39,7 @@ export async function inviteUser(data: {
           firstName,
           lastName,
           email: data.email,
-          jobTitle: data.role === "ADMIN" ? "Administrator" : data.role === "MANAGER" ? "Manager" : "Employee",
+          jobTitle: data.role === "ADMIN" ? "Administrator" : data.role === "HR" ? "HR Manager" : data.role === "MANAGER" ? "Manager" : "Employee",
           startDate: new Date(),
           anniversaryDate: new Date(),
           status: "ACTIVE",

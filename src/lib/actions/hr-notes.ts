@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getHRNotes(employeeId: string) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN") return [];
+  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") return [];
 
   return db.hRNote.findMany({
     where: { employeeId },
@@ -17,7 +17,7 @@ export async function getHRNotes(employeeId: string) {
 
 export async function addHRNote(employeeId: string, content: string) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN") throw new Error("Not authorized");
+  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
   if (!content.trim()) throw new Error("Note content required");
 
   const authorId = session.user.employeeId;
@@ -33,7 +33,7 @@ export async function addHRNote(employeeId: string, content: string) {
 
 export async function deleteHRNote(noteId: string) {
   const session = await requireAuth();
-  if (session.user?.role !== "ADMIN") throw new Error("Not authorized");
+  if (session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
   const note = await db.hRNote.findUnique({ where: { id: noteId } });
   if (!note) throw new Error("Note not found");

@@ -3522,7 +3522,8 @@ export const SigningRequestScalarFieldEnum = {
   signedAt: 'signedAt',
   viewedAt: 'viewedAt',
   expiresAt: 'expiresAt',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  message: 'message'
 } as const
 
 export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]

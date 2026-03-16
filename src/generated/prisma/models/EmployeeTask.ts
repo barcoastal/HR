@@ -482,9 +482,9 @@ export type EmployeeTaskMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
-export type EmployeeTaskScalarRelationFilter = {
-  is?: Prisma.EmployeeTaskWhereInput
-  isNot?: Prisma.EmployeeTaskWhereInput
+export type EmployeeTaskNullableScalarRelationFilter = {
+  is?: Prisma.EmployeeTaskWhereInput | null
+  isNot?: Prisma.EmployeeTaskWhereInput | null
 }
 
 export type EmployeeTaskCreateNestedManyWithoutEmployeeInput = {
@@ -623,10 +623,12 @@ export type EmployeeTaskCreateNestedOneWithoutSigningRequestInput = {
   connect?: Prisma.EmployeeTaskWhereUniqueInput
 }
 
-export type EmployeeTaskUpdateOneRequiredWithoutSigningRequestNestedInput = {
+export type EmployeeTaskUpdateOneWithoutSigningRequestNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeTaskCreateWithoutSigningRequestInput, Prisma.EmployeeTaskUncheckedCreateWithoutSigningRequestInput>
   connectOrCreate?: Prisma.EmployeeTaskCreateOrConnectWithoutSigningRequestInput
   upsert?: Prisma.EmployeeTaskUpsertWithoutSigningRequestInput
+  disconnect?: Prisma.EmployeeTaskWhereInput | boolean
+  delete?: Prisma.EmployeeTaskWhereInput | boolean
   connect?: Prisma.EmployeeTaskWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeTaskUpdateToOneWithWhereWithoutSigningRequestInput, Prisma.EmployeeTaskUpdateWithoutSigningRequestInput>, Prisma.EmployeeTaskUncheckedUpdateWithoutSigningRequestInput>
 }

@@ -20,6 +20,7 @@ export type EmployeeStatus = (typeof EmployeeStatus)[keyof typeof EmployeeStatus
 
 export const UserRole = {
   ADMIN: 'ADMIN',
+  HR: 'HR',
   MANAGER: 'MANAGER',
   EMPLOYEE: 'EMPLOYEE'
 } as const
