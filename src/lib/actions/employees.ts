@@ -356,10 +356,11 @@ export async function bulkImportEmployees(
   employees: {
     firstName: string;
     lastName: string;
-    email: string;
+    email?: string;
     jobTitle?: string;
     phone?: string;
     departmentId?: string;
+    departmentName?: string;
     managerId?: string;
     startDate?: string;
     location?: string;
@@ -369,22 +370,50 @@ export async function bulkImportEmployees(
   const skipped: string[] = [];
   const errors: string[] = [];
 
+  // Cache department lookups to avoid repeated DB queries
+  const deptCache: Record<string, string> = {};
+
+  async function resolveDepartmentId(emp: typeof employees[0]): Promise<string | null> {
+    if (emp.departmentId) return emp.departmentId;
+    if (!emp.departmentName) return null;
+
+    const name = emp.departmentName.trim();
+    if (deptCache[name]) return deptCache[name];
+
+    // Try to find existing department (case-insensitive)
+    let dept = await db.department.findFirst({
+      where: { name: { equals: name, mode: "insensitive" } },
+    });
+
+    if (!dept) {
+      dept = await db.department.create({ data: { name } });
+    }
+
+    deptCache[name] = dept.id;
+    return dept.id;
+  }
+
   for (const emp of employees) {
     try {
-      const existing = await db.employee.findUnique({ where: { email: emp.email } });
-      if (existing) {
-        skipped.push(emp.email);
-        continue;
+      // Skip duplicates by email if email is provided
+      if (emp.email) {
+        const existing = await db.employee.findUnique({ where: { email: emp.email } });
+        if (existing) {
+          skipped.push(emp.email);
+          continue;
+        }
       }
+
+      const departmentId = await resolveDepartmentId(emp);
 
       await db.employee.create({
         data: {
           firstName: emp.firstName,
           lastName: emp.lastName,
-          email: emp.email,
+          email: emp.email || `${emp.firstName.toLowerCase()}.${emp.lastName.toLowerCase().replace(/\s+/g, '')}@pending.local`,
           jobTitle: emp.jobTitle || "Employee",
           phone: emp.phone || null,
-          departmentId: emp.departmentId || null,
+          departmentId,
           managerId: emp.managerId || null,
           startDate: emp.startDate ? new Date(emp.startDate) : new Date(),
           anniversaryDate: emp.startDate ? new Date(emp.startDate) : new Date(),
@@ -395,7 +424,7 @@ export async function bulkImportEmployees(
       created++;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
-      errors.push(`Failed to import ${emp.email}: ${message}`);
+      errors.push(`Failed to import ${emp.email || emp.firstName + ' ' + emp.lastName}: ${message}`);
     }
   }
 

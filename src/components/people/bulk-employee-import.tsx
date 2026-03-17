@@ -7,7 +7,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { bulkImportEmployees } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 
-type EmployeeField = "firstName" | "lastName" | "email" | "jobTitle" | "phone" | "departmentId" | "location" | "startDate" | "skip";
+type EmployeeField = "firstName" | "lastName" | "email" | "jobTitle" | "phone" | "department" | "location" | "startDate" | "skip";
 
 const FIELD_OPTIONS: { value: EmployeeField; label: string }[] = [
   { value: "skip", label: "(Skip)" },
@@ -16,6 +16,7 @@ const FIELD_OPTIONS: { value: EmployeeField; label: string }[] = [
   { value: "email", label: "Email" },
   { value: "jobTitle", label: "Job Title" },
   { value: "phone", label: "Phone" },
+  { value: "department", label: "Department" },
   { value: "location", label: "Location" },
   { value: "startDate", label: "Start Date" },
 ];
@@ -25,9 +26,10 @@ const HEADER_MAP: Record<string, EmployeeField> = {
   "last name": "lastName", "lastname": "lastName", "last": "lastName", "surname": "lastName", "family name": "lastName",
   "email": "email", "e-mail": "email", "email address": "email", "work email": "email",
   "phone": "phone", "phone number": "phone", "telephone": "phone", "mobile": "phone",
-  "job title": "jobTitle", "jobtitle": "jobTitle", "title": "jobTitle", "position": "jobTitle", "role": "jobTitle",
+  "job title": "jobTitle", "jobtitle": "jobTitle", "title": "jobTitle", "position": "jobTitle", "role": "jobTitle", "primary job title": "jobTitle",
+  "department": "department", "dept": "department", "current department": "department", "team": "department",
   "location": "location", "office": "location", "city": "location",
-  "start date": "startDate", "startdate": "startDate", "hire date": "startDate", "hiredate": "startDate", "date hired": "startDate",
+  "start date": "startDate", "startdate": "startDate", "hire date": "startDate", "hiredate": "startDate", "date hired": "startDate", "employee start date": "startDate",
 };
 
 function parseCsv(text: string): { headers: string[]; rows: string[][] } {
@@ -103,7 +105,8 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
     setMapping((m) => m.map((v, i) => (i === index ? value : v)));
   }
 
-  const hasRequired = mapping.includes("firstName") && mapping.includes("lastName") && mapping.includes("email");
+  const hasRequired = mapping.includes("firstName") && mapping.includes("lastName");
+  const hasDeptFromCsv = mapping.includes("department");
 
   async function handleImport() {
     setImporting(true);
@@ -113,15 +116,16 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
         if (field !== "skip" && row[i]) entry[field] = row[i];
       });
       return entry;
-    }).filter((e) => e.firstName && e.lastName && e.email);
+    }).filter((e) => e.firstName && e.lastName);
 
     const payload = employees.map((e) => ({
       firstName: e.firstName,
       lastName: e.lastName,
-      email: e.email,
+      email: e.email || undefined,
       jobTitle: e.jobTitle || undefined,
       phone: e.phone || undefined,
-      departmentId: selectedDept || undefined,
+      departmentName: e.department || undefined,
+      departmentId: (!hasDeptFromCsv && selectedDept) ? selectedDept : undefined,
       startDate: e.startDate || undefined,
       location: e.location || undefined,
     }));
@@ -198,7 +202,7 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
                 Drop a CSV file here or click to browse
               </span>
               <span className="text-xs text-[var(--color-text-muted)]">
-                Required: First Name, Last Name, Email
+                Required: First Name, Last Name (Email optional)
               </span>
             </div>
           </div>
@@ -212,15 +216,17 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
               <span className="ml-auto">{rows.length} rows found</span>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                Assign all to department (optional)
-              </label>
-              <select value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)} className={inputClass}>
-                <option value="">No department</option>
-                {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-              </select>
-            </div>
+            {!hasDeptFromCsv && (
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                  Assign all to department (optional)
+                </label>
+                <select value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)} className={inputClass}>
+                  <option value="">No department</option>
+                  {departments.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
+                </select>
+              </div>
+            )}
 
             <div className="space-y-2">
               <p className="text-xs font-medium text-[var(--color-text-primary)]">Map columns to employee fields:</p>
@@ -270,7 +276,7 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
 
             {!hasRequired && (
               <p className="text-xs text-red-500">
-                Please map First Name, Last Name, and Email columns to proceed.
+                Please map First Name and Last Name columns to proceed.
               </p>
             )}
 
