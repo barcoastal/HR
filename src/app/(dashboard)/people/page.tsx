@@ -3,6 +3,7 @@ import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
+import { BulkEmployeeImport } from "@/components/people/bulk-employee-import";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default async function PeoplePage() {
@@ -19,7 +20,12 @@ export default async function PeoplePage() {
       <PageHeader
         title="People"
         description={`${employees.length} team member${employees.length !== 1 ? "s" : ""} across the organization`}
-        action={<AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />}
+        action={
+          <div className="flex items-center gap-2">
+            <BulkEmployeeImport departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+            <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+          </div>
+        }
       />
 
       {employees.length === 0 ? (

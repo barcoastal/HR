@@ -12,6 +12,7 @@ datasource db {
 // ---------------------
 
 enum EmployeeStatus {
+  PENDING
   ACTIVE
   ONBOARDING
   OFFBOARDED

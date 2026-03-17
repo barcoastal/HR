@@ -351,3 +351,115 @@ export async function deleteEmployee(id: string) {
   revalidatePath("/people");
   revalidatePath("/org");
 }
+
+export async function bulkImportEmployees(
+  employees: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    jobTitle?: string;
+    phone?: string;
+    departmentId?: string;
+    managerId?: string;
+    startDate?: string;
+    location?: string;
+  }[]
+): Promise<{ created: number; skipped: string[]; errors: string[] }> {
+  let created = 0;
+  const skipped: string[] = [];
+  const errors: string[] = [];
+
+  for (const emp of employees) {
+    try {
+      const existing = await db.employee.findUnique({ where: { email: emp.email } });
+      if (existing) {
+        skipped.push(emp.email);
+        continue;
+      }
+
+      await db.employee.create({
+        data: {
+          firstName: emp.firstName,
+          lastName: emp.lastName,
+          email: emp.email,
+          jobTitle: emp.jobTitle || "Employee",
+          phone: emp.phone || null,
+          departmentId: emp.departmentId || null,
+          managerId: emp.managerId || null,
+          startDate: emp.startDate ? new Date(emp.startDate) : new Date(),
+          anniversaryDate: emp.startDate ? new Date(emp.startDate) : new Date(),
+          location: emp.location || null,
+          status: "PENDING",
+        },
+      });
+      created++;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      errors.push(`Failed to import ${emp.email}: ${message}`);
+    }
+  }
+
+  revalidatePath("/people");
+  revalidatePath("/org");
+  return { created, skipped, errors };
+}
+
+export async function approveAndInviteEmployee(employeeId: string) {
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+  if (employee.status !== "PENDING") throw new Error("Employee is not pending");
+
+  await db.employee.update({
+    where: { id: employeeId },
+    data: { status: "ACTIVE" },
+  });
+
+  // Create user account
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const existingUser = await db.user.findUnique({ where: { email: employee.email } });
+  if (!existingUser) {
+    await db.user.create({
+      data: {
+        email: employee.email,
+        role: "EMPLOYEE",
+        employeeId: employee.id,
+      },
+    });
+  } else if (!existingUser.employeeId) {
+    await db.user.update({
+      where: { id: existingUser.id },
+      data: { employeeId: employee.id },
+    });
+  }
+
+  // Send welcome email
+  sendWelcomeEmail({
+    to: employee.email,
+    role: "Employee",
+    loginUrl: `${baseUrl}/login`,
+  });
+
+  revalidatePath("/people");
+  revalidatePath("/org");
+  revalidatePath("/settings");
+  return employee;
+}
+
+export async function bulkApproveAndInviteEmployees(employeeIds: string[]) {
+  let approved = 0;
+  const errors: string[] = [];
+
+  for (const id of employeeIds) {
+    try {
+      await approveAndInviteEmployee(id);
+      approved++;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      errors.push(`${id}: ${message}`);
+    }
+  }
+
+  revalidatePath("/people");
+  revalidatePath("/org");
+  return { approved, errors };
+}

@@ -10,6 +10,7 @@
 */
 
 export const EmployeeStatus = {
+  PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   ONBOARDING: 'ONBOARDING',
   OFFBOARDED: 'OFFBOARDED'

@@ -1,9 +1,11 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { Search, Mail, Filter } from "lucide-react";
+import { Search, Mail, Filter, UserCheck, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { approveAndInviteEmployee, bulkApproveAndInviteEmployees } from "@/lib/actions/employees";
 
 type Employee = {
   id: string;
@@ -18,6 +20,7 @@ type Employee = {
 };
 
 const statusColors: Record<string, string> = {
+  PENDING: "bg-amber-500",
   ACTIVE: "bg-emerald-500",
   ONBOARDING: "bg-blue-500",
   OFFBOARDED: "bg-gray-400",
@@ -43,8 +46,14 @@ export function PeopleList({
 }) {
   const [search, setSearch] = useState("");
   const [selectedDept, setSelectedDept] = useState("All");
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+  const [approvingAll, setApprovingAll] = useState(false);
+  const router = useRouter();
 
-  const filtered = employees.filter((emp) => {
+  const pendingEmployees = employees.filter((e) => e.status === "PENDING");
+  const nonPendingEmployees = employees.filter((e) => e.status !== "PENDING");
+
+  const filtered = nonPendingEmployees.filter((emp) => {
     const matchesSearch =
       !search ||
       `${emp.firstName} ${emp.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
@@ -55,8 +64,89 @@ export function PeopleList({
     return matchesSearch && matchesDept;
   });
 
+  async function handleApprove(id: string) {
+    setApprovingId(id);
+    await approveAndInviteEmployee(id);
+    setApprovingId(null);
+    router.refresh();
+  }
+
+  async function handleApproveAll() {
+    setApprovingAll(true);
+    await bulkApproveAndInviteEmployees(pendingEmployees.map((e) => e.id));
+    setApprovingAll(false);
+    router.refresh();
+  }
+
   return (
     <>
+      {pendingEmployees.length > 0 && (
+        <div className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+                {pendingEmployees.length} Pending Employee{pendingEmployees.length !== 1 ? "s" : ""}
+              </p>
+              <p className="text-xs text-[var(--color-text-muted)]">
+                Approve to send login invitations
+              </p>
+            </div>
+            <button
+              onClick={handleApproveAll}
+              disabled={approvingAll}
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium",
+                "bg-emerald-500 text-white hover:bg-emerald-600",
+                "disabled:opacity-50 transition-colors"
+              )}
+            >
+              {approvingAll ? (
+                <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Approving...</>
+              ) : (
+                <><UserCheck className="h-3.5 w-3.5" /> Approve All & Send Invites</>
+              )}
+            </button>
+          </div>
+          <div className="space-y-2 max-h-[300px] overflow-y-auto">
+            {pendingEmployees.map((emp) => {
+              const initials = getInitials(emp.firstName, emp.lastName);
+              const colorIdx = emp.firstName.charCodeAt(0) % avatarColors.length;
+              return (
+                <div key={emp.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)]">
+                  <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0", avatarColors[colorIdx])}>
+                    {initials}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                      {emp.firstName} {emp.lastName}
+                    </p>
+                    <p className="text-xs text-[var(--color-text-muted)] truncate">
+                      {emp.jobTitle} {emp.department ? `· ${emp.department.name}` : ""} · {emp.email}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleApprove(emp.id)}
+                    disabled={approvingId === emp.id}
+                    className={cn(
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium shrink-0",
+                      "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20",
+                      "disabled:opacity-50 transition-colors"
+                    )}
+                  >
+                    {approvingId === emp.id ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <UserCheck className="h-3 w-3" />
+                    )}
+                    Approve
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
         <input
