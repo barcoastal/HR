@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { Plus, Loader2, ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { Plus, Loader2, ArrowUpRight, Check, Sparkles, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createPosition, pullCandidateToRecruitment } from "@/lib/actions/candidates";
@@ -180,6 +180,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
   const [step, setStep] = useState<"form" | "recommendations">("form");
   const [createdPositionId, setCreatedPositionId] = useState<string | null>(null);
   const [createdPositionTitle, setCreatedPositionTitle] = useState("");
+  const [postToJobing, setPostToJobing] = useState(true);
   const [form, setForm] = useState({
     title: "",
     departmentId: "",
@@ -202,6 +203,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       description: form.description || undefined,
       requirements: form.requirements || undefined,
       salary: form.salary || undefined,
+      postToJobing,
     });
     setCreatedPositionId(position.id);
     setCreatedPositionTitle(form.title);
@@ -267,6 +269,28 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Salary Range</label>
               <input value={form.salary} onChange={(e) => update("salary", e.target.value)} className={inputClass} placeholder="$80k - $120k" />
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
+              <div className="flex items-center gap-2">
+                <ExternalLink className="h-4 w-4 text-orange-400" />
+                <div>
+                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Jobing</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">Automatically publish this job on pro.jobing.com</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPostToJobing(!postToJobing)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
+                  postToJobing ? "bg-orange-500" : "bg-[var(--color-border)]"
+                )}
+              >
+                <span className={cn(
+                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
+                  postToJobing ? "translate-x-4.5" : "translate-x-0.5"
+                )} />
+              </button>
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-4">

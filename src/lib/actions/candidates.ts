@@ -427,8 +427,30 @@ export async function createPosition(data: {
   description?: string;
   requirements?: string;
   salary?: string;
+  postToJobing?: boolean;
 }) {
-  const position = await db.position.create({ data });
+  const { postToJobing, ...positionData } = data;
+  const position = await db.position.create({ data: positionData });
+
+  if (postToJobing) {
+    const { postJobToJobing } = await import("@/lib/platform-sync/clients/jobing");
+    let departmentName: string | undefined;
+    if (data.departmentId) {
+      const dept = await db.department.findUnique({ where: { id: data.departmentId }, select: { name: true } });
+      if (dept) departmentName = dept.name;
+    }
+    const result = await postJobToJobing({
+      title: data.title,
+      description: data.description,
+      requirements: data.requirements,
+      salary: data.salary,
+      departmentName,
+    });
+    if (result.jobId) {
+      await db.position.update({ where: { id: position.id }, data: { jobingJobId: result.jobId } });
+    }
+  }
+
   revalidatePath("/cv");
   return position;
 }

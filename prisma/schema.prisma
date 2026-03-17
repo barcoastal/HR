@@ -538,6 +538,7 @@ model Position {
   requirements  String?
   salary        String?
   status        PositionStatus @default(OPEN)
+  jobingJobId   String?
   candidates    Candidate[]
   interviews    Interview[]
   createdAt     DateTime       @default(now())

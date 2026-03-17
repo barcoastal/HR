@@ -174,6 +174,52 @@ export class JobingClient implements PlatformClient {
   }
 }
 
+export async function postJobToJobing(job: {
+  title: string;
+  description?: string;
+  requirements?: string;
+  salary?: string;
+  departmentName?: string;
+}): Promise<{ jobId: string | null; error?: string }> {
+  const apiKey = process.env.NOLIG_API_KEY || "";
+  if (!apiKey) {
+    return { jobId: null, error: "NOLIG_API_KEY not configured" };
+  }
+
+  try {
+    const payload: Record<string, string> = {
+      title: job.title,
+      company: getCompany(),
+    };
+    if (job.description) payload.description = job.description;
+    if (job.requirements) payload.requirements = job.requirements;
+    if (job.salary) payload.salary = job.salary;
+    if (job.departmentName) payload.department = job.departmentName;
+
+    const res = await fetch(`${BASE_URL}/jobs`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer token=${apiKey}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      return { jobId: null, error: `Jobing API error ${res.status}: ${text}` };
+    }
+
+    const data = await res.json();
+    const jobId = data.id || data.job_id || null;
+    return { jobId };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return { jobId: null, error: message };
+  }
+}
+
 function mapApplicant(a: JobingApplicant, jobMap: Record<string, string> = {}): MockCandidate {
   const resumeUrl = a.resume || a.resume_url || undefined;
   const jobTitle = a.job_id ? jobMap[a.job_id] : undefined;
