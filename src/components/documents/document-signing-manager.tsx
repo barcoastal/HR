@@ -9,6 +9,7 @@ import {
   Download,
   Copy,
   RotateCcw,
+  PenLine,
   Ban,
   Clock,
   Eye,
@@ -50,6 +51,7 @@ type Props = {
   signingRequests: SigningRequest[];
   employees: { id: string; firstName: string; lastName: string; email: string }[];
   isAdmin?: boolean;
+  currentEmployeeId?: string | null;
 };
 
 type FilterTab = "all" | "pending" | "signed" | "voided";
@@ -126,7 +128,7 @@ function SourceBadge({ isOnboarding }: { isOnboarding: boolean }) {
   );
 }
 
-export function DocumentSigningManager({ signingRequests, employees, isAdmin = false }: Props) {
+export function DocumentSigningManager({ signingRequests, employees, isAdmin = false, currentEmployeeId }: Props) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
@@ -398,6 +400,21 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
 
                   {/* Actions */}
                   <div className="flex items-center gap-1 flex-shrink-0">
+                    {/* Sign Now — for employee's own pending documents */}
+                    {!isSigned && canResend && currentEmployeeId === request.employeeId && (
+                      <a
+                        href={`/sign/${request.token}`}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold",
+                          "bg-[var(--color-accent)] text-white",
+                          "hover:bg-[var(--color-accent-hover)] transition-colors",
+                          "shadow-[0_0_10px_var(--color-accent-glow)]"
+                        )}
+                      >
+                        <PenLine className="h-3.5 w-3.5" />
+                        Sign Now
+                      </a>
+                    )}
                     {isSigned && request.signedDocUrl && (
                       <a
                         href={request.signedDocUrl}

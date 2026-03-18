@@ -59,6 +59,7 @@ export default async function DocumentsPage() {
           email: e.email,
         }))}
         isAdmin={isAdmin}
+        currentEmployeeId={employeeId}
       />
     </div>
   );
