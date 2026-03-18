@@ -99,34 +99,36 @@ export async function createEmployee(data: {
     },
   });
 
-  // Send welcome email and create user account for the new employee
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  // Create a User account so they can log in (skip if one already exists for this email)
-  const existingUser = await db.user.findUnique({ where: { email: data.email } });
-  if (!existingUser) {
-    await db.user.create({
-      data: {
-        email: data.email,
-        role: "EMPLOYEE",
-        employeeId: employee.id,
-      },
-    });
-    revalidatePath("/settings");
-  } else if (!existingUser.employeeId) {
-    // Link existing user to the new employee record
-    await db.user.update({
-      where: { id: existingUser.id },
-      data: { employeeId: employee.id },
+  // Only create user account and send welcome email for non-ONBOARDING employees
+  // ONBOARDING employees get their welcome via the onboarding flow below
+  if (status !== "ONBOARDING") {
+    // Create a User account so they can log in (skip if one already exists for this email)
+    const existingUser = await db.user.findUnique({ where: { email: data.email } });
+    if (!existingUser) {
+      await db.user.create({
+        data: {
+          email: data.email,
+          role: "EMPLOYEE",
+          employeeId: employee.id,
+        },
+      });
+      revalidatePath("/settings");
+    } else if (!existingUser.employeeId) {
+      await db.user.update({
+        where: { id: existingUser.id },
+        data: { employeeId: employee.id },
+      });
+    }
+
+    // Send welcome email once
+    sendWelcomeEmail({
+      to: data.email,
+      role: "Employee",
+      loginUrl: `${baseUrl}/login`,
     });
   }
-
-  // Send welcome email
-  sendWelcomeEmail({
-    to: data.email,
-    role: "Employee",
-    loginUrl: `${baseUrl}/login`,
-  });
 
   // If onboarding, resolve and create tasks
   if (status === "ONBOARDING") {

@@ -80,10 +80,31 @@ export const authOptions: NextAuthOptions = {
       await ensureAdminExists();
 
       // Only allow pre-invited users (no auto-creation)
-      const dbUser = await db.user.findUnique({
-        where: { email },
+      // Case-insensitive lookup since Google may return different casing
+      const emailLower = email.toLowerCase();
+      let dbUser = await db.user.findUnique({
+        where: { email: emailLower },
         include: { employee: true },
       });
+      // Fallback: try original casing
+      if (!dbUser) {
+        dbUser = await db.user.findUnique({
+          where: { email },
+          include: { employee: true },
+        });
+      }
+      // Fallback: try finding by employee email
+      if (!dbUser) {
+        const emp = await db.employee.findFirst({
+          where: { email: { equals: emailLower, mode: "insensitive" } },
+        });
+        if (emp) {
+          dbUser = await db.user.findFirst({
+            where: { employeeId: emp.id },
+            include: { employee: true },
+          });
+        }
+      }
 
       if (!dbUser) {
         return "/login?error=not-invited";
