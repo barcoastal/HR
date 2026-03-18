@@ -1,10 +1,13 @@
 import { NextRequest } from "next/server";
 import { syncCandidatesStreaming, resyncCandidatesStreaming } from "@/lib/actions/platform-sync-stream";
+import { requireApiAuth } from "@/lib/auth-helpers";
 
 export const runtime = "nodejs";
 export const maxDuration = 300; // 5 min timeout for long syncs
 
 export async function GET(request: NextRequest) {
+  const session = await requireApiAuth();
+  if (!session) return new Response("Unauthorized", { status: 401 });
 
   const platformId = request.nextUrl.searchParams.get("platformId");
   if (!platformId) {

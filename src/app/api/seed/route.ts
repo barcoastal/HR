@@ -1,7 +1,10 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { requireApiAdmin } from "@/lib/auth-helpers";
 
 export async function GET() {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     // Ensure new tables/columns exist before seeding
     await db.$executeRawUnsafe(`

@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { requireApiAdmin } from "@/lib/auth-helpers";
 
 // One-time cleanup: remove demo employees and empty demo departments
 // DELETE /api/cleanup-demo
 export async function DELETE() {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   // Find all demo employees (non-coastaldebt emails)
   const demoEmployees = await db.employee.findMany({
     where: {

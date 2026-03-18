@@ -224,11 +224,7 @@ export default function LoginPage() {
           <button className="text-[var(--color-accent)] hover:underline">Privacy Policy</button>.
         </p>
 
-        {/* Demo credentials hint */}
-        <div className="mt-4 p-3 rounded-lg bg-[var(--color-surface)] border border-[var(--color-border)] text-xs text-[var(--color-text-muted)]">
-          <p className="font-medium text-[var(--color-text-primary)] mb-1">Demo account:</p>
-          <p>Admin: admin / admin123</p>
-        </div>
+        {/* Sign in with Google for @coastaldebt.com accounts */}
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireApiAuth } from "@/lib/auth-helpers";
 
 // Auth: query param ?api_token=XXX
 // Base: https://app.backgroundchecks.com/api
@@ -13,6 +14,8 @@ function apiUrl(path: string) {
 
 // POST /api/background-check  — initiate a background check order
 export async function POST(req: NextRequest) {
+  const session = await requireApiAuth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
   const { candidateId, options } = body as {
     candidateId: string;
@@ -126,6 +129,8 @@ export async function POST(req: NextRequest) {
 
 // GET /api/background-check?candidateId=xxx  — check/refresh status from API
 export async function GET(req: NextRequest) {
+  const session = await requireApiAuth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const candidateId = req.nextUrl.searchParams.get("candidateId");
 
   if (!candidateId) {
@@ -190,6 +195,8 @@ export async function GET(req: NextRequest) {
 
 // PATCH /api/background-check  — manually update status
 export async function PATCH(req: NextRequest) {
+  const session = await requireApiAuth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { candidateId, status } = await req.json();
 
   if (!candidateId || !status) {

@@ -5,12 +5,6 @@ import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 
 async function ensureAdminExists() {
-  const hash = await bcrypt.hash("admin123", 10);
-  await db.user.upsert({
-    where: { email: "admin" },
-    update: { passwordHash: hash, role: "ADMIN" },
-    create: { email: "admin", passwordHash: hash, role: "ADMIN" },
-  });
   // Ensure Google OAuth super admin exists
   await db.user.upsert({
     where: { email: "bar@coastaldebt.com" },

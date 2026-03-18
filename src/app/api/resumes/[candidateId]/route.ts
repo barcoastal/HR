@@ -2,11 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
+import { requireApiAuth } from "@/lib/auth-helpers";
 
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ candidateId: string }> }
 ) {
+  const session = await requireApiAuth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { candidateId } = await params;
 
   // Sanitize: only allow uuid-like IDs

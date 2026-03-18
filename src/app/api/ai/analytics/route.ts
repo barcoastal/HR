@@ -1,7 +1,12 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
+import { requireApiAuth } from "@/lib/auth-helpers";
 
 export async function POST(req: NextRequest) {
+  const session = await requireApiAuth();
+  if (!session) {
+    return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { "Content-Type": "application/json" } });
+  }
   try {
     const { question, context } = await req.json();
 
