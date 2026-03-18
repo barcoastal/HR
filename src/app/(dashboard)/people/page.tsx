@@ -7,11 +7,19 @@ import { BulkEmployeeImport } from "@/components/people/bulk-employee-import";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default async function PeoplePage() {
-  await requireAuth();
-  const [employees, departments] = await Promise.all([
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+
+  const [allEmployees, departments] = await Promise.all([
     getEmployees({ status: undefined }),
     getDepartments(),
   ]);
+
+  // Only admins see PENDING employees
+  const employees = isAdmin
+    ? allEmployees
+    : allEmployees.filter((e) => e.status !== "PENDING");
 
   const deptNames = departments.map((d) => d.name);
 
@@ -21,10 +29,12 @@ export default async function PeoplePage() {
         title="People"
         description={`${employees.length} team member${employees.length !== 1 ? "s" : ""} across the organization`}
         action={
-          <div className="flex items-center gap-2">
-            <BulkEmployeeImport departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
-            <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
-          </div>
+          isAdmin ? (
+            <div className="flex items-center gap-2">
+              <BulkEmployeeImport departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+              <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+            </div>
+          ) : undefined
         }
       />
 
