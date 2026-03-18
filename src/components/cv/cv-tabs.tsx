@@ -7,9 +7,9 @@ import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
-import { Users, Sparkles, ChevronDown, ChevronRight, Archive, Briefcase, CheckCircle2, XCircle } from "lucide-react";
+import { Users, Sparkles, ChevronDown, ChevronRight, Archive, Briefcase, CheckCircle2, XCircle, ExternalLink, Loader2 } from "lucide-react";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
-import { updatePositionStatus } from "@/lib/actions/candidates";
+import { updatePositionStatus, postPositionToBreezy } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 
@@ -89,6 +89,8 @@ function PositionPipeline({
   const [expanded, setExpanded] = useState(!isArchived);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
   const [closing, setClosing] = useState(false);
+  const [postingToBreezy, setPostingToBreezy] = useState(false);
+  const [breezyResult, setBreezyResult] = useState<{ success: boolean; error?: string } | null>(null);
   const router = useRouter();
 
   const activeCandidates = candidates.filter(
@@ -102,6 +104,17 @@ function PositionPipeline({
     await updatePositionStatus(position.id, "FILLED");
     setClosing(false);
     router.refresh();
+  }
+
+  async function handlePostToBreezy() {
+    setPostingToBreezy(true);
+    setBreezyResult(null);
+    const result = await postPositionToBreezy(position.id);
+    setBreezyResult(result);
+    setPostingToBreezy(false);
+    if (result.success) {
+      setTimeout(() => setBreezyResult(null), 3000);
+    }
   }
 
   async function handleReopenPosition() {
@@ -197,6 +210,29 @@ function PositionPipeline({
                 )}
               >
                 <Sparkles className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handlePostToBreezy}
+                disabled={postingToBreezy}
+                title="Post to Indeed & LinkedIn via Breezy HR"
+                className={cn(
+                  "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                  breezyResult?.success
+                    ? "text-emerald-400 bg-emerald-500/10"
+                    : breezyResult && !breezyResult.success
+                      ? "text-red-400 bg-red-500/10"
+                      : "text-[#6f42c1] hover:bg-[#6f42c1]/10",
+                  "disabled:opacity-50"
+                )}
+              >
+                {postingToBreezy ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : breezyResult?.success ? (
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                ) : (
+                  <ExternalLink className="h-3.5 w-3.5" />
+                )}
+                {postingToBreezy ? "Posting..." : breezyResult?.success ? "Posted!" : "Breezy"}
               </button>
               <button
                 onClick={handleClosePosition}

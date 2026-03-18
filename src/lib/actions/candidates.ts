@@ -500,6 +500,49 @@ export async function createPosition(data: {
   return position;
 }
 
+export async function postPositionToBreezy(
+  positionId: string
+): Promise<{ success: boolean; error?: string }> {
+  const position = await db.position.findUnique({
+    where: { id: positionId },
+    include: { department: true },
+  });
+  if (!position) return { success: false, error: "Position not found" };
+
+  const breezyPlatform = await db.recruitmentPlatform.findUnique({
+    where: { name: "Breezy HR" },
+    select: { id: true, accountIdentifier: true },
+  });
+  if (!breezyPlatform?.accountIdentifier) {
+    return { success: false, error: "Breezy HR not connected. Go to Settings to connect." };
+  }
+
+  const { ensureValidToken } = await import("./platform-sync");
+  const tokenResult = await ensureValidToken(breezyPlatform.id);
+  if (!tokenResult.valid || !tokenResult.accessToken) {
+    return { success: false, error: tokenResult.error || "Breezy HR auth failed" };
+  }
+
+  const [breezyToken] = tokenResult.accessToken.split("::");
+  const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
+  const result = await postJobToBreezy({
+    accessToken: breezyToken,
+    companyId: breezyPlatform.accountIdentifier,
+    title: position.title,
+    description: position.description || undefined,
+    requirements: position.requirements || undefined,
+    department: position.department?.name,
+    salary: position.salary || undefined,
+  });
+
+  if (!result.success) {
+    return { success: false, error: result.error };
+  }
+
+  revalidatePath("/cv");
+  return { success: true };
+}
+
 export async function updatePositionStatus(
   id: string,
   status: "OPEN" | "CLOSED" | "FILLED"
