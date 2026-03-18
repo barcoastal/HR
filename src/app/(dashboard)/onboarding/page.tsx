@@ -1,5 +1,5 @@
 import { cn, formatDate } from "@/lib/utils";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
 import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline";
@@ -8,8 +8,9 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 
 export default async function OnboardingPage() {
-  const session = await requireAuth();
+  const session = await requireAdmin();
   const currentEmployeeId = session.user?.employeeId;
+  const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
 
   const onboardingEmployees = await db.employee.findMany({
     where: { status: "ONBOARDING" },
@@ -120,6 +121,7 @@ export default async function OnboardingPage() {
               }))}
               availableItems={availableItems}
               type="ONBOARDING"
+              isSuperAdmin={isSuperAdmin}
             />
           );
         })}

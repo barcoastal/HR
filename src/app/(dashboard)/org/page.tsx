@@ -1,7 +1,7 @@
 import { cn, getInitials } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { Users, Building2, Layers, Clock, ChevronRight } from "lucide-react";
 import { ManagerAssignment } from "@/components/org/manager-assignment";
 import { OrgTree } from "@/components/org/org-tree";
@@ -19,7 +19,7 @@ const borderColors: Record<string, string> = {
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
 export default async function OrgPage() {
-  await requireAuth();
+  await requireManagerOrAdmin();
   const [departments, employees] = await Promise.all([getDepartments(), getEmployees()]);
 
   const activeEmployees = employees.filter((e) => e.status !== "OFFBOARDED");

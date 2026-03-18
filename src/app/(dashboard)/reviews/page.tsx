@@ -66,6 +66,17 @@ export default async function ReviewsPage() {
         reviews: {
           include: { employee: true, reviewer: true },
           orderBy: { createdAt: "desc" },
+          // Non-admin employees only see reviews where they are the subject or reviewer
+          ...(!isAdmin && currentEmployeeId
+            ? {
+                where: {
+                  OR: [
+                    { employeeId: currentEmployeeId },
+                    { reviewerId: currentEmployeeId },
+                  ],
+                },
+              }
+            : {}),
         },
         _count: { select: { reviews: true } },
       },

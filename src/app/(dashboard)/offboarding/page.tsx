@@ -1,5 +1,5 @@
 import { cn, formatDate } from "@/lib/utils";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { UserMinus, CheckCircle2 } from "lucide-react";
 import { StartOffboardingDialog } from "@/components/offboarding/start-offboarding-dialog";
@@ -8,7 +8,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 
 export default async function OffboardingPage() {
-  await requireAuth();
+  const session = await requireAdmin();
+  const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
 
   const activeEmployees = await db.employee.findMany({
     where: { status: "ACTIVE" },
@@ -95,6 +96,7 @@ export default async function OffboardingPage() {
               }))}
               availableItems={availableItems}
               type="OFFBOARDING"
+              isSuperAdmin={isSuperAdmin}
             />
           );
         })}

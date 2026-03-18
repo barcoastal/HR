@@ -6,7 +6,9 @@ import { getHolidaysForYear } from "@/lib/holidays";
 import { PageHeader } from "@/components/ui/page-header";
 
 export default async function CalendarPage() {
-  await requireAuth();
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const isManagerOrAbove = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR" || role === "MANAGER";
 
   const [employees, interviews] = await Promise.all([
     db.employee.findMany({
@@ -22,7 +24,7 @@ export default async function CalendarPage() {
         department: { select: { name: true } },
       },
     }),
-    getUpcomingInterviews(),
+    isManagerOrAbove ? getUpcomingInterviews() : Promise.resolve([]),
   ]);
 
   const now = new Date();
@@ -59,8 +61,8 @@ export default async function CalendarPage() {
       });
     }
 
-    // Benefits eligibility events — use the actual date
-    if (emp.benefitsEligibleDate) {
+    // Benefits eligibility events — HR/admin only
+    if (emp.benefitsEligibleDate && isManagerOrAbove) {
       const bed = emp.benefitsEligibleDate;
       events.push({
         id: `benefits-${emp.id}`,

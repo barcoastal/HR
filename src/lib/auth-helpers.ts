@@ -25,6 +25,10 @@ export async function requireAdmin() {
 
 export async function requireManagerOrAdmin() {
   const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
+    redirect("/login?error=unauthorized");
+  }
   return session;
 }
 
