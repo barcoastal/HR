@@ -8,6 +8,8 @@ import { SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import {
   oauthConnectPlatform,
   disconnectPlatformByName,
+  connectBreezyHR,
+  connectBreezyHRCompany,
 } from "@/lib/actions/platform-sync";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -30,6 +32,12 @@ export function NativeIntegrations({ connected }: Props) {
   const [oauthStep, setOauthStep] = useState<OAuthStep>("consent");
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  // Breezy HR state
+  const [breezyEmail, setBreezyEmail] = useState("");
+  const [breezyPassword, setBreezyPassword] = useState("");
+  const [breezyCompanies, setBreezyCompanies] = useState<{ id: string; name: string }[] | null>(null);
+  const [breezyError, setBreezyError] = useState("");
+  const [breezyLoading, setBreezyLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -58,6 +66,10 @@ export function NativeIntegrations({ connected }: Props) {
   function closeConnect() {
     setConnectingName(null);
     setOauthStep("consent");
+    setBreezyEmail("");
+    setBreezyPassword("");
+    setBreezyCompanies(null);
+    setBreezyError("");
   }
 
   function openDisconnect(name: string) {
@@ -69,6 +81,7 @@ export function NativeIntegrations({ connected }: Props) {
   }
 
   const connectingPlatform = SUPPORTED_PLATFORMS.find((p) => p.name === connectingName);
+  const isBreezyConnect = connectingPlatform?.name === "Breezy HR";
 
   async function handleAuthorize() {
     if (!connectingPlatform) return;
@@ -96,6 +109,52 @@ export function NativeIntegrations({ connected }: Props) {
         closeConnect();
         router.refresh();
       }, 1500);
+    }
+  }
+
+  async function handleBreezySignIn() {
+    if (!breezyEmail.trim() || !breezyPassword.trim()) {
+      setBreezyError("Email and password are required");
+      return;
+    }
+    setBreezyLoading(true);
+    setBreezyError("");
+
+    // First ensure the platform record exists
+    await oauthConnectPlatform("Breezy HR", "PREMIUM", 0, "breezy-");
+
+    // connectBreezyHR finds the platform by name internally
+    const result = await connectBreezyHR("__by_name__", breezyEmail.trim(), breezyPassword.trim());
+    setBreezyLoading(false);
+
+    if (result.success && result.companies) {
+      setBreezyCompanies(result.companies);
+    } else if (result.success) {
+      setOauthStep("success");
+      setTimeout(() => {
+        closeConnect();
+        router.refresh();
+      }, 1500);
+    } else {
+      setBreezyError(result.error || "Connection failed");
+    }
+  }
+
+  async function handleBreezySelectCompany(companyId: string) {
+    setBreezyLoading(true);
+    setBreezyError("");
+
+    const result = await connectBreezyHRCompany("__by_name__", companyId, breezyEmail.trim(), breezyPassword.trim());
+    setBreezyLoading(false);
+
+    if (result.success) {
+      setOauthStep("success");
+      setTimeout(() => {
+        closeConnect();
+        router.refresh();
+      }, 1500);
+    } else {
+      setBreezyError(result.error || "Connection failed");
     }
   }
 
@@ -235,9 +294,97 @@ export function NativeIntegrations({ connected }: Props) {
         })}
       </div>
 
-      {/* OAuth Consent Dialog */}
+      {/* Breezy HR Sign-In Dialog */}
       <Dialog
-        open={!!connectingName && oauthStep === "consent"}
+        open={!!connectingName && isBreezyConnect && oauthStep === "consent"}
+        onClose={closeConnect}
+        title=""
+      >
+        {connectingPlatform && !breezyCompanies && (
+          <div className="space-y-5">
+            <div className="flex flex-col items-center gap-3 pt-2">
+              <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center text-white text-xl font-bold", connectingPlatform.color)}>
+                B
+              </div>
+              <div className="text-center">
+                <p className="text-base font-semibold text-[var(--color-text-primary)]">Sign in to Breezy HR</p>
+                <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                  Connect your Breezy HR account to sync Indeed & LinkedIn candidates
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Email</label>
+                <input
+                  value={breezyEmail}
+                  onChange={(e) => setBreezyEmail(e.target.value)}
+                  className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")}
+                  placeholder="your@email.com"
+                  type="email"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Password</label>
+                <input
+                  value={breezyPassword}
+                  onChange={(e) => setBreezyPassword(e.target.value)}
+                  className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")}
+                  placeholder="Your Breezy HR password"
+                  type="password"
+                />
+              </div>
+              {breezyError && <p className="text-xs text-red-500">{breezyError}</p>}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleBreezySignIn}
+                disabled={breezyLoading || !breezyEmail.trim() || !breezyPassword.trim()}
+                className={cn("w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "text-white transition-colors", connectingPlatform.color, "hover:opacity-90", "disabled:opacity-50")}
+              >
+                {breezyLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                {breezyLoading ? "Signing in..." : "Sign In & Connect"}
+              </button>
+              <button onClick={closeConnect} className="w-full px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors">
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+        {connectingPlatform && breezyCompanies && (
+          <div className="space-y-5">
+            <div className="text-center pt-2">
+              <p className="text-base font-semibold text-[var(--color-text-primary)]">Select Company</p>
+              <p className="text-xs text-[var(--color-text-muted)] mt-1">Choose which Breezy HR company to connect</p>
+            </div>
+            <div className="space-y-2">
+              {breezyCompanies.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => handleBreezySelectCompany(c.id)}
+                  disabled={breezyLoading}
+                  className={cn("w-full text-left px-4 py-3 rounded-lg text-sm font-medium", "bg-[var(--color-background)] border border-[var(--color-border)]", "hover:bg-[var(--color-surface-hover)] transition-colors", "disabled:opacity-50")}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+            {breezyError && <p className="text-xs text-red-500">{breezyError}</p>}
+            {breezyLoading && (
+              <div className="flex items-center justify-center gap-2 py-2">
+                <Loader2 className="h-4 w-4 animate-spin text-[var(--color-accent)]" />
+                <span className="text-xs text-[var(--color-text-muted)]">Connecting...</span>
+              </div>
+            )}
+          </div>
+        )}
+      </Dialog>
+
+      {/* OAuth Consent Dialog (non-Breezy platforms) */}
+      <Dialog
+        open={!!connectingName && !isBreezyConnect && oauthStep === "consent"}
         onClose={closeConnect}
         title=""
       >

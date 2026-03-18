@@ -103,15 +103,22 @@ export async function connectBreezyHR(
     return { success: false, error: "No companies found in your Breezy HR account" };
   }
 
+  // Resolve platform ID if passed as __by_name__
+  let resolvedId = platformId;
+  if (platformId === "__by_name__") {
+    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Breezy HR" } });
+    if (!platform) return { success: false, error: "Breezy HR platform not found" };
+    resolvedId = platform.id;
+  }
+
   // If only one company, auto-connect
   if (companies.length === 1) {
     const compositeToken = `${signInResult.accessToken}::${companies[0].id}`;
     await db.recruitmentPlatform.update({
-      where: { id: platformId },
+      where: { id: resolvedId },
       data: {
         apiKey: compositeToken,
         accountIdentifier: companies[0].id,
-        // Store credentials for re-auth (email::password base64 encoded)
         refreshToken: Buffer.from(`${email}::${password}`).toString("base64"),
         status: "ACTIVE",
         connectedAt: new Date(),
@@ -139,9 +146,17 @@ export async function connectBreezyHRCompany(
     return { success: false, error: signInResult.error || "Sign in failed" };
   }
 
+  // Resolve platform ID if passed as __by_name__
+  let resolvedId = platformId;
+  if (platformId === "__by_name__") {
+    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Breezy HR" } });
+    if (!platform) return { success: false, error: "Breezy HR platform not found" };
+    resolvedId = platform.id;
+  }
+
   const compositeToken = `${signInResult.accessToken}::${companyId}`;
   await db.recruitmentPlatform.update({
-    where: { id: platformId },
+    where: { id: resolvedId },
     data: {
       apiKey: compositeToken,
       accountIdentifier: companyId,
