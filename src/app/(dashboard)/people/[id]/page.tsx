@@ -32,7 +32,9 @@ function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label:
 
 export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const session = await requireAuth();
-  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
+  const role = session.user?.role;
+  const currentEmployeeId = session.user?.employeeId;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const { id } = await params;
   const [employee, hrNotes, documents] = await Promise.all([
     getEmployeeById(id),
@@ -40,6 +42,12 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     getEmployeeDocuments(id),
   ]);
   if (!employee) notFound();
+
+  // Check if viewing own profile or a direct report's profile
+  const isOwnProfile = currentEmployeeId === employee.id;
+  const isDirectReport = currentEmployeeId ? employee.managerId === currentEmployeeId : false;
+  const canViewDocuments = isAdmin || isOwnProfile || isDirectReport;
+  const canEdit = isAdmin || isOwnProfile;
 
   const initials = getInitials(employee.firstName, employee.lastName);
   const colorIdx = employee.firstName.charCodeAt(0) % avatarColors.length;
@@ -75,36 +83,38 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{employee.jobTitle} · {employee.department?.name || "No department"}</p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
-              <EditEmployeeDialog employee={{
-                id: employee.id,
-                firstName: employee.firstName,
-                lastName: employee.lastName,
-                email: employee.email,
-                phone: employee.phone,
-                jobTitle: employee.jobTitle,
-                departmentId: employee.departmentId,
-                startDate: employee.startDate.toISOString().split("T")[0],
-                birthday: employee.birthday?.toISOString().split("T")[0] || "",
-                location: employee.location || "",
-                hobbies: employee.hobbies || "",
-                bio: employee.bio || "",
-                dietaryRestrictions: employee.dietaryRestrictions || "",
-                pronouns: employee.pronouns || "",
-                tShirtSize: employee.tShirtSize || "",
-                address: employee.address || "",
-                city: employee.city || "",
-                state: employee.state || "",
-                zipCode: employee.zipCode || "",
-                country: employee.country || "",
-                emergencyContactName: employee.emergencyContactName || "",
-                emergencyContactPhone: employee.emergencyContactPhone || "",
-                emergencyContactRelation: employee.emergencyContactRelation || "",
-              }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
-              {isAdmin && (
-                <DeleteEmployeeButton employeeId={employee.id} employeeName={`${employee.firstName} ${employee.lastName}`} />
-              )}
-            </div>
+            {canEdit && (
+              <div className="flex items-center gap-2 shrink-0">
+                <EditEmployeeDialog employee={{
+                  id: employee.id,
+                  firstName: employee.firstName,
+                  lastName: employee.lastName,
+                  email: employee.email,
+                  phone: employee.phone,
+                  jobTitle: employee.jobTitle,
+                  departmentId: employee.departmentId,
+                  startDate: employee.startDate.toISOString().split("T")[0],
+                  birthday: employee.birthday?.toISOString().split("T")[0] || "",
+                  location: employee.location || "",
+                  hobbies: employee.hobbies || "",
+                  bio: employee.bio || "",
+                  dietaryRestrictions: employee.dietaryRestrictions || "",
+                  pronouns: employee.pronouns || "",
+                  tShirtSize: employee.tShirtSize || "",
+                  address: employee.address || "",
+                  city: employee.city || "",
+                  state: employee.state || "",
+                  zipCode: employee.zipCode || "",
+                  country: employee.country || "",
+                  emergencyContactName: employee.emergencyContactName || "",
+                  emergencyContactPhone: employee.emergencyContactPhone || "",
+                  emergencyContactRelation: employee.emergencyContactRelation || "",
+                }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
+                {isAdmin && (
+                  <DeleteEmployeeButton employeeId={employee.id} employeeName={`${employee.firstName} ${employee.lastName}`} />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -147,18 +157,20 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             </section>
           )}
 
-          <EmployeeDocumentsSection
-            employeeId={employee.id}
-            documents={documents.map((d) => ({
-              id: d.id,
-              name: d.name,
-              url: d.url,
-              category: d.category,
-              visibility: d.visibility,
-              uploadedAt: d.uploadedAt.toISOString(),
-            }))}
-            isAdmin={isAdmin}
-          />
+          {canViewDocuments && (
+            <EmployeeDocumentsSection
+              employeeId={employee.id}
+              documents={documents.map((d) => ({
+                id: d.id,
+                name: d.name,
+                url: d.url,
+                category: d.category,
+                visibility: d.visibility,
+                uploadedAt: d.uploadedAt.toISOString(),
+              }))}
+              isAdmin={isAdmin}
+            />
+          )}
 
           {isAdmin && (
             <HRNotesSection
@@ -172,7 +184,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             />
           )}
 
-          {employee.reviewsAsEmployee.length > 0 && (
+          {canViewDocuments && employee.reviewsAsEmployee.length > 0 && (
             <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Performance Reviews</h2>
               <div className="space-y-4">
