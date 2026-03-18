@@ -25,6 +25,7 @@ import { getRolePermissions } from "@/lib/actions/role-permissions";
 import { PermissionsManager } from "@/components/settings/permissions-manager";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
+import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -135,6 +136,8 @@ export default async function SettingsPage() {
               }))}
           />
         </Suspense>
+
+        <CleanupDemoButton />
 
         <PlatformIntegrationManager
           platforms={recruitmentPlatforms.map((p) => ({
