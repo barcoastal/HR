@@ -49,6 +49,7 @@ type SigningRequest = {
 type Props = {
   signingRequests: SigningRequest[];
   employees: { id: string; firstName: string; lastName: string; email: string }[];
+  isAdmin?: boolean;
 };
 
 type FilterTab = "all" | "pending" | "signed" | "voided";
@@ -125,7 +126,7 @@ function SourceBadge({ isOnboarding }: { isOnboarding: boolean }) {
   );
 }
 
-export function DocumentSigningManager({ signingRequests, employees }: Props) {
+export function DocumentSigningManager({ signingRequests, employees, isAdmin = false }: Props) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
@@ -316,13 +317,15 @@ export function DocumentSigningManager({ signingRequests, employees }: Props) {
           ))}
         </div>
 
-        <button
-          onClick={() => setShowSendDialog(true)}
-          className={cn(accentButtonClass, "flex items-center gap-2")}
-        >
-          <Plus className="h-4 w-4" />
-          Send for Signing
-        </button>
+        {isAdmin && (
+          <button
+            onClick={() => setShowSendDialog(true)}
+            className={cn(accentButtonClass, "flex items-center gap-2")}
+          >
+            <Plus className="h-4 w-4" />
+            Send for Signing
+          </button>
+        )}
       </div>
 
       {/* Request List */}
@@ -415,7 +418,7 @@ export function DocumentSigningManager({ signingRequests, employees }: Props) {
                     >
                       <FileText className="h-4 w-4" />
                     </a>
-                    {canResend && (
+                    {isAdmin && canResend && (
                       <button
                         onClick={() => handleResend(request.id)}
                         disabled={resendingId === request.id}
@@ -429,18 +432,20 @@ export function DocumentSigningManager({ signingRequests, employees }: Props) {
                         )}
                       </button>
                     )}
-                    <button
-                      onClick={() => handleCopyLink(request.token, request.id)}
-                      className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
-                      title="Copy signing link"
-                    >
-                      {copiedId === request.id ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                      ) : (
-                        <Link2 className="h-4 w-4" />
-                      )}
-                    </button>
-                    {canVoid && (
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleCopyLink(request.token, request.id)}
+                        className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+                        title="Copy signing link"
+                      >
+                        {copiedId === request.id ? (
+                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                        ) : (
+                          <Link2 className="h-4 w-4" />
+                        )}
+                      </button>
+                    )}
+                    {isAdmin && canVoid && (
                       <button
                         onClick={() => setConfirmVoidId(request.id)}
                         className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/10 hover:text-red-400 transition-colors"

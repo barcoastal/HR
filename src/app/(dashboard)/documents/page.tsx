@@ -3,24 +3,49 @@ import { getAllSigningRequests } from "@/lib/actions/signing";
 import { getEmployees } from "@/lib/actions/employees";
 import { DocumentSigningManager } from "@/components/documents/document-signing-manager";
 import { PageHeader } from "@/components/ui/page-header";
+import { db } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export default async function DocumentsPage() {
-  await requireAuth();
-  const [signingRequests, employees] = await Promise.all([
-    getAllSigningRequests(),
-    getEmployees(),
-  ]);
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const employeeId = session.user?.employeeId;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isManager = role === "MANAGER";
+
+  const allRequests = await getAllSigningRequests();
+
+  // Filter signing requests based on role
+  let filteredRequests = allRequests;
+  if (!isAdmin) {
+    if (isManager && employeeId) {
+      // Managers see their own + their direct reports' documents
+      const directReports = await db.employee.findMany({
+        where: { managerId: employeeId },
+        select: { id: true },
+      });
+      const allowedIds = new Set([employeeId, ...directReports.map((r) => r.id)]);
+      filteredRequests = allRequests.filter((r) => allowedIds.has(r.employeeId));
+    } else if (employeeId) {
+      // Regular employees see only their own documents
+      filteredRequests = allRequests.filter((r) => r.employeeId === employeeId);
+    } else {
+      filteredRequests = [];
+    }
+  }
+
+  // Only admins get the employee list for sending new documents
+  const employees = isAdmin ? await getEmployees() : [];
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
       <PageHeader
         title="Documents & Signing"
-        description="Send documents for signing and track their status"
+        description={isAdmin ? "Send documents for signing and track their status" : "View your documents and signing requests"}
       />
       <DocumentSigningManager
-        signingRequests={signingRequests.map((r) => ({
+        signingRequests={filteredRequests.map((r) => ({
           ...r,
           signedAt: r.signedAt,
           viewedAt: r.viewedAt,
@@ -33,6 +58,7 @@ export default async function DocumentsPage() {
           lastName: e.lastName,
           email: e.email,
         }))}
+        isAdmin={isAdmin}
       />
     </div>
   );
