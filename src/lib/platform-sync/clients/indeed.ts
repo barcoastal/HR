@@ -1,30 +1,49 @@
 import type { PlatformClient, MockCandidate, CandidatePage } from "../types";
 
-const INDEED_GRAPHQL_URL = "https://apis.indeed.com/graphql";
+const UNIFIED_BASE_URL = "https://api.unified.to";
 const PAGE_SIZE = 50;
-const RATE_LIMIT_DELAY_MS = 500;
 
+/**
+ * Indeed client powered by Unified.to ATS API.
+ *
+ * Connection flow:
+ *  1. Admin sets UNIFIED_API_KEY in env
+ *  2. Admin creates Indeed connection in Unified.to dashboard → gets connection_id
+ *  3. connection_id is stored as platform.accountIdentifier
+ *  4. All API calls go through Unified.to: GET /ats/{connection_id}/candidate, etc.
+ */
 export class IndeedClient implements PlatformClient {
   readonly platformName = "Indeed";
 
   async validateCredentials(apiKey: string): Promise<boolean> {
     if (!apiKey) return false;
+    // Accept Unified.to API keys (typically long JWT-like strings)
+    // Also accept legacy indeed- prefixed tokens for backwards compat
     if (apiKey.startsWith("indeed-") && apiKey.length > 9) return true;
     if (apiKey.length > 20) return true;
     return false;
   }
 
   async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
-    if (accessToken && process.env.INDEED_CLIENT_ID) {
+    const unifiedKey = getUnifiedApiKey(accessToken);
+    const connectionId = getConnectionId(accessToken);
+
+    if (unifiedKey && connectionId) {
       try {
         const all: MockCandidate[] = [];
-        let cursor: string | null = null;
-        do {
-          const page = await this.fetchCandidatesPaginated(accessToken, cursor);
+        let offset = 0;
+        let hasMore = true;
+
+        while (hasMore) {
+          const page = await this.fetchCandidatesPaginated(
+            `${unifiedKey}::${connectionId}`,
+            String(offset)
+          );
           all.push(...page.candidates);
-          cursor = page.nextCursor;
-          if (cursor) await delay(RATE_LIMIT_DELAY_MS);
-        } while (cursor);
+          offset += page.candidates.length;
+          hasMore = page.nextCursor !== null && page.candidates.length >= PAGE_SIZE;
+        }
+
         if (all.length > 0) return all;
       } catch {
         // Fall through to mock data
@@ -39,81 +58,38 @@ export class IndeedClient implements PlatformClient {
     accessToken: string,
     cursor?: string | null
   ): Promise<CandidatePage> {
-    // Use the 3-legged OAuth token — it represents a specific employer
-    // after the user selected their employer via prompt=select_employer
-    const query = `
-      query GetApplications($after: String, $first: Int) {
-        applicationVersions(after: $after, first: $first) {
-          totalCount
-          pageInfo {
-            hasNextPage
-            endCursor
-          }
-          edges {
-            node {
-              id
-              status
-              candidate {
-                name {
-                  first
-                  last
-                }
-                email
-                phoneNumber
-                resumeUrl
-              }
-              job {
-                title
-                location {
-                  city
-                  region
-                }
-              }
-              createdAt
-            }
-          }
-        }
-      }
-    `;
+    const [unifiedKey, connectionId] = accessToken.split("::");
+    if (!unifiedKey || !connectionId) {
+      throw new Error("Invalid token format. Expected UNIFIED_KEY::CONNECTION_ID");
+    }
 
-    const variables: Record<string, unknown> = { first: PAGE_SIZE };
-    if (cursor) variables.after = cursor;
+    const offset = cursor ? parseInt(cursor, 10) : 0;
+    const url = new URL(`${UNIFIED_BASE_URL}/ats/${connectionId}/candidate`);
+    url.searchParams.set("limit", String(PAGE_SIZE));
+    url.searchParams.set("offset", String(offset));
 
-    const res = await fetchWithRetry(INDEED_GRAPHQL_URL, {
-      method: "POST",
+    const res = await fetch(url.toString(), {
       headers: {
+        Authorization: `Bearer ${unifiedKey}`,
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify({ query, variables }),
     });
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      throw new Error(`Indeed API ${res.status}: ${text.slice(0, 200)}`);
+      throw new Error(`Unified.to API ${res.status}: ${text.slice(0, 200)}`);
     }
 
-    const json = await res.json();
+    const data: UnifiedCandidate[] = await res.json();
 
-    if (json.errors?.length) {
-      throw new Error(`Indeed GraphQL error: ${json.errors[0].message}`);
-    }
-
-    const appVersions = json.data?.applicationVersions;
-    if (!appVersions) {
-      throw new Error("Unexpected Indeed API response shape");
-    }
-
-    const candidates: MockCandidate[] = (appVersions.edges ?? [])
-      .map((edge: IndeedEdge) => mapIndeedNode(edge.node))
-      .filter((c: MockCandidate | null): c is MockCandidate => c !== null);
+    const candidates: MockCandidate[] = data
+      .map(mapUnifiedCandidate)
+      .filter((c): c is MockCandidate => c !== null);
 
     return {
       candidates,
-      nextCursor: appVersions.pageInfo?.hasNextPage
-        ? appVersions.pageInfo.endCursor
-        : null,
-      totalEstimate: appVersions.totalCount ?? 0,
+      nextCursor: data.length >= PAGE_SIZE ? String(offset + data.length) : null,
+      totalEstimate: 0, // Unified.to doesn't return total count
     };
   }
 
@@ -173,44 +149,37 @@ export class IndeedClient implements PlatformClient {
   }
 }
 
-// --- Helpers ---
+// --- Unified.to ATS types ---
 
-type IndeedEdge = {
-  node: {
-    id: string;
-    status?: string;
-    candidate?: {
-      name?: { first?: string; last?: string };
-      email?: string;
-      phoneNumber?: string;
-      resumeUrl?: string;
-    };
-    job?: {
-      title?: string;
-      location?: { city?: string; region?: string };
-    };
-    createdAt?: string;
-  };
+type UnifiedCandidate = {
+  id?: string;
+  name?: string;
+  emails?: { email: string; type?: string }[];
+  telephones?: { telephone: string; type?: string }[];
+  title?: string;
+  company?: string;
+  link_urls?: string[];
+  created_at?: string;
+  updated_at?: string;
+  raw?: Record<string, unknown>;
 };
 
-function mapIndeedNode(node: IndeedEdge["node"]): MockCandidate | null {
-  const c = node.candidate;
-  if (!c?.email) return null;
+function mapUnifiedCandidate(c: UnifiedCandidate): MockCandidate | null {
+  const email = c.emails?.[0]?.email;
+  if (!email) return null;
 
-  const firstName = c.name?.first ?? "";
-  const lastName = c.name?.last ?? "";
+  const nameParts = (c.name || "").trim().split(/\s+/);
+  const firstName = nameParts[0] || "";
+  const lastName = nameParts.slice(1).join(" ") || "";
   if (!firstName && !lastName) return null;
 
-  const jobTitle = node.job?.title ?? "";
-  const location = [node.job?.location?.city, node.job?.location?.region]
-    .filter(Boolean)
-    .join(", ");
+  const phone = c.telephones?.[0]?.telephone;
+  const linkedinUrl = c.link_urls?.find((u) => u.includes("linkedin.com"));
 
   const notes = [
-    "Applied via Indeed",
-    node.status ? `Status: ${node.status}` : "",
-    location ? `Location: ${location}` : "",
-    node.createdAt ? `Applied: ${node.createdAt.slice(0, 10)}` : "",
+    "Synced via Indeed (Unified.to)",
+    c.company ? `Company: ${c.company}` : "",
+    c.created_at ? `Applied: ${c.created_at.slice(0, 10)}` : "",
   ]
     .filter(Boolean)
     .join(". ");
@@ -218,29 +187,150 @@ function mapIndeedNode(node: IndeedEdge["node"]): MockCandidate | null {
   return {
     firstName,
     lastName,
-    email: c.email,
-    phone: c.phoneNumber ?? undefined,
-    skills: jobTitle ? [jobTitle] : [],
-    experience: jobTitle || undefined,
+    email,
+    phone: phone || undefined,
+    linkedinUrl: linkedinUrl || undefined,
+    skills: c.title ? [c.title] : [],
+    experience: [c.title, c.company].filter(Boolean).join(" at ") || undefined,
     notes: notes || undefined,
     source: "Indeed",
   };
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
+// --- Job posting via Unified.to ---
+
+type UnifiedJobInput = {
+  name: string;
+  description?: string;
+  status?: "OPEN" | "CLOSED" | "DRAFT";
+  departments?: string[];
+  compensation?: { value: number; currency: string; type: string }[];
+};
+
+export async function postJobToIndeed(data: {
+  title: string;
+  description?: string;
+  requirements?: string;
+  salary?: string;
+  departmentName?: string;
+  connectionId: string;
+}): Promise<{ success: boolean; jobId?: string; error?: string }> {
+  const apiKey = process.env.UNIFIED_API_KEY;
+  if (!apiKey) {
+    return { success: false, error: "UNIFIED_API_KEY not configured" };
+  }
+
+  const body: UnifiedJobInput = {
+    name: data.title,
+    description: [data.description, data.requirements ? `\n\nRequirements:\n${data.requirements}` : ""]
+      .filter(Boolean)
+      .join(""),
+    status: "OPEN",
+  };
+
+  if (data.departmentName) {
+    body.departments = [data.departmentName];
+  }
+
+  if (data.salary) {
+    const salaryNum = parseFloat(data.salary.replace(/[^0-9.]/g, ""));
+    if (!isNaN(salaryNum)) {
+      body.compensation = [{ value: salaryNum, currency: "USD", type: "SALARY" }];
+    }
+  }
+
+  try {
+    const res = await fetch(
+      `${UNIFIED_BASE_URL}/ats/${data.connectionId}/job`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return { success: false, error: `Unified.to API ${res.status}: ${text.slice(0, 200)}` };
+    }
+
+    const result = await res.json();
+    return { success: true, jobId: result.id };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Failed to post job",
+    };
+  }
 }
 
-async function fetchWithRetry(
-  url: string,
-  init: RequestInit,
-  retries = 1
-): Promise<Response> {
-  const res = await fetch(url, init);
-  if (res.status === 429 && retries > 0) {
-    const retryAfter = parseInt(res.headers.get("Retry-After") ?? "2", 10);
-    await delay(retryAfter * 1000);
-    return fetchWithRetry(url, init, retries - 1);
+// --- Fetch applications from Indeed via Unified.to ---
+
+export async function fetchIndeedApplications(
+  connectionId: string,
+  jobId?: string
+): Promise<{ success: boolean; applications: UnifiedApplication[]; error?: string }> {
+  const apiKey = process.env.UNIFIED_API_KEY;
+  if (!apiKey) {
+    return { success: false, applications: [], error: "UNIFIED_API_KEY not configured" };
   }
-  return res;
+
+  try {
+    const url = new URL(`${UNIFIED_BASE_URL}/ats/${connectionId}/application`);
+    if (jobId) url.searchParams.set("job_id", jobId);
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return { success: false, applications: [], error: `Unified.to API ${res.status}: ${text.slice(0, 200)}` };
+    }
+
+    const data: UnifiedApplication[] = await res.json();
+    return { success: true, applications: data };
+  } catch (err) {
+    return {
+      success: false,
+      applications: [],
+      error: err instanceof Error ? err.message : "Failed to fetch applications",
+    };
+  }
+}
+
+export type UnifiedApplication = {
+  id?: string;
+  candidate_id?: string;
+  job_id?: string;
+  status?: string;
+  applied_at?: string;
+  created_at?: string;
+  raw?: Record<string, unknown>;
+};
+
+// --- Helpers ---
+
+function getUnifiedApiKey(accessToken?: string): string | null {
+  // First check env var, then fall back to the token itself
+  return process.env.UNIFIED_API_KEY || accessToken || null;
+}
+
+function getConnectionId(accessToken?: string): string | null {
+  // The connection_id is passed via the platform's accountIdentifier
+  // When calling from the sync system, it's encoded as KEY::CONNECTION_ID in the access token
+  if (accessToken?.includes("::")) {
+    return accessToken.split("::")[1];
+  }
+  return null;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
 }

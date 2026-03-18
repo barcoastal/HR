@@ -4,6 +4,7 @@ import { IndeedClient } from "./clients/indeed";
 import { HandshakeClient } from "./clients/handshake";
 import { EmployFLClient } from "./clients/employfl";
 import { JobingClient } from "./clients/jobing";
+import { BreezyHRClient } from "./clients/breezy";
 
 const CLIENT_REGISTRY: Record<string, () => PlatformClient> = {
   "LinkedIn Recruiter": () => new LinkedInRecruiterClient(),
@@ -11,6 +12,7 @@ const CLIENT_REGISTRY: Record<string, () => PlatformClient> = {
   Handshake: () => new HandshakeClient(),
   EmployFL: () => new EmployFLClient(),
   Jobing: () => new JobingClient(),
+  "Breezy HR": () => new BreezyHRClient(),
 };
 
 export function getPlatformClient(platformName: string): PlatformClient | null {
@@ -38,16 +40,17 @@ export const SUPPORTED_PLATFORMS = [
   },
   {
     name: "Indeed",
-    description: "Sync candidates from Indeed job postings and resume database",
+    description: "Sync candidates & post jobs via Unified.to integration",
     type: "PREMIUM" as const,
     monthlyCost: 300,
     keyPrefix: "indeed-",
     color: "bg-[#2164f3]",
     textColor: "text-[#2164f3]",
     bgLight: "bg-indigo-50",
-    permissions: ["Access your employer account", "View applicant data", "Read resume database"],
+    permissions: ["Sync candidates from Indeed", "Post job listings", "View applications"],
     oauthProviderId: "indeed",
-    hasRealOAuth: true,
+    hasRealOAuth: false,
+    usesUnifiedTo: true,
   },
   {
     name: "Handshake",
@@ -87,6 +90,20 @@ export const SUPPORTED_PLATFORMS = [
     permissions: ["Access applicant data", "View job listings", "Download resumes"],
     oauthProviderId: "jobing",
     hasRealOAuth: false,
+  },
+  {
+    name: "Breezy HR",
+    description: "Sync candidates from Indeed & LinkedIn via Breezy HR",
+    type: "PREMIUM" as const,
+    monthlyCost: 0,
+    keyPrefix: "breezy-",
+    color: "bg-[#6f42c1]",
+    textColor: "text-[#6f42c1]",
+    bgLight: "bg-purple-50",
+    permissions: ["Sync candidates from Indeed & LinkedIn", "Post job listings", "Real-time webhooks"],
+    oauthProviderId: "breezy",
+    hasRealOAuth: false,
+    usesBreezy: true,
   },
   {
     name: "Google Calendar",

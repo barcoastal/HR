@@ -181,6 +181,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
   const [createdPositionId, setCreatedPositionId] = useState<string | null>(null);
   const [createdPositionTitle, setCreatedPositionTitle] = useState("");
   const [postToJobing, setPostToJobing] = useState(true);
+  const [postToIndeed, setPostToIndeed] = useState(false);
+  const [postToBreezy, setPostToBreezy] = useState(false);
   const [form, setForm] = useState({
     title: "",
     departmentId: "",
@@ -204,6 +206,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       requirements: form.requirements || undefined,
       salary: form.salary || undefined,
       postToJobing,
+      postToIndeed,
+      postToBreezy,
     });
     setCreatedPositionId(position.id);
     setCreatedPositionTitle(form.title);
@@ -289,6 +293,50 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
                 <span className={cn(
                   "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
                   postToJobing ? "translate-x-4.5" : "translate-x-0.5"
+                )} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-[#2164f3]/5 border border-[#2164f3]/20">
+              <div className="flex items-center gap-2">
+                <ExternalLink className="h-4 w-4 text-[#2164f3]" />
+                <div>
+                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Indeed</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">Publish via Unified.to (requires connected Indeed)</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPostToIndeed(!postToIndeed)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
+                  postToIndeed ? "bg-[#2164f3]" : "bg-[var(--color-border)]"
+                )}
+              >
+                <span className={cn(
+                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
+                  postToIndeed ? "translate-x-4.5" : "translate-x-0.5"
+                )} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-[#6f42c1]/5 border border-[#6f42c1]/20">
+              <div className="flex items-center gap-2">
+                <ExternalLink className="h-4 w-4 text-[#6f42c1]" />
+                <div>
+                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Breezy HR</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">Publishes to Indeed & LinkedIn via Breezy</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPostToBreezy(!postToBreezy)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
+                  postToBreezy ? "bg-[#6f42c1]" : "bg-[var(--color-border)]"
+                )}
+              >
+                <span className={cn(
+                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
+                  postToBreezy ? "translate-x-4.5" : "translate-x-0.5"
                 )} />
               </button>
             </div>

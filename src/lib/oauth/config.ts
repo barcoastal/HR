@@ -23,12 +23,12 @@ export const OAUTH_PROVIDERS: Record<string, OAuthProviderConfig> = {
   indeed: {
     providerId: "indeed",
     platformName: "Indeed",
-    authorizationUrl: "https://secure.indeed.com/oauth/v2/authorize",
-    tokenUrl: "https://apis.indeed.com/oauth/v2/tokens",
-    scopes: ["email", "offline_access", "employer_access"],
-    clientIdEnvVar: "INDEED_CLIENT_ID",
-    clientSecretEnvVar: "INDEED_CLIENT_SECRET",
-    isAvailable: true,
+    authorizationUrl: "",
+    tokenUrl: "",
+    scopes: [],
+    clientIdEnvVar: "",
+    clientSecretEnvVar: "",
+    isAvailable: false, // Indeed now connects via Unified.to, not direct OAuth
   },
   handshake: {
     providerId: "handshake",
@@ -49,6 +49,16 @@ export const OAUTH_PROVIDERS: Record<string, OAuthProviderConfig> = {
     clientIdEnvVar: "",
     clientSecretEnvVar: "",
     isAvailable: false,
+  },
+  breezy: {
+    providerId: "breezy",
+    platformName: "Breezy HR",
+    authorizationUrl: "",
+    tokenUrl: "",
+    scopes: [],
+    clientIdEnvVar: "",
+    clientSecretEnvVar: "",
+    isAvailable: false, // Breezy uses email/password auth, not OAuth
   },
   google_calendar: {
     providerId: "google_calendar",

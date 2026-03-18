@@ -428,17 +428,20 @@ export async function createPosition(data: {
   requirements?: string;
   salary?: string;
   postToJobing?: boolean;
+  postToIndeed?: boolean;
+  postToBreezy?: boolean;
 }) {
-  const { postToJobing, ...positionData } = data;
+  const { postToJobing, postToIndeed, postToBreezy, ...positionData } = data;
   const position = await db.position.create({ data: positionData });
+
+  let departmentName: string | undefined;
+  if (data.departmentId) {
+    const dept = await db.department.findUnique({ where: { id: data.departmentId }, select: { name: true } });
+    if (dept) departmentName = dept.name;
+  }
 
   if (postToJobing) {
     const { postJobToJobing } = await import("@/lib/platform-sync/clients/jobing");
-    let departmentName: string | undefined;
-    if (data.departmentId) {
-      const dept = await db.department.findUnique({ where: { id: data.departmentId }, select: { name: true } });
-      if (dept) departmentName = dept.name;
-    }
     const result = await postJobToJobing({
       title: data.title,
       description: data.description,
@@ -448,6 +451,48 @@ export async function createPosition(data: {
     });
     if (result.jobId) {
       await db.position.update({ where: { id: position.id }, data: { jobingJobId: result.jobId } });
+    }
+  }
+
+  if (postToIndeed) {
+    const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
+    const indeedPlatform = await db.recruitmentPlatform.findUnique({
+      where: { name: "Indeed" },
+      select: { accountIdentifier: true },
+    });
+    if (indeedPlatform?.accountIdentifier) {
+      await postJobToIndeed({
+        title: data.title,
+        description: data.description,
+        requirements: data.requirements,
+        salary: data.salary,
+        departmentName,
+        connectionId: indeedPlatform.accountIdentifier,
+      });
+    }
+  }
+
+  if (postToBreezy) {
+    const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
+    const { ensureValidToken } = await import("./platform-sync");
+    const breezyPlatform = await db.recruitmentPlatform.findUnique({
+      where: { name: "Breezy HR" },
+      select: { id: true, accountIdentifier: true },
+    });
+    if (breezyPlatform?.accountIdentifier) {
+      const tokenResult = await ensureValidToken(breezyPlatform.id);
+      if (tokenResult.valid && tokenResult.accessToken) {
+        const [breezyToken] = tokenResult.accessToken.split("::");
+        await postJobToBreezy({
+          accessToken: breezyToken,
+          companyId: breezyPlatform.accountIdentifier,
+          title: data.title,
+          description: data.description,
+          requirements: data.requirements,
+          department: departmentName,
+          salary: data.salary,
+        });
+      }
     }
   }
 

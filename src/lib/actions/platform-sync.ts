@@ -34,6 +34,128 @@ export async function connectPlatform(
   return { success: true };
 }
 
+export async function connectIndeedViaUnified(
+  platformId: string,
+  connectionId: string
+): Promise<{ success: boolean; error?: string }> {
+  const unifiedApiKey = process.env.UNIFIED_API_KEY;
+  if (!unifiedApiKey) {
+    return { success: false, error: "UNIFIED_API_KEY not configured in environment variables" };
+  }
+
+  if (!connectionId.trim()) {
+    return { success: false, error: "Connection ID is required" };
+  }
+
+  // Validate the connection by making a test call to Unified.to
+  try {
+    const res = await fetch(`https://api.unified.to/ats/${connectionId.trim()}/candidate?limit=1`, {
+      headers: {
+        Authorization: `Bearer ${unifiedApiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      if (res.status === 401) {
+        return { success: false, error: "Invalid UNIFIED_API_KEY. Check your environment variables." };
+      }
+      if (res.status === 404) {
+        return { success: false, error: "Invalid Connection ID. Check your Unified.to dashboard." };
+      }
+      return { success: false, error: `Unified.to API error (${res.status}): ${text.slice(0, 100)}` };
+    }
+  } catch {
+    return { success: false, error: "Could not reach Unified.to API. Check your network connection." };
+  }
+
+  await db.recruitmentPlatform.update({
+    where: { id: platformId },
+    data: {
+      accountIdentifier: connectionId.trim(),
+      apiKey: unifiedApiKey,
+      status: "ACTIVE",
+      connectedAt: new Date(),
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  return { success: true };
+}
+
+export async function connectBreezyHR(
+  platformId: string,
+  email: string,
+  password: string
+): Promise<{ success: boolean; companies?: { id: string; name: string }[]; error?: string }> {
+  const { breezySignIn, getBreezyCompanies } = await import(
+    "@/lib/platform-sync/clients/breezy"
+  );
+
+  const signInResult = await breezySignIn(email, password);
+  if (!signInResult.accessToken) {
+    return { success: false, error: signInResult.error || "Sign in failed" };
+  }
+
+  const companies = await getBreezyCompanies(signInResult.accessToken);
+  if (companies.length === 0) {
+    return { success: false, error: "No companies found in your Breezy HR account" };
+  }
+
+  // If only one company, auto-connect
+  if (companies.length === 1) {
+    const compositeToken = `${signInResult.accessToken}::${companies[0].id}`;
+    await db.recruitmentPlatform.update({
+      where: { id: platformId },
+      data: {
+        apiKey: compositeToken,
+        accountIdentifier: companies[0].id,
+        // Store credentials for re-auth (email::password base64 encoded)
+        refreshToken: Buffer.from(`${email}::${password}`).toString("base64"),
+        status: "ACTIVE",
+        connectedAt: new Date(),
+      },
+    });
+    revalidatePath("/settings");
+    revalidatePath("/cv");
+    return { success: true };
+  }
+
+  // Multiple companies — return list for user to choose
+  return { success: true, companies };
+}
+
+export async function connectBreezyHRCompany(
+  platformId: string,
+  companyId: string,
+  email: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> {
+  const { breezySignIn } = await import("@/lib/platform-sync/clients/breezy");
+
+  const signInResult = await breezySignIn(email, password);
+  if (!signInResult.accessToken) {
+    return { success: false, error: signInResult.error || "Sign in failed" };
+  }
+
+  const compositeToken = `${signInResult.accessToken}::${companyId}`;
+  await db.recruitmentPlatform.update({
+    where: { id: platformId },
+    data: {
+      apiKey: compositeToken,
+      accountIdentifier: companyId,
+      refreshToken: Buffer.from(`${email}::${password}`).toString("base64"),
+      status: "ACTIVE",
+      connectedAt: new Date(),
+    },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  return { success: true };
+}
+
 export async function connectPlatformByName(
   name: string,
   type: "PREMIUM" | "NICHE" | "SOCIAL" | "JOB_BOARD",
@@ -143,6 +265,35 @@ export async function ensureValidToken(
 ): Promise<{ valid: boolean; accessToken?: string; error?: string }> {
   const platform = await db.recruitmentPlatform.findUnique({ where: { id: platformId } });
   if (!platform || !platform.apiKey) return { valid: false, error: "No token available" };
+
+  // Unified.to platforms: use UNIFIED_API_KEY env var + accountIdentifier as connection_id
+  if (platform.name === "Indeed" && platform.accountIdentifier && process.env.UNIFIED_API_KEY) {
+    const compositeToken = `${process.env.UNIFIED_API_KEY}::${platform.accountIdentifier}`;
+    return { valid: true, accessToken: compositeToken };
+  }
+
+  // Breezy HR: re-authenticate using stored credentials
+  if (platform.name === "Breezy HR" && platform.refreshToken && platform.accountIdentifier) {
+    try {
+      const decoded = Buffer.from(platform.refreshToken, "base64").toString("utf-8");
+      const [email, password] = decoded.split("::");
+      if (email && password) {
+        const { breezySignIn } = await import("@/lib/platform-sync/clients/breezy");
+        const result = await breezySignIn(email, password);
+        if (result.accessToken) {
+          const compositeToken = `${result.accessToken}::${platform.accountIdentifier}`;
+          await db.recruitmentPlatform.update({
+            where: { id: platformId },
+            data: { apiKey: compositeToken },
+          });
+          return { valid: true, accessToken: compositeToken };
+        }
+      }
+    } catch {
+      // Fall through
+    }
+    return { valid: false, error: "Breezy HR authentication failed. Please reconnect." };
+  }
 
   // If no OAuth provider or no expiry tracked, assume token is valid
   if (!platform.oauthProvider || !platform.tokenExpiresAt) {
