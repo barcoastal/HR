@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 
@@ -16,7 +16,6 @@ function GoogleIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-
 
 function LoginForm() {
   const searchParams = useSearchParams();
@@ -59,6 +58,18 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const [branding, setBranding] = useState<{ companyName: string; logoUrl: string | null }>({
+    companyName: "",
+    logoUrl: null,
+  });
+
+  useEffect(() => {
+    fetch("/api/branding")
+      .then((r) => r.json())
+      .then((data) => setBranding(data))
+      .catch(() => setBranding({ companyName: "Coastal HR", logoUrl: null }));
+  }, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] px-4">
       <div className="fixed inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 via-transparent to-purple-500/5 pointer-events-none" />
@@ -76,10 +87,22 @@ export default function LoginPage() {
           )}
         >
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 mb-4 shadow-[0_0_20px_var(--color-accent-glow)] animate-glow-pulse">
-              <span className="text-white font-bold text-lg">C</span>
-            </div>
-            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Coastal HR</h1>
+            {branding.logoUrl ? (
+              <img
+                src={branding.logoUrl}
+                alt={branding.companyName}
+                className="h-14 max-w-[200px] object-contain mx-auto mb-4"
+              />
+            ) : (
+              <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 mb-4 shadow-[0_0_20px_var(--color-accent-glow)] animate-glow-pulse">
+                <span className="text-white font-bold text-lg">
+                  {branding.companyName?.[0] || "C"}
+                </span>
+              </div>
+            )}
+            <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">
+              {branding.companyName || "\u00A0"}
+            </h1>
             <p className="text-sm text-[var(--color-text-muted)] mt-1">
               Sign in with your company account
             </p>

@@ -3,6 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
 import path from "path";
 import { requireApiAdmin } from "@/lib/auth-helpers";
+import { db } from "@/lib/db";
 
 const ALLOWED_TYPES = new Set([
   "image/png",
@@ -23,6 +24,22 @@ const EXT_MAP: Record<string, string> = {
 };
 
 const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+
+/** Public endpoint — returns company name + logo for login page */
+export async function GET() {
+  try {
+    const settings = await db.companySettings.findUnique({
+      where: { id: "singleton" },
+      select: { companyName: true, logoUrl: true },
+    });
+    return NextResponse.json({
+      companyName: settings?.companyName || "Coastal HR",
+      logoUrl: settings?.logoUrl || null,
+    });
+  } catch {
+    return NextResponse.json({ companyName: "Coastal HR", logoUrl: null });
+  }
+}
 
 export async function POST(request: NextRequest) {
   const session = await requireApiAdmin();
