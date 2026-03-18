@@ -10,6 +10,7 @@ import {
   ClipboardList,
   Calendar,
   UserCircle,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
@@ -18,6 +19,7 @@ import {
   addEmployeeTask,
   addCustomEmployeeTask,
   completeOnboarding,
+  deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 
@@ -48,6 +50,7 @@ type Props = {
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
   type: "ONBOARDING" | "OFFBOARDING";
+  isSuperAdmin?: boolean;
 };
 
 const DUE_DAY_LABELS: Record<number, string> = {
@@ -72,6 +75,7 @@ export function OnboardingTaskManager({
   tasks,
   availableItems,
   type,
+  isSuperAdmin = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
@@ -82,6 +86,8 @@ export function OnboardingTaskManager({
   const [customTitle, setCustomTitle] = useState("");
   const [customDesc, setCustomDesc] = useState("");
   const [addingCustom, setAddingCustom] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
@@ -143,10 +149,23 @@ export function OnboardingTaskManager({
     router.refresh();
   }
 
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteEmployee(employee.id);
+      setOpen(false);
+      router.refresh();
+    } catch {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  }
+
   function handleClose() {
     setOpen(false);
     setCompleted(false);
     setShowTaskPicker(false);
+    setConfirmDelete(false);
   }
 
   const label = type === "ONBOARDING" ? "Onboarding" : "Offboarding";
@@ -499,6 +518,40 @@ export function OnboardingTaskManager({
                     </>
                   )}
                 </button>
+              </div>
+            )}
+
+            {/* Super Admin Delete */}
+            {isSuperAdmin && (
+              <div className="border-t border-[var(--color-border)] pt-4">
+                {confirmDelete ? (
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs text-red-400">Delete {employee.firstName} and all their data?</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
+                      >
+                        {deleting ? "Deleting..." : "Confirm"}
+                      </button>
+                      <button
+                        onClick={() => setConfirmDelete(false)}
+                        className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setConfirmDelete(true)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Delete Employee
+                  </button>
+                )}
               </div>
             )}
           </div>

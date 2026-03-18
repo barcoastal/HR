@@ -15,6 +15,7 @@ import {
   FileText,
   Send,
   PenLine,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,6 +24,7 @@ import {
   addEmployeeTask,
   addCustomEmployeeTask,
   completeOnboarding,
+  deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 
@@ -59,6 +61,7 @@ type Props = {
   availableItems: AvailableChecklistItem[];
   type: "ONBOARDING" | "OFFBOARDING";
   defaultExpanded?: boolean;
+  isSuperAdmin?: boolean;
 };
 
 const DUE_DAY_LABELS: Record<number, string> = {
@@ -116,6 +119,7 @@ export function OnboardingTimeline({
   availableItems,
   type,
   defaultExpanded = false,
+  isSuperAdmin = false,
 }: Props) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [collapsedPhases, setCollapsedPhases] = useState<Set<string>>(new Set());
@@ -127,6 +131,8 @@ export function OnboardingTimeline({
   const [customTitle, setCustomTitle] = useState("");
   const [customDesc, setCustomDesc] = useState("");
   const [addingCustom, setAddingCustom] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
@@ -196,6 +202,17 @@ export function OnboardingTimeline({
     setCompleting(false);
     setCompleted(true);
     router.refresh();
+  }
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      await deleteEmployee(employee.id);
+      router.refresh();
+    } catch {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
   }
 
   const label = type === "ONBOARDING" ? "Onboarding" : "Offboarding";
@@ -273,6 +290,38 @@ export function OnboardingTimeline({
           <ChevronDown className={cn("h-4 w-4 text-[var(--color-text-muted)] transition-transform", expanded && "rotate-180")} />
         </div>
       </button>
+
+      {/* Super Admin Delete */}
+      {isSuperAdmin && (
+        <div className="px-5 pb-3 -mt-2 flex justify-end">
+          {confirmDelete ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-red-400">Delete {employee.firstName} and all their data?</span>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-red-500 text-white hover:bg-red-600 disabled:opacity-50"
+              >
+                {deleting ? "Deleting..." : "Confirm"}
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="px-3 py-1 rounded-lg text-xs font-medium bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setConfirmDelete(true)}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Delete
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Expanded Timeline */}
       <AnimatePresence>

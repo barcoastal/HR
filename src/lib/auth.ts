@@ -1,7 +1,5 @@
 import type { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 
 async function ensureAdminExists() {
@@ -16,39 +14,6 @@ async function ensureAdminExists() {
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
-
-        await ensureAdminExists();
-
-        const user = await db.user.findUnique({
-          where: { email: credentials.email },
-          include: { employee: true },
-        });
-
-        if (!user || !user.passwordHash) return null;
-
-        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!valid) return null;
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.employee
-            ? `${user.employee.firstName} ${user.employee.lastName}`
-            : user.email,
-          role: user.role,
-          employeeId: user.employeeId,
-          profilePhoto: user.employee?.profilePhoto || null,
-        };
-      },
-    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
@@ -66,7 +31,7 @@ export const authOptions: NextAuthOptions = {
   pages: { signIn: "/login" },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider !== "google") return true;
+      if (account?.provider === "credentials") return false;
 
       const email = profile?.email;
       if (!email) return false;
@@ -112,8 +77,8 @@ export const authOptions: NextAuthOptions = {
 
       // Auto-create employee profile if missing
       if (!dbUser.employeeId) {
-        const googleName = (profile as { name?: string })?.name || email.split("@")[0];
-        const nameParts = googleName.split(" ");
+        const profileName = (profile as { name?: string })?.name || email.split("@")[0];
+        const nameParts = profileName.split(" ");
         const firstName = nameParts[0] || email.split("@")[0];
         const lastName = nameParts.slice(1).join(" ") || "";
 
