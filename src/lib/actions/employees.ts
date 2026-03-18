@@ -29,11 +29,22 @@ export async function getEmployees(filters?: {
     ];
   }
 
-  // Only show employees who have an associated user account
-  where.user = { isNot: null };
+  // Show employees with a user account OR in PENDING status (pending don't have accounts yet)
+  const searchOR = where.OR;
+  delete where.OR;
+
+  const conditions: Record<string, unknown>[] = [
+    { ...where, user: { isNot: null } },
+    { ...where, status: "PENDING" },
+  ];
+
+  const finalWhere: Record<string, unknown> = { OR: conditions };
+  if (searchOR) {
+    finalWhere.AND = [{ OR: searchOR }];
+  }
 
   return db.employee.findMany({
-    where,
+    where: finalWhere,
     include: { department: true, team: true },
     orderBy: { firstName: "asc" },
   });
