@@ -426,11 +426,23 @@ export async function bulkImportEmployees(
 
       const departmentId = await resolveDepartmentId(emp);
 
+      // Generate a unique pending email if none provided
+      let email = emp.email;
+      if (!email) {
+        const base = `${emp.firstName.toLowerCase()}.${emp.lastName.toLowerCase().replace(/\s+/g, '')}`;
+        email = `${base}@pending.local`;
+        const existingPending = await db.employee.findUnique({ where: { email } });
+        if (existingPending) {
+          skipped.push(`${emp.firstName} ${emp.lastName} (already imported)`);
+          continue;
+        }
+      }
+
       await db.employee.create({
         data: {
           firstName: emp.firstName,
           lastName: emp.lastName,
-          email: emp.email || `${emp.firstName.toLowerCase()}.${emp.lastName.toLowerCase().replace(/\s+/g, '')}@pending.local`,
+          email,
           jobTitle: emp.jobTitle || "Employee",
           phone: emp.phone || null,
           departmentId,
