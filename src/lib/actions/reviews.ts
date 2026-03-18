@@ -170,3 +170,73 @@ export async function getMyPendingReviews(employeeId: string) {
     },
   });
 }
+
+/**
+ * Auto-generate SELF + MANAGER reviews for all active employees
+ * in the given departments. Each employee gets a SELF review
+ * (they review themselves) and a MANAGER review (their manager
+ * reviews them). Employees without a manager only get SELF.
+ */
+export async function generateReviewsForCycle(
+  cycleId: string,
+  departmentIds: string[]
+) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized");
+  }
+
+  const employees = await db.employee.findMany({
+    where: {
+      status: "ACTIVE",
+      departmentId: { in: departmentIds },
+    },
+    select: { id: true, managerId: true },
+  });
+
+  // Get existing reviews in this cycle to avoid duplicates
+  const existing = await db.review.findMany({
+    where: { cycleId },
+    select: { employeeId: true, type: true },
+  });
+  const existingSet = new Set(
+    existing.map((r) => `${r.employeeId}:${r.type}`)
+  );
+
+  const reviewsToCreate: {
+    cycleId: string;
+    employeeId: string;
+    reviewerId: string;
+    type: "SELF" | "MANAGER";
+  }[] = [];
+
+  for (const emp of employees) {
+    // Self review
+    if (!existingSet.has(`${emp.id}:SELF`)) {
+      reviewsToCreate.push({
+        cycleId,
+        employeeId: emp.id,
+        reviewerId: emp.id,
+        type: "SELF",
+      });
+    }
+    // Manager review
+    if (emp.managerId && !existingSet.has(`${emp.id}:MANAGER`)) {
+      reviewsToCreate.push({
+        cycleId,
+        employeeId: emp.id,
+        reviewerId: emp.managerId,
+        type: "MANAGER",
+      });
+    }
+  }
+
+  if (reviewsToCreate.length > 0) {
+    await db.review.createMany({ data: reviewsToCreate });
+  }
+
+  revalidatePath("/reviews");
+  return { created: reviewsToCreate.length, employees: employees.length };
+}
