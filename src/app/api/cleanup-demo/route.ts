@@ -1,13 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { requireApiAdmin } from "@/lib/auth-helpers";
 
-// One-time cleanup: remove demo employees and empty demo departments
-// DELETE /api/cleanup-demo
+// GET handler so you can trigger from browser: /api/cleanup-demo?token=coastal-cleanup-2026
+export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get("token");
+  if (token !== "coastal-cleanup-2026") {
+    return NextResponse.json({ error: "Invalid token" }, { status: 403 });
+  }
+  return runCleanup();
+}
+
+// DELETE /api/cleanup-demo (admin auth required)
 export async function DELETE() {
   const session = await requireApiAdmin();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return runCleanup();
+}
+
+async function runCleanup() {
   // Find all demo employees (non-coastaldebt emails)
   const demoEmployees = await db.employee.findMany({
     where: {
