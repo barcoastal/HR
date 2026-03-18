@@ -347,9 +347,29 @@ export async function completeOnboarding(employeeId: string) {
 }
 
 export async function deleteEmployee(id: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to delete employees");
+  }
+
+  // Unlink manager/buddy/department head references
+  await db.employee.updateMany({ where: { managerId: id }, data: { managerId: null } });
+  await db.employee.updateMany({ where: { buddyId: id }, data: { buddyId: null } });
+  await db.department.updateMany({ where: { headId: id }, data: { headId: null } });
+
+  // Unlink/delete user account
+  await db.user.deleteMany({ where: { employeeId: id } });
+
+  // Cascade handles: employeeTasks, signingRequests, reviews, documents, hrNotes, etc.
   await db.employee.delete({ where: { id } });
+
   revalidatePath("/people");
   revalidatePath("/org");
+  revalidatePath("/org/departments");
+  revalidatePath("/onboarding");
+  revalidatePath("/offboarding");
 }
 
 export async function bulkImportEmployees(

@@ -8,6 +8,7 @@ import {
   User, Shield, Shirt, Users,
 } from "lucide-react";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
+import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { getHRNotes } from "@/lib/actions/hr-notes";
@@ -74,31 +75,36 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{employee.jobTitle} · {employee.department?.name || "No department"}</p>
             </div>
-            <EditEmployeeDialog employee={{
-              id: employee.id,
-              firstName: employee.firstName,
-              lastName: employee.lastName,
-              email: employee.email,
-              phone: employee.phone,
-              jobTitle: employee.jobTitle,
-              departmentId: employee.departmentId,
-              startDate: employee.startDate.toISOString().split("T")[0],
-              birthday: employee.birthday?.toISOString().split("T")[0] || "",
-              location: employee.location || "",
-              hobbies: employee.hobbies || "",
-              bio: employee.bio || "",
-              dietaryRestrictions: employee.dietaryRestrictions || "",
-              pronouns: employee.pronouns || "",
-              tShirtSize: employee.tShirtSize || "",
-              address: employee.address || "",
-              city: employee.city || "",
-              state: employee.state || "",
-              zipCode: employee.zipCode || "",
-              country: employee.country || "",
-              emergencyContactName: employee.emergencyContactName || "",
-              emergencyContactPhone: employee.emergencyContactPhone || "",
-              emergencyContactRelation: employee.emergencyContactRelation || "",
-            }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
+            <div className="flex items-center gap-2 shrink-0">
+              <EditEmployeeDialog employee={{
+                id: employee.id,
+                firstName: employee.firstName,
+                lastName: employee.lastName,
+                email: employee.email,
+                phone: employee.phone,
+                jobTitle: employee.jobTitle,
+                departmentId: employee.departmentId,
+                startDate: employee.startDate.toISOString().split("T")[0],
+                birthday: employee.birthday?.toISOString().split("T")[0] || "",
+                location: employee.location || "",
+                hobbies: employee.hobbies || "",
+                bio: employee.bio || "",
+                dietaryRestrictions: employee.dietaryRestrictions || "",
+                pronouns: employee.pronouns || "",
+                tShirtSize: employee.tShirtSize || "",
+                address: employee.address || "",
+                city: employee.city || "",
+                state: employee.state || "",
+                zipCode: employee.zipCode || "",
+                country: employee.country || "",
+                emergencyContactName: employee.emergencyContactName || "",
+                emergencyContactPhone: employee.emergencyContactPhone || "",
+                emergencyContactRelation: employee.emergencyContactRelation || "",
+              }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
+              {isAdmin && (
+                <DeleteEmployeeButton employeeId={employee.id} employeeName={`${employee.firstName} ${employee.lastName}`} />
+              )}
+            </div>
           </div>
         </div>
       </div>
