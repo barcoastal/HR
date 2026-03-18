@@ -25,14 +25,23 @@ import {
   UserCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { canAccessSettings, canAccessRecruitment, canAccessAnalytics } from "@/lib/permissions";
+import {
+  canAccessSettings,
+  canAccessRecruitment,
+  canAccessAnalytics,
+  canManageOnboarding,
+  canManageOffboarding,
+  getRoleLevel,
+} from "@/lib/permissions";
 import type { UserRole } from "@/generated/prisma/client";
+
+const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 
 const tabs = [
   { href: "/", label: "Feed", icon: Newspaper },
   { href: "/people", label: "People", icon: Users },
-  { href: "/org", label: "Org", icon: Building2 },
-  { href: "/reviews", label: "Tasks", icon: ClipboardCheck },
+  { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/my-profile", label: "Profile", icon: UserCircle },
 ] as const;
 
 type DrawerSection = {
@@ -41,16 +50,15 @@ type DrawerSection = {
 };
 
 const allDrawerLinks = [
-  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: () => true, section: "Workflow" },
-  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: () => true, section: "Workflow" },
-  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: () => true, section: "Workflow" },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays, access: () => true, section: "Workflow" },
+  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
+  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r), section: "Workflow" },
+  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
+  { href: "/org", label: "Organization", icon: Building2, access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
   { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true, section: "Workflow" },
   { href: "/clubs", label: "Clubs", icon: Users2, access: () => true, section: "Social" },
   { href: "/voice", label: "Your Voice", icon: Megaphone, access: () => true, section: "Social" },
   { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r), section: "Admin" },
   { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r), section: "Admin" },
-  { href: "/my-profile", label: "My Profile", icon: UserCircle, access: () => true, section: "Admin" },
   { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r), section: "Admin" },
 ] as const;
 

@@ -29,16 +29,22 @@ import {
   canAccessSettings,
   canAccessRecruitment,
   canAccessAnalytics,
+  canManageOnboarding,
+  canManageOffboarding,
+  canManageEmployees,
+  getRoleLevel,
 } from "@/lib/permissions";
 import type { UserRole } from "@/generated/prisma/client";
+
+const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 
 const allNavLinks = [
   { href: "/", label: "Feed", icon: Newspaper, access: () => true },
   { href: "/people", label: "People", icon: Users, access: () => true },
-  { href: "/org", label: "Organization", icon: Building2, access: () => true },
-  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: () => true },
-  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: () => true },
-  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: () => true },
+  { href: "/org", label: "Organization", icon: Building2, access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r) },
+  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r) },
+  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r) },
   { href: "/calendar", label: "Calendar", icon: CalendarDays, access: () => true },
   { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true },
   { href: "/clubs", label: "Clubs", icon: Users2, access: () => true },
