@@ -7,7 +7,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { bulkImportEmployees } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 
-type EmployeeField = "firstName" | "lastName" | "email" | "jobTitle" | "phone" | "department" | "location" | "startDate" | "skip";
+type EmployeeField = "firstName" | "lastName" | "email" | "jobTitle" | "phone" | "department" | "location" | "startDate" | "reportsTo" | "skip";
 
 const FIELD_OPTIONS: { value: EmployeeField; label: string }[] = [
   { value: "skip", label: "(Skip)" },
@@ -19,6 +19,7 @@ const FIELD_OPTIONS: { value: EmployeeField; label: string }[] = [
   { value: "department", label: "Department" },
   { value: "location", label: "Location" },
   { value: "startDate", label: "Start Date" },
+  { value: "reportsTo", label: "Reports To" },
 ];
 
 const HEADER_MAP: Record<string, EmployeeField> = {
@@ -30,6 +31,7 @@ const HEADER_MAP: Record<string, EmployeeField> = {
   "department": "department", "dept": "department", "current department": "department", "team": "department",
   "location": "location", "office": "location", "city": "location",
   "start date": "startDate", "startdate": "startDate", "hire date": "startDate", "hiredate": "startDate", "date hired": "startDate", "employee start date": "startDate",
+  "reports to": "reportsTo", "reportsto": "reportsTo", "manager": "reportsTo", "manager name": "reportsTo", "direct manager": "reportsTo", "supervisor": "reportsTo", "reporting to": "reportsTo",
 };
 
 function parseCsv(text: string): { headers: string[]; rows: string[][] } {
@@ -128,6 +130,7 @@ export function BulkEmployeeImport({ departments }: { departments: Department[] 
       departmentId: (!hasDeptFromCsv && selectedDept) ? selectedDept : undefined,
       startDate: e.startDate || undefined,
       location: e.location || undefined,
+      reportsTo: e.reportsTo || undefined,
     }));
 
     try {

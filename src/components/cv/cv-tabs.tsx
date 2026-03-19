@@ -61,6 +61,8 @@ type SyncablePlatform = {
 
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 
+type Recruiter = { id: string; firstName: string; lastName: string };
+
 type Props = {
   pipelineCandidates: CandidateItem[];
   allCandidates: CandidateItem[];
@@ -69,6 +71,7 @@ type Props = {
   closedPositions: PositionFull[];
   syncablePlatforms: SyncablePlatform[];
   employees?: EmployeeOption[];
+  recruiters?: Recruiter[];
 };
 
 function PositionPipeline({
@@ -77,6 +80,7 @@ function PositionPipeline({
   allPositions,
   allCandidates,
   employees,
+  recruiters,
   isArchived,
 }: {
   position: PositionFull;
@@ -84,6 +88,7 @@ function PositionPipeline({
   allPositions: Position[];
   allCandidates: CandidateItem[];
   employees?: EmployeeOption[];
+  recruiters?: Recruiter[];
   isArchived: boolean;
 }) {
   const [expanded, setExpanded] = useState(!isArchived);
@@ -200,6 +205,7 @@ function PositionPipeline({
                 positionId={position.id}
                 positionTitle={position.title}
                 existingCandidates={existingForAdd}
+                recruiters={recruiters}
               />
               <button
                 onClick={() => setMatchDialogOpen(true)}
@@ -320,6 +326,7 @@ export function CVTabs({
   closedPositions,
   syncablePlatforms,
   employees,
+  recruiters,
 }: Props) {
   const tabs = [
     { id: "recruitment", label: "Recruitment" },
@@ -376,6 +383,7 @@ export function CVTabs({
                       allPositions={positions}
                       allCandidates={allCandidates}
                       employees={employees}
+                      recruiters={recruiters}
                       isArchived={false}
                     />
                   );
@@ -464,6 +472,7 @@ export function CVTabs({
                         allPositions={positions}
                         allCandidates={allCandidates}
                         employees={employees}
+                        recruiters={recruiters}
                         isArchived={true}
                       />
                     );

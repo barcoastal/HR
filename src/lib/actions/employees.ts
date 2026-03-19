@@ -395,6 +395,7 @@ export async function bulkImportEmployees(
     departmentId?: string;
     departmentName?: string;
     managerId?: string;
+    reportsTo?: string;
     startDate?: string;
     location?: string;
   }[]
@@ -426,6 +427,9 @@ export async function bulkImportEmployees(
     return dept.id;
   }
 
+  // Track created employee IDs + their reportsTo names for second pass
+  const createdEmployees: { id: string; email: string; firstName: string; lastName: string; reportsTo?: string }[] = [];
+
   for (const emp of employees) {
     try {
       // Skip duplicates by email if email is provided
@@ -451,7 +455,7 @@ export async function bulkImportEmployees(
         }
       }
 
-      await db.employee.create({
+      const newEmp = await db.employee.create({
         data: {
           firstName: emp.firstName,
           lastName: emp.lastName,
@@ -467,9 +471,64 @@ export async function bulkImportEmployees(
         },
       });
       created++;
+      createdEmployees.push({
+        id: newEmp.id,
+        email: newEmp.email,
+        firstName: newEmp.firstName,
+        lastName: newEmp.lastName,
+        reportsTo: emp.reportsTo,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
       errors.push(`Failed to import ${emp.email || emp.firstName + ' ' + emp.lastName}: ${message}`);
+    }
+  }
+
+  // Second pass: resolve "Reports To" names to manager IDs
+  const managerCache: Record<string, string | null> = {};
+  for (const emp of createdEmployees) {
+    if (!emp.reportsTo) continue;
+    const managerName = emp.reportsTo.trim();
+    if (!managerName) continue;
+
+    if (!(managerName in managerCache)) {
+      // Try to find manager by name (first + last)
+      const parts = managerName.split(/\s+/);
+      let manager = null;
+      if (parts.length >= 2) {
+        const firstName = parts[0];
+        const lastName = parts.slice(1).join(" ");
+        manager = await db.employee.findFirst({
+          where: {
+            firstName: { equals: firstName, mode: "insensitive" },
+            lastName: { equals: lastName, mode: "insensitive" },
+          },
+          select: { id: true },
+        });
+      }
+      if (!manager) {
+        // Fallback: search by full name in either order
+        manager = await db.employee.findFirst({
+          where: {
+            OR: [
+              { firstName: { contains: parts[0], mode: "insensitive" } },
+              { lastName: { contains: parts[0], mode: "insensitive" } },
+            ],
+          },
+          select: { id: true },
+        });
+      }
+      managerCache[managerName] = manager?.id || null;
+    }
+
+    const managerId = managerCache[managerName];
+    if (managerId) {
+      await db.employee.update({
+        where: { id: emp.id },
+        data: { managerId },
+      });
+    } else {
+      errors.push(`Could not find manager "${managerName}" for ${emp.firstName} ${emp.lastName}`);
     }
   }
 
