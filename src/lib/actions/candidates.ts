@@ -233,6 +233,7 @@ export async function updateCandidate(
     positionId?: string;
     costOfHire?: number;
     managerId?: string;
+    recruiterId?: string;
     status?: CandidateStatus;
   }
 ) {

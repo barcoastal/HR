@@ -25,6 +25,7 @@ type CandidateItem = {
   positionId: string | null;
   costOfHire: number | null;
   managerId: string | null;
+  recruiterId: string | null;
   backgroundCheckStatus: string | null;
   position: { title: string } | null;
 };
@@ -49,8 +50,9 @@ const columns: { status: CandidateStatus; label: string; color: string; bg: stri
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
+type Recruiter = { id: string; firstName: string; lastName: string };
 
-export function CandidatePipeline({ candidates, positions, employees }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[] }) {
+export function CandidatePipeline({ candidates, positions, employees, recruiters }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[] }) {
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [hiringId, setHiringId] = useState<string | null>(null);
@@ -232,6 +234,7 @@ export function CandidatePipeline({ candidates, positions, employees }: { candid
         candidate={selectedCandidate}
         positions={positions}
         employees={employees}
+        recruiters={recruiters}
         open={!!selectedCandidate}
         onClose={() => setSelectedCandidate(null)}
       />

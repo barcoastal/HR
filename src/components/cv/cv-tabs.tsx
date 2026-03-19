@@ -29,6 +29,7 @@ type CandidateItem = {
   positionId: string | null;
   costOfHire: number | null;
   managerId: string | null;
+  recruiterId: string | null;
   backgroundCheckStatus: string | null;
   jobAppliedTo: string | null;
   inPipeline: boolean;
@@ -291,11 +292,13 @@ function PositionPipeline({
                 positionId: c.positionId,
                 costOfHire: c.costOfHire,
                 managerId: c.managerId || null,
+                recruiterId: c.recruiterId || null,
                 backgroundCheckStatus: c.backgroundCheckStatus || null,
                 position: c.position,
               }))}
               positions={allPositions}
               employees={employees}
+              recruiters={recruiters}
             />
           ) : (
             <p className="text-center text-sm text-[var(--color-text-muted)] py-8">
@@ -432,11 +435,13 @@ export function CVTabs({
                       positionId: c.positionId,
                       costOfHire: c.costOfHire,
                       managerId: c.managerId || null,
+                      recruiterId: c.recruiterId || null,
                       backgroundCheckStatus: c.backgroundCheckStatus || null,
                       position: c.position,
                     }))}
                     positions={positions}
                     employees={employees}
+                    recruiters={recruiters}
                   />
                 </div>
               </div>

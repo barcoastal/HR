@@ -47,12 +47,14 @@ type CandidateForDialog = {
   positionId: string | null;
   costOfHire: number | null;
   managerId: string | null;
+  recruiterId: string | null;
   backgroundCheckStatus: string | null;
   position: { title: string } | null;
 };
 
 type Position = { id: string; title: string };
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
+type Recruiter = { id: string; firstName: string; lastName: string };
 
 function parseSkills(skills: string | null): string {
   if (!skills) return "";
@@ -78,12 +80,14 @@ export function CandidateDetailDialog({
   candidate,
   positions,
   employees,
+  recruiters,
   open,
   onClose,
 }: {
   candidate: CandidateForDialog | null;
   positions: Position[];
   employees?: EmployeeOption[];
+  recruiters?: Recruiter[];
   open: boolean;
   onClose: () => void;
 }) {
@@ -103,6 +107,7 @@ export function CandidateDetailDialog({
     positionId: "",
     costOfHire: "",
     managerId: "",
+    recruiterId: "",
     status: "NEW" as CandidateStatus,
     companyEmail: "",
     startDate: "",
@@ -156,6 +161,7 @@ export function CandidateDetailDialog({
         positionId: candidate.positionId || "",
         costOfHire: candidate.costOfHire?.toString() || "",
         managerId: candidate.managerId || "",
+        recruiterId: candidate.recruiterId || "",
         status: candidate.status,
         companyEmail: "",
         startDate: new Date().toISOString().split("T")[0],
@@ -189,6 +195,7 @@ export function CandidateDetailDialog({
           positionId: form.positionId || undefined,
           costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
           managerId: form.managerId || undefined,
+          recruiterId: form.recruiterId || undefined,
         });
         const result = await hireCandidateAndStartOnboarding(candidate.id, {
           companyEmail: form.companyEmail || undefined,
@@ -234,6 +241,7 @@ export function CandidateDetailDialog({
       positionId: form.positionId || undefined,
       costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
       managerId: form.managerId || undefined,
+      recruiterId: form.recruiterId || undefined,
       status: form.status,
     });
     setSaving(false);
@@ -491,6 +499,19 @@ export function CandidateDetailDialog({
                   <option value="">Select manager...</option>
                   {employees.map((e) => (
                     <option key={e.id} value={e.id}>{e.firstName} {e.lastName} — {e.jobTitle}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Recruiter selector */}
+            {recruiters && recruiters.length > 0 && (
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Recruiter</label>
+                <select value={form.recruiterId} onChange={(e) => update("recruiterId", e.target.value)} className={inputClass}>
+                  <option value="">Select recruiter...</option>
+                  {recruiters.map((r) => (
+                    <option key={r.id} value={r.id}>{r.firstName} {r.lastName}</option>
                   ))}
                 </select>
               </div>
