@@ -16,21 +16,32 @@ type SimpleCandidate = {
   positionId: string | null;
 };
 
+type Recruiter = {
+  id: string;
+  firstName: string;
+  lastName: string;
+};
+
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
 export function AddCandidateToPosition({
   positionId,
   positionTitle,
   existingCandidates,
+  recruiters = [],
 }: {
   positionId: string;
   positionTitle: string;
   existingCandidates: SimpleCandidate[];
+  recruiters?: Recruiter[];
 }) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"existing" | "new">("existing");
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState(false);
+  const [selectedRecruiterId, setSelectedRecruiterId] = useState(
+    recruiters.length === 1 ? recruiters[0].id : ""
+  );
   const [newForm, setNewForm] = useState({
     firstName: "",
     lastName: "",
@@ -39,6 +50,8 @@ export function AddCandidateToPosition({
     skills: "",
   });
   const router = useRouter();
+
+  const hasRecruiters = recruiters.length > 0;
 
   // Filter candidates not already assigned to this position
   const available = existingCandidates.filter(
@@ -54,14 +67,16 @@ export function AddCandidateToPosition({
   });
 
   async function handleAssign(candidateId: string) {
+    if (hasRecruiters && !selectedRecruiterId) return;
     setSaving(true);
-    await assignCandidateToPosition(candidateId, positionId);
+    await assignCandidateToPosition(candidateId, positionId, selectedRecruiterId || undefined);
     setSaving(false);
     router.refresh();
   }
 
   async function handleCreateNew() {
     if (!newForm.firstName || !newForm.lastName || !newForm.email) return;
+    if (hasRecruiters && !selectedRecruiterId) return;
     setSaving(true);
     const skills = newForm.skills
       .split(",")
@@ -74,6 +89,7 @@ export function AddCandidateToPosition({
       phone: newForm.phone || undefined,
       skills,
       positionId,
+      recruiterId: selectedRecruiterId || undefined,
       inPipeline: true,
     });
     setSaving(false);
@@ -89,6 +105,26 @@ export function AddCandidateToPosition({
     "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
   );
 
+  const recruiterSelector = hasRecruiters ? (
+    <div className="mb-3">
+      <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+        Assign Recruiter *
+      </label>
+      <select
+        value={selectedRecruiterId}
+        onChange={(e) => setSelectedRecruiterId(e.target.value)}
+        className={cn(inputClass, !selectedRecruiterId && "text-[var(--color-text-muted)]")}
+      >
+        <option value="">Select recruiter...</option>
+        {recruiters.map((r) => (
+          <option key={r.id} value={r.id}>
+            {r.firstName} {r.lastName}
+          </option>
+        ))}
+      </select>
+    </div>
+  ) : null;
+
   return (
     <>
       <button
@@ -102,6 +138,8 @@ export function AddCandidateToPosition({
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title={`Add Candidate to ${positionTitle}`}>
+        {recruiterSelector}
+
         <div className="flex gap-1 mb-4">
           <button
             onClick={() => setTab("existing")}
@@ -167,7 +205,7 @@ export function AddCandidateToPosition({
                     </div>
                     <button
                       onClick={() => handleAssign(c.id)}
-                      disabled={saving}
+                      disabled={saving || (hasRecruiters && !selectedRecruiterId)}
                       className={cn(
                         "px-2.5 py-1 rounded-lg text-xs font-medium",
                         "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",
@@ -234,7 +272,7 @@ export function AddCandidateToPosition({
               </button>
               <button
                 onClick={handleCreateNew}
-                disabled={saving || !newForm.firstName || !newForm.lastName || !newForm.email}
+                disabled={saving || !newForm.firstName || !newForm.lastName || !newForm.email || (hasRecruiters && !selectedRecruiterId)}
                 className={cn(
                   "px-4 py-2 rounded-lg text-sm font-medium",
                   "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",

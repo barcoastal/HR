@@ -26,12 +26,14 @@ import { PermissionsManager } from "@/components/settings/permissions-manager";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
 import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
+import { RecruiterManager } from "@/components/settings/recruiter-manager";
+import { getRecruiters } from "@/lib/actions/company-settings";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -42,6 +44,7 @@ export default async function SettingsPage() {
     getCompanySettings(),
     getEmailTemplates(),
     getRolePermissions(),
+    getRecruiters(),
   ]);
 
   const userList = users.map((u) => ({
@@ -78,6 +81,23 @@ export default async function SettingsPage() {
         <SettingsUserManagement users={userList} />
 
         <PermissionsManager permissions={rolePermissions} />
+
+        <RecruiterManager
+          recruiters={recruiters.map((r) => ({
+            id: r.id,
+            firstName: r.firstName,
+            lastName: r.lastName,
+            email: r.email,
+            jobTitle: r.jobTitle,
+          }))}
+          allEmployees={employees.map((e) => ({
+            id: e.id,
+            firstName: e.firstName,
+            lastName: e.lastName,
+            email: e.email,
+            jobTitle: e.jobTitle,
+          }))}
+        />
 
         <DepartmentManager
           departments={departments.map((d) => ({

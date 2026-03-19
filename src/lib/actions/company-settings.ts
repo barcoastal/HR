@@ -24,9 +24,30 @@ export async function getCompanySettings() {
       faviconUrl: null,
       senderEmail: "noreply@hr.coastaldebt-tools.com",
       senderName: "Coastal HR",
+      recruiterIds: "[]",
       updatedAt: new Date(),
     };
   }
+}
+
+export async function getRecruiters() {
+  const settings = await getCompanySettings();
+  const ids: string[] = JSON.parse(settings.recruiterIds || "[]");
+  if (ids.length === 0) return [];
+  return db.employee.findMany({
+    where: { id: { in: ids } },
+    select: { id: true, firstName: true, lastName: true, email: true, jobTitle: true },
+  });
+}
+
+export async function updateRecruiters(recruiterIds: string[]) {
+  await db.companySettings.upsert({
+    where: { id: SINGLETON_ID },
+    update: { recruiterIds: JSON.stringify(recruiterIds) },
+    create: { id: SINGLETON_ID, recruiterIds: JSON.stringify(recruiterIds) },
+  });
+  revalidatePath("/settings");
+  revalidatePath("/cv");
 }
 
 export async function updateCompanySettings(data: {
@@ -38,6 +59,7 @@ export async function updateCompanySettings(data: {
   faviconUrl?: string | null;
   senderEmail?: string;
   senderName?: string;
+  recruiterIds?: string;
 }) {
   const settings = await db.companySettings.upsert({
     where: { id: SINGLETON_ID },

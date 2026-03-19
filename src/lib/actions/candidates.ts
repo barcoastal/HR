@@ -557,11 +557,14 @@ export async function updatePositionStatus(
 
 export async function assignCandidateToPosition(
   candidateId: string,
-  positionId: string
+  positionId: string,
+  recruiterId?: string
 ) {
+  const data: Record<string, unknown> = { positionId, inPipeline: true, status: "NEW" };
+  if (recruiterId) data.recruiterId = recruiterId;
   const candidate = await db.candidate.update({
     where: { id: candidateId },
-    data: { positionId, inPipeline: true, status: "NEW" },
+    data,
   });
   revalidatePath("/cv");
   return candidate;

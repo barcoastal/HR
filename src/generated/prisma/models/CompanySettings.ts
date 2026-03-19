@@ -34,6 +34,7 @@ export type CompanySettingsMinAggregateOutputType = {
   faviconUrl: string | null
   senderEmail: string | null
   senderName: string | null
+  recruiterIds: string | null
   updatedAt: Date | null
 }
 
@@ -47,6 +48,7 @@ export type CompanySettingsMaxAggregateOutputType = {
   faviconUrl: string | null
   senderEmail: string | null
   senderName: string | null
+  recruiterIds: string | null
   updatedAt: Date | null
 }
 
@@ -60,6 +62,7 @@ export type CompanySettingsCountAggregateOutputType = {
   faviconUrl: number
   senderEmail: number
   senderName: number
+  recruiterIds: number
   updatedAt: number
   _all: number
 }
@@ -75,6 +78,7 @@ export type CompanySettingsMinAggregateInputType = {
   faviconUrl?: true
   senderEmail?: true
   senderName?: true
+  recruiterIds?: true
   updatedAt?: true
 }
 
@@ -88,6 +92,7 @@ export type CompanySettingsMaxAggregateInputType = {
   faviconUrl?: true
   senderEmail?: true
   senderName?: true
+  recruiterIds?: true
   updatedAt?: true
 }
 
@@ -101,6 +106,7 @@ export type CompanySettingsCountAggregateInputType = {
   faviconUrl?: true
   senderEmail?: true
   senderName?: true
+  recruiterIds?: true
   updatedAt?: true
   _all?: true
 }
@@ -187,6 +193,7 @@ export type CompanySettingsGroupByOutputType = {
   faviconUrl: string | null
   senderEmail: string
   senderName: string
+  recruiterIds: string
   updatedAt: Date
   _count: CompanySettingsCountAggregateOutputType | null
   _min: CompanySettingsMinAggregateOutputType | null
@@ -221,6 +228,7 @@ export type CompanySettingsWhereInput = {
   faviconUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
   senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
   senderName?: Prisma.StringFilter<"CompanySettings"> | string
+  recruiterIds?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }
 
@@ -234,6 +242,7 @@ export type CompanySettingsOrderByWithRelationInput = {
   faviconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
+  recruiterIds?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -250,6 +259,7 @@ export type CompanySettingsWhereUniqueInput = Prisma.AtLeast<{
   faviconUrl?: Prisma.StringNullableFilter<"CompanySettings"> | string | null
   senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
   senderName?: Prisma.StringFilter<"CompanySettings"> | string
+  recruiterIds?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }, "id">
 
@@ -263,6 +273,7 @@ export type CompanySettingsOrderByWithAggregationInput = {
   faviconUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
+  recruiterIds?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanySettingsCountOrderByAggregateInput
   _max?: Prisma.CompanySettingsMaxOrderByAggregateInput
@@ -282,6 +293,7 @@ export type CompanySettingsScalarWhereWithAggregatesInput = {
   faviconUrl?: Prisma.StringNullableWithAggregatesFilter<"CompanySettings"> | string | null
   senderEmail?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   senderName?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
+  recruiterIds?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
 }
 
@@ -295,6 +307,7 @@ export type CompanySettingsCreateInput = {
   faviconUrl?: string | null
   senderEmail?: string
   senderName?: string
+  recruiterIds?: string
   updatedAt?: Date | string
 }
 
@@ -308,6 +321,7 @@ export type CompanySettingsUncheckedCreateInput = {
   faviconUrl?: string | null
   senderEmail?: string
   senderName?: string
+  recruiterIds?: string
   updatedAt?: Date | string
 }
 
@@ -321,6 +335,7 @@ export type CompanySettingsUpdateInput = {
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
+  recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -334,6 +349,7 @@ export type CompanySettingsUncheckedUpdateInput = {
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
+  recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -347,6 +363,7 @@ export type CompanySettingsCreateManyInput = {
   faviconUrl?: string | null
   senderEmail?: string
   senderName?: string
+  recruiterIds?: string
   updatedAt?: Date | string
 }
 
@@ -360,6 +377,7 @@ export type CompanySettingsUpdateManyMutationInput = {
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
+  recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -373,6 +391,7 @@ export type CompanySettingsUncheckedUpdateManyInput = {
   faviconUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
+  recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -386,6 +405,7 @@ export type CompanySettingsCountOrderByAggregateInput = {
   faviconUrl?: Prisma.SortOrder
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
+  recruiterIds?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -399,6 +419,7 @@ export type CompanySettingsMaxOrderByAggregateInput = {
   faviconUrl?: Prisma.SortOrder
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
+  recruiterIds?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -412,6 +433,7 @@ export type CompanySettingsMinOrderByAggregateInput = {
   faviconUrl?: Prisma.SortOrder
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
+  recruiterIds?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -427,6 +449,7 @@ export type CompanySettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   faviconUrl?: boolean
   senderEmail?: boolean
   senderName?: boolean
+  recruiterIds?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -440,6 +463,7 @@ export type CompanySettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   faviconUrl?: boolean
   senderEmail?: boolean
   senderName?: boolean
+  recruiterIds?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -453,6 +477,7 @@ export type CompanySettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   faviconUrl?: boolean
   senderEmail?: boolean
   senderName?: boolean
+  recruiterIds?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -466,10 +491,11 @@ export type CompanySettingsSelectScalar = {
   faviconUrl?: boolean
   senderEmail?: boolean
   senderName?: boolean
+  recruiterIds?: boolean
   updatedAt?: boolean
 }
 
-export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "updatedAt", ExtArgs["result"]["companySettings"]>
+export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "recruiterIds" | "updatedAt", ExtArgs["result"]["companySettings"]>
 
 export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CompanySettings"
@@ -484,6 +510,7 @@ export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     faviconUrl: string | null
     senderEmail: string
     senderName: string
+    recruiterIds: string
     updatedAt: Date
   }, ExtArgs["result"]["companySettings"]>
   composites: {}
@@ -917,6 +944,7 @@ export interface CompanySettingsFieldRefs {
   readonly faviconUrl: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly senderEmail: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly senderName: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly recruiterIds: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly updatedAt: Prisma.FieldRef<"CompanySettings", 'DateTime'>
 }
     

@@ -604,6 +604,7 @@ export const CompanySettingsScalarFieldEnum = {
   faviconUrl: 'faviconUrl',
   senderEmail: 'senderEmail',
   senderName: 'senderName',
+  recruiterIds: 'recruiterIds',
   updatedAt: 'updatedAt'
 } as const
 

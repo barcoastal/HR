@@ -784,6 +784,7 @@ model CompanySettings {
   faviconUrl    String?
   senderEmail   String  @default("noreply@hr.coastaldebt-tools.com")
   senderName    String  @default("Coastal HR")
+  recruiterIds  String  @default("[]")
   updatedAt     DateTime @updatedAt
 }
 
