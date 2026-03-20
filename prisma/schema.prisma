@@ -14,6 +14,7 @@ datasource db {
 enum EmployeeStatus {
   PENDING
   ACTIVE
+  PRE_ONBOARDING
   ONBOARDING
   OFFBOARDED
 }
@@ -27,6 +28,7 @@ enum UserRole {
 }
 
 enum ChecklistType {
+  PRE_ONBOARDING
   ONBOARDING
   OFFBOARDING
 }
