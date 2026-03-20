@@ -120,10 +120,12 @@ export function OnboardingSetup({
   departments,
   employees,
   jobTitles,
+  checklistType = "ONBOARDING",
 }: {
   departments: Department[];
   employees: Employee[];
   jobTitles: JobTitle[];
+  checklistType?: "PRE_ONBOARDING" | "ONBOARDING";
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -234,12 +236,12 @@ export function OnboardingSetup({
       setLoading(true);
       try {
         const deptId = selectedDeptId || null;
-        const lists = await getChecklistsForDepartment(deptId);
+        const lists = await getChecklistsForDepartment(deptId, checklistType);
         if (cancelled) return;
         setChecklists(lists.map(mapChecklist));
 
         if (selectedDeptId) {
-          const ovr = await getOverridesForDepartment(selectedDeptId);
+          const ovr = await getOverridesForDepartment(selectedDeptId, checklistType);
           if (cancelled) return;
           setOverrides(ovr.map(mapOverride));
         } else {
@@ -253,7 +255,7 @@ export function OnboardingSetup({
     }
     fetchData();
     return () => { cancelled = true; };
-  }, [selectedDeptId]);
+  }, [selectedDeptId, checklistType]);
 
   // Refresh helper
   function refreshData() {
@@ -262,11 +264,11 @@ export function OnboardingSetup({
     });
     // Re-fetch local data
     const deptId = selectedDeptId || null;
-    getChecklistsForDepartment(deptId).then((lists) => {
+    getChecklistsForDepartment(deptId, checklistType).then((lists) => {
       setChecklists(lists.map(mapChecklist));
     });
     if (selectedDeptId) {
-      getOverridesForDepartment(selectedDeptId).then((ovr) => {
+      getOverridesForDepartment(selectedDeptId, checklistType).then((ovr) => {
         setOverrides(ovr.map(mapOverride));
       });
     }
@@ -288,10 +290,11 @@ export function OnboardingSetup({
   // Create checklist
   async function handleCreateChecklist() {
     setCreatingChecklist(true);
+    const typeLabel = checklistType === "PRE_ONBOARDING" ? "Pre-Onboarding" : "Onboarding";
     const name = selectedDeptId
-      ? `${selectedDeptName} Onboarding`
-      : "Global Onboarding";
-    await createChecklist(name, "ONBOARDING", selectedDeptId || undefined);
+      ? `${selectedDeptName} ${typeLabel}`
+      : `Global ${typeLabel}`;
+    await createChecklist(name, checklistType, selectedDeptId || undefined);
     setCreatingChecklist(false);
     refreshData();
   }
@@ -350,7 +353,7 @@ export function OnboardingSetup({
   async function handleCreateOverride() {
     if (!selectedDeptId || !overrideJobTitleId) return;
     setCreatingOverride(true);
-    await createOverrideChecklist(selectedDeptId, overrideJobTitleId);
+    await createOverrideChecklist(selectedDeptId, overrideJobTitleId, checklistType);
     setCreatingOverride(false);
     setOverrideJobTitleId("");
     refreshData();
@@ -430,7 +433,7 @@ export function OnboardingSetup({
       <div className="flex items-center gap-2 mb-5">
         <ClipboardList className="h-5 w-5 text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-          Onboarding Setup
+          {checklistType === "PRE_ONBOARDING" ? "Pre-Onboarding Setup" : "Onboarding Setup"}
         </h2>
       </div>
 

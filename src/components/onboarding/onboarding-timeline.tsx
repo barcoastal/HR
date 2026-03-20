@@ -24,6 +24,7 @@ import {
   addEmployeeTask,
   addCustomEmployeeTask,
   completeOnboarding,
+  completePreOnboarding,
   deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
@@ -59,7 +60,7 @@ type Props = {
   };
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
-  type: "ONBOARDING" | "OFFBOARDING";
+  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
   defaultExpanded?: boolean;
   isSuperAdmin?: boolean;
 };
@@ -198,7 +199,11 @@ export function OnboardingTimeline({
 
   async function handleCompleteOnboarding() {
     setCompleting(true);
-    await completeOnboarding(employee.id);
+    if (type === "PRE_ONBOARDING") {
+      await completePreOnboarding(employee.id);
+    } else {
+      await completeOnboarding(employee.id);
+    }
     setCompleting(false);
     setCompleted(true);
     router.refresh();
@@ -215,7 +220,7 @@ export function OnboardingTimeline({
     }
   }
 
-  const label = type === "ONBOARDING" ? "Onboarding" : "Offboarding";
+  const label = type === "PRE_ONBOARDING" ? "Pre-Onboarding" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
 
   // Group available items by checklist name
   const groupedAvailable = availableItems.reduce<Record<string, AvailableChecklistItem[]>>((acc, item) => {
@@ -504,7 +509,7 @@ export function OnboardingTimeline({
                   )}
                 </button>
 
-                {type === "ONBOARDING" && allDone && (
+                {(type === "ONBOARDING" || type === "PRE_ONBOARDING") && allDone && (
                   <button
                     onClick={handleCompleteOnboarding}
                     disabled={completing}
@@ -519,7 +524,7 @@ export function OnboardingTimeline({
                     {completing ? (
                       <><Loader2 className="h-4 w-4 animate-spin" />Processing...</>
                     ) : (
-                      <><CheckCircle2 className="h-4 w-4" />Complete {label}</>
+                      <><CheckCircle2 className="h-4 w-4" />{type === "PRE_ONBOARDING" ? "Move to Onboarding" : `Complete ${label}`}</>
                     )}
                   </button>
                 )}

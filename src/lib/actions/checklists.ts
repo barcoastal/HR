@@ -80,20 +80,21 @@ export async function deleteChecklistItem(id: string) {
 
 export async function createOverrideChecklist(
   departmentId: string,
-  jobTitleId: string
+  jobTitleId: string,
+  type: ChecklistType = "ONBOARDING"
 ) {
   const jobTitle = await db.jobTitle.findUnique({ where: { id: jobTitleId } });
   if (!jobTitle) throw new Error("Job title not found");
 
   const existing = await db.onboardingChecklist.findFirst({
-    where: { departmentId, jobTitleId, isOverride: true, type: "ONBOARDING" },
+    where: { departmentId, jobTitleId, isOverride: true, type },
   });
   if (existing) return existing;
 
   const checklist = await db.onboardingChecklist.create({
     data: {
       name: `${jobTitle.name} Override`,
-      type: "ONBOARDING",
+      type,
       departmentId,
       jobTitleId,
       isOverride: true,
@@ -122,7 +123,7 @@ export async function removeExclusion(overrideChecklistId: string, excludedItemI
   revalidatePath("/settings");
 }
 
-export async function getChecklistsForDepartment(departmentId: string | null, type: "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
+export async function getChecklistsForDepartment(departmentId: string | null, type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
   return db.onboardingChecklist.findMany({
     where: {
       type,
@@ -139,7 +140,7 @@ export async function getChecklistsForDepartment(departmentId: string | null, ty
   });
 }
 
-export async function getOverridesForDepartment(departmentId: string, type: "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
+export async function getOverridesForDepartment(departmentId: string, type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING" = "ONBOARDING") {
   return db.onboardingChecklist.findMany({
     where: {
       type,

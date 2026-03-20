@@ -12,23 +12,45 @@ export default async function OnboardingPage() {
   const currentEmployeeId = session.user?.employeeId;
   const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
 
-  const onboardingEmployees = await db.employee.findMany({
-    where: { status: "ONBOARDING" },
-    include: {
-      department: true,
-      employeeTasks: {
-        include: {
-          checklistItem: { include: { checklist: true } },
-          signingRequest: true,
-          assignee: true,
+  const [onboardingEmployees, preOnboardingEmployees] = await Promise.all([
+    db.employee.findMany({
+      where: { status: "ONBOARDING" },
+      include: {
+        department: true,
+        employeeTasks: {
+          include: {
+            checklistItem: { include: { checklist: true } },
+            signingRequest: true,
+            assignee: true,
+          },
         },
       },
-    },
-    orderBy: { startDate: "desc" },
-  });
+      orderBy: { startDate: "desc" },
+    }),
+    db.employee.findMany({
+      where: { status: "PRE_ONBOARDING" },
+      include: {
+        department: true,
+        employeeTasks: {
+          include: {
+            checklistItem: { include: { checklist: true } },
+            signingRequest: true,
+            assignee: true,
+          },
+        },
+      },
+      orderBy: { startDate: "desc" },
+    }),
+  ]);
 
   const allOnboardingChecklistItems = await db.checklistItem.findMany({
     where: { checklist: { type: "ONBOARDING" } },
+    include: { checklist: true, assignee: true },
+    orderBy: { order: "asc" },
+  });
+
+  const allPreOnboardingChecklistItems = await db.checklistItem.findMany({
+    where: { checklist: { type: "PRE_ONBOARDING" } },
     include: { checklist: true, assignee: true },
     orderBy: { order: "asc" },
   });
@@ -57,13 +79,14 @@ export default async function OnboardingPage() {
     return tasks.length > 0 && tasks.every((t) => t.status === "DONE");
   });
 
-  const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
+  const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0)
+    + preOnboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
 
   const myAssignedTasks = currentEmployeeId
     ? await db.employeeTask.findMany({
         where: {
           assigneeId: currentEmployeeId,
-          employee: { status: "ONBOARDING" },
+          employee: { status: { in: ["ONBOARDING", "PRE_ONBOARDING"] } },
         },
         include: {
           employee: true,
@@ -77,11 +100,60 @@ export default async function OnboardingPage() {
     <div className="max-w-5xl mx-auto py-8 px-4">
       <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <StatCard title="Pre-Onboarding" value={preOnboardingEmployees.length} icon={<ClipboardList className="h-5 w-5" />} color="purple" />
         <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<UserPlus className="h-5 w-5" />} color="blue" />
         <StatCard title="Completed This Month" value={completedEmployees.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
         <StatCard title="Pending Tasks" value={pendingTasks} icon={<ClipboardList className="h-5 w-5" />} color="amber" />
       </div>
+
+      {preOnboardingEmployees.length > 0 && (
+        <>
+          <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Pre-Onboarding</h2></div>
+          <div className="space-y-3 mb-8">
+            {preOnboardingEmployees.map((emp) => {
+              const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
+              const availableItems = allPreOnboardingChecklistItems
+                .filter((item) => !assignedItemIds.has(item.id))
+                .map((item) => ({
+                  id: item.id,
+                  title: item.title,
+                  description: item.description,
+                  checklistName: item.checklist.name,
+                  assigneeName: item.assignee ? `${item.assignee.firstName} ${item.assignee.lastName}` : null,
+                  dueDay: item.dueDay,
+                }));
+
+              return (
+                <OnboardingTimeline
+                  key={emp.id}
+                  employee={{
+                    id: emp.id,
+                    firstName: emp.firstName,
+                    lastName: emp.lastName,
+                    jobTitle: emp.jobTitle,
+                  }}
+                  tasks={emp.employeeTasks.map((t) => ({
+                    id: t.id,
+                    title: t.title || t.checklistItem?.title || "Untitled",
+                    description: t.description || t.checklistItem?.description || null,
+                    status: t.status as "PENDING" | "DONE",
+                    completedAt: t.completedAt?.toISOString() || null,
+                    dueDay: t.checklistItem?.dueDay || null,
+                    documentAction: t.documentAction || null,
+                    documentName: t.documentName || null,
+                    assigneeName: t.assignee ? `${t.assignee.firstName} ${t.assignee.lastName}` : null,
+                    signingStatus: t.signingRequest?.status || null,
+                  }))}
+                  availableItems={availableItems}
+                  type="PRE_ONBOARDING"
+                  isSuperAdmin={isSuperAdmin}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>
       <div className="space-y-3">

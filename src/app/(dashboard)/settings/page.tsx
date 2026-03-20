@@ -113,6 +113,13 @@ export default async function SettingsPage() {
           departments={departments.map((d) => ({ id: d.id, name: d.name }))}
           employees={employeeList}
           jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+          checklistType="PRE_ONBOARDING"
+        />
+
+        <OnboardingSetup
+          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+          employees={employeeList}
+          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
         />
 
         <OffboardingSetup

@@ -130,11 +130,38 @@ export async function createEmployee(data: {
     });
   }
 
-  // If onboarding, resolve and create tasks
+  // If onboarding, check for pre-onboarding tasks first
   if (status === "ONBOARDING") {
-    const { resolveOnboardingTasks } = await import("./onboarding-resolution");
+    const { resolveOnboardingTasks, resolvePreOnboardingTasks } = await import("./onboarding-resolution");
     const { createSigningRequest } = await import("./signing");
     const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
+
+    const preOnboardingTasks = await resolvePreOnboardingTasks(employee.departmentId, employee.jobTitle);
+
+    if (preOnboardingTasks.length > 0) {
+      // Has pre-onboarding tasks — set status to PRE_ONBOARDING and assign those
+      await db.employee.update({ where: { id: employee.id }, data: { status: "PRE_ONBOARDING" } });
+      employee.status = "PRE_ONBOARDING";
+
+      for (const task of preOnboardingTasks) {
+        await db.employeeTask.create({
+          data: {
+            employeeId: employee.id,
+            checklistItemId: task.checklistItemId,
+            title: task.title,
+            description: task.description,
+            documentAction: task.documentAction,
+            documentUrl: task.documentUrl,
+            documentName: task.documentName,
+            assigneeId: task.assigneeId,
+          },
+        });
+      }
+      revalidatePath("/onboarding");
+      revalidatePath("/people");
+      revalidatePath("/org");
+      return employee;
+    }
 
     const resolvedTasks = await resolveOnboardingTasks(employee.departmentId, employee.jobTitle);
 
@@ -310,15 +337,16 @@ export async function addCustomEmployeeTask(
   employeeId: string,
   title: string,
   description: string | undefined,
-  type: "ONBOARDING" | "OFFBOARDING"
+  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING"
 ) {
+  const typeLabel = type === "PRE_ONBOARDING" ? "Pre-Onboarding" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
   // Find or create a checklist for custom tasks
   let checklist = await db.onboardingChecklist.findFirst({
-    where: { name: `Custom ${type === "ONBOARDING" ? "Onboarding" : "Offboarding"} Tasks`, type },
+    where: { name: `Custom ${typeLabel} Tasks`, type },
   });
   if (!checklist) {
     checklist = await db.onboardingChecklist.create({
-      data: { name: `Custom ${type === "ONBOARDING" ? "Onboarding" : "Offboarding"} Tasks`, type },
+      data: { name: `Custom ${typeLabel} Tasks`, type },
     });
   }
 
@@ -345,6 +373,74 @@ export async function addCustomEmployeeTask(
   revalidatePath("/offboarding");
   revalidatePath("/settings");
   return task;
+}
+
+export async function completePreOnboarding(employeeId: string) {
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+
+  // Transition to ONBOARDING
+  await db.employee.update({
+    where: { id: employeeId },
+    data: { status: "ONBOARDING" },
+  });
+
+  // Resolve and assign regular onboarding tasks
+  const { resolveOnboardingTasks } = await import("./onboarding-resolution");
+  const { createSigningRequest } = await import("./signing");
+  const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
+  const resolvedTasks = await resolveOnboardingTasks(employee.departmentId, employee.jobTitle);
+
+  for (const task of resolvedTasks) {
+    const employeeTask = await db.employeeTask.create({
+      data: {
+        employeeId,
+        checklistItemId: task.checklistItemId,
+        title: task.title,
+        description: task.description,
+        documentAction: task.documentAction,
+        documentUrl: task.documentUrl,
+        documentName: task.documentName,
+        assigneeId: task.assigneeId,
+      },
+    });
+
+    if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
+      const signingReq = await createSigningRequest(
+        employeeTask.id,
+        employeeId,
+        task.documentUrl,
+        task.documentName
+      );
+      sendSigningRequestEmail({
+        to: employee.email,
+        firstName: employee.firstName,
+        documentName: task.documentName,
+        signingUrl: `${baseUrl}/sign/${signingReq.token}`,
+      });
+    }
+
+    if (task.assigneeId) {
+      const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
+      if (assignee) {
+        sendTaskAssignmentEmail({
+          to: assignee.email,
+          assigneeName: assignee.firstName,
+          newHireName: `${employee.firstName} ${employee.lastName}`,
+          taskTitle: task.title,
+          taskDescription: task.description,
+        });
+      }
+    }
+  }
+
+  revalidatePath("/onboarding");
+  revalidatePath("/people");
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/org");
+  return employee;
 }
 
 export async function completeOnboarding(employeeId: string) {

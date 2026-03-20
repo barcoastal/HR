@@ -18,6 +18,17 @@ type ResolvedTask = {
 };
 
 /**
+ * Resolve pre-onboarding tasks for an employee.
+ * Same merge logic as onboarding but uses PRE_ONBOARDING checklist type.
+ */
+export async function resolvePreOnboardingTasks(
+  departmentId: string | null,
+  jobTitle: string | null
+): Promise<ResolvedTask[]> {
+  return resolveTasksByType("PRE_ONBOARDING", departmentId, jobTitle);
+}
+
+/**
  * Resolve the full onboarding task list for an employee.
  * Merges: global tasks + department tasks + job title overrides (extras - exclusions).
  */
@@ -25,16 +36,24 @@ export async function resolveOnboardingTasks(
   departmentId: string | null,
   jobTitle: string | null
 ): Promise<ResolvedTask[]> {
+  return resolveTasksByType("ONBOARDING", departmentId, jobTitle);
+}
+
+async function resolveTasksByType(
+  type: "PRE_ONBOARDING" | "ONBOARDING",
+  departmentId: string | null,
+  jobTitle: string | null
+): Promise<ResolvedTask[]> {
   // 1. Fetch global checklists
   const globalChecklists = await db.onboardingChecklist.findMany({
-    where: { type: "ONBOARDING", departmentId: null, isOverride: false },
+    where: { type, departmentId: null, isOverride: false },
     include: { items: { orderBy: { order: "asc" } } },
   });
 
   // 2. Fetch department checklists
   const deptChecklists = departmentId
     ? await db.onboardingChecklist.findMany({
-        where: { type: "ONBOARDING", departmentId, isOverride: false },
+        where: { type, departmentId, isOverride: false },
         include: { items: { orderBy: { order: "asc" } } },
       })
     : [];
@@ -58,7 +77,7 @@ export async function resolveOnboardingTasks(
     if (jobTitleRecord) {
       const overrideChecklist = await db.onboardingChecklist.findFirst({
         where: {
-          type: "ONBOARDING",
+          type,
           departmentId,
           jobTitleId: jobTitleRecord.id,
           isOverride: true,

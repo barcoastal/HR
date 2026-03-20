@@ -330,15 +330,48 @@ export async function hireCandidateAndStartOnboarding(
     loginUrl: `${baseUrl}/login`,
   });
 
-  // Resolve and create onboarding tasks
-  const { resolveOnboardingTasks } = await import("./onboarding-resolution");
+  // Check for pre-onboarding tasks first
+  const { resolveOnboardingTasks, resolvePreOnboardingTasks } = await import("./onboarding-resolution");
   const { createSigningRequest } = await import("./signing");
   const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
 
-  const resolvedTasks = await resolveOnboardingTasks(
-    candidate.position?.departmentId || null,
-    candidate.position?.title || null
-  );
+  const deptId = candidate.position?.departmentId || null;
+  const jobTitleStr = candidate.position?.title || null;
+
+  const preOnboardingTasks = await resolvePreOnboardingTasks(deptId, jobTitleStr);
+
+  if (preOnboardingTasks.length > 0) {
+    // Has pre-onboarding tasks — set status to PRE_ONBOARDING and assign those
+    await db.employee.update({ where: { id: employee.id }, data: { status: "PRE_ONBOARDING" } });
+
+    for (const task of preOnboardingTasks) {
+      await db.employeeTask.create({
+        data: {
+          employeeId: employee.id,
+          checklistItemId: task.checklistItemId,
+          title: task.title,
+          description: task.description,
+          documentAction: task.documentAction,
+          documentUrl: task.documentUrl,
+          documentName: task.documentName,
+          assigneeId: task.assigneeId,
+        },
+      });
+    }
+
+    // Update candidate status
+    await db.candidate.update({
+      where: { id: candidateId },
+      data: { status: "HIRED", inPipeline: false },
+    });
+
+    revalidatePath("/cv");
+    revalidatePath("/onboarding");
+    revalidatePath("/people");
+    return { employee, taskCount: preOnboardingTasks.length };
+  }
+
+  const resolvedTasks = await resolveOnboardingTasks(deptId, jobTitleStr);
 
   for (const task of resolvedTasks) {
     const employeeTask = await db.employeeTask.create({
