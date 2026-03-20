@@ -8,7 +8,7 @@ export async function getDepartments() {
     include: {
       head: true,
       teams: true,
-      employees: { where: { status: { not: "OFFBOARDED" }, user: { isNot: null } } },
+      employees: { where: { status: { not: "OFFBOARDED" } } },
       _count: { select: { employees: true } },
     },
     orderBy: { name: "asc" },
