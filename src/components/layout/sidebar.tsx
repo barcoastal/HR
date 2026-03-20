@@ -42,6 +42,7 @@ const allNavLinks = [
   { href: "/", label: "Feed", icon: Newspaper, access: () => true },
   { href: "/people", label: "People", icon: Users, access: () => true },
   { href: "/org", label: "Organization", icon: Building2, access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: ClipboardCheck, access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r) },
   { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r) },

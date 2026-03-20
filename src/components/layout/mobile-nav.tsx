@@ -50,6 +50,7 @@ type DrawerSection = {
 };
 
 const allDrawerLinks = [
+  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: ClipboardCheck, access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
   { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
   { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r), section: "Workflow" },
   { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },

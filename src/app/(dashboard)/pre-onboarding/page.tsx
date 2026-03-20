@@ -1,4 +1,3 @@
-import { cn, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
@@ -7,13 +6,13 @@ import { MyOnboardingTasks } from "@/components/onboarding/my-onboarding-tasks";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 
-export default async function OnboardingPage() {
+export default async function PreOnboardingPage() {
   const session = await requireAdmin();
   const currentEmployeeId = session.user?.employeeId;
   const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
 
-  const onboardingEmployees = await db.employee.findMany({
-    where: { status: "ONBOARDING" },
+  const preOnboardingEmployees = await db.employee.findMany({
+    where: { status: "PRE_ONBOARDING" },
     include: {
       department: true,
       employeeTasks: {
@@ -27,43 +26,22 @@ export default async function OnboardingPage() {
     orderBy: { startDate: "desc" },
   });
 
-  const allOnboardingChecklistItems = await db.checklistItem.findMany({
-    where: { checklist: { type: "ONBOARDING" } },
+  const allPreOnboardingChecklistItems = await db.checklistItem.findMany({
+    where: { checklist: { type: "PRE_ONBOARDING" } },
     include: { checklist: true, assignee: true },
     orderBy: { order: "asc" },
   });
 
-  const recentlyCompleted = await db.employee.findMany({
-    where: {
-      status: "ACTIVE",
-      employeeTasks: { some: { checklistItem: { checklist: { type: "ONBOARDING" } } } },
-    },
-    include: {
-      department: true,
-      employeeTasks: {
-        include: {
-          checklistItem: { include: { checklist: true } },
-          signingRequest: true,
-          assignee: true,
-        },
-      },
-    },
-    orderBy: { startDate: "desc" },
-    take: 5,
-  });
-
-  const completedEmployees = recentlyCompleted.filter((emp) => {
-    const tasks = emp.employeeTasks.filter((t) => t.checklistItem?.checklist?.type === "ONBOARDING");
-    return tasks.length > 0 && tasks.every((t) => t.status === "DONE");
-  });
-
-  const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
+  const pendingTasks = preOnboardingEmployees.reduce(
+    (acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length,
+    0
+  );
 
   const myAssignedTasks = currentEmployeeId
     ? await db.employeeTask.findMany({
         where: {
           assigneeId: currentEmployeeId,
-          employee: { status: "ONBOARDING" },
+          employee: { status: "PRE_ONBOARDING" },
         },
         include: {
           employee: true,
@@ -75,19 +53,18 @@ export default async function OnboardingPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
+      <PageHeader title="Pre-Onboarding" description="Track and manage pre-onboarding tasks before full onboarding begins" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<UserPlus className="h-5 w-5" />} color="blue" />
-        <StatCard title="Completed This Month" value={completedEmployees.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Pending Tasks" value={pendingTasks} icon={<ClipboardList className="h-5 w-5" />} color="amber" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <StatCard title="In Pre-Onboarding" value={preOnboardingEmployees.length} icon={<ClipboardList className="h-5 w-5" />} color="purple" />
+        <StatCard title="Pending Tasks" value={pendingTasks} icon={<UserPlus className="h-5 w-5" />} color="amber" />
       </div>
 
-      <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>
+      <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Pre-Onboarding</h2></div>
       <div className="space-y-3">
-        {onboardingEmployees.map((emp) => {
+        {preOnboardingEmployees.map((emp) => {
           const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
-          const availableItems = allOnboardingChecklistItems
+          const availableItems = allPreOnboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
             .map((item) => ({
               id: item.id,
@@ -120,36 +97,15 @@ export default async function OnboardingPage() {
                 signingStatus: t.signingRequest?.status || null,
               }))}
               availableItems={availableItems}
-              type="ONBOARDING"
+              type="PRE_ONBOARDING"
               isSuperAdmin={isSuperAdmin}
             />
           );
         })}
-        {onboardingEmployees.length === 0 && <p className="text-center text-[var(--color-text-muted)] py-8">No active onboarding</p>}
+        {preOnboardingEmployees.length === 0 && (
+          <p className="text-center text-[var(--color-text-muted)] py-8">No active pre-onboarding</p>
+        )}
       </div>
-
-      {completedEmployees.length > 0 && (
-        <>
-          <div className="mt-8 mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Recently Completed</h2></div>
-          <div className="space-y-3">
-            {completedEmployees.map((emp) => (
-              <div key={emp.id} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">{emp.firstName[0]}{emp.lastName[0]}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{emp.firstName} {emp.lastName}</p>
-                    <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle} · {emp.department?.name}</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                    <span className="text-emerald-400 font-medium">Completed</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
 
       <MyOnboardingTasks
         tasks={myAssignedTasks.map((t) => ({
