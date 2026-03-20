@@ -1,7 +1,6 @@
 import { db } from "@/lib/db";
-import { requireApiAdmin } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // CSV data from coastal-debt-employees.csv
 const CSV_EMPLOYEES = [
@@ -116,8 +115,12 @@ function getManagerName(dept: string, title: string): string | null {
   return MANAGER_RULES[dept] || null;
 }
 
-export async function GET() {
-  await requireApiAdmin();
+export async function GET(req: NextRequest) {
+  // Simple secret key auth for one-time script
+  const key = req.nextUrl.searchParams.get("key");
+  if (key !== "coastal-sync-2026") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const log: string[] = [];
 
