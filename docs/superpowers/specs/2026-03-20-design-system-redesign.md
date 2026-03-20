@@ -186,23 +186,101 @@ Uses Tailwind's default spacing scale (4px base). No custom tokens needed — th
 2. **Remove** theme toggle from sidebar and topbar
 3. **Remove** `suppressHydrationWarning` from root layout's `<html>` tag
 
-### Components Using Glass/Gradient Effects
+### Components Using Glass/Gradient/Glow Effects
 
-These components reference `.glass`, `.glass-card`, `.gradient-border`, `.text-gradient`, or `.glow-accent` and need updating:
+Full list of files referencing `.glass`, `.glass-card`, `.gradient-border`, `.text-gradient`, `.glow-accent`, `.accent-glow`, `animate-glow-pulse`, inline `accent-glow` shadows, or inline `to-purple-600` gradients:
 
-- `src/components/layout/sidebar.tsx` — glass background, gradient active state
-- `src/components/layout/top-bar.tsx` — glass background
-- `src/components/ui/card.tsx` — gradient-border hover
+**Layout components:**
+- `src/components/layout/sidebar.tsx` — `glass`, gradient active state
+- `src/components/layout/top-bar.tsx` — `glass`
+- `src/components/layout/mobile-nav.tsx` — `glass`
+
+**UI components:**
+- `src/components/ui/card.tsx` — `gradient-border`
 - `src/components/ui/dialog.tsx` — glassmorphism overlay
 - `src/components/ui/badge.tsx` — gradient variant
 - `src/components/ui/tabs.tsx` — glass styling
 - `src/components/ui/stat-card.tsx` — glow effects
+- `src/components/ui/button.tsx` — `glow-accent`, inline `to-purple-600` gradient
+- `src/components/ui/page-header.tsx` — `text-gradient`
 
-**Replacement approach**: Replace glass backgrounds with `bg-surface` + `shadow-sm`. Replace gradient borders with `border-border hover:border-accent` + `shadow-md`. Replace text gradients with `text-accent`.
+**Page files:**
+- `src/app/(dashboard)/analytics/page.tsx` — `glass-card`, `gradient-border` (12+ uses)
+- `src/app/(dashboard)/my-profile/page.tsx` — `gradient-border`, `text-gradient`
+- `src/app/(dashboard)/people/[id]/page.tsx` — `gradient-border`, `text-gradient`
+- `src/app/(dashboard)/time-off/page.tsx` — `gradient-border`
+- `src/app/(dashboard)/reviews/page.tsx` — `gradient-border`, `to-purple-500` progress bar
+- `src/app/(dashboard)/org/page.tsx` — `gradient-border`
+- `src/app/(dashboard)/calendar/page.tsx` — `glass-card`
+- `src/app/(dashboard)/welcome/page.tsx` — `to-purple-500` progress bar gradient
+- `src/app/(auth)/login/page.tsx` — `glass-card`, `animate-glow-pulse`, `accent-glow`, `to-purple-500/5` background
+
+**Feature components:**
+- `src/components/clubs/club-card.tsx` — `gradient-border`
+- `src/components/analytics/ai-analytics-bar.tsx` — `glass-card`, `glow-accent`
+- `src/components/feed/post-card.tsx` — `gradient-border`, `to-purple-500/10` decorative gradient
+- `src/components/feed/post-composer.tsx` — `accent-glow`
+- `src/components/onboarding/onboarding-timeline.tsx` — `gradient-border`, `to-purple-500` progress bar
+- `src/components/people/people-list.tsx` — `gradient-border`, `accent-glow`
+- `src/components/people/employee-documents-section.tsx` — `gradient-border`
+- `src/components/people/hr-notes-section.tsx` — `gradient-border`
+- `src/components/people/add-employee-form.tsx` — `accent-glow`
+- `src/components/documents/document-signing-manager.tsx` — `glass-card`, inline `accent-glow` shadow
+- `src/components/cv/add-candidate-form.tsx` — `accent-glow`
+- `src/components/org/department-actions.tsx` — `accent-glow`
+- `src/components/settings/company-info.tsx` — `accent-glow`
+
+**Total: ~30 files** requiring class replacement.
+
+#### Replacement Rules
+
+| Old pattern | Replacement |
+|-------------|-------------|
+| `glass`, `glass-card` | `bg-surface shadow-sm border border-border` |
+| `gradient-border` | `border border-border hover:border-accent hover:shadow-md transition-all` |
+| `text-gradient` | `text-accent` |
+| `glow-accent`, `accent-glow` | `shadow-sm` (remove glow entirely) |
+| `animate-glow-pulse` | Remove (no replacement needed) |
+| Inline `shadow-[..accent-glow..]` | `shadow-sm` or `shadow-focus` for focus states |
+| All `to-purple-*` gradient patterns (600, 500, 500/10, 500/5) | See sub-rules below |
+| Solid gradient backgrounds (`to-purple-600`, `to-purple-500`) | `bg-accent` |
+| Progress bar gradients (`to-purple-500`) | `bg-accent` |
+| Subtle/decorative gradients (`to-purple-500/5`, `to-purple-500/10`) | `bg-accent-light` or remove |
+| Badge gradient variant (`to-purple-500/10`) | Replace with non-gradient badge style |
+| `bg-gradient-to-r from-[var(--color-accent)] to-purple-600` | `bg-accent` |
+
+#### Removed Tokens (no longer defined)
+
+These tokens/variables are removed and all references must be updated:
+- `--color-accent-glow` — replaced by `--shadow-focus` for focus rings, removed elsewhere
+- `--gradient-brand` — replace with solid `--color-accent`
+- `--gradient-brand-subtle` — replace with `--color-accent-light`
+- `--gradient-mesh` — removed (no replacement, body uses flat background)
 
 ### Font Loading
 
-Add Aeonik font files to `public/fonts/` and declare `@font-face` in globals.css. Apply `font-heading` to all `h1`–`h4` elements and page title components.
+**Available Aeonik weights**: Regular (400) and Medium (500) only.
+
+Add Aeonik font files to `public/fonts/` and declare `@font-face` in globals.css:
+- `Aeonik-Regular.woff2` — weight 400
+- `Aeonik-Medium.woff2` — weight 500
+
+**Application method**: Register `--font-heading` in the Tailwind `@theme` block, then add a global CSS rule:
+```css
+h1, h2, h3, h4 { font-family: var(--font-heading); }
+```
+
+The `page-header.tsx` component should also use `font-heading` for its title.
+
+**Weight mapping note**: Aeonik only provides Regular (400) and Medium (500). Headings should use `font-medium` (500) with Aeonik. Weights 600+ (`font-semibold`, `font-bold`) only apply to Inter-rendered text (body, UI, stat numbers).
+
+### New Tokens: Application Guidance
+
+- `--color-surface-raised` and `--color-border-subtle` — introduced for future use. No existing components need to adopt them during this migration. Available for modals/dropdowns and nested card borders.
+- `--color-secondary` (Orange #FF9000) — introduced for secondary CTAs and badge accents. No mandatory adoption during migration, but the badge `warning` variant may optionally switch to this.
+- `--color-highlight` (Light Blue #7FB2FF) — decorative accent for future use.
+- `--color-text-secondary` (#4A4D65) — fixes a pre-existing bug where 2 files reference this undefined token. Will work automatically once defined.
+- `--color-info` (#3B82F6) — intentionally close to `--color-accent` (#3052FF). Info is a semantic state color used for toast/alert contexts; accent is the interactive/brand color. The similar hue is acceptable since they serve different roles and rarely appear together.
 
 ---
 
@@ -222,9 +300,10 @@ Add Aeonik font files to `public/fonts/` and declare `@font-face` in globals.css
 Since all components already consume CSS variables through Tailwind, the migration is primarily:
 
 1. **Update tokens in globals.css** — most changes cascade automatically
-2. **Search and replace** glass/gradient class usage in components (~7 files)
-3. **Remove theme infrastructure** — ThemeProvider, theme toggle, dark mode selectors
-4. **Add Aeonik font** — font files + CSS + heading class updates
-5. **Audit and adjust** — verify each page looks correct with new tokens
+2. **Search and replace** glass/gradient/glow class usage in components (~30 files, see full list above)
+3. **Replace inline purple gradients** — 11+ files use `to-purple-600`, replace with solid `bg-accent`
+4. **Remove theme infrastructure** — ThemeProvider, theme toggle, dark mode selectors
+5. **Add Aeonik font** — font files + `@font-face` + global heading rule + `@theme` registration
+6. **Audit and adjust** — verify each page looks correct with new tokens
 
 This is a visual-only change. No database, API, or business logic modifications.
