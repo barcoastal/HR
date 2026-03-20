@@ -1,0 +1,12 @@
+{"type":"server-started","port":65495,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:65495","screen_dir":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/94613-1773349650"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/94613-1773349650/checklist-scope.html"}
+{"source":"user-event","type":"click","text":"A\n    \n      Job Title Only\n      Each job title gets its own checklist. Replace department scoping entirely. Simple and direct.","choice":"a","id":null,"timestamp":1773349748460}
+{"source":"user-event","type":"click","text":"A\n    \n      Job Title Only\n      Each job title gets its own checklist. Replace department scoping entirely. Simple and direct.","choice":"a","id":null,"timestamp":1773349749654}
+{"source":"user-event","type":"click","text":"A\n    \n      Job Title Only\n      Each job title gets its own checklist. Replace department scoping entirely. Simple and direct.","choice":"a","id":null,"timestamp":1773349751259}
+{"source":"user-event","type":"click","text":"B\n    \n      Job Title + Global\n      Job-title-specific checklists plus a global checklist that applies to everyone (e.g. \"Sign NDA\", \"Set up email\"). Best of both worlds.","choice":"b","id":null,"timestamp":1773349752566}
+{"source":"user-event","type":"click","text":"C\n    \n      Job Title + Department + Global\n      Most flexible: global steps + department steps + job-title steps all combined. More powerful but more complex to manage.","choice":"c","id":null,"timestamp":1773349754059}
+{"source":"user-event","type":"click","text":"B\n    \n      Job Title + Global\n      Job-title-specific checklists plus a global checklist that applies to everyone (e.g. \"Sign NDA\", \"Set up email\"). Best of both worlds.","choice":"b","id":null,"timestamp":1773349759408}
+{"source":"user-event","type":"click","text":"A\n    \n      Job Title Only\n      Each job title gets its own checklist. Replace department scoping entirely. Simple and direct.","choice":"a","id":null,"timestamp":1773349760051}
+{"source":"user-event","type":"click","text":"C\n    \n      Job Title + Department + Global\n      Most flexible: global steps + department steps + job-title steps all combined. More powerful but more complex to manage.","choice":"c","id":null,"timestamp":1773349760911}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/94613-1773349650/waiting.html"}
+{"type":"server-stopped","reason":"idle timeout"}

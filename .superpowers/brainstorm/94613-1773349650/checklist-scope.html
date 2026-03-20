@@ -1,0 +1,26 @@
+<h2>How should onboarding checklists be scoped?</h2>
+<p class="subtitle">Currently checklists are per-department. You want per-job-title. What's the right model?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Job Title Only</h3>
+      <p>Each job title gets its own checklist. Replace department scoping entirely. Simple and direct.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Job Title + Global</h3>
+      <p>Job-title-specific checklists <strong>plus</strong> a global checklist that applies to everyone (e.g. "Sign NDA", "Set up email"). Best of both worlds.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Job Title + Department + Global</h3>
+      <p>Most flexible: global steps + department steps + job-title steps all combined. More powerful but more complex to manage.</p>
+    </div>
+  </div>
+</div>
