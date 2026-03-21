@@ -1,100 +1,20 @@
-# Design System & Visual Redesign — Implementation Plan
+# Luminal Architect Design System — Implementation Plan
 
 > **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Migrate the HR platform from a dark-first glassmorphism aesthetic to a soft, warm, light-only design system with Coastal Debt brand-inspired tokens.
+**Goal:** Migrate the HR platform from dark glassmorphism to the Luminal Architect design system — indigo palette, tonal layering, no-line boundaries, editorial typography.
 
-**Architecture:** Token-level redesign — update CSS custom properties in globals.css (which cascade through all components via Tailwind), then replace ~30 files that use glass/gradient/glow classes with clean alternatives. Remove dark mode infrastructure entirely.
+**Architecture:** Token-level redesign — update CSS custom properties in globals.css, add new utility classes, then update ~30 component files. Remove dark mode entirely.
 
-**Tech Stack:** Tailwind CSS v4 (@theme), CSS custom properties, CVA (class-variance-authority), Framer Motion (kept as-is)
+**Tech Stack:** Tailwind CSS v4 (@theme), CSS custom properties, CVA, Framer Motion (kept)
 
 **Spec:** `docs/superpowers/specs/2026-03-20-design-system-redesign.md`
 
 ---
 
-## File Structure
+## Chunk 1: Foundation — New Tokens & Utilities
 
-**Modified files:**
-- `src/app/globals.css` — Complete token replacement, remove glass/gradient/dark classes
-- `src/app/layout.tsx` — Remove ThemeProvider wrapper, suppressHydrationWarning
-- `src/components/layout/theme-provider.tsx` — Delete entirely
-- `src/components/layout/sidebar.tsx` — Remove glass, gradients, theme toggle, useTheme
-- `src/components/layout/top-bar.tsx` — Remove glass, theme toggle, useTheme
-- `src/components/layout/mobile-nav.tsx` — Remove glass
-- `src/components/ui/button.tsx` — Replace gradient + glow default variant
-- `src/components/ui/card.tsx` — Replace gradient-border
-- `src/components/ui/badge.tsx` — Replace gradient variant, remove dark: classes
-- `src/components/ui/page-header.tsx` — Replace text-gradient
-- `src/components/ui/dialog.tsx` — Replace glass overlay
-- `src/components/ui/stat-card.tsx` — Remove dark: classes from color schemes
-- `src/components/ui/tabs.tsx` — Remove glass styling
-- `src/app/(auth)/login/page.tsx` — Replace glass-card, glow-pulse, purple orbs
-- `src/app/(dashboard)/analytics/page.tsx` — Replace glass-card, gradient-border (12+ uses)
-- `src/app/(dashboard)/my-profile/page.tsx` — Replace gradient-border, text-gradient
-- `src/app/(dashboard)/people/[id]/page.tsx` — Replace gradient-border, text-gradient
-- `src/app/(dashboard)/time-off/page.tsx` — Replace gradient-border
-- `src/app/(dashboard)/reviews/page.tsx` — Replace gradient-border, to-purple-500
-- `src/app/(dashboard)/org/page.tsx` — Replace gradient-border
-- `src/app/(dashboard)/calendar/page.tsx` — Replace glass-card
-- `src/app/(dashboard)/welcome/page.tsx` — Replace to-purple-500 gradient
-- `src/components/clubs/club-card.tsx` — Replace gradient-border
-- `src/components/analytics/ai-analytics-bar.tsx` — Replace glass-card, glow-accent
-- `src/components/feed/post-card.tsx` — Replace gradient-border, to-purple-500/10
-- `src/components/feed/post-composer.tsx` — Replace accent-glow
-- `src/components/onboarding/onboarding-timeline.tsx` — Replace gradient-border, to-purple-500
-- `src/components/people/people-list.tsx` — Replace gradient-border, accent-glow
-- `src/components/people/employee-documents-section.tsx` — Replace gradient-border
-- `src/components/people/hr-notes-section.tsx` — Replace gradient-border
-- `src/components/people/add-employee-form.tsx` — Replace accent-glow
-- `src/components/documents/document-signing-manager.tsx` — Replace glass-card, accent-glow shadow
-- `src/components/cv/add-candidate-form.tsx` — Replace accent-glow
-- `src/components/org/department-actions.tsx` — Replace accent-glow
-- `src/components/settings/company-info.tsx` — Replace accent-glow
-- `src/components/settings/email-template-manager.tsx` — Remove dark: classes
-- `src/components/cv/candidate-database.tsx` — Remove dark: classes
-- `src/components/time-off/burnout-alerts.tsx` — Remove dark: classes
-- `package.json` — Remove next-themes dependency
-
-**Created files:**
-- `public/fonts/Aeonik-Regular.woff2` — Font file (must be sourced manually)
-- `public/fonts/Aeonik-Medium.woff2` — Font file (must be sourced manually)
-
----
-
-## Chunk 1: Foundation — Tokens, Fonts, and Dark Mode Removal
-
-### Task 1: Add Aeonik font files
-
-**Files:**
-- Create: `public/fonts/Aeonik-Regular.woff2`
-- Create: `public/fonts/Aeonik-Medium.woff2`
-
-- [ ] **Step 1: Create fonts directory**
-
-```bash
-mkdir -p public/fonts
-```
-
-- [ ] **Step 2: Source Aeonik font files**
-
-Copy Aeonik-Regular.woff2 and Aeonik-Medium.woff2 into `public/fonts/`. These must be sourced from the company's licensed font files. Check if they exist anywhere on the machine:
-
-```bash
-find /Users/baralezrah -name "Aeonik*" -type f 2>/dev/null | head -20
-```
-
-If not found locally, the user must provide them. Do NOT proceed without real font files.
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add public/fonts/
-git commit -m "feat: add Aeonik font files for design system"
-```
-
----
-
-### Task 2: Replace globals.css with new design tokens
+### Task 1: Replace globals.css with Luminal Architect tokens
 
 **Files:**
 - Modify: `src/app/globals.css`
@@ -106,111 +26,99 @@ Replace the full contents of `src/app/globals.css` with:
 ```css
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Aeonik";
-  src: url("/fonts/Aeonik-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Aeonik";
-  src: url("/fonts/Aeonik-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   /* Typography */
-  --font-heading: "Aeonik", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
 
-  /* Core palette */
-  --color-background: #F5F6FA;
-  --color-foreground: #1A1A2E;
-  --color-surface: #FFFFFF;
-  --color-surface-hover: #F0F1F5;
-  --color-surface-raised: #FFFFFF;
-  --color-border: #E2E4ED;
-  --color-border-subtle: #EDEEF3;
+  /* Surfaces — tonal spectrum */
+  --color-surface: #fcf8ff;
+  --color-surface-container: #efecfd;
+  --color-surface-container-low: #f5f2ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-highest: #e3e0f2;
+  --color-surface-variant: #e3e0f2;
+
+  /* Legacy mappings (consumed by existing components via Tailwind) */
+  --color-background: #fcf8ff;
+  --color-foreground: #1a1a27;
+  --color-surface-hover: #efecfd;
 
   /* Text */
-  --color-text-primary: #1A1A2E;
-  --color-text-secondary: #4A4D65;
-  --color-text-muted: #8B8FA8;
-  --color-text-on-accent: #FFFFFF;
+  --color-on-surface: #1a1a27;
+  --color-on-surface-variant: #484555;
+  --color-text-primary: #1a1a27;
+  --color-text-secondary: #484555;
+  --color-text-muted: #78758a;
+  --color-on-primary: #ffffff;
+  --color-text-on-accent: #ffffff;
 
-  /* Brand / Accent */
-  --color-accent: #3052FF;
-  --color-accent-hover: #2442E0;
-  --color-accent-light: rgba(48, 82, 255, 0.08);
-  --color-accent-lighter: rgba(48, 82, 255, 0.04);
-  --color-secondary: #FF9000;
-  --color-secondary-hover: #E58200;
-  --color-secondary-light: rgba(255, 144, 0, 0.08);
-  --color-highlight: #7FB2FF;
+  /* Primary — Indigo */
+  --color-primary: #5b3cdd;
+  --color-primary-container: #7459f7;
+  --color-primary-fixed: #e5deff;
+  --color-on-primary-fixed-variant: #441cc8;
+  --color-accent: #5b3cdd;
+  --color-accent-hover: #4a2fc4;
+  --color-accent-light: rgba(91, 60, 221, 0.08);
+
+  /* Outline */
+  --color-outline-variant: #c9c4d8;
+  --color-border: rgba(201, 196, 216, 0.15);
+  --color-border-subtle: rgba(201, 196, 216, 0.10);
 
   /* Semantic */
   --color-success: #10B981;
-  --color-success-light: rgba(16, 185, 129, 0.08);
   --color-warning: #F59E0B;
-  --color-warning-light: rgba(245, 158, 11, 0.08);
   --color-danger: #EF4444;
-  --color-danger-light: rgba(239, 68, 68, 0.08);
-  --color-info: #3B82F6;
-  --color-info-light: rgba(59, 130, 246, 0.08);
+  --color-info: #7459f7;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.09);
-  --shadow-focus: 0 0 0 3px rgba(48, 82, 255, 0.15);
+  /* Shadows — tinted ambient */
+  --shadow-ambient: 0 20px 40px rgba(26, 26, 39, 0.06);
+  --shadow-glass: 0 8px 32px rgba(26, 26, 39, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(91, 60, 221, 0.2);
 
-  /* Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
+  /* Radius — strict: md for controls, lg for containers */
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
   --radius-full: 9999px;
-}
-
-/* Heading font */
-h1, h2, h3, h4 {
-  font-family: var(--font-heading);
 }
 
 /* Base styles */
 body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
   font-family: var(--font-sans);
 }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-outline-variant); border-radius: 3px; }
+
+/* Glassmorphism — floating elements only */
+.glass {
+  background: rgba(227, 224, 242, 0.70);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+
+/* Primary gradient — CTAs only */
+.gradient-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
 }
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
+
+/* Ghost border — 15% opacity only */
+.ghost-border {
+  outline: 1px solid rgba(201, 196, 216, 0.15);
+}
+.ghost-border-focus {
+  outline: 2px solid var(--color-primary);
 }
 
 /* Animations */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .animate-fade-up {
   animation: fadeUp 0.4s ease-out both;
@@ -225,42 +133,31 @@ body {
 }
 ```
 
-- [ ] **Step 2: Verify the app still compiles**
-
-```bash
-cd /Users/baralezrah/hr-platform && npx next build 2>&1 | tail -5
-```
-
-Note: Build will have warnings about removed classes (glass, gradient-border, etc.) still being referenced. That's expected — we'll fix those in subsequent tasks.
-
-- [ ] **Step 3: Commit**
+- [ ] **Step 2: Commit**
 
 ```bash
 git add src/app/globals.css
-git commit -m "feat: replace design tokens with new warm light-only palette
+git commit -m "feat: replace design tokens with Luminal Architect tonal spectrum
 
-Removes dark mode, glassmorphism, gradient utilities.
-Adds Aeonik font-face, new color tokens, shadow/radius tokens."
+New indigo palette, tonal surfaces, ghost borders, gradient-primary utility.
+Removes dark mode, old glassmorphism, gradient-border, text-gradient, glow effects."
 ```
 
 ---
 
-### Task 3: Remove dark mode infrastructure
+### Task 2: Remove dark mode infrastructure
 
 **Files:**
 - Modify: `src/app/layout.tsx`
 - Delete: `src/components/layout/theme-provider.tsx`
-- Modify: `package.json` (remove next-themes)
+- Modify: `package.json`
 
-- [ ] **Step 1: Update root layout — remove ThemeProvider**
+- [ ] **Step 1: Update root layout**
 
-In `src/app/layout.tsx`, make ONLY these targeted changes (preserve all other imports, metadata export, dynamic export, etc.):
-
-1. Remove the import: `import { ThemeProvider } from "@/components/layout/theme-provider";`
+In `src/app/layout.tsx`, make ONLY these targeted changes (preserve all other imports, metadata, dynamic export):
+1. Remove: `import { ThemeProvider } from "@/components/layout/theme-provider";`
 2. Remove `suppressHydrationWarning` from the `<html>` tag
-3. Remove the `<ThemeProvider>` wrapper tags, keeping everything inside (`<SessionProvider>` and `{children}`)
-
-**IMPORTANT:** Do NOT replace the whole file. Keep the existing `Metadata` import, `metadata` export (title, description, favicon), `dynamic` export, and all other content. Only remove the 3 items listed above.
+3. Remove the `<ThemeProvider>` wrapper tags, keeping `<SessionProvider>` and `{children}` inside
 
 - [ ] **Step 2: Delete theme-provider.tsx**
 
@@ -268,7 +165,7 @@ In `src/app/layout.tsx`, make ONLY these targeted changes (preserve all other im
 rm src/components/layout/theme-provider.tsx
 ```
 
-- [ ] **Step 3: Remove next-themes from package.json**
+- [ ] **Step 3: Remove next-themes**
 
 ```bash
 cd /Users/baralezrah/hr-platform && npm uninstall next-themes
@@ -278,446 +175,296 @@ cd /Users/baralezrah/hr-platform && npm uninstall next-themes
 
 ```bash
 git add -A
-git commit -m "feat: remove dark mode infrastructure
-
-Remove ThemeProvider, next-themes dependency, and suppressHydrationWarning."
+git commit -m "feat: remove dark mode — delete ThemeProvider, uninstall next-themes"
 ```
 
 ---
 
-## Chunk 2: UI Component Updates
+## Chunk 2: UI Components
 
-### Task 4: Update button component
+### Task 3: Update button component
 
 **Files:**
 - Modify: `src/components/ui/button.tsx`
 
-- [ ] **Step 1: Replace default variant**
+- [ ] **Step 1: Replace button variants**
 
-In `src/components/ui/button.tsx`, change the `default` variant from:
+Replace the variants object:
 
-```
-"bg-gradient-to-r from-[var(--color-accent)] to-purple-600 text-white shadow-sm glow-accent hover:shadow-lg hover:brightness-110"
+```typescript
+variant: {
+  default:
+    "gradient-primary text-white shadow-none hover:shadow-[var(--shadow-ambient)] hover:brightness-105 transition-all",
+  secondary:
+    "bg-transparent text-[var(--color-primary)] ghost-border hover:bg-[var(--color-primary-fixed)] transition-all",
+  ghost:
+    "bg-transparent text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] transition-all",
+  destructive:
+    "bg-[var(--color-danger)] text-white shadow-none hover:shadow-[var(--shadow-ambient)] hover:brightness-105 transition-all",
+},
 ```
 
-to:
-
-```
-"bg-[var(--color-accent)] text-white shadow-sm hover:bg-[var(--color-accent-hover)] hover:shadow-md"
-```
+Also update the base class: change `rounded-xl` to `rounded-[var(--radius-md)]`. Remove `glow-accent` from the base class if present.
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add src/components/ui/button.tsx
-git commit -m "feat: update button to solid accent instead of gradient"
+git commit -m "feat: button — gradient primary, ghost border secondary, remove glow"
 ```
 
 ---
 
-### Task 5: Update card component
+### Task 4: Update card component
 
 **Files:**
 - Modify: `src/components/ui/card.tsx`
 
-- [ ] **Step 1: Replace gradient-border**
+- [ ] **Step 1: Replace Card root className**
 
-In `src/components/ui/card.tsx`, change the Card root className from:
-
+Change from:
 ```
 "gradient-border rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm transition-all duration-300 hover:shadow-xl"
 ```
 
 to:
+```
+"rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] transition-all duration-200 hover:shadow-[var(--shadow-ambient)]"
+```
 
-```
-"rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-sm transition-all duration-200 hover:border-[var(--color-accent)]/30 hover:shadow-md"
-```
+No border. White card on tinted background creates lift via tonal layering.
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add src/components/ui/card.tsx
-git commit -m "feat: update card to soft hover instead of gradient border"
+git commit -m "feat: card — tonal layering, no border, ambient hover shadow"
 ```
 
 ---
 
-### Task 6: Update badge component
+### Task 5: Update badge component
 
 **Files:**
 - Modify: `src/components/ui/badge.tsx`
 
-- [ ] **Step 1: Replace gradient variant and remove dark: classes**
-
-Replace the variants object in `badgeVariants`:
+- [ ] **Step 1: Replace variants**
 
 ```typescript
 variant: {
-  default: "bg-[var(--color-accent)]/10 text-[var(--color-accent)]",
-  secondary: "bg-[var(--color-surface)] text-[var(--color-text-primary)] border border-[var(--color-border)]",
-  success: "bg-green-500/10 text-green-600",
-  warning: "bg-yellow-500/10 text-yellow-600",
+  default: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
+  secondary: "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]",
+  success: "bg-emerald-500/10 text-emerald-600",
+  warning: "bg-amber-500/10 text-amber-600",
   destructive: "bg-red-500/10 text-red-600",
-  gradient: "bg-[var(--color-accent)]/10 text-[var(--color-accent)]",
+  gradient: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
 },
 ```
 
-Note: `gradient` variant becomes identical to `default` — it's kept for backward compatibility so no call sites break.
+Remove `dark:` classes. Change `rounded-lg` to `rounded-[var(--radius-md)]`.
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add src/components/ui/badge.tsx
-git commit -m "feat: update badge — remove dark: classes and gradient variant"
+git commit -m "feat: badge — primary-fixed default, remove dark classes"
 ```
 
 ---
 
-### Task 7: Update page-header component
+### Task 6: Update page-header component
 
 **Files:**
 - Modify: `src/components/ui/page-header.tsx`
 
-- [ ] **Step 1: Replace text-gradient with text-accent**
+- [ ] **Step 1: Replace text-gradient**
 
-In the `h1` className, change:
-
+Change:
 ```
 gradient ? "text-gradient" : "text-[var(--color-text-primary)]"
 ```
-
 to:
-
 ```
-gradient ? "text-[var(--color-accent)]" : "text-[var(--color-text-primary)]"
+gradient ? "text-[var(--color-primary)]" : "text-[var(--color-on-surface)]"
 ```
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add src/components/ui/page-header.tsx
-git commit -m "feat: update page-header to use accent color instead of gradient text"
+git commit -m "feat: page-header — primary color instead of gradient text"
 ```
 
 ---
 
-### Task 8: Update dialog component
+### Task 7: Update dialog, stat-card, and tabs
 
 **Files:**
 - Modify: `src/components/ui/dialog.tsx`
-
-- [ ] **Step 1: Check for glass/glassmorphism classes**
-
-Read the dialog component and replace any `glass-card` or glassmorphism-related classes on the dialog panel. The backdrop `bg-black/50 backdrop-blur-sm` can stay — that's a standard overlay pattern, not glassmorphism.
-
-If the dialog panel uses `glass-card`, replace with:
-
-```
-"bg-[var(--color-surface)] border border-[var(--color-border)] shadow-lg"
-```
-
-- [ ] **Step 2: Commit**
-
-```bash
-git add src/components/ui/dialog.tsx
-git commit -m "feat: update dialog — remove glassmorphism"
-```
-
----
-
-### Task 9: Update stat-card component
-
-**Files:**
 - Modify: `src/components/ui/stat-card.tsx`
-
-- [ ] **Step 1: Remove all `dark:` class references**
-
-In the `colorSchemes` object, remove all `dark:` prefixed classes. For example, change:
-
-```
-"bg-blue-500/10 dark:bg-blue-500/15"
-```
-
-to:
-
-```
-"bg-blue-500/10"
-```
-
-Do this for every color scheme entry (blue, emerald, purple, etc.).
-
-Also remove any `glow-accent` or `accent-glow` classes if present.
-
-If the root div uses `gradient-border`, replace with `border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:shadow-md transition-all`.
-
-- [ ] **Step 2: Commit**
-
-```bash
-git add src/components/ui/stat-card.tsx
-git commit -m "feat: update stat-card — remove dark mode classes and gradient-border"
-```
-
----
-
-### Task 10: Update tabs component
-
-**Files:**
 - Modify: `src/components/ui/tabs.tsx`
 
-- [ ] **Step 1: Remove glass styling**
+- [ ] **Step 1: dialog.tsx**
 
-Read the tabs component and remove any `glass` class references. Replace with `bg-[var(--color-surface)]` if the glass class was providing a background. Remove any `dark:` prefixed classes.
+The backdrop overlay (`bg-black/50 backdrop-blur-sm`) — change to `bg-[var(--color-on-surface)]/30 backdrop-blur-sm`.
 
-- [ ] **Step 2: Commit**
+The dialog panel — if it uses `glass-card` or hardcoded bg, replace with:
+```
+"glass rounded-[var(--radius-lg)] shadow-[var(--shadow-glass)]"
+```
+
+- [ ] **Step 2: stat-card.tsx**
+
+Remove all `dark:` prefixed classes from the `colorSchemes` object.
+Remove any `gradient-border` — use no border.
+Remove any `glow-accent` or `accent-glow`.
+
+- [ ] **Step 3: tabs.tsx**
+
+Remove `glass` class if used on the tab list container. Replace with `bg-[var(--color-surface-container)]`.
+Remove any `dark:` prefixed classes.
+
+- [ ] **Step 4: Commit**
 
 ```bash
-git add src/components/ui/tabs.tsx
-git commit -m "feat: update tabs — remove glass styling"
+git add src/components/ui/dialog.tsx src/components/ui/stat-card.tsx src/components/ui/tabs.tsx
+git commit -m "feat: dialog glass overlay, stat-card + tabs tonal updates"
 ```
 
 ---
 
-## Chunk 3: Layout Component Updates
+## Chunk 3: Layout Components
 
-### Task 11: Update sidebar
+### Task 8: Update sidebar
 
 **Files:**
 - Modify: `src/components/layout/sidebar.tsx`
 
-- [ ] **Step 1: Remove useTheme import and all theme toggle code**
+- [ ] **Step 1: Remove useTheme and theme toggle**
 
-Remove:
-```typescript
-import { useTheme } from "next-themes";
+Remove `import { useTheme } from "next-themes"` and `const { theme, setTheme } = useTheme()`.
+Remove the entire theme toggle button block (Sun/Moon icons). Remove Sun/Moon imports from lucide-react if unused.
+
+- [ ] **Step 2: Replace sidebar background**
+
+Change aside from `glass` to `bg-[var(--color-surface-container-low)]`. The sidebar is a fixed tonal pillar, not floating glass.
+
+- [ ] **Step 3: Replace active nav state**
+
+Change active link from `bg-[var(--color-accent)]/10 text-[var(--color-accent)]` to:
+```
+"bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)] rounded-[var(--radius-md)]"
 ```
 
-Remove `const { theme, setTheme } = useTheme();` (or similar destructuring).
+Change the active indicator bar from gradient to solid `bg-[var(--color-primary)]`.
 
-Remove the entire theme toggle `<button>` block that references `setTheme` / `theme` — this is the Sun/Moon icon toggle button. Also remove the `Sun` and `Moon` imports from `lucide-react` if they are no longer used elsewhere. Keep the sign-out button and user info section.
+- [ ] **Step 4: Replace logo icon and company name**
 
-- [ ] **Step 2: Replace glass class on aside**
+Logo icon: change `bg-gradient-to-br from-[var(--color-accent)] to-purple-600 shadow-lg shadow-[var(--color-accent-glow)]` to `gradient-primary shadow-none`.
 
-Change the aside className from:
+Company name: change `text-gradient` to `text-[var(--color-on-surface)] font-semibold`.
 
-```
-"glass fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col"
-```
+- [ ] **Step 5: Replace user avatar fallback**
 
-to:
-
-```
-"fixed left-0 top-0 z-30 hidden h-screen w-64 flex-col bg-[var(--color-surface)]"
-```
-
-- [ ] **Step 3: Replace gradient logo icon**
-
-Change the logo icon container from:
-
-```
-"flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 shadow-lg shadow-[var(--color-accent-glow)]"
-```
-
-to:
-
-```
-"flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-accent)] shadow-sm"
-```
-
-- [ ] **Step 4: Replace text-gradient on company name**
-
-Change:
-```
-"text-lg font-bold text-gradient"
-```
-
-to:
-```
-"text-lg font-bold text-[var(--color-text-primary)]"
-```
-
-- [ ] **Step 5: Replace gradient active indicator**
-
-Change the active link indicator from:
-
-```
-"absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-gradient-to-b from-[var(--color-accent)] to-purple-500"
-```
-
-to:
-
-```
-"absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-[var(--color-accent)]"
-```
-
-- [ ] **Step 6: Replace gradient user avatar fallback**
-
-Change:
-```
-"flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-accent)] to-purple-600 text-xs font-semibold text-white"
-```
-
-to:
-```
-"flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)] text-xs font-semibold text-white"
-```
-
-- [ ] **Step 7: Commit**
-
-```bash
-git add src/components/layout/sidebar.tsx
-git commit -m "feat: update sidebar — remove glass, gradients, theme toggle"
-```
-
----
-
-### Task 12: Update top-bar
-
-**Files:**
-- Modify: `src/components/layout/top-bar.tsx`
-
-- [ ] **Step 1: Remove useTheme import and all theme toggle code**
-
-Remove:
-```typescript
-import { useTheme } from "next-themes";
-```
-
-Remove `const { theme, setTheme } = useTheme();` (or similar destructuring).
-
-Remove the entire theme toggle `<button>` block that references `setTheme` / `theme` — the Sun/Moon icon toggle. Also remove `Sun` and `Moon` imports from `lucide-react` if no longer used.
-
-- [ ] **Step 2: Replace glass on header**
-
-Change:
-```
-"glass sticky top-0 z-40 flex h-16 items-center justify-between"
-```
-
-to:
-```
-"sticky top-0 z-40 flex h-16 items-center justify-between bg-[var(--color-surface)]"
-```
-
-- [ ] **Step 3: Replace glass on search input**
-
-Remove the `glass` class from the search input. The input already has `border` and focus styles, so just remove `glass` and ensure it has a proper background:
-
-Replace `glass h-10 w-80 rounded-xl` with `h-10 w-80 rounded-xl bg-[var(--color-background)]`.
-
-Also replace `focus:ring-2 focus:ring-[var(--color-accent-light)]` with `focus:ring-2 focus:ring-[var(--color-accent)]/15` (since accent-light is now an rgba value, use Tailwind opacity).
-
-- [ ] **Step 4: Replace text-gradient on mobile title**
-
-Change:
-```
-"text-base font-bold text-gradient md:hidden"
-```
-
-to:
-```
-"text-base font-bold text-[var(--color-text-primary)] md:hidden"
-```
-
-- [ ] **Step 5: Replace gradient on user avatar fallback**
-
-If the top-bar has a user avatar fallback with `bg-gradient-to-br from-[var(--color-accent)] to-purple-600`, replace with `bg-[var(--color-accent)]` (same pattern as sidebar avatar in Task 11 Step 6).
+Change gradient avatar to `bg-[var(--color-primary)]`.
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add src/components/layout/top-bar.tsx
-git commit -m "feat: update top-bar — remove glass, theme toggle, gradients"
+git add src/components/layout/sidebar.tsx
+git commit -m "feat: sidebar — tonal pillar, primary-fixed active state, remove theme toggle"
 ```
 
 ---
 
-### Task 13: Update mobile-nav
+### Task 9: Update top-bar and mobile-nav
 
 **Files:**
+- Modify: `src/components/layout/top-bar.tsx`
 - Modify: `src/components/layout/mobile-nav.tsx`
 
-- [ ] **Step 1: Replace glass classes**
+- [ ] **Step 1: top-bar — remove useTheme + theme toggle**
 
-Read the file and replace all `glass` class references with `bg-[var(--color-surface)]`.
+Same as sidebar: remove import, destructuring, toggle button, Sun/Moon icons.
 
-- [ ] **Step 2: Commit**
+- [ ] **Step 2: top-bar — update styling**
+
+The header can keep `glass` class (it's a floating element). But replace the border:
+- Remove `border-b border-[var(--color-border)]/60`
+- Add `shadow-[var(--shadow-glass)]` for depth
+
+Search input: remove `glass` class, use `bg-[var(--color-surface-container-lowest)]`. On focus, transition to 2px primary border.
+
+Mobile title: change `text-gradient` to `text-[var(--color-on-surface)]`.
+
+Avatar fallback: change gradient to `bg-[var(--color-primary)]`.
+
+- [ ] **Step 3: mobile-nav — replace glass**
+
+Replace `glass` with `bg-[var(--color-surface-container-low)]`. Mobile nav is a fixed pillar, not floating.
+
+- [ ] **Step 4: Commit**
 
 ```bash
-git add src/components/layout/mobile-nav.tsx
-git commit -m "feat: update mobile-nav — remove glass"
+git add src/components/layout/top-bar.tsx src/components/layout/mobile-nav.tsx
+git commit -m "feat: top-bar glass + shadow, mobile-nav tonal bg, remove theme toggles"
 ```
 
 ---
 
-## Chunk 4: Page File Updates
+## Chunk 4: Pages
 
-### Task 14: Update login page
+### Task 10: Update login page
 
 **Files:**
 - Modify: `src/app/(auth)/login/page.tsx`
 
 - [ ] **Step 1: Replace glass-card**
 
-Change `glass-card rounded-3xl p-8` to `bg-[var(--color-surface)] border border-[var(--color-border)] rounded-3xl p-8`.
+Change `glass-card rounded-3xl p-8` to `bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-8 shadow-[var(--shadow-ambient)]`.
 
 - [ ] **Step 2: Replace purple background orbs**
 
-Change the decorative background from:
-```
-"fixed inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 via-transparent to-purple-500/5 pointer-events-none"
-```
-to:
-```
-"fixed inset-0 bg-gradient-to-br from-[var(--color-accent)]/5 via-transparent to-transparent pointer-events-none"
-```
-
-Change the purple blur orb from `bg-purple-500/10` to `bg-[var(--color-accent)]/5`.
+Change `to-purple-500/5` and `bg-purple-500/10` references to use `var(--color-primary)` at low opacity:
+- Background gradient: `from-[var(--color-primary)]/5 via-transparent to-transparent`
+- Blur orbs: `bg-[var(--color-primary)]/8`
 
 - [ ] **Step 3: Replace glow-pulse logo**
 
-Change the fallback logo from:
-```
-"inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-purple-600 mb-4 shadow-[0_0_20px_var(--color-accent-glow)] animate-glow-pulse"
-```
-
-to:
-```
-"inline-flex items-center justify-center h-12 w-12 rounded-xl bg-[var(--color-accent)] mb-4 shadow-sm"
-```
+Remove `animate-glow-pulse` and `shadow-[0_0_20px_var(--color-accent-glow)]`.
+Change gradient to `gradient-primary`. Add `shadow-[var(--shadow-ambient)]`.
 
 - [ ] **Step 4: Commit**
 
 ```bash
 git add src/app/(auth)/login/page.tsx
-git commit -m "feat: update login page — remove glassmorphism and glow effects"
+git commit -m "feat: login — tonal card, primary orbs, remove glow"
 ```
 
 ---
 
-### Task 15: Update analytics page
+### Task 11: Update analytics page
 
 **Files:**
 - Modify: `src/app/(dashboard)/analytics/page.tsx`
 
-- [ ] **Step 1: Replace all glass-card and gradient-border references**
+- [ ] **Step 1: Batch replace across entire file (12+ occurrences)**
 
-This file has 12+ uses. Use find-and-replace across the file:
-
-- Replace all `glass-card` with `bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm`
-- Replace all `gradient-border` with `border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:shadow-md transition-all`
-- Remove any `dark:` prefixed classes
+- `glass-card` → `bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)]`
+- `gradient-border` → remove (card component handles hover now)
+- Remove all `dark:` classes
+- Remove all explicit `border border-[var(--color-border)]` on cards (tonal layering)
 
 - [ ] **Step 2: Commit**
 
 ```bash
 git add src/app/(dashboard)/analytics/page.tsx
-git commit -m "feat: update analytics page — remove glass and gradient effects"
+git commit -m "feat: analytics — tonal cards, remove glass and gradient borders"
 ```
 
 ---
 
-### Task 16: Batch update remaining pages with gradient-border and text-gradient
+### Task 12: Batch update remaining dashboard pages
 
 **Files:**
 - Modify: `src/app/(dashboard)/my-profile/page.tsx`
@@ -725,219 +472,151 @@ git commit -m "feat: update analytics page — remove glass and gradient effects
 - Modify: `src/app/(dashboard)/time-off/page.tsx`
 - Modify: `src/app/(dashboard)/org/page.tsx`
 - Modify: `src/app/(dashboard)/calendar/page.tsx`
-
-- [ ] **Step 1: For each file, apply these replacements**
-
-For all 5 files:
-- Replace `gradient-border` with empty string (the Card component now handles hover)
-- Replace `text-gradient` with `text-[var(--color-accent)]`
-- Replace `glass-card` with `bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm`
-- Remove any `dark:` prefixed classes
-
-Note: Some of these files use `gradient-border` directly on divs (not via the Card component). For those, replace with `border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:shadow-md transition-all`.
-
-- [ ] **Step 2: Commit**
-
-```bash
-git add src/app/(dashboard)/my-profile/page.tsx src/app/(dashboard)/people/\\[id\\]/page.tsx src/app/(dashboard)/time-off/page.tsx src/app/(dashboard)/org/page.tsx src/app/(dashboard)/calendar/page.tsx
-git commit -m "feat: update dashboard pages — remove gradients and glass"
-```
-
----
-
-### Task 17: Update reviews and welcome pages (purple gradients)
-
-**Files:**
 - Modify: `src/app/(dashboard)/reviews/page.tsx`
 - Modify: `src/app/(dashboard)/welcome/page.tsx`
 
-- [ ] **Step 1: Replace purple progress bar gradients**
+- [ ] **Step 1: For each file, apply these replacements**
 
-In both files, replace any `to-purple-500` or `to-purple-600` gradient on progress bars with `bg-[var(--color-accent)]`.
-
-For example, change:
-```
-bg-gradient-to-r from-[var(--color-accent)] to-purple-500
-```
-to:
-```
-bg-[var(--color-accent)]
-```
-
-Also replace any `gradient-border` as in Task 16.
+- `gradient-border` → remove
+- `text-gradient` → `text-[var(--color-primary)]`
+- `glass-card` → `bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)]`
+- `to-purple-500` / `to-purple-600` progress bars → `bg-[var(--color-primary)]`
+- Remove `dark:` classes
+- Remove explicit card borders where tonal layering suffices
 
 - [ ] **Step 2: Commit**
 
 ```bash
-git add src/app/(dashboard)/reviews/page.tsx src/app/(dashboard)/welcome/page.tsx
-git commit -m "feat: update reviews and welcome pages — remove purple gradients"
+git add src/app/(dashboard)/
+git commit -m "feat: dashboard pages — tonal surfaces, primary color, remove gradients"
 ```
 
 ---
 
-## Chunk 5: Feature Component Updates
+## Chunk 5: Feature Components
 
-### Task 18: Batch update feature components with gradient-border only
+### Task 13: Update gradient-border components
 
 **Files:**
 - Modify: `src/components/clubs/club-card.tsx`
 - Modify: `src/components/people/employee-documents-section.tsx`
 - Modify: `src/components/people/hr-notes-section.tsx`
+- Modify: `src/components/feed/post-card.tsx`
+- Modify: `src/components/onboarding/onboarding-timeline.tsx`
+- Modify: `src/components/people/people-list.tsx`
 
-- [ ] **Step 1: Replace gradient-border and purple gradients in all 3 files**
+- [ ] **Step 1: Apply replacements across all files**
 
-For each file, replace `gradient-border` with empty string if it's used alongside the Card component, or with `border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:shadow-md transition-all` if on a standalone div.
-
-In `club-card.tsx`: also replace any `to-purple-600` or `to-purple-500` gradient with `bg-[var(--color-accent)]`.
+- `gradient-border` → remove
+- `to-purple-*` gradients → `bg-[var(--color-primary)]`
+- `to-purple-*/10` or `/5` → `bg-[var(--color-primary-fixed)]` or remove
+- `accent-glow` / inline glow shadows → remove
+- Remove explicit card borders
 
 - [ ] **Step 2: Commit**
 
 ```bash
-git add src/components/clubs/club-card.tsx src/components/people/employee-documents-section.tsx src/components/people/hr-notes-section.tsx
-git commit -m "feat: update club-card, docs section, hr-notes — remove gradient-border"
+git add src/components/clubs/ src/components/people/ src/components/feed/ src/components/onboarding/
+git commit -m "feat: feature components — remove gradient-border, purple gradients, glows"
 ```
 
 ---
 
-### Task 19: Update components with accent-glow
+### Task 14: Update accent-glow and glass components
 
 **Files:**
+- Modify: `src/components/analytics/ai-analytics-bar.tsx`
 - Modify: `src/components/feed/post-composer.tsx`
 - Modify: `src/components/people/add-employee-form.tsx`
+- Modify: `src/components/documents/document-signing-manager.tsx`
 - Modify: `src/components/cv/add-candidate-form.tsx`
 - Modify: `src/components/org/department-actions.tsx`
 - Modify: `src/components/settings/company-info.tsx`
 
-- [ ] **Step 1: Remove accent-glow / glow-accent classes**
+- [ ] **Step 1: Apply replacements**
 
-In each file, remove any `accent-glow`, `glow-accent`, or `shadow-[0_0_*_var(--color-accent-glow)]` inline shadow classes. Replace with `shadow-sm` if a shadow is still needed, or just remove.
+- `glass-card` → `bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)]`
+- `glow-accent` / `accent-glow` → remove
+- Inline `shadow-[0_0_*_var(--color-accent-glow)]` → remove
+- `to-purple-*` gradients → `bg-[var(--color-primary)]`
 
 - [ ] **Step 2: Commit**
 
 ```bash
-git add src/components/feed/post-composer.tsx src/components/people/add-employee-form.tsx src/components/cv/add-candidate-form.tsx src/components/org/department-actions.tsx src/components/settings/company-info.tsx
-git commit -m "feat: remove accent-glow from form and action components"
+git add src/components/analytics/ src/components/feed/ src/components/people/ src/components/documents/ src/components/cv/ src/components/org/ src/components/settings/
+git commit -m "feat: remaining components — remove glass-card, accent-glow, purple gradients"
 ```
 
 ---
 
-### Task 20: Update components with mixed patterns
+## Chunk 6: Cleanup & Verification
 
-**Files:**
-- Modify: `src/components/analytics/ai-analytics-bar.tsx`
-- Modify: `src/components/feed/post-card.tsx`
-- Modify: `src/components/onboarding/onboarding-timeline.tsx`
-- Modify: `src/components/people/people-list.tsx`
-- Modify: `src/components/documents/document-signing-manager.tsx`
+### Task 15: Global sweep for remaining old patterns
 
-- [ ] **Step 1: ai-analytics-bar.tsx**
-
-Replace `glass-card` with `bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm rounded-2xl`.
-Replace `glow-accent` with `shadow-sm`.
-Replace any `to-purple-600` or `to-purple-500` gradient patterns with `bg-[var(--color-accent)]`.
-
-- [ ] **Step 2: post-card.tsx**
-
-Replace `gradient-border` (see Task 18 pattern).
-Replace `to-purple-500/10` decorative gradient with `bg-[var(--color-accent)]/5` or remove.
-
-- [ ] **Step 3: onboarding-timeline.tsx**
-
-Replace `gradient-border` (see Task 18 pattern).
-Replace `to-purple-500` progress bar gradient with `bg-[var(--color-accent)]`.
-
-- [ ] **Step 4: people-list.tsx**
-
-Replace `gradient-border` (see Task 18 pattern).
-Replace `accent-glow` / inline accent-glow shadow with `shadow-sm`.
-
-- [ ] **Step 5: document-signing-manager.tsx**
-
-Replace `glass-card` with `bg-[var(--color-surface)] border border-[var(--color-border)] shadow-sm rounded-2xl`.
-Replace inline `shadow-[0_0_10px_var(--color-accent-glow)]` with `shadow-sm`.
-
-- [ ] **Step 6: Commit**
+- [ ] **Step 1: Search for stragglers**
 
 ```bash
-git add src/components/analytics/ai-analytics-bar.tsx src/components/feed/post-card.tsx src/components/onboarding/onboarding-timeline.tsx src/components/people/people-list.tsx src/components/documents/document-signing-manager.tsx
-git commit -m "feat: update mixed-pattern components — remove glass, gradients, glows"
-```
-
----
-
-## Chunk 6: Cleanup and Verification
-
-### Task 21: Global search for remaining dark mode and removed classes
-
-- [ ] **Step 1: Search for any remaining references**
-
-```bash
-cd /Users/baralezrah/hr-platform && grep -r "dark:" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
-grep -r "glass-card\|glass\b\|gradient-border\|text-gradient\|glow-accent\|accent-glow\|animate-glow-pulse\|to-purple" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
+cd /Users/baralezrah/hr-platform
+grep -r "dark:" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
+grep -r "glass-card\|gradient-border\|text-gradient\|glow-accent\|accent-glow\|animate-glow-pulse\|to-purple" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
 grep -r "useTheme\|next-themes\|ThemeProvider" src/ --include="*.tsx" --include="*.ts" -l
-grep -r "accent-glow\|color-accent-glow\|gradient-brand\|gradient-mesh" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
+grep -r "color-accent-glow\|gradient-brand\|gradient-mesh" src/ --include="*.tsx" --include="*.ts" --include="*.css" -l
 ```
 
-- [ ] **Step 2: Fix any remaining references found**
+Known files with `dark:` classes:
+- `src/components/settings/email-template-manager.tsx`
+- `src/components/cv/candidate-database.tsx`
+- `src/components/time-off/burnout-alerts.tsx`
 
-Known files with `dark:` classes not yet addressed:
-- `src/components/settings/email-template-manager.tsx` — has `dark:text-emerald-400`, `dark:text-red-400`
-- `src/components/cv/candidate-database.tsx` — has `dark:bg-[var(--color-background)]`
-- `src/components/time-off/burnout-alerts.tsx` — has `dark:text-amber-400`
-- `src/components/feed/post-card.tsx` — may have `dark:text-yellow-400`
+- [ ] **Step 2: Fix all remaining references**
 
-For each file returned by grep:
-- `dark:` classes → remove the dark: variant entirely
-- Glass/gradient/glow classes → apply replacement rules from the spec
-- `useTheme` / `next-themes` imports → remove
-- `accent-glow` / `gradient-brand` CSS var references → replace per spec
+- `dark:` → remove
+- Old class names → apply replacement rules from spec
+- `useTheme` / ThemeProvider → remove
+- Old CSS var references → update
 
-- [ ] **Step 3: Commit if changes were made**
+- [ ] **Step 3: Commit**
 
 ```bash
 git add -A
-git commit -m "feat: clean up remaining dark mode and removed class references"
+git commit -m "feat: final cleanup — remove all remaining dark mode and old class references"
 ```
 
 ---
 
-### Task 22: Build verification
+### Task 16: Build verification and deploy
 
-- [ ] **Step 1: Run the build**
+- [ ] **Step 1: Run build**
 
 ```bash
 cd /Users/baralezrah/hr-platform && npx next build
 ```
 
-Expected: Build succeeds with no errors. Warnings about unused CSS classes are acceptable.
+Expected: Success with no errors.
 
 - [ ] **Step 2: Fix any build errors**
 
-If there are TypeScript errors (e.g., missing ThemeProvider type, useTheme calls), fix them by removing the offending imports/usages.
+TypeScript errors from removed imports/variables — fix by removing the offending code.
 
-- [ ] **Step 3: Start dev server and spot-check**
+- [ ] **Step 3: Visual spot-check**
 
 ```bash
-cd /Users/baralezrah/hr-platform && npx next dev
+npx next dev
 ```
 
-Open http://localhost:3000 and verify:
-- Login page renders with white card, no glass effects
-- Dashboard sidebar is solid white background
-- Cards have soft shadows, no glow
-- Buttons are solid blue (#3052FF), no purple gradient
-- Page headers use accent blue text, no gradient text
-- Headings use Aeonik font (check in browser dev tools)
+Verify at http://localhost:3000:
+- Login: white card on lavender background, no glass effect on card, gradient primary button for CTA
+- Sidebar: `surface-container-low` pillar, `primary-fixed` active state
+- Cards: white on lavender, no borders, ambient hover shadow
+- Buttons: gradient primary (indigo), ghost border secondary
+- Page headers: primary indigo color, not gradient text
+- No purple-600 anywhere, no glow effects, no 1px borders on cards
+- Typography: Inter everywhere with tight tracking on display sizes
 
-- [ ] **Step 4: Final commit**
+- [ ] **Step 4: Final commit and deploy**
 
 ```bash
 git add -A
-git commit -m "feat: design system redesign complete — soft warm light-only theme"
-```
-
-- [ ] **Step 5: Push to deploy**
-
-```bash
+git commit -m "feat: Luminal Architect design system — complete redesign"
 git push origin main
 ```
