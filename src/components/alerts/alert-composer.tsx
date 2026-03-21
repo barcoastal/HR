@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
-import { sendEmergencyAlert } from "@/lib/actions/emergency-alerts";
+import { sendEmergencyAlert, sendTestEmergencyAlert } from "@/lib/actions/emergency-alerts";
 
 export function AlertComposer() {
   const [title, setTitle] = useState("");
@@ -18,8 +18,25 @@ export function AlertComposer() {
     smsFailed: number;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [testEmail, setTestEmail] = useState("");
+  const [testSending, setTestSending] = useState(false);
+  const [testResult, setTestResult] = useState<string | null>(null);
 
   const canSend = title.trim().length > 0 && message.trim().length > 0;
+
+  async function handleTestSend() {
+    if (!testEmail.trim() || !canSend) return;
+    setTestSending(true);
+    setTestResult(null);
+    try {
+      await sendTestEmergencyAlert(title.trim(), message.trim(), testEmail.trim());
+      setTestResult("Test email sent!");
+    } catch (e: any) {
+      setTestResult(`Failed: ${e.message}`);
+    } finally {
+      setTestSending(false);
+    }
+  }
 
   async function handleSend() {
     setSending(true);
@@ -80,6 +97,40 @@ export function AlertComposer() {
           "resize-none"
         )}
       />
+
+      {/* Test send */}
+      <div className="flex items-center gap-2">
+        <input
+          type="email"
+          value={testEmail}
+          onChange={(e) => setTestEmail(e.target.value)}
+          placeholder="Test email address"
+          className={cn(
+            "flex-1 px-4 py-2.5 rounded-xl border border-[var(--color-border)]/60",
+            "bg-[var(--color-surface-container-lowest)] text-[var(--color-on-surface)]",
+            "placeholder:text-[var(--color-text-muted)] text-sm",
+            "focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
+          )}
+        />
+        <button
+          onClick={handleTestSend}
+          disabled={!canSend || !testEmail.trim() || testSending}
+          className={cn(
+            "flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shrink-0",
+            canSend && testEmail.trim() && !testSending
+              ? "bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] hover:bg-[var(--color-surface-container-high)]"
+              : "bg-[var(--color-surface-container)] text-[var(--color-text-muted)] cursor-not-allowed"
+          )}
+        >
+          <Icon name="send" size={16} />
+          {testSending ? "Sending..." : "Send Test"}
+        </button>
+      </div>
+      {testResult && (
+        <p className={cn("text-sm", testResult.startsWith("Failed") ? "text-red-500" : "text-green-600")}>
+          {testResult}
+        </p>
+      )}
 
       <button
         onClick={() => setShowConfirm(true)}

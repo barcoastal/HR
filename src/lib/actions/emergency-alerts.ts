@@ -178,6 +178,46 @@ export async function sendEmergencyAlert(title: string, message: string) {
   };
 }
 
+export async function sendTestEmergencyAlert(
+  title: string,
+  message: string,
+  testEmail: string
+) {
+  const session = await requireAdmin();
+  const role = session.user?.role;
+  if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
+    throw new Error("Unauthorized: Only admins can send emergency alerts");
+  }
+  if (!resend) {
+    throw new Error("RESEND_API_KEY not configured");
+  }
+
+  const branding = await getCompanyBranding();
+  const emailHtml = buildEmergencyEmailHtml(
+    title,
+    message,
+    branding.companyName,
+    branding.logoUrl
+  );
+  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const from = senderName
+    ? `${senderName} <${branding.senderEmail}>`
+    : branding.senderEmail;
+
+  const { error } = await resend.emails.send({
+    from,
+    to: testEmail,
+    subject: `[TEST] [EMERGENCY] ${title}`,
+    html: emailHtml,
+  });
+
+  if (error) {
+    throw new Error(`Failed to send: ${error.message}`);
+  }
+
+  return { success: true };
+}
+
 export async function getEmergencyAlerts() {
   const session = await requireAdmin();
   const role = session.user?.role;
