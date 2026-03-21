@@ -12,6 +12,7 @@ export async function getOrCreateWorkspace() {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
 
+  try {
   // Check for existing workspace
   let workspace = await db.chatWorkspace.findFirst({
     include: {
@@ -106,6 +107,10 @@ export async function getOrCreateWorkspace() {
   }
 
   return workspace;
+  } catch (error) {
+    console.error("[Chat] getOrCreateWorkspace failed:", error);
+    throw error;
+  }
 }
 
 /**
