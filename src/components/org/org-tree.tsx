@@ -71,31 +71,39 @@ function CEONode({ employee }: { employee: OrgEmployee }) {
   );
 }
 
-function DirectorColumn({
-  director,
+function RecursiveNode({
+  employee,
   tree,
+  depth = 0,
 }: {
-  director: OrgEmployee;
+  employee: OrgEmployee;
   tree: Map<string | null, OrgEmployee[]>;
+  depth?: number;
 }) {
   const [showAll, setShowAll] = useState(false);
-  const reports = tree.get(director.id) || [];
+  const reports = tree.get(employee.id) || [];
+  const hasReports = reports.length > 0;
   const MAX_SHOWN = 5;
   const visible = showAll ? reports : reports.slice(0, MAX_SHOWN);
   const overflow = reports.length - MAX_SHOWN;
-  const initials = getInitials(director.firstName, director.lastName);
+  const initials = getInitials(employee.firstName, employee.lastName);
+
+  // Nodes with reports render as a manager card; leaf nodes as team cards
+  if (!hasReports && depth > 1) {
+    return <TeamCard employee={employee} />;
+  }
 
   return (
     <div className="flex flex-col items-center">
-      {/* Vertical connector from CEO horizontal bar to director card */}
+      {/* Connector from parent */}
       <div className="org-line-vertical h-8" />
 
-      {/* Director card */}
+      {/* Manager/employee card */}
       <div className="w-64 bg-white rounded-2xl border-2 border-[var(--color-primary)]/30 p-5 flex flex-col items-center text-center shadow-md hover:shadow-lg transition-shadow">
-        <Link href={`/people/${director.id}`} className="flex flex-col items-center gap-3 w-full">
-          {director.profilePhoto ? (
+        <Link href={`/people/${employee.id}`} className="flex flex-col items-center gap-3 w-full">
+          {employee.profilePhoto ? (
             <img
-              src={director.profilePhoto}
+              src={employee.profilePhoto}
               alt=""
               className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-primary)]/20"
             />
@@ -106,24 +114,41 @@ function DirectorColumn({
           )}
           <div>
             <p className="text-sm font-black text-[var(--color-on-surface)]">
-              {director.firstName} {director.lastName}
+              {employee.firstName} {employee.lastName}
             </p>
-            <p className="text-xs text-[var(--color-primary)] font-semibold mt-0.5">{director.jobTitle}</p>
-            {director.departmentName && (
-              <p className="text-xs text-[var(--color-on-surface-variant)] mt-0.5">{director.departmentName}</p>
+            <p className="text-xs text-[var(--color-primary)] font-semibold mt-0.5">{employee.jobTitle}</p>
+            {employee.departmentName && (
+              <p className="text-xs text-[var(--color-on-surface-variant)] mt-0.5">{employee.departmentName}</p>
             )}
           </div>
         </Link>
+        {hasReports && (
+          <span className="mt-2 text-[10px] font-bold text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)] px-2 py-0.5 rounded-full">
+            {reports.length} report{reports.length !== 1 ? "s" : ""}
+          </span>
+        )}
       </div>
 
-      {/* Vertical connector to team members */}
-      {reports.length > 0 && (
+      {/* Recursive reports */}
+      {hasReports && (
         <>
           <div className="org-line-vertical h-8" />
           <div className="flex flex-col items-center gap-2 w-full">
-            {visible.map((member) => (
-              <TeamCard key={member.id} employee={member} />
-            ))}
+            {visible.map((member) => {
+              const memberReports = tree.get(member.id) || [];
+              if (memberReports.length > 0) {
+                // This member has their own reports — render recursively
+                return (
+                  <RecursiveNode
+                    key={member.id}
+                    employee={member}
+                    tree={tree}
+                    depth={depth + 1}
+                  />
+                );
+              }
+              return <TeamCard key={member.id} employee={member} />;
+            })}
             {!showAll && overflow > 0 && (
               <button
                 onClick={() => setShowAll(true)}
@@ -136,6 +161,18 @@ function DirectorColumn({
         </>
       )}
     </div>
+  );
+}
+
+function DirectorColumn({
+  director,
+  tree,
+}: {
+  director: OrgEmployee;
+  tree: Map<string | null, OrgEmployee[]>;
+}) {
+  return (
+    <RecursiveNode employee={director} tree={tree} depth={1} />
   );
 }
 
@@ -244,10 +281,7 @@ export function OrgTree({
           </div>
           <div className="flex gap-4 items-start pt-0 mt-0 flex-wrap justify-center">
             {(tree.get(ceo.id) || []).map((member) => (
-              <div key={member.id} className="flex flex-col items-center">
-                <div className="org-line-vertical h-8" />
-                <TeamCard employee={member} />
-              </div>
+              <RecursiveNode key={member.id} employee={member} tree={tree} depth={1} />
             ))}
           </div>
         </>
