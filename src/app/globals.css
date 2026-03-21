@@ -55,6 +55,28 @@
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
   --radius-full: 9999px;
+
+  /* Tertiary — teal accent */
+  --color-tertiary: #00628b;
+  --color-tertiary-container: #007caf;
+  --color-tertiary-fixed: #c7e7ff;
+  --color-on-tertiary-fixed-variant: #004c6c;
+
+  /* Error container */
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Inverse */
+  --color-inverse-surface: #2f2f3c;
+  --color-inverse-primary: #c9bfff;
+
+  /* Additional surface/outline */
+  --color-outline: #797587;
+  --color-surface-container-high: #e9e6f8;
+  --color-primary-fixed-dim: #c9bfff;
+
+  /* Radius — editorial containers */
+  --radius-xl: 2rem;
 }
 
 /* Base styles */
@@ -104,4 +126,22 @@ body {
 }
 .animate-pulse-slow {
   animation: pulse-slow 2s ease-in-out infinite;
+}
+
+/* Org tree connectors */
+.org-line-vertical {
+  width: 2px;
+  background: linear-gradient(to bottom, #7459f7 0%, #e3e0f2 100%);
+}
+.org-line-horizontal {
+  height: 2px;
+  background: #e3e0f2;
+}
+
+/* Spinner for loading states (replaces Loader2 animate-spin) */
+@keyframes material-spin {
+  to { transform: rotate(360deg); }
+}
+.animate-material-spin {
+  animation: material-spin 1s linear infinite;
 }
