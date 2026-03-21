@@ -63,6 +63,7 @@ enum FeedPostType {
   NEW_HIRE
   DEPARTURE
   SHOUTOUT
+  EMERGENCY
 }
 
 enum TimeOffRequestStatus {
@@ -233,6 +234,7 @@ model Employee {
   managedCandidates  Candidate[]       @relation("CandidateManager")
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
+  emergencyAlerts    EmergencyAlert[]  @relation("EmergencyAlertSender")
 
   // Chat relations
   chatMembers          ChatMember[]
@@ -388,6 +390,7 @@ model FeedPost {
   comments            FeedComment[]
   reactions           FeedReaction[]
   attachments         PostAttachment[]
+  emergencyAlert      EmergencyAlert?
 
   @@index([authorId])
   @@index([mentionedEmployeeId])
@@ -432,6 +435,24 @@ model PostAttachment {
   post      FeedPost       @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@index([postId])
+}
+
+model EmergencyAlert {
+  id           String   @id @default(uuid())
+  feedPostId   String   @unique
+  feedPost     FeedPost @relation(fields: [feedPostId], references: [id], onDelete: Cascade)
+  title        String
+  sentById     String
+  sentBy       Employee @relation("EmergencyAlertSender", fields: [sentById], references: [id])
+  emailsSent   Int      @default(0)
+  smsSent      Int      @default(0)
+  emailsFailed Int      @default(0)
+  smsFailed    Int      @default(0)
+  status       String   @default("SENDING")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("emergency_alert")
 }
 
 model Notification {
