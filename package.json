@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.0",
     "googleapis": "^171.4.0",
+    "jsonwebtoken": "^9.0.3",
     "next": "^16.1.6",
     "next-auth": "^4.24.13",
     "pdf-lib": "^1.17.1",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
     "@types/react": "^19.2.14",
