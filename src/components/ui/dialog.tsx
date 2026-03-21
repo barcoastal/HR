@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -56,7 +56,7 @@ export function Dialog({ open, onClose, children, title }: DialogProps) {
                   onClick={onClose}
                   className="p-1.5 rounded-xl text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
                 >
-                  <X className="h-5 w-5" />
+                  <Icon name="close" size={20} />
                 </button>
               </div>
             )}
