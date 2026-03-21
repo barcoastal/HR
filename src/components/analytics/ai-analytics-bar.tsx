@@ -119,7 +119,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
     <div className="mt-8">
       {/* Conversation panel */}
       {panelOpen && messages.length > 0 && (
-        <div className="glass-card mb-3 overflow-hidden">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] mb-3 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-border)]/60">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-[var(--color-accent)]" />
@@ -147,7 +147,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
                   className={cn(
                     "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
                     msg.role === "user"
-                      ? "bg-gradient-to-r from-[var(--color-accent)] to-purple-600 text-white"
+                      ? "bg-[var(--color-primary)] text-white"
                       : "bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
                   )}
                 >
@@ -199,7 +199,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
       )}
 
       {/* Input bar */}
-      <div className="glass-card flex items-center gap-3 p-3">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] flex items-center gap-3 p-3">
         <Sparkles className="h-5 w-5 text-[var(--color-accent)] shrink-0" />
         <input
           ref={inputRef}
@@ -222,7 +222,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
           className={cn(
             "flex h-9 w-9 items-center justify-center rounded-xl transition-colors shrink-0",
             input.trim() && !streaming
-              ? "bg-gradient-to-r from-[var(--color-accent)] to-purple-600 text-white glow-accent"
+              ? "bg-[var(--color-primary)] text-white"
               : "bg-[var(--color-surface-hover)] text-[var(--color-text-muted)]",
             "disabled:opacity-50"
           )}

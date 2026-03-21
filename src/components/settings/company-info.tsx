@@ -232,7 +232,6 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
             saved ? "bg-emerald-500 text-white" : "bg-[var(--color-accent)] text-white",
             saved ? "hover:bg-emerald-600" : "hover:bg-[var(--color-accent-hover)]",
             "transition-colors disabled:opacity-50",
-            !saved && "shadow-[0_0_12px_var(--color-accent-glow)]"
           )}
         >
           {saved ? (

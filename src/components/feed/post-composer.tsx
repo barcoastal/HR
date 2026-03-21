@@ -354,7 +354,6 @@ export function PostComposer({
             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
             "bg-[var(--color-accent)] text-white",
             "hover:bg-[var(--color-accent-hover)] transition-colors",
-            "shadow-[0_0_12px_var(--color-accent-glow)]",
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         >

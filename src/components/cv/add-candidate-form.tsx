@@ -140,7 +140,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors", "shadow-[0_0_12px_var(--color-accent-glow)]")}>
+      <button onClick={() => setOpen(true)} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}>
         <Plus className="h-4 w-4" />Add Candidate
       </button>
 

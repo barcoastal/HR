@@ -287,7 +287,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
         ].map((stat) => (
           <div
             key={stat.label}
-            className="glass-card rounded-xl p-4 border border-[var(--color-border)]"
+            className="bg-[var(--color-surface-container-lowest)] rounded-xl p-4 border border-[var(--color-border)]"
           >
             <div className="flex items-center gap-2 text-[var(--color-text-muted)] mb-1">
               {stat.icon}
@@ -332,7 +332,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
 
       {/* Request List */}
       {filtered.length === 0 ? (
-        <div className="glass-card rounded-xl border border-[var(--color-border)] p-12 text-center">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border)] p-12 text-center">
           <Inbox className="h-12 w-12 text-[var(--color-text-muted)] mx-auto mb-3 opacity-50" />
           <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">
             No documents found
@@ -354,7 +354,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
             return (
               <div
                 key={request.id}
-                className="glass-card rounded-xl border border-[var(--color-border)] p-4 hover:border-[var(--color-accent)]/30 transition-colors"
+                className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border)] p-4 hover:border-[var(--color-accent)]/30 transition-colors"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   {/* Document Info */}
@@ -408,7 +408,6 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                           "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold",
                           "bg-[var(--color-accent)] text-white",
                           "hover:bg-[var(--color-accent-hover)] transition-colors",
-                          "shadow-[0_0_10px_var(--color-accent-glow)]"
                         )}
                       >
                         <PenLine className="h-3.5 w-3.5" />
