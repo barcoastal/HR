@@ -106,13 +106,13 @@ export default async function AnalyticsPage() {
 
       {/* Charts Row 1 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Department Breakdown</h3>
           <div className="min-h-[200px]">
             <DepartmentBarChart data={deptBreakdown} />
           </div>
         </div>
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Turnover Trend (6 Months)</h3>
           <div className="min-h-[200px]">
             <TurnoverLineChart data={turnover} />
@@ -122,19 +122,19 @@ export default async function AnalyticsPage() {
 
       {/* Charts Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Tenure Distribution</h3>
           <div className="min-h-[200px]">
             <TenureBarChart data={tenure} />
           </div>
         </div>
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Hiring Pipeline</h3>
           <div className="min-h-[200px]">
             <PipelinePieChart data={pipeline} />
           </div>
         </div>
-        <div className="glass-card rounded-2xl p-5">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Dietary Restrictions</h3>
           <div className="min-h-[200px]">
             <DietaryPieChart data={dietary.summary} />
@@ -144,7 +144,7 @@ export default async function AnalyticsPage() {
 
       {/* Source ROI */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Source ROI</h3>
           <div className="min-h-[200px]">
             <SourceROIChart data={sourceROI} />
@@ -163,7 +163,7 @@ export default async function AnalyticsPage() {
         </div>
 
         {/* Recruiter Analytics */}
-        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="h-4 w-4 text-[var(--color-accent)]" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Recruiter Performance</h3>
@@ -189,7 +189,7 @@ export default async function AnalyticsPage() {
 
       {/* Recruitment Platform Spend */}
       {platformSpend.platforms.length > 0 && (
-        <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Cable className="h-4 w-4 text-[var(--color-accent)]" />
@@ -299,7 +299,7 @@ export default async function AnalyticsPage() {
 
       {/* Review Metrics */}
       {reviews.length > 0 && (
-        <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Review Completion</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {reviews.map((r) => (
@@ -319,7 +319,7 @@ export default async function AnalyticsPage() {
       )}
 
       {/* Onboarding Metrics */}
-      <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
         <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Onboarding Pipeline</h3>
         <div className="flex items-center gap-6 mb-3">
           <div>
@@ -347,7 +347,7 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Benefits Eligibility */}
-      <div className="gradient-border rounded-2xl p-5 mb-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
         <div className="flex items-center gap-2 mb-4">
           <Shield className="h-4 w-4 text-emerald-400" />
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Benefits Eligibility</h3>
@@ -394,7 +394,7 @@ export default async function AnalyticsPage() {
 
       {/* Birthdays & Anniversaries */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
             <Cake className="h-4 w-4 text-amber-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Birthdays</h3>
@@ -419,7 +419,7 @@ export default async function AnalyticsPage() {
           ) : <p className="text-sm text-[var(--color-text-muted)]">No upcoming birthdays</p>}
         </div>
 
-        <div className="gradient-border rounded-2xl p-5 bg-[var(--color-surface)] border border-[var(--color-border)]">
+        <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
             <CalendarHeart className="h-4 w-4 text-rose-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Work Anniversaries</h3>
