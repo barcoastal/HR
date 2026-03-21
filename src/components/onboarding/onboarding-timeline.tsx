@@ -245,7 +245,7 @@ export function OnboardingTimeline({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="gradient-border rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
+        className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6"
       >
         <div className="flex flex-col items-center gap-4 py-4">
           <div className="h-14 w-14 rounded-full bg-emerald-500/15 flex items-center justify-center">
@@ -265,7 +265,7 @@ export function OnboardingTimeline({
   }
 
   return (
-    <div className="gradient-border rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+    <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
       {/* Employee Header — always visible, click to expand */}
       <button
         onClick={() => setExpanded(!expanded)}
@@ -347,7 +347,7 @@ export function OnboardingTimeline({
                 </div>
                 <div className="w-full h-2 rounded-full bg-[var(--color-border)] overflow-hidden">
                   <motion.div
-                    className={cn("h-full rounded-full", allDone ? "bg-emerald-500" : "bg-gradient-to-r from-[var(--color-accent)] to-purple-500")}
+                    className={cn("h-full rounded-full", allDone ? "bg-emerald-500" : "bg-[var(--color-primary)]")}
                     initial={{ width: 0 }}
                     animate={{ width: `${progressPercent}%` }}
                     transition={{ duration: 0.6, ease: "easeOut" }}

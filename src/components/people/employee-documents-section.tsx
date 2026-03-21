@@ -97,7 +97,7 @@ export function EmployeeDocumentsSection({
   const isPdf = (name: string) => name.toLowerCase().endsWith(".pdf");
 
   return (
-    <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+    <section className={cn("rounded-2xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-red-500/15 flex items-center justify-center">

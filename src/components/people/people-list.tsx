@@ -173,7 +173,7 @@ export function PeopleList({
             className={cn(
               "px-3 py-3 h-11 rounded-xl text-sm font-medium whitespace-nowrap transition-colors",
               selectedDept === dept
-                ? "bg-[var(--color-accent)] text-white shadow-[0_0_10px_var(--color-accent-glow)]"
+                ? "bg-[var(--color-accent)] text-white"
                 : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
@@ -192,7 +192,7 @@ export function PeopleList({
               key={employee.id}
               href={`/people/${employee.id}`}
               className={cn(
-                "rounded-2xl p-5 gradient-border",
+                "rounded-2xl p-5",
                 "bg-[var(--color-surface)] border border-[var(--color-border)]",
                 "hover:bg-[var(--color-surface-hover)] hover:border-[var(--color-accent)]/30",
                 "transition-all group"

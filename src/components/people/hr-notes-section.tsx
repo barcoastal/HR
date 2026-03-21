@@ -38,7 +38,7 @@ export function HRNotesSection({ employeeId, notes }: { employeeId: string; note
   }
 
   return (
-    <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+    <section className={cn("rounded-2xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-4">
         <div className="h-8 w-8 rounded-lg bg-amber-500/15 flex items-center justify-center">
           <StickyNote className="h-4 w-4 text-amber-400" />
