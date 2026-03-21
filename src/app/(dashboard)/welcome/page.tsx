@@ -25,7 +25,7 @@ export default async function WelcomePage() {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       {/* Hero */}
-      <div className={cn("rounded-xl overflow-hidden mb-8", "bg-gradient-to-br from-[var(--color-accent)]/20 via-purple-500/10 to-pink-500/10", "border border-[var(--color-accent)]/20")}>
+      <div className={cn("rounded-xl overflow-hidden mb-8", "bg-[var(--color-primary)]/8", "border border-[var(--color-primary)]/15")}>
         <div className="p-8 text-center">
           <div className="flex justify-center mb-4">
             <div className={cn("h-20 w-20 rounded-2xl flex items-center justify-center text-white text-2xl font-bold", avatarColors[colorIdx])}>
@@ -92,7 +92,7 @@ export default async function WelcomePage() {
         {/* Progress bar */}
         <div className="h-2 rounded-full bg-[var(--color-background)] mb-6">
           <div
-            className="h-2 rounded-full bg-gradient-to-r from-[var(--color-accent)] to-purple-500 transition-all duration-500"
+            className="h-2 rounded-full bg-[var(--color-primary)] transition-all duration-500"
             style={{ width: `${progressPercent}%` }}
           />
         </div>

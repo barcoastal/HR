@@ -267,7 +267,7 @@ export default async function ReviewsPage() {
               : {};
 
             return (
-              <div key={cycle.id} className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <div key={cycle.id} className={cn("rounded-[var(--radius-lg)] overflow-hidden bg-[var(--color-surface-container-lowest)]")}>
                 <div className="p-6">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
                     <div>
@@ -298,7 +298,7 @@ export default async function ReviewsPage() {
                         <span className="text-sm text-[var(--color-text-muted)]">{submitted}/{cycle.reviews.length} completed ({progressPercent}%)</span>
                       </div>
                       <div className="w-full h-3 rounded-full bg-[var(--color-background)] overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-[var(--color-accent)] to-purple-500 transition-all" style={{ width: `${progressPercent}%` }} />
+                        <div className="h-full rounded-full bg-[var(--color-primary)] transition-all" style={{ width: `${progressPercent}%` }} />
                       </div>
                     </div>
                   )}

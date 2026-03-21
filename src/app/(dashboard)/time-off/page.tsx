@@ -71,7 +71,7 @@ export default async function TimeOffPage() {
           {balances.map((b) => {
             const remaining = b.policy.isUnlimited ? null : b.policy.daysPerYear - b.used;
             return (
-              <div key={b.id} className={cn("rounded-2xl gradient-border p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+              <div key={b.id} className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-4")}>
                 <div className="flex items-center gap-2 mb-2">
                   <Palmtree className="h-4 w-4 text-emerald-500" />
                   <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{b.policy.name}</p>

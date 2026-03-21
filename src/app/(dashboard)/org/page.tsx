@@ -51,7 +51,7 @@ export default async function OrgPage() {
           const colorIdx = dept.head ? dept.head.firstName.charCodeAt(0) % avatarColors.length : 0;
           const memberCount = dept.employees.length;
           return (
-            <div key={dept.id} className={cn("rounded-2xl overflow-hidden gradient-border", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-[3px]", borderColors[dept.name] || "border-l-gray-500", "hover:bg-[var(--color-surface-hover)] transition-colors group cursor-pointer")}>
+            <div key={dept.id} className={cn("rounded-[var(--radius-lg)] overflow-hidden bg-[var(--color-surface-container-lowest)]", "border-l-[3px]", borderColors[dept.name] || "border-l-gray-500", "hover:bg-[var(--color-surface-hover)] transition-colors group cursor-pointer")}>
               <div className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-base font-semibold text-[var(--color-text-primary)]">{dept.name}</h3>

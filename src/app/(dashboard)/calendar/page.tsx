@@ -103,7 +103,7 @@ export default async function CalendarPage() {
     <div className="max-w-5xl mx-auto py-8 px-4">
       <PageHeader title="Calendar" description="Birthdays, anniversaries, interviews, and holidays" />
 
-      <div className="glass-card p-1">
+      <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-1">
         <CalendarView events={events} />
       </div>
     </div>

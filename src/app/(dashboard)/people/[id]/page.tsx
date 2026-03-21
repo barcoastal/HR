@@ -65,7 +65,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <div className={cn("rounded-2xl gradient-border overflow-hidden mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+      <div className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] overflow-hidden mb-6")}>
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             {employee.profilePhoto ? (
@@ -77,7 +77,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             )}
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <h1 className="text-2xl font-bold text-gradient">{employee.firstName} {employee.lastName}</h1>
+                <h1 className="text-2xl font-bold text-[var(--color-primary)]">{employee.firstName} {employee.lastName}</h1>
                 {employee.pronouns && <span className="text-sm text-[var(--color-text-muted)]">({employee.pronouns})</span>}
                 <span className={cn("inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium w-fit", statusColor)}>{employee.status}</span>
               </div>
@@ -122,13 +122,13 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           {employee.bio && (
-            <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">About</h2>
               <p className="text-sm text-[var(--color-text-primary)] leading-relaxed">{employee.bio}</p>
             </section>
           )}
 
-          <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
               <InfoRow icon={Mail} label="Email" value={employee.email} />
@@ -147,7 +147,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
 
           {/* Emergency Contact */}
           {employee.emergencyContactName && (
-            <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Emergency Contact</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
                 <InfoRow icon={User} label="Name" value={employee.emergencyContactName} />
@@ -185,7 +185,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
           )}
 
           {canViewDocuments && employee.reviewsAsEmployee.length > 0 && (
-            <section className={cn("rounded-2xl gradient-border p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Performance Reviews</h2>
               <div className="space-y-4">
                 {employee.reviewsAsEmployee.map((review) => (
@@ -213,7 +213,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
 
         <div className="space-y-6">
           {employee.manager && (
-            <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Reports To</h3>
               <div className="flex items-center gap-3">
                 <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[employee.manager.firstName.charCodeAt(0) % avatarColors.length])}>
@@ -228,7 +228,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
           )}
 
           {(employee as any).buddy && (
-            <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Onboarding Buddy</h3>
               <div className="flex items-center gap-3">
                 <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[(employee as any).buddy.firstName.charCodeAt(0) % avatarColors.length])}>
@@ -242,7 +242,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             </section>
           )}
 
-          <section className={cn("rounded-2xl gradient-border p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+          <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
             <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Quick Info</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
