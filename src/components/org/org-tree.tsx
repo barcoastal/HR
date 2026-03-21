@@ -234,54 +234,38 @@ export function OrgTree({
   }
 
   // CEO is root with most reports (first in sorted list)
-  const [ceo, ...directors] = roots;
+  const [ceo, ...otherRoots] = roots;
+
+  // Combine CEO's direct reports + other roots (employees with no manager who aren't the CEO)
+  const ceoDirectReports = ceo ? (tree.get(ceo.id) || []) : [];
+  // Other roots are employees without managers who aren't the CEO — treat them as top-level too
+  const topLevel = [...ceoDirectReports, ...otherRoots];
 
   return (
     <div className="flex flex-col items-center overflow-x-auto pb-8">
       {/* CEO node */}
       {ceo && <CEONode employee={ceo} />}
 
-      {/* Vertical gradient connector from CEO down */}
-      {directors.length > 0 && (
+      {/* CEO's direct reports + other roots */}
+      {topLevel.length > 0 && (
         <>
           <div className="org-line-vertical h-16" />
 
-          {/* Horizontal connector bar across all director columns */}
+          {/* Horizontal connector bar */}
           <div className="relative w-full flex justify-center">
             <div
               className="org-line-horizontal absolute top-0"
               style={{
-                width: `${Math.min(directors.length, 6) * 17}rem`,
+                width: `${Math.min(topLevel.length, 6) * 17}rem`,
                 maxWidth: "90%",
               }}
             />
           </div>
 
-          {/* Director columns */}
-          <div className="flex gap-4 items-start pt-0 mt-0">
-            {directors.map((director) => (
-              <DirectorColumn key={director.id} director={director} tree={tree} />
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* If only CEO with no directors, show their direct reports inline */}
-      {directors.length === 0 && ceo && (tree.get(ceo.id) || []).length > 0 && (
-        <>
-          <div className="org-line-vertical h-16" />
-          <div className="relative w-full flex justify-center">
-            <div
-              className="org-line-horizontal absolute top-0"
-              style={{
-                width: `${Math.min((tree.get(ceo.id) || []).length, 6) * 17}rem`,
-                maxWidth: "90%",
-              }}
-            />
-          </div>
+          {/* Director columns — recursive */}
           <div className="flex gap-4 items-start pt-0 mt-0 flex-wrap justify-center">
-            {(tree.get(ceo.id) || []).map((member) => (
-              <RecursiveNode key={member.id} employee={member} tree={tree} depth={1} />
+            {topLevel.map((emp) => (
+              <DirectorColumn key={emp.id} director={emp} tree={tree} />
             ))}
           </div>
         </>
