@@ -234,6 +234,13 @@ model Employee {
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
 
+  // Chat relations
+  chatMembers          ChatMember[]
+  channelMemberships   ChannelMember[]
+  createdChannels      Channel[]        @relation("CreatedChannels")
+  chatMessages         Message[]        @relation("ChatMessages")
+  dmMemberships        DmMember[]
+
   @@index([departmentId])
   @@index([teamId])
   @@index([managerId])
@@ -820,4 +827,137 @@ model OAuthState {
 
   @@index([state])
   @@index([expiresAt])
+}
+
+// ─── HT Platform: Chat ───
+
+enum ChatRole {
+  OWNER
+  ADMIN
+  MEMBER
+  GUEST
+}
+
+enum Presence {
+  ONLINE
+  AWAY
+  DND
+  OFFLINE
+}
+
+model ChatWorkspace {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  channels  Channel[]
+  members   ChatMember[]
+  dmThreads DmThread[]
+}
+
+model ChatMember {
+  id          String       @id @default(uuid())
+  employeeId  String
+  workspaceId String
+  role        ChatRole     @default(MEMBER)
+  status      String?
+  statusEmoji String?
+  presence    Presence     @default(OFFLINE)
+  dndUntil    DateTime?
+  joinedAt    DateTime     @default(now())
+
+  employee    Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  workspace   ChatWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, workspaceId])
+}
+
+model Channel {
+  id          String       @id @default(uuid())
+  workspaceId String
+  name        String
+  slug        String
+  description String?
+  topic       String?
+  isPrivate   Boolean      @default(false)
+  isArchived  Boolean      @default(false)
+  isDefault   Boolean      @default(false)
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  workspace   ChatWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy   Employee     @relation("CreatedChannels", fields: [createdById], references: [id])
+  messages    Message[]
+  members     ChannelMember[]
+
+  @@unique([workspaceId, slug])
+}
+
+model ChannelMember {
+  id         String   @id @default(uuid())
+  channelId  String
+  employeeId String
+  isAdmin    Boolean  @default(false)
+  isMuted    Boolean  @default(false)
+  isStarred  Boolean  @default(false)
+  lastReadAt DateTime?
+  joinedAt   DateTime @default(now())
+
+  channel    Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, employeeId])
+}
+
+model Message {
+  id           String    @id @default(uuid())
+  channelId    String?
+  dmThreadId   String?
+  parentId     String?
+  authorId     String
+  content      String
+  contentPlain String
+  isEdited     Boolean   @default(false)
+  isDeleted    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  channel      Channel?  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  dmThread     DmThread? @relation(fields: [dmThreadId], references: [id], onDelete: Cascade)
+  parent       Message?  @relation("ThreadReplies", fields: [parentId], references: [id], onDelete: SetNull)
+  replies      Message[] @relation("ThreadReplies")
+  author       Employee  @relation("ChatMessages", fields: [authorId], references: [id])
+
+  @@index([channelId, createdAt])
+  @@index([dmThreadId, createdAt])
+  @@index([parentId])
+  @@index([authorId])
+}
+
+model DmThread {
+  id          String   @id @default(uuid())
+  workspaceId String
+  isGroup     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  workspace   ChatWorkspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members     DmMember[]
+  messages    Message[]
+}
+
+model DmMember {
+  id         String   @id @default(uuid())
+  dmThreadId String
+  employeeId String
+  lastReadAt DateTime?
+  isMuted    Boolean  @default(false)
+
+  dmThread   DmThread @relation(fields: [dmThreadId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([dmThreadId, employeeId])
 }

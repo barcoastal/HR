@@ -596,6 +596,40 @@ export type EnumSurveyStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumSurveyStatusFilter<$PrismaModel>
 }
 
+export type EnumChatRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChatRole | Prisma.EnumChatRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChatRoleFilter<$PrismaModel> | $Enums.ChatRole
+}
+
+export type EnumPresenceFilter<$PrismaModel = never> = {
+  equals?: $Enums.Presence | Prisma.EnumPresenceFieldRefInput<$PrismaModel>
+  in?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPresenceFilter<$PrismaModel> | $Enums.Presence
+}
+
+export type EnumChatRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChatRole | Prisma.EnumChatRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChatRoleWithAggregatesFilter<$PrismaModel> | $Enums.ChatRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
+}
+
+export type EnumPresenceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Presence | Prisma.EnumPresenceFieldRefInput<$PrismaModel>
+  in?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPresenceWithAggregatesFilter<$PrismaModel> | $Enums.Presence
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPresenceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPresenceFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1167,6 +1201,40 @@ export type NestedEnumSurveyStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSurveyStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSurveyStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumChatRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChatRole | Prisma.EnumChatRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChatRoleFilter<$PrismaModel> | $Enums.ChatRole
+}
+
+export type NestedEnumPresenceFilter<$PrismaModel = never> = {
+  equals?: $Enums.Presence | Prisma.EnumPresenceFieldRefInput<$PrismaModel>
+  in?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPresenceFilter<$PrismaModel> | $Enums.Presence
+}
+
+export type NestedEnumChatRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ChatRole | Prisma.EnumChatRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ChatRole[] | Prisma.ListEnumChatRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumChatRoleWithAggregatesFilter<$PrismaModel> | $Enums.ChatRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumChatRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumPresenceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Presence | Prisma.EnumPresenceFieldRefInput<$PrismaModel>
+  in?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Presence[] | Prisma.ListEnumPresenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPresenceWithAggregatesFilter<$PrismaModel> | $Enums.Presence
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPresenceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPresenceFilter<$PrismaModel>
 }
 
 

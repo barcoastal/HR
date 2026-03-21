@@ -202,3 +202,38 @@ export type RolePermission = Prisma.RolePermissionModel
  * 
  */
 export type OAuthState = Prisma.OAuthStateModel
+/**
+ * Model ChatWorkspace
+ * 
+ */
+export type ChatWorkspace = Prisma.ChatWorkspaceModel
+/**
+ * Model ChatMember
+ * 
+ */
+export type ChatMember = Prisma.ChatMemberModel
+/**
+ * Model Channel
+ * 
+ */
+export type Channel = Prisma.ChannelModel
+/**
+ * Model ChannelMember
+ * 
+ */
+export type ChannelMember = Prisma.ChannelMemberModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
+ * Model DmThread
+ * 
+ */
+export type DmThread = Prisma.DmThreadModel
+/**
+ * Model DmMember
+ * 
+ */
+export type DmMember = Prisma.DmMemberModel

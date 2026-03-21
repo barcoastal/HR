@@ -87,7 +87,14 @@ export const ModelName = {
   CompanySettings: 'CompanySettings',
   EmailTemplate: 'EmailTemplate',
   RolePermission: 'RolePermission',
-  OAuthState: 'OAuthState'
+  OAuthState: 'OAuthState',
+  ChatWorkspace: 'ChatWorkspace',
+  ChatMember: 'ChatMember',
+  Channel: 'Channel',
+  ChannelMember: 'ChannelMember',
+  Message: 'Message',
+  DmThread: 'DmThread',
+  DmMember: 'DmMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -644,6 +651,103 @@ export const OAuthStateScalarFieldEnum = {
 } as const
 
 export type OAuthStateScalarFieldEnum = (typeof OAuthStateScalarFieldEnum)[keyof typeof OAuthStateScalarFieldEnum]
+
+
+export const ChatWorkspaceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  logoUrl: 'logoUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatWorkspaceScalarFieldEnum = (typeof ChatWorkspaceScalarFieldEnum)[keyof typeof ChatWorkspaceScalarFieldEnum]
+
+
+export const ChatMemberScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  workspaceId: 'workspaceId',
+  role: 'role',
+  status: 'status',
+  statusEmoji: 'statusEmoji',
+  presence: 'presence',
+  dndUntil: 'dndUntil',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ChatMemberScalarFieldEnum = (typeof ChatMemberScalarFieldEnum)[keyof typeof ChatMemberScalarFieldEnum]
+
+
+export const ChannelScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  slug: 'slug',
+  description: 'description',
+  topic: 'topic',
+  isPrivate: 'isPrivate',
+  isArchived: 'isArchived',
+  isDefault: 'isDefault',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChannelScalarFieldEnum = (typeof ChannelScalarFieldEnum)[keyof typeof ChannelScalarFieldEnum]
+
+
+export const ChannelMemberScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  employeeId: 'employeeId',
+  isAdmin: 'isAdmin',
+  isMuted: 'isMuted',
+  isStarred: 'isStarred',
+  lastReadAt: 'lastReadAt',
+  joinedAt: 'joinedAt'
+} as const
+
+export type ChannelMemberScalarFieldEnum = (typeof ChannelMemberScalarFieldEnum)[keyof typeof ChannelMemberScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  dmThreadId: 'dmThreadId',
+  parentId: 'parentId',
+  authorId: 'authorId',
+  content: 'content',
+  contentPlain: 'contentPlain',
+  isEdited: 'isEdited',
+  isDeleted: 'isDeleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const DmThreadScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  isGroup: 'isGroup',
+  createdAt: 'createdAt'
+} as const
+
+export type DmThreadScalarFieldEnum = (typeof DmThreadScalarFieldEnum)[keyof typeof DmThreadScalarFieldEnum]
+
+
+export const DmMemberScalarFieldEnum = {
+  id: 'id',
+  dmThreadId: 'dmThreadId',
+  employeeId: 'employeeId',
+  lastReadAt: 'lastReadAt',
+  isMuted: 'isMuted'
+} as const
+
+export type DmMemberScalarFieldEnum = (typeof DmMemberScalarFieldEnum)[keyof typeof DmMemberScalarFieldEnum]
 
 
 export const SortOrder = {

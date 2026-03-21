@@ -201,3 +201,23 @@ export const PlatformStatus = {
 } as const
 
 export type PlatformStatus = (typeof PlatformStatus)[keyof typeof PlatformStatus]
+
+
+export const ChatRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER',
+  GUEST: 'GUEST'
+} as const
+
+export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
+
+
+export const Presence = {
+  ONLINE: 'ONLINE',
+  AWAY: 'AWAY',
+  DND: 'DND',
+  OFFLINE: 'OFFLINE'
+} as const
+
+export type Presence = (typeof Presence)[keyof typeof Presence]
