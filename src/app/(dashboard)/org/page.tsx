@@ -1,108 +1,137 @@
-import { cn, getInitials } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { ManagerAssignment } from "@/components/org/manager-assignment";
 import { OrgTree } from "@/components/org/org-tree";
-import { PageHeader } from "@/components/ui/page-header";
-import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
+import { FAB } from "@/components/ui/fab";
 
-const borderColors: Record<string, string> = {
-  Engineering: "border-l-blue-500",
-  Product: "border-l-cyan-500",
-  Design: "border-l-pink-500",
-  Marketing: "border-l-purple-500",
-  "Human Resources": "border-l-indigo-500",
-  Finance: "border-l-teal-500",
-};
-const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
+// Client wrapper needed for FAB (server page)
+import OrgFABWrapper from "./org-fab-wrapper";
 
 export default async function OrgPage() {
   await requireManagerOrAdmin();
   const [departments, employees] = await Promise.all([getDepartments(), getEmployees()]);
 
   const activeEmployees = employees.filter((e) => e.status !== "OFFBOARDED");
-  const avgTenure = (() => {
-    if (activeEmployees.length === 0) return "0 yrs";
-    const totalMonths = activeEmployees.reduce((acc, e) => acc + (Date.now() - e.startDate.getTime()) / (1000 * 60 * 60 * 24 * 30), 0);
-    return `${(totalMonths / activeEmployees.length / 12).toFixed(1)} yrs`;
-  })();
-
-  const teamCount = departments.reduce((acc, d) => acc + d.teams.length, 0);
 
   return (
-    <div className="max-w-6xl mx-auto py-8 px-4">
-      <PageHeader title="Organization" description="Overview of your company structure and departments" />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Total Employees" value={activeEmployees.length} icon={<Icon name="group" size={20} />} color="blue" />
-        <StatCard title="Departments" value={departments.length} icon={<Icon name="business" size={20} />} color="purple" />
-        <StatCard title="Teams" value={teamCount} icon={<Icon name="layers" size={20} />} color="emerald" />
-        <StatCard title="Avg Tenure" value={avgTenure} icon={<Icon name="schedule" size={20} />} color="amber" animate={false} />
+    <div className="w-full p-10">
+      {/* Editorial header */}
+      <div className="flex justify-between items-end mb-12">
+        <div>
+          <h2 className="text-4xl font-extrabold tracking-tight text-[var(--color-on-surface)] mb-2">
+            Organization Structure
+          </h2>
+          <p className="text-[var(--color-on-surface-variant)] font-medium text-lg">
+            Visualizing the flow of talent and leadership.
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <button className="px-5 py-2.5 bg-[var(--color-surface-container-highest)] text-[var(--color-on-surface)] font-bold rounded-xl flex items-center gap-2">
+            <Icon name="filter_list" size={18} /> All Departments
+          </button>
+          <button className="px-5 py-2.5 bg-[var(--color-primary)] text-white font-bold rounded-xl flex items-center gap-2 shadow-lg shadow-[var(--color-primary)]/10">
+            <Icon name="download" size={18} /> Export Chart
+          </button>
+        </div>
       </div>
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Departments</h2>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {departments.map((dept) => {
-          const headInitials = dept.head ? getInitials(dept.head.firstName, dept.head.lastName) : "??";
-          const colorIdx = dept.head ? dept.head.firstName.charCodeAt(0) % avatarColors.length : 0;
-          const memberCount = dept.employees.length;
-          return (
-            <div key={dept.id} className={cn("rounded-[var(--radius-lg)] overflow-hidden bg-[var(--color-surface-container-lowest)]", "border-l-[3px]", borderColors[dept.name] || "border-l-gray-500", "hover:bg-[var(--color-surface-hover)] transition-colors group cursor-pointer")}>
-              <div className="p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-semibold text-[var(--color-text-primary)]">{dept.name}</h3>
-                  <Icon name="chevron_right" size={16} className="text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                {dept.description && <p className="text-sm text-[var(--color-text-muted)] mb-4 line-clamp-2">{dept.description}</p>}
-                {dept.head && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{headInitials}</div>
-                    <div>
-                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{dept.head.firstName} {dept.head.lastName}</p>
-                      <p className="text-xs text-[var(--color-text-muted)]">Department Head</p>
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-center gap-4 pt-3 border-t border-[var(--color-border)]">
-                  <div className="flex items-center gap-1.5">
-                    <Icon name="group" size={12} className="text-[var(--color-text-muted)]" />
-                    <span className="text-sm text-[var(--color-text-muted)]"><span className="font-medium text-[var(--color-text-primary)]">{memberCount}</span> members</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Icon name="layers" size={12} className="text-[var(--color-text-muted)]" />
-                    <span className="text-sm text-[var(--color-text-muted)]"><span className="font-medium text-[var(--color-text-primary)]">{dept.teams.length}</span> teams</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Visual Org Tree */}
+      <OrgTree
+        employees={activeEmployees.map((e) => ({
+          id: e.id,
+          firstName: e.firstName,
+          lastName: e.lastName,
+          jobTitle: e.jobTitle,
+          profilePhoto: e.profilePhoto,
+          departmentName: e.department?.name || null,
+          managerId: e.managerId,
+        }))}
+        departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+      />
 
-      <div className="mt-8">
-        <section className={cn("rounded-xl p-6 mb-8", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <Icon name="group" size={20} className="text-[var(--color-accent)]" />
-            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Organization Tree</h2>
+      {/* Bento stats section */}
+      <div className="mt-24 grid grid-cols-4 gap-6">
+        {/* Org Health card — col-span-2 */}
+        <div className="col-span-2 bg-[var(--color-surface-container-highest)]/30 rounded-2xl p-8 backdrop-blur-sm border border-[var(--color-outline-variant)]/10">
+          <div className="flex items-center gap-3 mb-6">
+            <h3 className="text-xl font-bold text-[var(--color-on-surface)]">Org Health Overview</h3>
+            <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+              Real-time Data
+            </span>
           </div>
-          <p className="text-sm text-[var(--color-text-muted)] mb-4">Reporting structure based on manager assignments.</p>
-          <OrgTree
-            employees={activeEmployees.map((e) => ({
-              id: e.id,
-              firstName: e.firstName,
-              lastName: e.lastName,
-              jobTitle: e.jobTitle,
-              profilePhoto: e.profilePhoto,
-              departmentName: e.department?.name || null,
-              managerId: e.managerId,
-            }))}
-          />
-        </section>
+          <div className="grid grid-cols-3 gap-6">
+            <div>
+              <p className="text-3xl font-black text-[var(--color-primary)]">{activeEmployees.length}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-on-surface-variant)] mt-1">
+                Total Employees
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">
+                {activeEmployees.length > 0
+                  ? Math.round(
+                      (activeEmployees.filter((e) => e.status === "ACTIVE").length /
+                        activeEmployees.length) *
+                        100
+                    )
+                  : 0}
+                %
+              </p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-on-surface-variant)] mt-1">
+                Retention Rate
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-black text-[var(--color-on-surface)]">{departments.length}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-on-surface-variant)] mt-1">
+                Departments
+              </p>
+            </div>
+          </div>
+        </div>
 
+        {/* Growth card — 1 col */}
+        <div className="bg-[var(--color-primary-container)] rounded-2xl p-8 text-white">
+          <Icon name="trending_up" size={32} className="mb-4 opacity-80" />
+          <p className="text-[10px] font-bold uppercase tracking-widest opacity-70 mb-2">Projected Growth</p>
+          <p className="text-4xl font-black">12%</p>
+          <p className="text-sm opacity-70 mt-2">Year over year</p>
+        </div>
+
+        {/* Inter-Team card — 1 col */}
+        <div className="bg-white rounded-2xl p-8 border border-[var(--color-outline-variant)]/10">
+          <div className="w-12 h-12 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)] mb-4">
+            <Icon name="hub" />
+          </div>
+          <h4 className="font-bold text-[var(--color-on-surface)] mb-1">Inter-Team Connections</h4>
+          <p className="text-sm text-[var(--color-on-surface-variant)] mb-4">Cross-department collaboration</p>
+          <div className="flex -space-x-2">
+            {activeEmployees.slice(0, 5).map((emp) =>
+              emp.profilePhoto ? (
+                <img
+                  key={emp.id}
+                  className="w-8 h-8 rounded-full border-2 border-white object-cover"
+                  src={emp.profilePhoto}
+                  alt=""
+                />
+              ) : (
+                <div
+                  key={emp.id}
+                  className="w-8 h-8 rounded-full border-2 border-white bg-[var(--color-primary-fixed)] flex items-center justify-center text-xs font-bold text-[var(--color-on-primary-fixed-variant)]"
+                >
+                  {emp.firstName[0]}
+                </div>
+              )
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Manager Assignment section */}
+      <div id="dept-actions" className="mt-12">
         <ManagerAssignment
           employees={activeEmployees.map((e) => ({
             id: e.id,
@@ -120,6 +149,9 @@ export default async function OrgPage() {
           }))}
         />
       </div>
+
+      {/* FAB — client component wrapper */}
+      <OrgFABWrapper />
     </div>
   );
 }
