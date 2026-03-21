@@ -5,25 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Newspaper,
-  Users,
-  Building2,
-  ClipboardCheck,
-  Menu,
-  UserPlus,
-  UserMinus,
-  Settings,
-  X,
-  Briefcase,
-  BarChart3,
-  CalendarDays,
-  LogOut,
-  Palmtree,
-  Users2,
-  Megaphone,
-  UserCircle,
-} from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import {
   canAccessSettings,
@@ -38,10 +20,10 @@ import type { UserRole } from "@/generated/prisma/client";
 const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 
 const tabs = [
-  { href: "/", label: "Feed", icon: Newspaper },
-  { href: "/people", label: "People", icon: Users },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/my-profile", label: "Profile", icon: UserCircle },
+  { href: "/", label: "Feed", icon: "newspaper" },
+  { href: "/people", label: "People", icon: "group" },
+  { href: "/calendar", label: "Calendar", icon: "calendar_month" },
+  { href: "/my-profile", label: "Profile", icon: "account_circle" },
 ] as const;
 
 type DrawerSection = {
@@ -50,17 +32,17 @@ type DrawerSection = {
 };
 
 const allDrawerLinks = [
-  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: ClipboardCheck, access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
-  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
-  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r), section: "Workflow" },
-  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
-  { href: "/org", label: "Organization", icon: Building2, access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
-  { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true, section: "Workflow" },
-  { href: "/clubs", label: "Clubs", icon: Users2, access: () => true, section: "Social" },
-  { href: "/voice", label: "Your Voice", icon: Megaphone, access: () => true, section: "Social" },
-  { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r), section: "Admin" },
-  { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r), section: "Admin" },
-  { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r), section: "Admin" },
+  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
+  { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
+  { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r), section: "Workflow" },
+  { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
+  { href: "/org", label: "Organization", icon: "business", access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
+  { href: "/time-off", label: "Time Off", icon: "beach_access", access: () => true, section: "Workflow" },
+  { href: "/clubs", label: "Clubs", icon: "groups", access: () => true, section: "Social" },
+  { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true, section: "Social" },
+  { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r), section: "Admin" },
+  { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r), section: "Admin" },
+  { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r), section: "Admin" },
 ] as const;
 
 export function MobileNav() {
@@ -93,7 +75,7 @@ export function MobileNav() {
           "border-t border-[var(--color-border)]/60"
         )}
       >
-        {tabs.map(({ href, label, icon: Icon }) => {
+        {tabs.map(({ href, label, icon }) => {
           const active = isActive(href);
           return (
             <Link
@@ -104,7 +86,7 @@ export function MobileNav() {
                 active ? "text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"
               )}
             >
-              <Icon className="h-6 w-6" />
+              <Icon name={icon} size={24} />
               <span className="text-[11px] font-medium">{label}</span>
               {active && (
                 <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-[var(--color-accent)]" />
@@ -116,7 +98,7 @@ export function MobileNav() {
           onClick={() => setDrawerOpen(true)}
           className="flex flex-1 flex-col items-center justify-center gap-1 py-3 text-[var(--color-text-muted)]"
         >
-          <Menu className="h-6 w-6" />
+          <Icon name="menu" size={24} />
           <span className="text-[11px] font-medium">More</span>
         </button>
       </div>
@@ -148,7 +130,7 @@ export function MobileNav() {
                   onClick={() => setDrawerOpen(false)}
                   className="rounded-full p-1.5 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
                 >
-                  <X className="h-5 w-5" />
+                  <Icon name="close" size={20} />
                 </button>
               </div>
               <nav className="px-3 pb-6 pt-1">
@@ -157,7 +139,7 @@ export function MobileNav() {
                     <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
                       {section.title}
                     </p>
-                    {section.links.map(({ href, label, icon: Icon }) => {
+                    {section.links.map(({ href, label, icon }) => {
                       const active = isActive(href);
                       return (
                         <Link
@@ -172,7 +154,7 @@ export function MobileNav() {
                               : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
                           )}
                         >
-                          <Icon className="h-5 w-5" />
+                          <Icon name={icon} size={20} />
                           {label}
                         </Link>
                       );
@@ -187,7 +169,7 @@ export function MobileNav() {
                       "text-red-400 hover:bg-red-500/10"
                     )}
                   >
-                    <LogOut className="h-5 w-5" />
+                    <Icon name="logout" size={20} />
                     Sign out
                   </button>
                 </div>

@@ -4,24 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { useSession, signOut } from "next-auth/react";
-import {
-  Newspaper,
-  Users,
-  Building2,
-  UserPlus,
-  UserMinus,
-  ClipboardCheck,
-  Settings,
-  Briefcase,
-  BarChart3,
-  CalendarDays,
-  LogOut,
-  Palmtree,
-  Users2,
-  Megaphone,
-  UserCircle,
-  FileSignature,
-} from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { cn, getInitials } from "@/lib/utils";
 import {
   canAccessSettings,
@@ -37,22 +20,22 @@ import type { UserRole } from "@/generated/prisma/client";
 const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 
 const allNavLinks = [
-  { href: "/", label: "Feed", icon: Newspaper, access: () => true },
-  { href: "/people", label: "People", icon: Users, access: () => true },
-  { href: "/org", label: "Organization", icon: Building2, access: (r: UserRole) => isManagerOrAbove(r) },
-  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: ClipboardCheck, access: (r: UserRole) => canManageOnboarding(r) },
-  { href: "/onboarding", label: "Onboarding", icon: UserPlus, access: (r: UserRole) => canManageOnboarding(r) },
-  { href: "/offboarding", label: "Offboarding", icon: UserMinus, access: (r: UserRole) => canManageOffboarding(r) },
-  { href: "/reviews", label: "Reviews", icon: ClipboardCheck, access: (r: UserRole) => isManagerOrAbove(r) },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays, access: () => true },
-  { href: "/time-off", label: "Time Off", icon: Palmtree, access: () => true },
-  { href: "/clubs", label: "Clubs", icon: Users2, access: () => true },
-  { href: "/voice", label: "Your Voice", icon: Megaphone, access: () => true },
-  { href: "/documents", label: "Documents", icon: FileSignature, access: () => true },
-  { href: "/cv", label: "Recruitment", icon: Briefcase, access: (r: UserRole) => canAccessRecruitment(r) },
-  { href: "/analytics", label: "Analytics", icon: BarChart3, access: (r: UserRole) => canAccessAnalytics(r) },
-  { href: "/my-profile", label: "My Profile", icon: UserCircle, access: () => true },
-  { href: "/settings", label: "Settings", icon: Settings, access: (r: UserRole) => canAccessSettings(r) },
+  { href: "/", label: "Feed", icon: "newspaper", access: () => true },
+  { href: "/people", label: "People", icon: "group", access: () => true },
+  { href: "/org", label: "Organization", icon: "business", access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r) },
+  { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r) },
+  { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r) },
+  { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/calendar", label: "Calendar", icon: "calendar_month", access: () => true },
+  { href: "/time-off", label: "Time Off", icon: "beach_access", access: () => true },
+  { href: "/clubs", label: "Clubs", icon: "groups", access: () => true },
+  { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true },
+  { href: "/documents", label: "Documents", icon: "draw", access: () => true },
+  { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r) },
+  { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r) },
+  { href: "/my-profile", label: "My Profile", icon: "account_circle", access: () => true },
+  { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r) },
 ];
 
 export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; companyName?: string }) {
@@ -87,7 +70,7 @@ export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; com
         ) : (
           <>
             <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary shadow-none">
-              <Users className="h-5 w-5 text-white" />
+              <Icon name="group" size={20} className="text-white" />
             </div>
             <span className="text-lg font-bold text-[var(--color-on-surface)] font-semibold">
               {companyName || "Coastal HR"}
@@ -98,7 +81,7 @@ export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; com
 
       {/* Navigation */}
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-2">
-        {navLinks.map(({ href, label, icon: Icon }) => {
+        {navLinks.map(({ href, label, icon }) => {
           const active = isActive(href);
           return (
             <Link
@@ -115,7 +98,7 @@ export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; com
               {active && (
                 <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[3px] rounded-r-full bg-[var(--color-primary)]" />
               )}
-              <Icon className="h-5 w-5" />
+              <Icon name={icon} size={20} fill={active} />
               {label}
             </Link>
           );
@@ -151,7 +134,7 @@ export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; com
             "hover:bg-red-500/10 hover:text-red-400"
           )}
         >
-          <LogOut className="h-5 w-5" />
+          <Icon name="logout" size={20} />
           Sign out
         </button>
       </div>

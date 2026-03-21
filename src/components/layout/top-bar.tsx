@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 import { useSession } from "next-auth/react";
-import { Bell, Search } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 import { cn, getInitials } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -61,7 +61,7 @@ export function TopBar() {
 
       <div className="flex items-center gap-3">
         <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]" />
+          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
             type="text"
             placeholder="Search..."
@@ -82,7 +82,7 @@ export function TopBar() {
             "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
           )}
         >
-          <Bell className="h-[18px] w-[18px]" />
+          <Icon name="notifications" size={18} />
           <motion.span
             className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"
             animate={{ scale: [1, 1.3, 1] }}
