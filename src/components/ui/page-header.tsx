@@ -22,8 +22,8 @@ export function PageHeader({
           className={cn(
             "text-2xl font-bold tracking-tight md:text-3xl",
             gradient
-              ? "text-gradient"
-              : "text-[var(--color-text-primary)]"
+              ? "text-[var(--color-primary)]"
+              : "text-[var(--color-on-surface)]"
           )}
         >
           {title}
