@@ -88,6 +88,11 @@ export type FeedReaction = Prisma.FeedReactionModel
  */
 export type PostAttachment = Prisma.PostAttachmentModel
 /**
+ * Model EmergencyAlert
+ * 
+ */
+export type EmergencyAlert = Prisma.EmergencyAlertModel
+/**
  * Model Notification
  * 
  */

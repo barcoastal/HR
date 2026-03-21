@@ -81,7 +81,8 @@ export const FeedPostType = {
   ANNIVERSARY: 'ANNIVERSARY',
   NEW_HIRE: 'NEW_HIRE',
   DEPARTURE: 'DEPARTURE',
-  SHOUTOUT: 'SHOUTOUT'
+  SHOUTOUT: 'SHOUTOUT',
+  EMERGENCY: 'EMERGENCY'
 } as const
 
 export type FeedPostType = (typeof FeedPostType)[keyof typeof FeedPostType]

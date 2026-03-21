@@ -65,6 +65,7 @@ export const ModelName = {
   FeedComment: 'FeedComment',
   FeedReaction: 'FeedReaction',
   PostAttachment: 'PostAttachment',
+  EmergencyAlert: 'EmergencyAlert',
   Notification: 'Notification',
   Document: 'Document',
   HRNote: 'HRNote',
@@ -322,6 +323,23 @@ export const PostAttachmentScalarFieldEnum = {
 } as const
 
 export type PostAttachmentScalarFieldEnum = (typeof PostAttachmentScalarFieldEnum)[keyof typeof PostAttachmentScalarFieldEnum]
+
+
+export const EmergencyAlertScalarFieldEnum = {
+  id: 'id',
+  feedPostId: 'feedPostId',
+  title: 'title',
+  sentById: 'sentById',
+  emailsSent: 'emailsSent',
+  smsSent: 'smsSent',
+  emailsFailed: 'emailsFailed',
+  smsFailed: 'smsFailed',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmergencyAlertScalarFieldEnum = (typeof EmergencyAlertScalarFieldEnum)[keyof typeof EmergencyAlertScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

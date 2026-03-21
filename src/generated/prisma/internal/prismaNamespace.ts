@@ -398,6 +398,7 @@ export const ModelName = {
   FeedComment: 'FeedComment',
   FeedReaction: 'FeedReaction',
   PostAttachment: 'PostAttachment',
+  EmergencyAlert: 'EmergencyAlert',
   Notification: 'Notification',
   Document: 'Document',
   HRNote: 'HRNote',
@@ -443,7 +444,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1480,6 +1481,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PostAttachmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PostAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmergencyAlert: {
+      payload: Prisma.$EmergencyAlertPayload<ExtArgs>
+      fields: Prisma.EmergencyAlertFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmergencyAlertFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmergencyAlertFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        findFirst: {
+          args: Prisma.EmergencyAlertFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmergencyAlertFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        findMany: {
+          args: Prisma.EmergencyAlertFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>[]
+        }
+        create: {
+          args: Prisma.EmergencyAlertCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        createMany: {
+          args: Prisma.EmergencyAlertCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmergencyAlertCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>[]
+        }
+        delete: {
+          args: Prisma.EmergencyAlertDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        update: {
+          args: Prisma.EmergencyAlertUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmergencyAlertDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmergencyAlertUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmergencyAlertUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmergencyAlertUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmergencyAlertPayload>
+        }
+        aggregate: {
+          args: Prisma.EmergencyAlertAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmergencyAlert>
+        }
+        groupBy: {
+          args: Prisma.EmergencyAlertGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmergencyAlertGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmergencyAlertCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmergencyAlertCountAggregateOutputType> | number
         }
       }
     }
@@ -3953,6 +4028,23 @@ export const PostAttachmentScalarFieldEnum = {
 export type PostAttachmentScalarFieldEnum = (typeof PostAttachmentScalarFieldEnum)[keyof typeof PostAttachmentScalarFieldEnum]
 
 
+export const EmergencyAlertScalarFieldEnum = {
+  id: 'id',
+  feedPostId: 'feedPostId',
+  title: 'title',
+  sentById: 'sentById',
+  emailsSent: 'emailsSent',
+  smsSent: 'smsSent',
+  emailsFailed: 'emailsFailed',
+  smsFailed: 'smsFailed',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmergencyAlertScalarFieldEnum = (typeof EmergencyAlertScalarFieldEnum)[keyof typeof EmergencyAlertScalarFieldEnum]
+
+
 export const NotificationScalarFieldEnum = {
   id: 'id',
   recipientId: 'recipientId',
@@ -4888,6 +4980,7 @@ export type GlobalOmitConfig = {
   feedComment?: Prisma.FeedCommentOmit
   feedReaction?: Prisma.FeedReactionOmit
   postAttachment?: Prisma.PostAttachmentOmit
+  emergencyAlert?: Prisma.EmergencyAlertOmit
   notification?: Prisma.NotificationOmit
   document?: Prisma.DocumentOmit
   hRNote?: Prisma.HRNoteOmit
