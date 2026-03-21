@@ -37,7 +37,7 @@ model EmergencyAlert {
   smsSent     Int      @default(0)
   emailsFailed Int     @default(0)
   smsFailed   Int      @default(0)
-  sentAt      DateTime @default(now())
+  status      String   @default("SENDING") // SENDING | SENT | PARTIALLY_FAILED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -68,7 +68,7 @@ model EmergencyAlert {
 
 **`sendEmergencyAlert(title: string, message: string)`**
 
-1. Auth check: require ADMIN or SUPER_ADMIN via `requireAdmin()`
+1. Auth check: call `requireAdmin()` for session, then explicitly verify `role === "ADMIN" || role === "SUPER_ADMIN"` (reject HR)
 2. Get current user's employee record
 3. Fetch all active employees (`status === "ACTIVE"`) with `email` and `phone`
 4. Create `FeedPost` with:
@@ -77,12 +77,13 @@ model EmergencyAlert {
    - `content: message`
    - `authorId: employeeId`
 5. Create linked `EmergencyAlert` record with `title` and `sentById`
-6. Send emails in parallel to all employees via Resend
+6. Send emails in batches of 10 using `Promise.allSettled` to all employees via Resend
+   - Call `resend.emails.send()` directly (not the existing `sendEmail` wrapper) to get per-email success/failure
    - Subject: `[EMERGENCY] {title}`
    - Body: HTML template with title + message + company branding
-7. Send SMS in parallel to employees who have `phone` set via Twilio
-   - Body: `[EMERGENCY] {title}: {message}` (truncated to 160 chars if needed)
-8. Update `EmergencyAlert` with delivery counts (`emailsSent`, `smsSent`, `emailsFailed`, `smsFailed`)
+7. Send SMS in batches of 10 using `Promise.allSettled` to employees who have `phone` set via Twilio
+   - Body: `[EMERGENCY] {title}: {message}` (Twilio handles multi-part SMS automatically for messages over 160 chars)
+8. Update `EmergencyAlert` with delivery counts and set `status` to `SENT` or `PARTIALLY_FAILED`
 9. Revalidate `/alerts` and `/` (feed) paths
 
 **`getEmergencyAlerts()`**
@@ -133,9 +134,10 @@ New email for emergency alerts (not stored in `EmailTemplate` table — hardcode
 
 ## Permissions
 
-- Use existing `requireAdmin()` helper which allows SUPER_ADMIN, ADMIN, and HR
-- Override in the action to restrict to ADMIN and SUPER_ADMIN only (exclude HR)
-- No new permission key needed — role check is sufficient
+- Page guard: `requireAdmin()` (allows SUPER_ADMIN, ADMIN, HR through)
+- Server action guard: after `requireAdmin()`, explicitly check `role === "ADMIN" || role === "SUPER_ADMIN"` — if HR, throw `"Unauthorized"` error
+- No new permission key needed — direct role check is sufficient
+- Client-side: disable send button after click to prevent double-sends
 
 ---
 
@@ -159,5 +161,6 @@ TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 | Create | `src/components/alerts/alert-composer.tsx` |
 | Create | `src/components/alerts/alert-history.tsx` |
 | Modify | `prisma/schema.prisma` (enum + model) |
+| Modify | `src/lib/email.ts` (use resend directly for delivery tracking) |
 | Modify | `src/components/feed/post-card.tsx` (EMERGENCY style) |
 | Modify | `src/components/layout/sidebar.tsx` (nav link) |
