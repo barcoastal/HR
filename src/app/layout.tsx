@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
-import { ThemeProvider } from "@/components/layout/theme-provider";
 import { SessionProvider } from "@/components/providers/session-provider";
 import "./globals.css";
 
@@ -19,10 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className="antialiased">
         <SessionProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          {children}
         </SessionProvider>
       </body>
     </html>

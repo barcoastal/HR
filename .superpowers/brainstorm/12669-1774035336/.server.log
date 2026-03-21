@@ -1,0 +1,5 @@
+{"type":"server-started","port":58798,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:58798","screen_dir":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/12669-1774035336"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/12669-1774035336/visual-direction.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/12669-1774035336/waiting.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/12669-1774035336/spec-review.html"}
+{"type":"server-stopped","reason":"idle timeout"}

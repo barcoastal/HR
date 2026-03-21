@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Spec — HR Platform Redesign</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #F5F6FA; color: #1A1A2E; line-height: 1.6; }
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+  h2 { font-size: 20px; font-weight: 700; margin-top: 40px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3052FF; color: #3052FF; }
+  h3 { font-size: 16px; font-weight: 600; margin-top: 24px; margin-bottom: 10px; color: #1A1A2E; }
+  h4 { font-size: 14px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; color: #4A4D65; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .meta { color: #8B8FA8; font-size: 14px; margin-bottom: 24px; }
+  .meta span { display: inline-block; margin-right: 16px; }
+  .meta .status { background: #FF9000; color: white; padding: 2px 10px; border-radius: 12px; font-weight: 500; font-size: 12px; }
+
+  p { margin-bottom: 12px; font-size: 15px; color: #4A4D65; }
+  strong { color: #1A1A2E; }
+
+  .card { background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border: 1px solid #E2E4ED; }
+
+  .goals { list-style: none; padding: 0; }
+  .goals li { padding: 10px 0; border-bottom: 1px solid #EDEEF3; font-size: 15px; color: #4A4D65; }
+  .goals li:last-child { border-bottom: none; }
+  .goals li strong { color: #3052FF; }
+
+  .non-goals { list-style: none; padding: 0; }
+  .non-goals li { padding: 6px 0 6px 20px; position: relative; font-size: 14px; color: #8B8FA8; }
+  .non-goals li::before { content: '✕'; position: absolute; left: 0; color: #EF4444; font-weight: 600; }
+
+  .direction-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+  .direction-item { background: white; border-radius: 10px; padding: 16px; border: 1px solid #E2E4ED; text-align: center; }
+  .direction-item .label { font-size: 12px; color: #8B8FA8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .direction-item .value { font-size: 15px; font-weight: 600; color: #1A1A2E; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #F5F6FA; font-weight: 600; color: #4A4D65; border-bottom: 2px solid #E2E4ED; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 8px 12px; border-bottom: 1px solid #EDEEF3; color: #4A4D65; }
+  td:first-child { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #1A1A2E; white-space: nowrap; }
+
+  .swatch { display: inline-block; width: 16px; height: 16px; border-radius: 4px; vertical-align: middle; margin-right: 6px; border: 1px solid rgba(0,0,0,0.08); }
+
+  .file-list { list-style: none; padding: 0; }
+  .file-list li { padding: 6px 0; border-bottom: 1px solid #EDEEF3; font-size: 13px; }
+  .file-list li:last-child { border-bottom: none; }
+  .file-list .path { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; color: #3052FF; }
+  .file-list .desc { color: #8B8FA8; margin-left: 4px; }
+
+  .group-label { font-size: 12px; font-weight: 600; color: #8B8FA8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 16px; margin-bottom: 6px; }
+
+  .replacement-table td:first-child { color: #EF4444; font-size: 12px; }
+  .replacement-table td:nth-child(2) { color: #10B981; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; }
+
+  .steps { list-style: none; padding: 0; counter-reset: step; }
+  .steps li { padding: 12px 0 12px 48px; border-bottom: 1px solid #EDEEF3; font-size: 15px; color: #4A4D65; position: relative; counter-increment: step; }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: 10px; width: 32px; height: 32px; border-radius: 50%; background: #3052FF; color: white; font-size: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .steps li:last-child { border-bottom: none; }
+
+  .stays { list-style: none; padding: 0; }
+  .stays li { padding: 6px 0 6px 20px; position: relative; font-size: 14px; color: #4A4D65; }
+  .stays li::before { content: '✓'; position: absolute; left: 0; color: #10B981; font-weight: 700; }
+
+  .note { background: rgba(48, 82, 255, 0.04); border-left: 3px solid #3052FF; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; font-size: 14px; color: #4A4D65; }
+
+  code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px; background: #F0F1F5; padding: 2px 6px; border-radius: 4px; color: #1A1A2E; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>HR Platform Design System & Visual Redesign</h1>
+  <div class="meta">
+    <span>2026-03-20</span>
+    <span class="status">Draft</span>
+    <span>CALATRAVA — Coastal Debt HR Platform</span>
+  </div>
+
+  <p>Redesign the HR platform's visual identity from a dark-first glassmorphism aesthetic to a <strong>soft, warm, light-only design</strong> inspired by the Coastal Debt brand book. Establish a token-level design system as the foundation for all UI.</p>
+
+  <h2>Goals</h2>
+  <div class="card">
+    <ol class="goals">
+      <li><strong>Visual cohesion</strong> — Replace inconsistent glassmorphism/gradient style with a unified warm, approachable look</li>
+      <li><strong>Brand alignment</strong> — Adapt Coastal Debt brand colors and typography for an internal HR tool</li>
+      <li><strong>Maintainable tokens</strong> — Single source of truth for colors, typography, spacing, shadows, and radii as CSS custom properties</li>
+      <li><strong>Smooth migration</strong> — Components already consume CSS variables via Tailwind, so token changes cascade naturally</li>
+    </ol>
+  </div>
+
+  <h3>Non-Goals</h3>
+  <ul class="non-goals">
+    <li>Building a documented component library (tokens only)</li>
+    <li>Adding new features or changing functionality</li>
+    <li>Changing component architecture (CVA + Tailwind stays)</li>
+    <li>Changing layout structure (sidebar + topbar + mobile nav stays)</li>
+  </ul>
+
+  <h2>Design Direction</h2>
+  <div class="direction-grid">
+    <div class="direction-item">
+      <div class="label">Style</div>
+      <div class="value">Soft & Warm</div>
+    </div>
+    <div class="direction-item">
+      <div class="label">Mode</div>
+      <div class="value">Light Only</div>
+    </div>
+    <div class="direction-item">
+      <div class="label">Typography</div>
+      <div class="value">Aeonik + Inter</div>
+    </div>
+  </div>
+  <p>Rounded corners, soft shadows, warm neutrals with brand color pops. Think Slack, Gusto. Friendly and approachable for daily use. Aeonik for headings, Inter for body/UI.</p>
+
+  <h2>Design Tokens</h2>
+
+  <h3>Color Palette — Core</h3>
+  <div class="card">
+    <table>
+      <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>--color-background</td><td><span class="swatch" style="background:#F5F6FA"></span>#F5F6FA</td><td>Page background</td></tr>
+      <tr><td>--color-foreground</td><td><span class="swatch" style="background:#1A1A2E"></span>#1A1A2E</td><td>Primary text</td></tr>
+      <tr><td>--color-surface</td><td><span class="swatch" style="background:#FFFFFF;border-color:#ddd"></span>#FFFFFF</td><td>Cards, panels</td></tr>
+      <tr><td>--color-surface-hover</td><td><span class="swatch" style="background:#F0F1F5"></span>#F0F1F5</td><td>Surface hover</td></tr>
+      <tr><td>--color-border</td><td><span class="swatch" style="background:#E2E4ED"></span>#E2E4ED</td><td>Default borders</td></tr>
+      <tr><td>--color-border-subtle</td><td><span class="swatch" style="background:#EDEEF3"></span>#EDEEF3</td><td>Nested borders (future)</td></tr>
+    </table>
+  </div>
+
+  <h3>Color Palette — Text</h3>
+  <div class="card">
+    <table>
+      <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>--color-text-primary</td><td><span class="swatch" style="background:#1A1A2E"></span>#1A1A2E</td><td>Headings, important text</td></tr>
+      <tr><td>--color-text-secondary</td><td><span class="swatch" style="background:#4A4D65"></span>#4A4D65</td><td>Body text, descriptions</td></tr>
+      <tr><td>--color-text-muted</td><td><span class="swatch" style="background:#8B8FA8"></span>#8B8FA8</td><td>Placeholder, helper text</td></tr>
+      <tr><td>--color-text-on-accent</td><td><span class="swatch" style="background:#FFFFFF;border-color:#ddd"></span>#FFFFFF</td><td>Text on accent backgrounds</td></tr>
+    </table>
+  </div>
+
+  <h3>Color Palette — Brand / Accent</h3>
+  <div class="card">
+    <table>
+      <tr><th>Token</th><th>Value</th><th>Source</th><th>Usage</th></tr>
+      <tr><td>--color-accent</td><td><span class="swatch" style="background:#3052FF"></span>#3052FF</td><td>Future Blue</td><td>Primary actions, links</td></tr>
+      <tr><td>--color-accent-hover</td><td><span class="swatch" style="background:#2442E0"></span>#2442E0</td><td>—</td><td>Hover state</td></tr>
+      <tr><td>--color-accent-light</td><td><span class="swatch" style="background:rgba(48,82,255,0.08)"></span>8% opacity</td><td>—</td><td>Selected states</td></tr>
+      <tr><td>--color-secondary</td><td><span class="swatch" style="background:#FF9000"></span>#FF9000</td><td>Orange</td><td>Secondary CTAs, badges</td></tr>
+      <tr><td>--color-secondary-hover</td><td><span class="swatch" style="background:#E58200"></span>#E58200</td><td>—</td><td>Hover state</td></tr>
+      <tr><td>--color-highlight</td><td><span class="swatch" style="background:#7FB2FF"></span>#7FB2FF</td><td>Light Blue</td><td>Decorative accents</td></tr>
+    </table>
+  </div>
+
+  <h3>Color Palette — Semantic</h3>
+  <div class="card">
+    <table>
+      <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>--color-success</td><td><span class="swatch" style="background:#10B981"></span>#10B981</td><td>Success, completed</td></tr>
+      <tr><td>--color-warning</td><td><span class="swatch" style="background:#F59E0B"></span>#F59E0B</td><td>Warnings, pending</td></tr>
+      <tr><td>--color-danger</td><td><span class="swatch" style="background:#EF4444"></span>#EF4444</td><td>Errors, destructive</td></tr>
+      <tr><td>--color-info</td><td><span class="swatch" style="background:#3B82F6"></span>#3B82F6</td><td>Informational</td></tr>
+    </table>
+    <div class="note">Each semantic color also has a <code>-light</code> variant at 8% opacity for backgrounds.</div>
+  </div>
+
+  <h3>Typography</h3>
+  <div class="card">
+    <table>
+      <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>--font-heading</td><td>"Aeonik", system-ui</td><td>Headings (h1–h4), page titles</td></tr>
+      <tr><td>--font-sans</td><td>"Inter", system-ui</td><td>Body, UI elements, labels</td></tr>
+    </table>
+    <div class="note"><strong>Aeonik weights:</strong> Regular (400) and Medium (500) only. Headings use <code>font-medium</code> (500). Weights 600+ apply to Inter only.</div>
+
+    <h4 style="margin-top: 16px;">Size Scale</h4>
+    <table>
+      <tr><th>Size</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>xs</td><td>12px</td><td>Captions, timestamps</td></tr>
+      <tr><td>sm</td><td>14px</td><td>Body, table cells, labels</td></tr>
+      <tr><td>base</td><td>16px</td><td>Default body, inputs</td></tr>
+      <tr><td>lg</td><td>18px</td><td>Section headings, card titles</td></tr>
+      <tr><td>xl</td><td>20px</td><td>Page subtitles</td></tr>
+      <tr><td>2xl</td><td>24px</td><td>Page titles</td></tr>
+      <tr><td>3xl</td><td>30px</td><td>Dashboard hero stats</td></tr>
+    </table>
+  </div>
+
+  <h3>Shadows & Radius</h3>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <h4>Shadows</h4>
+        <table>
+          <tr><td>--shadow-xs</td><td style="font-size:12px;color:#8B8FA8">Inputs, small cards</td></tr>
+          <tr><td>--shadow-sm</td><td style="font-size:12px;color:#8B8FA8">Cards at rest</td></tr>
+          <tr><td>--shadow-md</td><td style="font-size:12px;color:#8B8FA8">Cards on hover, dropdowns</td></tr>
+          <tr><td>--shadow-lg</td><td style="font-size:12px;color:#8B8FA8">Modals, popovers</td></tr>
+          <tr><td>--shadow-focus</td><td style="font-size:12px;color:#8B8FA8">Focus rings (accent)</td></tr>
+        </table>
+      </div>
+      <div>
+        <h4>Border Radius</h4>
+        <table>
+          <tr><td>--radius-sm</td><td style="font-size:12px;color:#8B8FA8">6px — badges, chips</td></tr>
+          <tr><td>--radius-md</td><td style="font-size:12px;color:#8B8FA8">8px — buttons, inputs</td></tr>
+          <tr><td>--radius-lg</td><td style="font-size:12px;color:#8B8FA8">12px — cards, panels</td></tr>
+          <tr><td>--radius-xl</td><td style="font-size:12px;color:#8B8FA8">16px — modals</td></tr>
+          <tr><td>--radius-full</td><td style="font-size:12px;color:#8B8FA8">9999px — avatars</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <h2>What Changes</h2>
+
+  <h3>globals.css</h3>
+  <div class="card">
+    <ol class="steps">
+      <li>Remove the entire <code>.dark { ... }</code> block</li>
+      <li>Replace <code>@theme</code> block with new token values</li>
+      <li>Remove glassmorphism utilities (<code>.glass</code>, <code>.glass-card</code>)</li>
+      <li>Remove gradient effects (<code>.gradient-border</code>, <code>.text-gradient</code>, <code>.glow-accent</code>)</li>
+      <li>Add new shadow, radius, and typography tokens</li>
+      <li>Add <code>@font-face</code> for Aeonik (Regular + Medium)</li>
+      <li>Update body to flat background (no gradient mesh)</li>
+    </ol>
+  </div>
+
+  <h3>Theme Provider</h3>
+  <div class="card">
+    <ul class="non-goals" style="margin:0">
+      <li style="color:#4A4D65">Remove <code>next-themes</code> dependency and <code>ThemeProvider</code></li>
+      <li style="color:#4A4D65">Remove theme toggle from sidebar and topbar</li>
+      <li style="color:#4A4D65">Remove <code>suppressHydrationWarning</code> from root layout</li>
+    </ul>
+  </div>
+
+  <h3>Affected Files (~30)</h3>
+  <div class="card">
+    <div class="group-label">Layout</div>
+    <ul class="file-list">
+      <li><span class="path">sidebar.tsx</span> <span class="desc">— glass, gradient active state</span></li>
+      <li><span class="path">top-bar.tsx</span> <span class="desc">— glass</span></li>
+      <li><span class="path">mobile-nav.tsx</span> <span class="desc">— glass</span></li>
+    </ul>
+
+    <div class="group-label">UI Components</div>
+    <ul class="file-list">
+      <li><span class="path">card.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">dialog.tsx</span> <span class="desc">— glassmorphism overlay</span></li>
+      <li><span class="path">badge.tsx</span> <span class="desc">— gradient variant</span></li>
+      <li><span class="path">tabs.tsx</span> <span class="desc">— glass styling</span></li>
+      <li><span class="path">stat-card.tsx</span> <span class="desc">— glow effects</span></li>
+      <li><span class="path">button.tsx</span> <span class="desc">— glow-accent, to-purple gradient</span></li>
+      <li><span class="path">page-header.tsx</span> <span class="desc">— text-gradient</span></li>
+    </ul>
+
+    <div class="group-label">Pages (9 files)</div>
+    <ul class="file-list">
+      <li><span class="path">analytics/page.tsx</span> <span class="desc">— glass-card, gradient-border (12+ uses)</span></li>
+      <li><span class="path">my-profile/page.tsx</span> <span class="desc">— gradient-border, text-gradient</span></li>
+      <li><span class="path">people/[id]/page.tsx</span> <span class="desc">— gradient-border, text-gradient</span></li>
+      <li><span class="path">time-off/page.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">reviews/page.tsx</span> <span class="desc">— gradient-border, to-purple-500</span></li>
+      <li><span class="path">org/page.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">calendar/page.tsx</span> <span class="desc">— glass-card</span></li>
+      <li><span class="path">welcome/page.tsx</span> <span class="desc">— to-purple-500 gradient</span></li>
+      <li><span class="path">login/page.tsx</span> <span class="desc">— glass-card, glow-pulse, accent-glow</span></li>
+    </ul>
+
+    <div class="group-label">Feature Components (13 files)</div>
+    <ul class="file-list">
+      <li><span class="path">club-card.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">ai-analytics-bar.tsx</span> <span class="desc">— glass-card, glow-accent</span></li>
+      <li><span class="path">post-card.tsx</span> <span class="desc">— gradient-border, to-purple-500/10</span></li>
+      <li><span class="path">post-composer.tsx</span> <span class="desc">— accent-glow</span></li>
+      <li><span class="path">onboarding-timeline.tsx</span> <span class="desc">— gradient-border, to-purple-500</span></li>
+      <li><span class="path">people-list.tsx</span> <span class="desc">— gradient-border, accent-glow</span></li>
+      <li><span class="path">employee-documents-section.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">hr-notes-section.tsx</span> <span class="desc">— gradient-border</span></li>
+      <li><span class="path">add-employee-form.tsx</span> <span class="desc">— accent-glow</span></li>
+      <li><span class="path">document-signing-manager.tsx</span> <span class="desc">— glass-card, accent-glow shadow</span></li>
+      <li><span class="path">add-candidate-form.tsx</span> <span class="desc">— accent-glow</span></li>
+      <li><span class="path">department-actions.tsx</span> <span class="desc">— accent-glow</span></li>
+      <li><span class="path">company-info.tsx</span> <span class="desc">— accent-glow</span></li>
+    </ul>
+  </div>
+
+  <h3>Replacement Rules</h3>
+  <div class="card">
+    <table class="replacement-table">
+      <tr><th>Old Pattern</th><th>Replacement</th></tr>
+      <tr><td><code>glass</code>, <code>glass-card</code></td><td>bg-surface shadow-sm border border-border</td></tr>
+      <tr><td><code>gradient-border</code></td><td>border border-border hover:border-accent hover:shadow-md</td></tr>
+      <tr><td><code>text-gradient</code></td><td>text-accent</td></tr>
+      <tr><td><code>glow-accent</code>, <code>accent-glow</code></td><td>shadow-sm</td></tr>
+      <tr><td><code>animate-glow-pulse</code></td><td>Remove entirely</td></tr>
+      <tr><td>Inline accent-glow shadows</td><td>shadow-sm or shadow-focus</td></tr>
+      <tr><td>Solid <code>to-purple-600/500</code></td><td>bg-accent</td></tr>
+      <tr><td>Subtle <code>to-purple-500/5</code>, <code>/10</code></td><td>bg-accent-light or remove</td></tr>
+      <tr><td>Badge gradient variant</td><td>Non-gradient badge style</td></tr>
+    </table>
+  </div>
+
+  <h2>What Stays</h2>
+  <div class="card">
+    <ul class="stays">
+      <li><strong>Component architecture</strong> — CVA variants, Tailwind utilities, cn() helper</li>
+      <li><strong>Layout structure</strong> — Sidebar + TopBar + MobileNav</li>
+      <li><strong>Animation system</strong> — Framer Motion for transitions, stagger, counters</li>
+      <li><strong>Animations</strong> — fadeUp, pulse-slow keyframes (remove glow-pulse only)</li>
+      <li><strong>Icon library</strong> — Lucide React (already line-style per brand guidelines)</li>
+      <li><strong>All functionality and routing</strong> — Zero functional changes</li>
+    </ul>
+  </div>
+
+  <h2>Migration Strategy</h2>
+  <div class="card">
+    <ol class="steps">
+      <li><strong>Update tokens in globals.css</strong> — most changes cascade automatically</li>
+      <li><strong>Search and replace</strong> glass/gradient/glow classes (~30 files)</li>
+      <li><strong>Replace inline purple gradients</strong> — 11+ files, replace with solid bg-accent</li>
+      <li><strong>Remove theme infrastructure</strong> — ThemeProvider, toggle, dark selectors</li>
+      <li><strong>Add Aeonik font</strong> — font files + @font-face + global heading rule</li>
+      <li><strong>Audit and adjust</strong> — verify each page looks correct with new tokens</li>
+    </ol>
+    <div class="note">This is a <strong>visual-only change</strong>. No database, API, or business logic modifications.</div>
+  </div>
+
+</div>
+</body>
+</html>
