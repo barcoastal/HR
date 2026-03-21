@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { EmojiPicker } from "./emoji-picker";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -48,6 +48,31 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
       },
     },
   });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = useCallback(async (file: File) => {
+    if (!editor) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = await res.json();
+
+      if (data.fileType.startsWith("image/")) {
+        editor.commands.insertContent(`<img src="${data.url}" alt="${data.fileName}" />`);
+      } else {
+        editor.commands.insertContent(`<a href="${data.url}" target="_blank">${data.fileName}</a>`);
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+    } finally {
+      setUploading(false);
+    }
+  }, [editor]);
 
   const handleSubmit = useCallback(async () => {
     if (!editor || sending) return;
@@ -107,9 +132,25 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
 
         <div className="flex items-center justify-between px-3 py-1.5 bg-gray-50/50">
           <div className="flex gap-1">
-            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-              <span className="material-symbols-rounded text-[18px]">attach_file</span>
-            </button>
+            <>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50"
+              >
+                <span className="material-symbols-rounded text-[18px]">{uploading ? "hourglass_empty" : "attach_file"}</span>
+              </button>
+            </>
             <div className="relative">
               <button
                 onClick={() => setShowEmoji(!showEmoji)}
