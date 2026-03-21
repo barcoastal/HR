@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import { FAB } from "@/components/ui/fab";
 
 export type CalendarEvent = {
   id: string;
@@ -19,17 +20,12 @@ type Props = {
   events: CalendarEvent[];
 };
 
-const DAYS_OF_WEEK = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-const eventColors: Record<CalendarEvent["type"], { dot: string; bg: string; text: string; label: string }> = {
-  birthday: { dot: "bg-amber-400", bg: "bg-amber-500/15", text: "text-amber-400", label: "Birthday" },
-  anniversary: { dot: "bg-rose-400", bg: "bg-rose-500/15", text: "text-rose-400", label: "Anniversary" },
-  benefits: { dot: "bg-emerald-400", bg: "bg-emerald-500/15", text: "text-emerald-400", label: "Benefits Eligible" },
-  interview: { dot: "bg-purple-400", bg: "bg-purple-500/15", text: "text-purple-400", label: "Interview" },
-  "holiday-jewish": { dot: "bg-blue-400", bg: "bg-blue-500/15", text: "text-blue-400", label: "Jewish Holiday" },
-  "holiday-muslim": { dot: "bg-green-400", bg: "bg-green-500/15", text: "text-green-400", label: "Muslim Holiday" },
-  "holiday-christian": { dot: "bg-violet-400", bg: "bg-violet-500/15", text: "text-violet-400", label: "Christian Holiday" },
-  "holiday-american": { dot: "bg-red-400", bg: "bg-red-500/15", text: "text-red-400", label: "US Holiday" },
+type DayCellProps = {
+  key: string;
+  day: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  events: CalendarEvent[];
 };
 
 function getDaysInMonth(year: number, month: number) {
@@ -40,18 +36,112 @@ function getFirstDayOfMonth(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
+const chipStyles: Record<string, string> = {
+  birthday: "bg-[var(--color-tertiary-container)]/10 text-[var(--color-tertiary)]",
+  anniversary: "bg-[var(--color-tertiary-fixed)] text-[var(--color-on-tertiary-fixed-variant)]",
+  interview: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
+  benefits: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
+};
+
+const holidayStyle = "bg-[var(--color-error-container)]/20 text-[var(--color-on-error-container)]";
+
+function getChipStyle(type: CalendarEvent["type"]): string {
+  if (type.startsWith("holiday-")) return holidayStyle;
+  return chipStyles[type] ?? "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]";
+}
+
+function chipIconForType(type: CalendarEvent["type"]): string {
+  if (type === "birthday") return "Birthday";
+  if (type === "anniversary") return "Anniversary";
+  if (type === "benefits") return "Benefits Eligible";
+  if (type === "interview") return "Interview";
+  if (type.startsWith("holiday-")) {
+    const sub = type.replace("holiday-", "");
+    return sub.charAt(0).toUpperCase() + sub.slice(1) + " Holiday";
+  }
+  return type;
+}
+
+function EventChip({ event, isToday, index }: { event: CalendarEvent; isToday: boolean; index: number }) {
+  const baseClass = cn(
+    "text-[10px] font-bold px-2 py-0.5 rounded-full truncate max-w-full",
+    isToday
+      ? index === 0
+        ? "bg-[var(--color-primary)] text-white"
+        : "bg-white/50 text-[var(--color-primary)]"
+      : getChipStyle(event.type)
+  );
+
+  const label = event.time ? `${event.time} ${event.name}` : event.name;
+
+  if (event.type === "interview" && event.meetLink) {
+    return (
+      <a
+        href={event.meetLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(baseClass, "cursor-pointer hover:opacity-80 transition-opacity")}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {label}
+      </a>
+    );
+  }
+
+  return <span className={baseClass}>{label}</span>;
+}
+
+function DayCell({ day, isCurrentMonth, isToday, events }: Omit<DayCellProps, "key">) {
+  const maxChips = 2;
+  const visibleEvents = events.slice(0, maxChips);
+  const overflow = events.length - maxChips;
+
+  return (
+    <div
+      className={cn(
+        "min-h-[120px] rounded-2xl p-4 flex flex-col gap-2",
+        !isCurrentMonth && "opacity-40",
+        isToday
+          ? "bg-[var(--color-primary-fixed)] border-2 border-[var(--color-primary)]/20"
+          : "bg-[var(--color-surface-container-lowest)]"
+      )}
+    >
+      <div className="flex justify-between items-start">
+        <span
+          className={cn(
+            "text-sm font-bold",
+            isToday ? "font-black text-[var(--color-primary)]" : "text-[var(--color-on-surface)]"
+          )}
+        >
+          {day}
+        </span>
+        {isToday && (
+          <span className="bg-[var(--color-primary)] text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase">
+            Today
+          </span>
+        )}
+      </div>
+      {visibleEvents.map((evt, i) => (
+        <EventChip key={evt.id} event={evt} isToday={isToday} index={i} />
+      ))}
+      {overflow > 0 && (
+        <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">
+          +{overflow} more
+        </span>
+      )}
+    </div>
+  );
+}
+
 export function CalendarView({ events }: Props) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-  const firstDay = getFirstDayOfMonth(currentYear, currentMonth);
 
-  const monthName = new Date(currentYear, currentMonth).toLocaleDateString("en-US", {
+  const monthNameOnly = new Date(currentYear, currentMonth).toLocaleDateString("en-US", {
     month: "long",
-    year: "numeric",
   });
 
   // Map events by day-of-month for the current view
@@ -68,42 +158,6 @@ export function CalendarView({ events }: Props) {
     return map;
   }, [events, currentMonth, currentYear]);
 
-  // Events for the selected day
-  const selectedDayEvents = selectedDay ? (eventsByDay[selectedDay] || []) : [];
-
-  // This month's birthdays and anniversaries for the lists below
-  const monthBirthdays = useMemo(
-    () => events.filter((e) => {
-      const d = new Date(e.date);
-      return e.type === "birthday" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-    }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
-    [events, currentMonth, currentYear]
-  );
-
-  const monthAnniversaries = useMemo(
-    () => events.filter((e) => {
-      const d = new Date(e.date);
-      return e.type === "anniversary" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-    }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
-    [events, currentMonth, currentYear]
-  );
-
-  const monthBenefits = useMemo(
-    () => events.filter((e) => {
-      const d = new Date(e.date);
-      return e.type === "benefits" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-    }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
-    [events, currentMonth, currentYear]
-  );
-
-  const monthHolidays = useMemo(
-    () => events.filter((e) => {
-      const d = new Date(e.date);
-      return e.type.startsWith("holiday-") && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-    }).sort((a, b) => new Date(a.date).getDate() - new Date(b.date).getDate()),
-    [events, currentMonth, currentYear]
-  );
-
   function goToPrevMonth() {
     if (currentMonth === 0) {
       setCurrentMonth(11);
@@ -111,7 +165,6 @@ export function CalendarView({ events }: Props) {
     } else {
       setCurrentMonth(currentMonth - 1);
     }
-    setSelectedDay(null);
   }
 
   function goToNextMonth() {
@@ -121,337 +174,228 @@ export function CalendarView({ events }: Props) {
     } else {
       setCurrentMonth(currentMonth + 1);
     }
-    setSelectedDay(null);
   }
 
   function goToToday() {
     setCurrentMonth(today.getMonth());
     setCurrentYear(today.getFullYear());
-    setSelectedDay(null);
   }
 
-  const isToday = (day: number) =>
+  const isTodayCheck = (day: number) =>
     day === today.getDate() &&
     currentMonth === today.getMonth() &&
     currentYear === today.getFullYear();
 
-  const isCurrentMonth =
-    currentMonth === today.getMonth() && currentYear === today.getFullYear();
+  // Monday start: adjust first day offset
+  // getDay() returns 0=Sun, 1=Mon ... 6=Sat
+  // We want Mon=0, so: (getDay() + 6) % 7
+  const adjustedFirstDay = (getFirstDayOfMonth(currentYear, currentMonth) + 6) % 7;
 
-  // Build the calendar grid cells
-  const calendarCells: (number | null)[] = [];
-  for (let i = 0; i < firstDay; i++) calendarCells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) calendarCells.push(d);
-  // Pad remaining cells to fill last row
-  while (calendarCells.length % 7 !== 0) calendarCells.push(null);
+  // Days from previous month to fill padding
+  const prevMonthDays = getDaysInMonth(
+    currentMonth === 0 ? currentYear - 1 : currentYear,
+    currentMonth === 0 ? 11 : currentMonth - 1
+  );
+
+  // Build the calendar cells
+  type Cell = {
+    key: string;
+    day: number;
+    isCurrentMonth: boolean;
+    isToday: boolean;
+    events: CalendarEvent[];
+  };
+
+  const cells: Cell[] = [];
+
+  // Padding cells from previous month
+  for (let i = adjustedFirstDay - 1; i >= 0; i--) {
+    const day = prevMonthDays - i;
+    cells.push({
+      key: `prev-${day}`,
+      day,
+      isCurrentMonth: false,
+      isToday: false,
+      events: [],
+    });
+  }
+
+  // Current month cells
+  for (let d = 1; d <= daysInMonth; d++) {
+    cells.push({
+      key: `cur-${d}`,
+      day: d,
+      isCurrentMonth: true,
+      isToday: isTodayCheck(d),
+      events: eventsByDay[d] || [],
+    });
+  }
+
+  // Padding cells from next month to fill last row
+  let nextDay = 1;
+  while (cells.length % 7 !== 0) {
+    cells.push({
+      key: `next-${nextDay}`,
+      day: nextDay,
+      isCurrentMonth: false,
+      isToday: false,
+      events: [],
+    });
+    nextDay++;
+  }
+
+  // Current week milestone count subtitle
+  const weekStart = new Date(today);
+  const dayOfWeek = (today.getDay() + 6) % 7; // Monday = 0
+  weekStart.setDate(today.getDate() - dayOfWeek);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setDate(weekStart.getDate() + 6);
+
+  const weekMilestoneCount = events.filter((e) => {
+    const d = new Date(e.date);
+    return d >= weekStart && d <= weekEnd;
+  }).length;
+
+  // Upcoming events from today
+  const upcomingEvents = useMemo(() => {
+    const todayMs = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    return events
+      .filter((e) => new Date(e.date).getTime() >= todayMs)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 3);
+  }, [events]);
 
   return (
     <div>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
+      {/* Editorial header with month navigation */}
+      <div className="flex justify-between items-end mb-8">
+        <div className="flex items-center gap-4">
           <button
             onClick={goToPrevMonth}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg",
-              "border border-[var(--color-border)] bg-[var(--color-surface)]",
-              "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]",
-              "transition-colors duration-200"
-            )}
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] transition-colors"
           >
-            <Icon name="chevron_left" size={16} />
+            <Icon name="chevron_left" size={20} />
           </button>
-          <h2 className="text-lg font-semibold text-[var(--color-text-primary)] min-w-[180px] text-center">
-            {monthName}
-          </h2>
+          <div>
+            <h2 className="text-4xl font-black tracking-tight text-[var(--color-on-surface)]">
+              {monthNameOnly} {currentYear}
+            </h2>
+            {weekMilestoneCount > 0 && (
+              <p className="text-sm text-[var(--color-on-surface-variant)] mt-0.5">
+                {weekMilestoneCount} milestone{weekMilestoneCount !== 1 ? "s" : ""} this week
+              </p>
+            )}
+          </div>
           <button
             onClick={goToNextMonth}
-            className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-lg",
-              "border border-[var(--color-border)] bg-[var(--color-surface)]",
-              "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]",
-              "transition-colors duration-200"
-            )}
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] transition-colors"
           >
-            <Icon name="chevron_right" size={16} />
+            <Icon name="chevron_right" size={20} />
           </button>
-        </div>
-        {!isCurrentMonth && (
           <button
             onClick={goToToday}
-            className={cn(
-              "px-3 py-1.5 rounded-lg text-xs font-medium",
-              "border border-[var(--color-border)] bg-[var(--color-surface)]",
-              "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]",
-              "transition-colors duration-200"
-            )}
+            className="ml-2 px-3 py-1 bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)] rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
           >
             Today
           </button>
-        )}
+        </div>
+        <div className="flex items-center bg-[var(--color-surface-container-low)] p-1 rounded-xl">
+          <button className="px-4 py-2 rounded-lg bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] font-bold shadow-sm">
+            Month
+          </button>
+          <button className="px-4 py-2 rounded-lg text-[var(--color-on-surface-variant)] font-semibold opacity-50 cursor-not-allowed">
+            Week
+          </button>
+          <button className="px-4 py-2 rounded-lg text-[var(--color-on-surface-variant)] font-semibold opacity-50 cursor-not-allowed">
+            Day
+          </button>
+        </div>
       </div>
 
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 mb-4">
-        {Object.entries(eventColors).map(([type, config]) => (
-          <div key={type} className="flex items-center gap-1.5">
-            <div className={cn("h-2.5 w-2.5 rounded-full", config.dot)} />
-            <span className="text-xs text-[var(--color-text-muted)]">{config.label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Calendar Grid */}
-      <div className={cn("rounded-xl overflow-hidden", "border border-[var(--color-border)]")}>
-        {/* Day headers */}
-        <div className="grid grid-cols-7 bg-[var(--color-surface)]">
-          {DAYS_OF_WEEK.map((day) => (
+      {/* Calendar grid */}
+      <div className="bg-[var(--color-surface-container-low)] rounded-[var(--radius-xl)] p-4 mt-8">
+        {/* Day headers — Monday start */}
+        <div className="grid grid-cols-7 mb-4">
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
             <div
-              key={day}
-              className="px-2 py-2.5 text-center text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider"
+              key={d}
+              className="text-center text-[10px] font-black uppercase tracking-widest text-[var(--color-outline)] py-2"
             >
-              {day}
+              {d}
             </div>
           ))}
         </div>
-
-        {/* Day cells */}
-        <div className="grid grid-cols-7">
-          {calendarCells.map((day, idx) => {
-            const dayEvents = day ? (eventsByDay[day] || []) : [];
-            const todayHighlight = day !== null && isToday(day);
-            const isSelected = day !== null && day === selectedDay;
-
-            return (
-              <button
-                key={idx}
-                disabled={day === null}
-                onClick={() => day !== null && setSelectedDay(day === selectedDay ? null : day)}
-                className={cn(
-                  "relative flex flex-col items-center min-h-[72px] p-1.5 border-t border-r border-[var(--color-border)]",
-                  "transition-colors duration-150",
-                  day === null
-                    ? "bg-[var(--color-background)] cursor-default"
-                    : "bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] cursor-pointer",
-                  isSelected && "bg-[var(--color-accent)]/5",
-                  // Remove right border on last column
-                  idx % 7 === 6 && "border-r-0"
-                )}
-              >
-                {day !== null && (
-                  <>
-                    <span
-                      className={cn(
-                        "flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium",
-                        todayHighlight
-                          ? "bg-[var(--color-accent)] text-white ring-2 ring-[var(--color-accent)]/30"
-                          : "text-[var(--color-text-primary)]"
-                      )}
-                    >
-                      {day}
-                    </span>
-                    {dayEvents.length > 0 && (
-                      <div className="flex items-center gap-1 mt-1">
-                        {/* Deduplicate event types for dots */}
-                        {Array.from(new Set(dayEvents.map((e) => e.type))).map((type) => (
-                          <div
-                            key={type}
-                            className={cn("h-1.5 w-1.5 rounded-full", eventColors[type].dot)}
-                          />
-                        ))}
-                      </div>
-                    )}
-                    {dayEvents.length > 0 && (
-                      <span className="text-[9px] text-[var(--color-text-muted)] mt-0.5">
-                        {dayEvents.length}
-                      </span>
-                    )}
-                  </>
-                )}
-              </button>
-            );
-          })}
+        <div className="grid grid-cols-7 gap-3">
+          {cells.map((cell) => (
+            <DayCell
+              key={cell.key}
+              day={cell.day}
+              isCurrentMonth={cell.isCurrentMonth}
+              isToday={cell.isToday}
+              events={cell.events}
+            />
+          ))}
         </div>
       </div>
 
-      {/* Selected Day Events */}
-      {selectedDay !== null && selectedDayEvents.length > 0 && (
-        <div className={cn("mt-4 rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">
-            Events on {new Date(currentYear, currentMonth, selectedDay).toLocaleDateString("en-US", { month: "long", day: "numeric" })}
-          </h3>
-          <div className="space-y-2">
-            {selectedDayEvents.map((event) => {
-              const config = eventColors[event.type];
-              return (
-                <div
-                  key={event.id}
-                  className={cn("flex items-center justify-between rounded-lg px-3 py-2", config.bg)}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={cn("h-2 w-2 rounded-full", config.dot)} />
-                    <span className="text-sm font-medium text-[var(--color-text-primary)]">{event.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {event.time && (
-                      <span className="text-xs text-[var(--color-text-muted)]">{event.time}</span>
-                    )}
-                    {event.department && (
-                      <span className="text-xs text-[var(--color-text-muted)]">{event.department}</span>
-                    )}
-                    {event.meetLink && (
-                      <a
-                        href={event.meetLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Icon name="open_in_new" size={12} />
-                        Meet
-                      </a>
-                    )}
-                    <span className={cn("text-xs font-medium", config.text)}>
-                      {event.type === "anniversary" && event.years !== undefined
-                        ? `${event.years} yr${event.years !== 1 ? "s" : ""}`
-                        : config.label}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+      {/* Contextual Insights section */}
+      <div className="grid grid-cols-3 gap-6 mt-8">
+        {/* Upcoming Highlights panel */}
+        <div className="glass rounded-[var(--radius-xl)] p-6 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)]">
+              <Icon name="auto_awesome" size={20} />
+            </div>
+            <h3 className="font-bold text-lg text-[var(--color-on-surface)]">Upcoming Highlights</h3>
           </div>
-        </div>
-      )}
-
-      {/* Monthly Summary Lists */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-        {/* Birthdays */}
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <div className={cn("h-2.5 w-2.5 rounded-full", eventColors.birthday.dot)} />
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-              Birthdays This Month
-            </h3>
-            <span className="ml-auto text-xs text-[var(--color-text-muted)]">{monthBirthdays.length}</span>
-          </div>
-          {monthBirthdays.length > 0 ? (
-            <div className="space-y-2.5">
-              {monthBirthdays.map((b) => (
-                <div key={b.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-[var(--color-text-primary)]">{b.name}</p>
-                    {b.department && (
-                      <p className="text-xs text-[var(--color-text-muted)]">{b.department}</p>
-                    )}
+          {upcomingEvents.length === 0 ? (
+            <p className="text-sm text-[var(--color-on-surface-variant)]">No upcoming events</p>
+          ) : (
+            upcomingEvents.map((evt) => (
+              <div key={evt.id} className="flex items-center gap-4">
+                <div className="w-12 h-14 rounded-xl bg-[var(--color-primary-fixed)] flex flex-col items-center justify-center overflow-hidden shrink-0">
+                  <div className="w-full bg-[var(--color-primary)] text-white text-[8px] font-bold text-center py-0.5">
+                    {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
                   </div>
-                  <span className="text-xs text-amber-400 font-medium">
-                    {new Date(b.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  <span className="text-lg font-black text-[var(--color-on-primary-fixed-variant)]">
+                    {new Date(evt.date).getDate()}
                   </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No birthdays this month</p>
-          )}
-        </div>
-
-        {/* Anniversaries */}
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <div className={cn("h-2.5 w-2.5 rounded-full", eventColors.anniversary.dot)} />
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-              Anniversaries This Month
-            </h3>
-            <span className="ml-auto text-xs text-[var(--color-text-muted)]">{monthAnniversaries.length}</span>
-          </div>
-          {monthAnniversaries.length > 0 ? (
-            <div className="space-y-2.5">
-              {monthAnniversaries.map((a) => (
-                <div key={a.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-[var(--color-text-primary)]">{a.name}</p>
-                    {a.department && (
-                      <p className="text-xs text-[var(--color-text-muted)]">{a.department}</p>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs text-rose-400 font-medium">
-                      {a.years !== undefined ? `${a.years} yr${a.years !== 1 ? "s" : ""}` : ""}
-                    </span>
-                    <p className="text-[10px] text-[var(--color-text-muted)]">
-                      {new Date(a.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </p>
-                  </div>
+                <div className="min-w-0">
+                  <p className="font-bold text-sm text-[var(--color-on-surface)] truncate">{evt.name}</p>
+                  <p className="text-xs text-[var(--color-on-surface-variant)]">{chipIconForType(evt.type)}</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No anniversaries this month</p>
+              </div>
+            ))
           )}
         </div>
 
-        {/* Benefits Eligibility */}
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <div className={cn("h-2.5 w-2.5 rounded-full", eventColors.benefits.dot)} />
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-              Benefits Eligible This Month
+        {/* Promo card */}
+        <div className="col-span-2 bg-[var(--color-inverse-surface)] rounded-[var(--radius-xl)] p-8 relative overflow-hidden flex items-center">
+          <div className="relative z-10 space-y-4 max-w-md">
+            <span className="bg-[var(--color-primary)]/20 text-[var(--color-primary-fixed-dim)] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-block">
+              Pro Tip
+            </span>
+            <h3 className="text-2xl font-black text-white leading-tight">
+              Sync your calendar with Google or Outlook.
             </h3>
-            <span className="ml-auto text-xs text-[var(--color-text-muted)]">{monthBenefits.length}</span>
+            <p className="text-[var(--color-surface-variant)]/70 text-sm">
+              Keep your professional and personal life in perfect harmony.
+            </p>
+            <button className="bg-[var(--color-surface)] text-[var(--color-on-surface)] px-6 py-2.5 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
+              Enable Sync Now
+            </button>
           </div>
-          {monthBenefits.length > 0 ? (
-            <div className="space-y-2.5">
-              {monthBenefits.map((b) => (
-                <div key={b.id} className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-[var(--color-text-primary)]">{b.name}</p>
-                    {b.department && (
-                      <p className="text-xs text-[var(--color-text-muted)]">{b.department}</p>
-                    )}
-                  </div>
-                  <span className="text-xs text-emerald-400 font-medium">
-                    {new Date(b.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No benefits dates this month</p>
-          )}
-        </div>
-
-        {/* Holidays */}
-        <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="h-2.5 w-2.5 rounded-full bg-blue-400" />
-            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-              Holidays This Month
-            </h3>
-            <span className="ml-auto text-xs text-[var(--color-text-muted)]">{monthHolidays.length}</span>
-          </div>
-          {monthHolidays.length > 0 ? (
-            <div className="space-y-2.5">
-              {monthHolidays.map((h) => {
-                const config = eventColors[h.type];
-                return (
-                  <div key={h.id} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className={cn("h-2 w-2 rounded-full", config.dot)} />
-                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{h.name}</p>
-                    </div>
-                    <span className={cn("text-xs font-medium", config.text)}>
-                      {new Date(h.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-sm text-[var(--color-text-muted)]">No holidays this month</p>
-          )}
+          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[var(--color-primary)]/30 to-transparent" />
+          <Icon
+            name="calendar_month"
+            size={200}
+            className="absolute -right-10 -bottom-10 text-white/5 rotate-12"
+          />
         </div>
       </div>
+
+      <FAB icon="event" variant="solid" />
     </div>
   );
 }

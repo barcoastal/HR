@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
-import { PageHeader } from "@/components/ui/page-header";
 
 export default async function CalendarPage() {
   const session = await requireAuth();
@@ -100,12 +99,8 @@ export default async function CalendarPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
-      <PageHeader title="Calendar" description="Birthdays, anniversaries, interviews, and holidays" />
-
-      <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-1">
-        <CalendarView events={events} />
-      </div>
+    <div className="px-8 py-8">
+      <CalendarView events={events} />
     </div>
   );
 }
