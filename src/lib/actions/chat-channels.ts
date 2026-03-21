@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function getChannels(workspaceId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   return db.channel.findMany({
     where: {
@@ -55,7 +55,7 @@ export async function createChannel(data: {
   isPrivate?: boolean;
 }) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   const slug = data.name
     .toLowerCase()
@@ -84,7 +84,7 @@ export async function createChannel(data: {
 
 export async function joinChannel(channelId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   await db.channelMember.upsert({
     where: { channelId_employeeId: { channelId, employeeId } },
@@ -97,7 +97,7 @@ export async function joinChannel(channelId: string) {
 
 export async function leaveChannel(channelId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   await db.channelMember.deleteMany({
     where: { channelId, employeeId },
@@ -108,7 +108,7 @@ export async function leaveChannel(channelId: string) {
 
 export async function updateLastRead(channelId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   await db.channelMember.updateMany({
     where: { channelId, employeeId },

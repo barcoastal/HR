@@ -3,6 +3,13 @@ import { getOrCreateWorkspace } from "@/lib/actions/chat-workspace";
 
 export default async function ChatPage() {
   const workspace = await getOrCreateWorkspace();
+  if (!workspace) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        Unable to initialize workspace.
+      </div>
+    );
+  }
   const general = workspace.channels.find((c) => c.slug === "general");
 
   if (general) {

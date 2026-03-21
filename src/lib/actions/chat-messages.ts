@@ -65,7 +65,7 @@ export async function sendMessage(data: {
   type?: "channel" | "dm";
 }) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
   const isChannel = (data.type ?? "channel") === "channel";
 
   const message = await db.message.create({
@@ -105,7 +105,7 @@ export async function sendMessage(data: {
 
 export async function editMessage(messageId: string, content: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   const existing = await db.message.findUnique({ where: { id: messageId } });
   if (!existing || existing.authorId !== employeeId) {
@@ -133,7 +133,7 @@ export async function editMessage(messageId: string, content: string) {
 
 export async function deleteMessage(messageId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   const existing = await db.message.findUnique({ where: { id: messageId } });
   if (!existing || existing.authorId !== employeeId) {

@@ -12,7 +12,7 @@ type EventHandler = (event: ServerEvent) => void;
 export function useWebSocket(onEvent: EventHandler) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectAttempt = useRef(0);
-  const reconnectTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const reconnectTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [isConnected, setIsConnected] = useState(false);
 
   const connect = useCallback(async () => {

@@ -10,7 +10,7 @@ import { requireAuth } from "@/lib/auth-helpers";
  */
 export async function getOrCreateWorkspace() {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   // Check for existing workspace
   let workspace = await db.chatWorkspace.findFirst({

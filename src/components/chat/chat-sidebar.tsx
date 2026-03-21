@@ -17,11 +17,12 @@ export function ChatSidebar() {
   useEffect(() => {
     async function init() {
       const workspace = await getOrCreateWorkspace();
+      if (!workspace) return;
       setWorkspace(workspace.id, workspace.name);
 
-      const channelList = await getChannels(workspace.id);
+      const channelList = await getChannels(workspace.id) as any[];
       setChannels(
-        channelList.map((c) => ({
+        channelList.map((c: any) => ({
           id: c.id,
           name: c.name,
           slug: c.slug,
@@ -29,20 +30,20 @@ export function ChatSidebar() {
           topic: c.topic,
           isPrivate: c.isPrivate,
           isDefault: c.isDefault,
-          memberCount: c._count.members,
-          isStarred: c.members[0]?.isStarred ?? false,
-          isMuted: c.members[0]?.isMuted ?? false,
+          memberCount: c._count?.members ?? 0,
+          isStarred: c.members?.[0]?.isStarred ?? false,
+          isMuted: c.members?.[0]?.isMuted ?? false,
           unreadCount: 0,
         }))
       );
 
-      const dms = await getDmThreads(workspace.id);
+      const dms = await getDmThreads(workspace.id) as any[];
       setDmThreads(
-        dms.map((dm) => ({
+        dms.map((dm: any) => ({
           id: dm.id,
           isGroup: dm.isGroup,
-          members: dm.members.map((m) => m.employee),
-          lastMessage: dm.messages[0]
+          members: dm.members.map((m: any) => m.employee),
+          lastMessage: dm.messages?.[0]
             ? {
                 content: dm.messages[0].contentPlain,
                 createdAt: new Date(dm.messages[0].createdAt).toISOString(),

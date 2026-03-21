@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 
 export async function getDmThreads(workspaceId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   return db.dmThread.findMany({
     where: {
@@ -35,7 +35,7 @@ export async function getOrCreateDmThread(
   participantIds: string[]
 ) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   const allMemberIds = [...new Set([employeeId, ...participantIds])];
   const isGroup = allMemberIds.length > 2;
@@ -84,7 +84,7 @@ export async function getOrCreateDmThread(
 
 export async function updateDmLastRead(dmThreadId: string) {
   const session = await requireAuth();
-  const employeeId = session.user.employeeId;
+  const employeeId = session.user.employeeId!;
 
   await db.dmMember.updateMany({
     where: { dmThreadId, employeeId },
