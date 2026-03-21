@@ -207,8 +207,8 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
             <div className={cn(
               "flex items-center gap-2 p-3 rounded-lg text-sm",
               testResult.success
-                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                : "bg-red-500/10 text-red-600 dark:text-red-400"
+                ? "bg-emerald-500/10 text-emerald-600"
+                : "bg-red-500/10 text-red-600"
             )}>
               {testResult.success ? (
                 <><Check className="h-4 w-4 shrink-0" />Test email sent to {userEmail}</>

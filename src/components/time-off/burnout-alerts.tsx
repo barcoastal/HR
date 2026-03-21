@@ -23,7 +23,7 @@ export function BurnoutAlerts({ employees }: { employees: Employee[] }) {
     <div className="space-y-3">
       <div className={cn("flex items-center gap-2 p-3 rounded-lg", "bg-amber-500/10 border border-amber-500/20")}>
         <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
-        <p className="text-sm text-amber-600 dark:text-amber-400">
+        <p className="text-sm text-amber-600">
           {employees.length} employee{employees.length !== 1 ? "s" : ""} haven&apos;t taken time off in 6+ months
         </p>
       </div>
