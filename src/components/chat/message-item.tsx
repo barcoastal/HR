@@ -46,9 +46,10 @@ export function MessageItem({ message }: { message: MessagePayload }) {
             {timeAgo(message.createdAt)}
           </span>
         </div>
-        <p className="text-sm text-gray-800 whitespace-pre-wrap break-words mt-0.5">
-          {message.contentPlain}
-        </p>
+        <div
+          className="text-sm text-gray-800 mt-0.5 [&>p]:my-0 [&_code]:bg-gray-100 [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[13px] [&_code]:text-rose-600 [&_blockquote]:border-l-3 [&_blockquote]:border-[#7C3AED] [&_blockquote]:pl-3 [&_blockquote]:text-gray-500 [&_ul]:pl-5 [&_ol]:pl-5 [&_a]:text-[#7C3AED] [&_a]:underline"
+          dangerouslySetInnerHTML={{ __html: message.content }}
+        />
       </div>
     </div>
   );

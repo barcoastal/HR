@@ -146,3 +146,47 @@ body {
 .animate-material-spin {
   animation: material-spin 1s linear infinite;
 }
+
+/* TipTap chat editor styles */
+.tiptap p.is-editor-empty:first-child::before {
+  color: #9ca3af;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.chat-code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  margin: 8px 0;
+}
+
+.tiptap code {
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 13px;
+  color: #e11d48;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid #7C3AED;
+  padding-left: 12px;
+  color: #6b7280;
+  margin: 8px 0;
+}
+
+.tiptap ul, .tiptap ol {
+  padding-left: 24px;
+  margin: 4px 0;
+}
+
+.tiptap a {
+  color: #7C3AED;
+  text-decoration: underline;
+}

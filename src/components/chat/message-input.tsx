@@ -1,6 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import LinkExtension from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
 import { sendMessage } from "@/lib/actions/chat-messages";
 import { useChatStore } from "@/lib/chat/use-chat-store";
 import type { MessagePayload } from "@/lib/chat/ws-types";
@@ -12,17 +17,44 @@ interface Props {
 }
 
 export function MessageInput({ channelId, channelType, channelName }: Props) {
-  const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [showToolbar, setShowToolbar] = useState(false);
   const { addMessage } = useChatStore();
 
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        codeBlock: { HTMLAttributes: { class: "chat-code-block" } },
+      }),
+      Placeholder.configure({
+        placeholder: `Message ${channelType === "channel" ? "#" : ""}${channelName}`,
+      }),
+      LinkExtension.configure({ openOnClick: false }),
+      Underline,
+    ],
+    editorProps: {
+      attributes: {
+        class: "outline-none px-4 py-3 text-sm min-h-[44px] max-h-[200px] overflow-y-auto",
+      },
+      handleKeyDown: (_view, event) => {
+        if (event.key === "Enter" && !event.shiftKey) {
+          event.preventDefault();
+          handleSubmit();
+          return true;
+        }
+        return false;
+      },
+    },
+  });
+
   const handleSubmit = useCallback(async () => {
-    const text = content.trim();
-    if (!text || sending) return;
+    if (!editor || sending) return;
+    const html = editor.getHTML();
+    const text = editor.getText().trim();
+    if (!text) return;
 
     setSending(true);
-    setContent("");
+    editor.commands.clearContent();
 
     const tempId = `temp-${Date.now()}`;
     const optimistic: MessagePayload = {
@@ -31,7 +63,7 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
       dmThreadId: channelType === "dm" ? channelId : null,
       parentId: null,
       authorId: "self",
-      content: text,
+      content: html,
       contentPlain: text,
       createdAt: new Date().toISOString(),
       author: { id: "self", firstName: "You", lastName: "", profilePhoto: null },
@@ -39,57 +71,80 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
     addMessage(channelId, optimistic);
 
     try {
-      await sendMessage({ channelId, content: text, type: channelType });
+      await sendMessage({ channelId, content: html, contentPlain: text, type: channelType });
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
       setSending(false);
-      textareaRef.current?.focus();
+      editor?.commands.focus();
     }
-  }, [content, sending, channelId, channelType, addMessage]);
+  }, [editor, sending, channelId, channelType, addMessage]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
-
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-    const el = e.target;
-    el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 200) + "px";
-  };
+  if (!editor) return null;
 
   return (
     <div className="px-5 py-3 border-t border-gray-200 bg-white flex-shrink-0">
       <div className="border border-gray-300 rounded-xl overflow-hidden focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/20 transition-colors">
-        <textarea
-          ref={textareaRef}
-          value={content}
-          onChange={handleInput}
-          onKeyDown={handleKeyDown}
-          placeholder={`Message ${channelType === "channel" ? "#" : ""}${channelName}`}
-          rows={1}
-          className="w-full px-4 py-3 text-sm resize-none outline-none bg-transparent"
-          style={{ minHeight: "44px", maxHeight: "200px" }}
-        />
+        {showToolbar && (
+          <div className="flex items-center gap-1 px-3 py-1.5 border-b border-gray-100">
+            <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} label="B" className="font-bold" />
+            <ToolbarButton active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()} label="I" className="italic" />
+            <ToolbarButton active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()} label="S" className="line-through" />
+            <ToolbarButton active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()} label="U" className="underline" />
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <ToolbarButton active={editor.isActive("code")} onClick={() => editor.chain().focus().toggleCode().run()} label="<>" className="font-mono text-[10px]" />
+            <ToolbarButton active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()} label="{}" className="font-mono text-[10px]" />
+            <div className="w-px h-5 bg-gray-200 mx-1" />
+            <ToolbarButton active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()} label="•" />
+            <ToolbarButton active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()} label="1." />
+            <ToolbarButton active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()} label="❝" />
+          </div>
+        )}
+
+        <EditorContent editor={editor} />
+
         <div className="flex items-center justify-between px-3 py-1.5 bg-gray-50/50">
-          <div className="flex gap-1 text-gray-400" />
+          <div className="flex gap-1">
+            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+              <span className="material-symbols-rounded text-[18px]">attach_file</span>
+            </button>
+            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+              <span className="material-symbols-rounded text-[18px]">mood</span>
+            </button>
+            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-xs font-semibold">
+              @
+            </button>
+            <button
+              onClick={() => setShowToolbar(!showToolbar)}
+              className={`w-7 h-7 rounded flex items-center justify-center transition-colors text-xs font-semibold ${
+                showToolbar ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Aa
+            </button>
+          </div>
           <button
             onClick={handleSubmit}
-            disabled={!content.trim() || sending}
-            className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${
-              content.trim()
-                ? "bg-[#7C3AED] text-white hover:bg-[#6D28D9]"
-                : "bg-gray-200 text-gray-400"
-            }`}
+            disabled={sending}
+            className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7C3AED] text-white hover:bg-[#6D28D9] transition-colors disabled:opacity-50"
           >
             <span className="material-symbols-rounded text-[18px]">send</span>
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+function ToolbarButton({ active, onClick, label, className = "" }: { active: boolean; onClick: () => void; label: string; className?: string }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`w-7 h-7 rounded flex items-center justify-center text-xs transition-colors ${className} ${
+        active ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-500 hover:bg-gray-100"
+      }`}
+    >
+      {label}
+    </button>
   );
 }

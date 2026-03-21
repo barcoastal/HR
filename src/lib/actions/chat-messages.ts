@@ -62,6 +62,7 @@ export async function getMessages(
 export async function sendMessage(data: {
   channelId: string;
   content: string;
+  contentPlain?: string;
   type?: "channel" | "dm";
 }) {
   const session = await requireAuth();
@@ -73,7 +74,7 @@ export async function sendMessage(data: {
       ...(isChannel ? { channelId: data.channelId } : { dmThreadId: data.channelId }),
       authorId: employeeId,
       content: data.content,
-      contentPlain: data.content,
+      contentPlain: data.contentPlain || data.content,
     },
     include: {
       author: {
