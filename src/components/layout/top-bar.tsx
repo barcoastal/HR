@@ -20,9 +20,12 @@ export function TopBar() {
         "shadow-[var(--shadow-glass)] px-4 md:px-6"
       )}
     >
-      <div className="flex items-center">
-        <span className="text-base font-bold text-[var(--color-on-surface)]">
-          Coastal HR
+      <div className="flex items-center gap-2">
+        <span className="text-base font-black tracking-wide text-[var(--color-on-surface)]">
+          CALATRAVA
+        </span>
+        <span className="text-xs text-[var(--color-on-surface-variant)]">
+          by Coastal Debt Resolve
         </span>
       </div>
 
