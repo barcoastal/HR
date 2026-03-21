@@ -62,7 +62,7 @@ const TabsList = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "glass inline-flex items-center gap-1 rounded-xl p-1 border border-[var(--color-border)]/60",
+      "bg-[var(--color-surface-container)] inline-flex items-center gap-1 rounded-xl p-1 border border-[var(--color-border)]/60",
       className
     )}
     {...props}

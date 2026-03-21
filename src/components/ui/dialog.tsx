@@ -33,7 +33,7 @@ export function Dialog({ open, onClose, children, title }: DialogProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 bg-[var(--color-on-surface)]/30 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
@@ -43,7 +43,7 @@ export function Dialog({ open, onClose, children, title }: DialogProps) {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
               "relative z-50 w-full max-w-lg max-h-[90vh] overflow-y-auto",
-              "glass-card rounded-2xl p-6",
+              "glass rounded-[var(--radius-lg)] p-6 shadow-[var(--shadow-glass)]",
               "shadow-2xl"
             )}
           >
