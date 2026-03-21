@@ -264,3 +264,28 @@ export type DmThread = Prisma.DmThreadModel
  * 
  */
 export type DmMember = Prisma.DmMemberModel
+/**
+ * Model Reaction
+ * 
+ */
+export type Reaction = Prisma.ReactionModel
+/**
+ * Model ChatAttachment
+ * 
+ */
+export type ChatAttachment = Prisma.ChatAttachmentModel
+/**
+ * Model Mention
+ * 
+ */
+export type Mention = Prisma.MentionModel
+/**
+ * Model PinnedMessage
+ * 
+ */
+export type PinnedMessage = Prisma.PinnedMessageModel
+/**
+ * Model SavedMessage
+ * 
+ */
+export type SavedMessage = Prisma.SavedMessageModel

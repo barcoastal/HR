@@ -440,6 +440,9 @@ export type EmployeeWhereInput = {
   createdChannels?: Prisma.ChannelListRelationFilter
   chatMessages?: Prisma.MessageListRelationFilter
   dmMemberships?: Prisma.DmMemberListRelationFilter
+  chatReactions?: Prisma.ReactionListRelationFilter
+  savedMessages?: Prisma.SavedMessageListRelationFilter
+  pinnedMessages?: Prisma.PinnedMessageListRelationFilter
 }
 
 export type EmployeeOrderByWithRelationInput = {
@@ -510,6 +513,9 @@ export type EmployeeOrderByWithRelationInput = {
   createdChannels?: Prisma.ChannelOrderByRelationAggregateInput
   chatMessages?: Prisma.MessageOrderByRelationAggregateInput
   dmMemberships?: Prisma.DmMemberOrderByRelationAggregateInput
+  chatReactions?: Prisma.ReactionOrderByRelationAggregateInput
+  savedMessages?: Prisma.SavedMessageOrderByRelationAggregateInput
+  pinnedMessages?: Prisma.PinnedMessageOrderByRelationAggregateInput
 }
 
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
@@ -583,6 +589,9 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   createdChannels?: Prisma.ChannelListRelationFilter
   chatMessages?: Prisma.MessageListRelationFilter
   dmMemberships?: Prisma.DmMemberListRelationFilter
+  chatReactions?: Prisma.ReactionListRelationFilter
+  savedMessages?: Prisma.SavedMessageListRelationFilter
+  pinnedMessages?: Prisma.PinnedMessageListRelationFilter
 }, "id" | "email">
 
 export type EmployeeOrderByWithAggregationInput = {
@@ -727,6 +736,9 @@ export type EmployeeCreateInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateInput = {
@@ -793,6 +805,9 @@ export type EmployeeUncheckedCreateInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUpdateInput = {
@@ -859,6 +874,9 @@ export type EmployeeUpdateInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateInput = {
@@ -925,6 +943,9 @@ export type EmployeeUncheckedUpdateInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateManyInput = {
@@ -1773,6 +1794,48 @@ export type EmployeeUpdateOneRequiredWithoutDmMembershipsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutDmMembershipsInput, Prisma.EmployeeUpdateWithoutDmMembershipsInput>, Prisma.EmployeeUncheckedUpdateWithoutDmMembershipsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutChatReactionsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatReactionsInput, Prisma.EmployeeUncheckedCreateWithoutChatReactionsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatReactionsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutChatReactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatReactionsInput, Prisma.EmployeeUncheckedCreateWithoutChatReactionsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatReactionsInput
+  upsert?: Prisma.EmployeeUpsertWithoutChatReactionsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutChatReactionsInput, Prisma.EmployeeUpdateWithoutChatReactionsInput>, Prisma.EmployeeUncheckedUpdateWithoutChatReactionsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutPinnedMessagesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutPinnedMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPinnedMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutPinnedMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutPinnedMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutPinnedMessagesInput
+  upsert?: Prisma.EmployeeUpsertWithoutPinnedMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutPinnedMessagesInput, Prisma.EmployeeUpdateWithoutPinnedMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutPinnedMessagesInput>
+}
+
+export type EmployeeCreateNestedOneWithoutSavedMessagesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutSavedMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSavedMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutSavedMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutSavedMessagesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSavedMessagesInput
+  upsert?: Prisma.EmployeeUpsertWithoutSavedMessagesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSavedMessagesInput, Prisma.EmployeeUpdateWithoutSavedMessagesInput>, Prisma.EmployeeUncheckedUpdateWithoutSavedMessagesInput>
+}
+
 export type EmployeeCreateWithoutHeadOfInput = {
   id?: string
   firstName: string
@@ -1836,6 +1899,9 @@ export type EmployeeCreateWithoutHeadOfInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutHeadOfInput = {
@@ -1901,6 +1967,9 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutHeadOfInput = {
@@ -1971,6 +2040,9 @@ export type EmployeeCreateWithoutDepartmentInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutDepartmentInput = {
@@ -2036,6 +2108,9 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutDepartmentInput = {
@@ -2122,6 +2197,9 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
@@ -2187,6 +2265,9 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutDepartmentInput = {
@@ -2307,6 +2388,9 @@ export type EmployeeCreateWithoutTeamInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutTeamInput = {
@@ -2372,6 +2456,9 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutTeamInput = {
@@ -2463,6 +2550,9 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
@@ -2528,6 +2618,9 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutDirectReportsInput = {
@@ -2598,6 +2691,9 @@ export type EmployeeCreateWithoutManagerInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutManagerInput = {
@@ -2663,6 +2759,9 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutManagerInput = {
@@ -2738,6 +2837,9 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
@@ -2803,6 +2905,9 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutBuddyOfInput = {
@@ -2873,6 +2978,9 @@ export type EmployeeCreateWithoutBuddyInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutBuddyInput = {
@@ -2938,6 +3046,9 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutBuddyInput = {
@@ -3024,6 +3135,9 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
@@ -3089,6 +3203,9 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutManagerInput = {
@@ -3181,6 +3298,9 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
@@ -3246,6 +3366,9 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithWhereUniqueWithoutBuddyInput = {
@@ -3327,6 +3450,9 @@ export type EmployeeCreateWithoutUserInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutUserInput = {
@@ -3392,6 +3518,9 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutUserInput = {
@@ -3473,6 +3602,9 @@ export type EmployeeUpdateWithoutUserInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutUserInput = {
@@ -3538,6 +3670,9 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
@@ -3603,6 +3738,9 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
@@ -3668,6 +3806,9 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutAssignedChecklistItemsInput = {
@@ -3749,6 +3890,9 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
@@ -3814,6 +3958,9 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutEmployeeTasksInput = {
@@ -3879,6 +4026,9 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
@@ -3944,6 +4094,9 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutEmployeeTasksInput = {
@@ -4014,6 +4167,9 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
@@ -4079,6 +4235,9 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutAssignedTasksInput = {
@@ -4160,6 +4319,9 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
@@ -4225,6 +4387,9 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithoutAssignedTasksInput = {
@@ -4301,6 +4466,9 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
@@ -4366,6 +4534,9 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
@@ -4431,6 +4602,9 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
@@ -4496,6 +4670,9 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutReviewsAsEmployeeInput = {
@@ -4566,6 +4743,9 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
@@ -4631,6 +4811,9 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutReviewsAsReviewerInput = {
@@ -4712,6 +4895,9 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
@@ -4777,6 +4963,9 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithoutReviewsAsReviewerInput = {
@@ -4853,6 +5042,9 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
@@ -4918,6 +5110,9 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutFeedPostsInput = {
@@ -4983,6 +5178,9 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
@@ -5048,6 +5246,9 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedPostsInput = {
@@ -5118,6 +5319,9 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
@@ -5183,6 +5387,9 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutMentionedInPostsInput = {
@@ -5264,6 +5471,9 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
@@ -5329,6 +5539,9 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithoutMentionedInPostsInput = {
@@ -5405,6 +5618,9 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
@@ -5470,6 +5686,9 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutFeedCommentsInput = {
@@ -5535,6 +5754,9 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
@@ -5600,6 +5822,9 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedCommentsInput = {
@@ -5681,6 +5906,9 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
@@ -5746,6 +5974,9 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutFeedReactionsInput = {
@@ -5811,6 +6042,9 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
@@ -5876,6 +6110,9 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutFeedReactionsInput = {
@@ -5957,6 +6194,9 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
@@ -6022,6 +6262,9 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutEmergencyAlertsInput = {
@@ -6087,6 +6330,9 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
@@ -6152,6 +6398,9 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutEmergencyAlertsInput = {
@@ -6233,6 +6482,9 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
@@ -6298,6 +6550,9 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutNotificationsInput = {
@@ -6363,6 +6618,9 @@ export type EmployeeCreateWithoutNotificationsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutNotificationsInput = {
@@ -6428,6 +6686,9 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutNotificationsInput = {
@@ -6509,6 +6770,9 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
@@ -6574,6 +6838,9 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutDocumentsInput = {
@@ -6639,6 +6906,9 @@ export type EmployeeCreateWithoutDocumentsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutDocumentsInput = {
@@ -6704,6 +6974,9 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutDocumentsInput = {
@@ -6785,6 +7058,9 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
@@ -6850,6 +7126,9 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutHrNotesInput = {
@@ -6915,6 +7194,9 @@ export type EmployeeCreateWithoutHrNotesInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutHrNotesInput = {
@@ -6980,6 +7262,9 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutHrNotesInput = {
@@ -7050,6 +7335,9 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
@@ -7115,6 +7403,9 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutAuthoredHRNotesInput = {
@@ -7196,6 +7487,9 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
@@ -7261,6 +7555,9 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithoutAuthoredHRNotesInput = {
@@ -7337,6 +7634,9 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
@@ -7402,6 +7702,9 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutManagedCandidatesInput = {
@@ -7467,6 +7770,9 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
@@ -7532,6 +7838,9 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutManagedCandidatesInput = {
@@ -7613,6 +7922,9 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
@@ -7678,6 +7990,9 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutSigningRequestsInput = {
@@ -7743,6 +8058,9 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
@@ -7808,6 +8126,9 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutSigningRequestsInput = {
@@ -7889,6 +8210,9 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
@@ -7954,6 +8278,9 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutTimeOffBalancesInput = {
@@ -8019,6 +8346,9 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
@@ -8084,6 +8414,9 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutTimeOffBalancesInput = {
@@ -8165,6 +8498,9 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
@@ -8230,6 +8566,9 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutTimeOffRequestsInput = {
@@ -8295,6 +8634,9 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
@@ -8360,6 +8702,9 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutTimeOffRequestsInput = {
@@ -8430,6 +8775,9 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
@@ -8495,6 +8843,9 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutApprovedRequestsInput = {
@@ -8576,6 +8927,9 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
@@ -8641,6 +8995,9 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUpsertWithoutApprovedRequestsInput = {
@@ -8717,6 +9074,9 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
@@ -8782,6 +9142,9 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutClubMembershipsInput = {
@@ -8847,6 +9210,9 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
@@ -8912,6 +9278,9 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutClubMembershipsInput = {
@@ -8993,6 +9362,9 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
@@ -9058,6 +9430,9 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutPulseResponsesInput = {
@@ -9123,6 +9498,9 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
@@ -9188,6 +9566,9 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutPulseResponsesInput = {
@@ -9269,6 +9650,9 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
@@ -9334,6 +9718,9 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutChatMembersInput = {
@@ -9399,6 +9786,9 @@ export type EmployeeCreateWithoutChatMembersInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutChatMembersInput = {
@@ -9464,6 +9854,9 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutChatMembersInput = {
@@ -9545,6 +9938,9 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
@@ -9610,6 +10006,9 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutCreatedChannelsInput = {
@@ -9675,6 +10074,9 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
@@ -9740,6 +10142,9 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutCreatedChannelsInput = {
@@ -9821,6 +10226,9 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
@@ -9886,6 +10294,9 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutChannelMembershipsInput = {
@@ -9951,6 +10362,9 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
@@ -10016,6 +10430,9 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutChannelMembershipsInput = {
@@ -10097,6 +10514,9 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
@@ -10162,6 +10582,9 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutChatMessagesInput = {
@@ -10227,6 +10650,9 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
@@ -10292,6 +10718,9 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutChatMessagesInput = {
@@ -10373,6 +10802,9 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
@@ -10438,6 +10870,9 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateWithoutDmMembershipsInput = {
@@ -10503,6 +10938,9 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
@@ -10568,6 +11006,9 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
 }
 
 export type EmployeeCreateOrConnectWithoutDmMembershipsInput = {
@@ -10649,6 +11090,9 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
@@ -10714,6 +11158,873 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutChatReactionsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutChatReactionsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutChatReactionsInput, Prisma.EmployeeUncheckedCreateWithoutChatReactionsInput>
+}
+
+export type EmployeeUpsertWithoutChatReactionsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutChatReactionsInput, Prisma.EmployeeUncheckedUpdateWithoutChatReactionsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutChatReactionsInput, Prisma.EmployeeUncheckedCreateWithoutChatReactionsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutChatReactionsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutChatReactionsInput, Prisma.EmployeeUncheckedUpdateWithoutChatReactionsInput>
+}
+
+export type EmployeeUpdateWithoutChatReactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutPinnedMessagesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeCreateOrConnectWithoutPinnedMessagesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutPinnedMessagesInput>
+}
+
+export type EmployeeUpsertWithoutPinnedMessagesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutPinnedMessagesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutPinnedMessagesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutPinnedMessagesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutPinnedMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutPinnedMessagesInput>
+}
+
+export type EmployeeUpdateWithoutPinnedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeCreateWithoutSavedMessagesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutSavedMessagesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutSavedMessagesInput>
+}
+
+export type EmployeeUpsertWithoutSavedMessagesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutSavedMessagesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedCreateWithoutSavedMessagesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutSavedMessagesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutSavedMessagesInput, Prisma.EmployeeUncheckedUpdateWithoutSavedMessagesInput>
+}
+
+export type EmployeeUpdateWithoutSavedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeCreateManyDepartmentInput = {
@@ -10814,6 +12125,9 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
@@ -10879,6 +12193,9 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
@@ -11014,6 +12331,9 @@ export type EmployeeUpdateWithoutTeamInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutTeamInput = {
@@ -11079,6 +12399,9 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
@@ -11249,6 +12572,9 @@ export type EmployeeUpdateWithoutManagerInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutManagerInput = {
@@ -11314,6 +12640,9 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
@@ -11414,6 +12743,9 @@ export type EmployeeUpdateWithoutBuddyInput = {
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateWithoutBuddyInput = {
@@ -11479,6 +12811,9 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
   dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
 }
 
 export type EmployeeUncheckedUpdateManyWithoutBuddyInput = {
@@ -11551,6 +12886,9 @@ export type EmployeeCountOutputType = {
   createdChannels: number
   chatMessages: number
   dmMemberships: number
+  chatReactions: number
+  savedMessages: number
+  pinnedMessages: number
 }
 
 export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -11583,6 +12921,9 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   createdChannels?: boolean | EmployeeCountOutputTypeCountCreatedChannelsArgs
   chatMessages?: boolean | EmployeeCountOutputTypeCountChatMessagesArgs
   dmMemberships?: boolean | EmployeeCountOutputTypeCountDmMembershipsArgs
+  chatReactions?: boolean | EmployeeCountOutputTypeCountChatReactionsArgs
+  savedMessages?: boolean | EmployeeCountOutputTypeCountSavedMessagesArgs
+  pinnedMessages?: boolean | EmployeeCountOutputTypeCountPinnedMessagesArgs
 }
 
 /**
@@ -11798,6 +13139,27 @@ export type EmployeeCountOutputTypeCountDmMembershipsArgs<ExtArgs extends runtim
   where?: Prisma.DmMemberWhereInput
 }
 
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountChatReactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReactionWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountSavedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SavedMessageWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountPinnedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PinnedMessageWhereInput
+}
+
 
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -11867,6 +13229,9 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdChannels?: boolean | Prisma.Employee$createdChannelsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.Employee$chatMessagesArgs<ExtArgs>
   dmMemberships?: boolean | Prisma.Employee$dmMembershipsArgs<ExtArgs>
+  chatReactions?: boolean | Prisma.Employee$chatReactionsArgs<ExtArgs>
+  savedMessages?: boolean | Prisma.Employee$savedMessagesArgs<ExtArgs>
+  pinnedMessages?: boolean | Prisma.Employee$pinnedMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employee"]>
 
@@ -12022,6 +13387,9 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   createdChannels?: boolean | Prisma.Employee$createdChannelsArgs<ExtArgs>
   chatMessages?: boolean | Prisma.Employee$chatMessagesArgs<ExtArgs>
   dmMemberships?: boolean | Prisma.Employee$dmMembershipsArgs<ExtArgs>
+  chatReactions?: boolean | Prisma.Employee$chatReactionsArgs<ExtArgs>
+  savedMessages?: boolean | Prisma.Employee$savedMessagesArgs<ExtArgs>
+  pinnedMessages?: boolean | Prisma.Employee$pinnedMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -12074,6 +13442,9 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     createdChannels: Prisma.$ChannelPayload<ExtArgs>[]
     chatMessages: Prisma.$MessagePayload<ExtArgs>[]
     dmMemberships: Prisma.$DmMemberPayload<ExtArgs>[]
+    chatReactions: Prisma.$ReactionPayload<ExtArgs>[]
+    savedMessages: Prisma.$SavedMessagePayload<ExtArgs>[]
+    pinnedMessages: Prisma.$PinnedMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -12537,6 +13908,9 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   createdChannels<T extends Prisma.Employee$createdChannelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$createdChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatMessages<T extends Prisma.Employee$chatMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$chatMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   dmMemberships<T extends Prisma.Employee$dmMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$dmMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DmMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatReactions<T extends Prisma.Employee$chatReactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$chatReactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  savedMessages<T extends Prisma.Employee$savedMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$savedMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SavedMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  pinnedMessages<T extends Prisma.Employee$pinnedMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$pinnedMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PinnedMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13783,6 +15157,78 @@ export type Employee$dmMembershipsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.DmMemberScalarFieldEnum | Prisma.DmMemberScalarFieldEnum[]
+}
+
+/**
+ * Employee.chatReactions
+ */
+export type Employee$chatReactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reaction
+   */
+  select?: Prisma.ReactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reaction
+   */
+  omit?: Prisma.ReactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReactionInclude<ExtArgs> | null
+  where?: Prisma.ReactionWhereInput
+  orderBy?: Prisma.ReactionOrderByWithRelationInput | Prisma.ReactionOrderByWithRelationInput[]
+  cursor?: Prisma.ReactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReactionScalarFieldEnum | Prisma.ReactionScalarFieldEnum[]
+}
+
+/**
+ * Employee.savedMessages
+ */
+export type Employee$savedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SavedMessage
+   */
+  select?: Prisma.SavedMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SavedMessage
+   */
+  omit?: Prisma.SavedMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SavedMessageInclude<ExtArgs> | null
+  where?: Prisma.SavedMessageWhereInput
+  orderBy?: Prisma.SavedMessageOrderByWithRelationInput | Prisma.SavedMessageOrderByWithRelationInput[]
+  cursor?: Prisma.SavedMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SavedMessageScalarFieldEnum | Prisma.SavedMessageScalarFieldEnum[]
+}
+
+/**
+ * Employee.pinnedMessages
+ */
+export type Employee$pinnedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PinnedMessage
+   */
+  select?: Prisma.PinnedMessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PinnedMessage
+   */
+  omit?: Prisma.PinnedMessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PinnedMessageInclude<ExtArgs> | null
+  where?: Prisma.PinnedMessageWhereInput
+  orderBy?: Prisma.PinnedMessageOrderByWithRelationInput | Prisma.PinnedMessageOrderByWithRelationInput[]
+  cursor?: Prisma.PinnedMessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PinnedMessageScalarFieldEnum | Prisma.PinnedMessageScalarFieldEnum[]
 }
 
 /**

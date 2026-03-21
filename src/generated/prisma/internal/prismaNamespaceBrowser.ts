@@ -95,7 +95,12 @@ export const ModelName = {
   ChannelMember: 'ChannelMember',
   Message: 'Message',
   DmThread: 'DmThread',
-  DmMember: 'DmMember'
+  DmMember: 'DmMember',
+  Reaction: 'Reaction',
+  ChatAttachment: 'ChatAttachment',
+  Mention: 'Mention',
+  PinnedMessage: 'PinnedMessage',
+  SavedMessage: 'SavedMessage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -766,6 +771,61 @@ export const DmMemberScalarFieldEnum = {
 } as const
 
 export type DmMemberScalarFieldEnum = (typeof DmMemberScalarFieldEnum)[keyof typeof DmMemberScalarFieldEnum]
+
+
+export const ReactionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  employeeId: 'employeeId',
+  emoji: 'emoji'
+} as const
+
+export type ReactionScalarFieldEnum = (typeof ReactionScalarFieldEnum)[keyof typeof ReactionScalarFieldEnum]
+
+
+export const ChatAttachmentScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  fileName: 'fileName',
+  fileType: 'fileType',
+  fileSize: 'fileSize',
+  url: 'url',
+  thumbnailUrl: 'thumbnailUrl',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatAttachmentScalarFieldEnum = (typeof ChatAttachmentScalarFieldEnum)[keyof typeof ChatAttachmentScalarFieldEnum]
+
+
+export const MentionScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  type: 'type',
+  targetId: 'targetId'
+} as const
+
+export type MentionScalarFieldEnum = (typeof MentionScalarFieldEnum)[keyof typeof MentionScalarFieldEnum]
+
+
+export const PinnedMessageScalarFieldEnum = {
+  id: 'id',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  pinnedById: 'pinnedById',
+  pinnedAt: 'pinnedAt'
+} as const
+
+export type PinnedMessageScalarFieldEnum = (typeof PinnedMessageScalarFieldEnum)[keyof typeof PinnedMessageScalarFieldEnum]
+
+
+export const SavedMessageScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  messageId: 'messageId',
+  savedAt: 'savedAt'
+} as const
+
+export type SavedMessageScalarFieldEnum = (typeof SavedMessageScalarFieldEnum)[keyof typeof SavedMessageScalarFieldEnum]
 
 
 export const SortOrder = {

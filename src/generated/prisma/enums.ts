@@ -222,3 +222,14 @@ export const Presence = {
 } as const
 
 export type Presence = (typeof Presence)[keyof typeof Presence]
+
+
+export const MentionType = {
+  USER: 'USER',
+  CHANNEL: 'CHANNEL',
+  HERE: 'HERE',
+  EVERYONE: 'EVERYONE',
+  USER_GROUP: 'USER_GROUP'
+} as const
+
+export type MentionType = (typeof MentionType)[keyof typeof MentionType]
