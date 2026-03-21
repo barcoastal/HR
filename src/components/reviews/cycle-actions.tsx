@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { updateReviewCycleStatus, deleteReviewCycle } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
-import { Play, Square, Trash2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export function CycleActions({
   cycleId,
@@ -50,7 +50,7 @@ export function CycleActions({
             "disabled:opacity-50"
           )}
         >
-          <Play className="h-3.5 w-3.5" />Activate
+          <Icon name="play_arrow" size={12} />Activate
         </button>
       )}
       {status === "ACTIVE" && (
@@ -63,7 +63,7 @@ export function CycleActions({
             "disabled:opacity-50"
           )}
         >
-          <Square className="h-3.5 w-3.5" />Close
+          <Icon name="stop" size={12} />Close
         </button>
       )}
       <button
@@ -75,7 +75,7 @@ export function CycleActions({
           "disabled:opacity-50"
         )}
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Icon name="delete" size={12} />
       </button>
     </div>
   );

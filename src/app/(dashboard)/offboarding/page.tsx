@@ -1,11 +1,11 @@
 import { cn, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
-import { UserMinus, CheckCircle2 } from "lucide-react";
 import { StartOffboardingDialog } from "@/components/offboarding/start-offboarding-dialog";
 import { OnboardingTaskManager } from "@/components/onboarding/onboarding-task-manager";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { Icon } from "@/components/ui/icon";
 
 export default async function OffboardingPage() {
   const session = await requireAdmin();
@@ -58,8 +58,8 @@ export default async function OffboardingPage() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <StatCard title="Active Offboarding" value={offboardingEmployees.length} icon={<UserMinus className="h-5 w-5" />} color="amber" />
-        <StatCard title="Completed This Month" value={completedOffboarding.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
+        <StatCard title="Active Offboarding" value={offboardingEmployees.length} icon={<Icon name="person_remove" size={20} />} color="amber" />
+        <StatCard title="Completed This Month" value={completedOffboarding.length} icon={<Icon name="check_circle" size={20} />} color="emerald" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Offboarding</h2></div>
@@ -116,7 +116,7 @@ export default async function OffboardingPage() {
                     <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle} · {emp.department?.name}</p>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    <Icon name="check_circle" size={16} className="text-emerald-400" />
                     <span className="text-emerald-400 font-medium">Completed</span>
                     {emp.endDate && <span className="text-[var(--color-text-muted)] ml-1">{formatDate(emp.endDate)}</span>}
                   </div>

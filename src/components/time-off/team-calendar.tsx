@@ -1,10 +1,10 @@
 "use client";
 
 import { cn, getInitials, formatDate } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { getTeamCalendar } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type CalendarEntry = {
   id: string;
@@ -48,11 +48,11 @@ export function TeamCalendar({ initialEntries, initialYear, initialMonth }: {
     <div>
       <div className="flex items-center justify-between mb-4">
         <button onClick={() => navigate(-1)} disabled={loading} className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50">
-          <ChevronLeft className="h-5 w-5" />
+          <Icon name="chevron_left" size={20} />
         </button>
         <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">{monthNames[month]} {year}</h3>
         <button onClick={() => navigate(1)} disabled={loading} className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50">
-          <ChevronRight className="h-5 w-5" />
+          <Icon name="chevron_right" size={20} />
         </button>
       </div>
 

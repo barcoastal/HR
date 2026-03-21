@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UserMinus, CheckCircle2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { startOffboarding } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Employee = {
   id: string;
@@ -65,14 +65,14 @@ export function StartOffboardingDialog({ employees }: { employees: Employee[] })
           "hover:bg-orange-600 transition-colors"
         )}
       >
-        <UserMinus className="h-4 w-4" />Start Offboarding
+        <Icon name="person_remove" size={16} />Start Offboarding
       </button>
 
       <Dialog open={open} onClose={handleClose} title="Start Offboarding">
         {success ? (
           <div className="flex flex-col items-center gap-4 py-4">
             <div className="h-14 w-14 rounded-full bg-orange-500/15 flex items-center justify-center">
-              <CheckCircle2 className="h-8 w-8 text-orange-500" />
+              <Icon name="check_circle" size={32} className="text-orange-500" />
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-[var(--color-text-primary)]">Offboarding Started</p>
@@ -125,7 +125,7 @@ export function StartOffboardingDialog({ employees }: { employees: Employee[] })
                   "disabled:opacity-50"
                 )}
               >
-                {loading ? <><Loader2 className="h-4 w-4 animate-spin" />Processing...</> : "Start Offboarding"}
+                {loading ? <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</> : "Start Offboarding"}
               </button>
             </div>
           </>

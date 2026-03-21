@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { createPulseSurvey, closePulseSurvey, getPulseSurveyResults } from "@/lib/actions/pulse";
 import { useRouter } from "next/navigation";
-import { Plus, BarChart3, X, Activity } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
+import { Icon } from "@/components/ui/icon";
 
 type Survey = {
   id: string;
@@ -67,7 +67,7 @@ export function PulseSurveyManager({ surveys: initialSurveys }: { surveys: Surve
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-4">
-        <Activity className="h-5 w-5 text-purple-500" />
+        <Icon name="monitoring" size={20} className="text-purple-500" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Pulse Surveys</h2>
       </div>
 
@@ -89,7 +89,7 @@ export function PulseSurveyManager({ surveys: initialSurveys }: { surveys: Surve
             "disabled:opacity-50"
           )}
         >
-          <Plus className="h-4 w-4" />{creating ? "..." : "Create"}
+          <Icon name="add" size={16} />{creating ? "..." : "Create"}
         </button>
       </div>
 
@@ -109,11 +109,11 @@ export function PulseSurveyManager({ surveys: initialSurveys }: { surveys: Surve
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button onClick={() => handleViewResults(s.id)} className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors" title="View results">
-                  <BarChart3 className="h-4 w-4" />
+                  <Icon name="bar_chart" size={16} />
                 </button>
                 {s.status === "ACTIVE" && (
                   <button onClick={() => handleClose(s.id)} className="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors" title="Close survey">
-                    <X className="h-4 w-4" />
+                    <Icon name="close" size={16} />
                   </button>
                 )}
               </div>

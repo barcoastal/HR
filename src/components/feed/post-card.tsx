@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Heart, PartyPopper, ThumbsUp, MessageCircle, Pin, Cake, UserPlus, Star, Trash2, Paperclip, Download } from "lucide-react";
 import { timeAgo, getInitials } from "@/lib/utils";
 import { toggleReaction, deleteFeedPost } from "@/lib/actions/feed";
 import { CommentSection } from "@/components/feed/comment-section";
 import type { ReactionType } from "@/generated/prisma/client";
 import { useState } from "react";
+import { Icon } from "@/components/ui/icon";
 
 type PostWithRelations = {
   id: string;
@@ -23,13 +23,13 @@ type PostWithRelations = {
 };
 
 function ReactionButton({
-  icon: Icon,
+  icon,
   count,
   label,
   active,
   onClick,
 }: {
-  icon: React.ElementType;
+  icon: string;
   count: number;
   label: string;
   active: boolean;
@@ -46,7 +46,7 @@ function ReactionButton({
       )}
       aria-label={label}
     >
-      <Icon className="h-4 w-4" />
+      <Icon name={icon} size={16} />
       <span>{count}</span>
     </button>
   );
@@ -77,9 +77,9 @@ function AttachmentGallery({ attachments }: { attachments?: { id: string; url: s
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] hover:bg-[var(--color-surface-hover)] transition-colors text-sm text-[var(--color-text-primary)]"
             >
-              <Paperclip className="h-4 w-4 text-[var(--color-text-muted)]" />
+              <Icon name="attach_file" size={16} className="text-[var(--color-text-muted)]" />
               <span className="truncate max-w-[200px]">{file.name}</span>
-              <Download className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+              <Icon name="download" size={12} className="text-[var(--color-text-muted)]" />
             </a>
           ))}
         </div>
@@ -121,9 +121,9 @@ export function PostCard({
 
   const reactionsBar = (
     <div className="flex items-center gap-1">
-      <ReactionButton icon={Heart} count={heartCount} label="Love" active={myReaction === "HEART"} onClick={() => handleReaction("HEART")} />
-      <ReactionButton icon={PartyPopper} count={celebrateCount} label="Celebrate" active={myReaction === "CELEBRATE"} onClick={() => handleReaction("CELEBRATE")} />
-      <ReactionButton icon={ThumbsUp} count={thumbsupCount} label="Like" active={myReaction === "THUMBSUP"} onClick={() => handleReaction("THUMBSUP")} />
+      <ReactionButton icon="favorite" count={heartCount} label="Love" active={myReaction === "HEART"} onClick={() => handleReaction("HEART")} />
+      <ReactionButton icon="celebration" count={celebrateCount} label="Celebrate" active={myReaction === "CELEBRATE"} onClick={() => handleReaction("CELEBRATE")} />
+      <ReactionButton icon="thumb_up" count={thumbsupCount} label="Like" active={myReaction === "THUMBSUP"} onClick={() => handleReaction("THUMBSUP")} />
       <button
         onClick={() => setShowComments(!showComments)}
         className={cn(
@@ -133,7 +133,7 @@ export function PostCard({
             : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
         )}
       >
-        <MessageCircle className="h-4 w-4" />
+        <Icon name="chat_bubble" size={16} />
         <span>{post._count.comments}</span>
       </button>
       {canDelete && (
@@ -142,7 +142,7 @@ export function PostCard({
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-red-400 hover:bg-red-500/10 transition-colors"
           aria-label="Delete post"
         >
-          <Trash2 className="h-4 w-4" />
+          <Icon name="delete" size={16} />
         </button>
       )}
     </div>
@@ -164,7 +164,7 @@ export function PostCard({
       <article className={cn("rounded-2xl overflow-hidden", "bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-rose-500/10", "border border-yellow-400/20")}>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+            <Icon name="star" size={20} fill className="text-yellow-500" />
             <span className="text-sm font-medium text-yellow-600">Shoutout</span>
             <span className="text-sm text-[var(--color-text-muted)]">· {timeAgo(post.createdAt)}</span>
           </div>
@@ -202,7 +202,7 @@ export function PostCard({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <p className="font-semibold text-[var(--color-text-primary)]">{post.author.firstName} {post.author.lastName}</p>
-                <Cake className="h-4 w-4 text-amber-500" />
+                <Icon name="cake" size={16} className="text-amber-500" />
               </div>
               <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle} · {timeAgo(post.createdAt)}</p>
             </div>
@@ -225,7 +225,7 @@ export function PostCard({
       <article className={cn("rounded-2xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-4 border-l-emerald-500")}>
         <div className="p-5">
           <div className="flex items-center gap-2 mb-4">
-            <UserPlus className="h-5 w-5 text-emerald-500" />
+            <Icon name="person_add" size={20} className="text-emerald-500" />
             <span className="text-sm font-medium text-emerald-500">New Team Member</span>
             <span className="text-sm text-[var(--color-text-muted)]">· {timeAgo(post.createdAt)}</span>
           </div>
@@ -264,7 +264,7 @@ export function PostCard({
           </div>
           {post.pinned && (
             <div className="flex items-center gap-1 text-xs font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-2 py-1 rounded-full">
-              <Pin className="h-3 w-3" />Pinned
+              <Icon name="push_pin" size={12} />Pinned
             </div>
           )}
         </div>

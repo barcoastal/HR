@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Upload, FileSpreadsheet, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { bulkImportCandidates } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type CandidateField = "firstName" | "lastName" | "email" | "phone" | "skills" | "experience" | "source" | "linkedinUrl" | "notes" | "skip";
 
@@ -186,7 +186,7 @@ export function CsvImport() {
           "hover:bg-[var(--color-surface-hover)] transition-colors"
         )}
       >
-        <Upload className="h-4 w-4" />
+        <Icon name="upload" size={16} />
         Import CSV
       </button>
 
@@ -212,7 +212,7 @@ export function CsvImport() {
                 if (file) handleFile(file);
               }}
             />
-            <FileSpreadsheet className="h-8 w-8 text-[var(--color-text-muted)]" />
+            <Icon name="table_chart" size={32} className="text-[var(--color-text-muted)]" />
             <span className="text-sm text-[var(--color-text-primary)] font-medium">
               Drop a CSV file here or click to browse
             </span>
@@ -225,7 +225,7 @@ export function CsvImport() {
         {step === 2 && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
-              <FileSpreadsheet className="h-4 w-4" />
+              <Icon name="table_chart" size={16} />
               <span>{fileName}</span>
               <span className="ml-auto">{rows.length} rows found</span>
             </div>
@@ -302,7 +302,7 @@ export function CsvImport() {
               >
                 {importing ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Icon name="progress_activity" size={16} className="animate-material-spin" />
                     Importing...
                   </>
                 ) : (
@@ -317,9 +317,9 @@ export function CsvImport() {
           <div className="space-y-4">
             <div className="flex flex-col items-center gap-3 py-4">
               {result.errors.length === 0 ? (
-                <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+                <Icon name="check_circle" size={40} className="text-emerald-500" />
               ) : (
-                <AlertCircle className="h-10 w-10 text-amber-500" />
+                <Icon name="error" size={40} className="text-amber-500" />
               )}
               <p className="text-sm font-medium text-[var(--color-text-primary)]">
                 Import Complete

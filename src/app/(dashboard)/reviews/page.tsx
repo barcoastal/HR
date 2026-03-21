@@ -1,15 +1,6 @@
 import { cn, getInitials, formatDate } from "@/lib/utils";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
-import {
-  ClipboardCheck,
-  Clock,
-  CheckCircle2,
-  Calendar,
-  Star,
-  FileText,
-  Users,
-} from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { CreateCycleDialog } from "@/components/reviews/create-cycle-dialog";
@@ -18,10 +9,11 @@ import { SubmitReviewDialog } from "@/components/reviews/submit-review-dialog";
 import { ViewReviewDialog } from "@/components/reviews/view-review-dialog";
 import { CycleActions } from "@/components/reviews/cycle-actions";
 import { GenerateReviewsDialog } from "@/components/reviews/generate-reviews-dialog";
+import { Icon } from "@/components/ui/icon";
 
-const statusConfig: Record<string, { color: string; bg: string; icon: React.ElementType }> = {
-  SUBMITTED: { color: "text-emerald-400", bg: "bg-emerald-500/15", icon: CheckCircle2 },
-  PENDING: { color: "text-[var(--color-text-muted)]", bg: "bg-[var(--color-surface-hover)]", icon: Clock },
+const statusConfig: Record<string, { color: string; bg: string; icon: string }> = {
+  SUBMITTED: { color: "text-emerald-400", bg: "bg-emerald-500/15", icon: "check_circle" },
+  PENDING: { color: "text-[var(--color-text-muted)]", bg: "bg-[var(--color-surface-hover)]", icon: "schedule" },
 };
 const typeConfig: Record<string, string> = {
   SELF: "bg-blue-500/15 text-blue-400",
@@ -124,10 +116,10 @@ export default async function ReviewsPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Total Cycles" value={cycles.length} icon={<ClipboardCheck className="h-5 w-5" />} color="blue" />
-        <StatCard title="Active Cycles" value={cycles.filter((c) => c.status === "ACTIVE").length} icon={<Calendar className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Submitted" value={submittedReviews} icon={<FileText className="h-5 w-5" />} color="purple" />
-        <StatCard title="Avg Rating" value={avgRating} icon={<Star className="h-5 w-5" />} color="amber" animate={false} />
+        <StatCard title="Total Cycles" value={cycles.length} icon={<Icon name="assignment_turned_in" size={20} />} color="blue" />
+        <StatCard title="Active Cycles" value={cycles.filter((c) => c.status === "ACTIVE").length} icon={<Icon name="calendar_today" size={20} />} color="emerald" />
+        <StatCard title="Submitted" value={submittedReviews} icon={<Icon name="description" size={20} />} color="purple" />
+        <StatCard title="Avg Rating" value={avgRating} icon={<Icon name="star" size={20} />} color="amber" animate={false} />
       </div>
 
       {/* My pending reviews */}
@@ -176,7 +168,7 @@ export default async function ReviewsPage() {
                         {pair.selfReview.rating && (
                           <div className="flex items-center gap-0.5 ml-auto">
                             {[1, 2, 3, 4, 5].map((n) => (
-                              <Star key={n} className={cn("h-3.5 w-3.5", n <= pair.selfReview!.rating! ? "text-amber-400 fill-amber-400" : "text-[var(--color-border)]")} />
+                              <Icon name="star" size={14} fill={n <= pair.selfReview!.rating!} className={n <= pair.selfReview!.rating! ? "text-amber-400" : "text-[var(--color-border)]"} />
                             ))}
                           </div>
                         )}
@@ -210,7 +202,7 @@ export default async function ReviewsPage() {
                         {pair.managerReview.rating && (
                           <div className="flex items-center gap-0.5 ml-auto">
                             {[1, 2, 3, 4, 5].map((n) => (
-                              <Star key={n} className={cn("h-3.5 w-3.5", n <= pair.managerReview!.rating! ? "text-amber-400 fill-amber-400" : "text-[var(--color-border)]")} />
+                              <Icon name="star" size={14} fill={n <= pair.managerReview!.rating!} className={n <= pair.managerReview!.rating! ? "text-amber-400" : "text-[var(--color-border)]"} />
                             ))}
                           </div>
                         )}
@@ -245,7 +237,7 @@ export default async function ReviewsPage() {
       {/* Review Cycles */}
       {cycles.length === 0 ? (
         <div className="text-center py-12">
-          <ClipboardCheck className="h-12 w-12 text-[var(--color-text-muted)] mx-auto mb-3" />
+          <Icon name="assignment_turned_in" size={48} className="text-[var(--color-text-muted)] mx-auto mb-3" />
           <p className="text-[var(--color-text-muted)]">No review cycles yet. {isAdmin && "Create one to get started."}</p>
         </div>
       ) : (
@@ -272,12 +264,12 @@ export default async function ReviewsPage() {
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <ClipboardCheck className="h-5 w-5 text-[var(--color-accent)]" />
+                        <Icon name="assignment_turned_in" size={20} className="text-[var(--color-accent)]" />
                         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">{cycle.name}</h2>
                         <span className={cn("inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium", cycleCfg.color)}>{cycleCfg.label}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-sm text-[var(--color-text-muted)]">
-                        <Calendar className="h-3.5 w-3.5" />
+                        <Icon name="calendar_today" size={12} />
                         {formatDate(cycle.startDate)} — {formatDate(cycle.endDate)}
                       </div>
                     </div>
@@ -307,7 +299,7 @@ export default async function ReviewsPage() {
                   {isAdmin && Object.keys(reviewsByEmployee).length > 0 && (
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 mb-3">
-                        <Users className="h-4 w-4 text-[var(--color-text-muted)]" />
+                        <Icon name="group" size={16} className="text-[var(--color-text-muted)]" />
                         <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Reviews by Employee</h3>
                       </div>
                       {Object.values(reviewsByEmployee).map(({ employee: emp, reviews }) => {
@@ -328,7 +320,7 @@ export default async function ReviewsPage() {
                               </div>
                               {allDone && (
                                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400">
-                                  <CheckCircle2 className="h-3 w-3" />Complete
+                                  <Icon name="check_circle" size={12} />Complete
                                 </span>
                               )}
                             </div>
@@ -354,7 +346,6 @@ export default async function ReviewsPage() {
                     <div className="space-y-2">
                       {cycle.reviews.map((review) => {
                         const cfg = statusConfig[review.status] || statusConfig.PENDING;
-                        const StatusIcon = cfg.icon;
                         const canSubmit = review.status === "PENDING" && review.reviewerId === currentEmployeeId && cycle.status === "ACTIVE";
                         const canView = review.status === "SUBMITTED" && (review.reviewerId === currentEmployeeId || review.employeeId === currentEmployeeId);
 
@@ -369,10 +360,10 @@ export default async function ReviewsPage() {
                                 <div className="flex items-center gap-2 mt-0.5">
                                   <span className={cn("inline-flex px-1.5 py-0.5 rounded-full text-xs font-medium", typeConfig[review.type] || "")}>{review.type}</span>
                                   <div className={cn("inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs font-medium", cfg.bg, cfg.color)}>
-                                    <StatusIcon className="h-3 w-3" />{review.status}
+                                    <Icon name={cfg.icon} size={12} />{review.status}
                                   </div>
                                   {review.rating && (
-                                    <span className="flex items-center gap-0.5 text-xs"><Star className="h-3 w-3 text-amber-400 fill-amber-400" />{review.rating}/5</span>
+                                    <span className="flex items-center gap-0.5 text-xs"><Icon name="star" size={12} fill className="text-amber-400" />{review.rating}/5</span>
                                   )}
                                 </div>
                               </div>
@@ -441,11 +432,11 @@ function ReviewPill({
       </span>
       {isSubmitted && review.rating && (
         <span className="flex items-center gap-0.5">
-          <Star className="h-3 w-3 text-amber-400 fill-amber-400" />{review.rating}
+          <Icon name="star" size={12} fill className="text-amber-400" />{review.rating}
         </span>
       )}
-      {isSubmitted && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />}
-      {!isSubmitted && <Clock className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />}
+      {isSubmitted && <Icon name="check_circle" size={12} className="text-emerald-400" />}
+      {!isSubmitted && <Icon name="schedule" size={12} className="text-[var(--color-text-muted)]" />}
       {canSubmit && (
         <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type }} />
       )}

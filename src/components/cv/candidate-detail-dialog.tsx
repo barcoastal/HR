@@ -7,9 +7,9 @@ import { updateCandidate, hireCandidateAndStartOnboarding } from "@/lib/actions/
 import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
-import { CheckCircle2, Loader2, Calendar, Video, X as XIcon, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
+import { Icon } from "@/components/ui/icon";
 
 type InterviewForDisplay = {
   id: string;
@@ -280,7 +280,7 @@ export function CandidateDetailDialog({
       {hireResult ? (
         <div className="flex flex-col items-center gap-4 py-4">
           <div className="h-14 w-14 rounded-full bg-green-500/15 flex items-center justify-center">
-            <CheckCircle2 className="h-8 w-8 text-green-500" />
+            <Icon name="check_circle" size={32} className="text-green-500" />
           </div>
           <div className="text-center">
             <p className="text-lg font-semibold text-[var(--color-text-primary)]">Employee Created</p>
@@ -528,7 +528,7 @@ export function CandidateDetailDialog({
                     "hover:bg-[var(--color-accent-hover)] transition-colors"
                   )}
                 >
-                  <Calendar className="h-4 w-4" />
+                  <Icon name="calendar_today" size={16} />
                   Schedule Interview
                 </button>
               </div>
@@ -549,7 +549,7 @@ export function CandidateDetailDialog({
                         className="flex items-center justify-between rounded-lg px-3 py-2 bg-purple-500/10 border border-purple-500/20"
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <Video className="h-3.5 w-3.5 text-purple-400 shrink-0" />
+                          <Icon name="videocam" size={12} className="text-purple-400 shrink-0" />
                           <div className="min-w-0">
                             <span className="text-xs font-medium text-purple-300">
                               {interviewTypeLabels[interview.type]}
@@ -573,7 +573,7 @@ export function CandidateDetailDialog({
                               rel="noopener noreferrer"
                               className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium text-blue-400 hover:bg-blue-500/10 transition-colors"
                             >
-                              <ExternalLink className="h-3 w-3" />
+                              <Icon name="open_in_new" size={12} />
                               Join
                             </a>
                           )}
@@ -584,9 +584,9 @@ export function CandidateDetailDialog({
                             title="Cancel interview"
                           >
                             {cancellingId === interview.id ? (
-                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              <Icon name="progress_activity" size={12} className="animate-material-spin" />
                             ) : (
-                              <XIcon className="h-3.5 w-3.5" />
+                              <Icon name="close" size={14} />
                             )}
                           </button>
                         </div>
@@ -695,7 +695,7 @@ export function CandidateDetailDialog({
               )}
             >
               {hiring ? (
-                <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 animate-spin" />Hiring...</span>
+                <span className="flex items-center gap-2"><Icon name="progress_activity" size={16} className="animate-material-spin" />Hiring...</span>
               ) : saving ? (
                 "Saving..."
               ) : form.status === "HIRED" && candidate.status !== "HIRED" ? (

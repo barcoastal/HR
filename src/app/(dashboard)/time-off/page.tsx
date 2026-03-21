@@ -16,9 +16,9 @@ import { RequestList } from "@/components/time-off/request-list";
 import { WhosOutWidget } from "@/components/time-off/whos-out-widget";
 import { TeamCalendar } from "@/components/time-off/team-calendar";
 import { BurnoutAlerts } from "@/components/time-off/burnout-alerts";
-import { Palmtree } from "lucide-react";
 import { TimeOffTabs } from "@/components/time-off/time-off-tabs";
 import { PageHeader } from "@/components/ui/page-header";
+import { Icon } from "@/components/ui/icon";
 
 export default async function TimeOffPage() {
   const session = await requireAuth();
@@ -73,7 +73,7 @@ export default async function TimeOffPage() {
             return (
               <div key={b.id} className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-4")}>
                 <div className="flex items-center gap-2 mb-2">
-                  <Palmtree className="h-4 w-4 text-emerald-500" />
+                  <Icon name="beach_access" size={16} className="text-emerald-500" />
                   <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{b.policy.name}</p>
                 </div>
                 <p className="text-2xl font-bold text-[var(--color-text-primary)]">
@@ -90,7 +90,7 @@ export default async function TimeOffPage() {
 
       {policies.length === 0 && (
         <div className={cn("rounded-2xl p-8 text-center mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <Palmtree className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
+          <Icon name="beach_access" size={40} className="text-[var(--color-text-muted)] mx-auto mb-3" />
           <p className="text-[var(--color-text-muted)]">No time off policies configured yet. Ask your admin to set them up in Settings.</p>
         </div>
       )}

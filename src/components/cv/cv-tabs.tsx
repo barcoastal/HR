@@ -7,11 +7,11 @@ import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
-import { Users, Sparkles, ChevronDown, ChevronRight, Archive, Briefcase, CheckCircle2, XCircle, ExternalLink, Loader2 } from "lucide-react";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
 import { updatePositionStatus, postPositionToBreezy } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
+import { Icon } from "@/components/ui/icon";
 
 type CandidateItem = {
   id: string;
@@ -160,9 +160,9 @@ function PositionPipeline({
       >
         <button className="p-0.5 text-[var(--color-text-muted)] shrink-0">
           {expanded ? (
-            <ChevronDown className="h-4 w-4" />
+            <Icon name="expand_more" size={16} />
           ) : (
-            <ChevronRight className="h-4 w-4" />
+            <Icon name="chevron_right" size={16} />
           )}
         </button>
         <div className="flex-1 min-w-0">
@@ -172,7 +172,7 @@ function PositionPipeline({
             </h3>
             {isArchived && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-500/15 text-gray-400">
-                <Archive className="h-3 w-3" />
+                <Icon name="archive" size={12} />
                 {position.status === "FILLED" ? "Filled" : "Closed"}
               </span>
             )}
@@ -185,12 +185,12 @@ function PositionPipeline({
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Users className="h-3 w-3" />
+              <Icon name="group" size={12} />
               {activeCandidates} active
             </span>
             {hiredCount > 0 && (
               <span className="flex items-center gap-1 text-emerald-400">
-                <CheckCircle2 className="h-3 w-3" />
+                <Icon name="check_circle" size={12} />
                 {hiredCount} hired
               </span>
             )}
@@ -216,7 +216,7 @@ function PositionPipeline({
                   "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10"
                 )}
               >
-                <Sparkles className="h-4 w-4" />
+                <Icon name="auto_awesome" size={16} />
               </button>
               <button
                 onClick={handlePostToBreezy}
@@ -233,11 +233,11 @@ function PositionPipeline({
                 )}
               >
                 {postingToBreezy ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 ) : breezyResult?.success ? (
-                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  <Icon name="check_circle" size={12} />
                 ) : (
-                  <ExternalLink className="h-3.5 w-3.5" />
+                  <Icon name="open_in_new" size={12} />
                 )}
                 {postingToBreezy ? "Posting..." : breezyResult?.success ? "Posted!" : "Breezy"}
               </button>
@@ -250,7 +250,7 @@ function PositionPipeline({
                   "disabled:opacity-50"
                 )}
               >
-                <XCircle className="h-3.5 w-3.5" />Close
+                <Icon name="cancel" size={12} />Close
               </button>
             </>
           )}
@@ -264,7 +264,7 @@ function PositionPipeline({
                 "disabled:opacity-50"
               )}
             >
-              <Briefcase className="h-3.5 w-3.5" />Reopen
+              <Icon name="work" size={12} />Reopen
             </button>
           )}
         </div>
@@ -397,7 +397,7 @@ export function CVTabs({
 
           {openPositions.length === 0 && (
             <div className="text-center py-8 mb-6">
-              <Briefcase className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-2" />
+              <Icon name="work" size={40} className="text-[var(--color-text-muted)] mx-auto mb-2" />
               <p className="text-[var(--color-text-muted)]">
                 No open positions. Create one to start building pipelines.
               </p>
@@ -456,11 +456,11 @@ export function CVTabs({
                 className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors mb-3"
               >
                 {showArchive ? (
-                  <ChevronDown className="h-4 w-4" />
+                  <Icon name="expand_more" size={16} />
                 ) : (
-                  <ChevronRight className="h-4 w-4" />
+                  <Icon name="chevron_right" size={16} />
                 )}
-                <Archive className="h-4 w-4" />
+                <Icon name="archive" size={16} />
                 Archived Positions ({closedPositions.length})
               </button>
               {showArchive && (

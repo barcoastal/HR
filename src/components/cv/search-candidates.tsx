@@ -1,10 +1,10 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { Search, ArrowUpRight, Check } from "lucide-react";
 import { useState } from "react";
 import { advancedSearchCandidates, pullCandidateToRecruitment } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type SearchResult = {
   id: string;
@@ -67,7 +67,7 @@ export function SearchCandidates() {
       <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Search All Candidates</h3>
       <div className="flex gap-2 mb-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
+          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -107,7 +107,7 @@ export function SearchCandidates() {
                     <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", statusColors[r.status] || "")}>{r.status}</span>
                     {r.inPipeline ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400">
-                        <Check className="h-2.5 w-2.5" />
+                        <Icon name="check" />
                         Pipeline
                       </span>
                     ) : (
@@ -120,7 +120,7 @@ export function SearchCandidates() {
                           "disabled:opacity-50"
                         )}
                       >
-                        <ArrowUpRight className="h-2.5 w-2.5" />
+                        <Icon name="open_in_new" />
                         {pullingId === r.id ? "..." : "Pull"}
                       </button>
                     )}

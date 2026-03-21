@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Camera, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { updateProfilePhoto } from "@/lib/actions/my-profile";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 export function ProfilePhotoUpload({
   employeeId,
@@ -69,9 +69,9 @@ export function ProfilePhotoUpload({
         "bg-black/50 opacity-0 group-hover:opacity-100"
       )}>
         {uploading ? (
-          <Loader2 className="h-6 w-6 text-white animate-spin" />
+          <Icon name="progress_activity" className="animate-material-spin text-white animate-spin" />
         ) : (
-          <Camera className="h-6 w-6 text-white" />
+          <Icon name="photo_camera" className="text-white" />
         )}
       </div>
       <input

@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Shield, Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { inviteUser, updateUserRole, deleteUser } from "@/lib/actions/users";
 import { useRouter } from "next/navigation";
 import type { UserRole } from "@/generated/prisma/client";
+import { Icon } from "@/components/ui/icon";
 
 const roleColors: Record<string, string> = {
   SUPER_ADMIN: "bg-amber-500/15 text-amber-400",
@@ -60,14 +60,14 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
       <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-[var(--color-accent)]" />
+            <Icon name="shield" size={20} className="text-[var(--color-accent)]" />
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">User Management</h2>
           </div>
           <button
             onClick={() => setInviteOpen(true)}
             className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}
           >
-            <Plus className="h-3.5 w-3.5" />Invite User
+            <Icon name="add" size={12} />Invite User
           </button>
         </div>
 
@@ -107,7 +107,7 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
                   <td className="px-3 py-3">
                     <div className="flex items-center justify-end gap-1">
                       <button onClick={() => handleDelete(user.id)} className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors">
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Icon name="delete" size={12} />
                       </button>
                     </div>
                   </td>

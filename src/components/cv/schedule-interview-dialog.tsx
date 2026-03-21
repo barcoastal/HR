@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { useState } from "react";
 import { scheduleInterview } from "@/lib/actions/interviews";
-import { Loader2, Info } from "lucide-react";
 import type { InterviewType } from "@/generated/prisma/client";
 import Link from "next/link";
+import { Icon } from "@/components/ui/icon";
 
 const interviewTypes: { value: InterviewType; label: string }[] = [
   { value: "PHONE_SCREEN", label: "Phone Screen" },
@@ -157,14 +157,14 @@ export function ScheduleInterviewDialog({
         {/* Calendar status */}
         {calendarConnected ? (
           <div className="flex items-start gap-2 rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
-            <Info className="h-4 w-4 text-blue-400 mt-0.5 shrink-0" />
+            <Icon name="info" size={16} className="text-blue-400 mt-0.5 shrink-0" />
             <p className="text-xs text-blue-300">
               A Google Meet link will be created automatically and calendar invites will be sent to the candidate.
             </p>
           </div>
         ) : (
           <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
-            <Info className="h-4 w-4 text-amber-400 mt-0.5 shrink-0" />
+            <Icon name="info" size={16} className="text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-300">
               Google Calendar is not connected. The interview will be saved without a Meet link.{" "}
               <Link href="/settings" className="underline hover:text-amber-200">
@@ -193,7 +193,7 @@ export function ScheduleInterviewDialog({
         >
           {submitting ? (
             <span className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
+              <Icon name="progress_activity" size={16} className="animate-material-spin" />
               Scheduling...
             </span>
           ) : (

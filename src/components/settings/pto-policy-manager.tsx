@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Plus, Trash2, Palmtree, Upload, FileText, X } from "lucide-react";
 import { useState, useRef } from "react";
 import { createTimeOffPolicy, deleteTimeOffPolicy, updateTimeOffPolicy } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Policy = {
   id: string;
@@ -116,7 +116,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-4">
-        <Palmtree className="h-5 w-5 text-emerald-500" />
+        <Icon name="beach_access" size={20} className="text-emerald-500" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">PTO Policies</h2>
       </div>
 
@@ -130,7 +130,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
                   <p className="text-xs text-[var(--color-text-muted)]">{p.isUnlimited ? "Unlimited" : `${p.daysPerYear} days/year`}</p>
                 </div>
                 <button onClick={() => handleDelete(p.id)} className="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors">
-                  <Trash2 className="h-4 w-4" />
+                  <Icon name="delete" size={16} />
                 </button>
               </div>
 
@@ -144,7 +144,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
                       rel="noopener noreferrer"
                       className="flex items-center gap-1.5 text-xs text-[var(--color-accent)] hover:underline"
                     >
-                      <FileText className="h-3.5 w-3.5" />
+                      <Icon name="description" size={12} />
                       {p.documentName || "Policy Document"}
                     </a>
                     <button
@@ -152,7 +152,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
                       className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
                       title="Remove document"
                     >
-                      <X className="h-3 w-3" />
+                      <Icon name="close" size={12} />
                     </button>
                   </div>
                 ) : (
@@ -172,7 +172,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
                       disabled={uploadingId === p.id}
                       className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
                     >
-                      <Upload className="h-3.5 w-3.5" />
+                      <Icon name="upload" size={12} />
                       {uploadingId === p.id ? "Uploading..." : "Upload policy document"}
                     </button>
                   </div>
@@ -218,7 +218,7 @@ export function PtoPolicyManager({ policies: initialPolicies }: { policies: Poli
             "disabled:opacity-50"
           )}
         >
-          <Plus className="h-4 w-4" />{adding ? "Adding..." : "Add Policy"}
+          <Icon name="add" size={16} />{adding ? "Adding..." : "Add Policy"}
         </button>
       </div>
     </section>

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { Star, Eye } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type ReviewInfo = {
   employeeName: string;
@@ -27,7 +27,7 @@ export function ViewReviewDialog({ review }: { review: ReviewInfo }) {
           "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
         )}
       >
-        <Eye className="h-3.5 w-3.5" />View
+        <Icon name="visibility" size={12} />View
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title={`${review.type} Review — ${review.employeeName}`}>
@@ -40,15 +40,12 @@ export function ViewReviewDialog({ review }: { review: ReviewInfo }) {
             <p className="text-xs font-medium text-[var(--color-text-muted)] mb-1">Rating</p>
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((n) => (
-                <Star
-                  key={n}
-                  className={cn(
+                <Icon name="star" className={cn(
                     "h-5 w-5",
                     n <= (review.rating || 0)
                       ? "text-amber-400 fill-amber-400"
                       : "text-[var(--color-border)]"
-                  )}
-                />
+                  )} />
               ))}
               <span className="ml-2 text-sm text-[var(--color-text-muted)]">{review.rating}/5</span>
             </div>

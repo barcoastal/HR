@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spec Review — Page Redesigns</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #fcf8ff; color: #1a1a27; line-height: 1.6; padding: 40px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+  h2 { font-size: 22px; font-weight: 700; margin-top: 40px; margin-bottom: 12px; color: #5b3cdd; }
+  h3 { font-size: 17px; font-weight: 700; margin-top: 28px; margin-bottom: 8px; }
+  h4 { font-size: 14px; font-weight: 700; margin-top: 20px; margin-bottom: 6px; color: #484555; }
+  p, li { font-size: 14px; color: #484555; margin-bottom: 6px; }
+  .meta { font-size: 13px; color: #78758a; margin-bottom: 24px; }
+  .meta strong { color: #5b3cdd; }
+  code { background: #efecfd; padding: 2px 6px; border-radius: 6px; font-size: 13px; color: #441cc8; font-family: 'SF Mono', monospace; }
+  pre { background: #1a1a27; color: #e5deff; padding: 16px; border-radius: 12px; overflow-x: auto; margin: 12px 0; font-size: 13px; line-height: 1.5; }
+  pre code { background: none; color: inherit; padding: 0; }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  li { margin-bottom: 4px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #efecfd; color: #441cc8; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+  td { padding: 8px 12px; border-bottom: 1px solid rgba(201,196,216,0.15); }
+  tr:hover td { background: #f5f2ff; }
+  .section { background: white; border-radius: 16px; padding: 24px; margin: 16px 0; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .tag-goal { background: #e5deff; color: #441cc8; }
+  .tag-nongoal { background: #ffdad6; color: #93000a; }
+  .tag-new { background: #c7e7ff; color: #004c6c; }
+  hr { border: none; height: 1px; background: rgba(201,196,216,0.2); margin: 32px 0; }
+  .highlight { background: linear-gradient(135deg, #5b3cdd, #7459f7); color: white; border-radius: 16px; padding: 20px 24px; margin: 16px 0; }
+  .highlight h3 { color: white; margin-top: 0; }
+  .highlight p { color: rgba(255,255,255,0.85); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-box { background: #efecfd; border-radius: 12px; padding: 14px; text-align: center; }
+  .stat-box .num { font-size: 28px; font-weight: 900; color: #5b3cdd; }
+  .stat-box .label { font-size: 11px; color: #78758a; font-weight: 600; text-transform: uppercase; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<h1>Page Redesigns — Stitch Alignment</h1>
+<div class="meta">
+  <strong>Date:</strong> 2026-03-21 &nbsp;|&nbsp; <strong>Status:</strong> Approved &nbsp;|&nbsp; <strong>Project:</strong> CALATRAVA<br/>
+  <strong>Depends on:</strong> Luminal Architect design system (deployed 2026-03-20)<br/>
+  <strong>Supersedes:</strong> The Luminal Architect spec's "Icon library: Lucide React" stays statement
+</div>
+
+<div class="grid-2" style="margin-bottom: 24px;">
+  <div class="stat-box"><div class="num">3</div><div class="label">Pages Redesigned</div></div>
+  <div class="stat-box"><div class="num">88</div><div class="label">Files for Icon Migration</div></div>
+  <div class="stat-box"><div class="num">12</div><div class="label">New Design Tokens</div></div>
+  <div class="stat-box"><div class="num">90</div><div class="label">Icons Mapped</div></div>
+</div>
+
+<h2>Goals</h2>
+<div class="section">
+  <p><span class="tag tag-goal">Goal 1</span> <strong>Visual alignment</strong> — Match the Stitch reference layouts for People Directory, Org Chart, Calendar</p>
+  <p><span class="tag tag-goal">Goal 2</span> <strong>Icon migration</strong> — Replace Lucide React with Material Symbols Outlined app-wide</p>
+  <p><span class="tag tag-goal">Goal 3</span> <strong>Token expansion</strong> — Add only the color tokens these pages consume</p>
+  <p><span class="tag tag-goal">Goal 4</span> <strong>New UI patterns</strong> — FABs, bento grids, status labels, event chips, org tree connectors</p>
+</div>
+
+<h2>Non-Goals</h2>
+<div class="section">
+  <p><span class="tag tag-nongoal">Out</span> Week/Day calendar views (toggle renders but only Month functions)</p>
+  <p><span class="tag tag-nongoal">Out</span> Real-time presence data (statuses map from existing employee status field)</p>
+  <p><span class="tag tag-nongoal">Out</span> Calendar sync functionality (promo card is decorative)</p>
+  <p><span class="tag tag-nongoal">Out</span> Backend logic, APIs, or database schema changes</p>
+</div>
+
+<hr/>
+
+<h2>Shared Foundation</h2>
+
+<h3>Icon Migration: Lucide → Material Symbols Outlined</h3>
+<div class="section">
+  <p>Add Material Symbols font in <code>layout.tsx</code>. Create <code>Icon</code> wrapper component at <code>src/components/ui/icon.tsx</code>.</p>
+  <p><strong>88 files</strong> import from <code>lucide-react</code> using ~90 unique icons. Complete mapping in Appendix A.</p>
+  <p>After all replacements: remove <code>lucide-react</code> from <code>package.json</code>.</p>
+</div>
+
+<h3>New Design Tokens</h3>
+<div class="section">
+  <table>
+    <tr><th>Token</th><th>Value</th><th>Used by</th></tr>
+    <tr><td><code>--color-tertiary</code></td><td>#00628b</td><td>Calendar birthday chips</td></tr>
+    <tr><td><code>--color-tertiary-container</code></td><td>#007caf</td><td>Calendar event accent</td></tr>
+    <tr><td><code>--color-tertiary-fixed</code></td><td>#c7e7ff</td><td>Anniversary chips, team card bg</td></tr>
+    <tr><td><code>--color-on-tertiary-fixed-variant</code></td><td>#004c6c</td><td>Text on tertiary-fixed</td></tr>
+    <tr><td><code>--color-error-container</code></td><td>#ffdad6</td><td>Holiday chips</td></tr>
+    <tr><td><code>--color-on-error-container</code></td><td>#93000a</td><td>Text on error-container</td></tr>
+    <tr><td><code>--color-inverse-surface</code></td><td>#2f2f3c</td><td>Calendar promo card bg</td></tr>
+    <tr><td><code>--color-inverse-primary</code></td><td>#c9bfff</td><td>Text on inverse-surface</td></tr>
+    <tr><td><code>--color-outline</code></td><td>#797587</td><td>Calendar day labels</td></tr>
+    <tr><td><code>--color-surface-container-high</code></td><td>#e9e6f8</td><td>Org chart hover states</td></tr>
+    <tr><td><code>--color-primary-fixed-dim</code></td><td>#c9bfff</td><td>Promo card accent</td></tr>
+    <tr><td><code>--radius-xl</code></td><td>2rem (32px)</td><td>Calendar container, insights panels, promo card</td></tr>
+  </table>
+</div>
+
+<h3>FAB Component <span class="tag tag-new">New</span></h3>
+<div class="section">
+  <p>Shared <code>src/components/ui/fab.tsx</code>: fixed bottom-right, gradient or solid variant, scale on hover.</p>
+  <ul>
+    <li><strong>People:</strong> gradient, <code>person_add</code> icon, opens add-employee dialog</li>
+    <li><strong>Org:</strong> solid, <code>add_moderator</code> icon, opens department creation</li>
+    <li><strong>Calendar:</strong> solid, <code>event</code> icon, no-op for now</li>
+  </ul>
+</div>
+
+<hr/>
+
+<h2>Page 1: People Directory</h2>
+<div class="highlight">
+  <h3>Major Changes</h3>
+  <p>Editorial header (5xl/black) · Bento 4-col grid · Featured 2-col card · Center-aligned regular cards · Status labels · Team row cards · Circular pagination · FAB</p>
+</div>
+
+<div class="section">
+  <h4>Header</h4>
+  <p>"People" at <code>text-5xl font-black</code>. Subtitle: "Managing {count} talented individuals across {dept_count} departments." Filters + Sort buttons replace department pills.</p>
+
+  <h4>Card Types</h4>
+  <ul>
+    <li><strong>Featured card</strong> (first employee): 2-col span, horizontal layout, square avatar with grayscale→color hover, skill tags, Message + Mail buttons</li>
+    <li><strong>Regular card</strong>: center-aligned, circular avatar, status label at bottom, "View Profile" ghost button</li>
+    <li><strong>Team row card</strong>: 3-col span, department icon + name + member count + avatar stack + "View Team" link</li>
+  </ul>
+
+  <h4>Status Label Mapping</h4>
+  <table>
+    <tr><th>Employee Status</th><th>Label</th><th>Icon</th><th>Colors</th></tr>
+    <tr><td>ACTIVE</td><td>Available</td><td><code>circle</code></td><td>green-600 on green-50</td></tr>
+    <tr><td>ONBOARDING</td><td>Onboarding</td><td><code>rocket_launch</code></td><td>primary on primary-fixed/30</td></tr>
+    <tr><td>PENDING</td><td>Pending Approval</td><td><code>schedule</code></td><td>amber-600 on amber-50</td></tr>
+    <tr><td>OFFBOARDED</td><td>Offboarded</td><td><code>block</code></td><td>on-surface-variant on surface-container</td></tr>
+  </table>
+
+  <h4>Pagination</h4>
+  <p>12 per page. Circular buttons. Active: primary bg. Ellipsis for large ranges. "Showing X of Y employees" below.</p>
+</div>
+
+<hr/>
+
+<h2>Page 2: Organization Chart</h2>
+<div class="highlight">
+  <h3>Major Changes</h3>
+  <p>Visual tree with CSS gradient connectors · CEO spotlight node · Director cards · Team cards with left accent · Bento stats section · FAB</p>
+</div>
+
+<div class="section">
+  <h4>Visual Org Tree</h4>
+  <ul>
+    <li><strong>CEO node:</strong> centered top, gradient avatar frame, Profile + Contact buttons, shadow-xl</li>
+    <li><strong>Connectors:</strong> vertical gradient lines (primary→surface-variant), horizontal solid lines</li>
+    <li><strong>Director nodes:</strong> centered row below connectors, circular avatars, one highlighted with top border</li>
+    <li><strong>Team cards:</strong> below each director, surface-container bg, left-4px primary border, icon + name + count</li>
+    <li><strong>Depth cap:</strong> max 3 levels, deeper nodes collapse behind "View team"</li>
+  </ul>
+
+  <h4>Bento Stats Section</h4>
+  <ul>
+    <li><strong>Org Health</strong> (2-col span): Total Employees, Retention Rate, Departments</li>
+    <li><strong>Growth card:</strong> primary-container bg, white text, large percentage</li>
+    <li><strong>Inter-Team card:</strong> white bg, hub icon, avatar stack</li>
+  </ul>
+
+  <h4>Manager Assignment</h4>
+  <p>Stays as-is below the bento stats. Icons migrated, layout unchanged.</p>
+</div>
+
+<hr/>
+
+<h2>Page 3: Company Calendar</h2>
+<div class="highlight">
+  <h3>Major Changes</h3>
+  <p>Editorial month title · Month/Week/Day toggle · Large rounded grid cells · Inline event chips · Glass insights panel · Dark promo card · FAB</p>
+</div>
+
+<div class="section">
+  <h4>Calendar Grid</h4>
+  <ul>
+    <li><strong>Container:</strong> surface-container-low, radius-xl (32px), p-4</li>
+    <li><strong>Day cells:</strong> min-h 120px, white rounded-2xl, inline event chips (max 2 + overflow)</li>
+    <li><strong>Today:</strong> primary-fixed bg, primary/20 border, "Today" badge pill</li>
+    <li><strong>Prev/next month:</strong> same cells at 40% opacity</li>
+  </ul>
+
+  <h4>Event Chip Colors</h4>
+  <table>
+    <tr><th>Type</th><th>Background</th><th>Text</th><th>Icon</th></tr>
+    <tr><td>Birthday</td><td>tertiary-container/10</td><td>tertiary</td><td><code>cake</code></td></tr>
+    <tr><td>Anniversary</td><td>tertiary-fixed</td><td>on-tertiary-fixed-variant</td><td><code>verified</code></td></tr>
+    <tr><td>Interview</td><td>primary/10</td><td>primary</td><td><code>videocam</code></td></tr>
+    <tr><td>Holiday</td><td>error-container/20</td><td>error</td><td><code>celebration</code></td></tr>
+    <tr><td>Benefits</td><td>primary-fixed</td><td>on-primary-fixed-variant</td><td><code>health_and_safety</code></td></tr>
+  </table>
+
+  <h4>Removed</h4>
+  <p>Event type legend bar, click-to-select detail panel, 4 summary cards — all replaced by inline chips + insights panel.</p>
+
+  <h4>Contextual Insights</h4>
+  <ul>
+    <li><strong>Upcoming Highlights</strong> (glass panel): mini date icons + next 2-3 events</li>
+    <li><strong>Promo card</strong> (2-col, dark inverse-surface): "Pro Tip" badge, calendar sync CTA (decorative), gradient overlay + watermark</li>
+  </ul>
+</div>
+
+<hr/>
+
+<h2>Affected Files Summary</h2>
+<div class="section">
+  <h4>Foundation</h4>
+  <p><code>globals.css</code>, <code>layout.tsx</code>, <code>icon.tsx</code> (new), <code>fab.tsx</code> (new), <code>package.json</code></p>
+
+  <h4>Icon Migration — 88 Files by Area</h4>
+  <table>
+    <tr><th>Area</th><th>Count</th></tr>
+    <tr><td>Layout (sidebar, top-bar, mobile-nav)</td><td>3</td></tr>
+    <tr><td>Dashboard pages</td><td>12</td></tr>
+    <tr><td>People components</td><td>7</td></tr>
+    <tr><td>Org components</td><td>3</td></tr>
+    <tr><td>CV/Recruitment</td><td>11</td></tr>
+    <tr><td>Settings</td><td>16</td></tr>
+    <tr><td>Onboarding</td><td>4</td></tr>
+    <tr><td>Reviews</td><td>6</td></tr>
+    <tr><td>Feed</td><td>3</td></tr>
+    <tr><td>Time-off</td><td>5</td></tr>
+    <tr><td>Other (calendar, docs, signing, profile, etc.)</td><td>18</td></tr>
+  </table>
+
+  <h4>Page Redesigns (major rewrites)</h4>
+  <table>
+    <tr><th>Page</th><th>Files</th></tr>
+    <tr><td>People Directory</td><td><code>people/page.tsx</code>, <code>people-list.tsx</code></td></tr>
+    <tr><td>Organization Chart</td><td><code>org/page.tsx</code>, <code>org/departments/page.tsx</code>, <code>org-tree.tsx</code>, <code>department-actions.tsx</code>, <code>manager-assignment.tsx</code></td></tr>
+    <tr><td>Calendar</td><td><code>calendar/page.tsx</code>, <code>calendar-view.tsx</code></td></tr>
+  </table>
+</div>
+
+<hr/>
+
+<h2>What Stays</h2>
+<div class="section">
+  <ul>
+    <li><strong>All backend logic</strong> — server actions, data fetching, Prisma queries</li>
+    <li><strong>Component architecture</strong> — CVA + Tailwind + cn()</li>
+    <li><strong>Animation system</strong> — Framer Motion page transitions</li>
+    <li><strong>Auth/routing</strong> — unchanged</li>
+    <li><strong>Manager Assignment</strong> — layout stays, icons migrated</li>
+    <li><strong>Add Employee / Bulk Import</strong> — functionality unchanged, icons updated</li>
+    <li><strong>Holiday calculation</strong> — holidays.ts unchanged</li>
+    <li><strong>Event type system</strong> — same types, rendered as chips instead of dots</li>
+  </ul>
+</div>
+
+<div style="text-align: center; padding: 32px; color: #78758a; font-size: 13px;">
+  Full spec with icon mapping appendix at:<br/>
+  <code>docs/superpowers/specs/2026-03-21-page-redesigns-stitch-alignment.md</code>
+</div>
+
+</body>
+</html>

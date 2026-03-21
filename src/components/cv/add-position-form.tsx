@@ -1,12 +1,12 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { Plus, Loader2, ArrowUpRight, Check, Sparkles, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createPosition, pullCandidateToRecruitment } from "@/lib/actions/candidates";
 import { aiMatchCandidates, type AIMatch } from "@/lib/actions/ai-match";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Department = { id: string; name: string };
 
@@ -87,7 +87,7 @@ export function AIMatchDialog({
     <Dialog open={open} onClose={handleClose} title="AI Candidate Matching">
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="h-4 w-4 text-[var(--color-accent)]" />
+          <Icon name="auto_awesome" size={16} className="text-[var(--color-accent)]" />
           <p className="text-sm text-[var(--color-text-muted)]">
             {loading ? (
               <>AI is scanning your candidate database for <span className="font-medium text-[var(--color-text-primary)]">{positionTitle}</span>...</>
@@ -103,7 +103,7 @@ export function AIMatchDialog({
         {loading ? (
           <div className="flex flex-col items-center justify-center py-10 gap-3">
             <div className="relative">
-              <Sparkles className="h-6 w-6 text-[var(--color-accent)] animate-pulse" />
+              <Icon name="auto_awesome" className="text-[var(--color-accent)] animate-pulse" />
             </div>
             <p className="text-xs text-[var(--color-text-muted)] animate-pulse">Analyzing skills, experience, and fit...</p>
           </div>
@@ -135,7 +135,7 @@ export function AIMatchDialog({
                   <div className="shrink-0">
                     {m.inPipeline ? (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                        <Check className="h-3 w-3" />
+                        <Icon name="check" size={12} />
                         Added
                       </span>
                     ) : (
@@ -148,7 +148,7 @@ export function AIMatchDialog({
                           "disabled:opacity-50"
                         )}
                       >
-                        <ArrowUpRight className="h-3 w-3" />
+                        <Icon name="open_in_new" size={12} />
                         {pullingId === m.id ? "..." : "Pull"}
                       </button>
                     )}
@@ -244,7 +244,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
           "hover:bg-[var(--color-surface-hover)] transition-colors"
         )}
       >
-        <Plus className="h-4 w-4" />
+        <Icon name="add" size={16} />
         Add Position
       </button>
 
@@ -276,7 +276,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
               <div className="flex items-center gap-2">
-                <ExternalLink className="h-4 w-4 text-orange-400" />
+                <Icon name="open_in_new" size={16} className="text-orange-400" />
                 <div>
                   <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Jobing</p>
                   <p className="text-[10px] text-[var(--color-text-muted)]">Automatically publish this job on pro.jobing.com</p>
@@ -298,7 +298,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-[#2164f3]/5 border border-[#2164f3]/20">
               <div className="flex items-center gap-2">
-                <ExternalLink className="h-4 w-4 text-[#2164f3]" />
+                <Icon name="open_in_new" size={16} className="text-[#2164f3]" />
                 <div>
                   <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Indeed</p>
                   <p className="text-[10px] text-[var(--color-text-muted)]">Publish via Unified.to (requires connected Indeed)</p>
@@ -320,7 +320,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-[#6f42c1]/5 border border-[#6f42c1]/20">
               <div className="flex items-center gap-2">
-                <ExternalLink className="h-4 w-4 text-[#6f42c1]" />
+                <Icon name="open_in_new" size={16} className="text-[#6f42c1]" />
                 <div>
                   <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Breezy HR</p>
                   <p className="text-[10px] text-[var(--color-text-muted)]">Publishes to Indeed & LinkedIn via Breezy</p>
@@ -348,7 +348,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
               disabled={!form.title || loading}
               className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
             >
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create & Find Matches"}
+              {loading ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : "Create & Find Matches"}
             </button>
           </div>
         </Dialog>

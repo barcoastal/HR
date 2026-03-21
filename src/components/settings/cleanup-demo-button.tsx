@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cleanupDemoData } from "@/lib/actions/cleanup";
 import { cn } from "@/lib/utils";
-import { Trash2, Loader2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export function CleanupDemoButton() {
   const [running, setRunning] = useState(false);
@@ -50,9 +50,9 @@ export function CleanupDemoButton() {
           )}
         >
           {running ? (
-            <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Cleaning up...</>
+            <><Icon name="progress_activity" size={12} className="animate-material-spin" /> Cleaning up...</>
           ) : (
-            <><Trash2 className="h-3.5 w-3.5" /> Remove Demo Employees</>
+            <><Icon name="delete" size={12} /> Remove Demo Employees</>
           )}
         </button>
       )}

@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { AlertCircle } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -35,7 +35,7 @@ function LoginForm() {
     <>
       {errorMessage && (
         <div className="flex items-center gap-2 p-3 mb-6 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-          <AlertCircle className="h-4 w-4 shrink-0" />
+          <Icon name="error" size={16} className="shrink-0" />
           {errorMessage}
         </div>
       )}

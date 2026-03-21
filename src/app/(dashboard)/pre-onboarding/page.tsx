@@ -1,10 +1,10 @@
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
-import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
 import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline";
 import { MyOnboardingTasks } from "@/components/onboarding/my-onboarding-tasks";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { Icon } from "@/components/ui/icon";
 
 export default async function PreOnboardingPage() {
   const session = await requireAdmin();
@@ -56,8 +56,8 @@ export default async function PreOnboardingPage() {
       <PageHeader title="Pre-Onboarding" description="Track and manage pre-onboarding tasks before full onboarding begins" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        <StatCard title="In Pre-Onboarding" value={preOnboardingEmployees.length} icon={<ClipboardList className="h-5 w-5" />} color="purple" />
-        <StatCard title="Pending Tasks" value={pendingTasks} icon={<UserPlus className="h-5 w-5" />} color="amber" />
+        <StatCard title="In Pre-Onboarding" value={preOnboardingEmployees.length} icon={<Icon name="assignment" size={20} />} color="purple" />
+        <StatCard title="Pending Tasks" value={pendingTasks} icon={<Icon name="person_add" size={20} />} color="amber" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Pre-Onboarding</h2></div>

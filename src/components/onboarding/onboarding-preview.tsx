@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { resolveOnboardingTasks } from "@/lib/actions/onboarding-resolution";
 import { Dialog } from "@/components/ui/dialog";
-import { Loader2, FileText, PenLine, Send, X, ClipboardList } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type ResolvedTask = {
   checklistItemId: string;
@@ -73,11 +73,11 @@ export function OnboardingPreview({ open, onClose, onConfirm, departmentId, jobT
 
         {fetching ? (
           <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-[var(--color-text-muted)]" />
+            <Icon name="progress_activity" className="animate-material-spin text-[var(--color-text-muted)]" />
           </div>
         ) : tasks.length === 0 ? (
           <div className="text-center py-8">
-            <ClipboardList className="h-8 w-8 text-[var(--color-text-muted)] mx-auto mb-2" />
+            <Icon name="assignment" size={32} className="text-[var(--color-text-muted)] mx-auto mb-2" />
             <p className="text-sm text-[var(--color-text-muted)]">
               No onboarding tasks configured for {departmentName || "this department"}.
               You can add custom tasks or configure templates in Settings.
@@ -112,12 +112,12 @@ export function OnboardingPreview({ open, onClose, onConfirm, departmentId, jobT
                       )}
                       {task.documentAction === "SEND" && (
                         <span className="inline-flex items-center gap-1 text-xs text-blue-500">
-                          <Send className="h-3 w-3" />Send Doc
+                          <Icon name="send" size={12} />Send Doc
                         </span>
                       )}
                       {task.documentAction === "SIGN" && (
                         <span className="inline-flex items-center gap-1 text-xs text-amber-500">
-                          <PenLine className="h-3 w-3" />Sign Doc
+                          <Icon name="edit_note" size={12} />Sign Doc
                         </span>
                       )}
                     </div>
@@ -130,7 +130,7 @@ export function OnboardingPreview({ open, onClose, onConfirm, departmentId, jobT
                     {isExcluded ? (
                       <span className="text-xs text-[var(--color-accent)]">Restore</span>
                     ) : (
-                      <X className="h-4 w-4 text-[var(--color-text-muted)]" />
+                      <Icon name="close" size={16} className="text-[var(--color-text-muted)]" />
                     )}
                   </button>
                 </div>

@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Shield, Check, X, Loader2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { ALL_PERMISSIONS } from "@/lib/permissions-config";
 import { updateRolePermissions } from "@/lib/actions/role-permissions";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 const ROLES = ["SUPER_ADMIN", "ADMIN", "HR", "MANAGER", "EMPLOYEE"] as const;
 
@@ -82,7 +82,7 @@ export function PermissionsManager({ permissions }: Props) {
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-5">
-        <Shield className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="shield" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Role Permissions</h2>
       </div>
       <p className="text-sm text-[var(--color-text-muted)] mb-6">
@@ -132,7 +132,7 @@ export function PermissionsManager({ permissions }: Props) {
                             : "hover:bg-[var(--color-surface-hover)] cursor-pointer"
                         )}
                       >
-                        {granted ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+                        {granted ? <Icon name="check" size={16} /> : <Icon name="close" size={16} />}
                       </button>
                     </td>
                   );
@@ -175,7 +175,7 @@ export function PermissionsManager({ permissions }: Props) {
                         )}
                       >
                         {savingRole === role ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Icon name="progress_activity" size={12} className="animate-material-spin" />
                         ) : (
                           "Save"
                         )}

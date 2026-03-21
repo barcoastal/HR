@@ -1,8 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Sparkles, Send, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { Icon } from "@/components/ui/icon";
 
 type Message = {
   role: "user" | "assistant";
@@ -122,7 +122,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] mb-3 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--color-border)]/60">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-[var(--color-accent)]" />
+              <Icon name="auto_awesome" size={16} className="text-[var(--color-accent)]" />
               <span className="text-xs font-semibold text-[var(--color-text-primary)]">AI Analytics Assistant</span>
             </div>
             <div className="flex items-center gap-1">
@@ -130,13 +130,13 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
                 onClick={() => setPanelOpen(false)}
                 className="p-1 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
               >
-                <ChevronDown className="h-4 w-4" />
+                <Icon name="expand_more" size={16} />
               </button>
               <button
                 onClick={() => { setMessages([]); setPanelOpen(false); }}
                 className="p-1 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
               >
-                <X className="h-4 w-4" />
+                <Icon name="close" size={16} />
               </button>
             </div>
           </div>
@@ -153,7 +153,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
                 >
                   {msg.role === "assistant" && msg.content === "" && streaming ? (
                     <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin text-[var(--color-accent)]" />
+                      <Icon name="progress_activity" size={16} className="animate-material-spin text-[var(--color-accent)]" />
                       <span className="text-[var(--color-text-muted)]">Thinking...</span>
                     </div>
                   ) : (
@@ -172,7 +172,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
           onClick={() => setPanelOpen(true)}
           className="w-full flex items-center justify-center gap-2 py-2 mb-3 rounded-xl text-xs font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/5 hover:bg-[var(--color-accent)]/10 transition-colors"
         >
-          <ChevronUp className="h-3.5 w-3.5" />
+          <Icon name="expand_less" size={12} />
           Show AI conversation ({messages.length} messages)
         </button>
       )}
@@ -200,7 +200,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
 
       {/* Input bar */}
       <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] flex items-center gap-3 p-3">
-        <Sparkles className="h-5 w-5 text-[var(--color-accent)] shrink-0" />
+        <Icon name="auto_awesome" size={20} className="text-[var(--color-accent)] shrink-0" />
         <input
           ref={inputRef}
           type="text"
@@ -227,7 +227,7 @@ export function AIAnalyticsBar({ context }: { context: Record<string, unknown> }
             "disabled:opacity-50"
           )}
         >
-          {streaming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+          {streaming ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="send" size={16} />}
         </button>
       </div>
     </div>

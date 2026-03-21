@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { updateMyProfile } from "@/lib/actions/my-profile";
 import { useRouter } from "next/navigation";
-import { Phone } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type EmergencyContactData = {
   employeeId: string;
@@ -56,7 +56,7 @@ export function EditEmergencyContactDialog({ data }: { data: EmergencyContactDat
           "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
         )}
       >
-        <Phone className="h-3.5 w-3.5" />Edit
+        <Icon name="phone" size={12} />Edit
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Edit Emergency Contact">

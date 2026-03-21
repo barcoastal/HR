@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { deleteEmployee } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 export function DeleteEmployeeButton({ employeeId, employeeName }: { employeeId: string; employeeName: string }) {
   const [deleting, setDeleting] = useState(false);
@@ -34,9 +34,9 @@ export function DeleteEmployeeButton({ employeeId, employeeName }: { employeeId:
       )}
     >
       {deleting ? (
-        <><Loader2 className="h-4 w-4 animate-spin" /> Deleting...</>
+        <><Icon name="progress_activity" size={16} className="animate-material-spin" /> Deleting...</>
       ) : (
-        <><Trash2 className="h-4 w-4" /> Delete Employee</>
+        <><Icon name="delete" size={16} /> Delete Employee</>
       )}
     </button>
   );

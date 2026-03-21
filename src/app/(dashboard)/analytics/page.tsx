@@ -23,11 +23,6 @@ import {
   getPlatformSpendVsHiresTrend,
 } from "@/lib/actions/recruitment-platforms";
 import {
-  Users, TrendingUp, TrendingDown, UserPlus, UserMinus,
-  Cake, CalendarHeart, Clock, DollarSign, Target, Briefcase,
-  UtensilsCrossed, BarChart3, Shield, Cable,
-} from "lucide-react";
-import {
   DepartmentBarChart,
   TenureBarChart,
   PipelinePieChart,
@@ -39,6 +34,7 @@ import { SpendVsHiresChart } from "@/components/analytics/recruitment-cost-chart
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { AIAnalyticsBar } from "@/components/analytics/ai-analytics-bar";
+import { Icon } from "@/components/ui/icon";
 
 export default async function AnalyticsPage() {
   await requireManagerOrAdmin();
@@ -89,19 +85,19 @@ export default async function AnalyticsPage() {
 
       {/* Headcount Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-        <StatCard title="Total Employees" value={headcount.total} icon={<Users className="h-5 w-5" />} color="blue" />
-        <StatCard title="Active" value={headcount.active} icon={<Users className="h-5 w-5" />} color="emerald" />
-        <StatCard title="New This Month" value={headcount.newThisMonth} icon={<UserPlus className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Departed" value={headcount.departedThisMonth} icon={<UserMinus className="h-5 w-5" />} color="red" />
-        <StatCard title="Net Growth" value={headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth)} icon={headcount.netGrowthMonth >= 0 ? <TrendingUp className="h-5 w-5" /> : <TrendingDown className="h-5 w-5" />} color={headcount.netGrowthMonth >= 0 ? "emerald" : "red"} animate={false} />
-        <StatCard title="Retention" value={`${retention.retentionRate}%`} icon={<Target className="h-5 w-5" />} color="purple" animate={false} />
+        <StatCard title="Total Employees" value={headcount.total} icon={<Icon name="group" size={20} />} color="blue" />
+        <StatCard title="Active" value={headcount.active} icon={<Icon name="group" size={20} />} color="emerald" />
+        <StatCard title="New This Month" value={headcount.newThisMonth} icon={<Icon name="person_add" size={20} />} color="emerald" />
+        <StatCard title="Departed" value={headcount.departedThisMonth} icon={<Icon name="person_remove" size={20} />} color="red" />
+        <StatCard title="Net Growth" value={headcount.netGrowthMonth >= 0 ? `+${headcount.netGrowthMonth}` : String(headcount.netGrowthMonth)} icon={headcount.netGrowthMonth >= 0 ? <Icon name="trending_up" size={20} /> : <Icon name="trending_down" size={20} />} color={headcount.netGrowthMonth >= 0 ? "emerald" : "red"} animate={false} />
+        <StatCard title="Retention" value={`${retention.retentionRate}%`} icon={<Icon name="target" size={20} />} color="purple" animate={false} />
       </div>
 
       {/* Recruitment KPIs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <StatCard title="Avg Time to Hire" value={timeToHire.avgDays} icon={<Clock className="h-5 w-5" />} color="amber" suffix="days" />
-        <StatCard title="Blended Cost/Hire" value={`$${blendedCost.blendedCostPerHire.toLocaleString()}`} icon={<DollarSign className="h-5 w-5" />} color="emerald" animate={false} description={`Direct: $${blendedCost.directCostPerHire.toLocaleString()} · Platform: $${blendedCost.platformCostPerHire.toLocaleString()}`} />
-        <StatCard title="Open Positions" value={pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)} icon={<Briefcase className="h-5 w-5" />} color="blue" description="active candidates" />
+        <StatCard title="Avg Time to Hire" value={timeToHire.avgDays} icon={<Icon name="schedule" size={20} />} color="amber" suffix="days" />
+        <StatCard title="Blended Cost/Hire" value={`$${blendedCost.blendedCostPerHire.toLocaleString()}`} icon={<Icon name="attach_money" size={20} />} color="emerald" animate={false} description={`Direct: $${blendedCost.directCostPerHire.toLocaleString()} · Platform: $${blendedCost.platformCostPerHire.toLocaleString()}`} />
+        <StatCard title="Open Positions" value={pipeline.filter((p) => !["HIRED", "REJECTED"].includes(p.status)).reduce((a, p) => a + p.count, 0)} icon={<Icon name="work" size={20} />} color="blue" description="active candidates" />
       </div>
 
       {/* Charts Row 1 */}
@@ -165,7 +161,7 @@ export default async function AnalyticsPage() {
         {/* Recruiter Analytics */}
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="h-4 w-4 text-[var(--color-accent)]" />
+            <Icon name="bar_chart" size={16} className="text-[var(--color-accent)]" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Recruiter Performance</h3>
           </div>
           {recruiterStats.length > 0 ? (
@@ -192,7 +188,7 @@ export default async function AnalyticsPage() {
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Cable className="h-4 w-4 text-[var(--color-accent)]" />
+              <Icon name="cable" size={16} className="text-[var(--color-accent)]" />
               <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Recruitment Platform Spend</h3>
             </div>
             <span className={cn("px-2 py-1 rounded-lg text-xs font-medium", "bg-[var(--color-accent)]/10 text-[var(--color-accent)]")}>
@@ -349,7 +345,7 @@ export default async function AnalyticsPage() {
       {/* Benefits Eligibility */}
       <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5 mb-6">
         <div className="flex items-center gap-2 mb-4">
-          <Shield className="h-4 w-4 text-emerald-400" />
+          <Icon name="shield" size={16} className="text-emerald-400" />
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Benefits Eligibility</h3>
         </div>
         <div className="flex items-center gap-6 mb-4">
@@ -396,7 +392,7 @@ export default async function AnalyticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Cake className="h-4 w-4 text-amber-400" />
+            <Icon name="cake" size={16} className="text-amber-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Birthdays</h3>
           </div>
           {birthdays.length > 0 ? (
@@ -421,7 +417,7 @@ export default async function AnalyticsPage() {
 
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
           <div className="flex items-center gap-2 mb-4">
-            <CalendarHeart className="h-4 w-4 text-rose-400" />
+            <Icon name="calendar_month" size={16} className="text-rose-400" />
             <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Upcoming Work Anniversaries</h3>
           </div>
           {anniversaries.length > 0 ? (

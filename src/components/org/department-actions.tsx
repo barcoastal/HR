@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -10,6 +9,7 @@ import {
   deleteDepartment,
 } from "@/lib/actions/departments";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 // ---------------------------------------------------------------------------
 // Shared types
@@ -143,7 +143,7 @@ export function DepartmentActions({
           "hover:bg-[var(--color-accent-hover)] transition-colors",
         )}
       >
-        <Plus className="h-4 w-4" />
+        <Icon name="add" size={16} />
         Add Department
       </button>
 
@@ -384,7 +384,7 @@ export function DepartmentRowActions({
           )}
           aria-label={`Edit ${department.name}`}
         >
-          <Pencil className="h-4 w-4" />
+          <Icon name="edit" size={16} />
         </button>
         <button
           onClick={() => setDeleteOpen(true)}
@@ -395,7 +395,7 @@ export function DepartmentRowActions({
           )}
           aria-label={`Delete ${department.name}`}
         >
-          <Trash2 className="h-4 w-4" />
+          <Icon name="delete" size={16} />
         </button>
       </div>
 

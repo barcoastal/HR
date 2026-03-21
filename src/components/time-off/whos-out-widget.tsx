@@ -1,5 +1,5 @@
 import { cn, getInitials } from "@/lib/utils";
-import { Palmtree } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type OutEmployee = {
   employee: { id: string; firstName: string; lastName: string; jobTitle: string };
@@ -13,7 +13,7 @@ export function WhosOutWidget({ outToday }: { outToday: OutEmployee[] }) {
     return (
       <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
         <div className="flex items-center gap-2 mb-3">
-          <Palmtree className="h-5 w-5 text-emerald-500" />
+          <Icon name="beach_access" size={20} className="text-emerald-500" />
           <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Who&apos;s Out Today</h3>
         </div>
         <p className="text-sm text-[var(--color-text-muted)]">Everyone is in today!</p>
@@ -24,7 +24,7 @@ export function WhosOutWidget({ outToday }: { outToday: OutEmployee[] }) {
   return (
     <div className={cn("rounded-xl p-5", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-3">
-        <Palmtree className="h-5 w-5 text-emerald-500" />
+        <Icon name="beach_access" size={20} className="text-emerald-500" />
         <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Who&apos;s Out Today</h3>
         <span className="ml-auto text-xs font-medium text-[var(--color-text-muted)] bg-[var(--color-surface-hover)] px-2 py-0.5 rounded-full">
           {outToday.length}

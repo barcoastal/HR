@@ -1,7 +1,6 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { Cable, Loader2, CheckCircle2, Unlink, Shield, LogIn, AlertCircle, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
@@ -12,6 +11,7 @@ import {
   connectBreezyHRCompany,
 } from "@/lib/actions/platform-sync";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type ConnectedPlatform = {
   name: string;
@@ -175,7 +175,7 @@ export function NativeIntegrations({ connected }: Props) {
       )}
     >
       <div className="flex items-center gap-2 mb-2">
-        <Cable className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="cable" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
           Platform Integrations
         </h2>
@@ -195,16 +195,16 @@ export function NativeIntegrations({ connected }: Props) {
           )}
         >
           {notification.type === "success" ? (
-            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <Icon name="check_circle" size={16} className="shrink-0" />
           ) : (
-            <AlertCircle className="h-4 w-4 shrink-0" />
+            <Icon name="error" size={16} className="shrink-0" />
           )}
           <span className="flex-1">{notification.message}</span>
           <button
             onClick={() => setNotification(null)}
             className="shrink-0 hover:opacity-70 transition-opacity"
           >
-            <X className="h-4 w-4" />
+            <Icon name="close" size={16} />
           </button>
         </div>
       )}
@@ -271,7 +271,7 @@ export function NativeIntegrations({ connected }: Props) {
                       "hover:bg-red-500/10 hover:text-red-400 transition-colors"
                     )}
                   >
-                    <Unlink className="h-3.5 w-3.5" />
+                    <Icon name="link_off" size={12} />
                     Disconnect
                   </button>
                 </div>
@@ -285,7 +285,7 @@ export function NativeIntegrations({ connected }: Props) {
                     "hover:opacity-90"
                   )}
                 >
-                  <LogIn className="h-4 w-4" />
+                  <Icon name="login" size={16} />
                   Sign in with {platform.name}
                 </button>
               )}
@@ -344,7 +344,7 @@ export function NativeIntegrations({ connected }: Props) {
                 disabled={breezyLoading || !breezyEmail.trim() || !breezyPassword.trim()}
                 className={cn("w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "text-white transition-colors", connectingPlatform.color, "hover:opacity-90", "disabled:opacity-50")}
               >
-                {breezyLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                {breezyLoading ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="login" size={16} />}
                 {breezyLoading ? "Signing in..." : "Sign In & Connect"}
               </button>
               <button onClick={closeConnect} className="w-full px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors">
@@ -374,7 +374,7 @@ export function NativeIntegrations({ connected }: Props) {
             {breezyError && <p className="text-xs text-red-500">{breezyError}</p>}
             {breezyLoading && (
               <div className="flex items-center justify-center gap-2 py-2">
-                <Loader2 className="h-4 w-4 animate-spin text-[var(--color-accent)]" />
+                <Icon name="progress_activity" size={16} className="animate-material-spin text-[var(--color-accent)]" />
                 <span className="text-xs text-[var(--color-text-muted)]">Connecting...</span>
               </div>
             )}
@@ -419,7 +419,7 @@ export function NativeIntegrations({ connected }: Props) {
               </p>
               {connectingPlatform.permissions.map((perm) => (
                 <div key={perm} className="flex items-center gap-2">
-                  <Shield className="h-3.5 w-3.5 text-[var(--color-accent)] shrink-0" />
+                  <Icon name="shield" size={12} className="text-[var(--color-accent)] shrink-0" />
                   <span className="text-xs text-[var(--color-text-muted)]">{perm}</span>
                 </div>
               ))}
@@ -436,7 +436,7 @@ export function NativeIntegrations({ connected }: Props) {
                   "hover:opacity-90"
                 )}
               >
-                <LogIn className="h-4 w-4" />
+                <Icon name="login" size={16} />
                 Authorize & Connect
               </button>
               <button
@@ -461,7 +461,7 @@ export function NativeIntegrations({ connected }: Props) {
         title=""
       >
         <div className="flex flex-col items-center gap-4 py-8">
-          <Loader2 className="h-10 w-10 text-[var(--color-accent)] animate-spin" />
+          <Icon name="progress_activity" size={40} className="animate-material-spin text-[var(--color-accent)] animate-spin" />
           <div className="text-center">
             <p className="text-sm font-medium text-[var(--color-text-primary)]">
               Connecting to {connectingPlatform?.name}...
@@ -489,7 +489,7 @@ export function NativeIntegrations({ connected }: Props) {
             >
               {connectingPlatform?.name.charAt(0)}
             </div>
-            <CheckCircle2 className="h-6 w-6 text-emerald-500 absolute -bottom-1 -right-1 bg-[var(--color-surface)] rounded-full" />
+            <Icon name="check_circle" className="text-emerald-500 absolute -bottom-1 -right-1 bg-[var(--color-surface)] rounded-full" />
           </div>
           <div className="text-center">
             <p className="text-sm font-semibold text-[var(--color-text-primary)]">
@@ -534,7 +534,7 @@ export function NativeIntegrations({ connected }: Props) {
           >
             {loading ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Disconnecting...
               </span>
             ) : (

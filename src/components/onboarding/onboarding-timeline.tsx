@@ -1,22 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  CheckCircle2,
-  Circle,
-  Plus,
-  Loader2,
-  PartyPopper,
-  ClipboardList,
-  Calendar,
-  UserCircle,
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  Send,
-  PenLine,
-  Trash2,
-} from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -28,6 +12,7 @@ import {
   deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type TaskItem = {
   id: string;
@@ -249,7 +234,7 @@ export function OnboardingTimeline({
       >
         <div className="flex flex-col items-center gap-4 py-4">
           <div className="h-14 w-14 rounded-full bg-emerald-500/15 flex items-center justify-center">
-            <PartyPopper className="h-8 w-8 text-emerald-500" />
+            <Icon name="celebration" size={32} className="text-emerald-500" />
           </div>
           <div className="text-center">
             <p className="text-lg font-semibold text-[var(--color-text-primary)]">
@@ -292,7 +277,7 @@ export function OnboardingTimeline({
               <p className="text-[10px] text-[var(--color-text-muted)]">tasks</p>
             </div>
           </div>
-          <ChevronDown className={cn("h-4 w-4 text-[var(--color-text-muted)] transition-transform", expanded && "rotate-180")} />
+          <Icon name="expand_more" size={16} className={cn("text-[var(--color-text-muted)] transition-transform", expanded && "rotate-180")} />
         </div>
       </button>
 
@@ -321,7 +306,7 @@ export function OnboardingTimeline({
               onClick={() => setConfirmDelete(true)}
               className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs text-red-400 hover:bg-red-500/10 transition-colors"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Icon name="delete" size={12} />
               Delete
             </button>
           )}
@@ -390,7 +375,7 @@ export function OnboardingTimeline({
                           <span className="text-sm font-semibold text-[var(--color-text-primary)]">{phaseLabel}</span>
                           <span className="text-xs text-[var(--color-text-muted)]">{phaseDone}/{phaseTotal} complete</span>
                           <ProgressRing percent={phasePercent} size={20} />
-                          <ChevronRight className={cn("h-3.5 w-3.5 text-[var(--color-text-muted)] transition-transform ml-auto", !isCollapsed && "rotate-90")} />
+                          <Icon name="chevron_right" size={14} className={cn("text-[var(--color-text-muted)] transition-transform ml-auto", !isCollapsed && "rotate-90")} />
                         </button>
 
                         {/* Phase tasks */}
@@ -421,17 +406,17 @@ export function OnboardingTimeline({
                                     >
                                       <div className="mt-0.5 shrink-0">
                                         {isToggling ? (
-                                          <Loader2 className="h-5 w-5 text-[var(--color-text-muted)] animate-spin" />
+                                          <Icon name="progress_activity" size={20} className="animate-material-spin text-[var(--color-text-muted)] animate-spin" />
                                         ) : isDone ? (
                                           <motion.div
                                             initial={{ scale: 0.5 }}
                                             animate={{ scale: 1 }}
                                             transition={{ type: "spring", stiffness: 500, damping: 15 }}
                                           >
-                                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                                            <Icon name="check_circle" size={20} className="text-emerald-500" />
                                           </motion.div>
                                         ) : (
-                                          <Circle className="h-5 w-5 text-[var(--color-text-muted)]" />
+                                          <Icon name="circle" size={20} className="text-[var(--color-text-muted)]" />
                                         )}
                                       </div>
                                       <div className="min-w-0 flex-1">
@@ -453,7 +438,7 @@ export function OnboardingTimeline({
                                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                           {task.documentAction === "SEND" && (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                              <Send className="h-3 w-3" />Sent
+                                              <Icon name="send" size={12} />Sent
                                             </span>
                                           )}
                                           {task.documentAction === "SIGN" && (
@@ -463,13 +448,13 @@ export function OnboardingTimeline({
                                               task.signingStatus === "VIEWED" ? "bg-blue-500/10 text-blue-500" :
                                               "bg-amber-500/10 text-amber-500"
                                             )}>
-                                              <PenLine className="h-3 w-3" />
+                                              <Icon name="edit_note" size={12} />
                                               {task.signingStatus === "SIGNED" ? "Signed" : task.signingStatus === "VIEWED" ? "Viewed" : "Pending Signature"}
                                             </span>
                                           )}
                                           {task.assigneeName && (
                                             <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                                              <UserCircle className="h-3 w-3" />Assigned to: {task.assigneeName}
+                                              <Icon name="account_circle" size={12} />Assigned to: {task.assigneeName}
                                             </span>
                                           )}
                                         </div>
@@ -500,7 +485,7 @@ export function OnboardingTimeline({
                     "transition-colors"
                   )}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Icon name="add" size={16} />
                   Add Tasks
                   {availableItems.length > 0 && (
                     <span className="ml-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full text-xs font-semibold bg-[var(--color-accent)] text-white">
@@ -522,9 +507,9 @@ export function OnboardingTimeline({
                     )}
                   >
                     {completing ? (
-                      <><Loader2 className="h-4 w-4 animate-spin" />Processing...</>
+                      <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</>
                     ) : (
-                      <><CheckCircle2 className="h-4 w-4" />{type === "PRE_ONBOARDING" ? "Move to Onboarding" : `Complete ${label}`}</>
+                      <><Icon name="check_circle" size={16} />{type === "PRE_ONBOARDING" ? "Move to Onboarding" : `Complete ${label}`}</>
                     )}
                   </button>
                 )}
@@ -553,7 +538,7 @@ export function OnboardingTimeline({
 
                       {Object.keys(groupedAvailable).length === 0 ? (
                         <div className="text-center py-6">
-                          <ClipboardList className="h-8 w-8 text-[var(--color-text-muted)] mx-auto mb-2" />
+                          <Icon name="assignment" size={32} className="text-[var(--color-text-muted)] mx-auto mb-2" />
                           <p className="text-sm text-[var(--color-text-muted)]">All template tasks have been added.</p>
                         </div>
                       ) : (
@@ -583,12 +568,12 @@ export function OnboardingTimeline({
                                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                           {item.assigneeName && (
                                             <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                                              <UserCircle className="h-3 w-3" />{item.assigneeName}
+                                              <Icon name="account_circle" size={12} />{item.assigneeName}
                                             </span>
                                           )}
                                           {dueDayLabel && (
                                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
-                                              <Calendar className="h-3 w-3" />{dueDayLabel}
+                                              <Icon name="calendar_today" size={12} />{dueDayLabel}
                                             </span>
                                           )}
                                         </div>
@@ -602,7 +587,7 @@ export function OnboardingTimeline({
                                           "disabled:opacity-50"
                                         )}
                                       >
-                                        {isAdding ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
+                                        {isAdding ? <Icon name="progress_activity" size={12} className="animate-material-spin" /> : <Icon name="add" size={12} />}
                                         {isAdding ? "Adding..." : "Add"}
                                       </button>
                                     </div>
@@ -639,7 +624,7 @@ export function OnboardingTimeline({
                             "disabled:opacity-50"
                           )}
                         >
-                          {addingCustom ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+                          {addingCustom ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="add" size={16} />}
                           {addingCustom ? "Adding..." : "Add Custom Task"}
                         </button>
                       </div>

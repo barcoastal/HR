@@ -1,0 +1,309 @@
+<h2>Calendar — Current vs Stitch</h2>
+<p class="subtitle">From basic grid + detail panel to editorial calendar with inline event chips</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Current Implementation</div>
+    <div class="mockup-body" style="padding: 20px; background: #fcf8ff; font-family: Inter, sans-serif;">
+      <!-- Current: Month nav + legend + grid with dots + selected day panel + 4 summary cards -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div>
+          <div style="font-size: 24px; font-weight: 600; color: #1a1a27;">Company Calendar</div>
+          <div style="font-size: 14px; color: #484555;">Team events and milestones</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div style="padding: 6px 12px; background: white; border-radius: 8px; font-size: 13px; color: #484555;">← Prev</div>
+          <div style="font-size: 16px; font-weight: 600; color: #1a1a27;">March 2026</div>
+          <div style="padding: 6px 12px; background: white; border-radius: 8px; font-size: 13px; color: #484555;">Next →</div>
+          <div style="padding: 6px 12px; background: #e5deff; border-radius: 8px; font-size: 13px; color: #441cc8; font-weight: 600;">Today</div>
+        </div>
+      </div>
+      <!-- Legend -->
+      <div style="display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #f59e0b;"></div> Birthday
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #f43f5e;"></div> Anniversary
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div> Benefits
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #8b5cf6;"></div> Interview
+        </div>
+        <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: #3b82f6;"></div> Holiday
+        </div>
+      </div>
+      <!-- Calendar grid (simplified) -->
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 12px;">
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Sun</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Mon</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Tue</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Wed</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Thu</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Fri</div>
+        <div style="text-align: center; font-size: 11px; font-weight: 600; color: #78758a; padding: 6px;">Sat</div>
+        <!-- Week 1 -->
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">1</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">2</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">3
+          <div style="display: flex; gap: 2px; margin-top: 4px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></div></div>
+        </div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">4</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">5</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">6</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">7</div>
+        <!-- Week 2 -->
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">8</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">9</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">10</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">11</div>
+        <div style="height: 52px; background: #e5deff; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #5b3cdd; font-weight: 700; border: 2px solid #5b3cdd;">12
+          <div style="display: flex; gap: 2px; margin-top: 2px;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #8b5cf6;"></div><div style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></div></div>
+        </div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">13</div>
+        <div style="height: 52px; background: white; border-radius: 6px; padding: 4px 6px; font-size: 12px; color: #1a1a27;">14</div>
+      </div>
+      <!-- Selected day detail -->
+      <div style="background: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; border-left: 3px solid #5b3cdd;">
+        <div style="font-size: 13px; font-weight: 600; color: #1a1a27; margin-bottom: 6px;">March 12 — Selected Day</div>
+        <div style="font-size: 12px; color: #484555;">🎂 Birthday: Marcus Chen</div>
+        <div style="font-size: 12px; color: #484555;">🎤 Interview: Sarah J. @ 2pm</div>
+      </div>
+      <!-- 4 summary cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px;">
+        <div style="background: white; border-radius: 12px; padding: 12px; text-align: center;">
+          <div style="font-size: 11px; color: #78758a;">🎂 Birthdays</div>
+          <div style="font-size: 18px; font-weight: 700; color: #1a1a27;">3</div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 12px; text-align: center;">
+          <div style="font-size: 11px; color: #78758a;">🎉 Anniversaries</div>
+          <div style="font-size: 18px; font-weight: 700; color: #1a1a27;">2</div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 12px; text-align: center;">
+          <div style="font-size: 11px; color: #78758a;">💊 Benefits</div>
+          <div style="font-size: 18px; font-weight: 700; color: #1a1a27;">1</div>
+        </div>
+        <div style="background: white; border-radius: 12px; padding: 12px; text-align: center;">
+          <div style="font-size: 11px; color: #78758a;">🏖 Holidays</div>
+          <div style="font-size: 18px; font-weight: 700; color: #1a1a27;">1</div>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 12px; color: #78758a; font-size: 12px;">Small cells with dot indicators · Click-to-select detail panel · Legend bar · 4 summary cards</div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Stitch Target</div>
+    <div class="mockup-body" style="padding: 20px; background: #fcf8ff; font-family: Inter, sans-serif;">
+      <!-- Stitch: Editorial header + Month/Week/Day toggle + Large cells with inline chips + Insights panel + Dark promo card -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 32px; font-weight: 900; color: #1a1a27; letter-spacing: -0.5px;">March 2026</div>
+          <div style="font-size: 14px; color: #484555; font-weight: 500;">3 important milestones this week</div>
+        </div>
+        <div style="display: flex; background: #f5f2ff; border-radius: 12px; padding: 3px;">
+          <div style="padding: 8px 16px; background: white; border-radius: 10px; font-size: 13px; font-weight: 700; color: #5b3cdd; box-shadow: 0 1px 3px rgba(0,0,0,0.08);">Month</div>
+          <div style="padding: 8px 16px; font-size: 13px; font-weight: 600; color: #484555;">Week</div>
+          <div style="padding: 8px 16px; font-size: 13px; font-weight: 600; color: #484555;">Day</div>
+        </div>
+      </div>
+
+      <!-- Calendar in container -->
+      <div style="background: #f5f2ff; border-radius: 24px; padding: 14px; margin-bottom: 16px;">
+        <!-- Day labels -->
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 8px;">
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Mon</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Tue</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Wed</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Thu</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Fri</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Sat</div>
+          <div style="text-align: center; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; color: #797587; padding: 6px;">Sun</div>
+        </div>
+        <!-- Grid cells - larger with inline event chips -->
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;">
+          <!-- Prev month days (dimmed) -->
+          <div style="min-height: 80px; background: rgba(255,255,255,0.4); border-radius: 14px; padding: 8px; opacity: 0.4;">
+            <span style="font-size: 12px; font-weight: 700;">27</span>
+          </div>
+          <div style="min-height: 80px; background: rgba(255,255,255,0.4); border-radius: 14px; padding: 8px; opacity: 0.4;">
+            <span style="font-size: 12px; font-weight: 700;">28</span>
+          </div>
+          <!-- Current month -->
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">1</span>
+            <div style="margin-top: 6px; background: rgba(91,60,221,0.1); color: #5b3cdd; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Kick-off Q2</div>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">2</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">3</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">4</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">5</span>
+            <div style="margin-top: 6px; background: rgba(0,98,139,0.1); color: #00628b; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 6px; display: flex; align-items: center; gap: 2px;">🎂 Birthday</div>
+          </div>
+          <!-- Row 2 -->
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">6</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">7</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">8</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">9</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">10</span>
+          </div>
+          <div style="min-height: 80px; background: white; border-radius: 14px; padding: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: #1a1a27;">11</span>
+          </div>
+          <!-- TODAY -->
+          <div style="min-height: 80px; background: #e5deff; border: 2px solid rgba(91,60,221,0.2); border-radius: 14px; padding: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 12px; font-weight: 900; color: #5b3cdd;">12</span>
+              <span style="background: #5b3cdd; color: white; font-size: 7px; padding: 2px 6px; border-radius: 10px; font-weight: 700; text-transform: uppercase;">Today</span>
+            </div>
+            <div style="margin-top: 6px; background: #5b3cdd; color: white; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 6px;">Team Sync: 10AM</div>
+            <div style="margin-top: 3px; background: rgba(255,255,255,0.5); color: #5b3cdd; font-size: 9px; font-weight: 700; padding: 3px 6px; border-radius: 6px;">Design Review</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contextual insights: glass card + dark promo -->
+      <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+        <!-- Glass insights -->
+        <div style="background: rgba(227,224,242,0.7); backdrop-filter: blur(12px); border-radius: 24px; padding: 18px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: rgba(91,60,221,0.1); display: flex; align-items: center; justify-content: center; color: #5b3cdd; font-size: 16px;">✨</div>
+            <div style="font-size: 15px; font-weight: 700; color: #1a1a27;">Upcoming Highlights</div>
+          </div>
+          <!-- Highlight items -->
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: white; overflow: hidden; display: flex; flex-direction: column; align-items: center;">
+                <div style="background: #5b3cdd; width: 100%; text-align: center; color: white; font-size: 7px; font-weight: 900; padding: 2px; text-transform: uppercase;">Mar</div>
+                <div style="font-size: 14px; font-weight: 900; color: #1a1a27; margin-top: 1px;">14</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: #1a1a27;">Work Anniversary</div>
+                <div style="font-size: 10px; color: #484555;">David Chen · 5 years</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: white; overflow: hidden; display: flex; flex-direction: column; align-items: center;">
+                <div style="background: #007caf; width: 100%; text-align: center; color: white; font-size: 7px; font-weight: 900; padding: 2px; text-transform: uppercase;">Mar</div>
+                <div style="font-size: 14px; font-weight: 900; color: #1a1a27; margin-top: 1px;">18</div>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: #1a1a27;">Quarterly Townhall</div>
+                <div style="font-size: 10px; color: #484555;">All hands · 2:00 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dark promo card -->
+        <div style="background: #2f2f3c; border-radius: 24px; padding: 24px; position: relative; overflow: hidden; display: flex; align-items: center;">
+          <div style="position: relative; z-index: 1;">
+            <div style="background: rgba(91,60,221,0.2); color: #c9bfff; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px;">Pro Tip</div>
+            <div style="font-size: 20px; font-weight: 900; color: white; line-height: 1.3; margin-bottom: 8px;">Sync your calendar with Google or Outlook.</div>
+            <div style="font-size: 12px; color: rgba(227,224,242,0.7); margin-bottom: 14px;">Keep your professional and personal life in perfect harmony.</div>
+            <div style="background: #fcf8ff; color: #1a1a27; padding: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; display: inline-block;">Enable Sync Now</div>
+          </div>
+          <div style="position: absolute; right: -20px; bottom: -20px; font-size: 120px; opacity: 0.05; color: white;">📅</div>
+          <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 30%; background: linear-gradient(to left, rgba(91,60,221,0.3), transparent);"></div>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 12px; color: #78758a; font-size: 12px; margin-top: 8px;">Large rounded cells · Inline event chips · Month/Week/Day toggle · Glass insights · Dark promo card</div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top: 32px;">Key Changes</h3>
+<div class="section">
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600; width: 30%;">Header</td>
+      <td style="padding: 8px;">Month name as editorial display text (32px/900). Subtitle shows milestone count for current week. Prev/Next/Today buttons removed from header — month navigation via arrow buttons on the calendar itself.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">View toggle</td>
+      <td style="padding: 8px;">NEW: Month/Week/Day pill toggle (surface-container-low bg, active tab in white with shadow). Month view is default. Week/Day views are future — Month only for now, but toggle renders for visual consistency.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Calendar container</td>
+      <td style="padding: 8px;">Grid wrapped in surface-container-low rounded-[2rem] container. Day labels use outline color, uppercase, 2px letter-spacing, 900 weight.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Day cells</td>
+      <td style="padding: 8px;">Small flat cells → Large rounded-2xl cells (min-height 120px). White bg (surface-container-lowest). Previous/next month days at 40% opacity.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Events in cells</td>
+      <td style="padding: 8px;">Colored dots → Inline event chips with text labels. Color-coded by event type: primary/10 for meetings, tertiary-container/10 for birthdays, tertiary-fixed for anniversaries, error-container/20 for holidays.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Today highlight</td>
+      <td style="padding: 8px;">primary-fixed bg, 2px primary/20 border, "Today" pill badge, bold day number in primary color.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Legend + detail panel</td>
+      <td style="padding: 8px;">REMOVED: Legend bar and click-to-select detail panel. Events are now self-describing inline. Clicking a day could show a popover instead (future enhancement).</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Summary cards</td>
+      <td style="padding: 8px;">4 flat summary cards → REPLACED by glass "Upcoming Highlights" panel (mini calendar date icons + event details) and dark inverse-surface promo card.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Insights panel</td>
+      <td style="padding: 8px;">NEW: Glassmorphism card with upcoming highlights. Mini date icons (month header + day number). Shows next 2-3 notable events.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Promo card</td>
+      <td style="padding: 8px;">NEW: Dark inverse-surface card with "Pro Tip" badge, CTA button, decorative gradient + oversized icon watermark. Promotes calendar sync feature.</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; font-weight: 600;">FAB</td>
+      <td style="padding: 8px;">NEW: Fixed bottom-right, primary bg, event icon.</td>
+    </tr>
+  </table>
+</div>
+
+<h3 style="margin-top: 24px;">Event Chip Color Mapping</h3>
+<div class="section">
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600; width: 30%;">Birthday</td>
+      <td style="padding: 8px;">bg: tertiary-container/10, text: tertiary, icon: cake</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Anniversary</td>
+      <td style="padding: 8px;">bg: tertiary-fixed, text: on-tertiary-fixed-variant, icon: verified</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Interview</td>
+      <td style="padding: 8px;">bg: primary/10, text: primary, icon: videocam</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Holiday</td>
+      <td style="padding: 8px;">bg: error-container/20, text: error, icon: celebration</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; font-weight: 600;">Benefits eligible</td>
+      <td style="padding: 8px;">bg: primary-fixed, text: on-primary-fixed-variant, icon: health_and_safety</td>
+    </tr>
+  </table>
+</div>

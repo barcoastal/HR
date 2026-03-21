@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { getInitials, timeAgo } from "@/lib/utils";
-import { Send } from "lucide-react";
 import { useState } from "react";
 import { createFeedComment } from "@/lib/actions/feed";
+import { Icon } from "@/components/ui/icon";
 
 type Comment = {
   id: string;
@@ -89,7 +89,7 @@ export function CommentSection({
               "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           >
-            <Send className="h-4 w-4" />
+            <Icon name="send" size={16} />
           </button>
         </div>
       )}

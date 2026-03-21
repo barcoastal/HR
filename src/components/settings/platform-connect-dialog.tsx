@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Loader2, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -12,6 +11,7 @@ import {
   disconnectPlatform,
 } from "@/lib/actions/platform-sync";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 const CREDENTIAL_FIELDS: Record<
   string,
@@ -177,7 +177,7 @@ export function ConnectPlatformDialog({
     >
       {success ? (
         <div className="flex flex-col items-center gap-3 py-6">
-          <CheckCircle2 className="h-10 w-10 text-green-500" />
+          <Icon name="check_circle" size={40} className="text-green-500" />
           <p className="text-sm font-medium text-[var(--color-text-primary)]">
             Connected successfully!
           </p>
@@ -207,7 +207,7 @@ export function ConnectPlatformDialog({
           {error && <p className="text-xs text-red-500">{error}</p>}
           {loading && (
             <div className="flex items-center justify-center gap-2 py-2">
-              <Loader2 className="h-4 w-4 animate-spin text-[var(--color-accent)]" />
+              <Icon name="progress_activity" size={16} className="animate-material-spin text-[var(--color-accent)]" />
               <span className="text-xs text-[var(--color-text-muted)]">
                 Connecting...
               </span>
@@ -314,7 +314,7 @@ export function ConnectPlatformDialog({
             >
               {loading ? (
                 <span className="flex items-center gap-1.5">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Icon name="progress_activity" size={12} className="animate-material-spin" />
                   Connecting...
                 </span>
               ) : isBreezy ? (
@@ -379,7 +379,7 @@ export function DisconnectPlatformDialog({
         >
           {loading ? (
             <span className="flex items-center gap-1.5">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Icon name="progress_activity" size={12} className="animate-material-spin" />
               Disconnecting...
             </span>
           ) : (

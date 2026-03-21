@@ -1,9 +1,9 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { ChevronDown, ChevronRight, Users } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { Icon } from "@/components/ui/icon";
 
 type OrgEmployee = {
   id: string;
@@ -55,7 +55,7 @@ function OrgNode({
             onClick={() => setExpanded(!expanded)}
             className="p-0.5 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors shrink-0"
           >
-            {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            {expanded ? <Icon name="expand_more" size={16} /> : <Icon name="chevron_right" size={16} />}
           </button>
         ) : (
           <span className="w-5 shrink-0" />
@@ -80,7 +80,7 @@ function OrgNode({
           </div>
           {children.length > 0 && (
             <span className="flex items-center gap-1 text-xs text-[var(--color-text-muted)] shrink-0">
-              <Users className="h-3 w-3" />
+              <Icon name="group" size={12} />
               {children.length}
             </span>
           )}

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { toggleEmployeeTask } from "@/lib/actions/employees";
 import { useState } from "react";
-import { CheckCircle2, Circle, User } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type AssignedTask = {
   id: string;
@@ -48,7 +48,7 @@ export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
         {Object.entries(grouped).map(([empId, group]) => (
           <div key={empId} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
             <div className="flex items-center gap-2 mb-3">
-              <User className="h-4 w-4 text-[var(--color-text-muted)]" />
+              <Icon name="person" size={16} className="text-[var(--color-text-muted)]" />
               <span className="text-sm font-medium text-[var(--color-text-primary)]">Tasks for {group.name}</span>
             </div>
             <div className="space-y-2">
@@ -59,9 +59,9 @@ export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
                   className="flex items-start gap-3 w-full text-left p-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors"
                 >
                   {task.status === "DONE" ? (
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                    <Icon name="check_circle" size={20} className="text-emerald-500 shrink-0 mt-0.5" />
                   ) : (
-                    <Circle className="h-5 w-5 text-[var(--color-text-muted)] shrink-0 mt-0.5" />
+                    <Icon name="circle" size={20} className="text-[var(--color-text-muted)] shrink-0 mt-0.5" />
                   )}
                   <div>
                     <p className={cn("text-sm", task.status === "DONE" ? "line-through text-[var(--color-text-muted)]" : "text-[var(--color-text-primary)]")}>

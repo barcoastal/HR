@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Building, Save, Upload, Check, X, Image, Globe } from "lucide-react";
 import { useState, useRef } from "react";
 import { updateCompanySettings } from "@/lib/actions/company-settings";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type CompanySettingsData = {
   companyName: string;
@@ -53,7 +53,7 @@ function ImageUpload({
   description,
   currentUrl,
   uploadType,
-  icon: Icon,
+  icon,
   onUploaded,
   onRemoved,
 }: {
@@ -61,7 +61,7 @@ function ImageUpload({
   description: string;
   currentUrl: string | null;
   uploadType: "logo" | "favicon";
-  icon: typeof Image;
+  icon: string;
   onUploaded: (url: string) => void;
   onRemoved: () => void;
 }) {
@@ -107,7 +107,7 @@ function ImageUpload({
             className="p-1.5 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors"
             title="Remove"
           >
-            <X className="h-4 w-4" />
+            <Icon name="close" size={16} />
           </button>
         </div>
       ) : (
@@ -135,7 +135,7 @@ function ImageUpload({
               <p className="text-sm text-[var(--color-text-muted)]">Uploading...</p>
             ) : (
               <>
-                <Icon className="h-5 w-5 text-[var(--color-text-muted)]" />
+                <Icon name={icon} size={20} className="text-[var(--color-text-muted)]" />
                 <div className="text-left">
                   <p className="text-sm text-[var(--color-text-primary)]">Click to upload {label.toLowerCase()}</p>
                   <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{description}</p>
@@ -183,7 +183,7 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-5">
-        <Building className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="apartment" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Company Information</h2>
       </div>
 
@@ -200,7 +200,7 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
           description="PNG, JPG, or SVG (max 2MB). Used in sidebar."
           currentUrl={info.logoUrl}
           uploadType="logo"
-          icon={Image}
+          icon="image"
           onUploaded={(url) => { setInfo((p) => ({ ...p, logoUrl: url })); setSaved(false); }}
           onRemoved={() => { setInfo((p) => ({ ...p, logoUrl: null })); setSaved(false); }}
         />
@@ -209,7 +209,7 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
           description="ICO, PNG, or SVG (max 2MB). Browser tab icon."
           currentUrl={info.faviconUrl}
           uploadType="favicon"
-          icon={Globe}
+          icon="language"
           onUploaded={(url) => { setInfo((p) => ({ ...p, faviconUrl: url })); setSaved(false); }}
           onRemoved={() => { setInfo((p) => ({ ...p, faviconUrl: null })); setSaved(false); }}
         />
@@ -235,11 +235,11 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
           )}
         >
           {saved ? (
-            <><Check className="h-4 w-4" />Saved!</>
+            <><Icon name="check" size={16} />Saved!</>
           ) : saving ? (
             <>Saving...</>
           ) : (
-            <><Save className="h-4 w-4" />Save Changes</>
+            <><Icon name="save" size={16} />Save Changes</>
           )}
         </button>
       </div>

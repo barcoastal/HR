@@ -1,5 +1,5 @@
 import { cn, getInitials } from "@/lib/utils";
-import { AlertTriangle } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Employee = {
   id: string;
@@ -22,7 +22,7 @@ export function BurnoutAlerts({ employees }: { employees: Employee[] }) {
   return (
     <div className="space-y-3">
       <div className={cn("flex items-center gap-2 p-3 rounded-lg", "bg-amber-500/10 border border-amber-500/20")}>
-        <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+        <Icon name="warning" size={16} className="text-amber-500 shrink-0" />
         <p className="text-sm text-amber-600">
           {employees.length} employee{employees.length !== 1 ? "s" : ""} haven&apos;t taken time off in 6+ months
         </p>

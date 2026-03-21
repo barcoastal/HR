@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { generateReviewsForCycle } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
-import { Zap, Building2, Check } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Department = { id: string; name: string; employeeCount: number };
 
@@ -70,14 +70,14 @@ export function GenerateReviewsDialog({
           "text-purple-400 hover:bg-purple-500/10 transition-colors"
         )}
       >
-        <Zap className="h-3.5 w-3.5" />Generate
+        <Icon name="bolt" size={12} />Generate
       </button>
 
       <Dialog open={open} onClose={handleClose} title="Generate Reviews">
         {result ? (
           <div className="text-center py-4">
             <div className="h-12 w-12 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto mb-3">
-              <Check className="h-6 w-6 text-emerald-400" />
+              <Icon name="check" className="text-emerald-400" />
             </div>
             <p className="text-sm font-medium text-[var(--color-text-primary)] mb-1">
               Created {result.created} reviews
@@ -103,7 +103,7 @@ export function GenerateReviewsDialog({
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-[var(--color-text-primary)]">
-                  <Building2 className="h-3.5 w-3.5 inline mr-1" />
+                  <Icon name="business" size={12} className="inline mr-1" />
                   Departments
                 </span>
                 <button onClick={selectAll} className="text-xs text-[var(--color-accent)] hover:underline">
@@ -129,7 +129,7 @@ export function GenerateReviewsDialog({
                           ? "bg-[var(--color-accent)] border-[var(--color-accent)]"
                           : "border-[var(--color-border)]"
                       )}>
-                        {selectedDepts.has(dept.id) && <Check className="h-3 w-3 text-white" />}
+                        {selectedDepts.has(dept.id) && <Icon name="check" size={12} className="text-white" />}
                       </div>
                       {dept.name}
                     </div>

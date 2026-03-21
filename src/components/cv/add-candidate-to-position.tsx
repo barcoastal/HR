@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { assignCandidateToPosition, createCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
-import { UserPlus, Search, Plus } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type SimpleCandidate = {
   id: string;
@@ -134,7 +134,7 @@ export function AddCandidateToPosition({
           "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
         )}
       >
-        <UserPlus className="h-3.5 w-3.5" />Add Candidate
+        <Icon name="person_add" size={12} />Add Candidate
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title={`Add Candidate to ${positionTitle}`}>
@@ -150,7 +150,7 @@ export function AddCandidateToPosition({
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
-            <Search className="h-3.5 w-3.5 inline mr-1.5" />From Database
+            <Icon name="search" size={12} className="inline mr-1.5" />From Database
           </button>
           <button
             onClick={() => setTab("new")}
@@ -161,7 +161,7 @@ export function AddCandidateToPosition({
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
-            <Plus className="h-3.5 w-3.5 inline mr-1.5" />New Candidate
+            <Icon name="add" size={12} className="inline mr-1.5" />New Candidate
           </button>
         </div>
 

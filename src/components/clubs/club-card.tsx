@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Users } from "lucide-react";
 import { joinClub, leaveClub } from "@/lib/actions/clubs";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Icon } from "@/components/ui/icon";
 
 type ClubData = {
   id: string;
@@ -51,7 +51,7 @@ export function ClubCard({
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
-          <Users className="h-3.5 w-3.5" />
+          <Icon name="group" size={12} />
           <span>{club._count.members} member{club._count.members !== 1 ? "s" : ""}</span>
         </div>
         {currentEmployeeId && (

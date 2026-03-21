@@ -2,8 +2,8 @@ import { cn, getInitials } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
-import { Users, Layers } from "lucide-react";
 import { DepartmentActions, DepartmentRowActions } from "@/components/org/department-actions";
+import { Icon } from "@/components/ui/icon";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -67,14 +67,14 @@ export default async function DepartmentsPage() {
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-1.5">
-                      <Layers className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                      <Icon name="layers" size={12} className="text-[var(--color-text-muted)]" />
                       <span className="text-sm text-[var(--color-text-primary)]">{dept.teams.length}</span>
                       <span className="text-xs text-[var(--color-text-muted)] ml-1">({dept.teams.map((t) => t.name).join(", ")})</span>
                     </div>
                   </td>
                   <td className="px-5 py-4">
                     <div className="flex items-center gap-1.5">
-                      <Users className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                      <Icon name="group" size={12} className="text-[var(--color-text-muted)]" />
                       <span className="text-sm text-[var(--color-text-primary)]">{dept.employees.length}</span>
                     </div>
                   </td>
@@ -111,8 +111,8 @@ export default async function DepartmentsPage() {
                 </div>
               )}
               <div className="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
-                <div className="flex items-center gap-1"><Users className="h-3.5 w-3.5" />{dept.employees.length} members</div>
-                <div className="flex items-center gap-1"><Layers className="h-3.5 w-3.5" />{dept.teams.length} teams</div>
+                <div className="flex items-center gap-1"><Icon name="group" size={12} />{dept.employees.length} members</div>
+                <div className="flex items-center gap-1"><Icon name="layers" size={12} />{dept.teams.length} teams</div>
               </div>
             </div>
           );

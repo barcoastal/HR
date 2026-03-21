@@ -2,10 +2,10 @@
 
 import { cn } from "@/lib/utils";
 import { timeAgo } from "@/lib/utils";
-import { MessageCircle, Reply } from "lucide-react";
 import { useState } from "react";
 import { replyToAnonFeedback } from "@/lib/actions/voice";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Feedback = {
   id: string;
@@ -33,7 +33,7 @@ export function FeedbackList({ feedbacks }: { feedbacks: Feedback[] }) {
   if (feedbacks.length === 0) {
     return (
       <div className="text-center py-8">
-        <MessageCircle className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
+        <Icon name="chat_bubble" size={40} className="text-[var(--color-text-muted)] mx-auto mb-3" />
         <p className="text-[var(--color-text-muted)]">No anonymous feedback received yet.</p>
       </div>
     );
@@ -98,7 +98,7 @@ export function FeedbackList({ feedbacks }: { feedbacks: Feedback[] }) {
                   onClick={() => setReplyingTo(fb.id)}
                   className="flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 px-3 py-1.5 rounded-lg transition-colors ml-4"
                 >
-                  <Reply className="h-3.5 w-3.5" />Reply
+                  <Icon name="reply" size={12} />Reply
                 </button>
               )}
             </>

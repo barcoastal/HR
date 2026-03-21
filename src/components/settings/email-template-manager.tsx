@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Mail, ChevronDown, ChevronUp, Save, Check, RotateCcw, Eye, Code, Copy, Send, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { upsertEmailTemplate, resetEmailTemplate, sendTestEmailAction } from "@/lib/actions/email-templates";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type TemplateData = {
   type: string;
@@ -99,9 +99,9 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
           <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{template.description}</p>
         </div>
         {expanded ? (
-          <ChevronUp className="h-4 w-4 text-[var(--color-text-muted)] shrink-0" />
+          <Icon name="expand_less" size={16} className="text-[var(--color-text-muted)] shrink-0" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-[var(--color-text-muted)] shrink-0" />
+          <Icon name="expand_more" size={16} className="text-[var(--color-text-muted)] shrink-0" />
         )}
       </button>
 
@@ -121,7 +121,7 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                     "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors cursor-pointer"
                   )}
                 >
-                  <Copy className="h-3 w-3" />
+                  <Icon name="content_copy" size={12} />
                   {`{{${v}}}`}
                 </button>
               ))}
@@ -157,7 +157,7 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                       : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                   )}
                 >
-                  <Code className="h-3 w-3" />Code
+                  <Icon name="code" size={12} />Code
                 </button>
                 <button
                   onClick={() => setShowPreview(true)}
@@ -168,7 +168,7 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                       : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                   )}
                 >
-                  <Eye className="h-3 w-3" />Preview
+                  <Icon name="visibility" size={12} />Preview
                 </button>
               </div>
             </div>
@@ -211,9 +211,9 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                 : "bg-red-500/10 text-red-600"
             )}>
               {testResult.success ? (
-                <><Check className="h-4 w-4 shrink-0" />Test email sent to {userEmail}</>
+                <><Icon name="check" size={16} className="shrink-0" />Test email sent to {userEmail}</>
               ) : (
-                <><AlertCircle className="h-4 w-4 shrink-0" />{testResult.error}</>
+                <><Icon name="error" size={16} className="shrink-0" />{testResult.error}</>
               )}
             </div>
           )}
@@ -231,7 +231,7 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                   "disabled:opacity-40 disabled:cursor-not-allowed"
                 )}
               >
-                <RotateCcw className="h-3.5 w-3.5" />Reset
+                <Icon name="undo" size={12} />Reset
               </button>
               <button
                 onClick={handleSendTest}
@@ -244,7 +244,7 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
                   "disabled:opacity-50"
                 )}
               >
-                <Send className="h-3.5 w-3.5" />
+                <Icon name="send" size={12} />
                 {sendingTest ? "Sending..." : "Send Test Email"}
               </button>
             </div>
@@ -259,11 +259,11 @@ function TemplateEditor({ template, userEmail }: { template: TemplateData; userE
               )}
             >
               {saved ? (
-                <><Check className="h-3.5 w-3.5" />Saved!</>
+                <><Icon name="check" size={12} />Saved!</>
               ) : saving ? (
                 <>Saving...</>
               ) : (
-                <><Save className="h-3.5 w-3.5" />Save Template</>
+                <><Icon name="save" size={12} />Save Template</>
               )}
             </button>
           </div>
@@ -277,7 +277,7 @@ export function EmailTemplateManager({ templates, userEmail }: { templates: Temp
   return (
     <section className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-2">
-        <Mail className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="mail" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Email Templates</h2>
       </div>
       <p className="text-xs text-[var(--color-text-muted)] mb-4">

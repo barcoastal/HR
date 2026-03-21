@@ -1,0 +1,303 @@
+<h2>Organization Chart — Current vs Stitch</h2>
+<p class="subtitle">From indented tree list to visual hierarchy with connectors</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Current Implementation</div>
+    <div class="mockup-body" style="padding: 20px; background: #fcf8ff; font-family: Inter, sans-serif;">
+      <!-- Current: Stat cards + Department cards + Indented tree -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <div style="font-size: 24px; font-weight: 600; color: #1a1a27;">Organization</div>
+          <div style="font-size: 14px; color: #484555;">Company structure</div>
+        </div>
+      </div>
+      <!-- Stat cards row -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div style="background: white; border-radius: 16px; padding: 16px;">
+          <div style="font-size: 12px; color: #78758a; margin-bottom: 4px;">Total Employees</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1a27;">24</div>
+        </div>
+        <div style="background: white; border-radius: 16px; padding: 16px;">
+          <div style="font-size: 12px; color: #78758a; margin-bottom: 4px;">Departments</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1a27;">5</div>
+        </div>
+        <div style="background: white; border-radius: 16px; padding: 16px;">
+          <div style="font-size: 12px; color: #78758a; margin-bottom: 4px;">Teams</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1a27;">8</div>
+        </div>
+        <div style="background: white; border-radius: 16px; padding: 16px;">
+          <div style="font-size: 12px; color: #78758a; margin-bottom: 4px;">Avg Tenure</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1a1a27;">2.1y</div>
+        </div>
+      </div>
+      <!-- Department cards -->
+      <div style="font-size: 16px; font-weight: 600; color: #1a1a27; margin-bottom: 12px;">Departments</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div style="background: white; border-radius: 16px; padding: 16px; border-left: 4px solid #5b3cdd;">
+          <div style="font-size: 14px; font-weight: 600; color: #1a1a27;">Engineering</div>
+          <div style="font-size: 12px; color: #484555;">Head: Marcus Chen · 12 members</div>
+        </div>
+        <div style="background: white; border-radius: 16px; padding: 16px; border-left: 4px solid #10b981;">
+          <div style="font-size: 14px; font-weight: 600; color: #1a1a27;">Design</div>
+          <div style="font-size: 12px; color: #484555;">Head: Sarah Jenkins · 6 members</div>
+        </div>
+      </div>
+      <!-- Indented tree -->
+      <div style="font-size: 16px; font-weight: 600; color: #1a1a27; margin-bottom: 12px;">Organization Tree</div>
+      <div style="background: white; border-radius: 16px; padding: 16px; font-size: 13px;">
+        <div style="display: flex; align-items: center; gap: 8px; padding: 8px 0;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: #5b3cdd; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">JV</div>
+          <div><span style="font-weight: 600; color: #1a1a27;">Julian Vane</span> <span style="color: #78758a;">· CEO</span></div>
+          <span style="margin-left: auto; color: #78758a; font-size: 11px;">▼ 3 reports</span>
+        </div>
+        <div style="margin-left: 24px; border-left: 2px solid #efecfd; padding-left: 16px;">
+          <div style="display: flex; align-items: center; gap: 8px; padding: 8px 0;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #7459f7; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">MC</div>
+            <div><span style="font-weight: 600; color: #1a1a27;">Marcus Chen</span> <span style="color: #78758a;">· CTO</span></div>
+          </div>
+          <div style="margin-left: 24px; border-left: 2px solid #efecfd; padding-left: 16px;">
+            <div style="display: flex; align-items: center; gap: 8px; padding: 6px 0; color: #484555;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5deff; color: #441cc8; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">AT</div>
+              Alex Torres · Engineer
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 6px 0; color: #484555;">
+              <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5deff; color: #441cc8; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600;">RP</div>
+              Ray Park · Engineer
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; padding: 8px 0;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;">SJ</div>
+            <div><span style="font-weight: 600; color: #1a1a27;">Sarah Jenkins</span> <span style="color: #78758a;">· CPO</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 12px; color: #78758a; font-size: 12px; margin-top: 8px;">Flat stat cards · Department list · Indented tree (no visual connectors)</div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Stitch Target</div>
+    <div class="mockup-body" style="padding: 20px; background: #fcf8ff; font-family: Inter, sans-serif;">
+      <!-- Stitch: Editorial header + Visual tree with connectors + Bento stats -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+        <div>
+          <div style="font-size: 32px; font-weight: 800; color: #1a1a27; letter-spacing: -0.5px;">Organization Structure</div>
+          <div style="font-size: 16px; color: #484555; font-weight: 500;">Visualizing the flow of talent and leadership.</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <div style="padding: 10px 18px; background: #e3e0f2; color: #1a1a27; border-radius: 12px; font-size: 13px; font-weight: 700;">All Departments</div>
+          <div style="padding: 10px 18px; background: #5b3cdd; color: white; border-radius: 12px; font-size: 13px; font-weight: 700;">↓ Export Chart</div>
+        </div>
+      </div>
+
+      <!-- Visual org tree with connectors -->
+      <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 32px;">
+        <!-- CEO node -->
+        <div style="background: white; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: center; width: 200px; box-shadow: 0 8px 24px rgba(91,60,221,0.08); border: 1px solid rgba(201,196,216,0.1);">
+          <div style="width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #5b3cdd, #7459f7); padding: 3px; margin-bottom: 8px;">
+            <div style="width: 100%; height: 100%; border-radius: 13px; background: #c9bfff; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #441cc8; font-size: 18px;">JV</div>
+          </div>
+          <div style="font-size: 15px; font-weight: 900; color: #1a1a27;">Julian Vane</div>
+          <div style="font-size: 10px; font-weight: 700; color: #5b3cdd; text-transform: uppercase; letter-spacing: 2px; margin-top: 2px;">CEO</div>
+          <div style="display: flex; gap: 6px; margin-top: 10px; width: 100%;">
+            <div style="flex: 1; padding: 6px; background: #f5f2ff; border-radius: 8px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-align: center; color: #5b3cdd;">Profile</div>
+            <div style="flex: 1; padding: 6px; background: #e5deff; border-radius: 8px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; text-align: center; color: #441cc8;">Contact</div>
+          </div>
+        </div>
+
+        <!-- Vertical connector -->
+        <div style="width: 2px; height: 32px; background: linear-gradient(to bottom, #7459f7, #e3e0f2);"></div>
+
+        <!-- Horizontal connector -->
+        <div style="width: 80%; height: 2px; background: #e3e0f2;"></div>
+
+        <!-- Director level -->
+        <div style="display: flex; gap: 24px; margin-top: 0;">
+          <!-- Director 1 -->
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 2px; height: 24px; background: linear-gradient(to bottom, #e3e0f2, #7459f7);"></div>
+            <div style="background: white; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; align-items: center; width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid rgba(201,196,216,0.1);">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #10b981; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; margin-bottom: 6px;">ER</div>
+              <div style="font-size: 13px; font-weight: 700; color: #1a1a27;">Elena Rodriguez</div>
+              <div style="font-size: 9px; font-weight: 600; color: #484555; text-transform: uppercase; letter-spacing: 1px;">VP of Product</div>
+            </div>
+            <div style="width: 2px; height: 20px; background: linear-gradient(to bottom, #7459f7, #e3e0f2);"></div>
+            <!-- Sub-teams -->
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="background: #efecfd; padding: 10px 14px; border-radius: 12px; border-left: 3px solid #5b3cdd; display: flex; align-items: center; gap: 8px; width: 160px;">
+                <span style="color: #5b3cdd; font-size: 16px;">🎨</span>
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: #1a1a27;">Design Systems</div>
+                  <div style="font-size: 9px; color: #484555;">12 Members</div>
+                </div>
+              </div>
+              <div style="background: #efecfd; padding: 10px 14px; border-radius: 12px; border-left: 3px solid #5b3cdd; display: flex; align-items: center; gap: 8px; width: 160px;">
+                <span style="color: #5b3cdd; font-size: 16px;">📊</span>
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: #1a1a27;">Analytics</div>
+                  <div style="font-size: 9px; color: #484555;">8 Members</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Director 2 -->
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 2px; height: 24px; background: linear-gradient(to bottom, #e3e0f2, #7459f7);"></div>
+            <div style="background: white; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; align-items: center; width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid rgba(201,196,216,0.1); border-top: 3px solid #5b3cdd;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; margin-bottom: 6px;">MT</div>
+              <div style="font-size: 13px; font-weight: 700; color: #1a1a27;">Marcus Thorne</div>
+              <div style="font-size: 9px; font-weight: 600; color: #484555; text-transform: uppercase; letter-spacing: 1px;">CTO</div>
+            </div>
+            <div style="width: 2px; height: 20px; background: linear-gradient(to bottom, #7459f7, #e3e0f2);"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="background: #efecfd; padding: 10px 14px; border-radius: 12px; border-left: 3px solid #5b3cdd; display: flex; align-items: center; gap: 8px; width: 160px;">
+                <span style="color: #5b3cdd; font-size: 16px;">☁️</span>
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: #1a1a27;">Infrastructure</div>
+                  <div style="font-size: 9px; color: #484555;">24 Members</div>
+                </div>
+              </div>
+              <div style="background: #e3e0f2; padding: 10px 14px; border-radius: 12px; border-left: 3px solid #5b3cdd; display: flex; align-items: center; gap: 8px; width: 160px;">
+                <span style="color: #5b3cdd; font-size: 16px;">⌨️</span>
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: #1a1a27;">Core Systems</div>
+                  <div style="font-size: 9px; color: #484555;">42 Members</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Director 3 -->
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 2px; height: 24px; background: linear-gradient(to bottom, #e3e0f2, #7459f7);"></div>
+            <div style="background: white; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; align-items: center; width: 160px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid rgba(201,196,216,0.1);">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; margin-bottom: 6px;">SJ</div>
+              <div style="font-size: 13px; font-weight: 700; color: #1a1a27;">Sarah Jenkins</div>
+              <div style="font-size: 9px; font-weight: 600; color: #484555; text-transform: uppercase; letter-spacing: 1px;">CPO</div>
+            </div>
+            <div style="width: 2px; height: 20px; background: linear-gradient(to bottom, #7459f7, #e3e0f2);"></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <div style="background: #efecfd; padding: 10px 14px; border-radius: 12px; border-left: 3px solid #5b3cdd; display: flex; align-items: center; gap: 8px; width: 160px;">
+                <span style="color: #5b3cdd; font-size: 16px;">🤝</span>
+                <div>
+                  <div style="font-size: 11px; font-weight: 700; color: #1a1a27;">Culture</div>
+                  <div style="font-size: 9px; color: #484555;">4 Members</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento stats section -->
+      <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;">
+        <div style="background: rgba(227,224,242,0.3); border-radius: 20px; padding: 20px; border: 1px solid rgba(201,196,216,0.1);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div style="font-size: 16px; font-weight: 900; color: #1a1a27;">Org Health Overview</div>
+            <span style="background: rgba(91,60,221,0.1); color: #5b3cdd; padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase;">Real-time</span>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+            <div>
+              <div style="font-size: 24px; font-weight: 900; color: #5b3cdd;">24</div>
+              <div style="font-size: 9px; font-weight: 700; color: #484555; text-transform: uppercase;">Total Members</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 900; color: #1a1a27;">82%</div>
+              <div style="font-size: 9px; font-weight: 700; color: #484555; text-transform: uppercase;">Retention Rate</div>
+            </div>
+            <div>
+              <div style="font-size: 24px; font-weight: 900; color: #1a1a27;">5</div>
+              <div style="font-size: 9px; font-weight: 700; color: #484555; text-transform: uppercase;">Departments</div>
+            </div>
+          </div>
+        </div>
+        <div style="background: #7459f7; border-radius: 20px; padding: 20px; color: white; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="font-size: 20px; margin-bottom: 8px;">📈</div>
+            <div style="font-size: 14px; font-weight: 700;">Projected Growth</div>
+          </div>
+          <div style="font-size: 28px; font-weight: 900;">+12.5%</div>
+        </div>
+        <div style="background: white; border-radius: 20px; padding: 20px; border: 1px solid rgba(201,196,216,0.1); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="font-size: 20px; color: #5b3cdd; margin-bottom: 8px;">🔗</div>
+            <div style="font-size: 14px; font-weight: 700; color: #1a1a27;">Inter-Team Links</div>
+          </div>
+          <div style="display: flex;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #e5deff; border: 2px solid white; margin-right: -6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #441cc8;">A</div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #c9bfff; border: 2px solid white; margin-right: -6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #441cc8;">B</div>
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #efecfd; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #484555;">+5</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding: 12px; color: #78758a; font-size: 12px; margin-top: 8px;">Visual tree with gradient connectors · CEO spotlight · Team cards with left accent · Bento stats</div>
+    </div>
+  </div>
+</div>
+
+<h3 style="margin-top: 32px;">Key Changes</h3>
+<div class="section">
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600; width: 30%;">Header</td>
+      <td style="padding: 8px;">Same editorial treatment — extrabold title, descriptive subtitle. "All Departments" filter + "Export Chart" primary button.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Tree visualization</td>
+      <td style="padding: 8px;">Indented list → Visual tree with CSS gradient connector lines (vertical: primary→surface-variant gradient, horizontal: solid surface-variant). Cards centered at each level.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">CEO node</td>
+      <td style="padding: 8px;">Spotlight treatment: gradient-bordered avatar frame, shadow-xl, Profile + Contact buttons. Larger than director nodes.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Director nodes</td>
+      <td style="padding: 8px;">Photo + name + title. Circular avatar. Ghost border. One gets a top-4px primary accent border (highlights key role).</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Team cards</td>
+      <td style="padding: 8px;">Below each director: surface-container cards with left-4px primary border, Material icon, team name, member count. Replace current department grid.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Stats section</td>
+      <td style="padding: 8px;">Flat 4-col stat cards → Bento grid below the tree. 2-col "Org Health" card with 3 metrics, primary-container "Growth" card, white "Inter-Team" card with avatar stack.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Manager Assignment</td>
+      <td style="padding: 8px;">Stays as a separate section/tab — not shown in Stitch but keep as-is since it's functional admin tooling.</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; font-weight: 600;">FAB</td>
+      <td style="padding: 8px;">NEW: Fixed bottom-right, primary bg, add_moderator icon.</td>
+    </tr>
+  </table>
+</div>
+
+<h3 style="margin-top: 24px;">Data Mapping</h3>
+<div class="section">
+  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600; width: 30%;">CEO node</td>
+      <td style="padding: 8px;">Employee with no manager (root of tree). Currently identified by buildTree() in org-tree.tsx.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Director nodes</td>
+      <td style="padding: 8px;">Direct reports of the root employee. Depth 1 in current tree.</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Team cards</td>
+      <td style="padding: 8px;">Departments, grouped under their head's director node. Uses existing department data (name + employee count).</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <td style="padding: 8px; font-weight: 600;">Org Health metrics</td>
+      <td style="padding: 8px;">Total employees (count), Retention rate (calculated from offboarded/total), Departments (count). Growth % is static/decorative for now.</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; font-weight: 600;">Inter-Team card</td>
+      <td style="padding: 8px;">Decorative — avatar stack of recent cross-department collaborators. Static for now.</td>
+    </tr>
+  </table>
+</div>

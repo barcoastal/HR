@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { StickyNote, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { addHRNote, deleteHRNote } from "@/lib/actions/hr-notes";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Note = {
   id: string;
@@ -41,7 +41,7 @@ export function HRNotesSection({ employeeId, notes }: { employeeId: string; note
     <section className={cn("rounded-2xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-4">
         <div className="h-8 w-8 rounded-lg bg-amber-500/15 flex items-center justify-center">
-          <StickyNote className="h-4 w-4 text-amber-400" />
+          <Icon name="sticky_note_2" size={16} className="text-amber-400" />
         </div>
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">HR Notes</h2>
         <span className="text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium">Admin Only</span>
@@ -71,7 +71,7 @@ export function HRNotesSection({ employeeId, notes }: { employeeId: string; note
               "disabled:opacity-50"
             )}
           >
-            <Plus className="h-3.5 w-3.5" />
+            <Icon name="add" size={12} />
             {loading ? "Adding..." : "Add Note"}
           </button>
         </div>
@@ -102,7 +102,7 @@ export function HRNotesSection({ employeeId, notes }: { employeeId: string; note
                   onClick={() => handleDelete(note.id)}
                   className="p-1 rounded-lg text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 hover:bg-red-500/15 hover:text-red-400 transition-all"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Icon name="delete" size={12} />
                 </button>
               </div>
             </div>

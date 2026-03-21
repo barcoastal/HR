@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createEmployee } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 import { OnboardingPreview } from "@/components/onboarding/onboarding-preview";
+import { Icon } from "@/components/ui/icon";
 
 type Department = { id: string; name: string };
 
@@ -64,7 +64,7 @@ export function AddEmployeeForm({ departments }: { departments: Department[] }) 
   return (
     <>
       <button onClick={() => setOpen(true)} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}>
-        <Plus className="h-4 w-4" />Add Employee
+        <Icon name="add" size={16} />Add Employee
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Add Employee">

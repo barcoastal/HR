@@ -1,0 +1,7 @@
+{"type":"server-started","port":58826,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:58826","screen_dir":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603/people-directory-design.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603/org-chart-design.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603/calendar-design.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603/waiting.html"}
+{"type":"screen-added","file":"/Users/baralezrah/hr-platform/.superpowers/brainstorm/24114-1774092603/spec-review.html"}
+{"type":"server-stopped","reason":"idle timeout"}

@@ -1,27 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  Plus,
-  Trash2,
-  Loader2,
-  LogOut,
-  Calendar,
-  UserCircle,
-  Paperclip,
-  Upload,
-  X,
-  ChevronDown,
-  ChevronUp,
-  FileText,
-  PenTool,
-  Send,
-  ShieldCheck,
-  Briefcase,
-  Eye,
-} from "lucide-react";
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 import {
   createChecklist,
   addChecklistItem,
@@ -82,9 +64,9 @@ const DUE_DAY_OPTIONS = [
 ];
 
 const DOCUMENT_ACTIONS = [
-  { value: "NONE", label: "None", icon: FileText },
-  { value: "SEND", label: "Send", icon: Send },
-  { value: "SIGN", label: "Sign", icon: PenTool },
+  { value: "NONE", label: "None" },
+  { value: "SEND", label: "Send" },
+  { value: "SIGN", label: "Sign" },
 ];
 
 function getDueDayLabel(dueDay: number | null): string {
@@ -440,7 +422,7 @@ export function OffboardingSetup({
     >
       {/* Header */}
       <div className="flex items-center gap-2 mb-5">
-        <LogOut className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="logout" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
           Offboarding Setup
         </h2>
@@ -468,7 +450,7 @@ export function OffboardingSetup({
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-5 w-5 animate-spin text-[var(--color-accent)]" />
+          <Icon name="progress_activity" size={20} className="animate-material-spin text-[var(--color-accent)]" />
           <span className="ml-2 text-sm text-[var(--color-text-muted)]">Loading checklists...</span>
         </div>
       )}
@@ -479,7 +461,7 @@ export function OffboardingSetup({
           <div className="mb-6">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-[var(--color-accent)]" />
+                <Icon name="verified_user" size={16} className="text-[var(--color-accent)]" />
                 Base Tasks
                 <span className="text-xs font-normal text-[var(--color-text-muted)]">
                   ({selectedDeptName})
@@ -494,7 +476,7 @@ export function OffboardingSetup({
                     "hover:bg-[var(--color-accent-hover)] transition-colors"
                   )}
                 >
-                  {showAddForm ? <ChevronUp className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+                  {showAddForm ? <Icon name="expand_less" size={12} /> : <Icon name="add" size={12} />}
                   {showAddForm ? "Close" : "Add Task"}
                 </button>
               )}
@@ -517,9 +499,9 @@ export function OffboardingSetup({
                   )}
                 >
                   {creatingChecklist ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Icon name="progress_activity" size={16} className="animate-material-spin" />
                   ) : (
-                    <Plus className="h-4 w-4" />
+                    <Icon name="add" size={16} />
                   )}
                   {creatingChecklist ? "Creating..." : "Create Offboarding Checklist"}
                 </button>
@@ -556,12 +538,12 @@ export function OffboardingSetup({
                                 "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                               )}
                             >
-                              <Calendar className="h-3 w-3" />
+                              <Icon name="calendar_today" size={12} />
                               {getDueDayLabel(item.dueDay)}
                             </span>
                           )}
                           <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                            <UserCircle className="h-3 w-3" />
+                            <Icon name="account_circle" size={12} />
                             {item.assignee
                               ? `${item.assignee.firstName} ${item.assignee.lastName}`
                               : "Unassigned"}
@@ -574,9 +556,9 @@ export function OffboardingSetup({
                               )}
                             >
                               {item.documentAction === "SEND" ? (
-                                <Send className="h-3 w-3" />
+                                <Icon name="send" size={12} />
                               ) : (
-                                <PenTool className="h-3 w-3" />
+                                <Icon name="edit_note" size={12} />
                               )}
                               {badge.label}
                             </span>
@@ -588,7 +570,7 @@ export function OffboardingSetup({
                                 "bg-amber-500/10 text-amber-600"
                               )}
                             >
-                              <Paperclip className="h-3 w-3" />
+                              <Icon name="attach_file" size={12} />
                               {item.documentName}
                             </span>
                           )}
@@ -607,7 +589,7 @@ export function OffboardingSetup({
                             className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-accent)]/15 hover:text-[var(--color-accent)] transition-colors"
                             title={item.documentAction === "SIGN" ? "Test signing flow" : "Preview document"}
                           >
-                            <Eye className="h-3.5 w-3.5" />
+                            <Icon name="visibility" size={12} />
                           </button>
                         )}
                         <button
@@ -616,9 +598,9 @@ export function OffboardingSetup({
                           className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
                         >
                           {deletingItemId === item.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            <Icon name="progress_activity" size={12} className="animate-material-spin" />
                           ) : (
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Icon name="delete" size={12} />
                           )}
                         </button>
                       </div>
@@ -654,7 +636,7 @@ export function OffboardingSetup({
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      <Calendar className="inline h-3 w-3 mr-1" />
+                      <Icon name="calendar_today" size={12} className="inline mr-1" />
                       Due Day
                     </label>
                     <select
@@ -671,7 +653,7 @@ export function OffboardingSetup({
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      <UserCircle className="inline h-3 w-3 mr-1" />
+                      <Icon name="account_circle" size={12} className="inline mr-1" />
                       Assignee
                     </label>
                     <select
@@ -689,7 +671,7 @@ export function OffboardingSetup({
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      <FileText className="inline h-3 w-3 mr-1" />
+                      <Icon name="description" size={12} className="inline mr-1" />
                       Document Action
                     </label>
                     <select
@@ -716,7 +698,7 @@ export function OffboardingSetup({
                 {newDocAction !== "NONE" && (
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      <Paperclip className="inline h-3 w-3 mr-1" />
+                      <Icon name="attach_file" size={12} className="inline mr-1" />
                       Upload Document {newDocAction === "SIGN" && "(PDF only)"}
                     </label>
                     {newDocName ? (
@@ -729,7 +711,7 @@ export function OffboardingSetup({
                           onClick={() => { setNewDocUrl(""); setNewDocName(""); }}
                           className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
                         >
-                          <X className="h-3 w-3" />
+                          <Icon name="close" size={12} />
                         </button>
                       </div>
                     ) : (
@@ -741,9 +723,9 @@ export function OffboardingSetup({
                         )}
                       >
                         {uploading ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <Icon name="progress_activity" size={12} className="animate-material-spin" />
                         ) : (
-                          <Upload className="h-3 w-3" />
+                          <Icon name="upload" size={12} />
                         )}
                         {uploading ? "Uploading..." : "Upload file"}
                         <input
@@ -770,9 +752,9 @@ export function OffboardingSetup({
                     )}
                   >
                     {addingItem ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
                     ) : (
-                      <Plus className="h-3 w-3" />
+                      <Icon name="add" size={12} />
                     )}
                     {addingItem ? "Adding..." : "Add Task"}
                   </button>
@@ -791,7 +773,7 @@ export function OffboardingSetup({
           {selectedDeptId && (
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Briefcase className="h-4 w-4 text-[var(--color-accent)]" />
+                <Icon name="work" size={16} className="text-[var(--color-accent)]" />
                 <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
                   Job Title Overrides
                 </h3>
@@ -823,9 +805,9 @@ export function OffboardingSetup({
                     )}
                   >
                     {creatingOverride ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
                     ) : (
-                      <Plus className="h-3 w-3" />
+                      <Icon name="add" size={12} />
                     )}
                     Add Override
                   </button>
@@ -850,7 +832,7 @@ export function OffboardingSetup({
                   >
                     <div className="flex items-center justify-between mb-3">
                       <h4 className="text-sm font-semibold text-[var(--color-text-primary)] flex items-center gap-1.5">
-                        <Briefcase className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+                        <Icon name="work" size={12} className="text-[var(--color-accent)]" />
                         {override.jobTitle?.name ?? "Unknown Role"}
                       </h4>
                       <button
@@ -859,9 +841,9 @@ export function OffboardingSetup({
                         className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
                       >
                         {deletingOverrideId === override.id ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <Icon name="progress_activity" size={12} className="animate-material-spin" />
                         ) : (
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Icon name="delete" size={12} />
                         )}
                       </button>
                     </div>
@@ -890,7 +872,7 @@ export function OffboardingSetup({
                                 )}
                               >
                                 {isToggling ? (
-                                  <Loader2 className="h-3 w-3 animate-spin shrink-0" />
+                                  <Icon name="progress_activity" size={12} className="animate-material-spin shrink-0" />
                                 ) : (
                                   <input
                                     type="checkbox"
@@ -954,7 +936,7 @@ export function OffboardingSetup({
                                     className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
                                     title={item.documentAction === "SIGN" ? "Test signing flow" : "Preview document"}
                                   >
-                                    <Eye className="h-3 w-3" />
+                                    <Icon name="visibility" size={12} />
                                   </button>
                                 )}
                                 <button
@@ -963,9 +945,9 @@ export function OffboardingSetup({
                                   className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
                                 >
                                   {deletingItemId === item.id ? (
-                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                    <Icon name="progress_activity" size={12} className="animate-material-spin" />
                                   ) : (
-                                    <Trash2 className="h-3 w-3" />
+                                    <Icon name="delete" size={12} />
                                   )}
                                 </button>
                               </div>
@@ -1085,7 +1067,7 @@ export function OffboardingSetup({
                                   }}
                                   className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
                                 >
-                                  <X className="h-3 w-3" />
+                                  <Icon name="close" size={12} />
                                 </button>
                               </div>
                             ) : (
@@ -1097,9 +1079,9 @@ export function OffboardingSetup({
                                 )}
                               >
                                 {overrideUploading[override.id] ? (
-                                  <Loader2 className="h-3 w-3 animate-spin" />
+                                  <Icon name="progress_activity" size={12} className="animate-material-spin" />
                                 ) : (
-                                  <Upload className="h-3 w-3" />
+                                  <Icon name="upload" size={12} />
                                 )}
                                 {overrideUploading[override.id] ? "Uploading..." : "Upload file"}
                                 <input
@@ -1130,9 +1112,9 @@ export function OffboardingSetup({
                             )}
                           >
                             {overrideAddingItem[override.id] ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
+                              <Icon name="progress_activity" size={12} className="animate-material-spin" />
                             ) : (
-                              <Plus className="h-3 w-3" />
+                              <Icon name="add" size={12} />
                             )}
                             {overrideAddingItem[override.id] ? "Adding..." : "Add Task"}
                           </button>
@@ -1157,7 +1139,7 @@ export function OffboardingSetup({
                           "text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
                         )}
                       >
-                        <Plus className="h-3 w-3" />
+                        <Icon name="add" size={12} />
                         Add Extra Task
                       </button>
                     )}

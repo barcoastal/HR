@@ -1,11 +1,11 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { RefreshCw, Loader2, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import type { SyncProgressEvent } from "@/lib/platform-sync/types";
+import { Icon } from "@/components/ui/icon";
 
 type SyncablePlatform = {
   id: string;
@@ -194,12 +194,12 @@ export function PlatformSyncPanel({ platforms }: Props) {
                 >
                   {isSyncing ? (
                     <>
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
                       Syncing...
                     </>
                   ) : (
                     <>
-                      <RefreshCw className="h-3.5 w-3.5" />
+                      <Icon name="refresh" size={12} />
                       Sync
                     </>
                   )}
@@ -215,7 +215,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
                     "disabled:opacity-50"
                   )}
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Icon name="delete" size={12} />
                 </button>
               </div>
             </div>
@@ -260,7 +260,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
       <Dialog open={!!result} onClose={closeResult} title="Sync Results">
         {result?.success ? (
           <div className="flex flex-col items-center gap-3 py-4">
-            <CheckCircle2 className="h-10 w-10 text-green-500" />
+            <Icon name="check_circle" size={40} className="text-green-500" />
             <p className="text-sm font-medium text-[var(--color-text-primary)]">
               Sync from {resultPlatformName} complete
             </p>
@@ -303,7 +303,7 @@ export function PlatformSyncPanel({ platforms }: Props) {
           </div>
         ) : result ? (
           <div className="flex flex-col items-center gap-3 py-4">
-            <AlertCircle className="h-10 w-10 text-red-500" />
+            <Icon name="error" size={40} className="text-red-500" />
             <p className="text-sm font-medium text-[var(--color-text-primary)]">Sync Failed</p>
             <p className="text-sm text-[var(--color-text-muted)]">{result.error}</p>
           </div>

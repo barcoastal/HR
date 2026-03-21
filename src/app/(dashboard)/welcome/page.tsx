@@ -2,7 +2,7 @@ import { cn, getInitials } from "@/lib/utils";
 import { getWelcomeData } from "@/lib/actions/my-profile";
 import { requireAuth } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
-import { CheckCircle2, Circle, Sparkles, Users } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -33,9 +33,9 @@ export default async function WelcomePage() {
             </div>
           </div>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="h-5 w-5 text-[var(--color-accent)]" />
+            <Icon name="auto_awesome" size={20} className="text-[var(--color-accent)]" />
             <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">Welcome, {employee.firstName}!</h1>
-            <Sparkles className="h-5 w-5 text-[var(--color-accent)]" />
+            <Icon name="auto_awesome" size={20} className="text-[var(--color-accent)]" />
           </div>
           <p className="text-[var(--color-text-muted)] max-w-lg mx-auto">
             We&apos;re thrilled to have you join {employee.department?.name || "the team"}. Here&apos;s everything you need to get started.
@@ -75,7 +75,7 @@ export default async function WelcomePage() {
             </div>
           ) : (
             <div className="flex items-center gap-3 text-[var(--color-text-muted)]">
-              <Users className="h-10 w-10" />
+              <Icon name="group" size={40} />
               <p className="text-sm">A buddy will be assigned to you soon!</p>
             </div>
           )}
@@ -105,9 +105,9 @@ export default async function WelcomePage() {
           {employee.employeeTasks.map((task) => (
             <div key={task.id} className={cn("flex items-center gap-3 p-3 rounded-lg", "hover:bg-[var(--color-surface-hover)] transition-colors")}>
               {task.status === "DONE" ? (
-                <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
+                <Icon name="check_circle" size={20} className="text-emerald-500 shrink-0" />
               ) : (
-                <Circle className="h-5 w-5 text-[var(--color-text-muted)] shrink-0" />
+                <Icon name="circle" size={20} className="text-[var(--color-text-muted)] shrink-0" />
               )}
               <div className="flex-1 min-w-0">
                 <p className={cn("text-sm", task.status === "DONE" ? "text-[var(--color-text-muted)] line-through" : "text-[var(--color-text-primary)]")}>

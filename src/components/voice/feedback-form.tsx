@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { submitAnonFeedback } from "@/lib/actions/voice";
 import { useRouter } from "next/navigation";
-import { Send, ShieldCheck } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 export function FeedbackForm() {
   const [content, setContent] = useState("");
@@ -26,7 +26,7 @@ export function FeedbackForm() {
   return (
     <div className={cn("rounded-xl p-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
       <div className="flex items-center gap-2 mb-4">
-        <ShieldCheck className="h-5 w-5 text-emerald-500" />
+        <Icon name="verified_user" size={20} className="text-emerald-500" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Submit Anonymous Feedback</h2>
       </div>
       <p className="text-sm text-[var(--color-text-muted)] mb-4">
@@ -61,7 +61,7 @@ export function FeedbackForm() {
               "disabled:opacity-50"
             )}
           >
-            <Send className="h-4 w-4" />
+            <Icon name="send" size={16} />
             {loading ? "Sending..." : "Submit Anonymously"}
           </button>
         </div>

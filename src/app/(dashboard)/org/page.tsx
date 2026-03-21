@@ -2,11 +2,11 @@ import { cn, getInitials } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
-import { Users, Building2, Layers, Clock, ChevronRight } from "lucide-react";
 import { ManagerAssignment } from "@/components/org/manager-assignment";
 import { OrgTree } from "@/components/org/org-tree";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { Icon } from "@/components/ui/icon";
 
 const borderColors: Record<string, string> = {
   Engineering: "border-l-blue-500",
@@ -36,10 +36,10 @@ export default async function OrgPage() {
       <PageHeader title="Organization" description="Overview of your company structure and departments" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard title="Total Employees" value={activeEmployees.length} icon={<Users className="h-5 w-5" />} color="blue" />
-        <StatCard title="Departments" value={departments.length} icon={<Building2 className="h-5 w-5" />} color="purple" />
-        <StatCard title="Teams" value={teamCount} icon={<Layers className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Avg Tenure" value={avgTenure} icon={<Clock className="h-5 w-5" />} color="amber" animate={false} />
+        <StatCard title="Total Employees" value={activeEmployees.length} icon={<Icon name="group" size={20} />} color="blue" />
+        <StatCard title="Departments" value={departments.length} icon={<Icon name="business" size={20} />} color="purple" />
+        <StatCard title="Teams" value={teamCount} icon={<Icon name="layers" size={20} />} color="emerald" />
+        <StatCard title="Avg Tenure" value={avgTenure} icon={<Icon name="schedule" size={20} />} color="amber" animate={false} />
       </div>
 
       <div className="mb-4">
@@ -55,7 +55,7 @@ export default async function OrgPage() {
               <div className="p-5">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-base font-semibold text-[var(--color-text-primary)]">{dept.name}</h3>
-                  <ChevronRight className="h-4 w-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Icon name="chevron_right" size={16} className="text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 {dept.description && <p className="text-sm text-[var(--color-text-muted)] mb-4 line-clamp-2">{dept.description}</p>}
                 {dept.head && (
@@ -69,11 +69,11 @@ export default async function OrgPage() {
                 )}
                 <div className="flex items-center gap-4 pt-3 border-t border-[var(--color-border)]">
                   <div className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                    <Icon name="group" size={12} className="text-[var(--color-text-muted)]" />
                     <span className="text-sm text-[var(--color-text-muted)]"><span className="font-medium text-[var(--color-text-primary)]">{memberCount}</span> members</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Layers className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                    <Icon name="layers" size={12} className="text-[var(--color-text-muted)]" />
                     <span className="text-sm text-[var(--color-text-muted)]"><span className="font-medium text-[var(--color-text-primary)]">{dept.teams.length}</span> teams</span>
                   </div>
                 </div>
@@ -86,7 +86,7 @@ export default async function OrgPage() {
       <div className="mt-8">
         <section className={cn("rounded-xl p-6 mb-8", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
           <div className="flex items-center gap-2 mb-4">
-            <Users className="h-5 w-5 text-[var(--color-accent)]" />
+            <Icon name="group" size={20} className="text-[var(--color-accent)]" />
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Organization Tree</h2>
           </div>
           <p className="text-sm text-[var(--color-text-muted)] mb-4">Reporting structure based on manager assignments.</p>

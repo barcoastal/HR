@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { submitPulseResponse } from "@/lib/actions/pulse";
-import { X } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 const moodEmojis = [
   { emoji: "😫", label: "Terrible", value: 1 },
@@ -48,7 +48,7 @@ export function PulsePopup({
           <p className="text-sm font-medium text-[var(--color-text-primary)]">{question}</p>
         </div>
         <button onClick={() => setDismissed(true)} className="p-1 rounded text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">
-          <X className="h-4 w-4" />
+          <Icon name="close" size={16} />
         </button>
       </div>
       <div className="flex justify-between gap-1">

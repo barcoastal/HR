@@ -1,12 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { FileText, Upload, Trash2, ChevronRight, Eye, EyeOff, Lock, PenTool, Send } from "lucide-react";
 import { useState, useRef } from "react";
 import { addEmployeeDocument, deleteEmployeeDocument, sendDocForSigning } from "@/lib/actions/employee-documents";
 import { Dialog } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
+import { Icon } from "@/components/ui/icon";
 
 type Doc = {
   id: string;
@@ -101,7 +101,7 @@ export function EmployeeDocumentsSection({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-lg bg-red-500/15 flex items-center justify-center">
-            <FileText className="h-4 w-4 text-red-400" />
+            <Icon name="description" size={16} className="text-red-400" />
           </div>
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Documents</h2>
         </div>
@@ -114,7 +114,7 @@ export function EmployeeDocumentsSection({
               "hover:bg-[var(--color-accent-hover)] transition-colors"
             )}
           >
-            <Upload className="h-3.5 w-3.5" />
+            <Icon name="upload" size={12} />
             Upload
           </button>
         )}
@@ -139,14 +139,14 @@ export function EmployeeDocumentsSection({
                 className="flex items-center gap-3 flex-1 min-w-0"
               >
                 <div className="h-9 w-9 rounded-lg bg-red-500/15 flex items-center justify-center shrink-0">
-                  <FileText className="h-4 w-4 text-red-400" />
+                  <Icon name="description" size={16} className="text-red-400" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
                     {doc.visibility === "HR_ONLY" && (
                       <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium shrink-0">
-                        <Lock className="h-2.5 w-2.5" />
+                        <Icon name="lock" />
                         HR Only
                       </span>
                     )}
@@ -162,7 +162,7 @@ export function EmployeeDocumentsSection({
                     className="p-1.5 rounded-lg text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 hover:bg-emerald-500/15 hover:text-emerald-400 transition-all"
                     title="Send for signing"
                   >
-                    <PenTool className="h-3.5 w-3.5" />
+                    <Icon name="edit_note" size={12} />
                   </button>
                 )}
                 {isAdmin && (
@@ -170,10 +170,10 @@ export function EmployeeDocumentsSection({
                     onClick={() => handleDelete(doc.id)}
                     className="p-1.5 rounded-lg text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 hover:bg-red-500/15 hover:text-red-400 transition-all"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Icon name="delete" size={12} />
                   </button>
                 )}
-                <ChevronRight className="h-4 w-4 text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Icon name="chevron_right" size={16} className="text-[var(--color-text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             </div>
           ))}
@@ -229,7 +229,7 @@ export function EmployeeDocumentsSection({
                     : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
                 )}
               >
-                <Eye className="h-4 w-4" />
+                <Icon name="visibility" size={16} />
                 Visible to Employee
               </button>
               <button
@@ -242,7 +242,7 @@ export function EmployeeDocumentsSection({
                     : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
                 )}
               >
-                <EyeOff className="h-4 w-4" />
+                <Icon name="visibility_off" size={16} />
                 HR Only
               </button>
             </div>
@@ -262,7 +262,7 @@ export function EmployeeDocumentsSection({
               "h-8 w-8 rounded-lg flex items-center justify-center shrink-0",
               requireSignature ? "bg-emerald-500/20" : "bg-[var(--color-surface-hover)]"
             )}>
-              <PenTool className={cn("h-4 w-4", requireSignature ? "text-emerald-400" : "text-[var(--color-text-muted)]")} />
+              <Icon name="edit_note" size={16} className={requireSignature ? "text-emerald-400" : "text-[var(--color-text-muted)]"} />
             </div>
             <div className="flex-1">
               <p className={cn("text-sm font-medium", requireSignature ? "text-emerald-400" : "text-[var(--color-text-primary)]")}>
@@ -301,7 +301,7 @@ export function EmployeeDocumentsSection({
                 "disabled:opacity-50 transition-colors"
               )}
             >
-              {requireSignature && <PenTool className="h-3.5 w-3.5" />}
+              {requireSignature && <Icon name="edit_note" size={12} />}
               {uploading ? "Uploading..." : requireSignature ? "Upload & Send for Signing" : "Upload"}
             </button>
           </div>

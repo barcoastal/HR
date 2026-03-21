@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Send, Image, Paperclip, Star, X, Smile, Loader2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { createFeedPost, createShoutoutPost } from "@/lib/actions/feed";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type EmployeeOption = { id: string; firstName: string; lastName: string };
 type Attachment = { url: string; type: "IMAGE" | "FILE"; name: string; preview?: string };
@@ -207,7 +207,7 @@ export function PostComposer({
                 />
               ) : (
                 <div className="h-20 w-20 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] flex flex-col items-center justify-center p-2">
-                  <Paperclip className="h-5 w-5 text-[var(--color-text-muted)] mb-1" />
+                  <Icon name="attach_file" size={20} className="text-[var(--color-text-muted)] mb-1" />
                   <span className="text-[9px] text-[var(--color-text-muted)] truncate w-full text-center">{att.name}</span>
                 </div>
               )}
@@ -215,13 +215,13 @@ export function PostComposer({
                 onClick={() => removeAttachment(idx)}
                 className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <X className="h-3 w-3" />
+                <Icon name="close" size={12} />
               </button>
             </div>
           ))}
           {uploading && (
             <div className="h-20 w-20 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] flex items-center justify-center">
-              <Loader2 className="h-5 w-5 text-[var(--color-accent)] animate-spin" />
+              <Icon name="progress_activity" size={20} className="animate-material-spin text-[var(--color-accent)] animate-spin" />
             </div>
           )}
         </div>
@@ -259,12 +259,12 @@ export function PostComposer({
                 onClick={() => setShowGifPicker(false)}
                 className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
               >
-                <X className="h-4 w-4" />
+                <Icon name="close" size={16} />
               </button>
             </div>
             {loadingGifs ? (
               <div className="flex justify-center py-6">
-                <Loader2 className="h-6 w-6 text-[var(--color-accent)] animate-spin" />
+                <Icon name="progress_activity" className="animate-material-spin text-[var(--color-accent)] animate-spin" />
               </div>
             ) : (
               <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto">
@@ -311,7 +311,7 @@ export function PostComposer({
             disabled={uploading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50"
           >
-            <Image className="h-4 w-4" />
+            <Icon name="image" size={16} />
             Photo
           </button>
           <button
@@ -319,7 +319,7 @@ export function PostComposer({
             disabled={uploading}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50"
           >
-            <Paperclip className="h-4 w-4" />
+            <Icon name="attach_file" size={16} />
             Attach
           </button>
           <button
@@ -331,7 +331,7 @@ export function PostComposer({
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
-            <Smile className="h-4 w-4" />
+            <Icon name="mood" size={16} />
             GIF
           </button>
           <button
@@ -343,7 +343,7 @@ export function PostComposer({
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
-            <Star className="h-4 w-4" />
+            <Icon name="star" size={16} />
             Shoutout
           </button>
         </div>
@@ -357,7 +357,7 @@ export function PostComposer({
             "disabled:opacity-50 disabled:cursor-not-allowed"
           )}
         >
-          <Send className="h-4 w-4" />
+          <Icon name="send" size={16} />
           {loading ? "Posting..." : "Post"}
         </button>
       </div>

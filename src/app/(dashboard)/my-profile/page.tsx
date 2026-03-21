@@ -2,21 +2,19 @@ import { cn, getInitials, formatDate } from "@/lib/utils";
 import { getMyProfile } from "@/lib/actions/my-profile";
 import { requireAuth } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
-import {
-  Mail, Phone, MapPin, Briefcase, Clock, Heart, UtensilsCrossed, User, Shield, Shirt,
-} from "lucide-react";
 import { EditPersonalInfoDialog } from "@/components/my-profile/edit-personal-info-dialog";
 import { EditEmergencyContactDialog } from "@/components/my-profile/edit-emergency-contact-dialog";
 import { EditAboutDialog } from "@/components/my-profile/edit-about-dialog";
 import { ProfilePhotoUpload } from "@/components/my-profile/profile-photo-upload";
+import { Icon } from "@/components/ui/icon";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
-function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3 py-3">
       <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center shrink-0">
-        <Icon className="h-4 w-4 text-[var(--color-accent)]" />
+        <Icon name={icon} size={16} className="text-[var(--color-accent)]" />
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{label}</p>
@@ -86,8 +84,8 @@ export default async function MyProfilePage() {
             ) : (
               <p className="text-sm text-[var(--color-text-muted)] italic">Add a bio to tell your colleagues about yourself.</p>
             )}
-            {profile.hobbies && <InfoRow icon={Heart} label="Hobbies" value={profile.hobbies} />}
-            {profile.dietaryRestrictions && <InfoRow icon={UtensilsCrossed} label="Dietary Restrictions" value={profile.dietaryRestrictions} />}
+            {profile.hobbies && <InfoRow icon="favorite" label="Hobbies" value={profile.hobbies} />}
+            {profile.dietaryRestrictions && <InfoRow icon="restaurant" label="Dietary Restrictions" value={profile.dietaryRestrictions} />}
           </section>
 
           {/* Personal Info */}
@@ -106,13 +104,13 @@ export default async function MyProfilePage() {
               }} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-              <InfoRow icon={Mail} label="Email" value={profile.email} />
-              {profile.phone && <InfoRow icon={Phone} label="Phone" value={profile.phone} />}
-              {fullAddress && <InfoRow icon={MapPin} label="Address" value={fullAddress} />}
-              {profile.pronouns && <InfoRow icon={User} label="Pronouns" value={profile.pronouns} />}
-              {profile.tShirtSize && <InfoRow icon={Shirt} label="T-Shirt Size" value={profile.tShirtSize} />}
-              <InfoRow icon={Briefcase} label="Start Date" value={formatDate(profile.startDate)} />
-              <InfoRow icon={Clock} label="Tenure" value={tenure} />
+              <InfoRow icon="mail" label="Email" value={profile.email} />
+              {profile.phone && <InfoRow icon="phone" label="Phone" value={profile.phone} />}
+              {fullAddress && <InfoRow icon="location_on" label="Address" value={fullAddress} />}
+              {profile.pronouns && <InfoRow icon="person" label="Pronouns" value={profile.pronouns} />}
+              {profile.tShirtSize && <InfoRow icon="checkroom" label="T-Shirt Size" value={profile.tShirtSize} />}
+              <InfoRow icon="work" label="Start Date" value={formatDate(profile.startDate)} />
+              <InfoRow icon="schedule" label="Tenure" value={tenure} />
             </div>
           </section>
 
@@ -129,9 +127,9 @@ export default async function MyProfilePage() {
             </div>
             {profile.emergencyContactName ? (
               <div className="space-y-1">
-                <InfoRow icon={User} label="Name" value={profile.emergencyContactName} />
-                {profile.emergencyContactPhone && <InfoRow icon={Phone} label="Phone" value={profile.emergencyContactPhone} />}
-                {profile.emergencyContactRelation && <InfoRow icon={Shield} label="Relationship" value={profile.emergencyContactRelation} />}
+                <InfoRow icon="person" label="Name" value={profile.emergencyContactName} />
+                {profile.emergencyContactPhone && <InfoRow icon="phone" label="Phone" value={profile.emergencyContactPhone} />}
+                {profile.emergencyContactRelation && <InfoRow icon="shield" label="Relationship" value={profile.emergencyContactRelation} />}
               </div>
             ) : (
               <p className="text-sm text-[var(--color-text-muted)] italic">No emergency contact on file. Please add one.</p>

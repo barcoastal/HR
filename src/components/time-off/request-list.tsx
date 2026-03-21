@@ -2,9 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { getInitials, formatDate } from "@/lib/utils";
-import { Check, X, Clock, Ban } from "lucide-react";
 import { approveTimeOffRequest, denyTimeOffRequest, cancelTimeOffRequest } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Request = {
   id: string;
@@ -19,11 +19,11 @@ type Request = {
   approver: { firstName: string; lastName: string } | null;
 };
 
-const statusConfig: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  PENDING: { label: "Pending", color: "bg-yellow-500/15 text-yellow-500", icon: Clock },
-  APPROVED: { label: "Approved", color: "bg-emerald-500/15 text-emerald-500", icon: Check },
-  DENIED: { label: "Denied", color: "bg-red-500/15 text-red-500", icon: X },
-  CANCELLED: { label: "Cancelled", color: "bg-gray-500/15 text-gray-400", icon: Ban },
+const statusConfig: Record<string, { label: string; color: string; icon: string }> = {
+  PENDING: { label: "Pending", color: "bg-yellow-500/15 text-yellow-500", icon: "schedule" },
+  APPROVED: { label: "Approved", color: "bg-emerald-500/15 text-emerald-500", icon: "check" },
+  DENIED: { label: "Denied", color: "bg-red-500/15 text-red-500", icon: "close" },
+  CANCELLED: { label: "Cancelled", color: "bg-gray-500/15 text-gray-400", icon: "block" },
 };
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
@@ -62,7 +62,6 @@ export function RequestList({
     <div className="space-y-3">
       {requests.map((req) => {
         const cfg = statusConfig[req.status] || statusConfig.PENDING;
-        const StatusIcon = cfg.icon;
         const initials = getInitials(req.employee.firstName, req.employee.lastName);
         const colorIdx = req.employee.firstName.charCodeAt(0) % avatarColors.length;
         const isOwn = req.employee.id === currentEmployeeId;
@@ -77,7 +76,7 @@ export function RequestList({
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-semibold text-[var(--color-text-primary)]">{req.employee.firstName} {req.employee.lastName}</p>
                   <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium", cfg.color)}>
-                    <StatusIcon className="h-3 w-3" />{cfg.label}
+                    <Icon name={cfg.icon} size={12} />{cfg.label}
                   </span>
                 </div>
                 <p className="text-sm text-[var(--color-text-muted)] mt-0.5">
@@ -96,14 +95,14 @@ export function RequestList({
                       className="p-2.5 h-11 w-11 rounded-lg text-emerald-500 hover:bg-emerald-500/10 transition-colors flex items-center justify-center"
                       title="Approve"
                     >
-                      <Check className="h-5 w-5" />
+                      <Icon name="check" size={20} />
                     </button>
                     <button
                       onClick={() => handleDeny(req.id)}
                       className="p-2.5 h-11 w-11 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors flex items-center justify-center"
                       title="Deny"
                     >
-                      <X className="h-5 w-5" />
+                      <Icon name="close" size={20} />
                     </button>
                   </>
                 )}

@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Building2, Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -10,6 +9,7 @@ import {
   deleteDepartment,
 } from "@/lib/actions/departments";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Department = {
   id: string;
@@ -114,7 +114,7 @@ export function DepartmentManager({ departments }: Props) {
     >
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-[var(--color-accent)]" />
+          <Icon name="business" size={20} className="text-[var(--color-accent)]" />
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
             Departments
           </h2>
@@ -127,7 +127,7 @@ export function DepartmentManager({ departments }: Props) {
             "hover:bg-[var(--color-accent-hover)] transition-colors"
           )}
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Icon name="add" size={12} />
           Add Department
         </button>
       </div>
@@ -157,13 +157,13 @@ export function DepartmentManager({ departments }: Props) {
                 onClick={() => openEdit(dept)}
                 className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Icon name="edit" size={12} />
               </button>
               <button
                 onClick={() => openDelete(dept)}
                 className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Icon name="delete" size={12} />
               </button>
             </div>
           </div>
@@ -220,7 +220,7 @@ export function DepartmentManager({ departments }: Props) {
           >
             {saving ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Creating...
               </span>
             ) : (
@@ -279,7 +279,7 @@ export function DepartmentManager({ departments }: Props) {
           >
             {saving ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Saving...
               </span>
             ) : (
@@ -321,7 +321,7 @@ export function DepartmentManager({ departments }: Props) {
           >
             {deleting ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Deleting...
               </span>
             ) : (

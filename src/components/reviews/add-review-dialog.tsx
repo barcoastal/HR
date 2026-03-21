@@ -5,8 +5,8 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { addReviewToCycle } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
-import { UserPlus } from "lucide-react";
 import type { ReviewType } from "@/generated/prisma/client";
+import { Icon } from "@/components/ui/icon";
 
 type SimpleEmployee = { id: string; firstName: string; lastName: string };
 
@@ -52,7 +52,7 @@ export function AddReviewDialog({
           "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
         )}
       >
-        <UserPlus className="h-3.5 w-3.5" />Add Review
+        <Icon name="person_add" size={12} />Add Review
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Add Review Assignment">

@@ -1,13 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Plus, Upload, Loader2, FileText, Linkedin } from "lucide-react";
 import { useState, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createCandidate } from "@/lib/actions/candidates";
 import { parseResume } from "@/lib/actions/parse-resume";
 import { parseLinkedIn } from "@/lib/actions/parse-linkedin";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Position = { id: string; title: string };
 type PlatformOption = { id: string; name: string };
@@ -141,7 +141,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
   return (
     <>
       <button onClick={() => setOpen(true)} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}>
-        <Plus className="h-4 w-4" />Add Candidate
+        <Icon name="add" size={16} />Add Candidate
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Add Candidate">
@@ -170,18 +170,18 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
             />
             {parsing ? (
               <>
-                <Loader2 className="h-6 w-6 text-[var(--color-accent)] animate-spin" />
+                <Icon name="progress_activity" className="animate-material-spin text-[var(--color-accent)] animate-spin" />
                 <span className="text-sm text-[var(--color-text-muted)]">Parsing resume...</span>
               </>
             ) : fileName ? (
               <>
-                <FileText className="h-6 w-6 text-[var(--color-accent)]" />
+                <Icon name="description" className="text-[var(--color-accent)]" />
                 <span className="text-sm text-[var(--color-text-primary)]">{fileName}</span>
                 <span className="text-xs text-[var(--color-text-muted)]">Click or drop to replace</span>
               </>
             ) : (
               <>
-                <Upload className="h-6 w-6 text-[var(--color-text-muted)]" />
+                <Icon name="upload" className="text-[var(--color-text-muted)]" />
                 <span className="text-sm text-[var(--color-text-muted)]">Upload PDF resume to auto-fill fields</span>
                 <span className="text-xs text-[var(--color-text-muted)]">Drop file here or click to browse</span>
               </>
@@ -198,7 +198,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
           {/* LinkedIn URL Fetch */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Linkedin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
+              <Icon name="link" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
               <input
                 value={linkedinInput}
                 onChange={(e) => setLinkedinInput(e.target.value)}
@@ -217,7 +217,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
                 "disabled:opacity-50"
               )}
             >
-              {fetchingLinkedIn ? <Loader2 className="h-4 w-4 animate-spin" /> : "Fetch"}
+              {fetchingLinkedIn ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : "Fetch"}
             </button>
           </div>
 

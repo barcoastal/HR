@@ -1,17 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  CheckCircle2,
-  Circle,
-  Plus,
-  Loader2,
-  PartyPopper,
-  ClipboardList,
-  Calendar,
-  UserCircle,
-  Trash2,
-} from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -22,6 +11,7 @@ import {
   deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type TaskItem = {
   id: string;
@@ -223,7 +213,7 @@ export function OnboardingTaskManager({
         {completed ? (
           <div className="flex flex-col items-center gap-4 py-6">
             <div className="h-14 w-14 rounded-full bg-emerald-500/15 flex items-center justify-center">
-              <PartyPopper className="h-8 w-8 text-emerald-500" />
+              <Icon name="celebration" size={32} className="text-emerald-500" />
             </div>
             <div className="text-center">
               <p className="text-lg font-semibold text-[var(--color-text-primary)]">
@@ -255,7 +245,7 @@ export function OnboardingTaskManager({
 
             {Object.keys(groupedItems).length === 0 ? (
               <div className="text-center py-8">
-                <ClipboardList className="h-8 w-8 text-[var(--color-text-muted)] mx-auto mb-2" />
+                <Icon name="assignment" size={32} className="text-[var(--color-text-muted)] mx-auto mb-2" />
                 <p className="text-sm text-[var(--color-text-muted)]">
                   All template tasks have been added, or no templates exist yet.
                 </p>
@@ -296,7 +286,7 @@ export function OnboardingTaskManager({
                               <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                 {item.assigneeName && (
                                   <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                                    <UserCircle className="h-3 w-3" />
+                                    <Icon name="account_circle" size={12} />
                                     {item.assigneeName}
                                   </span>
                                 )}
@@ -305,7 +295,7 @@ export function OnboardingTaskManager({
                                     "inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs",
                                     "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                                   )}>
-                                    <Calendar className="h-3 w-3" />
+                                    <Icon name="calendar_today" size={12} />
                                     {dueDayLabel}
                                   </span>
                                 )}
@@ -322,9 +312,9 @@ export function OnboardingTaskManager({
                               )}
                             >
                               {isAdding ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                               ) : (
-                                <Plus className="h-3.5 w-3.5" />
+                                <Icon name="add" size={12} />
                               )}
                               {isAdding ? "Adding..." : "Add"}
                             </button>
@@ -369,9 +359,9 @@ export function OnboardingTaskManager({
                 )}
               >
                 {addingCustom ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Icon name="progress_activity" size={16} className="animate-material-spin" />
                 ) : (
-                  <Plus className="h-4 w-4" />
+                  <Icon name="add" size={16} />
                 )}
                 {addingCustom ? "Adding..." : "Add Custom Task"}
               </button>
@@ -424,11 +414,11 @@ export function OnboardingTaskManager({
                     >
                       <div className="mt-0.5 shrink-0">
                         {isToggling ? (
-                          <Loader2 className="h-5 w-5 text-[var(--color-text-muted)] animate-spin" />
+                          <Icon name="progress_activity" size={20} className="animate-material-spin text-[var(--color-text-muted)] animate-spin" />
                         ) : isDone ? (
-                          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                          <Icon name="check_circle" size={20} className="text-emerald-500" />
                         ) : (
-                          <Circle className="h-5 w-5 text-[var(--color-text-muted)]" />
+                          <Icon name="circle" size={20} className="text-[var(--color-text-muted)]" />
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -479,7 +469,7 @@ export function OnboardingTaskManager({
                   "transition-colors"
                 )}
               >
-                <ClipboardList className="h-4 w-4" />
+                <Icon name="assignment" size={16} />
                 Browse & Add Tasks
                 {availableItems.length > 0 && (
                   <span className={cn(
@@ -508,12 +498,12 @@ export function OnboardingTaskManager({
                 >
                   {completing ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Icon name="progress_activity" size={16} className="animate-material-spin" />
                       Processing...
                     </>
                   ) : (
                     <>
-                      <PartyPopper className="h-4 w-4" />
+                      <Icon name="celebration" size={16} />
                       Complete Onboarding
                     </>
                   )}
@@ -548,7 +538,7 @@ export function OnboardingTaskManager({
                     onClick={() => setConfirmDelete(true)}
                     className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-medium text-red-400 hover:bg-red-500/10 transition-colors"
                   >
-                    <Trash2 className="h-3.5 w-3.5" />
+                    <Icon name="delete" size={12} />
                     Delete Employee
                   </button>
                 )}

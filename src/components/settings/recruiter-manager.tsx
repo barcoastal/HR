@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UserCheck, X, Plus, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { updateRecruiters } from "@/lib/actions/company-settings";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Employee = {
   id: string;
@@ -72,7 +72,7 @@ export function RecruiterManager({ recruiters, allEmployees }: Props) {
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <UserCheck className="h-5 w-5 text-[var(--color-accent)]" />
+          <Icon name="how_to_reg" size={20} className="text-[var(--color-accent)]" />
           <div>
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
               Recruiters
@@ -94,7 +94,7 @@ export function RecruiterManager({ recruiters, allEmployees }: Props) {
             )}
           >
             {saving ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Icon name="progress_activity" size={12} className="animate-material-spin" />
             ) : null}
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -128,7 +128,7 @@ export function RecruiterManager({ recruiters, allEmployees }: Props) {
               onClick={() => removeRecruiter(emp.id)}
               className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/10 hover:text-red-400 transition-colors"
             >
-              <X className="h-4 w-4" />
+              <Icon name="close" size={16} />
             </button>
           </div>
         ))}
@@ -202,7 +202,7 @@ export function RecruiterManager({ recruiters, allEmployees }: Props) {
               "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-accent)] transition-colors"
             )}
           >
-            <Plus className="h-4 w-4" />
+            <Icon name="add" size={16} />
             Add Recruiter
           </button>
         )}

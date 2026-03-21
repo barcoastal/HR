@@ -1,11 +1,11 @@
 import { cn, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
-import { UserPlus, CheckCircle2, ClipboardList } from "lucide-react";
 import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline";
 import { MyOnboardingTasks } from "@/components/onboarding/my-onboarding-tasks";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { Icon } from "@/components/ui/icon";
 
 export default async function OnboardingPage() {
   const session = await requireAdmin();
@@ -78,9 +78,9 @@ export default async function OnboardingPage() {
       <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<UserPlus className="h-5 w-5" />} color="blue" />
-        <StatCard title="Completed This Month" value={completedEmployees.length} icon={<CheckCircle2 className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Pending Tasks" value={pendingTasks} icon={<ClipboardList className="h-5 w-5" />} color="amber" />
+        <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<Icon name="person_add" size={20} />} color="blue" />
+        <StatCard title="Completed This Month" value={completedEmployees.length} icon={<Icon name="check_circle" size={20} />} color="emerald" />
+        <StatCard title="Pending Tasks" value={pendingTasks} icon={<Icon name="assignment" size={20} />} color="amber" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Onboarding</h2></div>
@@ -141,7 +141,7 @@ export default async function OnboardingPage() {
                     <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle} · {emp.department?.name}</p>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                    <Icon name="check_circle" size={16} className="text-emerald-400" />
                     <span className="text-emerald-400 font-medium">Completed</span>
                   </div>
                 </div>

@@ -1,10 +1,10 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { UsersRound, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { setEmployeeManager } from "@/lib/actions/employees";
+import { Icon } from "@/components/ui/icon";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -88,7 +88,7 @@ export function ManagerAssignment({ employees }: Props) {
             "bg-[var(--color-accent)]/10"
           )}
         >
-          <UsersRound className="h-5 w-5 text-[var(--color-accent)]" />
+          <Icon name="groups" size={20} className="text-[var(--color-accent)]" />
         </div>
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
@@ -147,7 +147,7 @@ export function ManagerAssignment({ employees }: Props) {
                 </div>
 
                 {/* Arrow */}
-                <ArrowRight className="h-4 w-4 flex-shrink-0 text-[var(--color-text-muted)]" />
+                <Icon name="arrow_forward" size={16} className="flex-shrink-0 text-[var(--color-text-muted)]" />
 
                 {/* Manager dropdown */}
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -173,7 +173,7 @@ export function ManagerAssignment({ employees }: Props) {
                   </select>
 
                   {isSaving && (
-                    <Loader2 className="h-4 w-4 animate-spin text-[var(--color-accent)] flex-shrink-0" />
+                    <Icon name="progress_activity" size={16} className="animate-material-spin text-[var(--color-accent)] flex-shrink-0" />
                   )}
                 </div>
               </div>

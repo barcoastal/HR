@@ -3,8 +3,8 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { getClubs } from "@/lib/actions/clubs";
 import { ClubCard } from "@/components/clubs/club-card";
 import { CreateClubDialog } from "@/components/clubs/create-club-dialog";
-import { Users2 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
+import { Icon } from "@/components/ui/icon";
 
 export default async function ClubsPage() {
   const session = await requireAuth();
@@ -27,7 +27,7 @@ export default async function ClubsPage() {
         </div>
       ) : (
         <div className={cn("rounded-2xl p-12 text-center", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-          <Users2 className="h-10 w-10 text-[var(--color-text-muted)] mx-auto mb-3" />
+          <Icon name="groups" size={40} className="text-[var(--color-text-muted)] mx-auto mb-3" />
           <p className="text-[var(--color-text-muted)]">No clubs yet. Be the first to create one!</p>
         </div>
       )}

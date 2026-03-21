@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Briefcase, Plus, X, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { createJobTitle, deleteJobTitle } from "@/lib/actions/job-titles";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type JobTitle = { id: string; name: string };
 type Props = { jobTitles: JobTitle[] };
@@ -40,7 +40,7 @@ export function JobTitleManager({ jobTitles }: Props) {
       )}
     >
       <div className="flex items-center gap-2 mb-5">
-        <Briefcase className="h-5 w-5 text-[var(--color-accent)]" />
+        <Icon name="work" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
           Job Titles
         </h2>
@@ -63,9 +63,9 @@ export function JobTitleManager({ jobTitles }: Props) {
               className="p-0.5 rounded-full hover:bg-red-500/15 hover:text-red-400 transition-colors disabled:opacity-50"
             >
               {deletingId === jt.id ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
               ) : (
-                <X className="h-3 w-3" />
+                <Icon name="close" size={12} />
               )}
             </button>
           </span>
@@ -108,12 +108,12 @@ export function JobTitleManager({ jobTitles }: Props) {
         >
           {adding ? (
             <>
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Icon name="progress_activity" size={12} className="animate-material-spin" />
               Adding...
             </>
           ) : (
             <>
-              <Plus className="h-3.5 w-3.5" />
+              <Icon name="add" size={12} />
               Add
             </>
           )}

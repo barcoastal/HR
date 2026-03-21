@@ -1,11 +1,11 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { Search, Mail, Filter, UserCheck, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { approveAndInviteEmployee, bulkApproveAndInviteEmployees } from "@/lib/actions/employees";
+import { Icon } from "@/components/ui/icon";
 
 type Employee = {
   id: string;
@@ -101,9 +101,9 @@ export function PeopleList({
               )}
             >
               {approvingAll ? (
-                <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Approving...</>
+                <><Icon name="progress_activity" size={12} className="animate-material-spin" /> Approving...</>
               ) : (
-                <><UserCheck className="h-3.5 w-3.5" /> Approve All & Send Invites</>
+                <><Icon name="how_to_reg" size={12} /> Approve All & Send Invites</>
               )}
             </button>
           </div>
@@ -134,9 +134,9 @@ export function PeopleList({
                     )}
                   >
                     {approvingId === emp.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
                     ) : (
-                      <UserCheck className="h-3 w-3" />
+                      <Icon name="how_to_reg" size={12} />
                     )}
                     Approve
                   </button>
@@ -148,7 +148,7 @@ export function PeopleList({
       )}
 
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
+        <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
         <input
           type="text"
           placeholder="Search by name, title, or department..."
@@ -165,7 +165,7 @@ export function PeopleList({
       </div>
 
       <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-        <Filter className="h-4 w-4 text-[var(--color-text-muted)] shrink-0" />
+        <Icon name="filter_list" size={16} className="text-[var(--color-text-muted)] shrink-0" />
         {["All", ...departments].map((dept) => (
           <button
             key={dept}
@@ -223,7 +223,7 @@ export function PeopleList({
                     </div>
                   )}
                   <div className="flex items-center gap-1.5 mt-2 text-xs text-[var(--color-text-muted)]">
-                    <Mail className="h-3 w-3" />
+                    <Icon name="mail" size={12} />
                     <span className="truncate">{employee.email}</span>
                   </div>
                 </div>

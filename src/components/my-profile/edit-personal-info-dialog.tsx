@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { updateMyProfile } from "@/lib/actions/my-profile";
 import { useRouter } from "next/navigation";
-import { MapPin } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type PersonalInfo = {
   employeeId: string;
@@ -68,7 +68,7 @@ export function EditPersonalInfoDialog({ data }: { data: PersonalInfo }) {
           "text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
         )}
       >
-        <MapPin className="h-3.5 w-3.5" />Edit
+        <Icon name="location_on" size={12} />Edit
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Edit Personal Info">

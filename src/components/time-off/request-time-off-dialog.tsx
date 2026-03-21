@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createTimeOffRequest } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Policy = { id: string; name: string; daysPerYear: number; isUnlimited: boolean };
 type Balance = { policyId: string; used: number; policy: Policy };
@@ -86,7 +86,7 @@ export function RequestTimeOffDialog({
           "hover:bg-[var(--color-accent-hover)] transition-colors"
         )}
       >
-        <Plus className="h-4 w-4" />Request Time Off
+        <Icon name="add" size={16} />Request Time Off
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Request Time Off">

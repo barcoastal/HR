@@ -1,21 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  Plus,
-  Trash2,
-  GripVertical,
-  Loader2,
-  ClipboardList,
-  Pencil,
-  Check,
-  X,
-  Calendar,
-  UserCircle,
-  Mail,
-  Paperclip,
-  Upload,
-} from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -26,6 +11,7 @@ import {
   deleteChecklist,
 } from "@/lib/actions/checklists";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type ChecklistItem = {
   id: string;
@@ -304,7 +290,7 @@ export function ChecklistManager({
     >
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <ClipboardList className="h-5 w-5 text-[var(--color-accent)]" />
+          <Icon name="assignment" size={20} className="text-[var(--color-accent)]" />
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
             Checklist Templates
           </h2>
@@ -317,7 +303,7 @@ export function ChecklistManager({
             "hover:bg-[var(--color-accent-hover)] transition-colors"
           )}
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Icon name="add" size={12} />
           Add Checklist
         </button>
       </div>
@@ -360,7 +346,7 @@ export function ChecklistManager({
               }}
               className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Icon name="delete" size={12} />
             </button>
           </div>
         ))}
@@ -496,7 +482,7 @@ export function ChecklistManager({
                         <div className="grid grid-cols-2 gap-2">
                           <div>
                             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                              <UserCircle className="inline h-3 w-3 mr-1" />
+                              <Icon name="account_circle" size={12} className="inline mr-1" />
                               Assignee
                             </label>
                             <select
@@ -516,7 +502,7 @@ export function ChecklistManager({
                           </div>
                           <div>
                             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                              <Calendar className="inline h-3 w-3 mr-1" />
+                              <Icon name="calendar_today" size={12} className="inline mr-1" />
                               Due Day
                             </label>
                             <select
@@ -544,7 +530,7 @@ export function ChecklistManager({
                               onChange={(e) => setEditSendEmail(e.target.checked)}
                               className="rounded border-[var(--color-border)]"
                             />
-                            <Mail className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                            <Icon name="mail" size={12} className="text-[var(--color-text-muted)]" />
                             <span className="text-xs font-medium text-[var(--color-text-primary)]">
                               Send email to new hire
                             </span>
@@ -571,7 +557,7 @@ export function ChecklistManager({
                         {/* Document upload */}
                         <div className="pt-1 border-t border-[var(--color-border)]">
                           <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                            <Paperclip className="inline h-3 w-3 mr-1" />
+                            <Icon name="attach_file" size={12} className="inline mr-1" />
                             Document
                           </label>
                           {editDocName ? (
@@ -584,7 +570,7 @@ export function ChecklistManager({
                                 onClick={() => { setEditDocUrl(""); setEditDocName(""); }}
                                 className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
                               >
-                                <X className="h-3 w-3" />
+                                <Icon name="close" size={12} />
                               </button>
                             </div>
                           ) : (
@@ -596,9 +582,9 @@ export function ChecklistManager({
                               )}
                             >
                               {uploadingEditDoc ? (
-                                <Loader2 className="h-3 w-3 animate-spin" />
+                                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                               ) : (
-                                <Upload className="h-3 w-3" />
+                                <Icon name="upload" size={12} />
                               )}
                               {uploadingEditDoc ? "Uploading..." : "Upload file"}
                               <input
@@ -624,9 +610,9 @@ export function ChecklistManager({
                             )}
                           >
                             {savingEdit ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
+                              <Icon name="progress_activity" size={12} className="animate-material-spin" />
                             ) : (
-                              <Check className="h-3 w-3" />
+                              <Icon name="check" size={12} />
                             )}
                             {savingEdit ? "Saving..." : "Save"}
                           </button>
@@ -635,7 +621,7 @@ export function ChecklistManager({
                             disabled={savingEdit}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
                           >
-                            <X className="h-3 w-3" />
+                            <Icon name="close" size={12} />
                             Cancel
                           </button>
                         </div>
@@ -643,7 +629,7 @@ export function ChecklistManager({
                     ) : (
                       /* Display mode */
                       <div className="flex items-start gap-2">
-                        <GripVertical className="h-4 w-4 text-[var(--color-text-muted)] mt-0.5 shrink-0" />
+                        <Icon name="drag_indicator" size={16} className="text-[var(--color-text-muted)] mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-[var(--color-text-primary)]">
                             <span className="text-xs text-[var(--color-text-muted)] mr-1.5">
@@ -658,7 +644,7 @@ export function ChecklistManager({
                           )}
                           <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                             <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                              <UserCircle className="h-3 w-3" />
+                              <Icon name="account_circle" size={12} />
                               {item.assigneeName || "Unassigned"}
                             </span>
                             {item.dueDay !== null && item.dueDay > 0 && (
@@ -668,7 +654,7 @@ export function ChecklistManager({
                                   "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                                 )}
                               >
-                                <Calendar className="h-3 w-3 mr-1" />
+                                <Icon name="calendar_today" size={12} className="mr-1" />
                                 {getDueDayLabel(item.dueDay)}
                               </span>
                             )}
@@ -679,7 +665,7 @@ export function ChecklistManager({
                                   "bg-blue-500/10 text-blue-500"
                                 )}
                               >
-                                <Mail className="h-3 w-3" />
+                                <Icon name="mail" size={12} />
                                 Email
                               </span>
                             )}
@@ -690,7 +676,7 @@ export function ChecklistManager({
                                   "bg-amber-500/10 text-amber-600"
                                 )}
                               >
-                                <Paperclip className="h-3 w-3" />
+                                <Icon name="attach_file" size={12} />
                                 {item.documentName}
                               </span>
                             )}
@@ -701,7 +687,7 @@ export function ChecklistManager({
                             onClick={() => startEditing(item)}
                             className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
                           >
-                            <Pencil className="h-3.5 w-3.5" />
+                            <Icon name="edit" size={12} />
                           </button>
                           <button
                             onClick={() => handleDeleteItem(item.id)}
@@ -709,9 +695,9 @@ export function ChecklistManager({
                             className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 transition-colors"
                           >
                             {deletingId === item.id ? (
-                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              <Icon name="progress_activity" size={12} className="animate-material-spin" />
                             ) : (
-                              <Trash2 className="h-3.5 w-3.5" />
+                              <Icon name="delete" size={12} />
                             )}
                           </button>
                         </div>
@@ -752,7 +738,7 @@ export function ChecklistManager({
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                    <UserCircle className="inline h-3 w-3 mr-1" />
+                    <Icon name="account_circle" size={12} className="inline mr-1" />
                     Assignee
                   </label>
                   <select
@@ -770,7 +756,7 @@ export function ChecklistManager({
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                    <Calendar className="inline h-3 w-3 mr-1" />
+                    <Icon name="calendar_today" size={12} className="inline mr-1" />
                     Due Day
                   </label>
                   <select
@@ -796,7 +782,7 @@ export function ChecklistManager({
                     onChange={(e) => setNewItemSendEmail(e.target.checked)}
                     className="rounded border-[var(--color-border)]"
                   />
-                  <Mail className="h-3.5 w-3.5 text-[var(--color-text-muted)]" />
+                  <Icon name="mail" size={12} className="text-[var(--color-text-muted)]" />
                   <span className="text-xs font-medium text-[var(--color-text-primary)]">
                     Send email to new hire
                   </span>
@@ -823,7 +809,7 @@ export function ChecklistManager({
               {/* Document upload */}
               <div>
                 <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                  <Paperclip className="inline h-3 w-3 mr-1" />
+                  <Icon name="attach_file" size={12} className="inline mr-1" />
                   Document
                 </label>
                 {newItemDocName ? (
@@ -836,7 +822,7 @@ export function ChecklistManager({
                       onClick={() => { setNewItemDocUrl(""); setNewItemDocName(""); }}
                       className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400"
                     >
-                      <X className="h-3 w-3" />
+                      <Icon name="close" size={12} />
                     </button>
                   </div>
                 ) : (
@@ -848,9 +834,9 @@ export function ChecklistManager({
                     )}
                   >
                     {uploadingNewDoc ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
+                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
                     ) : (
-                      <Upload className="h-3 w-3" />
+                      <Icon name="upload" size={12} />
                     )}
                     {uploadingNewDoc ? "Uploading..." : "Upload file"}
                     <input
@@ -876,12 +862,12 @@ export function ChecklistManager({
               >
                 {addingItem ? (
                   <>
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Icon name="progress_activity" size={12} className="animate-material-spin" />
                     Adding...
                   </>
                 ) : (
                   <>
-                    <Plus className="h-3 w-3" />
+                    <Icon name="add" size={12} />
                     Add Step
                   </>
                 )}

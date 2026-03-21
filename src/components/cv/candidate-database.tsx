@@ -2,12 +2,12 @@
 
 import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { Search, Download, ArrowUpRight, FileText, Check, ChevronDown, ChevronUp, Mail, Phone, Linkedin, Briefcase, Save, Loader2, Pencil } from "lucide-react";
 import { useState, useMemo } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { pullCandidateToRecruitment, updateCandidateNotes } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
+import { Icon } from "@/components/ui/icon";
 
 type CandidateItem = {
   id: string;
@@ -60,13 +60,13 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
     <div className="rounded-lg border-2 border-dashed border-[var(--color-border)] p-3 bg-[var(--color-surface)]">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1.5">
-          <Pencil className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+          <Icon name="edit" size={12} className="text-[var(--color-accent)]" />
           <p className="text-xs font-semibold text-[var(--color-text-primary)]">Notes</p>
         </div>
         <div className="flex items-center gap-2">
           {saved && (
             <span className="text-[10px] text-emerald-400 flex items-center gap-1">
-              <Check className="h-3 w-3" /> Saved
+              <Icon name="check" size={12} /> Saved
             </span>
           )}
           <button
@@ -79,7 +79,7 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
                 : "bg-[var(--color-border)] text-[var(--color-text-muted)] cursor-not-allowed"
             )}
           >
-            {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+            {saving ? <Icon name="progress_activity" size={12} className="animate-material-spin" /> : <Icon name="save" size={12} />}
             {saving ? "Saving..." : "Save Note"}
           </button>
         </div>
@@ -111,7 +111,7 @@ function ResumeViewer({ resumeUrl, candidateName }: { resumeUrl: string; candida
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
-        <FileText className="h-3.5 w-3.5 text-[var(--color-accent)]" />
+        <Icon name="description" size={12} className="text-[var(--color-accent)]" />
         <p className="text-xs font-semibold text-[var(--color-text-primary)]">Resume PDF</p>
         <a
           href={pdfSrc}
@@ -123,7 +123,7 @@ function ResumeViewer({ resumeUrl, candidateName }: { resumeUrl: string; candida
             "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
           )}
         >
-          <Download className="h-3 w-3" />
+          <Icon name="download" size={12} />
           Download PDF
         </a>
       </div>
@@ -204,7 +204,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
     <div>
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-text-muted)]" />
+          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
             type="text"
             placeholder="Search by name, email, skills, or resume content..."
@@ -234,7 +234,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                    <FileText className="h-4 w-4 text-blue-400" />
+                    <Icon name="description" size={16} className="text-blue-400" />
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
@@ -258,13 +258,13 @@ export function CandidateDatabase({ candidates, positions }: Props) {
               <div className="space-y-2 mb-3 text-xs">
                 {c.phone && (
                   <div className="flex items-center gap-2">
-                    <Phone className="h-3 w-3 text-[var(--color-text-muted)]" />
+                    <Icon name="phone" size={12} className="text-[var(--color-text-muted)]" />
                     <span className="text-[var(--color-text-muted)]">{c.phone}</span>
                   </div>
                 )}
                 {c.jobAppliedTo && (
                   <div className="flex items-center gap-2">
-                    <Briefcase className="h-3 w-3 text-[var(--color-text-muted)]" />
+                    <Icon name="work" size={12} className="text-[var(--color-text-muted)]" />
                     <span className="text-[var(--color-text-muted)] truncate">{c.jobAppliedTo}</span>
                   </div>
                 )}
@@ -299,14 +299,14 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                         "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
                       )}
                     >
-                      <Download className="h-3 w-3" />
+                      <Icon name="download" size={12} />
                       Resume
                     </a>
                   )}
                 </div>
                 {c.inPipeline ? (
                   <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 h-11">
-                    <Check className="h-3 w-3" />
+                    <Icon name="check" size={12} />
                     In Pipeline
                   </span>
                 ) : (
@@ -317,7 +317,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                       "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
                     )}
                   >
-                    <ArrowUpRight className="h-3 w-3" />
+                    <Icon name="open_in_new" size={12} />
                     Pull to Recruitment
                   </button>
                 )}
@@ -363,12 +363,12 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         {isExpanded ? (
-                          <ChevronUp className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
+                          <Icon name="expand_less" size={12} className="text-[var(--color-text-muted)] shrink-0" />
                         ) : (
-                          <ChevronDown className="h-3.5 w-3.5 text-[var(--color-text-muted)] shrink-0" />
+                          <Icon name="expand_more" size={12} className="text-[var(--color-text-muted)] shrink-0" />
                         )}
                         <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
-                          <FileText className="h-3.5 w-3.5 text-blue-400" />
+                          <Icon name="description" size={12} className="text-blue-400" />
                         </div>
                         <span className="text-sm font-medium text-[var(--color-text-primary)]">
                           {c.firstName} {c.lastName}
@@ -408,7 +408,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                               "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
                             )}
                           >
-                            <Download className="h-3 w-3" />
+                            <Icon name="download" size={12} />
                             PDF
                           </a>
                         )}
@@ -417,7 +417,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                             "inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium",
                             "bg-purple-500/10 text-purple-400"
                           )}>
-                            <FileText className="h-3 w-3" />
+                            <Icon name="description" size={12} />
                             Text
                           </span>
                         )}
@@ -429,7 +429,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                     <td className="px-4 py-3 text-right">
                       {c.inPipeline ? (
                         <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">
-                          <Check className="h-3 w-3" />
+                          <Icon name="check" size={12} />
                           In Pipeline
                         </span>
                       ) : (
@@ -440,7 +440,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                             "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
                           )}
                         >
-                          <ArrowUpRight className="h-3 w-3" />
+                          <Icon name="open_in_new" size={12} />
                           Pull to Recruitment
                         </button>
                       )}
@@ -453,18 +453,18 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                           {/* Contact & Skills */}
                           <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-[var(--color-text-muted)]">
                             <div className="flex items-center gap-2">
-                              <Mail className="h-3.5 w-3.5 shrink-0" />
+                              <Icon name="mail" size={12} className="shrink-0" />
                               <span>{c.email}</span>
                             </div>
                             {c.phone && (
                               <div className="flex items-center gap-2">
-                                <Phone className="h-3.5 w-3.5 shrink-0" />
+                                <Icon name="phone" size={12} className="shrink-0" />
                                 <span>{c.phone}</span>
                               </div>
                             )}
                             {c.linkedinUrl && (
                               <div className="flex items-center gap-2">
-                                <Linkedin className="h-3.5 w-3.5 shrink-0" />
+                                <Icon name="link" size={12} className="shrink-0" />
                                 <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" className="text-[var(--color-accent)] hover:underline truncate">
                                   LinkedIn Profile
                                 </a>
@@ -472,19 +472,19 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                             )}
                             {c.experience && (
                               <div className="flex items-center gap-2">
-                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <Icon name="work" size={12} className="shrink-0" />
                                 <span>{c.experience}</span>
                               </div>
                             )}
                             {c.position && (
                               <div className="flex items-center gap-2">
-                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <Icon name="work" size={12} className="shrink-0" />
                                 <span>Position: {c.position.title}</span>
                               </div>
                             )}
                             {c.jobAppliedTo && (
                               <div className="flex items-center gap-2">
-                                <Briefcase className="h-3.5 w-3.5 shrink-0" />
+                                <Icon name="work" size={12} className="shrink-0" />
                                 <span className="font-medium text-[var(--color-text-primary)]">Applied for: {c.jobAppliedTo}</span>
                               </div>
                             )}

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon";
 
 export type CalendarEvent = {
   id: string;
@@ -159,7 +159,7 @@ export function CalendarView({ events }: Props) {
               "transition-colors duration-200"
             )}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <Icon name="chevron_left" size={16} />
           </button>
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)] min-w-[180px] text-center">
             {monthName}
@@ -173,7 +173,7 @@ export function CalendarView({ events }: Props) {
               "transition-colors duration-200"
             )}
           >
-            <ChevronRight className="h-4 w-4" />
+            <Icon name="chevron_right" size={16} />
           </button>
         </div>
         {!isCurrentMonth && (
@@ -307,7 +307,7 @@ export function CalendarView({ events }: Props) {
                         className="flex items-center gap-1 text-xs font-medium text-blue-400 hover:text-blue-300"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <ExternalLink className="h-3 w-3" />
+                        <Icon name="open_in_new" size={12} />
                         Meet
                       </a>
                     )}

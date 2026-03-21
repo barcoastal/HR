@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createReviewCycle, generateReviewsForCycle } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
-import { Plus, Building2, Check } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type Department = { id: string; name: string; employeeCount: number };
 
@@ -75,7 +75,7 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
           "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors"
         )}
       >
-        <Plus className="h-4 w-4" />New Cycle
+        <Icon name="add" size={16} />New Cycle
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Create Review Cycle">
@@ -104,7 +104,7 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-xs font-medium text-[var(--color-text-primary)]">
-                <Building2 className="h-3.5 w-3.5 inline mr-1" />
+                <Icon name="business" size={12} className="inline mr-1" />
                 Auto-generate reviews for departments
               </label>
               <button
@@ -133,7 +133,7 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
                         ? "bg-[var(--color-accent)] border-[var(--color-accent)]"
                         : "border-[var(--color-border)]"
                     )}>
-                      {selectedDepts.has(dept.id) && <Check className="h-3 w-3 text-white" />}
+                      {selectedDepts.has(dept.id) && <Icon name="check" size={12} className="text-white" />}
                     </div>
                     {dept.name}
                   </div>

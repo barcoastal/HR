@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
-import { Mail, Phone, Linkedin, Briefcase, FileText, Download, Trash2 } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type CandidateItem = {
   id: string;
@@ -128,24 +128,24 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                       </div>
                       <div className="space-y-1 mb-2 text-[10px] text-[var(--color-text-muted)]">
                         <div className="flex items-center gap-1.5 truncate">
-                          <Mail className="h-3 w-3 shrink-0" />
+                          <Icon name="mail" size={12} className="shrink-0" />
                           <span className="truncate">{candidate.email}</span>
                         </div>
                         {candidate.phone && (
                           <div className="flex items-center gap-1.5">
-                            <Phone className="h-3 w-3 shrink-0" />
+                            <Icon name="phone" size={12} className="shrink-0" />
                             <span>{candidate.phone}</span>
                           </div>
                         )}
                         {candidate.experience && (
                           <div className="flex items-center gap-1.5">
-                            <Briefcase className="h-3 w-3 shrink-0" />
+                            <Icon name="work" size={12} className="shrink-0" />
                             <span>{candidate.experience}</span>
                           </div>
                         )}
                         {candidate.linkedinUrl && (
                           <div className="flex items-center gap-1.5">
-                            <Linkedin className="h-3 w-3 shrink-0" />
+                            <Icon name="link" size={12} className="shrink-0" />
                             <a
                               href={candidate.linkedinUrl}
                               target="_blank"
@@ -171,13 +171,13 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                                 "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
                               )}
                             >
-                              <Download className="h-2.5 w-2.5" />
+                              <Icon name="download" />
                               Resume PDF
                             </a>
                           )}
                           {candidate.resumeText && !candidate.resumeUrl && (
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">
-                              <FileText className="h-2.5 w-2.5" />
+                              <Icon name="description" />
                               Resume
                             </span>
                           )}
@@ -205,7 +205,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                             className="p-1 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
                             title="Delete candidate"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Icon name="delete" size={12} />
                           </button>
                         </div>
                         {nextStatus && (

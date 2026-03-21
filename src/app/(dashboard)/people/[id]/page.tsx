@@ -3,24 +3,21 @@ import { getEmployeeById } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
-import {
-  Mail, Phone, Calendar, MapPin, Briefcase, Clock, Heart, FileText, Star, ChevronRight, UtensilsCrossed,
-  User, Shield, Shirt, Users,
-} from "lucide-react";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
 import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { getHRNotes } from "@/lib/actions/hr-notes";
 import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
+import { Icon } from "@/components/ui/icon";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
-function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3 py-3">
       <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center shrink-0">
-        <Icon className="h-4 w-4 text-[var(--color-accent)]" />
+        <Icon name={icon} size={16} className="text-[var(--color-accent)]" />
       </div>
       <div className="min-w-0">
         <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">{label}</p>
@@ -131,17 +128,17 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
           <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-              <InfoRow icon={Mail} label="Email" value={employee.email} />
-              {employee.phone && <InfoRow icon={Phone} label="Phone" value={employee.phone} />}
-              {employee.pronouns && <InfoRow icon={User} label="Pronouns" value={employee.pronouns} />}
-              {employee.birthday && <InfoRow icon={Calendar} label="Birthday" value={formatDate(employee.birthday)} />}
-              <InfoRow icon={Briefcase} label="Start Date" value={formatDate(employee.startDate)} />
-              {employee.location && <InfoRow icon={MapPin} label="Location" value={employee.location} />}
-              {fullAddress && <InfoRow icon={MapPin} label="Address" value={fullAddress} />}
-              <InfoRow icon={Clock} label="Tenure" value={tenure} />
-              {employee.tShirtSize && <InfoRow icon={Shirt} label="T-Shirt Size" value={employee.tShirtSize} />}
-              {employee.hobbies && <InfoRow icon={Heart} label="Hobbies" value={employee.hobbies} />}
-              {employee.dietaryRestrictions && <InfoRow icon={UtensilsCrossed} label="Dietary Restrictions" value={employee.dietaryRestrictions} />}
+              <InfoRow icon="mail" label="Email" value={employee.email} />
+              {employee.phone && <InfoRow icon="phone" label="Phone" value={employee.phone} />}
+              {employee.pronouns && <InfoRow icon="person" label="Pronouns" value={employee.pronouns} />}
+              {employee.birthday && <InfoRow icon="calendar_today" label="Birthday" value={formatDate(employee.birthday)} />}
+              <InfoRow icon="work" label="Start Date" value={formatDate(employee.startDate)} />
+              {employee.location && <InfoRow icon="location_on" label="Location" value={employee.location} />}
+              {fullAddress && <InfoRow icon="location_on" label="Address" value={fullAddress} />}
+              <InfoRow icon="schedule" label="Tenure" value={tenure} />
+              {employee.tShirtSize && <InfoRow icon="checkroom" label="T-Shirt Size" value={employee.tShirtSize} />}
+              {employee.hobbies && <InfoRow icon="favorite" label="Hobbies" value={employee.hobbies} />}
+              {employee.dietaryRestrictions && <InfoRow icon="restaurant" label="Dietary Restrictions" value={employee.dietaryRestrictions} />}
             </div>
           </section>
 
@@ -150,9 +147,9 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Emergency Contact</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-                <InfoRow icon={User} label="Name" value={employee.emergencyContactName} />
-                {employee.emergencyContactPhone && <InfoRow icon={Phone} label="Phone" value={employee.emergencyContactPhone} />}
-                {employee.emergencyContactRelation && <InfoRow icon={Shield} label="Relationship" value={employee.emergencyContactRelation} />}
+                <InfoRow icon="person" label="Name" value={employee.emergencyContactName} />
+                {employee.emergencyContactPhone && <InfoRow icon="phone" label="Phone" value={employee.emergencyContactPhone} />}
+                {employee.emergencyContactRelation && <InfoRow icon="shield" label="Relationship" value={employee.emergencyContactRelation} />}
               </div>
             </section>
           )}
@@ -195,7 +192,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                       {review.rating && (
                         <div className="flex items-center gap-0.5">
                           {Array.from({ length: 5 }).map((_, i) => (
-                            <Star key={i} className={cn("h-4 w-4", i < review.rating! ? "text-amber-400 fill-amber-400" : "text-gray-600")} />
+                            <Icon name="star" size={16} fill={i < review.rating!} className={cn(i < review.rating! ? "text-amber-400" : "text-gray-600")} />
                           ))}
                         </div>
                       )}

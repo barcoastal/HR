@@ -1,7 +1,6 @@
 "use client";
 
 import { cn, timeAgo } from "@/lib/utils";
-import { Cable, Plus, Pencil, Trash2, Loader2, Link2, Unlink } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -14,6 +13,7 @@ import {
   DisconnectPlatformDialog,
 } from "@/components/settings/platform-connect-dialog";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type Platform = {
   id: string;
@@ -245,7 +245,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
     >
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Cable className="h-5 w-5 text-[var(--color-accent)]" />
+          <Icon name="cable" size={20} className="text-[var(--color-accent)]" />
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
             Platform Integrations
           </h2>
@@ -258,7 +258,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
             "hover:bg-[var(--color-accent-hover)] transition-colors"
           )}
         >
-          <Plus className="h-3.5 w-3.5" />
+          <Icon name="add" size={12} />
           Add Platform
         </button>
       </div>
@@ -321,7 +321,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
                         "hover:bg-red-500/15 transition-colors"
                       )}
                     >
-                      <Unlink className="h-3.5 w-3.5" />
+                      <Icon name="link_off" size={12} />
                       Disconnect
                     </button>
                   ) : (
@@ -333,7 +333,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
                         "hover:bg-emerald-500/25 transition-colors"
                       )}
                     >
-                      <Link2 className="h-3.5 w-3.5" />
+                      <Icon name="link" size={12} />
                       Connect
                     </button>
                   )
@@ -342,13 +342,13 @@ export function PlatformIntegrationManager({ platforms }: Props) {
                   onClick={() => openEdit(p)}
                   className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
                 >
-                  <Pencil className="h-3.5 w-3.5" />
+                  <Icon name="edit" size={12} />
                 </button>
                 <button
                   onClick={() => openDelete(p)}
                   className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Icon name="delete" size={12} />
                 </button>
               </div>
             </div>
@@ -383,7 +383,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
           >
             {saving ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Creating...
               </span>
             ) : (
@@ -419,7 +419,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
           >
             {saving ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Saving...
               </span>
             ) : (
@@ -461,7 +461,7 @@ export function PlatformIntegrationManager({ platforms }: Props) {
           >
             {deleting ? (
               <span className="flex items-center gap-1.5">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Icon name="progress_activity" size={12} className="animate-material-spin" />
                 Deleting...
               </span>
             ) : (

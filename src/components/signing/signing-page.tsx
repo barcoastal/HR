@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { FileText, Check, Loader2, PenLine, ChevronLeft, ChevronRight, MousePointer2, X } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type SigningData = {
   documentUrl: string;
@@ -111,7 +111,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
         )}
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
           <div className="h-16 w-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="h-8 w-8 text-emerald-600" />
+            <Icon name="check" size={32} className="text-emerald-600" />
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">{testMode ? "Test Complete" : "Document Signed"}</h1>
           <p className="text-gray-600">
@@ -160,7 +160,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
           <>
             <div className="bg-white rounded-xl shadow-sm border mb-6">
               <div className="flex items-center gap-2 px-4 py-3 border-b bg-gray-50 rounded-t-xl">
-                <FileText className="h-4 w-4 text-gray-500" />
+                <Icon name="description" size={16} className="text-gray-500" />
                 <span className="text-sm font-medium text-gray-700">{data.documentName}</span>
               </div>
               <div className="p-4">
@@ -180,7 +180,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
                   onClick={() => setMode("place")}
                   className="w-full py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
                 >
-                  <PenLine className="h-4 w-4" />
+                  <Icon name="edit_note" size={16} />
                   Proceed to Sign
                 </button>
               </div>
@@ -190,7 +190,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
               <div className="bg-white rounded-xl shadow-sm border p-6">
                 {sigPosition && (
                   <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
-                    <Check className="h-4 w-4 text-blue-600 shrink-0" />
+                    <Icon name="check" size={16} className="text-blue-600 shrink-0" />
                     <p className="text-sm text-blue-700">Signature placement selected on page {sigPosition.page + 1}</p>
                     <button
                       onClick={() => setMode("place")}
@@ -245,7 +245,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   )}
                 >
-                  {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+                  {submitting ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="check" size={16} />}
                   {submitting ? "Signing..." : "Sign & Submit"}
                 </button>
               </div>
@@ -332,7 +332,7 @@ function PlacementView({
   if (loading) {
     return (
       <div className="bg-white rounded-xl shadow-sm border p-12 flex flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500 mb-3" />
+        <Icon name="progress_activity" size={32} className="animate-material-spin text-blue-500 mb-3" />
         <p className="text-sm text-gray-500">Loading document pages...</p>
       </div>
     );
@@ -355,13 +355,13 @@ function PlacementView({
   return (
     <div className="space-y-4">
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-center gap-3">
-        <MousePointer2 className="h-5 w-5 text-blue-600 shrink-0" />
+        <Icon name="mouse" size={20} className="text-blue-600 shrink-0" />
         <div>
           <p className="text-sm font-medium text-blue-800">Click where you want to place your signature</p>
           <p className="text-xs text-blue-600 mt-0.5">Navigate pages below, then click the exact spot on the document.</p>
         </div>
         <button onClick={onCancel} className="ml-auto p-1.5 rounded-lg hover:bg-blue-100 text-blue-400">
-          <X className="h-4 w-4" />
+          <Icon name="close" size={16} />
         </button>
       </div>
 
@@ -373,7 +373,7 @@ function PlacementView({
             disabled={currentPage === 0}
             className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <Icon name="chevron_left" size={16} />
           </button>
           <span className="text-sm text-gray-600 font-medium">
             Page {currentPage + 1} of {totalPages}
@@ -383,7 +383,7 @@ function PlacementView({
             disabled={currentPage === totalPages - 1}
             className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
           >
-            <ChevronRight className="h-4 w-4" />
+            <Icon name="chevron_right" size={16} />
           </button>
         </div>
       )}

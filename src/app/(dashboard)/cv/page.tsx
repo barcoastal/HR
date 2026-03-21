@@ -6,12 +6,12 @@ import { getEmployees } from "@/lib/actions/employees";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { getRecruiters } from "@/lib/actions/company-settings";
-import { Briefcase, Target, Users, Archive } from "lucide-react";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { AddPositionForm } from "@/components/cv/add-position-form";
 import { CVTabs } from "@/components/cv/cv-tabs";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
+import { Icon } from "@/components/ui/icon";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
@@ -50,10 +50,10 @@ export default async function CVPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <StatCard title="Open Positions" value={openPositions.length} icon={<Briefcase className="h-5 w-5" />} color="blue" />
-        <StatCard title="Active in Pipeline" value={activeCandidates} icon={<Target className="h-5 w-5" />} color="emerald" />
-        <StatCard title="Total Candidates" value={allCandidates.length} icon={<Users className="h-5 w-5" />} color="purple" />
-        <StatCard title="Archived Positions" value={closedPositions.length} icon={<Archive className="h-5 w-5" />} color="amber" />
+        <StatCard title="Open Positions" value={openPositions.length} icon={<Icon name="work" size={20} />} color="blue" />
+        <StatCard title="Active in Pipeline" value={activeCandidates} icon={<Icon name="target" size={20} />} color="emerald" />
+        <StatCard title="Total Candidates" value={allCandidates.length} icon={<Icon name="group" size={20} />} color="purple" />
+        <StatCard title="Archived Positions" value={closedPositions.length} icon={<Icon name="archive" size={20} />} color="amber" />
       </div>
 
       <CVTabs

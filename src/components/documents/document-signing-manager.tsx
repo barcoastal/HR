@@ -2,26 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { cn, formatDate } from "@/lib/utils";
-import {
-  FileText,
-  Send,
-  Plus,
-  Download,
-  Copy,
-  RotateCcw,
-  PenLine,
-  Ban,
-  Clock,
-  Eye,
-  CheckCircle2,
-  XCircle,
-  Upload,
-  Loader2,
-  AlertTriangle,
-  FileCheck,
-  Inbox,
-  Link2,
-} from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import {
   createStandaloneSigningRequest,
@@ -29,6 +9,7 @@ import {
   voidSigningRequest,
 } from "@/lib/actions/signing";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type SigningRequest = {
   id: string;
@@ -68,31 +49,31 @@ function StatusBadge({ status }: { status: string }) {
     PENDING: {
       bg: "bg-amber-500/10 border-amber-500/20",
       text: "text-amber-400",
-      icon: <Clock className="h-3 w-3" />,
+      icon: <Icon name="schedule" size={12} />,
       label: "Pending",
     },
     VIEWED: {
       bg: "bg-blue-500/10 border-blue-500/20",
       text: "text-blue-400",
-      icon: <Eye className="h-3 w-3" />,
+      icon: <Icon name="visibility" size={12} />,
       label: "Viewed",
     },
     SIGNED: {
       bg: "bg-emerald-500/10 border-emerald-500/20",
       text: "text-emerald-400",
-      icon: <CheckCircle2 className="h-3 w-3" />,
+      icon: <Icon name="check_circle" size={12} />,
       label: "Signed",
     },
     VOIDED: {
       bg: "bg-red-500/10 border-red-500/20",
       text: "text-red-400",
-      icon: <XCircle className="h-3 w-3" />,
+      icon: <Icon name="cancel" size={12} />,
       label: "Voided",
     },
     EXPIRED: {
       bg: "bg-red-500/10 border-red-500/20",
       text: "text-red-400",
-      icon: <AlertTriangle className="h-3 w-3" />,
+      icon: <Icon name="warning" size={12} />,
       label: "Expired",
     },
   };
@@ -280,10 +261,10 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
       {/* Stats Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Total Documents", value: stats.total, icon: <FileText className="h-4 w-4" /> },
-          { label: "Pending", value: stats.pending, icon: <Clock className="h-4 w-4" /> },
-          { label: "Awaiting Signature", value: stats.viewed, icon: <Eye className="h-4 w-4" /> },
-          { label: "Signed", value: stats.signed, icon: <CheckCircle2 className="h-4 w-4" /> },
+          { label: "Total Documents", value: stats.total, icon: <Icon name="description" size={16} /> },
+          { label: "Pending", value: stats.pending, icon: <Icon name="schedule" size={16} /> },
+          { label: "Awaiting Signature", value: stats.viewed, icon: <Icon name="visibility" size={16} /> },
+          { label: "Signed", value: stats.signed, icon: <Icon name="check_circle" size={16} /> },
         ].map((stat) => (
           <div
             key={stat.label}
@@ -324,7 +305,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
             onClick={() => setShowSendDialog(true)}
             className={cn(accentButtonClass, "flex items-center gap-2")}
           >
-            <Plus className="h-4 w-4" />
+            <Icon name="add" size={16} />
             Send for Signing
           </button>
         )}
@@ -333,7 +314,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
       {/* Request List */}
       {filtered.length === 0 ? (
         <div className="bg-[var(--color-surface-container-lowest)] rounded-xl border border-[var(--color-border)] p-12 text-center">
-          <Inbox className="h-12 w-12 text-[var(--color-text-muted)] mx-auto mb-3 opacity-50" />
+          <Icon name="inbox" size={48} className="text-[var(--color-text-muted)] mx-auto mb-3 opacity-50" />
           <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">
             No documents found
           </h3>
@@ -368,9 +349,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                       )}
                     >
                       {isSigned ? (
-                        <FileCheck className="h-5 w-5" />
+                        <Icon name="task" size={20} />
                       ) : (
-                        <FileText className="h-5 w-5" />
+                        <Icon name="description" size={20} />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -410,7 +391,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                           "hover:bg-[var(--color-accent-hover)] transition-colors",
                         )}
                       >
-                        <PenLine className="h-3.5 w-3.5" />
+                        <Icon name="edit_note" size={12} />
                         Sign Now
                       </a>
                     )}
@@ -422,7 +403,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                         className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-emerald-400 transition-colors"
                         title="Download signed document"
                       >
-                        <Download className="h-4 w-4" />
+                        <Icon name="download" size={16} />
                       </a>
                     )}
                     <a
@@ -432,7 +413,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                       className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
                       title="Download original document"
                     >
-                      <FileText className="h-4 w-4" />
+                      <Icon name="description" size={16} />
                     </a>
                     {isAdmin && canResend && (
                       <button
@@ -442,9 +423,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                         title="Resend email"
                       >
                         {resendingId === request.id ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
+                          <Icon name="progress_activity" size={16} className="animate-material-spin" />
                         ) : (
-                          <RotateCcw className="h-4 w-4" />
+                          <Icon name="undo" size={16} />
                         )}
                       </button>
                     )}
@@ -455,9 +436,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                         title="Copy signing link"
                       >
                         {copiedId === request.id ? (
-                          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                          <Icon name="check_circle" size={16} className="text-emerald-400" />
                         ) : (
-                          <Link2 className="h-4 w-4" />
+                          <Icon name="link" size={16} />
                         )}
                       </button>
                     )}
@@ -467,7 +448,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                         className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/10 hover:text-red-400 transition-colors"
                         title="Void request"
                       >
-                        <Ban className="h-4 w-4" />
+                        <Icon name="block" size={16} />
                       </button>
                     )}
                   </div>
@@ -514,7 +495,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
             </label>
             {uploadedDoc ? (
               <div className="flex items-center gap-2 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                <FileCheck className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                <Icon name="task" size={16} className="text-emerald-400 flex-shrink-0" />
                 <span className="text-sm text-emerald-400 truncate flex-1">
                   {uploadedDoc.name}
                 </span>
@@ -535,9 +516,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                 )}
               >
                 {uploading ? (
-                  <Loader2 className="h-6 w-6 text-[var(--color-text-muted)] animate-spin" />
+                  <Icon name="progress_activity" className="animate-material-spin text-[var(--color-text-muted)] animate-spin" />
                 ) : (
-                  <Upload className="h-6 w-6 text-[var(--color-text-muted)]" />
+                  <Icon name="upload" className="text-[var(--color-text-muted)]" />
                 )}
                 <span className="text-sm text-[var(--color-text-muted)]">
                   {uploading ? "Uploading..." : "Click to upload a document"}
@@ -584,9 +565,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
               className={cn(accentButtonClass, "flex items-center gap-2")}
             >
               {sending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Icon name="progress_activity" size={16} className="animate-material-spin" />
               ) : (
-                <Send className="h-4 w-4" />
+                <Icon name="send" size={16} />
               )}
               {sending ? "Sending..." : "Send for Signing"}
             </button>
@@ -618,9 +599,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
               className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {voidingId ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Icon name="progress_activity" size={16} className="animate-material-spin" />
               ) : (
-                <Ban className="h-4 w-4" />
+                <Icon name="block" size={16} />
               )}
               {voidingId ? "Voiding..." : "Void Request"}
             </button>

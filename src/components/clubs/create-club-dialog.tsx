@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createClub } from "@/lib/actions/clubs";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 const emojiOptions = ["🎯", "🎮", "📚", "🏃", "🎨", "🎵", "🍕", "☕", "🌱", "🐾", "🏀", "⚽", "🎸", "🧘", "🎬", "🏖️"];
 
@@ -46,7 +46,7 @@ export function CreateClubDialog() {
           "hover:bg-[var(--color-accent-hover)] transition-colors"
         )}
       >
-        <Plus className="h-4 w-4" />Create Club
+        <Icon name="add" size={16} />Create Club
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Create Club">

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { submitReview } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
-import { Star } from "lucide-react";
+import { Icon } from "@/components/ui/icon";
 
 type ReviewData = {
   id: string;
@@ -67,14 +67,12 @@ export function SubmitReviewDialog({ review }: { review: ReviewData }) {
                   onClick={() => setRating(n)}
                   className="p-0.5 transition-transform hover:scale-110"
                 >
-                  <Star
-                    className={cn(
+                  <Icon name="star" className={cn(
                       "h-7 w-7 transition-colors",
                       n <= activeRating
                         ? "text-amber-400 fill-amber-400"
                         : "text-[var(--color-border)]"
-                    )}
-                  />
+                    )} />
                 </button>
               ))}
               {rating > 0 && (

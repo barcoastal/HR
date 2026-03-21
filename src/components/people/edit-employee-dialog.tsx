@@ -1,11 +1,11 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { updateEmployee } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import { Icon } from "@/components/ui/icon";
 
 type EmployeeData = {
   id: string;
@@ -117,7 +117,7 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
           "hover:bg-[var(--color-accent)]/10 hover:text-[var(--color-accent)] transition-colors"
         )}
       >
-        <Pencil className="h-3.5 w-3.5" />Edit
+        <Icon name="edit" size={12} />Edit
       </button>
 
       <Dialog open={open} onClose={() => setOpen(false)} title="Edit Employee">
