@@ -122,3 +122,29 @@ export async function getWorkspaceById(workspaceId: string) {
     },
   });
 }
+
+/**
+ * Get all members of a workspace with employee details.
+ */
+export async function getWorkspaceMembers(workspaceId: string) {
+  await requireAuth();
+
+  const members = await db.chatMember.findMany({
+    where: { workspaceId },
+    include: {
+      employee: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          profilePhoto: true,
+          jobTitle: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: { employee: { firstName: "asc" } },
+  });
+
+  return members.map((m) => m.employee);
+}

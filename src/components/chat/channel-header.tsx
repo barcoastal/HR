@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { getOrCreateDmThread } from "@/lib/actions/chat-dms";
+import { useChatStore } from "@/lib/chat/use-chat-store";
 
 interface Member {
   id: string;
@@ -25,6 +28,15 @@ function getInitials(firstName: string, lastName: string) {
 
 export function ChannelHeader({ name, topic, memberCount, isPrivate, isDm, members = [] }: Props) {
   const [showMembers, setShowMembers] = useState(false);
+  const router = useRouter();
+  const { workspaceId } = useChatStore();
+
+  const handleMemberClick = async (memberId: string) => {
+    if (!workspaceId) return;
+    const dm = await getOrCreateDmThread(workspaceId, [memberId]) as any;
+    router.push(`/chat/${dm.id}?type=dm`);
+    setShowMembers(false);
+  };
 
   return (
     <>
@@ -67,7 +79,12 @@ export function ChannelHeader({ name, topic, memberCount, isPrivate, isDm, membe
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-48 overflow-y-auto">
             {members.map((m) => (
-              <div key={m.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-white transition-colors">
+              <button
+                key={m.id}
+                onClick={() => handleMemberClick(m.id)}
+                className="flex items-center gap-2 p-2 rounded-lg hover:bg-white transition-colors text-left cursor-pointer"
+                title={`Message ${m.firstName} ${m.lastName}`}
+              >
                 {m.profilePhoto ? (
                   <img
                     src={m.profilePhoto}
@@ -87,7 +104,7 @@ export function ChannelHeader({ name, topic, memberCount, isPrivate, isDm, membe
                     <p className="text-[11px] text-gray-500 truncate">{m.jobTitle}</p>
                   )}
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
