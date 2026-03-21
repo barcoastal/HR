@@ -155,3 +155,39 @@ export async function deleteMessage(messageId: string) {
     });
   }
 }
+
+export async function pinMessage(messageId: string, channelId: string) {
+  const session = await requireAuth();
+  const employeeId = session.user.employeeId!;
+
+  const existing = await db.pinnedMessage.findUnique({
+    where: { channelId_messageId: { channelId, messageId } },
+  });
+
+  if (existing) {
+    await db.pinnedMessage.delete({ where: { id: existing.id } });
+    return { action: "unpinned" };
+  }
+
+  await db.pinnedMessage.create({
+    data: { channelId, messageId, pinnedById: employeeId },
+  });
+  return { action: "pinned" };
+}
+
+export async function saveMessage(messageId: string) {
+  const session = await requireAuth();
+  const employeeId = session.user.employeeId!;
+
+  const existing = await db.savedMessage.findUnique({
+    where: { employeeId_messageId: { employeeId, messageId } },
+  });
+
+  if (existing) {
+    await db.savedMessage.delete({ where: { id: existing.id } });
+    return { action: "unsaved" };
+  }
+
+  await db.savedMessage.create({ data: { employeeId, messageId } });
+  return { action: "saved" };
+}
