@@ -246,6 +246,36 @@ export function PostCard({
     );
   }
 
+  if (post.type === "EMERGENCY") {
+    return (
+      <article className={cn("rounded-2xl overflow-hidden", "bg-gradient-to-br from-red-500/10 via-red-400/5 to-orange-500/5", "border-2 border-red-500/30")}>
+        <div className="p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Icon name="warning" size={20} fill className="text-red-500" />
+            <span className="text-sm font-bold text-red-500 uppercase tracking-wider">Emergency Alert</span>
+            <span className="text-sm text-[var(--color-text-muted)]">· {timeAgo(post.createdAt)}</span>
+          </div>
+          <p className="text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line font-medium">{post.content}</p>
+          <AttachmentGallery attachments={post.attachments} />
+          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-red-500/20">
+            <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+              {post.author.profilePhoto ? (
+                <img src={post.author.profilePhoto} alt="" className="h-5 w-5 rounded-full object-cover" />
+              ) : (
+                <div className={cn("h-5 w-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold", avatarColor)}>{initials}</div>
+              )}
+              <span>{post.author.firstName} {post.author.lastName}</span>
+            </div>
+          </div>
+          <div className="pt-3 mt-1 border-t border-red-500/20">
+            {reactionsBar}
+            {commentsSection}
+          </div>
+        </div>
+      </article>
+    );
+  }
+
   return (
     <article className={cn("rounded-2xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]", post.pinned && "border-l-4 border-l-[var(--color-accent)]")}>
       <div className="p-5">
