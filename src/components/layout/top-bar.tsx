@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
+
 import { useSession } from "next-auth/react";
-import { Bell, Search, Sun, Moon } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -36,7 +36,7 @@ function getPageTitle(pathname: string): string {
 export function TopBar() {
   const pathname = usePathname();
   const title = getPageTitle(pathname);
-  const { theme, setTheme } = useTheme();
+
   const { data: session } = useSession();
 
   const userInitials = session?.user?.name
@@ -47,11 +47,11 @@ export function TopBar() {
     <header
       className={cn(
         "glass sticky top-0 z-40 flex h-16 items-center justify-between",
-        "border-b border-[var(--color-border)]/60 px-4 md:px-6"
+        "shadow-[var(--shadow-glass)] px-4 md:px-6"
       )}
     >
       <div className="flex items-center">
-        <span className="text-base font-bold text-gradient md:hidden">
+        <span className="text-base font-bold text-[var(--color-on-surface)] md:hidden">
           Coastal HR
         </span>
         <h1 className="hidden text-lg font-semibold text-[var(--color-text-primary)] md:block">
@@ -66,27 +66,14 @@ export function TopBar() {
             type="text"
             placeholder="Search..."
             className={cn(
-              "glass h-10 w-80 rounded-xl border border-[var(--color-border)]/60",
+              "bg-[var(--color-surface-container-lowest)] h-10 w-80 rounded-xl border border-[var(--color-border)]/60",
               "pl-9 pr-4 text-sm text-[var(--color-text-primary)]",
               "placeholder:text-[var(--color-text-muted)]",
               "transition-all duration-200",
-              "focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-light)]"
+              "focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
             )}
           />
         </div>
-
-        <button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={cn(
-            "relative flex h-10 w-10 items-center justify-center rounded-xl",
-            "text-[var(--color-text-muted)] transition-colors duration-200",
-            "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
-          )}
-          aria-label="Toggle theme"
-        >
-          <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-transform duration-200 dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-transform duration-200 dark:rotate-0 dark:scale-100" />
-        </button>
 
         <button
           className={cn(
@@ -109,7 +96,7 @@ export function TopBar() {
           <button
             className={cn(
               "flex h-9 w-9 items-center justify-center rounded-full",
-              "bg-gradient-to-br from-[var(--color-accent)] to-purple-600",
+              "bg-[var(--color-primary)]",
               "text-xs font-semibold text-white transition-opacity duration-200 hover:opacity-90"
             )}
           >

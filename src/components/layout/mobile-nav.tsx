@@ -89,7 +89,7 @@ export function MobileNav() {
     <>
       <div
         className={cn(
-          "glass fixed bottom-0 left-0 right-0 z-50 flex h-16 md:hidden",
+          "bg-[var(--color-surface-container-low)] fixed bottom-0 left-0 right-0 z-50 flex h-16 md:hidden",
           "border-t border-[var(--color-border)]/60"
         )}
       >
@@ -138,7 +138,7 @@ export function MobileNav() {
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className={cn(
-                "glass fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl md:hidden",
+                "bg-[var(--color-surface-container-low)] fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl md:hidden",
                 "border-t border-[var(--color-border)]/60 max-h-[80vh] overflow-y-auto"
               )}
             >
