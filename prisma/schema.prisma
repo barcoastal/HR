@@ -242,6 +242,9 @@ model Employee {
   createdChannels      Channel[]        @relation("CreatedChannels")
   chatMessages         Message[]        @relation("ChatMessages")
   dmMemberships        DmMember[]
+  chatReactions        Reaction[]       @relation("ChatReactions")
+  savedMessages        SavedMessage[]
+  pinnedMessages       PinnedMessage[]
 
   @@index([departmentId])
   @@index([teamId])
@@ -914,6 +917,7 @@ model Channel {
   createdBy   Employee     @relation("CreatedChannels", fields: [createdById], references: [id])
   messages    Message[]
   members     ChannelMember[]
+  pins        PinnedMessage[]
 
   @@unique([workspaceId, slug])
 }
@@ -952,6 +956,11 @@ model Message {
   parent       Message?  @relation("ThreadReplies", fields: [parentId], references: [id], onDelete: SetNull)
   replies      Message[] @relation("ThreadReplies")
   author       Employee  @relation("ChatMessages", fields: [authorId], references: [id])
+  reactions     Reaction[]
+  attachments   ChatAttachment[]
+  mentions      Mention[]
+  pins          PinnedMessage[]
+  savedBy       SavedMessage[]
 
   @@index([channelId, createdAt])
   @@index([dmThreadId, createdAt])
@@ -981,4 +990,78 @@ model DmMember {
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@unique([dmThreadId, employeeId])
+}
+
+model Reaction {
+  id        String   @id @default(uuid())
+  messageId String
+  employeeId String
+  emoji     String
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  employee  Employee @relation("ChatReactions", fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, employeeId, emoji])
+  @@index([messageId])
+}
+
+model ChatAttachment {
+  id        String   @id @default(uuid())
+  messageId String
+  fileName  String
+  fileType  String
+  fileSize  Int
+  url       String
+  thumbnailUrl String?
+  createdAt DateTime @default(now())
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+}
+
+model Mention {
+  id        String      @id @default(uuid())
+  messageId String
+  type      MentionType
+  targetId  String
+
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([targetId, type])
+  @@index([messageId])
+}
+
+enum MentionType {
+  USER
+  CHANNEL
+  HERE
+  EVERYONE
+  USER_GROUP
+}
+
+model PinnedMessage {
+  id        String   @id @default(uuid())
+  channelId String
+  messageId String
+  pinnedById String
+  pinnedAt  DateTime @default(now())
+
+  channel   Channel  @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  pinnedBy  Employee @relation(fields: [pinnedById], references: [id])
+
+  @@unique([channelId, messageId])
+}
+
+model SavedMessage {
+  id         String   @id @default(uuid())
+  employeeId String
+  messageId  String
+  savedAt    DateTime @default(now())
+
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, messageId])
 }
