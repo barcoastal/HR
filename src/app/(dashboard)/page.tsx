@@ -4,8 +4,6 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { getInitials } from "@/lib/utils";
 import { PostComposer } from "@/components/feed/post-composer";
 import { PostCard } from "@/components/feed/post-card";
-import { PageHeader } from "@/components/ui/page-header";
-
 export default async function FeedPage() {
   const session = await requireAuth();
   const [posts, employees] = await Promise.all([
@@ -28,7 +26,6 @@ export default async function FeedPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <PageHeader title="Feed" description="Stay connected with your team" />
 
       {session.user.employeeId ? (
         <PostComposer
