@@ -1,42 +1,12 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-
 import { useSession } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
 import { cn, getInitials } from "@/lib/utils";
 import { motion } from "framer-motion";
 
-const routeTitles: Record<string, string> = {
-  "/": "Feed",
-  "/people": "People",
-  "/org": "Organization",
-  "/org/departments": "Departments",
-  "/onboarding": "Onboarding",
-  "/offboarding": "Offboarding",
-  "/reviews": "Reviews",
-  "/settings": "Settings",
-  "/cv": "Recruitment",
-  "/analytics": "Analytics",
-  "/calendar": "Calendar",
-  "/time-off": "Time Off",
-  "/clubs": "Clubs",
-  "/voice": "Your Voice",
-  "/my-profile": "My Profile",
-};
-
-function getPageTitle(pathname: string): string {
-  if (routeTitles[pathname]) return routeTitles[pathname];
-  for (const [route, title] of Object.entries(routeTitles)) {
-    if (pathname.startsWith(route) && route !== "/") return title;
-  }
-  return "Coastal HR";
-}
 
 export function TopBar() {
-  const pathname = usePathname();
-  const title = getPageTitle(pathname);
-
   const { data: session } = useSession();
 
   const userInitials = session?.user?.name
@@ -51,12 +21,9 @@ export function TopBar() {
       )}
     >
       <div className="flex items-center">
-        <span className="text-base font-bold text-[var(--color-on-surface)] md:hidden">
+        <span className="text-base font-bold text-[var(--color-on-surface)]">
           Coastal HR
         </span>
-        <h1 className="hidden text-lg font-semibold text-[var(--color-text-primary)] md:block">
-          {title}
-        </h1>
       </div>
 
       <div className="flex items-center gap-3">
