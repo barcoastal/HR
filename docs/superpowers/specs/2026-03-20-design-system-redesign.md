@@ -236,7 +236,7 @@ Same file list as before (all files using glass/gradient/glow effects), but with
 - **Layout structure**: Sidebar (desktop) + TopBar (sticky) + MobileNav (mobile bottom)
 - **Animation system**: Framer Motion for page transitions, stagger effects, counters
 - **Existing animations**: `fadeUp`, `pulse-slow` keyframes (remove `glow-pulse`)
-- **Icon library**: Lucide React
+- **Icon library**: Lucide React (superseded by Stitch alignment spec — migrating to Material Symbols Outlined)
 - **All functionality and routing**: Zero functional changes
 
 ---
