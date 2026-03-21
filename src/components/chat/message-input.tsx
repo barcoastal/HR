@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { EmojiPicker } from "./emoji-picker";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -19,6 +20,7 @@ interface Props {
 export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [sending, setSending] = useState(false);
   const [showToolbar, setShowToolbar] = useState(false);
+  const [showEmoji, setShowEmoji] = useState(false);
   const { addMessage } = useChatStore();
 
   const editor = useEditor({
@@ -108,9 +110,26 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
             <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
               <span className="material-symbols-rounded text-[18px]">attach_file</span>
             </button>
-            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
-              <span className="material-symbols-rounded text-[18px]">mood</span>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowEmoji(!showEmoji)}
+                className={`w-7 h-7 rounded flex items-center justify-center transition-colors ${
+                  showEmoji ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                }`}
+              >
+                <span className="material-symbols-rounded text-[18px]">mood</span>
+              </button>
+              {showEmoji && (
+                <EmojiPicker
+                  onSelect={(emoji) => {
+                    editor?.commands.insertContent(emoji);
+                    setShowEmoji(false);
+                    editor?.commands.focus();
+                  }}
+                  onClose={() => setShowEmoji(false)}
+                />
+              )}
+            </div>
             <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-xs font-semibold">
               @
             </button>
