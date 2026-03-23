@@ -354,10 +354,6 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
               }}
               icon="video_call"
             />
-            {/* Voice clip placeholder */}
-            <ToolbarButton active={false} onClick={() => {}} icon="mic" />
-            {/* Shortcuts */}
-            <ToolbarButton active={false} onClick={() => {}} icon="bolt" />
           </div>
           <div className="flex items-center gap-1">
             <button

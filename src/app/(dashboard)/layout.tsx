@@ -1,6 +1,7 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { TopBar } from "@/components/layout/top-bar";
+import { ChatWidget } from "@/components/chat/chat-widget";
 import { PulseSurveyWrapper } from "@/components/pulse/pulse-survey-wrapper";
 import { getCompanySettings } from "@/lib/actions/company-settings";
 import { Suspense } from "react";
@@ -22,6 +23,7 @@ export default async function DashboardLayout({
         <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-hidden">{children}</main>
       </div>
       <MobileNav />
+      <ChatWidget />
       <Suspense fallback={null}>
         <PulseSurveyWrapper />
       </Suspense>
