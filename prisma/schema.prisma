@@ -64,6 +64,7 @@ enum FeedPostType {
   DEPARTURE
   SHOUTOUT
   EMERGENCY
+  EVENT
 }
 
 enum TimeOffRequestStatus {
@@ -262,7 +263,17 @@ model User {
   employeeId   String?  @unique
   createdAt    DateTime @default(now())
 
-  employee     Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  // Google Calendar per-user sync
+  googleCalendarAccessToken    String?
+  googleCalendarRefreshToken   String?
+  googleCalendarTokenExpiresAt DateTime?
+  googleCalendarSyncEnabled    Boolean   @default(false)
+
+  // Email notification preferences
+  emailNotificationsEnabled    Boolean   @default(true)
+
+  employee          Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  eventAttendances  EventAttendance[]
 }
 
 model OnboardingChecklist {
@@ -394,15 +405,41 @@ model FeedPost {
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
+  eventDate     DateTime?
+  eventEndDate  DateTime?
+  eventLocation String?
+
   author              Employee       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   mentionedEmployee   Employee?      @relation("FeedPostMention", fields: [mentionedEmployeeId], references: [id], onDelete: SetNull)
   comments            FeedComment[]
   reactions           FeedReaction[]
   attachments         PostAttachment[]
   emergencyAlert      EmergencyAlert?
+  attendees           EventAttendance[]
 
   @@index([authorId])
   @@index([mentionedEmployeeId])
+}
+
+enum AttendanceStatus {
+  GOING
+  MAYBE
+  NOT_GOING
+}
+
+model EventAttendance {
+  id                    String           @id @default(uuid())
+  feedPostId            String
+  feedPost              FeedPost         @relation(fields: [feedPostId], references: [id], onDelete: Cascade)
+  userId                String
+  user                  User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status                AttendanceStatus
+  googleCalendarEventId String?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@unique([feedPostId, userId])
+  @@index([userId])
 }
 
 model FeedComment {
@@ -854,6 +891,7 @@ model OAuthState {
   platformId  String?
   userId      String
   redirectUri String
+  metadata    Json?
   expiresAt   DateTime
   createdAt   DateTime @default(now())
 
