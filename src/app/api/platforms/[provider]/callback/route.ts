@@ -60,7 +60,21 @@ export async function GET(
     return NextResponse.redirect(settingsUrl);
   }
 
-  // 6. Upsert RecruitmentPlatform with tokens
+  // 6. Provider-specific callback handling
+  if (providerId === "gusto") {
+    try {
+      const { handleGustoCallback } = await import("@/lib/gusto");
+      await handleGustoCallback(tokens, { userId: stateData.userId });
+      settingsUrl.searchParams.set("oauth_success", "Gusto");
+      return NextResponse.redirect(settingsUrl);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Gusto connection failed";
+      settingsUrl.searchParams.set("oauth_error", message);
+      return NextResponse.redirect(settingsUrl);
+    }
+  }
+
+  // 7. Upsert RecruitmentPlatform with tokens
   const tokenExpiresAt = tokens.expires_in
     ? new Date(Date.now() + tokens.expires_in * 1000)
     : null;
