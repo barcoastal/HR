@@ -6,6 +6,8 @@ import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
+import { IndeedImport } from "@/components/cv/indeed-import";
+import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
 import { updatePositionStatus, postPositionToBreezy } from "@/lib/actions/candidates";
@@ -493,10 +495,18 @@ export function CVTabs({
       )}
 
       {activeTab === "database" && (
-        <CandidateDatabase
-          candidates={allCandidates}
-          positions={positions}
-        />
+        <div>
+          <div className="flex items-center gap-2 mb-4">
+            <IndeedImport
+              platform={syncablePlatforms.find((p) => p.name === "Indeed") as any}
+            />
+            <CsvImport />
+          </div>
+          <CandidateDatabase
+            candidates={allCandidates}
+            positions={positions}
+          />
+        </div>
       )}
     </div>
   );
