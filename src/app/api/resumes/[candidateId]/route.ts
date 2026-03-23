@@ -54,7 +54,7 @@ export async function GET(
   // If local file exists, serve it
   if (existsSync(filePath)) {
     const fileBuffer = await readFile(filePath);
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="${candidateId}.pdf"`,
@@ -80,7 +80,7 @@ export async function GET(
     await mkdir(RESUMES_DIR, { recursive: true });
     await writeFile(filePath, buffer);
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="${candidateId}.pdf"`,
