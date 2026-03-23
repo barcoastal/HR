@@ -28,12 +28,14 @@ import { PageHeader } from "@/components/ui/page-header";
 import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 import { RecruiterManager } from "@/components/settings/recruiter-manager";
 import { getRecruiters } from "@/lib/actions/company-settings";
+import { GustoConnection } from "@/components/settings/gusto-connection";
+import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -45,7 +47,17 @@ export default async function SettingsPage() {
     getEmailTemplates(),
     getRolePermissions(),
     getRecruiters(),
+    getGustoConnection(),
   ]);
+
+  let gustoMapping = null;
+  if (gustoConnection) {
+    try {
+      gustoMapping = await getEmployeeMapping();
+    } catch {
+      // Gusto API may be unavailable
+    }
+  }
 
   const userList = users.map((u) => ({
     id: u.id,
@@ -180,6 +192,15 @@ export default async function SettingsPage() {
             totalSynced: p.totalSynced,
             hasSyncSupport: hasSyncSupport(p.name),
           }))}
+        />
+
+        <GustoConnection
+          connection={gustoConnection ? {
+            companyName: gustoConnection.companyName,
+            createdAt: gustoConnection.createdAt,
+            tokenExpiresAt: gustoConnection.tokenExpiresAt,
+          } : null}
+          mapping={gustoMapping}
         />
       </div>
     </div>
