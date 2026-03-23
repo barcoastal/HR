@@ -28,7 +28,7 @@ export default async function CalendarPage() {
       },
     }),
     isManagerOrAbove ? getUpcomingInterviews() : Promise.resolve([]),
-    userId ? getCalendarSyncStatus(userId) : { connected: false },
+    userId ? getCalendarSyncStatus(userId).catch(() => ({ connected: false })) : { connected: false },
     db.feedPost.findMany({
       where: { type: "EVENT", eventDate: { not: null } },
       select: {

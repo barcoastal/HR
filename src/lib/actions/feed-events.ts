@@ -25,10 +25,12 @@ export async function createFeedEvent(data: {
     },
   });
 
-  // Async email notification (fire-and-forget)
-  sendPostNotificationEmail(post.id, data.authorId).catch((err) =>
-    console.error("[feed-events] notification error:", err)
-  );
+  // Send email notification (awaited to ensure execution in server action context)
+  try {
+    await sendPostNotificationEmail(post.id, data.authorId);
+  } catch (err) {
+    console.error("[feed-events] notification error:", err);
+  }
 
   revalidatePath("/");
   return post;

@@ -43,15 +43,15 @@ export async function createFeedPost(data: {
     });
   }
 
+  // Send email notification before revalidating (awaited to ensure execution)
+  try {
+    const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
+    await sendPostNotificationEmail(post.id, data.authorId);
+  } catch (err) {
+    console.error("[feed] notification error:", err);
+  }
+
   revalidatePath("/");
-
-  // Fire-and-forget email notification (uses shared helper from feed-events.ts)
-  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
-    sendPostNotificationEmail(post.id, data.authorId).catch((err) =>
-      console.error("[feed] notification error:", err)
-    );
-  });
-
   return post;
 }
 
@@ -80,15 +80,15 @@ export async function createShoutoutPost(
       mentionedEmployeeId,
     },
   });
+  // Send email notification before revalidating (awaited to ensure execution)
+  try {
+    const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
+    await sendPostNotificationEmail(post.id, authorId);
+  } catch (err) {
+    console.error("[feed] notification error:", err);
+  }
+
   revalidatePath("/");
-
-  // Fire-and-forget email notification
-  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
-    sendPostNotificationEmail(post.id, authorId).catch((err) =>
-      console.error("[feed] notification error:", err)
-    );
-  });
-
   return post;
 }
 
