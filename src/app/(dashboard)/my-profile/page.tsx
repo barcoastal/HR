@@ -7,6 +7,10 @@ import { EditEmergencyContactDialog } from "@/components/my-profile/edit-emergen
 import { EditAboutDialog } from "@/components/my-profile/edit-about-dialog";
 import { ProfilePhotoUpload } from "@/components/my-profile/profile-photo-upload";
 import { Icon } from "@/components/ui/icon";
+import { EmailNotificationToggle } from "@/components/my-profile/email-notification-toggle";
+import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-connect";
+import { getCalendarSyncStatus } from "@/lib/actions/calendar-sync";
+import { db } from "@/lib/db";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -30,6 +34,12 @@ export default async function MyProfilePage() {
 
   const profile = await getMyProfile(session.user.employeeId);
   if (!profile) redirect("/");
+
+  const syncStatus = await getCalendarSyncStatus(session.user.id);
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { emailNotificationsEnabled: true },
+  });
 
   const initials = getInitials(profile.firstName, profile.lastName);
   const colorIdx = profile.firstName.charCodeAt(0) % avatarColors.length;
@@ -134,6 +144,29 @@ export default async function MyProfilePage() {
             ) : (
               <p className="text-sm text-[var(--color-text-muted)] italic">No emergency contact on file. Please add one.</p>
             )}
+          </section>
+
+          {/* Preferences */}
+          <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
+            <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Preferences</h2>
+            <div className="space-y-4">
+              <EmailNotificationToggle
+                userId={session.user.id}
+                enabled={user?.emailNotificationsEnabled ?? true}
+              />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center">
+                    <Icon name="calendar_month" size={16} className="text-[var(--color-accent)]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-[var(--color-text-primary)]">Google Calendar</p>
+                    <p className="text-xs text-[var(--color-text-muted)]">Sync your calendar events</p>
+                  </div>
+                </div>
+                <GoogleCalendarConnect connected={syncStatus.connected} userId={session.user.id} />
+              </div>
+            </div>
           </section>
         </div>
 

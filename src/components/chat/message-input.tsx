@@ -40,7 +40,6 @@ let cachedMembers: any[] | null = null;
 
 export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [sending, setSending] = useState(false);
-  const [showToolbar, setShowToolbar] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -246,21 +245,21 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
           </div>
         )}
 
-        {showToolbar && (
-          <div className="flex items-center gap-1 px-3 py-1.5 border-b border-gray-100">
-            <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} label="B" className="font-bold" />
-            <ToolbarButton active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()} label="I" className="italic" />
-            <ToolbarButton active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()} label="S" className="line-through" />
-            <ToolbarButton active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()} label="U" className="underline" />
-            <div className="w-px h-5 bg-gray-200 mx-1" />
-            <ToolbarButton active={editor.isActive("code")} onClick={() => editor.chain().focus().toggleCode().run()} label="<>" className="font-mono text-[10px]" />
-            <ToolbarButton active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()} label="{}" className="font-mono text-[10px]" />
-            <div className="w-px h-5 bg-gray-200 mx-1" />
-            <ToolbarButton active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()} label="•" />
-            <ToolbarButton active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()} label="1." />
-            <ToolbarButton active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()} label="❝" />
-          </div>
-        )}
+        {/* Always-visible formatting toolbar (Slack-style) */}
+        <div className="flex items-center gap-0.5 px-2 py-1 border-b border-gray-100 overflow-x-auto">
+          <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} label="B" className="font-bold" />
+          <ToolbarButton active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()} label="I" className="italic" />
+          <ToolbarButton active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()} label="U" className="underline" />
+          <ToolbarButton active={editor.isActive("strike")} onClick={() => editor.chain().focus().toggleStrike().run()} label="S" className="line-through" />
+          <div className="w-px h-4 bg-gray-200 mx-0.5 shrink-0" />
+          <ToolbarButton active={false} onClick={() => { const url = prompt("Enter link URL:"); if (url) editor.chain().focus().setLink({ href: url }).run(); }} icon="link" />
+          <div className="w-px h-4 bg-gray-200 mx-0.5 shrink-0" />
+          <ToolbarButton active={editor.isActive("orderedList")} onClick={() => editor.chain().focus().toggleOrderedList().run()} icon="format_list_numbered" />
+          <ToolbarButton active={editor.isActive("bulletList")} onClick={() => editor.chain().focus().toggleBulletList().run()} icon="format_list_bulleted" />
+          <div className="w-px h-4 bg-gray-200 mx-0.5 shrink-0" />
+          <ToolbarButton active={editor.isActive("codeBlock")} onClick={() => editor.chain().focus().toggleCodeBlock().run()} icon="code" />
+          <ToolbarButton active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()} icon="format_quote" />
+        </div>
 
         <EditorContent editor={editor} />
 
@@ -288,8 +287,8 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
           </div>
         )}
 
-        <div className="flex items-center justify-between px-3 py-1.5 bg-gray-50/50">
-          <div className="flex gap-1">
+        <div className="flex items-center justify-between px-2 py-1 bg-gray-50/50">
+          <div className="flex gap-0.5">
             <input
               ref={fileInputRef}
               type="file"
@@ -301,22 +300,20 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
                 e.target.value = "";
               }}
             />
-            <button
+            {/* Add attachment */}
+            <ToolbarButton
+              active={false}
               onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-50"
-            >
-              <span className="material-symbols-rounded text-[18px]">{uploading ? "hourglass_empty" : "attach_file"}</span>
-            </button>
+              icon={uploading ? "hourglass_empty" : "add"}
+            />
+            <div className="w-px h-4 bg-gray-200 mx-0.5 shrink-0 self-center" />
+            {/* Emoji */}
             <div className="relative">
-              <button
+              <ToolbarButton
+                active={showEmoji}
                 onClick={() => setShowEmoji(!showEmoji)}
-                className={`w-7 h-7 rounded flex items-center justify-center transition-colors ${
-                  showEmoji ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                }`}
-              >
-                <span className="material-symbols-rounded text-[18px]">mood</span>
-              </button>
+                icon="mood"
+              />
               {showEmoji && (
                 <EmojiPicker
                   onSelect={(emoji) => {
@@ -328,35 +325,41 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
                 />
               )}
             </div>
+            {/* @Mention */}
+            <ToolbarButton active={false} onClick={triggerMention} label="@" />
+            {/* Google Meet */}
+            <ToolbarButton
+              active={false}
+              onClick={() => {
+                const meetUrl = `https://meet.google.com/new`;
+                editor?.commands.insertContent(
+                  `<a href="${meetUrl}" target="_blank">📹 Join Google Meet</a>`
+                );
+                editor?.commands.focus();
+              }}
+              icon="video_call"
+            />
+            {/* Voice clip placeholder */}
+            <ToolbarButton active={false} onClick={() => {}} icon="mic" />
+            {/* Shortcuts */}
+            <ToolbarButton active={false} onClick={() => {}} icon="bolt" />
+          </div>
+          <div className="flex items-center gap-1">
             <button
-              onClick={triggerMention}
-              className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-xs font-semibold"
+              onClick={handleSubmit}
+              disabled={sending}
+              className="h-7 px-3 rounded-lg flex items-center justify-center gap-1 bg-[#007a5a] text-white hover:bg-[#006b4f] transition-colors disabled:opacity-50 text-xs font-medium"
             >
-              @
-            </button>
-            <button
-              onClick={() => setShowToolbar(!showToolbar)}
-              className={`w-7 h-7 rounded flex items-center justify-center transition-colors text-xs font-semibold ${
-                showToolbar ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              Aa
+              <span className="material-symbols-rounded text-[16px]">send</span>
             </button>
           </div>
-          <button
-            onClick={handleSubmit}
-            disabled={sending}
-            className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7C3AED] text-white hover:bg-[#6D28D9] transition-colors disabled:opacity-50"
-          >
-            <span className="material-symbols-rounded text-[18px]">send</span>
-          </button>
         </div>
       </div>
     </div>
   );
 }
 
-function ToolbarButton({ active, onClick, label, className = "" }: { active: boolean; onClick: () => void; label: string; className?: string }) {
+function ToolbarButton({ active, onClick, label, icon, className = "" }: { active: boolean; onClick: () => void; label?: string; icon?: string; className?: string }) {
   return (
     <button
       onClick={onClick}
@@ -364,7 +367,7 @@ function ToolbarButton({ active, onClick, label, className = "" }: { active: boo
         active ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "text-gray-500 hover:bg-gray-100"
       }`}
     >
-      {label}
+      {icon ? <span className="material-symbols-rounded text-[18px]">{icon}</span> : label}
     </button>
   );
 }

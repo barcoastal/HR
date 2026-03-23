@@ -3,13 +3,17 @@ import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
+import { getCalendarSyncStatus } from "@/lib/actions/calendar-sync";
+import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-connect";
+import { CalendarGoogleEvents } from "@/components/calendar/calendar-google-events";
 
 export default async function CalendarPage() {
   const session = await requireAuth();
   const role = session.user?.role;
+  const userId = session.user?.id;
   const isManagerOrAbove = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR" || role === "MANAGER";
 
-  const [employees, interviews] = await Promise.all([
+  const [employees, interviews, syncStatus, feedEvents] = await Promise.all([
     db.employee.findMany({
       where: { status: "ACTIVE" },
       select: {
@@ -24,6 +28,17 @@ export default async function CalendarPage() {
       },
     }),
     isManagerOrAbove ? getUpcomingInterviews() : Promise.resolve([]),
+    userId ? getCalendarSyncStatus(userId) : { connected: false },
+    db.feedPost.findMany({
+      where: { type: "EVENT", eventDate: { not: null } },
+      select: {
+        id: true,
+        content: true,
+        eventDate: true,
+        eventEndDate: true,
+        eventLocation: true,
+      },
+    }),
   ]);
 
   const now = new Date();
@@ -34,7 +49,6 @@ export default async function CalendarPage() {
     const name = `${emp.firstName} ${emp.lastName}`;
     const department = emp.department?.name || undefined;
 
-    // Birthday events — set year to current year, keep month/day
     if (emp.birthday) {
       const bd = emp.birthday;
       events.push({
@@ -46,7 +60,6 @@ export default async function CalendarPage() {
       });
     }
 
-    // Anniversary events — set year to current year, keep month/day, calculate years
     if (emp.anniversaryDate) {
       const ad = emp.anniversaryDate;
       const years = currentYear - emp.startDate.getFullYear();
@@ -60,7 +73,6 @@ export default async function CalendarPage() {
       });
     }
 
-    // Benefits eligibility events — HR/admin only
     if (emp.benefitsEligibleDate && isManagerOrAbove) {
       const bed = emp.benefitsEligibleDate;
       events.push({
@@ -73,7 +85,6 @@ export default async function CalendarPage() {
     }
   }
 
-  // Interview events
   for (const interview of interviews) {
     const candidateName = `${interview.candidate.firstName} ${interview.candidate.lastName}`;
     const d = new Date(interview.scheduledAt);
@@ -87,7 +98,6 @@ export default async function CalendarPage() {
     });
   }
 
-  // Holidays (Jewish, Muslim, Christian, American)
   const holidays = getHolidaysForYear(currentYear);
   for (const h of holidays) {
     events.push({
@@ -98,9 +108,36 @@ export default async function CalendarPage() {
     });
   }
 
+  // Feed events
+  for (const fe of feedEvents) {
+    if (fe.eventDate) {
+      events.push({
+        id: `feed-event-${fe.id}`,
+        name: fe.content.slice(0, 80),
+        date: fe.eventDate.toISOString(),
+        type: "feed-event",
+        endDate: fe.eventEndDate?.toISOString(),
+        location: fe.eventLocation || undefined,
+      });
+    }
+  }
+
   return (
     <div className="px-8 py-8">
-      <CalendarView events={events} />
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
+        {userId && (
+          <GoogleCalendarConnect connected={syncStatus.connected} userId={userId} />
+        )}
+      </div>
+      {syncStatus.connected && userId ? (
+        <CalendarGoogleEvents
+          events={events}
+          userId={userId}
+        />
+      ) : (
+        <CalendarView events={events} />
+      )}
     </div>
   );
 }
