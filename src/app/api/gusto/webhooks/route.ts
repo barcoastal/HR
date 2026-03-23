@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { db } from "@/lib/db";
-import { decrypt } from "@/lib/gusto";
+import { decrypt } from "@/lib/encryption";
 
 export async function POST(request: Request) {
   // 1. Look up connection

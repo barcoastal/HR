@@ -2,8 +2,8 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { decrypt } from "@/lib/encryption";
 import {
-  decrypt,
   fetchGustoEmployees,
   fetchPayrollRuns,
   fetchPayrollDetail,
