@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { createFeedPost, createShoutoutPost } from "@/lib/actions/feed";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { CreateEventDialog } from "@/components/feed/create-event-dialog";
 
 type EmployeeOption = { id: string; firstName: string; lastName: string };
 type Attachment = { url: string; type: "IMAGE" | "FILE"; name: string; preview?: string };
@@ -34,6 +35,7 @@ export function PostComposer({
   const [gifSearch, setGifSearch] = useState("");
   const [gifs, setGifs] = useState<{ id: string; url: string; preview: string; title: string }[]>([]);
   const [loadingGifs, setLoadingGifs] = useState(false);
+  const [showEventDialog, setShowEventDialog] = useState(false);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -346,6 +348,16 @@ export function PostComposer({
             <Icon name="star" size={16} />
             Shoutout
           </button>
+          <button
+            onClick={() => setShowEventDialog(true)}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors",
+              "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+            )}
+          >
+            <Icon name="event" size={16} />
+            Event
+          </button>
         </div>
         <button
           onClick={handlePost}
@@ -361,6 +373,13 @@ export function PostComposer({
           {loading ? "Posting..." : "Post"}
         </button>
       </div>
+
+      {showEventDialog && (
+        <CreateEventDialog
+          employeeId={employeeId}
+          onClose={() => setShowEventDialog(false)}
+        />
+      )}
     </div>
   );
 }

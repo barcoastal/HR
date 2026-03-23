@@ -7,12 +7,16 @@ import { CommentSection } from "@/components/feed/comment-section";
 import type { ReactionType } from "@/generated/prisma/client";
 import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
+import { EventCard } from "@/components/feed/event-card";
 
 type PostWithRelations = {
   id: string;
   content: string;
   type: string;
   pinned: boolean;
+  eventDate?: Date | null;
+  eventEndDate?: Date | null;
+  eventLocation?: string | null;
   createdAt: Date;
   author: { id: string; firstName: string; lastName: string; jobTitle: string; pronouns?: string | null; profilePhoto?: string | null };
   mentionedEmployee?: { id: string; firstName: string; lastName: string; jobTitle: string } | null;
@@ -91,10 +95,12 @@ function AttachmentGallery({ attachments }: { attachments?: { id: string; url: s
 export function PostCard({
   post,
   currentEmployeeId,
+  currentUserId,
   userRole,
 }: {
   post: PostWithRelations;
   currentEmployeeId: string;
+  currentUserId?: string;
   userRole?: string;
 }) {
   const [showComments, setShowComments] = useState(false);
@@ -155,6 +161,18 @@ export function PostCard({
       currentEmployeeId={currentEmployeeId}
     />
   ) : null;
+
+  if (post.type === "EVENT" && currentUserId) {
+    return (
+      <EventCard
+        post={post as any}
+        currentUserId={currentUserId}
+        currentEmployeeId={currentEmployeeId}
+        reactionsBar={reactionsBar}
+        commentsSection={commentsSection}
+      />
+    );
+  }
 
   if (post.type === "SHOUTOUT" && post.mentionedEmployee) {
     const mentioned = post.mentionedEmployee;
