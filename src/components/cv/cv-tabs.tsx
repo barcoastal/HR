@@ -501,11 +501,64 @@ export function CVTabs({
               platform={syncablePlatforms.find((p) => p.name === "Indeed") as any}
             />
             <CsvImport />
+            <CleanDuplicatesButton />
           </div>
           <CandidateDatabase
             candidates={allCandidates}
             positions={positions}
           />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CleanDuplicatesButton() {
+  const [cleaning, setCleaning] = useState(false);
+  const [result, setResult] = useState<{ duplicatesFound: number; deleted: number; totalBefore: number; totalAfter: number } | null>(null);
+  const router = useRouter();
+
+  async function handleClean() {
+    if (!confirm("This will remove duplicate candidates (same email). Candidates in the active pipeline or hired will be preserved. Continue?")) return;
+    setCleaning(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/candidates/cleanup", { method: "POST" });
+      if (!res.ok) throw new Error("Cleanup failed");
+      const data = await res.json();
+      setResult(data);
+      if (data.deleted > 0) router.refresh();
+    } catch {
+      alert("Failed to clean duplicates. Please try again.");
+    }
+    setCleaning(false);
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleClean}
+        disabled={cleaning}
+        className={cn(
+          "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20",
+          "border border-amber-500/20",
+          "disabled:opacity-50"
+        )}
+      >
+        <Icon name={cleaning ? "progress_activity" : "delete_sweep"} size={16} className={cleaning ? "animate-material-spin" : ""} />
+        {cleaning ? "Cleaning..." : "Clean Duplicates"}
+      </button>
+      {result && result.deleted > 0 && (
+        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
+          <p className="text-xs font-medium text-gray-900 mb-1">Cleanup Complete</p>
+          <p className="text-[11px] text-gray-500">{result.deleted} duplicates removed</p>
+          <p className="text-[11px] text-gray-500">{result.totalBefore} → {result.totalAfter} candidates</p>
+        </div>
+      )}
+      {result && result.deleted === 0 && (
+        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
+          <p className="text-xs font-medium text-gray-900">No duplicates found</p>
         </div>
       )}
     </div>
