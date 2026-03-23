@@ -62,6 +62,7 @@ export const ModelName = {
   ReviewCycle: 'ReviewCycle',
   Review: 'Review',
   FeedPost: 'FeedPost',
+  EventAttendance: 'EventAttendance',
   FeedComment: 'FeedComment',
   FeedReaction: 'FeedReaction',
   PostAttachment: 'PostAttachment',
@@ -189,7 +190,12 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   employeeId: 'employeeId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  googleCalendarAccessToken: 'googleCalendarAccessToken',
+  googleCalendarRefreshToken: 'googleCalendarRefreshToken',
+  googleCalendarTokenExpiresAt: 'googleCalendarTokenExpiresAt',
+  googleCalendarSyncEnabled: 'googleCalendarSyncEnabled',
+  emailNotificationsEnabled: 'emailNotificationsEnabled'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -298,10 +304,26 @@ export const FeedPostScalarFieldEnum = {
   pinned: 'pinned',
   mentionedEmployeeId: 'mentionedEmployeeId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  eventDate: 'eventDate',
+  eventEndDate: 'eventEndDate',
+  eventLocation: 'eventLocation'
 } as const
 
 export type FeedPostScalarFieldEnum = (typeof FeedPostScalarFieldEnum)[keyof typeof FeedPostScalarFieldEnum]
+
+
+export const EventAttendanceScalarFieldEnum = {
+  id: 'id',
+  feedPostId: 'feedPostId',
+  userId: 'userId',
+  status: 'status',
+  googleCalendarEventId: 'googleCalendarEventId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventAttendanceScalarFieldEnum = (typeof EventAttendanceScalarFieldEnum)[keyof typeof EventAttendanceScalarFieldEnum]
 
 
 export const FeedCommentScalarFieldEnum = {
@@ -678,6 +700,7 @@ export const OAuthStateScalarFieldEnum = {
   platformId: 'platformId',
   userId: 'userId',
   redirectUri: 'redirectUri',
+  metadata: 'metadata',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 } as const

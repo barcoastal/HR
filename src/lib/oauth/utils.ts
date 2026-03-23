@@ -33,8 +33,8 @@ export async function createOAuthState(
       userId,
       redirectUri: getCallbackUrl(providerId),
       expiresAt,
-      ...(metadata ? { metadata } : {}),
-    },
+      ...(metadata ? { metadata: metadata as any } : {}),
+    } as any,
   });
 
   return state;

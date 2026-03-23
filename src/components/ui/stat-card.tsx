@@ -72,7 +72,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-5 transition-all duration-300 hover:shadow-xl",
+        "rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3 md:p-5 transition-all duration-300 hover:shadow-xl",
         className
       )}
     >
@@ -81,7 +81,7 @@ export function StatCard({
           <p className="text-sm font-medium text-[var(--color-text-muted)] truncate">
             {title}
           </p>
-          <p className="mt-2 text-2xl font-bold text-[var(--color-text-primary)]">
+          <p className="mt-1 md:mt-2 text-xl md:text-2xl font-bold text-[var(--color-text-primary)]">
             {animate && numValue !== null ? (
               <AnimatedCounterClient value={numValue} />
             ) : (
@@ -114,7 +114,7 @@ export function StatCard({
         </div>
         <div
           className={cn(
-            "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl",
+            "flex h-9 w-9 md:h-11 md:w-11 shrink-0 items-center justify-center rounded-xl",
             scheme.iconBg,
             scheme.iconColor
           )}

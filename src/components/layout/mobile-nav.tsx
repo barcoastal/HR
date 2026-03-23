@@ -22,7 +22,7 @@ const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 const tabs = [
   { href: "/", label: "Feed", icon: "newspaper" },
   { href: "/people", label: "People", icon: "group" },
-  { href: "/calendar", label: "Calendar", icon: "calendar_month" },
+  { href: "/chat", label: "Chat", icon: "chat" },
   { href: "/my-profile", label: "Profile", icon: "account_circle" },
 ] as const;
 

@@ -75,12 +75,16 @@ export function ChannelHeader({ name, topic, memberCount, isPrivate, isDm, chann
 
   return (
     <>
-      <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-white flex-shrink-0">
+      <div className="flex items-center justify-between px-3 md:px-5 py-3 border-b border-gray-200 bg-white flex-shrink-0">
         <div className="flex items-center gap-2 min-w-0">
+          {/* Mobile back/menu button */}
+          <a href="/chat" className="md:hidden text-gray-500 hover:text-gray-700 mr-1">
+            <span className="material-symbols-rounded text-[20px]">arrow_back</span>
+          </a>
           {!isDm && (
             <span className="text-gray-400 text-sm">{isPrivate ? "🔒" : "#"}</span>
           )}
-          <h2 className="font-semibold text-gray-900 truncate">{name}</h2>
+          <h2 className="font-semibold text-gray-900 truncate text-sm md:text-base">{name}</h2>
           {topic && (
             <span className="text-sm text-gray-500 truncate ml-2 hidden md:inline">
               {topic}

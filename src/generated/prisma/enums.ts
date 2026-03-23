@@ -82,7 +82,8 @@ export const FeedPostType = {
   NEW_HIRE: 'NEW_HIRE',
   DEPARTURE: 'DEPARTURE',
   SHOUTOUT: 'SHOUTOUT',
-  EMERGENCY: 'EMERGENCY'
+  EMERGENCY: 'EMERGENCY',
+  EVENT: 'EVENT'
 } as const
 
 export type FeedPostType = (typeof FeedPostType)[keyof typeof FeedPostType]
@@ -183,6 +184,15 @@ export const InterviewStatus = {
 } as const
 
 export type InterviewStatus = (typeof InterviewStatus)[keyof typeof InterviewStatus]
+
+
+export const AttendanceStatus = {
+  GOING: 'GOING',
+  MAYBE: 'MAYBE',
+  NOT_GOING: 'NOT_GOING'
+} as const
+
+export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
 
 
 export const PlatformType = {

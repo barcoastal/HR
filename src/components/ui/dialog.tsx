@@ -42,8 +42,8 @@ export function Dialog({ open, onClose, children, title }: DialogProps) {
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={cn(
-              "relative z-50 w-full max-w-lg max-h-[90vh] overflow-y-auto",
-              "glass rounded-[var(--radius-lg)] p-6 shadow-[var(--shadow-glass)]",
+              "relative z-50 w-full max-w-lg max-h-[90vh] overflow-y-auto mx-3 md:mx-0",
+              "glass rounded-[var(--radius-lg)] p-4 md:p-6 shadow-[var(--shadow-glass)]",
               "shadow-2xl"
             )}
           >

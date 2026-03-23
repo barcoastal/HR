@@ -428,10 +428,6 @@ export type EnumChecklistTypeFieldUpdateOperationsInput = {
   set?: $Enums.ChecklistType
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type OnboardingChecklistCreateNestedOneWithoutItemsInput = {
   create?: Prisma.XOR<Prisma.OnboardingChecklistCreateWithoutItemsInput, Prisma.OnboardingChecklistUncheckedCreateWithoutItemsInput>
   connectOrCreate?: Prisma.OnboardingChecklistCreateOrConnectWithoutItemsInput

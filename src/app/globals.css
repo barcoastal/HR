@@ -204,3 +204,63 @@ body {
 .mention::before {
   content: "@";
 }
+
+/* ─── Mobile Responsive Fixes ─── */
+@media (max-width: 767px) {
+  /* Prevent any horizontal overflow */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  /* Stat cards: 2 columns on mobile */
+  .grid-cols-2.sm\:grid-cols-4,
+  .grid.grid-cols-2.sm\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Tables: horizontal scroll wrapper */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  thead, tbody, tr {
+    display: table;
+    width: 100%;
+    table-layout: auto;
+  }
+
+  /* Dialogs: full width on mobile */
+  [role="dialog"] > div {
+    max-width: calc(100vw - 2rem) !important;
+    margin: 1rem !important;
+  }
+
+  /* Pipeline columns: horizontal scroll */
+  .flex.gap-3.overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Page headers: stack on mobile */
+  .flex.items-center.justify-between {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* Cards: full width */
+  .rounded-2xl {
+    border-radius: 1rem;
+  }
+
+  /* Search bars: full width */
+  input[type="search"],
+  input[type="text"][placeholder*="Search"] {
+    width: 100% !important;
+  }
+}

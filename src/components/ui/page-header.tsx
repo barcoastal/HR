@@ -20,7 +20,7 @@ export function PageHeader({
       <div>
         <h1
           className={cn(
-            "text-2xl font-bold tracking-tight md:text-3xl",
+            "text-xl font-bold tracking-tight md:text-3xl",
             gradient
               ? "text-[var(--color-primary)]"
               : "text-[var(--color-on-surface)]"

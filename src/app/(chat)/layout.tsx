@@ -10,8 +10,11 @@ export default async function ChatLayout({
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <ChatSidebar />
-      <main className="flex-1 flex flex-col min-w-0">{children}</main>
+      {/* Sidebar: hidden on mobile, shown on desktop */}
+      <div className="hidden md:flex">
+        <ChatSidebar />
+      </div>
+      <main className="flex-1 flex flex-col min-w-0 w-full">{children}</main>
     </div>
   );
 }

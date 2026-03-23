@@ -95,6 +95,11 @@ export type Review = Prisma.ReviewModel
  */
 export type FeedPost = Prisma.FeedPostModel
 /**
+ * Model EventAttendance
+ * 
+ */
+export type EventAttendance = Prisma.EventAttendanceModel
+/**
  * Model FeedComment
  * 
  */

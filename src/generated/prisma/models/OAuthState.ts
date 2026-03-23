@@ -53,6 +53,7 @@ export type OAuthStateCountAggregateOutputType = {
   platformId: number
   userId: number
   redirectUri: number
+  metadata: number
   expiresAt: number
   createdAt: number
   _all: number
@@ -88,6 +89,7 @@ export type OAuthStateCountAggregateInputType = {
   platformId?: true
   userId?: true
   redirectUri?: true
+  metadata?: true
   expiresAt?: true
   createdAt?: true
   _all?: true
@@ -172,6 +174,7 @@ export type OAuthStateGroupByOutputType = {
   platformId: string | null
   userId: string
   redirectUri: string
+  metadata: runtime.JsonValue | null
   expiresAt: Date
   createdAt: Date
   _count: OAuthStateCountAggregateOutputType | null
@@ -204,6 +207,7 @@ export type OAuthStateWhereInput = {
   platformId?: Prisma.StringNullableFilter<"OAuthState"> | string | null
   userId?: Prisma.StringFilter<"OAuthState"> | string
   redirectUri?: Prisma.StringFilter<"OAuthState"> | string
+  metadata?: Prisma.JsonNullableFilter<"OAuthState">
   expiresAt?: Prisma.DateTimeFilter<"OAuthState"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"OAuthState"> | Date | string
 }
@@ -215,6 +219,7 @@ export type OAuthStateOrderByWithRelationInput = {
   platformId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   redirectUri?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -229,6 +234,7 @@ export type OAuthStateWhereUniqueInput = Prisma.AtLeast<{
   platformId?: Prisma.StringNullableFilter<"OAuthState"> | string | null
   userId?: Prisma.StringFilter<"OAuthState"> | string
   redirectUri?: Prisma.StringFilter<"OAuthState"> | string
+  metadata?: Prisma.JsonNullableFilter<"OAuthState">
   expiresAt?: Prisma.DateTimeFilter<"OAuthState"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"OAuthState"> | Date | string
 }, "id" | "state">
@@ -240,6 +246,7 @@ export type OAuthStateOrderByWithAggregationInput = {
   platformId?: Prisma.SortOrderInput | Prisma.SortOrder
   userId?: Prisma.SortOrder
   redirectUri?: Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OAuthStateCountOrderByAggregateInput
@@ -257,6 +264,7 @@ export type OAuthStateScalarWhereWithAggregatesInput = {
   platformId?: Prisma.StringNullableWithAggregatesFilter<"OAuthState"> | string | null
   userId?: Prisma.StringWithAggregatesFilter<"OAuthState"> | string
   redirectUri?: Prisma.StringWithAggregatesFilter<"OAuthState"> | string
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"OAuthState">
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthState"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthState"> | Date | string
 }
@@ -268,6 +276,7 @@ export type OAuthStateCreateInput = {
   platformId?: string | null
   userId: string
   redirectUri: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -279,6 +288,7 @@ export type OAuthStateUncheckedCreateInput = {
   platformId?: string | null
   userId: string
   redirectUri: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -290,6 +300,7 @@ export type OAuthStateUpdateInput = {
   platformId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   redirectUri?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -301,6 +312,7 @@ export type OAuthStateUncheckedUpdateInput = {
   platformId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   redirectUri?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -312,6 +324,7 @@ export type OAuthStateCreateManyInput = {
   platformId?: string | null
   userId: string
   redirectUri: string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -323,6 +336,7 @@ export type OAuthStateUpdateManyMutationInput = {
   platformId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   redirectUri?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -334,6 +348,7 @@ export type OAuthStateUncheckedUpdateManyInput = {
   platformId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   redirectUri?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -345,6 +360,7 @@ export type OAuthStateCountOrderByAggregateInput = {
   platformId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   redirectUri?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -380,6 +396,7 @@ export type OAuthStateSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   platformId?: boolean
   userId?: boolean
   redirectUri?: boolean
+  metadata?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["oAuthState"]>
@@ -391,6 +408,7 @@ export type OAuthStateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   platformId?: boolean
   userId?: boolean
   redirectUri?: boolean
+  metadata?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["oAuthState"]>
@@ -402,6 +420,7 @@ export type OAuthStateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   platformId?: boolean
   userId?: boolean
   redirectUri?: boolean
+  metadata?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["oAuthState"]>
@@ -413,11 +432,12 @@ export type OAuthStateSelectScalar = {
   platformId?: boolean
   userId?: boolean
   redirectUri?: boolean
+  metadata?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }
 
-export type OAuthStateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "state" | "provider" | "platformId" | "userId" | "redirectUri" | "expiresAt" | "createdAt", ExtArgs["result"]["oAuthState"]>
+export type OAuthStateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "state" | "provider" | "platformId" | "userId" | "redirectUri" | "metadata" | "expiresAt" | "createdAt", ExtArgs["result"]["oAuthState"]>
 
 export type $OAuthStatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OAuthState"
@@ -429,6 +449,7 @@ export type $OAuthStatePayload<ExtArgs extends runtime.Types.Extensions.Internal
     platformId: string | null
     userId: string
     redirectUri: string
+    metadata: runtime.JsonValue | null
     expiresAt: Date
     createdAt: Date
   }, ExtArgs["result"]["oAuthState"]>
@@ -860,6 +881,7 @@ export interface OAuthStateFieldRefs {
   readonly platformId: Prisma.FieldRef<"OAuthState", 'String'>
   readonly userId: Prisma.FieldRef<"OAuthState", 'String'>
   readonly redirectUri: Prisma.FieldRef<"OAuthState", 'String'>
+  readonly metadata: Prisma.FieldRef<"OAuthState", 'Json'>
   readonly expiresAt: Prisma.FieldRef<"OAuthState", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"OAuthState", 'DateTime'>
 }
