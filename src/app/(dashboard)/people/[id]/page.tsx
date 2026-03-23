@@ -10,6 +10,7 @@ import { EmployeeDocumentsSection } from "@/components/people/employee-documents
 import { getHRNotes } from "@/lib/actions/hr-notes";
 import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
 import { Icon } from "@/components/ui/icon";
+import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -205,6 +206,16 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 ))}
               </div>
             </section>
+          )}
+
+          {employee.gustoEmployeeId && (isAdmin || isOwnProfile) && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                <Icon name="payments" size={20} />
+                Gusto
+              </h3>
+              <EmployeeGustoTab gustoEmployeeId={employee.gustoEmployeeId} />
+            </div>
           )}
         </div>
 
