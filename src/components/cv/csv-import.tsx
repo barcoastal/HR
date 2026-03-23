@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { bulkImportCandidates } from "@/lib/actions/candidates";
+// Uses API route instead of server action for large payloads
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 
@@ -230,8 +230,17 @@ export function CsvImport() {
     }));
 
     try {
-      const res = await bulkImportCandidates(payload);
-      setResult({ created: res.created, skipped: res.skipped.length, errors: res.errors });
+      const res = await fetch("/api/candidates/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidates: payload }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Import failed (${res.status})`);
+      }
+      const data = await res.json();
+      setResult({ created: data.created, skipped: data.skipped?.length ?? 0, errors: data.errors ?? [] });
       setStep(3);
     } catch {
       setResult({ created: 0, skipped: 0, errors: ["Import failed. Please try again."] });
