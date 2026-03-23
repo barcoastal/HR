@@ -88,17 +88,20 @@ export class JobingClient implements PlatformClient {
     // First: pull from bulk endpoint (up to 1000)
     let page = 1;
     while (true) {
-      const res = await fetch(
-        `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
-        fetchOpts(token)
-      );
-      if (!res.ok) break;
+      const bulkUrl = `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`;
+      console.log(`[Jobing] Fetching bulk page ${page}: ${bulkUrl}`);
+      const res = await fetch(bulkUrl, fetchOpts(token));
+      if (!res.ok) {
+        console.log(`[Jobing] Bulk page ${page} failed: HTTP ${res.status}`);
+        break;
+      }
 
       const data = await res.json();
       const applicants: JobingApplicant[] = Array.isArray(data)
         ? data
         : data.results || data.applicants || [];
 
+      console.log(`[Jobing] Bulk page ${page}: ${applicants.length} applicants`);
       if (applicants.length === 0) break;
 
       for (const a of applicants) {

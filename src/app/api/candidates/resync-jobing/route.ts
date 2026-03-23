@@ -21,9 +21,22 @@ async function run() {
     return NextResponse.json({ error: "NOLIG_API_KEY not configured" }, { status: 500 });
   }
 
+  const company = process.env.NOLIG_COMPANY || "coastal-debt-resolve";
   await mkdir(RESUMES_DIR, { recursive: true });
 
   try {
+    // Step 0: Test API connectivity
+    const testRes = await fetch(
+      `https://pro.jobing.com/api/jobs?company=${company}`,
+      {
+        headers: { Authorization: `Bearer token=${apiKey}`, Accept: "application/json" },
+        cache: "no-store",
+      }
+    );
+    const testData = testRes.ok ? await testRes.json() : null;
+    const jobCount = testData?.results?.length || 0;
+    console.log(`[Resync Jobing] API test: status=${testRes.status}, jobs=${jobCount}`);
+
     // Step 1: Delete ALL existing Jobing candidates
     const deleted = await db.candidate.deleteMany({
       where: {
@@ -33,10 +46,12 @@ async function run() {
         ],
       },
     });
+    console.log(`[Resync Jobing] Deleted ${deleted.count} existing candidates`);
 
-    // Step 2: Fetch fresh from Jobing API
+    // Step 2: Fetch fresh from Jobing API (bulk + per-job)
     const client = new JobingClient();
     const candidates = await client.fetchCandidates(apiKey);
+    console.log(`[Resync Jobing] Fetched ${candidates.length} candidates from API`);
 
     // Step 3: Create candidates and download resumes
     let created = 0;
@@ -110,6 +125,7 @@ async function run() {
     revalidatePath("/cv");
 
     return NextResponse.json({
+      apiTest: { status: testRes.status, jobCount },
       step1_deleted: deleted.count,
       step2_fetched: candidates.length,
       step3_created: created,
