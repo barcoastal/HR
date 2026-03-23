@@ -301,8 +301,12 @@ export async function hireCandidateAndStartOnboarding(
     .join("\n");
 
   // Use company email if provided, otherwise fall back to candidate's personal email
-  const employeeEmail = options?.companyEmail?.trim() || candidate.email;
+  const skipEmail = options?.skipEmail === true;
+  const employeeEmail = skipEmail ? candidate.email : (options?.companyEmail?.trim() || candidate.email);
   const startDate = options?.startDate ? new Date(options.startDate) : new Date();
+
+  // If skipEmail (pre-onboarding), set status to PRE_ONBOARDING directly
+  const initialStatus = skipEmail ? "PRE_ONBOARDING" : "ONBOARDING";
 
   const employee = await db.employee.create({
     data: {
@@ -316,33 +320,68 @@ export async function hireCandidateAndStartOnboarding(
       startDate,
       anniversaryDate: startDate,
       bio: bio || null,
-      status: "ONBOARDING",
+      status: initialStatus,
     },
   });
 
-  // Create user account with company email and send welcome email
+  // Create user account and send welcome email (skip if pre-onboarding without company email)
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const existingUser = await db.user.findUnique({ where: { email: employeeEmail } });
-  if (!existingUser) {
-    await db.user.create({
-      data: {
-        email: employeeEmail,
-        role: "EMPLOYEE",
-        employeeId: employee.id,
-      },
-    });
-  } else if (!existingUser.employeeId) {
-    await db.user.update({
-      where: { id: existingUser.id },
-      data: { employeeId: employee.id },
+  if (!skipEmail) {
+    const existingUser = await db.user.findUnique({ where: { email: employeeEmail } });
+    if (!existingUser) {
+      await db.user.create({
+        data: {
+          email: employeeEmail,
+          role: "EMPLOYEE",
+          employeeId: employee.id,
+        },
+      });
+    } else if (!existingUser.employeeId) {
+      await db.user.update({
+        where: { id: existingUser.id },
+        data: { employeeId: employee.id },
+      });
+    }
+
+    sendWelcomeEmail({
+      to: employeeEmail,
+      role: "Employee",
+      loginUrl: `${baseUrl}/login`,
     });
   }
 
-  sendWelcomeEmail({
-    to: employeeEmail,
-    role: "Employee",
-    loginUrl: `${baseUrl}/login`,
-  });
+  // If skipEmail, assign pre-onboarding tasks and return early
+  if (skipEmail) {
+    const { resolvePreOnboardingTasks } = await import("./onboarding-resolution");
+    const deptId = candidate.position?.departmentId || null;
+    const jobTitleStr = candidate.position?.title || null;
+    const preOnboardingTasks = await resolvePreOnboardingTasks(deptId, jobTitleStr);
+
+    for (const task of preOnboardingTasks) {
+      await db.employeeTask.create({
+        data: {
+          employeeId: employee.id,
+          checklistItemId: task.checklistItemId,
+          title: task.title,
+          description: task.description,
+          documentAction: task.documentAction,
+          documentUrl: task.documentUrl,
+          documentName: task.documentName,
+          assigneeId: task.assigneeId,
+        },
+      });
+    }
+
+    await db.candidate.update({
+      where: { id: candidateId },
+      data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
+    });
+
+    revalidatePath("/cv");
+    revalidatePath("/pre-onboarding");
+    revalidatePath("/people");
+    return { employee, taskCount: preOnboardingTasks.length };
+  }
 
   // Check for pre-onboarding tasks first
   const { resolveOnboardingTasks, resolvePreOnboardingTasks } = await import("./onboarding-resolution");
