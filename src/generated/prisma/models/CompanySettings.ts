@@ -35,6 +35,8 @@ export type CompanySettingsMinAggregateOutputType = {
   senderEmail: string | null
   senderName: string | null
   recruiterIds: string | null
+  pipelineStages: string | null
+  candidateCustomFields: string | null
   updatedAt: Date | null
 }
 
@@ -49,6 +51,8 @@ export type CompanySettingsMaxAggregateOutputType = {
   senderEmail: string | null
   senderName: string | null
   recruiterIds: string | null
+  pipelineStages: string | null
+  candidateCustomFields: string | null
   updatedAt: Date | null
 }
 
@@ -63,6 +67,8 @@ export type CompanySettingsCountAggregateOutputType = {
   senderEmail: number
   senderName: number
   recruiterIds: number
+  pipelineStages: number
+  candidateCustomFields: number
   updatedAt: number
   _all: number
 }
@@ -79,6 +85,8 @@ export type CompanySettingsMinAggregateInputType = {
   senderEmail?: true
   senderName?: true
   recruiterIds?: true
+  pipelineStages?: true
+  candidateCustomFields?: true
   updatedAt?: true
 }
 
@@ -93,6 +101,8 @@ export type CompanySettingsMaxAggregateInputType = {
   senderEmail?: true
   senderName?: true
   recruiterIds?: true
+  pipelineStages?: true
+  candidateCustomFields?: true
   updatedAt?: true
 }
 
@@ -107,6 +117,8 @@ export type CompanySettingsCountAggregateInputType = {
   senderEmail?: true
   senderName?: true
   recruiterIds?: true
+  pipelineStages?: true
+  candidateCustomFields?: true
   updatedAt?: true
   _all?: true
 }
@@ -194,6 +206,8 @@ export type CompanySettingsGroupByOutputType = {
   senderEmail: string
   senderName: string
   recruiterIds: string
+  pipelineStages: string
+  candidateCustomFields: string
   updatedAt: Date
   _count: CompanySettingsCountAggregateOutputType | null
   _min: CompanySettingsMinAggregateOutputType | null
@@ -229,6 +243,8 @@ export type CompanySettingsWhereInput = {
   senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
   senderName?: Prisma.StringFilter<"CompanySettings"> | string
   recruiterIds?: Prisma.StringFilter<"CompanySettings"> | string
+  pipelineStages?: Prisma.StringFilter<"CompanySettings"> | string
+  candidateCustomFields?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }
 
@@ -243,6 +259,8 @@ export type CompanySettingsOrderByWithRelationInput = {
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
   recruiterIds?: Prisma.SortOrder
+  pipelineStages?: Prisma.SortOrder
+  candidateCustomFields?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -260,6 +278,8 @@ export type CompanySettingsWhereUniqueInput = Prisma.AtLeast<{
   senderEmail?: Prisma.StringFilter<"CompanySettings"> | string
   senderName?: Prisma.StringFilter<"CompanySettings"> | string
   recruiterIds?: Prisma.StringFilter<"CompanySettings"> | string
+  pipelineStages?: Prisma.StringFilter<"CompanySettings"> | string
+  candidateCustomFields?: Prisma.StringFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }, "id">
 
@@ -274,6 +294,8 @@ export type CompanySettingsOrderByWithAggregationInput = {
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
   recruiterIds?: Prisma.SortOrder
+  pipelineStages?: Prisma.SortOrder
+  candidateCustomFields?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanySettingsCountOrderByAggregateInput
   _max?: Prisma.CompanySettingsMaxOrderByAggregateInput
@@ -294,6 +316,8 @@ export type CompanySettingsScalarWhereWithAggregatesInput = {
   senderEmail?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   senderName?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   recruiterIds?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
+  pipelineStages?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
+  candidateCustomFields?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
 }
 
@@ -308,6 +332,8 @@ export type CompanySettingsCreateInput = {
   senderEmail?: string
   senderName?: string
   recruiterIds?: string
+  pipelineStages?: string
+  candidateCustomFields?: string
   updatedAt?: Date | string
 }
 
@@ -322,6 +348,8 @@ export type CompanySettingsUncheckedCreateInput = {
   senderEmail?: string
   senderName?: string
   recruiterIds?: string
+  pipelineStages?: string
+  candidateCustomFields?: string
   updatedAt?: Date | string
 }
 
@@ -336,6 +364,8 @@ export type CompanySettingsUpdateInput = {
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
   recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
+  pipelineStages?: Prisma.StringFieldUpdateOperationsInput | string
+  candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -350,6 +380,8 @@ export type CompanySettingsUncheckedUpdateInput = {
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
   recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
+  pipelineStages?: Prisma.StringFieldUpdateOperationsInput | string
+  candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -364,6 +396,8 @@ export type CompanySettingsCreateManyInput = {
   senderEmail?: string
   senderName?: string
   recruiterIds?: string
+  pipelineStages?: string
+  candidateCustomFields?: string
   updatedAt?: Date | string
 }
 
@@ -378,6 +412,8 @@ export type CompanySettingsUpdateManyMutationInput = {
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
   recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
+  pipelineStages?: Prisma.StringFieldUpdateOperationsInput | string
+  candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -392,6 +428,8 @@ export type CompanySettingsUncheckedUpdateManyInput = {
   senderEmail?: Prisma.StringFieldUpdateOperationsInput | string
   senderName?: Prisma.StringFieldUpdateOperationsInput | string
   recruiterIds?: Prisma.StringFieldUpdateOperationsInput | string
+  pipelineStages?: Prisma.StringFieldUpdateOperationsInput | string
+  candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -406,6 +444,8 @@ export type CompanySettingsCountOrderByAggregateInput = {
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
   recruiterIds?: Prisma.SortOrder
+  pipelineStages?: Prisma.SortOrder
+  candidateCustomFields?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -420,6 +460,8 @@ export type CompanySettingsMaxOrderByAggregateInput = {
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
   recruiterIds?: Prisma.SortOrder
+  pipelineStages?: Prisma.SortOrder
+  candidateCustomFields?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -434,6 +476,8 @@ export type CompanySettingsMinOrderByAggregateInput = {
   senderEmail?: Prisma.SortOrder
   senderName?: Prisma.SortOrder
   recruiterIds?: Prisma.SortOrder
+  pipelineStages?: Prisma.SortOrder
+  candidateCustomFields?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -450,6 +494,8 @@ export type CompanySettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   senderEmail?: boolean
   senderName?: boolean
   recruiterIds?: boolean
+  pipelineStages?: boolean
+  candidateCustomFields?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -464,6 +510,8 @@ export type CompanySettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   senderEmail?: boolean
   senderName?: boolean
   recruiterIds?: boolean
+  pipelineStages?: boolean
+  candidateCustomFields?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -478,6 +526,8 @@ export type CompanySettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   senderEmail?: boolean
   senderName?: boolean
   recruiterIds?: boolean
+  pipelineStages?: boolean
+  candidateCustomFields?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -492,10 +542,12 @@ export type CompanySettingsSelectScalar = {
   senderEmail?: boolean
   senderName?: boolean
   recruiterIds?: boolean
+  pipelineStages?: boolean
+  candidateCustomFields?: boolean
   updatedAt?: boolean
 }
 
-export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "recruiterIds" | "updatedAt", ExtArgs["result"]["companySettings"]>
+export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "recruiterIds" | "pipelineStages" | "candidateCustomFields" | "updatedAt", ExtArgs["result"]["companySettings"]>
 
 export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CompanySettings"
@@ -511,6 +563,8 @@ export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     senderEmail: string
     senderName: string
     recruiterIds: string
+    pipelineStages: string
+    candidateCustomFields: string
     updatedAt: Date
   }, ExtArgs["result"]["companySettings"]>
   composites: {}
@@ -945,6 +999,8 @@ export interface CompanySettingsFieldRefs {
   readonly senderEmail: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly senderName: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly recruiterIds: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly pipelineStages: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly candidateCustomFields: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly updatedAt: Prisma.FieldRef<"CompanySettings", 'DateTime'>
 }
     

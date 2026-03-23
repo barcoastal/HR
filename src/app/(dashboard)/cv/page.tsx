@@ -5,7 +5,7 @@ import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
 import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
-import { getRecruiters } from "@/lib/actions/company-settings";
+import { getRecruiters, getPipelineStages } from "@/lib/actions/company-settings";
 import { AddCandidateForm } from "@/components/cv/add-candidate-form";
 import { AddPositionForm } from "@/components/cv/add-position-form";
 import { CVTabs } from "@/components/cv/cv-tabs";
@@ -15,7 +15,7 @@ import { Icon } from "@/components/ui/icon";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters] = await Promise.all([
+  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages] = await Promise.all([
     getCandidates({ inPipeline: true }),
     getAllCandidatesForDatabase(),
     getPositions(),
@@ -24,6 +24,7 @@ export default async function CVPage() {
     getDepartments(),
     getEmployees(),
     getRecruiters(),
+    getPipelineStages(),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
@@ -127,6 +128,7 @@ export default async function CVPage() {
         syncablePlatforms={syncablePlatforms}
         employees={allEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, jobTitle: e.jobTitle }))}
         recruiters={recruiters.map((r) => ({ id: r.id, firstName: r.firstName, lastName: r.lastName }))}
+        pipelineStages={pipelineStages}
       />
     </div>
   );

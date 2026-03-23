@@ -27,7 +27,8 @@ import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 import { PageHeader } from "@/components/ui/page-header";
 import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 import { RecruiterManager } from "@/components/settings/recruiter-manager";
-import { getRecruiters } from "@/lib/actions/company-settings";
+import { PipelineSettings } from "@/components/settings/pipeline-settings";
+import { getRecruiters, getPipelineStages, getCandidateCustomFields } from "@/lib/actions/company-settings";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 
@@ -35,7 +36,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -48,6 +49,8 @@ export default async function SettingsPage() {
     getRolePermissions(),
     getRecruiters(),
     getGustoConnection(),
+    getPipelineStages(),
+    getCandidateCustomFields(),
   ]);
 
   let gustoMapping = null;
@@ -109,6 +112,11 @@ export default async function SettingsPage() {
             email: e.email,
             jobTitle: e.jobTitle,
           }))}
+        />
+
+        <PipelineSettings
+          initialStages={pipelineStages}
+          initialCustomFields={candidateFields}
         />
 
         <DepartmentManager

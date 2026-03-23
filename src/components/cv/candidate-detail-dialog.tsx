@@ -66,7 +66,7 @@ function parseSkills(skills: string | null): string {
   }
 }
 
-const statuses: { value: CandidateStatus; label: string; color: string }[] = [
+const DEFAULT_STATUSES: { value: CandidateStatus; label: string; color: string }[] = [
   { value: "NEW", label: "New", color: "bg-blue-500" },
   { value: "SCREENING", label: "Screening", color: "bg-amber-500" },
   { value: "INTERVIEW", label: "Interview", color: "bg-purple-500" },
@@ -76,11 +76,14 @@ const statuses: { value: CandidateStatus; label: string; color: string }[] = [
   { value: "REJECTED", label: "Rejected", color: "bg-red-500" },
 ];
 
+type PipelineStageConfig = { id: string; label: string; color: string; bgColor: string; enumValue: string; visible: boolean; order: number };
+
 export function CandidateDetailDialog({
   candidate,
   positions,
   employees,
   recruiters,
+  pipelineStages,
   open,
   onClose,
 }: {
@@ -88,9 +91,17 @@ export function CandidateDetailDialog({
   positions: Position[];
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
+  pipelineStages?: PipelineStageConfig[];
   open: boolean;
   onClose: () => void;
 }) {
+  const statuses = pipelineStages && pipelineStages.length > 0
+    ? pipelineStages.filter(s => s.visible).map(s => ({
+        value: s.enumValue as CandidateStatus,
+        label: s.label,
+        color: s.bgColor,
+      }))
+    : DEFAULT_STATUSES;
   const [saving, setSaving] = useState(false);
   const [hiring, setHiring] = useState(false);
   const [hireResult, setHireResult] = useState<{ employeeId: string; name: string; taskCount: number } | null>(null);

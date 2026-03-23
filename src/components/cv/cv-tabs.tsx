@@ -66,6 +66,16 @@ type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitl
 
 type Recruiter = { id: string; firstName: string; lastName: string };
 
+type PipelineStageConfig = {
+  id: string;
+  label: string;
+  color: string;
+  bgColor: string;
+  enumValue: string;
+  visible: boolean;
+  order: number;
+};
+
 type Props = {
   pipelineCandidates: CandidateItem[];
   allCandidates: CandidateItem[];
@@ -75,6 +85,7 @@ type Props = {
   syncablePlatforms: SyncablePlatform[];
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
+  pipelineStages?: PipelineStageConfig[];
 };
 
 function PositionPipeline({

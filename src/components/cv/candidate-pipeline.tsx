@@ -37,7 +37,7 @@ function parseSkills(skills: string | null): string[] {
   try { return JSON.parse(skills); } catch { return skills.split(",").map((s) => s.trim()).filter(Boolean); }
 }
 
-const columns: { status: CandidateStatus; label: string; color: string; bg: string }[] = [
+const DEFAULT_COLUMNS: { status: CandidateStatus; label: string; color: string; bg: string }[] = [
   { status: "NEW", label: "New", color: "text-blue-400", bg: "bg-blue-500/10" },
   { status: "SCREENING", label: "Screening", color: "text-amber-400", bg: "bg-amber-500/10" },
   { status: "INTERVIEW", label: "Interview", color: "text-purple-400", bg: "bg-purple-500/10" },
@@ -47,12 +47,22 @@ const columns: { status: CandidateStatus; label: string; color: string; bg: stri
   { status: "REJECTED", label: "Rejected", color: "text-red-400", bg: "bg-red-500/10" },
 ];
 
+type PipelineStageConfig = { id: string; label: string; color: string; bgColor: string; enumValue: string; visible: boolean; order: number };
+
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 type Recruiter = { id: string; firstName: string; lastName: string };
 
-export function CandidatePipeline({ candidates, positions, employees, recruiters }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[] }) {
+export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[] }) {
+  const columns = pipelineStages && pipelineStages.length > 0
+    ? pipelineStages.filter(s => s.visible).map(s => ({
+        status: s.enumValue as CandidateStatus,
+        label: s.label,
+        color: s.color,
+        bg: s.bgColor.replace("bg-", "bg-") + "/10",
+      }))
+    : DEFAULT_COLUMNS;
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [hiringId, setHiringId] = useState<string | null>(null);

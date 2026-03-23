@@ -824,6 +824,8 @@ model CompanySettings {
   senderEmail   String  @default("noreply@hr.coastaldebt-tools.com")
   senderName    String  @default("Coastal HR")
   recruiterIds  String  @default("[]")
+  pipelineStages String @default("[]")
+  candidateCustomFields String @default("[]")
   updatedAt     DateTime @updatedAt
 }
 
