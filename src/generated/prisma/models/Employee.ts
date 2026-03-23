@@ -56,6 +56,7 @@ export type EmployeeMinAggregateOutputType = {
   tShirtSize: string | null
   buddyId: string | null
   status: $Enums.EmployeeStatus | null
+  gustoEmployeeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,6 +93,7 @@ export type EmployeeMaxAggregateOutputType = {
   tShirtSize: string | null
   buddyId: string | null
   status: $Enums.EmployeeStatus | null
+  gustoEmployeeId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -128,6 +130,7 @@ export type EmployeeCountAggregateOutputType = {
   tShirtSize: number
   buddyId: number
   status: number
+  gustoEmployeeId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -166,6 +169,7 @@ export type EmployeeMinAggregateInputType = {
   tShirtSize?: true
   buddyId?: true
   status?: true
+  gustoEmployeeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -202,6 +206,7 @@ export type EmployeeMaxAggregateInputType = {
   tShirtSize?: true
   buddyId?: true
   status?: true
+  gustoEmployeeId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -238,6 +243,7 @@ export type EmployeeCountAggregateInputType = {
   tShirtSize?: true
   buddyId?: true
   status?: true
+  gustoEmployeeId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -347,6 +353,7 @@ export type EmployeeGroupByOutputType = {
   tShirtSize: string | null
   buddyId: string | null
   status: $Enums.EmployeeStatus
+  gustoEmployeeId: string | null
   createdAt: Date
   updatedAt: Date
   _count: EmployeeCountAggregateOutputType | null
@@ -404,6 +411,7 @@ export type EmployeeWhereInput = {
   tShirtSize?: Prisma.StringNullableFilter<"Employee"> | string | null
   buddyId?: Prisma.StringNullableFilter<"Employee"> | string | null
   status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.StringNullableFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
@@ -477,6 +485,7 @@ export type EmployeeOrderByWithRelationInput = {
   tShirtSize?: Prisma.SortOrderInput | Prisma.SortOrder
   buddyId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  gustoEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
@@ -521,6 +530,7 @@ export type EmployeeOrderByWithRelationInput = {
 export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  gustoEmployeeId?: string
   AND?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
   OR?: Prisma.EmployeeWhereInput[]
   NOT?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
@@ -592,7 +602,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   chatReactions?: Prisma.ReactionListRelationFilter
   savedMessages?: Prisma.SavedMessageListRelationFilter
   pinnedMessages?: Prisma.PinnedMessageListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "gustoEmployeeId">
 
 export type EmployeeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -626,6 +636,7 @@ export type EmployeeOrderByWithAggregationInput = {
   tShirtSize?: Prisma.SortOrderInput | Prisma.SortOrder
   buddyId?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  gustoEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
@@ -668,6 +679,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   tShirtSize?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   buddyId?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   status?: Prisma.EnumEmployeeStatusWithAggregatesFilter<"Employee"> | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
@@ -700,6 +712,7 @@ export type EmployeeCreateInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -773,6 +786,7 @@ export type EmployeeUncheckedCreateInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -838,6 +852,7 @@ export type EmployeeUpdateInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -911,6 +926,7 @@ export type EmployeeUncheckedUpdateInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -980,6 +996,7 @@ export type EmployeeCreateManyInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1012,6 +1029,7 @@ export type EmployeeUpdateManyMutationInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1048,6 +1066,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1099,6 +1118,7 @@ export type EmployeeCountOrderByAggregateInput = {
   tShirtSize?: Prisma.SortOrder
   buddyId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  gustoEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1135,6 +1155,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   tShirtSize?: Prisma.SortOrder
   buddyId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  gustoEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1171,6 +1192,7 @@ export type EmployeeMinOrderByAggregateInput = {
   tShirtSize?: Prisma.SortOrder
   buddyId?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  gustoEmployeeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1864,6 +1886,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -1936,6 +1959,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2005,6 +2029,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
@@ -2076,6 +2101,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2162,6 +2188,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -2234,6 +2261,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -2321,6 +2349,7 @@ export type EmployeeScalarWhereInput = {
   tShirtSize?: Prisma.StringNullableFilter<"Employee"> | string | null
   buddyId?: Prisma.StringNullableFilter<"Employee"> | string | null
   status?: Prisma.EnumEmployeeStatusFilter<"Employee"> | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.StringNullableFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
@@ -2353,6 +2382,7 @@ export type EmployeeCreateWithoutTeamInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -2424,6 +2454,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2515,6 +2546,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -2587,6 +2619,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
@@ -2656,6 +2689,7 @@ export type EmployeeCreateWithoutManagerInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -2727,6 +2761,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2802,6 +2837,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -2874,6 +2910,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2943,6 +2980,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3014,6 +3052,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3100,6 +3139,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -3172,6 +3212,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
@@ -3263,6 +3304,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -3335,6 +3377,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -3415,6 +3458,7 @@ export type EmployeeCreateWithoutUserInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3487,6 +3531,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3567,6 +3612,7 @@ export type EmployeeUpdateWithoutUserInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -3639,6 +3685,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -3703,6 +3750,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3775,6 +3823,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3855,6 +3904,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -3927,6 +3977,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -3991,6 +4042,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4063,6 +4115,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4132,6 +4185,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4204,6 +4258,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4284,6 +4339,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4356,6 +4412,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -4431,6 +4488,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4503,6 +4561,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -4567,6 +4626,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4639,6 +4699,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4708,6 +4769,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4780,6 +4842,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4860,6 +4923,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4932,6 +4996,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5007,6 +5072,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5079,6 +5145,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5143,6 +5210,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5215,6 +5283,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5284,6 +5353,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5356,6 +5426,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5436,6 +5507,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5508,6 +5580,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5583,6 +5656,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5655,6 +5729,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5719,6 +5794,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5791,6 +5867,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5871,6 +5948,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5943,6 +6021,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6007,6 +6086,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6079,6 +6159,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -6159,6 +6240,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6231,6 +6313,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6295,6 +6378,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6367,6 +6451,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -6447,6 +6532,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6519,6 +6605,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6583,6 +6670,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6655,6 +6743,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -6735,6 +6824,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6807,6 +6897,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6871,6 +6962,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6943,6 +7035,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7023,6 +7116,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7095,6 +7189,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -7159,6 +7254,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7231,6 +7327,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7300,6 +7397,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7372,6 +7470,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7452,6 +7551,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7524,6 +7624,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -7599,6 +7700,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7671,6 +7773,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -7735,6 +7838,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7807,6 +7911,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7887,6 +7992,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7959,6 +8065,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8023,6 +8130,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8095,6 +8203,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8175,6 +8284,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8247,6 +8357,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8311,6 +8422,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8383,6 +8495,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8463,6 +8576,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8535,6 +8649,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8599,6 +8714,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8671,6 +8787,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8740,6 +8857,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8812,6 +8930,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8892,6 +9011,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8964,6 +9084,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9039,6 +9160,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9111,6 +9233,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9175,6 +9298,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9247,6 +9371,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -9327,6 +9452,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9399,6 +9525,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9463,6 +9590,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9535,6 +9663,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -9615,6 +9744,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9687,6 +9817,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9751,6 +9882,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9823,6 +9955,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -9903,6 +10036,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9975,6 +10109,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10039,6 +10174,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10111,6 +10247,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10191,6 +10328,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10263,6 +10401,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10327,6 +10466,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10399,6 +10539,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10479,6 +10620,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10551,6 +10693,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10615,6 +10758,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10687,6 +10831,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10767,6 +10912,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10839,6 +10985,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10903,6 +11050,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10975,6 +11123,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11055,6 +11204,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11127,6 +11277,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -11191,6 +11342,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11263,6 +11415,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11343,6 +11496,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11415,6 +11569,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -11479,6 +11634,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11551,6 +11707,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11631,6 +11788,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11703,6 +11861,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -11767,6 +11926,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11839,6 +11999,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11919,6 +12080,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11991,6 +12153,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12058,6 +12221,7 @@ export type EmployeeCreateManyDepartmentInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -12090,6 +12254,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
@@ -12161,6 +12326,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12229,6 +12395,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -12264,6 +12431,7 @@ export type EmployeeCreateManyTeamInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -12296,6 +12464,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12367,6 +12536,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12435,6 +12605,7 @@ export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -12470,6 +12641,7 @@ export type EmployeeCreateManyManagerInput = {
   tShirtSize?: string | null
   buddyId?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -12505,6 +12677,7 @@ export type EmployeeCreateManyBuddyInput = {
   pronouns?: string | null
   tShirtSize?: string | null
   status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -12537,6 +12710,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12608,6 +12782,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12676,6 +12851,7 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -12708,6 +12884,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12779,6 +12956,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12847,6 +13025,7 @@ export type EmployeeUncheckedUpdateManyWithoutBuddyInput = {
   pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -13193,6 +13372,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   tShirtSize?: boolean
   buddyId?: boolean
   status?: boolean
+  gustoEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -13267,6 +13447,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tShirtSize?: boolean
   buddyId?: boolean
   status?: boolean
+  gustoEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -13307,6 +13488,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   tShirtSize?: boolean
   buddyId?: boolean
   status?: boolean
+  gustoEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -13347,11 +13529,12 @@ export type EmployeeSelectScalar = {
   tShirtSize?: boolean
   buddyId?: boolean
   status?: boolean
+  gustoEmployeeId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "gustoEmployeeId" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
   team?: boolean | Prisma.Employee$teamArgs<ExtArgs>
@@ -13478,6 +13661,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     tShirtSize: string | null
     buddyId: string | null
     status: $Enums.EmployeeStatus
+    gustoEmployeeId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employee"]>
@@ -13971,6 +14155,7 @@ export interface EmployeeFieldRefs {
   readonly tShirtSize: Prisma.FieldRef<"Employee", 'String'>
   readonly buddyId: Prisma.FieldRef<"Employee", 'String'>
   readonly status: Prisma.FieldRef<"Employee", 'EmployeeStatus'>
+  readonly gustoEmployeeId: Prisma.FieldRef<"Employee", 'String'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }

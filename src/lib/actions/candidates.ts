@@ -464,8 +464,11 @@ export async function createPosition(data: {
   postToJobing?: boolean;
   postToIndeed?: boolean;
   postToBreezy?: boolean;
+  breezyChannels?: { linkedin?: boolean; indeed?: boolean };
+  linkedInSettings?: { premium?: boolean; remote?: boolean; jobType?: string; experienceLevel?: string };
+  indeedSettings?: { sponsored?: boolean; budget?: string; remote?: boolean; jobType?: string };
 }) {
-  const { postToJobing, postToIndeed, postToBreezy, ...positionData } = data;
+  const { postToJobing, postToIndeed, postToBreezy, breezyChannels, linkedInSettings, indeedSettings, ...positionData } = data;
   const position = await db.position.create({ data: positionData });
 
   let departmentName: string | undefined;

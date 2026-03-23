@@ -61,7 +61,6 @@ export function AIMatchDialog({
     setLoading(false);
   }
 
-  // Trigger match when dialog opens
   if (open && !started) {
     runMatch();
   }
@@ -174,15 +173,50 @@ export function AIMatchDialog({
   );
 }
 
+function Toggle({ checked, onChange, color }: { checked: boolean; onChange: () => void; color: string }) {
+  return (
+    <button
+      type="button"
+      onClick={onChange}
+      className={cn(
+        "relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0",
+        checked ? color : "bg-[var(--color-border)]"
+      )}
+    >
+      <span className={cn(
+        "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
+        checked ? "translate-x-4.5" : "translate-x-0.5"
+      )} />
+    </button>
+  );
+}
+
 export function AddPositionForm({ departments }: { departments: Department[] }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"form" | "recommendations">("form");
   const [createdPositionId, setCreatedPositionId] = useState<string | null>(null);
   const [createdPositionTitle, setCreatedPositionTitle] = useState("");
+
+  // Platform toggles
   const [postToJobing, setPostToJobing] = useState(true);
+  const [postToLinkedIn, setPostToLinkedIn] = useState(false);
   const [postToIndeed, setPostToIndeed] = useState(false);
-  const [postToBreezy, setPostToBreezy] = useState(false);
+
+  // Platform settings
+  const [linkedInSettings, setLinkedInSettings] = useState({
+    premium: false,
+    remote: false,
+    jobType: "full-time",
+    experienceLevel: "mid-senior",
+  });
+  const [indeedSettings, setIndeedSettings] = useState({
+    sponsored: false,
+    budget: "50",
+    remote: false,
+    jobType: "full-time",
+  });
+
   const [form, setForm] = useState({
     title: "",
     departmentId: "",
@@ -206,8 +240,14 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       requirements: form.requirements || undefined,
       salary: form.salary || undefined,
       postToJobing,
-      postToIndeed,
-      postToBreezy,
+      postToIndeed: postToIndeed,
+      postToBreezy: postToLinkedIn || postToIndeed, // Use Breezy when either LinkedIn or Indeed via Breezy is selected
+      breezyChannels: {
+        linkedin: postToLinkedIn,
+        indeed: postToIndeed,
+      },
+      linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
+      indeedSettings: postToIndeed ? indeedSettings : undefined,
     });
     setCreatedPositionId(position.id);
     setCreatedPositionTitle(form.title);
@@ -224,6 +264,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     setForm({ title: "", departmentId: "", description: "", requirements: "", salary: "" });
     setCreatedPositionId(null);
     setCreatedPositionTitle("");
+    setPostToLinkedIn(false);
+    setPostToIndeed(false);
   }
 
   const inputClass = cn(
@@ -232,6 +274,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
     "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
   );
+
+  const selectClass = cn(inputClass, "appearance-none");
 
   return (
     <>
@@ -250,7 +294,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
 
       {step === "form" && (
         <Dialog open={open} onClose={handleClose} title="New Position">
-          <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
+            {/* Basic fields */}
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Title *</label>
               <input value={form.title} onChange={(e) => update("title", e.target.value)} className={inputClass} placeholder="Senior React Developer" />
@@ -267,80 +312,145 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
               <textarea value={form.description} onChange={(e) => update("description", e.target.value)} rows={3} className={cn(inputClass, "resize-none")} placeholder="Role description..." />
             </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Requirements (used to find matching candidates)</label>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Requirements</label>
               <textarea value={form.requirements} onChange={(e) => update("requirements", e.target.value)} rows={2} className={cn(inputClass, "resize-none")} placeholder="React, TypeScript, Node.js, 5+ years..." />
             </div>
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Salary Range</label>
               <input value={form.salary} onChange={(e) => update("salary", e.target.value)} className={inputClass} placeholder="$80k - $120k" />
             </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-500/5 border border-orange-500/20">
-              <div className="flex items-center gap-2">
-                <Icon name="open_in_new" size={16} className="text-orange-400" />
-                <div>
-                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Jobing</p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">Automatically publish this job on pro.jobing.com</p>
+
+            {/* Publish To section */}
+            <div className="pt-2">
+              <p className="text-xs font-semibold text-[var(--color-text-primary)] mb-2 flex items-center gap-1.5">
+                <Icon name="public" size={14} />
+                Publish To
+              </p>
+
+              {/* LinkedIn */}
+              <div className={cn("rounded-lg border mb-2 transition-colors", postToLinkedIn ? "border-[#0A66C2]/40 bg-[#0A66C2]/5" : "border-[var(--color-border)]")}>
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[#0A66C2] flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">in</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[var(--color-text-primary)]">LinkedIn</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)]">Post via Breezy HR integration</p>
+                    </div>
+                  </div>
+                  <Toggle checked={postToLinkedIn} onChange={() => setPostToLinkedIn(!postToLinkedIn)} color="bg-[#0A66C2]" />
+                </div>
+                {postToLinkedIn && (
+                  <div className="px-3 pb-3 pt-1 border-t border-[#0A66C2]/10 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Premium Listing</p>
+                        <p className="text-[10px] text-[var(--color-text-muted)]">Boost visibility with promoted placement</p>
+                      </div>
+                      <Toggle checked={linkedInSettings.premium} onChange={() => setLinkedInSettings(s => ({ ...s, premium: !s.premium }))} color="bg-[#0A66C2]" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Remote Position</p>
+                      <Toggle checked={linkedInSettings.remote} onChange={() => setLinkedInSettings(s => ({ ...s, remote: !s.remote }))} color="bg-[#0A66C2]" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Job Type</label>
+                        <select value={linkedInSettings.jobType} onChange={(e) => setLinkedInSettings(s => ({ ...s, jobType: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
+                          <option value="full-time">Full-time</option>
+                          <option value="part-time">Part-time</option>
+                          <option value="contract">Contract</option>
+                          <option value="internship">Internship</option>
+                          <option value="temporary">Temporary</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Experience Level</label>
+                        <select value={linkedInSettings.experienceLevel} onChange={(e) => setLinkedInSettings(s => ({ ...s, experienceLevel: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
+                          <option value="entry">Entry Level</option>
+                          <option value="associate">Associate</option>
+                          <option value="mid-senior">Mid-Senior</option>
+                          <option value="director">Director</option>
+                          <option value="executive">Executive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Indeed */}
+              <div className={cn("rounded-lg border mb-2 transition-colors", postToIndeed ? "border-[#2164f3]/40 bg-[#2164f3]/5" : "border-[var(--color-border)]")}>
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[#2164f3] flex items-center justify-center">
+                      <span className="text-white text-[10px] font-bold">iD</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[var(--color-text-primary)]">Indeed</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)]">Post via Breezy HR integration</p>
+                    </div>
+                  </div>
+                  <Toggle checked={postToIndeed} onChange={() => setPostToIndeed(!postToIndeed)} color="bg-[#2164f3]" />
+                </div>
+                {postToIndeed && (
+                  <div className="px-3 pb-3 pt-1 border-t border-[#2164f3]/10 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Sponsored Listing</p>
+                        <p className="text-[10px] text-[var(--color-text-muted)]">Pay-per-click to appear higher in search</p>
+                      </div>
+                      <Toggle checked={indeedSettings.sponsored} onChange={() => setIndeedSettings(s => ({ ...s, sponsored: !s.sponsored }))} color="bg-[#2164f3]" />
+                    </div>
+                    {indeedSettings.sponsored && (
+                      <div>
+                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Daily Budget ($)</label>
+                        <input
+                          type="number"
+                          value={indeedSettings.budget}
+                          onChange={(e) => setIndeedSettings(s => ({ ...s, budget: e.target.value }))}
+                          className={cn(inputClass, "text-xs py-1.5")}
+                          placeholder="50"
+                        />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Remote Position</p>
+                      <Toggle checked={indeedSettings.remote} onChange={() => setIndeedSettings(s => ({ ...s, remote: !s.remote }))} color="bg-[#2164f3]" />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Job Type</label>
+                      <select value={indeedSettings.jobType} onChange={(e) => setIndeedSettings(s => ({ ...s, jobType: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="contract">Contract</option>
+                        <option value="internship">Internship</option>
+                        <option value="temporary">Temporary</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Jobing */}
+              <div className={cn("rounded-lg border transition-colors", postToJobing ? "border-orange-500/40 bg-orange-500/5" : "border-[var(--color-border)]")}>
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-orange-500 flex items-center justify-center">
+                      <span className="text-white text-[10px] font-bold">JB</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[var(--color-text-primary)]">Jobing</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)]">Publish on pro.jobing.com</p>
+                    </div>
+                  </div>
+                  <Toggle checked={postToJobing} onChange={() => setPostToJobing(!postToJobing)} color="bg-orange-500" />
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setPostToJobing(!postToJobing)}
-                className={cn(
-                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
-                  postToJobing ? "bg-orange-500" : "bg-[var(--color-border)]"
-                )}
-              >
-                <span className={cn(
-                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
-                  postToJobing ? "translate-x-4.5" : "translate-x-0.5"
-                )} />
-              </button>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#2164f3]/5 border border-[#2164f3]/20">
-              <div className="flex items-center gap-2">
-                <Icon name="open_in_new" size={16} className="text-[#2164f3]" />
-                <div>
-                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Indeed</p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">Publish via Unified.to (requires connected Indeed)</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setPostToIndeed(!postToIndeed)}
-                className={cn(
-                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
-                  postToIndeed ? "bg-[#2164f3]" : "bg-[var(--color-border)]"
-                )}
-              >
-                <span className={cn(
-                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
-                  postToIndeed ? "translate-x-4.5" : "translate-x-0.5"
-                )} />
-              </button>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-[#6f42c1]/5 border border-[#6f42c1]/20">
-              <div className="flex items-center gap-2">
-                <Icon name="open_in_new" size={16} className="text-[#6f42c1]" />
-                <div>
-                  <p className="text-xs font-medium text-[var(--color-text-primary)]">Post to Breezy HR</p>
-                  <p className="text-[10px] text-[var(--color-text-muted)]">Publishes to Indeed & LinkedIn via Breezy</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setPostToBreezy(!postToBreezy)}
-                className={cn(
-                  "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
-                  postToBreezy ? "bg-[#6f42c1]" : "bg-[var(--color-border)]"
-                )}
-              >
-                <span className={cn(
-                  "inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform",
-                  postToBreezy ? "translate-x-4.5" : "translate-x-0.5"
-                )} />
-              </button>
             </div>
           </div>
+
           <div className="flex justify-end gap-2 pt-4">
             <button onClick={handleClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
             <button

@@ -289,3 +289,8 @@ export type PinnedMessage = Prisma.PinnedMessageModel
  * 
  */
 export type SavedMessage = Prisma.SavedMessageModel
+/**
+ * Model GustoConnection
+ * 
+ */
+export type GustoConnection = Prisma.GustoConnectionModel

@@ -433,7 +433,8 @@ export const ModelName = {
   ChatAttachment: 'ChatAttachment',
   Mention: 'Mention',
   PinnedMessage: 'PinnedMessage',
-  SavedMessage: 'SavedMessage'
+  SavedMessage: 'SavedMessage',
+  GustoConnection: 'GustoConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -449,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4153,6 +4154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GustoConnection: {
+      payload: Prisma.$GustoConnectionPayload<ExtArgs>
+      fields: Prisma.GustoConnectionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GustoConnectionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GustoConnectionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        findFirst: {
+          args: Prisma.GustoConnectionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GustoConnectionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        findMany: {
+          args: Prisma.GustoConnectionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>[]
+        }
+        create: {
+          args: Prisma.GustoConnectionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        createMany: {
+          args: Prisma.GustoConnectionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GustoConnectionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>[]
+        }
+        delete: {
+          args: Prisma.GustoConnectionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        update: {
+          args: Prisma.GustoConnectionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        deleteMany: {
+          args: Prisma.GustoConnectionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GustoConnectionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GustoConnectionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>[]
+        }
+        upsert: {
+          args: Prisma.GustoConnectionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GustoConnectionPayload>
+        }
+        aggregate: {
+          args: Prisma.GustoConnectionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGustoConnection>
+        }
+        groupBy: {
+          args: Prisma.GustoConnectionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GustoConnectionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GustoConnectionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GustoConnectionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4247,6 +4322,7 @@ export const EmployeeScalarFieldEnum = {
   tShirtSize: 'tShirtSize',
   buddyId: 'buddyId',
   status: 'status',
+  gustoEmployeeId: 'gustoEmployeeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -4906,6 +4982,23 @@ export const SavedMessageScalarFieldEnum = {
 export type SavedMessageScalarFieldEnum = (typeof SavedMessageScalarFieldEnum)[keyof typeof SavedMessageScalarFieldEnum]
 
 
+export const GustoConnectionScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  companyName: 'companyName',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenExpiresAt: 'tokenExpiresAt',
+  webhookSubId: 'webhookSubId',
+  webhookSecret: 'webhookSecret',
+  connectedBy: 'connectedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GustoConnectionScalarFieldEnum = (typeof GustoConnectionScalarFieldEnum)[keyof typeof GustoConnectionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5496,6 +5589,7 @@ export type GlobalOmitConfig = {
   mention?: Prisma.MentionOmit
   pinnedMessage?: Prisma.PinnedMessageOmit
   savedMessage?: Prisma.SavedMessageOmit
+  gustoConnection?: Prisma.GustoConnectionOmit
 }
 
 /* Types for Logging */

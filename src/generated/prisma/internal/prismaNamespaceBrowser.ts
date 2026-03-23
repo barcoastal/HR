@@ -100,7 +100,8 @@ export const ModelName = {
   ChatAttachment: 'ChatAttachment',
   Mention: 'Mention',
   PinnedMessage: 'PinnedMessage',
-  SavedMessage: 'SavedMessage'
+  SavedMessage: 'SavedMessage',
+  GustoConnection: 'GustoConnection'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -174,6 +175,7 @@ export const EmployeeScalarFieldEnum = {
   tShirtSize: 'tShirtSize',
   buddyId: 'buddyId',
   status: 'status',
+  gustoEmployeeId: 'gustoEmployeeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -831,6 +833,23 @@ export const SavedMessageScalarFieldEnum = {
 } as const
 
 export type SavedMessageScalarFieldEnum = (typeof SavedMessageScalarFieldEnum)[keyof typeof SavedMessageScalarFieldEnum]
+
+
+export const GustoConnectionScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  companyName: 'companyName',
+  accessToken: 'accessToken',
+  refreshToken: 'refreshToken',
+  tokenExpiresAt: 'tokenExpiresAt',
+  webhookSubId: 'webhookSubId',
+  webhookSecret: 'webhookSecret',
+  connectedBy: 'connectedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GustoConnectionScalarFieldEnum = (typeof GustoConnectionScalarFieldEnum)[keyof typeof GustoConnectionScalarFieldEnum]
 
 
 export const SortOrder = {
