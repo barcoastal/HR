@@ -507,12 +507,13 @@ export function CVTabs({
 
       {activeTab === "database" && (
         <div>
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             <IndeedImport
               platform={syncablePlatforms.find((p) => p.name === "Indeed") as any}
             />
             <CsvImport />
             <CleanDuplicatesButton />
+            <FixNamesButton />
           </div>
           <CandidateDatabase
             candidates={allCandidates}
@@ -570,6 +571,53 @@ function CleanDuplicatesButton() {
       {result && result.deleted === 0 && (
         <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
           <p className="text-xs font-medium text-gray-900">No duplicates found</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function FixNamesButton() {
+  const [fixing, setFixing] = useState(false);
+  const [result, setResult] = useState<{ fixed: number } | null>(null);
+  const router = useRouter();
+
+  async function handleFix() {
+    if (!confirm("This will fix candidates that have dates or missing names by extracting names from their email. Continue?")) return;
+    setFixing(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/candidates/fix-names", { method: "POST" });
+      if (!res.ok) throw new Error("Failed");
+      const data = await res.json();
+      setResult({ fixed: data.fixed });
+      if (data.fixed > 0) router.refresh();
+    } catch {
+      alert("Failed to fix names.");
+    }
+    setFixing(false);
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleFix}
+        disabled={fixing}
+        className={cn(
+          "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20",
+          "border border-blue-500/20",
+          "disabled:opacity-50"
+        )}
+      >
+        <Icon name={fixing ? "progress_activity" : "auto_fix_high"} size={16} className={fixing ? "animate-material-spin" : ""} />
+        {fixing ? "Fixing..." : "Fix Names"}
+      </button>
+      {result && (
+        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
+          <p className="text-xs font-medium text-gray-900">
+            {result.fixed > 0 ? `Fixed ${result.fixed} candidate names` : "All names look good"}
+          </p>
         </div>
       )}
     </div>
