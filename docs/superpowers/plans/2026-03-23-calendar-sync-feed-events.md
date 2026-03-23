@@ -627,6 +627,12 @@ Create `src/lib/actions/calendar-sync.ts`:
 import { db } from "@/lib/db";
 
 export async function getCalendarSyncStatus(userId: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user?.id !== userId) {
+    throw new Error("Not authorized");
+  }
+
   const user = await db.user.findUnique({
     where: { id: userId },
     select: {
@@ -662,6 +668,12 @@ export async function getGoogleCalendarEvents(
   timeMin: string,
   timeMax: string
 ) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user?.id !== userId) {
+    throw new Error("Not authorized");
+  }
+
   const { fetchGoogleCalendarEvents } = await import(
     "@/lib/google-calendar-sync"
   );
@@ -716,7 +728,7 @@ export async function createFeedEvent(data: {
   });
 
   // Async email notification (fire-and-forget)
-  sendFeedPostNotificationAsync(post.id, data.authorId).catch((err) =>
+  sendPostNotificationEmail(post.id, data.authorId).catch((err) =>
     console.error("[feed-events] notification error:", err)
   );
 
@@ -852,12 +864,13 @@ export async function getEventAttendees(feedPostId: string) {
   const attendance = await getEventAttendance(feedPostId);
   const going = attendance.filter((a) => a.status === "GOING");
   const maybe = attendance.filter((a) => a.status === "MAYBE");
-  return { going, maybe, total: going.length + maybe.length };
+  const notGoing = attendance.filter((a) => a.status === "NOT_GOING");
+  return { going, maybe, notGoing, total: going.length + maybe.length };
 }
 
-// ── Email notification helper ──────────────────────────────
+// ── Email notification helper (shared — also called from feed.ts) ────
 
-async function sendFeedPostNotificationAsync(
+export async function sendPostNotificationEmail(
   postId: string,
   authorEmployeeId: string
 ) {
@@ -890,12 +903,18 @@ async function sendFeedPostNotificationAsync(
   const { sendFeedPostNotification } = await import("@/lib/email");
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
+  // Escape HTML in user content to prevent XSS
+  const safeContent = post.content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
   const isEvent = post.type === "EVENT";
   const subject = isEvent
     ? `New event: ${post.content.slice(0, 60)}`
     : `New post from ${authorName}`;
 
-  let bodyHtml = `<p style="margin:0 0 12px">${post.content}</p>`;
+  let bodyHtml = `<p style="margin:0 0 12px">${safeContent}</p>`;
   if (isEvent && post.eventDate) {
     const dateStr = new Date(post.eventDate).toLocaleDateString("en-US", {
       weekday: "long",
@@ -906,7 +925,11 @@ async function sendFeedPostNotificationAsync(
     });
     bodyHtml += `<p style="margin:0 0 4px;color:#666"><strong>When:</strong> ${dateStr}</p>`;
     if (post.eventLocation) {
-      bodyHtml += `<p style="margin:0 0 12px;color:#666"><strong>Where:</strong> ${post.eventLocation}</p>`;
+      const safeLocation = post.eventLocation
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      bodyHtml += `<p style="margin:0 0 12px;color:#666"><strong>Where:</strong> ${safeLocation}</p>`;
     }
   }
 
@@ -1233,7 +1256,7 @@ export function EventCard({
     getEventAttendees(post.id).then((data) => {
       setGoingCount(data.going.length);
       setMaybeCount(data.maybe.length);
-      const mine = [...data.going, ...data.maybe].find(
+      const mine = [...data.going, ...data.maybe, ...data.notGoing].find(
         (a) => a.user.id === currentUserId
       );
       if (mine) setMyStatus(mine.status);
@@ -1678,6 +1701,13 @@ const chipStyles: Record<string, string> = {
 };
 ```
 
+Update `chipIconForType` (around line 53) to handle the new types — add before the `return type;` fallback:
+
+```typescript
+  if (type === "feed-event") return "Event";
+  if (type === "google-calendar") return "Google Calendar";
+```
+
 - [ ] **Step 2: Update calendar page to include feed events and Google Calendar events**
 
 Replace `src/app/(dashboard)/calendar/page.tsx` with:
@@ -1807,9 +1837,6 @@ export default async function CalendarPage() {
     }
   }
 
-  // Show success/error from OAuth redirect
-  const successParam = typeof globalThis !== "undefined" ? "" : "";
-
   return (
     <div className="px-8 py-8">
       <div className="flex items-center justify-between mb-6">
@@ -1838,7 +1865,7 @@ Create `src/components/calendar/calendar-google-events.tsx`:
 ```tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getGoogleCalendarEvents } from "@/lib/actions/calendar-sync";
 
@@ -1849,32 +1876,38 @@ export function CalendarGoogleEvents({
   events: CalendarEvent[];
   userId: string;
 }) {
-  const [allEvents, setAllEvents] = useState<CalendarEvent[]>(serverEvents);
+  const [googleEvents, setGoogleEvents] = useState<CalendarEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const fetched = useRef(false);
 
   useEffect(() => {
-    // Fetch Google Calendar events for current month ± 1 month
+    if (fetched.current) return;
+    fetched.current = true;
+
     const now = new Date();
     const timeMin = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
     const timeMax = new Date(now.getFullYear(), now.getMonth() + 2, 0).toISOString();
 
     getGoogleCalendarEvents(userId, timeMin, timeMax)
-      .then((googleEvents) => {
-        const mapped: CalendarEvent[] = googleEvents.map((ge) => ({
-          id: `gcal-${ge.id}`,
-          name: ge.summary || "Untitled",
-          date: ge.start.dateTime || ge.start.date || "",
-          type: "google-calendar" as const,
-          endDate: ge.end.dateTime || ge.end.date || undefined,
-          location: ge.location || undefined,
-        }));
-        setAllEvents([...serverEvents, ...mapped]);
+      .then((events) => {
+        setGoogleEvents(
+          events.map((ge) => ({
+            id: `gcal-${ge.id}`,
+            name: ge.summary || "Untitled",
+            date: ge.start.dateTime || ge.start.date || "",
+            type: "google-calendar" as const,
+            endDate: ge.end.dateTime || ge.end.date || undefined,
+            location: ge.location || undefined,
+          }))
+        );
       })
       .catch((err) => {
         console.error("Failed to fetch Google Calendar events:", err);
         setError("Failed to load Google Calendar events");
       });
-  }, [userId, serverEvents]);
+  }, [userId]);
+
+  const allEvents = [...serverEvents, ...googleEvents];
 
   return (
     <div>
@@ -2079,79 +2112,28 @@ git commit -m "feat: add email notification toggle and Google Calendar connect t
 
 - [ ] **Step 1: Add email notification trigger to createFeedPost and createShoutoutPost**
 
-In `src/lib/actions/feed.ts`, update `createFeedPost` (line 21-48) to trigger notifications after creating the post:
-
-After `revalidatePath("/");` (line 46), before `return post;`, add:
+In `src/lib/actions/feed.ts`, update `createFeedPost` (line 21-48) to trigger notifications. After `revalidatePath("/");` (line 46), before `return post;`, add:
 
 ```typescript
-  // Async email notification (fire-and-forget)
-  if (data.type === "GENERAL" || !data.type) {
-    import("@/lib/actions/feed-events").then(({ default: _, ...mod }) => {
-      // Trigger notification via the helper in feed-events
-    }).catch(() => {});
-  }
-```
-
-Actually, the notification logic is already inside `createFeedEvent` for EVENT type. For GENERAL and SHOUTOUT, we need to call the same notification helper. The cleanest approach: extract the notification helper and call it from both places.
-
-Update `createFeedPost` in `src/lib/actions/feed.ts` to add after `revalidatePath("/");`:
-
-```typescript
-  // Fire-and-forget email notification for user-created posts
-  sendPostNotification(post.id, data.authorId).catch((err) =>
-    console.error("[feed] notification error:", err)
-  );
+  // Fire-and-forget email notification (uses shared helper from feed-events.ts)
+  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
+    sendPostNotificationEmail(post.id, data.authorId).catch((err) =>
+      console.error("[feed] notification error:", err)
+    );
+  });
 ```
 
 Similarly update `createShoutoutPost` after `revalidatePath("/");`:
 
 ```typescript
-  sendPostNotification(post.id, authorId).catch((err) =>
-    console.error("[feed] notification error:", err)
-  );
+  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
+    sendPostNotificationEmail(post.id, authorId).catch((err) =>
+      console.error("[feed] notification error:", err)
+    );
+  });
 ```
 
-Add this helper function at the bottom of `src/lib/actions/feed.ts`:
-
-```typescript
-async function sendPostNotification(postId: string, authorEmployeeId: string) {
-  const post = await db.feedPost.findUnique({
-    where: { id: postId },
-    include: { author: { select: { firstName: true, lastName: true } } },
-  });
-  if (!post) return;
-
-  const notifyTypes = ["GENERAL", "SHOUTOUT"];
-  if (!notifyTypes.includes(post.type)) return;
-
-  const authorName = `${post.author.firstName} ${post.author.lastName}`;
-  const users = await db.user.findMany({
-    where: {
-      emailNotificationsEnabled: true,
-      employee: { status: "ACTIVE", id: { not: authorEmployeeId } },
-    },
-    select: { email: true },
-  });
-
-  if (users.length === 0) return;
-
-  const { sendFeedPostNotification } = await import("@/lib/email");
-  const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
-  const subject = `New post from ${authorName}`;
-  const bodyHtml = `
-    <p style="margin:0 0 12px">${post.content}</p>
-    <p style="margin:16px 0 0">
-      <a href="${baseUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">View in App</a>
-    </p>
-  `;
-
-  await sendFeedPostNotification(
-    users.map((u) => u.email),
-    subject,
-    bodyHtml
-  );
-}
-```
+This reuses the `sendPostNotificationEmail` exported from `feed-events.ts` — no duplicate logic.
 
 - [ ] **Step 2: Verify build**
 
