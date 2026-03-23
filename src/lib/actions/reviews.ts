@@ -122,17 +122,21 @@ export async function addReviewToCycle(data: {
 export async function submitReview(
   reviewId: string,
   data: {
-    rating: number;
-    strengths: string;
-    improvements: string;
-    goals: string;
+    rating?: number;
+    strengths?: string;
+    improvements?: string;
+    goals?: string;
+    responses?: Record<string, unknown>;
   }
 ) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   const employeeId = session.user?.employeeId;
 
-  const review = await db.review.findUnique({ where: { id: reviewId } });
+  const review = await db.review.findUnique({
+    where: { id: reviewId },
+    include: { cycle: true },
+  });
   if (!review) throw new Error("Review not found");
 
   // Only the assigned reviewer can submit, or admin/hr
@@ -142,13 +146,29 @@ export async function submitReview(
     throw new Error("Not authorized to submit this review");
   }
 
+  // If responses provided, validate against template
+  if (data.responses) {
+    const { resolveTemplate, validateResponses } = await import("@/lib/review-templates");
+    const template = resolveTemplate(
+      review.cycle as any,
+      review.type as "SELF" | "MANAGER" | "PEER"
+    );
+    if (template) {
+      const errors = validateResponses(template, data.responses);
+      if (errors.length > 0) {
+        throw new Error(errors.join(", "));
+      }
+    }
+  }
+
   const updated = await db.review.update({
     where: { id: reviewId },
     data: {
-      rating: data.rating,
-      strengths: data.strengths,
-      improvements: data.improvements,
-      goals: data.goals,
+      ...(data.rating !== undefined ? { rating: data.rating } : {}),
+      ...(data.strengths !== undefined ? { strengths: data.strengths } : {}),
+      ...(data.improvements !== undefined ? { improvements: data.improvements } : {}),
+      ...(data.goals !== undefined ? { goals: data.goals } : {}),
+      ...(data.responses ? { responses: data.responses } : {}),
       status: "SUBMITTED",
     },
   });
