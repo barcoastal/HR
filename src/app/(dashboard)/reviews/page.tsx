@@ -10,6 +10,8 @@ import { ViewReviewDialog } from "@/components/reviews/view-review-dialog";
 import { CycleActions } from "@/components/reviews/cycle-actions";
 import { GenerateReviewsDialog } from "@/components/reviews/generate-reviews-dialog";
 import { Icon } from "@/components/ui/icon";
+import { resolveTemplate } from "@/lib/review-templates";
+import type { TemplateField } from "@/lib/review-templates";
 
 const statusConfig: Record<string, { color: string; bg: string; icon: string }> = {
   SUBMITTED: { color: "text-emerald-400", bg: "bg-emerald-500/15", icon: "check_circle" },
@@ -82,16 +84,42 @@ export default async function ReviewsPage() {
   const allReviews = cycles.flatMap((c) => c.reviews);
   const submittedReviews = allReviews.filter((r) => r.status === "SUBMITTED").length;
   const pendingReviews = allReviews.filter((r) => r.status === "PENDING").length;
-  const avgRating =
-    allReviews.filter((r) => r.rating).length > 0
-      ? (allReviews.filter((r) => r.rating).reduce((acc, r) => acc + (r.rating || 0), 0) / allReviews.filter((r) => r.rating).length).toFixed(1)
-      : "—";
+  // Calculate average rating — check template responses first, fall back to legacy rating field
+  const allRatings: number[] = [];
+  for (const r of allReviews) {
+    if (r.status !== "SUBMITTED") continue;
+    const resp = (r as any).responses as Record<string, unknown> | null;
+    const reviewCycle = cycles.find((c) => c.id === r.cycleId);
+    if (resp && reviewCycle) {
+      const tpl = resolveTemplate(reviewCycle as any, r.type as "SELF" | "MANAGER" | "PEER");
+      if (tpl) {
+        const ratingField = tpl.find((f) => f.type === "star_rating" || f.type === "numeric_scale");
+        if (ratingField && typeof resp[ratingField.id] === "number") {
+          if (ratingField.type === "star_rating") {
+            allRatings.push(resp[ratingField.id] as number);
+          } else {
+            const max = ratingField.options?.max ?? 10;
+            allRatings.push(((resp[ratingField.id] as number) / max) * 5);
+          }
+          continue;
+        }
+      }
+    }
+    if (r.rating) allRatings.push(r.rating);
+  }
+  const avgRating = allRatings.length > 0
+    ? (allRatings.reduce((a, b) => a + b, 0) / allRatings.length).toFixed(1)
+    : "—";
 
   // My pending reviews
   const myPendingReviews = currentEmployeeId
-    ? allReviews.filter(
-        (r) => r.reviewerId === currentEmployeeId && r.status === "PENDING" && cycles.find((c) => c.id === r.cycleId)?.status === "ACTIVE"
-      )
+    ? cycles
+        .filter((c) => c.status === "ACTIVE")
+        .flatMap((c) =>
+          c.reviews
+            .filter((r) => r.reviewerId === currentEmployeeId && r.status === "PENDING")
+            .map((r) => ({ ...r, _cycle: c }))
+        )
     : [];
 
   // For employees: group reviews by employee to show self + manager side by side
@@ -140,7 +168,7 @@ export default async function ReviewsPage() {
                         <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium", typeConfig[review.type] || "")}>{review.type}</span>
                       </div>
                     </div>
-                    <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type }} />
+                    <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(review._cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
                   </div>
                 </div>
               );
@@ -326,13 +354,13 @@ export default async function ReviewsPage() {
                             </div>
                             <div className="flex flex-wrap gap-2">
                               {selfR && (
-                                <ReviewPill review={selfR} type="SELF" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} />
+                                <ReviewPill review={selfR} type="SELF" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} cycle={cycle} />
                               )}
                               {mgrR && (
-                                <ReviewPill review={mgrR} type="MANAGER" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} />
+                                <ReviewPill review={mgrR} type="MANAGER" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} cycle={cycle} />
                               )}
                               {peerRs.map((pr) => (
-                                <ReviewPill key={pr.id} review={pr} type="PEER" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} />
+                                <ReviewPill key={pr.id} review={pr} type="PEER" currentEmployeeId={currentEmployeeId} isAdmin={isAdmin} cycleActive={cycle.status === "ACTIVE"} cycle={cycle} />
                               ))}
                             </div>
                           </div>
@@ -369,7 +397,7 @@ export default async function ReviewsPage() {
                               </div>
                             </div>
                             <div>
-                              {canSubmit && <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type }} />}
+                              {canSubmit && <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />}
                               {canView && (
                                 <ViewReviewDialog review={{
                                   employeeName: `${review.employee.firstName} ${review.employee.lastName}`,
@@ -379,6 +407,8 @@ export default async function ReviewsPage() {
                                   strengths: review.strengths,
                                   improvements: review.improvements,
                                   goals: review.goals,
+                                  template: resolveTemplate(cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null,
+                                  responses: (review as any).responses,
                                 }} />
                               )}
                             </div>
@@ -410,12 +440,14 @@ function ReviewPill({
   currentEmployeeId,
   isAdmin,
   cycleActive,
+  cycle,
 }: {
   review: { id: string; status: string; rating: number | null; type: string; reviewerId: string; employeeId: string; employee: { firstName: string; lastName: string }; reviewer: { firstName: string; lastName: string }; strengths: string | null; improvements: string | null; goals: string | null };
   type: string;
   currentEmployeeId?: string | null;
   isAdmin: boolean;
   cycleActive: boolean;
+  cycle: any;
 }) {
   const isSubmitted = review.status === "SUBMITTED";
   const canSubmit = !isSubmitted && (review.reviewerId === currentEmployeeId || isAdmin) && cycleActive;
@@ -438,7 +470,7 @@ function ReviewPill({
       {isSubmitted && <Icon name="check_circle" size={12} className="text-emerald-400" />}
       {!isSubmitted && <Icon name="schedule" size={12} className="text-[var(--color-text-muted)]" />}
       {canSubmit && (
-        <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type }} />
+        <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(cycle, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
       )}
       {canView && (
         <ViewReviewDialog review={{
@@ -449,6 +481,8 @@ function ReviewPill({
           strengths: review.strengths,
           improvements: review.improvements,
           goals: review.goals,
+          template: resolveTemplate(cycle, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null,
+          responses: (review as any).responses,
         }} />
       )}
     </div>
