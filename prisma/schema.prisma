@@ -202,6 +202,7 @@ model Employee {
   tShirtSize          String?
   buddyId             String?
   status              EmployeeStatus @default(ACTIVE)
+  gustoEmployeeId     String?        @unique
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
@@ -1069,4 +1070,18 @@ model SavedMessage {
   message    Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@unique([employeeId, messageId])
+}
+
+model GustoConnection {
+  id             String   @id @default(uuid())
+  companyId      String   @unique
+  companyName    String
+  accessToken    String
+  refreshToken   String
+  tokenExpiresAt DateTime
+  webhookSubId   String?
+  webhookSecret  String?
+  connectedBy    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
