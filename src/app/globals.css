@@ -190,3 +190,17 @@ body {
   color: #7C3AED;
   text-decoration: underline;
 }
+
+/* Mention tags */
+.mention {
+  background: rgba(124, 58, 237, 0.1);
+  color: #7C3AED;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.mention::before {
+  content: "@";
+}

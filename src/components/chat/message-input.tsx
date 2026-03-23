@@ -1,15 +1,20 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
+import { createRoot } from "react-dom/client";
 import { EmojiPicker } from "./emoji-picker";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { MentionList } from "./mention-list";
+import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import LinkExtension from "@tiptap/extension-link";
 import Underline from "@tiptap/extension-underline";
+import Mention from "@tiptap/extension-mention";
 import { sendMessage } from "@/lib/actions/chat-messages";
+import { getWorkspaceMembers } from "@/lib/actions/chat-workspace";
 import { useChatStore } from "@/lib/chat/use-chat-store";
 import type { MessagePayload } from "@/lib/chat/ws-types";
+import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 
 interface UploadedFile {
   fileName: string;
@@ -30,6 +35,9 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+// Cache members so we don't refetch every keystroke
+let cachedMembers: any[] | null = null;
+
 export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [sending, setSending] = useState(false);
   const [showToolbar, setShowToolbar] = useState(false);
@@ -37,7 +45,16 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addMessage } = useChatStore();
+  const { addMessage, workspaceId } = useChatStore();
+
+  // Preload members for mentions
+  useEffect(() => {
+    if (workspaceId && !cachedMembers) {
+      getWorkspaceMembers(workspaceId).then((m: any) => {
+        cachedMembers = m;
+      });
+    }
+  }, [workspaceId]);
 
   const editor = useEditor({
     extensions: [
@@ -49,6 +66,67 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
       }),
       LinkExtension.configure({ openOnClick: false }),
       Underline,
+      Mention.configure({
+        HTMLAttributes: {
+          class: "mention",
+        },
+        suggestion: {
+          items: ({ query }: { query: string }) => {
+            if (!cachedMembers) return [];
+            return cachedMembers
+              .filter((m: any) =>
+                `${m.firstName} ${m.lastName}`.toLowerCase().includes(query.toLowerCase())
+              )
+              .slice(0, 8);
+          },
+          render: () => {
+            let component: ReactRenderer | null = null;
+            let popup: HTMLDivElement | null = null;
+
+            return {
+              onStart: (props: SuggestionProps) => {
+                component = new ReactRenderer(MentionList, {
+                  props,
+                  editor: props.editor,
+                });
+
+                popup = document.createElement("div");
+                popup.style.position = "absolute";
+                popup.style.zIndex = "50";
+
+                const editorEl = props.editor.view.dom.closest(".border") as HTMLElement | null;
+                if (editorEl) {
+                  editorEl.style.position = "relative";
+                  // Position above the editor
+                  popup.style.bottom = "100%";
+                  popup.style.left = "16px";
+                  popup.style.marginBottom = "4px";
+                  editorEl.appendChild(popup);
+                } else {
+                  document.body.appendChild(popup);
+                }
+
+                popup.appendChild(component.element);
+              },
+              onUpdate: (props: SuggestionProps) => {
+                component?.updateProps(props);
+              },
+              onKeyDown: (props: SuggestionKeyDownProps) => {
+                if (props.event.key === "Escape") {
+                  popup?.remove();
+                  component?.destroy();
+                  return true;
+                }
+                return (component?.ref as any)?.onKeyDown?.(props) ?? false;
+              },
+              onExit: () => {
+                popup?.remove();
+                component?.destroy();
+              },
+            };
+          },
+        },
+      }),
     ],
     editorProps: {
       attributes: {
@@ -56,6 +134,10 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
       },
       handleKeyDown: (_view, event) => {
         if (event.key === "Enter" && !event.shiftKey) {
+          // Don't submit if mention suggestion is open
+          const mentionPopup = document.querySelector("[data-tippy-root]");
+          if (mentionPopup) return false;
+
           event.preventDefault();
           handleSubmit();
           return true;
@@ -127,11 +209,17 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
     }
   }, [editor, sending, channelId, channelType, addMessage, pendingFiles]);
 
+  const triggerMention = () => {
+    if (!editor) return;
+    editor.commands.focus();
+    editor.commands.insertContent("@");
+  };
+
   if (!editor) return null;
 
   return (
     <div className="px-5 py-3 border-t border-gray-200 bg-white flex-shrink-0">
-      <div className="border border-gray-300 rounded-xl overflow-hidden focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/20 transition-colors">
+      <div className="border border-gray-300 rounded-xl overflow-hidden focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/20 transition-colors relative">
         {showToolbar && (
           <div className="flex items-center gap-1 px-3 py-1.5 border-b border-gray-100">
             <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} label="B" className="font-bold" />
@@ -217,7 +305,10 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
                 />
               )}
             </div>
-            <button className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-xs font-semibold">
+            <button
+              onClick={triggerMention}
+              className="w-7 h-7 rounded flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors text-xs font-semibold"
+            >
               @
             </button>
             <button

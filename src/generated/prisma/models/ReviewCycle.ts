@@ -48,6 +48,10 @@ export type ReviewCycleCountAggregateOutputType = {
   startDate: number
   endDate: number
   status: number
+  template: number
+  selfTemplate: number
+  managerTemplate: number
+  peerTemplate: number
   createdAt: number
   _all: number
 }
@@ -77,6 +81,10 @@ export type ReviewCycleCountAggregateInputType = {
   startDate?: true
   endDate?: true
   status?: true
+  template?: true
+  selfTemplate?: true
+  managerTemplate?: true
+  peerTemplate?: true
   createdAt?: true
   _all?: true
 }
@@ -159,6 +167,10 @@ export type ReviewCycleGroupByOutputType = {
   startDate: Date
   endDate: Date
   status: $Enums.ReviewCycleStatus
+  template: runtime.JsonValue | null
+  selfTemplate: runtime.JsonValue | null
+  managerTemplate: runtime.JsonValue | null
+  peerTemplate: runtime.JsonValue | null
   createdAt: Date
   _count: ReviewCycleCountAggregateOutputType | null
   _min: ReviewCycleMinAggregateOutputType | null
@@ -189,6 +201,10 @@ export type ReviewCycleWhereInput = {
   startDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   endDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   status?: Prisma.EnumReviewCycleStatusFilter<"ReviewCycle"> | $Enums.ReviewCycleStatus
+  template?: Prisma.JsonNullableFilter<"ReviewCycle">
+  selfTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  managerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  peerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   createdAt?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
 }
@@ -199,6 +215,10 @@ export type ReviewCycleOrderByWithRelationInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  template?: Prisma.SortOrderInput | Prisma.SortOrder
+  selfTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  peerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
@@ -212,6 +232,10 @@ export type ReviewCycleWhereUniqueInput = Prisma.AtLeast<{
   startDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   endDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   status?: Prisma.EnumReviewCycleStatusFilter<"ReviewCycle"> | $Enums.ReviewCycleStatus
+  template?: Prisma.JsonNullableFilter<"ReviewCycle">
+  selfTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  managerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  peerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   createdAt?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
   reviews?: Prisma.ReviewListRelationFilter
 }, "id">
@@ -222,6 +246,10 @@ export type ReviewCycleOrderByWithAggregationInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  template?: Prisma.SortOrderInput | Prisma.SortOrder
+  selfTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  peerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ReviewCycleCountOrderByAggregateInput
   _max?: Prisma.ReviewCycleMaxOrderByAggregateInput
@@ -237,6 +265,10 @@ export type ReviewCycleScalarWhereWithAggregatesInput = {
   startDate?: Prisma.DateTimeWithAggregatesFilter<"ReviewCycle"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"ReviewCycle"> | Date | string
   status?: Prisma.EnumReviewCycleStatusWithAggregatesFilter<"ReviewCycle"> | $Enums.ReviewCycleStatus
+  template?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
+  selfTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
+  managerTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
+  peerTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReviewCycle"> | Date | string
 }
 
@@ -246,6 +278,10 @@ export type ReviewCycleCreateInput = {
   startDate: Date | string
   endDate: Date | string
   status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   reviews?: Prisma.ReviewCreateNestedManyWithoutCycleInput
 }
@@ -256,6 +292,10 @@ export type ReviewCycleUncheckedCreateInput = {
   startDate: Date | string
   endDate: Date | string
   status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutCycleInput
 }
@@ -266,6 +306,10 @@ export type ReviewCycleUpdateInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUpdateManyWithoutCycleNestedInput
 }
@@ -276,6 +320,10 @@ export type ReviewCycleUncheckedUpdateInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutCycleNestedInput
 }
@@ -286,6 +334,10 @@ export type ReviewCycleCreateManyInput = {
   startDate: Date | string
   endDate: Date | string
   status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -295,6 +347,10 @@ export type ReviewCycleUpdateManyMutationInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -304,6 +360,10 @@ export type ReviewCycleUncheckedUpdateManyInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -313,6 +373,10 @@ export type ReviewCycleCountOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  template?: Prisma.SortOrder
+  selfTemplate?: Prisma.SortOrder
+  managerTemplate?: Prisma.SortOrder
+  peerTemplate?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -363,6 +427,10 @@ export type ReviewCycleCreateWithoutReviewsInput = {
   startDate: Date | string
   endDate: Date | string
   status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -372,6 +440,10 @@ export type ReviewCycleUncheckedCreateWithoutReviewsInput = {
   startDate: Date | string
   endDate: Date | string
   status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -397,6 +469,10 @@ export type ReviewCycleUpdateWithoutReviewsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -406,6 +482,10 @@ export type ReviewCycleUncheckedUpdateWithoutReviewsInput = {
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -446,6 +526,10 @@ export type ReviewCycleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   startDate?: boolean
   endDate?: boolean
   status?: boolean
+  template?: boolean
+  selfTemplate?: boolean
+  managerTemplate?: boolean
+  peerTemplate?: boolean
   createdAt?: boolean
   reviews?: boolean | Prisma.ReviewCycle$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ReviewCycleCountOutputTypeDefaultArgs<ExtArgs>
@@ -457,6 +541,10 @@ export type ReviewCycleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   startDate?: boolean
   endDate?: boolean
   status?: boolean
+  template?: boolean
+  selfTemplate?: boolean
+  managerTemplate?: boolean
+  peerTemplate?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["reviewCycle"]>
 
@@ -466,6 +554,10 @@ export type ReviewCycleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   startDate?: boolean
   endDate?: boolean
   status?: boolean
+  template?: boolean
+  selfTemplate?: boolean
+  managerTemplate?: boolean
+  peerTemplate?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["reviewCycle"]>
 
@@ -475,10 +567,14 @@ export type ReviewCycleSelectScalar = {
   startDate?: boolean
   endDate?: boolean
   status?: boolean
+  template?: boolean
+  selfTemplate?: boolean
+  managerTemplate?: boolean
+  peerTemplate?: boolean
   createdAt?: boolean
 }
 
-export type ReviewCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "status" | "createdAt", ExtArgs["result"]["reviewCycle"]>
+export type ReviewCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "status" | "template" | "selfTemplate" | "managerTemplate" | "peerTemplate" | "createdAt", ExtArgs["result"]["reviewCycle"]>
 export type ReviewCycleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reviews?: boolean | Prisma.ReviewCycle$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ReviewCycleCountOutputTypeDefaultArgs<ExtArgs>
@@ -497,6 +593,10 @@ export type $ReviewCyclePayload<ExtArgs extends runtime.Types.Extensions.Interna
     startDate: Date
     endDate: Date
     status: $Enums.ReviewCycleStatus
+    template: runtime.JsonValue | null
+    selfTemplate: runtime.JsonValue | null
+    managerTemplate: runtime.JsonValue | null
+    peerTemplate: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["reviewCycle"]>
   composites: {}
@@ -927,6 +1027,10 @@ export interface ReviewCycleFieldRefs {
   readonly startDate: Prisma.FieldRef<"ReviewCycle", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"ReviewCycle", 'DateTime'>
   readonly status: Prisma.FieldRef<"ReviewCycle", 'ReviewCycleStatus'>
+  readonly template: Prisma.FieldRef<"ReviewCycle", 'Json'>
+  readonly selfTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
+  readonly managerTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
+  readonly peerTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
   readonly createdAt: Prisma.FieldRef<"ReviewCycle", 'DateTime'>
 }
     
