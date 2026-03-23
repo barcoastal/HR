@@ -20,7 +20,8 @@ export function getCallbackUrl(providerId: string): string {
 
 export async function createOAuthState(
   providerId: string,
-  userId: string
+  userId: string,
+  metadata?: Record<string, unknown>
 ): Promise<string> {
   const state = generateState();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -32,6 +33,7 @@ export async function createOAuthState(
       userId,
       redirectUri: getCallbackUrl(providerId),
       expiresAt,
+      ...(metadata ? { metadata } : {}),
     },
   });
 
@@ -40,7 +42,12 @@ export async function createOAuthState(
 
 export async function validateAndConsumeState(
   state: string
-): Promise<{ provider: string; userId: string; redirectUri: string } | null> {
+): Promise<{
+  provider: string;
+  userId: string;
+  redirectUri: string;
+  metadata: Record<string, unknown> | null;
+} | null> {
   const record = await db.oAuthState.findUnique({ where: { state } });
   if (!record) return null;
   if (record.expiresAt < new Date()) {
@@ -55,6 +62,7 @@ export async function validateAndConsumeState(
     provider: record.provider,
     userId: record.userId,
     redirectUri: record.redirectUri,
+    metadata: (record.metadata as Record<string, unknown>) ?? null,
   };
 }
 

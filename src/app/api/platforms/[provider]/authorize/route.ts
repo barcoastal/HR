@@ -68,7 +68,10 @@ export async function GET(
   }
 
   // 4. Real OAuth — create state token in DB
-  const state = await createOAuthState(providerId, userId);
+  const url = new URL(_request.url);
+  const mode = url.searchParams.get("mode");
+  const metadata = mode ? { mode } : undefined;
+  const state = await createOAuthState(providerId, userId, metadata);
 
   // 5. Build authorization URL and redirect to provider
   const redirectUri = `${baseUrl}/api/platforms/${providerId}/callback`;

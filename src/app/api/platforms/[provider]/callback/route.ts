@@ -74,6 +74,29 @@ export async function GET(
     }
   }
 
+  // 6b. Google Calendar personal sync
+  if (
+    providerId === "google_calendar" &&
+    stateData.metadata?.mode === "personal"
+  ) {
+    try {
+      const { handleGoogleCalendarCallback } = await import(
+        "@/lib/google-calendar-sync"
+      );
+      await handleGoogleCalendarCallback(tokens, {
+        userId: stateData.userId,
+      });
+      const calendarUrl = new URL("/calendar", baseUrl);
+      calendarUrl.searchParams.set("oauth_success", "Google Calendar");
+      return NextResponse.redirect(calendarUrl);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Google Calendar connection failed";
+      settingsUrl.searchParams.set("oauth_error", message);
+      return NextResponse.redirect(settingsUrl);
+    }
+  }
+
   // 7. Upsert RecruitmentPlatform with tokens
   const tokenExpiresAt = tokens.expires_in
     ? new Date(Date.now() + tokens.expires_in * 1000)
