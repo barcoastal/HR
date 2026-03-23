@@ -168,7 +168,7 @@ export async function submitReview(
       ...(data.strengths !== undefined ? { strengths: data.strengths } : {}),
       ...(data.improvements !== undefined ? { improvements: data.improvements } : {}),
       ...(data.goals !== undefined ? { goals: data.goals } : {}),
-      ...(data.responses ? { responses: data.responses } : {}),
+      ...(data.responses ? { responses: data.responses as any } : {}),
       status: "SUBMITTED",
     },
   });
