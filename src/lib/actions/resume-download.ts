@@ -65,16 +65,44 @@ export async function batchDownloadResumes(): Promise<{
   for (const c of candidates) {
     if (!c.resumeUrl) continue;
 
-    // Skip if already stored locally
+    const localPath = path.join(RESUMES_DIR, `${c.id}.pdf`);
+
+    // If URL is local, check if file actually exists
     if (c.resumeUrl.startsWith("/api/resumes/")) {
-      alreadyLocal++;
+      if (existsSync(localPath)) {
+        alreadyLocal++;
+        continue;
+      }
+      // File is missing — try to re-download from Jobing API
+      const apiKey = process.env.NOLIG_API_KEY || "";
+      const JOBING_BASE = "https://api.pro.jobing.com";
+      let refetched = false;
+
+      for (const url of [
+        `${JOBING_BASE}/resumes/${c.id}`,
+        `${JOBING_BASE}/candidates/${c.id}/resume`,
+      ]) {
+        try {
+          const res = await fetch(url, {
+            headers: { Authorization: `Bearer token=${apiKey}` },
+          });
+          if (res.ok) {
+            const buf = Buffer.from(await res.arrayBuffer());
+            if (buf.length >= 100) {
+              await writeFile(localPath, buf);
+              refetched = true;
+              downloaded++;
+              break;
+            }
+          }
+        } catch {}
+      }
+      if (!refetched) failed++;
       continue;
     }
 
     // Skip if local file already exists
-    const localPath = path.join(RESUMES_DIR, `${c.id}.pdf`);
     if (existsSync(localPath)) {
-      // Update URL to local
       await db.candidate.update({
         where: { id: c.id },
         data: { resumeUrl: `/api/resumes/${c.id}` },
@@ -83,6 +111,7 @@ export async function batchDownloadResumes(): Promise<{
       continue;
     }
 
+    // Download from original URL
     const ok = await downloadResumePdf(c.resumeUrl, c.id);
     if (ok) {
       await db.candidate.update({
