@@ -189,13 +189,12 @@ export async function sendPostNotificationEmail(
 
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
-  // Get all users with active employee profiles, excluding the post author
+  // Get all users with active employee profiles (including the author)
   const users = await db.user.findMany({
     where: {
       emailNotificationsEnabled: true,
       employee: {
         status: "ACTIVE",
-        id: { not: authorEmployeeId },
       },
     },
     select: { email: true },
