@@ -52,9 +52,26 @@ export async function POST(req: NextRequest) {
       const chunk = uniqueToCreate.slice(i, i + CHUNK_SIZE);
       try {
         const result = await db.candidate.createMany({
-          data: chunk.map((c: any) => ({
-            firstName: c.firstName,
-            lastName: c.lastName || "",
+          data: chunk.map((c: any) => {
+            // If firstName looks like a date, extract name from email
+            let firstName = c.firstName;
+            let lastName = c.lastName || "";
+            if (/^\d{4}-\d{2}-\d{2}/.test(firstName) || /^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(firstName)) {
+              const local = c.email.split("@")[0].replace(/[0-9_\-\.]+.*$/, "");
+              if (local.length >= 3) {
+                // Try to split into first+last
+                const mid = Math.ceil(local.length * 0.45);
+                firstName = local.slice(0, mid);
+                firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+                const rest = local.slice(mid);
+                lastName = rest ? rest.charAt(0).toUpperCase() + rest.slice(1) : "";
+              } else {
+                firstName = local || c.email.split("@")[0];
+              }
+            }
+            return {
+            firstName,
+            lastName,
             email: c.email.toLowerCase().trim(),
             phone: c.phone || null,
             skills: c.skills
@@ -70,7 +87,8 @@ export async function POST(req: NextRequest) {
             linkedinUrl: c.linkedinUrl || null,
             notes: c.notes || null,
             inPipeline: false,
-          })),
+          };
+          }),
           skipDuplicates: true,
         });
         created += result.count;
