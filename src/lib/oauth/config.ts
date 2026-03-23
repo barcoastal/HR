@@ -73,6 +73,26 @@ export const OAUTH_PROVIDERS: Record<string, OAuthProviderConfig> = {
     clientSecretEnvVar: "GOOGLE_CALENDAR_CLIENT_SECRET",
     isAvailable: true,
   },
+  gusto: {
+    providerId: "gusto",
+    platformName: "Gusto",
+    authorizationUrl: `${process.env.GUSTO_API_URL || "https://api.gusto-demo.com"}/oauth/authorize`,
+    tokenUrl: `${process.env.GUSTO_API_URL || "https://api.gusto-demo.com"}/oauth/token`,
+    scopes: [
+      "companies:read",
+      "employees:read",
+      "employees:manage",
+      "payrolls:read",
+      "payrolls:run",
+      "time_off_policies:read",
+      "time_off_requests:read",
+      "time_off_requests:write",
+      "webhooks:manage",
+    ],
+    clientIdEnvVar: "GUSTO_CLIENT_ID",
+    clientSecretEnvVar: "GUSTO_CLIENT_SECRET",
+    isAvailable: true,
+  },
 };
 
 export function getOAuthProvider(id: string): OAuthProviderConfig | null {
