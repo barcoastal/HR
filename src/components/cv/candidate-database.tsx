@@ -159,15 +159,19 @@ export function CandidateDatabase({ candidates, positions }: Props) {
     return candidates.filter((c) => {
       if (sourceFilter && c.source !== sourceFilter) return false;
       if (search) {
-        const q = search.toLowerCase();
+        const q = search.toLowerCase().trim();
+        const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
         const match =
+          fullName.includes(q) ||
           c.firstName.toLowerCase().includes(q) ||
           c.lastName.toLowerCase().includes(q) ||
           c.email.toLowerCase().includes(q) ||
+          (c.phone && c.phone.toLowerCase().includes(q)) ||
           (c.skills && c.skills.toLowerCase().includes(q)) ||
           (c.experience && c.experience.toLowerCase().includes(q)) ||
           (c.jobAppliedTo && c.jobAppliedTo.toLowerCase().includes(q)) ||
-          (c.resumeText && c.resumeText.toLowerCase().includes(q));
+          (c.resumeText && c.resumeText.toLowerCase().includes(q)) ||
+          (c.notes && c.notes.toLowerCase().includes(q));
         if (!match) return false;
       }
       return true;
