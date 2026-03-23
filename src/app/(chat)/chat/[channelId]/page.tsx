@@ -48,6 +48,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
           memberCount={channel?._count.members ?? 0}
           isPrivate={channel?.isPrivate ?? false}
           isDm={isDm}
+          channelId={channelId}
           members={(channel?.members ?? []).map((m: any) => ({
             id: m.employee.id,
             firstName: m.employee.firstName,

@@ -106,6 +106,20 @@ export async function leaveChannel(channelId: string) {
   revalidatePath("/chat");
 }
 
+export async function addMembersToChannel(channelId: string, employeeIds: string[]) {
+  await requireAuth();
+
+  await db.channelMember.createMany({
+    data: employeeIds.map((employeeId) => ({
+      channelId,
+      employeeId,
+    })),
+    skipDuplicates: true,
+  });
+
+  revalidatePath("/chat");
+}
+
 export async function updateLastRead(channelId: string) {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
