@@ -330,12 +330,27 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
             {/* Google Meet */}
             <ToolbarButton
               active={false}
-              onClick={() => {
-                const meetUrl = `https://meet.google.com/new`;
-                editor?.commands.insertContent(
-                  `<a href="${meetUrl}" target="_blank">📹 Join Google Meet</a>`
-                );
-                editor?.commands.focus();
+              onClick={async () => {
+                if (!editor) return;
+                try {
+                  const res = await fetch("/api/chat/meet", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ title: `Meeting in #${channelName}` }),
+                  });
+                  if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(err.error || "Failed to create meeting");
+                    return;
+                  }
+                  const { meetLink } = await res.json();
+                  editor.commands.insertContent(
+                    `<p>📹 <a href="${meetLink}" target="_blank">Join Google Meet</a></p>`
+                  );
+                  editor.commands.focus();
+                } catch {
+                  alert("Failed to create Google Meet. Check your calendar connection in Settings.");
+                }
               }}
               icon="video_call"
             />
