@@ -170,17 +170,26 @@ export async function sendPostNotificationEmail(
   postId: string,
   authorEmployeeId: string
 ) {
+  console.log(`[feed-notify] Starting notification for post ${postId}, author employee ${authorEmployeeId}`);
+
   const post = await db.feedPost.findUnique({
     where: { id: postId },
     include: { author: { select: { firstName: true, lastName: true } } },
   });
-  if (!post) return;
+  if (!post) {
+    console.log(`[feed-notify] Post ${postId} not found, skipping`);
+    return;
+  }
 
   const notifyTypes = ["GENERAL", "SHOUTOUT", "EVENT"];
-  if (!notifyTypes.includes(post.type)) return;
+  if (!notifyTypes.includes(post.type)) {
+    console.log(`[feed-notify] Post type ${post.type} not in notify list, skipping`);
+    return;
+  }
 
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
+  // Get all users with active employee profiles, excluding the post author
   const users = await db.user.findMany({
     where: {
       emailNotificationsEnabled: true,
@@ -191,6 +200,8 @@ export async function sendPostNotificationEmail(
     },
     select: { email: true },
   });
+
+  console.log(`[feed-notify] Found ${users.length} recipients (excluding author ${authorEmployeeId})`);
 
   if (users.length === 0) return;
 
