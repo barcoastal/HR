@@ -20,6 +20,10 @@ function GoogleIcon({ className }: { className?: string }) {
 function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [credError, setCredError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const errorParam = searchParams.get("error");
   const errorMessage =
@@ -29,14 +33,42 @@ function LoginForm() {
         ? "You haven't been invited yet. Ask your admin for access."
         : errorParam === "unauthorized"
           ? "You don't have permission to access that page."
-          : null;
+          : errorParam === "CredentialsSignin"
+            ? "Invalid username or password."
+            : null;
+
+  async function handleCredentialLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!username || !password) return;
+    setLoading(true);
+    setCredError("");
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+      callbackUrl,
+    });
+    if (result?.error) {
+      setCredError("Invalid username or password");
+      setLoading(false);
+    } else if (result?.url) {
+      window.location.href = result.url;
+    }
+  }
+
+  const inputClass = cn(
+    "w-full px-3 py-2.5 rounded-lg text-sm",
+    "bg-[var(--color-background)] border border-[var(--color-border)]",
+    "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
+    "focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/40"
+  );
 
   return (
     <>
-      {errorMessage && (
+      {(errorMessage || credError) && (
         <div className="flex items-center gap-2 p-3 mb-6 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
           <Icon name="error" size={16} className="shrink-0" />
-          {errorMessage}
+          {credError || errorMessage}
         </div>
       )}
 
@@ -53,6 +85,49 @@ function LoginForm() {
         <GoogleIcon className="h-5 w-5" />
         Sign in with Google
       </button>
+
+      <div className="flex items-center gap-3 my-5">
+        <div className="flex-1 h-px bg-[var(--color-border)]" />
+        <span className="text-xs text-[var(--color-text-muted)]">or</span>
+        <div className="flex-1 h-px bg-[var(--color-border)]" />
+      </div>
+
+      <form onSubmit={handleCredentialLogin} className="space-y-3">
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+          className={inputClass}
+          autoComplete="username"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          className={inputClass}
+          autoComplete="current-password"
+        />
+        <button
+          type="submit"
+          disabled={!username || !password || loading}
+          className={cn(
+            "w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium",
+            "bg-[var(--color-primary)] text-white",
+            "hover:opacity-90 transition-opacity",
+            "disabled:opacity-50",
+            "active:scale-[0.98]"
+          )}
+        >
+          {loading ? (
+            <Icon name="progress_activity" size={16} className="animate-material-spin" />
+          ) : (
+            <Icon name="login" size={16} />
+          )}
+          Sign in
+        </button>
+      </form>
     </>
   );
 }
@@ -113,7 +188,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-[var(--color-text-muted)] mt-6">
-          Only @coastaldebt.com accounts can sign in.
+          Sign in with your company Google account or credentials.
         </p>
       </div>
     </div>

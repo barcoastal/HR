@@ -1,5 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 
 async function ensureAdminExists() {
@@ -14,6 +16,38 @@ async function ensureAdminExists() {
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) return null;
+
+        // Find user by username (stored in email field for credential users)
+        const user = await db.user.findFirst({
+          where: { email: credentials.username },
+          include: { employee: true },
+        });
+
+        if (!user || !user.passwordHash) return null;
+
+        const valid = await bcrypt.compare(credentials.password, user.passwordHash);
+        if (!valid) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.employee
+            ? `${user.employee.firstName} ${user.employee.lastName}`
+            : user.email,
+          role: user.role,
+          employeeId: user.employeeId,
+          profilePhoto: user.employee?.profilePhoto || null,
+        };
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
@@ -31,7 +65,8 @@ export const authOptions: NextAuthOptions = {
   pages: { signIn: "/login" },
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (account?.provider === "credentials") return false;
+      // Allow credentials login (already validated in authorize)
+      if (account?.provider === "credentials") return true;
 
       const email = profile?.email;
       if (!email) return false;
