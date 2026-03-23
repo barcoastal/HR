@@ -256,3 +256,36 @@ export async function sendSigningConfirmationEmail({
     `);
   }
 }
+
+export async function sendFeedPostNotification(
+  recipients: string[],
+  subject: string,
+  bodyHtml: string
+) {
+  if (!resend) {
+    console.warn(`[email] RESEND_API_KEY not set — skipping feed notification`);
+    return;
+  }
+
+  const branding = await getCompanyBranding();
+  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const senderEmail = branding.senderEmail.trim();
+  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  const html = wrapHtml(bodyHtml, branding.companyName, branding.logoUrl);
+
+  // Chunk into batches of 100 (Resend batch limit)
+  const BATCH_SIZE = 100;
+  for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+    const chunk = recipients.slice(i, i + BATCH_SIZE);
+    try {
+      await resend.batch.send(
+        chunk.map((to) => ({ from, to, subject, html }))
+      );
+      console.log(
+        `[email] Feed notification batch sent: ${chunk.length} recipients`
+      );
+    } catch (error) {
+      console.error(`[email] Feed notification batch error:`, error);
+    }
+  }
+}
