@@ -274,7 +274,7 @@ export async function updateCandidateNotes(id: string, notes: string) {
 
 export async function hireCandidateAndStartOnboarding(
   candidateId: string,
-  options?: { companyEmail?: string; startDate?: string; managerId?: string }
+  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
 ) {
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },

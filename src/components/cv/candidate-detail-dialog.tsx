@@ -197,10 +197,12 @@ export function CandidateDetailDialog({
           managerId: form.managerId || undefined,
           recruiterId: form.recruiterId || undefined,
         });
+        const isPreOnboarding = form.companyEmail === "__PRE_ONBOARDING__";
         const result = await hireCandidateAndStartOnboarding(candidate.id, {
-          companyEmail: form.companyEmail || undefined,
+          companyEmail: isPreOnboarding ? undefined : (form.companyEmail || undefined),
           startDate: form.startDate || undefined,
           managerId: form.managerId || undefined,
+          skipEmail: isPreOnboarding,
         });
         setHireResult({
           employeeId: result.employee.id,
@@ -334,17 +336,17 @@ export function CandidateDetailDialog({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      Company Email
+                      Company Email <span className="text-red-400">*</span>
                     </label>
                     <input
                       value={form.companyEmail}
                       onChange={(e) => update("companyEmail", e.target.value)}
                       type="email"
                       placeholder={`${form.firstName.toLowerCase()}.${form.lastName.toLowerCase()}@coastaldebt.com`}
-                      className={inputClass}
+                      className={cn(inputClass, !form.companyEmail && "border-amber-400/50")}
                     />
                     <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
-                      Used for system login & internal comms
+                      Required — @coastaldebt.com email for login & comms
                     </p>
                   </div>
                   <div>
@@ -359,6 +361,33 @@ export function CandidateDetailDialog({
                     />
                   </div>
                 </div>
+                {!form.companyEmail && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <div className="flex-1 h-px bg-[var(--color-border)]" />
+                    <span className="text-[10px] text-[var(--color-text-muted)]">or</span>
+                    <div className="flex-1 h-px bg-[var(--color-border)]" />
+                  </div>
+                )}
+                {!form.companyEmail && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      update("status", "HIRED");
+                      update("companyEmail", "__PRE_ONBOARDING__");
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
+                  >
+                    <Icon name="school" size={14} />
+                    Move to Pre-Onboarding (no email needed yet)
+                  </button>
+                )}
+                {form.companyEmail === "__PRE_ONBOARDING__" && (
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                    <Icon name="school" size={14} className="text-amber-500" />
+                    <p className="text-xs text-amber-600">Will move to Pre-Onboarding — email can be assigned later</p>
+                    <button onClick={() => update("companyEmail", "")} className="ml-auto text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">Change</button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -685,7 +714,7 @@ export function CandidateDetailDialog({
             </button>
             <button
               onClick={handleSave}
-              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email}
+              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email || (form.status === "HIRED" && candidate.status !== "HIRED" && !form.companyEmail)}
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium text-white",
                 form.status === "HIRED" && candidate.status !== "HIRED"
