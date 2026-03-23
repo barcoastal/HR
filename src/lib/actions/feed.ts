@@ -44,6 +44,14 @@ export async function createFeedPost(data: {
   }
 
   revalidatePath("/");
+
+  // Fire-and-forget email notification (uses shared helper from feed-events.ts)
+  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
+    sendPostNotificationEmail(post.id, data.authorId).catch((err) =>
+      console.error("[feed] notification error:", err)
+    );
+  });
+
   return post;
 }
 
@@ -73,6 +81,14 @@ export async function createShoutoutPost(
     },
   });
   revalidatePath("/");
+
+  // Fire-and-forget email notification
+  import("@/lib/actions/feed-events").then(({ sendPostNotificationEmail }) => {
+    sendPostNotificationEmail(post.id, authorId).catch((err) =>
+      console.error("[feed] notification error:", err)
+    );
+  });
+
   return post;
 }
 
