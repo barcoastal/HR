@@ -32,6 +32,10 @@ export async function createReviewCycle(data: {
   name: string;
   startDate: string;
   endDate: string;
+  template?: unknown;
+  selfTemplate?: unknown;
+  managerTemplate?: unknown;
+  peerTemplate?: unknown;
 }) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
@@ -40,12 +44,19 @@ export async function createReviewCycle(data: {
     throw new Error("Not authorized");
   }
 
+  // Only SUPER_ADMIN and ADMIN can attach templates
+  const canSetTemplate = role === "SUPER_ADMIN" || role === "ADMIN";
+
   const cycle = await db.reviewCycle.create({
     data: {
       name: data.name,
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
       status: "DRAFT",
+      ...(canSetTemplate && data.template ? { template: data.template } : {}),
+      ...(canSetTemplate && data.selfTemplate ? { selfTemplate: data.selfTemplate } : {}),
+      ...(canSetTemplate && data.managerTemplate ? { managerTemplate: data.managerTemplate } : {}),
+      ...(canSetTemplate && data.peerTemplate ? { peerTemplate: data.peerTemplate } : {}),
     },
   });
   revalidatePath("/reviews");

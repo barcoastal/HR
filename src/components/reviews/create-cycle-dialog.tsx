@@ -6,6 +6,9 @@ import { Dialog } from "@/components/ui/dialog";
 import { createReviewCycle, generateReviewsForCycle } from "@/lib/actions/reviews";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { TemplateBuilder } from "@/components/reviews/template-builder";
+import { getDefaultTemplate } from "@/lib/review-templates";
+import type { TemplateField } from "@/lib/review-templates";
 
 type Department = { id: string; name: string; employeeCount: number };
 
@@ -14,6 +17,11 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ name: "", startDate: "", endDate: "" });
   const [selectedDepts, setSelectedDepts] = useState<Set<string>>(new Set());
+  const [template, setTemplate] = useState<TemplateField[]>(getDefaultTemplate());
+  const [showTypeOverrides, setShowTypeOverrides] = useState(false);
+  const [selfTemplate, setSelfTemplate] = useState<TemplateField[]>([]);
+  const [managerTemplate, setManagerTemplate] = useState<TemplateField[]>([]);
+  const [peerTemplate, setPeerTemplate] = useState<TemplateField[]>([]);
   const router = useRouter();
 
   function update(key: string, value: string) {
@@ -41,7 +49,13 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
     if (!form.name || !form.startDate || !form.endDate) return;
     setSaving(true);
     try {
-      const cycle = await createReviewCycle(form);
+      const cycle = await createReviewCycle({
+        ...form,
+        template: template.length > 0 ? template : undefined,
+        selfTemplate: selfTemplate.length > 0 ? selfTemplate : undefined,
+        managerTemplate: managerTemplate.length > 0 ? managerTemplate : undefined,
+        peerTemplate: peerTemplate.length > 0 ? peerTemplate : undefined,
+      });
       // Auto-generate reviews if departments selected
       if (selectedDepts.size > 0) {
         await generateReviewsForCycle(cycle.id, Array.from(selectedDepts));
@@ -49,6 +63,11 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
       setOpen(false);
       setForm({ name: "", startDate: "", endDate: "" });
       setSelectedDepts(new Set());
+      setTemplate(getDefaultTemplate());
+      setShowTypeOverrides(false);
+      setSelfTemplate([]);
+      setManagerTemplate([]);
+      setPeerTemplate([]);
       router.refresh();
     } finally {
       setSaving(false);
@@ -98,6 +117,40 @@ export function CreateCycleDialog({ departments }: { departments: Department[] }
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">End Date</label>
               <input type="date" value={form.endDate} onChange={(e) => update("endDate", e.target.value)} className={inputClass} />
             </div>
+          </div>
+
+          {/* Review Form Template */}
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-2">
+              <Icon name="dynamic_form" size={12} className="inline mr-1" />
+              Review Form Fields
+            </label>
+            <TemplateBuilder value={template} onChange={setTemplate} />
+
+            {/* Per-type overrides */}
+            <button
+              onClick={() => setShowTypeOverrides(!showTypeOverrides)}
+              className="mt-3 flex items-center gap-1 text-xs text-[var(--color-accent)] hover:underline"
+            >
+              <Icon name={showTypeOverrides ? "expand_less" : "expand_more"} size={14} />
+              Customize by review type
+            </button>
+            {showTypeOverrides && (
+              <div className="mt-3 space-y-4 border-t border-[var(--color-border)]/50 pt-3">
+                {([
+                  { label: "Self Review", value: selfTemplate, onChange: setSelfTemplate },
+                  { label: "Manager Review", value: managerTemplate, onChange: setManagerTemplate },
+                  { label: "Peer Review", value: peerTemplate, onChange: setPeerTemplate },
+                ] as const).map(({ label, value: tpl, onChange: setTpl }) => (
+                  <div key={label}>
+                    <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1.5">
+                      {label} {tpl.length === 0 && <span className="text-[var(--color-text-muted)] font-normal">(uses default)</span>}
+                    </p>
+                    <TemplateBuilder value={tpl} onChange={setTpl} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Department Selection */}
