@@ -10,6 +10,15 @@ export type ClientEvent =
 
 // ─── Server → Client events ───
 
+export interface AttachmentPayload {
+  id: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  url: string;
+  thumbnailUrl: string | null;
+}
+
 export interface MessagePayload {
   id: string;
   channelId: string | null;
@@ -19,6 +28,7 @@ export interface MessagePayload {
   content: string;
   contentPlain: string;
   createdAt: string;
+  attachments?: AttachmentPayload[];
   author: {
     id: string;
     firstName: string;

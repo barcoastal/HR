@@ -22,7 +22,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
     type: isDm ? "dm" : "channel",
   });
 
-  const serializedMessages = messages.map((m) => ({
+  const serializedMessages = messages.map((m: any) => ({
     id: m.id,
     channelId: m.channelId,
     dmThreadId: m.dmThreadId,
@@ -32,6 +32,14 @@ export default async function ChannelPage({ params, searchParams }: Props) {
     contentPlain: m.contentPlain,
     createdAt: m.createdAt.toISOString(),
     author: m.author,
+    attachments: (m.attachments || []).map((a: any) => ({
+      id: a.id,
+      fileName: a.fileName,
+      fileType: a.fileType,
+      fileSize: a.fileSize,
+      url: a.url,
+      thumbnailUrl: a.thumbnailUrl,
+    })),
   }));
 
   return (

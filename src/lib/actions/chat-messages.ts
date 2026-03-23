@@ -46,6 +46,7 @@ export async function getMessages(
       author: {
         select: { id: true, firstName: true, lastName: true, profilePhoto: true },
       },
+      attachments: true,
     },
   });
 
@@ -64,6 +65,7 @@ export async function sendMessage(data: {
   content: string;
   contentPlain?: string;
   type?: "channel" | "dm";
+  attachments?: Array<{ fileName: string; fileType: string; fileSize: number; url: string }>;
 }) {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
@@ -75,11 +77,24 @@ export async function sendMessage(data: {
       authorId: employeeId,
       content: data.content,
       contentPlain: data.contentPlain || data.content,
+      ...(data.attachments && data.attachments.length > 0
+        ? {
+            attachments: {
+              create: data.attachments.map((a) => ({
+                fileName: a.fileName,
+                fileType: a.fileType,
+                fileSize: a.fileSize,
+                url: a.url,
+              })),
+            },
+          }
+        : {}),
     },
     include: {
       author: {
         select: { id: true, firstName: true, lastName: true, profilePhoto: true },
       },
+      attachments: true,
     },
   });
 
@@ -92,6 +107,14 @@ export async function sendMessage(data: {
     content: message.content,
     contentPlain: message.contentPlain,
     createdAt: message.createdAt.toISOString(),
+    attachments: message.attachments.map((a) => ({
+      id: a.id,
+      fileName: a.fileName,
+      fileType: a.fileType,
+      fileSize: a.fileSize,
+      url: a.url,
+      thumbnailUrl: a.thumbnailUrl,
+    })),
     author: message.author,
   };
 
