@@ -15,11 +15,11 @@ export default async function DashboardLayout({
   const settings = await getCompanySettings();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full overflow-x-hidden">
       <Sidebar logoUrl={settings.logoUrl} companyName={settings.companyName} />
-      <div className="flex-1 md:ml-64">
+      <div className="flex-1 md:ml-64 min-w-0 max-w-full">
         <TopBar />
-        <main className="p-5 pb-28 md:p-8 md:pb-8">{children}</main>
+        <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-hidden">{children}</main>
       </div>
       <MobileNav />
       <Suspense fallback={null}>

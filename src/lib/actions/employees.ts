@@ -471,6 +471,37 @@ export async function deleteEmployee(id: string) {
   // Unlink/delete user account
   await db.user.deleteMany({ where: { employeeId: id } });
 
+  // Clean up chat data (chat relations don't cascade on Employee delete)
+  try {
+    await db.reaction.deleteMany({ where: { employeeId: id } });
+    await db.savedMessage.deleteMany({ where: { employeeId: id } });
+    await db.pinnedMessage.deleteMany({ where: { pinnedById: id } });
+    await db.message.deleteMany({ where: { authorId: id } });
+    await db.channelMember.deleteMany({ where: { employeeId: id } });
+    await db.dmMember.deleteMany({ where: { employeeId: id } });
+    await db.chatMember.deleteMany({ where: { employeeId: id } });
+    // These models may be added in later phases
+    // await db.chatNotification.deleteMany({ where: { employeeId: id } });
+    // await db.messageDraft.deleteMany({ where: { employeeId: id } });
+    // await db.reminder.deleteMany({ where: { employeeId: id } });
+  } catch {
+    // Chat tables may not exist yet
+  }
+
+  // Clean up other relations (some cascade via onDelete, but clean explicitly to be safe)
+  try {
+    await db.feedReaction.deleteMany({ where: { employeeId: id } });
+    await db.feedComment.deleteMany({ where: { authorId: id } });
+    await db.feedPost.deleteMany({ where: { authorId: id } });
+    await db.clubMember.deleteMany({ where: { employeeId: id } });
+    await db.pulseResponse.deleteMany({ where: { employeeId: id } });
+    await db.timeOffRequest.deleteMany({ where: { employeeId: id } });
+    await db.timeOffBalance.deleteMany({ where: { employeeId: id } });
+    await db.notification.deleteMany({ where: { recipientId: id } });
+  } catch {
+    // Ignore if any fail
+  }
+
   // Cascade handles: employeeTasks, signingRequests, reviews, documents, hrNotes, etc.
   await db.employee.delete({ where: { id } });
 

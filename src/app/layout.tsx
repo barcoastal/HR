@@ -4,12 +4,21 @@ export const dynamic = "force-dynamic";
 import { SessionProvider } from "@/components/providers/session-provider";
 import "./globals.css";
 
+import type { Viewport } from "next";
+
 export const metadata: Metadata = {
   title: "Coastal HR - HR Management",
   description: "Internal HR management platform",
   icons: {
     icon: "/api/favicon",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -31,7 +40,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className="antialiased">
+      <body className="antialiased overflow-x-hidden">
         <SessionProvider>
           {children}
         </SessionProvider>
