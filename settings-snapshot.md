@@ -1,0 +1,113 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img "CALATRAVA by Coastal debt Resolve" [ref=e5]
+      - navigation [ref=e6]:
+        - link "newspaper Feed" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: newspaper
+          - text: Feed
+        - link "warning Alerts" [ref=e55] [cursor=pointer]:
+          - /url: /alerts
+          - generic [ref=e56]: warning
+          - text: Alerts
+        - link "chat Chat" [ref=e9] [cursor=pointer]:
+          - /url: /chat
+          - generic [ref=e10]: chat
+          - text: Chat
+        - link "group People" [ref=e11] [cursor=pointer]:
+          - /url: /people
+          - generic [ref=e12]: group
+          - text: People
+        - link "business Organization" [ref=e57] [cursor=pointer]:
+          - /url: /org
+          - generic [ref=e58]: business
+          - text: Organization
+        - link "assignment_turned_in Pre-Onboarding" [ref=e59] [cursor=pointer]:
+          - /url: /pre-onboarding
+          - generic [ref=e60]: assignment_turned_in
+          - text: Pre-Onboarding
+        - link "person_add Onboarding" [ref=e61] [cursor=pointer]:
+          - /url: /onboarding
+          - generic [ref=e62]: person_add
+          - text: Onboarding
+        - link "person_remove Offboarding" [ref=e63] [cursor=pointer]:
+          - /url: /offboarding
+          - generic [ref=e64]: person_remove
+          - text: Offboarding
+        - link "assignment_turned_in Reviews" [ref=e65] [cursor=pointer]:
+          - /url: /reviews
+          - generic [ref=e66]: assignment_turned_in
+          - text: Reviews
+        - link "calendar_month Calendar" [ref=e13] [cursor=pointer]:
+          - /url: /calendar
+          - generic [ref=e14]: calendar_month
+          - text: Calendar
+        - link "beach_access Time Off" [ref=e15] [cursor=pointer]:
+          - /url: /time-off
+          - generic [ref=e16]: beach_access
+          - text: Time Off
+        - link "payments Gusto" [ref=e67] [cursor=pointer]:
+          - /url: /gusto
+          - generic [ref=e69]: payments
+          - text: Gusto
+        - link "groups Clubs" [ref=e17] [cursor=pointer]:
+          - /url: /clubs
+          - generic [ref=e18]: groups
+          - text: Clubs
+        - link "campaign Your Voice" [ref=e19] [cursor=pointer]:
+          - /url: /voice
+          - generic [ref=e20]: campaign
+          - text: Your Voice
+        - link "draw Documents" [ref=e21] [cursor=pointer]:
+          - /url: /documents
+          - generic [ref=e22]: draw
+          - text: Documents
+        - link "work Recruitment" [ref=e70] [cursor=pointer]:
+          - /url: /cv
+          - generic [ref=e71]: work
+          - text: Recruitment
+        - link "bar_chart Analytics" [ref=e72] [cursor=pointer]:
+          - /url: /analytics
+          - generic [ref=e73]: bar_chart
+          - text: Analytics
+        - link "account_circle My Profile" [ref=e23] [cursor=pointer]:
+          - /url: /my-profile
+          - generic [ref=e24]: account_circle
+          - text: My Profile
+        - link "settings Settings" [ref=e74] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e75]: settings
+          - text: Settings
+      - generic [ref=e25]:
+        - generic [ref=e77]:
+          - paragraph [ref=e78]: Bar Elezra
+          - paragraph [ref=e79]: SUPER_ADMIN
+        - button "logout Sign out" [ref=e26]:
+          - generic [ref=e27]: logout
+          - text: Sign out
+    - generic [ref=e28]:
+      - banner [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: CALATRAVA
+          - generic [ref=e32]: by Coastal Debt Resolve
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]: search
+            - textbox "Search..." [ref=e36]
+          - button "notifications" [ref=e37]:
+            - generic [ref=e38]: notifications
+      - main [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e44]:
+            - heading "Gusto" [level=1] [ref=e45]
+            - paragraph [ref=e46]: Payroll & time-off management
+          - generic [ref=e47]:
+            - generic [ref=e48]: link_off
+            - generic [ref=e49]:
+              - paragraph [ref=e50]: Gusto is not connected
+              - paragraph [ref=e51]: Connect in Settings to enable payroll and time-off sync.
+            - link "Connect" [ref=e52] [cursor=pointer]:
+              - /url: /settings
+              - button "Connect" [ref=e53]
+  - alert [ref=e54]

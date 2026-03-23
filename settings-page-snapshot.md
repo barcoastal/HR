@@ -1,0 +1,1152 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - img "CALATRAVA by Coastal debt Resolve" [ref=e5]
+      - navigation [ref=e6]:
+        - link "newspaper Feed" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: newspaper
+          - text: Feed
+        - link "warning Alerts" [ref=e1026] [cursor=pointer]:
+          - /url: /alerts
+          - generic [ref=e1027]: warning
+          - text: Alerts
+        - link "chat Chat" [ref=e9] [cursor=pointer]:
+          - /url: /chat
+          - generic [ref=e10]: chat
+          - text: Chat
+        - link "group People" [ref=e11] [cursor=pointer]:
+          - /url: /people
+          - generic [ref=e12]: group
+          - text: People
+        - link "business Organization" [ref=e1028] [cursor=pointer]:
+          - /url: /org
+          - generic [ref=e1029]: business
+          - text: Organization
+        - link "assignment_turned_in Pre-Onboarding" [ref=e1030] [cursor=pointer]:
+          - /url: /pre-onboarding
+          - generic [ref=e1031]: assignment_turned_in
+          - text: Pre-Onboarding
+        - link "person_add Onboarding" [ref=e1032] [cursor=pointer]:
+          - /url: /onboarding
+          - generic [ref=e1033]: person_add
+          - text: Onboarding
+        - link "person_remove Offboarding" [ref=e1034] [cursor=pointer]:
+          - /url: /offboarding
+          - generic [ref=e1035]: person_remove
+          - text: Offboarding
+        - link "assignment_turned_in Reviews" [ref=e1036] [cursor=pointer]:
+          - /url: /reviews
+          - generic [ref=e1037]: assignment_turned_in
+          - text: Reviews
+        - link "calendar_month Calendar" [ref=e13] [cursor=pointer]:
+          - /url: /calendar
+          - generic [ref=e14]: calendar_month
+          - text: Calendar
+        - link "beach_access Time Off" [ref=e15] [cursor=pointer]:
+          - /url: /time-off
+          - generic [ref=e16]: beach_access
+          - text: Time Off
+        - link "payments Gusto" [ref=e1038] [cursor=pointer]:
+          - /url: /gusto
+          - generic [ref=e1039]: payments
+          - text: Gusto
+        - link "groups Clubs" [ref=e17] [cursor=pointer]:
+          - /url: /clubs
+          - generic [ref=e18]: groups
+          - text: Clubs
+        - link "campaign Your Voice" [ref=e19] [cursor=pointer]:
+          - /url: /voice
+          - generic [ref=e20]: campaign
+          - text: Your Voice
+        - link "draw Documents" [ref=e21] [cursor=pointer]:
+          - /url: /documents
+          - generic [ref=e22]: draw
+          - text: Documents
+        - link "work Recruitment" [ref=e1040] [cursor=pointer]:
+          - /url: /cv
+          - generic [ref=e1041]: work
+          - text: Recruitment
+        - link "bar_chart Analytics" [ref=e1042] [cursor=pointer]:
+          - /url: /analytics
+          - generic [ref=e1043]: bar_chart
+          - text: Analytics
+        - link "account_circle My Profile" [ref=e23] [cursor=pointer]:
+          - /url: /my-profile
+          - generic [ref=e24]: account_circle
+          - text: My Profile
+        - link "settings Settings" [ref=e1044] [cursor=pointer]:
+          - /url: /settings
+          - generic [ref=e1046]: settings
+          - text: Settings
+      - generic [ref=e25]:
+        - generic [ref=e1048]:
+          - paragraph [ref=e1049]: Bar Elezra
+          - paragraph [ref=e1050]: SUPER_ADMIN
+        - button "logout Sign out" [ref=e26]:
+          - generic [ref=e27]: logout
+          - text: Sign out
+    - generic [ref=e28]:
+      - banner [ref=e29]:
+        - generic [ref=e30]:
+          - generic [ref=e31]: CALATRAVA
+          - generic [ref=e32]: by Coastal Debt Resolve
+        - generic [ref=e33]:
+          - generic [ref=e34]:
+            - generic [ref=e35]: search
+            - textbox "Search..." [ref=e36]
+          - button "notifications" [ref=e37]:
+            - generic [ref=e38]: notifications
+      - main [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e44]:
+            - heading "Settings" [level=1] [ref=e45]
+            - paragraph [ref=e46]: Manage your company settings, users, and templates
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: apartment
+                - heading "Company Information" [level=2] [ref=e51]
+              - generic [ref=e52]:
+                - generic [ref=e53]:
+                  - generic [ref=e54]: Company Name
+                  - textbox "Your company name" [ref=e55]: CALATRAVA by Coastal debt Resolve
+                - generic [ref=e56]:
+                  - generic [ref=e57]: Domain
+                  - textbox "yourdomain.com" [ref=e58]: Coastaldebt.com
+                - generic [ref=e59]:
+                  - generic [ref=e60]: Industry
+                  - textbox "Technology, Healthcare, etc." [ref=e61]: Finance
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Company Size
+                  - textbox "Number of employees" [ref=e64]: "71"
+              - generic [ref=e65]:
+                - generic [ref=e66]:
+                  - generic [ref=e67]: Company Logo
+                  - generic [ref=e68]:
+                    - img "Company Logo" [ref=e69]
+                    - generic [ref=e70]:
+                      - paragraph [ref=e71]: Current company logo
+                      - paragraph [ref=e72]: Click remove to change
+                    - button "close" [ref=e73]:
+                      - generic [ref=e74]: close
+                - generic [ref=e75]:
+                  - generic [ref=e76]: Favicon
+                  - generic [ref=e77]:
+                    - img "Favicon" [ref=e78]
+                    - generic [ref=e79]:
+                      - paragraph [ref=e80]: Current favicon
+                      - paragraph [ref=e81]: Click remove to change
+                    - button "close" [ref=e82]:
+                      - generic [ref=e83]: close
+              - generic [ref=e84]:
+                - generic [ref=e85]:
+                  - generic [ref=e86]: Sender Email
+                  - textbox "hr@yourdomain.com" [ref=e87]: hrteam@hr.coastaldebt-tools.com
+                - generic [ref=e88]:
+                  - generic [ref=e89]: Sender Name
+                  - textbox "Company HR" [ref=e90]: Coastal Debt Resolve HR team
+              - paragraph [ref=e91]: The sender email must be from a domain verified in your Resend account.
+              - button "save Save Changes" [ref=e93]:
+                - generic [ref=e94]: save
+                - text: Save Changes
+            - generic [ref=e95]:
+              - generic [ref=e96]:
+                - generic [ref=e97]:
+                  - generic [ref=e98]: shield
+                  - heading "User Management" [level=2] [ref=e99]
+                - button "add Invite User" [ref=e100]:
+                  - generic [ref=e101]: add
+                  - text: Invite User
+              - table [ref=e103]:
+                - rowgroup [ref=e104]:
+                  - row "User Email Role Actions" [ref=e105]:
+                    - columnheader "User" [ref=e106]
+                    - columnheader "Email" [ref=e107]
+                    - columnheader "Role" [ref=e108]
+                    - columnheader "Actions" [ref=e109]
+                - rowgroup [ref=e110]:
+                  - row "BE Bar Elezra bar@coastaldebt.com Super Admin delete" [ref=e111]:
+                    - cell "BE Bar Elezra" [ref=e112]:
+                      - generic [ref=e113]:
+                        - generic [ref=e114]: BE
+                        - generic [ref=e115]: Bar Elezra
+                    - cell "bar@coastaldebt.com" [ref=e116]
+                    - cell "Super Admin" [ref=e117]:
+                      - combobox [ref=e118] [cursor=pointer]:
+                        - option "Super Admin" [selected]
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee"
+                    - cell "delete" [ref=e119]:
+                      - button "delete" [ref=e121]:
+                        - generic [ref=e122]: delete
+                  - row "EW Eli who eli.s@coastaldebt.com Admin delete" [ref=e123]:
+                    - cell "EW Eli who" [ref=e124]:
+                      - generic [ref=e125]:
+                        - generic [ref=e126]: EW
+                        - generic [ref=e127]: Eli who
+                    - cell "eli.s@coastaldebt.com" [ref=e128]
+                    - cell "Admin" [ref=e129]:
+                      - combobox [ref=e130] [cursor=pointer]:
+                        - option "Super Admin"
+                        - option "Admin" [selected]
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee"
+                    - cell "delete" [ref=e131]:
+                      - button "delete" [ref=e133]:
+                        - generic [ref=e134]: delete
+                  - row "SG Sandra Garcia Hopkins sandra@coastaldebt.com Super Admin delete" [ref=e135]:
+                    - cell "SG Sandra Garcia Hopkins" [ref=e136]:
+                      - generic [ref=e137]:
+                        - generic [ref=e138]: SG
+                        - generic [ref=e139]: Sandra Garcia Hopkins
+                    - cell "sandra@coastaldebt.com" [ref=e140]
+                    - cell "Super Admin" [ref=e141]:
+                      - combobox [ref=e142] [cursor=pointer]:
+                        - option "Super Admin" [selected]
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee"
+                    - cell "delete" [ref=e143]:
+                      - button "delete" [ref=e145]:
+                        - generic [ref=e146]: delete
+                  - row "AL Alexis Lawton alexis@coastaldebt.com Super Admin delete" [ref=e147]:
+                    - cell "AL Alexis Lawton" [ref=e148]:
+                      - generic [ref=e149]:
+                        - generic [ref=e150]: AL
+                        - generic [ref=e151]: Alexis Lawton
+                    - cell "alexis@coastaldebt.com" [ref=e152]
+                    - cell "Super Admin" [ref=e153]:
+                      - combobox [ref=e154] [cursor=pointer]:
+                        - option "Super Admin" [selected]
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee"
+                    - cell "delete" [ref=e155]:
+                      - button "delete" [ref=e157]:
+                        - generic [ref=e158]: delete
+                  - row "BT Bar Test user1@coastaldebt.com Employee delete" [ref=e159]:
+                    - cell "BT Bar Test" [ref=e160]:
+                      - generic [ref=e161]:
+                        - generic [ref=e162]: BT
+                        - generic [ref=e163]: Bar Test
+                    - cell "user1@coastaldebt.com" [ref=e164]
+                    - cell "Employee" [ref=e165]:
+                      - combobox [ref=e166] [cursor=pointer]:
+                        - option "Super Admin"
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee" [selected]
+                    - cell "delete" [ref=e167]:
+                      - button "delete" [ref=e169]:
+                        - generic [ref=e170]: delete
+                  - row "DG David Garen dgaren@coastaldebt.com Employee delete" [ref=e171]:
+                    - cell "DG David Garen" [ref=e172]:
+                      - generic [ref=e173]:
+                        - generic [ref=e174]: DG
+                        - generic [ref=e175]: David Garen
+                    - cell "dgaren@coastaldebt.com" [ref=e176]
+                    - cell "Employee" [ref=e177]:
+                      - combobox [ref=e178] [cursor=pointer]:
+                        - option "Super Admin"
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee" [selected]
+                    - cell "delete" [ref=e179]:
+                      - button "delete" [ref=e181]:
+                        - generic [ref=e182]: delete
+                  - row "JL Jeanne Langlois jlanglois@coastaldebt.com Employee delete" [ref=e183]:
+                    - cell "JL Jeanne Langlois" [ref=e184]:
+                      - generic [ref=e185]:
+                        - generic [ref=e186]: JL
+                        - generic [ref=e187]: Jeanne Langlois
+                    - cell "jlanglois@coastaldebt.com" [ref=e188]
+                    - cell "Employee" [ref=e189]:
+                      - combobox [ref=e190] [cursor=pointer]:
+                        - option "Super Admin"
+                        - option "Admin"
+                        - option "HR"
+                        - option "Manager"
+                        - option "Employee" [selected]
+                    - cell "delete" [ref=e191]:
+                      - button "delete" [ref=e193]:
+                        - generic [ref=e194]: delete
+            - generic [ref=e195]:
+              - generic [ref=e196]:
+                - generic [ref=e197]: shield
+                - heading "Role Permissions" [level=2] [ref=e198]
+              - paragraph [ref=e199]: Control what each role can access. Super Admin always has full access.
+              - table [ref=e201]:
+                - rowgroup [ref=e202]:
+                  - row "Permission Super Admin Admin HR Manager Employee" [ref=e203]:
+                    - columnheader "Permission" [ref=e204]
+                    - columnheader "Super Admin" [ref=e205]:
+                      - generic [ref=e206]: Super Admin
+                    - columnheader "Admin" [ref=e207]:
+                      - generic [ref=e208]: Admin
+                    - columnheader "HR" [ref=e209]:
+                      - generic [ref=e210]: HR
+                    - columnheader "Manager" [ref=e211]:
+                      - generic [ref=e212]: Manager
+                    - columnheader "Employee" [ref=e213]:
+                      - generic [ref=e214]: Employee
+                - rowgroup [ref=e215]:
+                  - row "Settings Access system settings, branding, email templates check check close close close" [ref=e216]:
+                    - cell "Settings Access system settings, branding, email templates" [ref=e217]:
+                      - generic [ref=e218]:
+                        - paragraph [ref=e219]: Settings
+                        - paragraph [ref=e220]: Access system settings, branding, email templates
+                    - cell "check" [ref=e221]:
+                      - button "check" [disabled] [ref=e222]:
+                        - generic [ref=e223]: check
+                    - cell "check" [ref=e224]:
+                      - button "check" [ref=e225] [cursor=pointer]:
+                        - generic [ref=e226]: check
+                    - cell "close" [ref=e227]:
+                      - button "close" [ref=e228] [cursor=pointer]:
+                        - generic [ref=e229]: close
+                    - cell "close" [ref=e230]:
+                      - button "close" [ref=e231] [cursor=pointer]:
+                        - generic [ref=e232]: close
+                    - cell "close" [ref=e233]:
+                      - button "close" [ref=e234] [cursor=pointer]:
+                        - generic [ref=e235]: close
+                  - row "User Management Invite users, change roles, delete users check check close close close" [ref=e236]:
+                    - cell "User Management Invite users, change roles, delete users" [ref=e237]:
+                      - generic [ref=e238]:
+                        - paragraph [ref=e239]: User Management
+                        - paragraph [ref=e240]: Invite users, change roles, delete users
+                    - cell "check" [ref=e241]:
+                      - button "check" [disabled] [ref=e242]:
+                        - generic [ref=e243]: check
+                    - cell "check" [ref=e244]:
+                      - button "check" [ref=e245] [cursor=pointer]:
+                        - generic [ref=e246]: check
+                    - cell "close" [ref=e247]:
+                      - button "close" [ref=e248] [cursor=pointer]:
+                        - generic [ref=e249]: close
+                    - cell "close" [ref=e250]:
+                      - button "close" [ref=e251] [cursor=pointer]:
+                        - generic [ref=e252]: close
+                    - cell "close" [ref=e253]:
+                      - button "close" [ref=e254] [cursor=pointer]:
+                        - generic [ref=e255]: close
+                  - row "People Directory View employee profiles and directory check check check check check" [ref=e256]:
+                    - cell "People Directory View employee profiles and directory" [ref=e257]:
+                      - generic [ref=e258]:
+                        - paragraph [ref=e259]: People Directory
+                        - paragraph [ref=e260]: View employee profiles and directory
+                    - cell "check" [ref=e261]:
+                      - button "check" [disabled] [ref=e262]:
+                        - generic [ref=e263]: check
+                    - cell "check" [ref=e264]:
+                      - button "check" [ref=e265] [cursor=pointer]:
+                        - generic [ref=e266]: check
+                    - cell "check" [ref=e267]:
+                      - button "check" [ref=e268] [cursor=pointer]:
+                        - generic [ref=e269]: check
+                    - cell "check" [ref=e270]:
+                      - button "check" [ref=e271] [cursor=pointer]:
+                        - generic [ref=e272]: check
+                    - cell "check" [ref=e273]:
+                      - button "check" [ref=e274] [cursor=pointer]:
+                        - generic [ref=e275]: check
+                  - row "Manage Employees Edit employee profiles, add/remove employees check check check check close" [ref=e276]:
+                    - cell "Manage Employees Edit employee profiles, add/remove employees" [ref=e277]:
+                      - generic [ref=e278]:
+                        - paragraph [ref=e279]: Manage Employees
+                        - paragraph [ref=e280]: Edit employee profiles, add/remove employees
+                    - cell "check" [ref=e281]:
+                      - button "check" [disabled] [ref=e282]:
+                        - generic [ref=e283]: check
+                    - cell "check" [ref=e284]:
+                      - button "check" [ref=e285] [cursor=pointer]:
+                        - generic [ref=e286]: check
+                    - cell "check" [ref=e287]:
+                      - button "check" [ref=e288] [cursor=pointer]:
+                        - generic [ref=e289]: check
+                    - cell "check" [ref=e290]:
+                      - button "check" [ref=e291] [cursor=pointer]:
+                        - generic [ref=e292]: check
+                    - cell "close" [ref=e293]:
+                      - button "close" [ref=e294] [cursor=pointer]:
+                        - generic [ref=e295]: close
+                  - row "Manage Departments Create, edit, delete departments check check check close close" [ref=e296]:
+                    - cell "Manage Departments Create, edit, delete departments" [ref=e297]:
+                      - generic [ref=e298]:
+                        - paragraph [ref=e299]: Manage Departments
+                        - paragraph [ref=e300]: Create, edit, delete departments
+                    - cell "check" [ref=e301]:
+                      - button "check" [disabled] [ref=e302]:
+                        - generic [ref=e303]: check
+                    - cell "check" [ref=e304]:
+                      - button "check" [ref=e305] [cursor=pointer]:
+                        - generic [ref=e306]: check
+                    - cell "check" [ref=e307]:
+                      - button "check" [ref=e308] [cursor=pointer]:
+                        - generic [ref=e309]: check
+                    - cell "close" [ref=e310]:
+                      - button "close" [ref=e311] [cursor=pointer]:
+                        - generic [ref=e312]: close
+                    - cell "close" [ref=e313]:
+                      - button "close" [ref=e314] [cursor=pointer]:
+                        - generic [ref=e315]: close
+                  - row "Onboarding Manage onboarding checklists and tasks check check check close close" [ref=e316]:
+                    - cell "Onboarding Manage onboarding checklists and tasks" [ref=e317]:
+                      - generic [ref=e318]:
+                        - paragraph [ref=e319]: Onboarding
+                        - paragraph [ref=e320]: Manage onboarding checklists and tasks
+                    - cell "check" [ref=e321]:
+                      - button "check" [disabled] [ref=e322]:
+                        - generic [ref=e323]: check
+                    - cell "check" [ref=e324]:
+                      - button "check" [ref=e325] [cursor=pointer]:
+                        - generic [ref=e326]: check
+                    - cell "check" [ref=e327]:
+                      - button "check" [ref=e328] [cursor=pointer]:
+                        - generic [ref=e329]: check
+                    - cell "close" [ref=e330]:
+                      - button "close" [ref=e331] [cursor=pointer]:
+                        - generic [ref=e332]: close
+                    - cell "close" [ref=e333]:
+                      - button "close" [ref=e334] [cursor=pointer]:
+                        - generic [ref=e335]: close
+                  - row "Offboarding Manage offboarding checklists and tasks check check check close close" [ref=e336]:
+                    - cell "Offboarding Manage offboarding checklists and tasks" [ref=e337]:
+                      - generic [ref=e338]:
+                        - paragraph [ref=e339]: Offboarding
+                        - paragraph [ref=e340]: Manage offboarding checklists and tasks
+                    - cell "check" [ref=e341]:
+                      - button "check" [disabled] [ref=e342]:
+                        - generic [ref=e343]: check
+                    - cell "check" [ref=e344]:
+                      - button "check" [ref=e345] [cursor=pointer]:
+                        - generic [ref=e346]: check
+                    - cell "check" [ref=e347]:
+                      - button "check" [ref=e348] [cursor=pointer]:
+                        - generic [ref=e349]: check
+                    - cell "close" [ref=e350]:
+                      - button "close" [ref=e351] [cursor=pointer]:
+                        - generic [ref=e352]: close
+                    - cell "close" [ref=e353]:
+                      - button "close" [ref=e354] [cursor=pointer]:
+                        - generic [ref=e355]: close
+                  - row "Documents & Signing Upload docs, send for signing, manage signed docs check check check close close" [ref=e356]:
+                    - cell "Documents & Signing Upload docs, send for signing, manage signed docs" [ref=e357]:
+                      - generic [ref=e358]:
+                        - paragraph [ref=e359]: Documents & Signing
+                        - paragraph [ref=e360]: Upload docs, send for signing, manage signed docs
+                    - cell "check" [ref=e361]:
+                      - button "check" [disabled] [ref=e362]:
+                        - generic [ref=e363]: check
+                    - cell "check" [ref=e364]:
+                      - button "check" [ref=e365] [cursor=pointer]:
+                        - generic [ref=e366]: check
+                    - cell "check" [ref=e367]:
+                      - button "check" [ref=e368] [cursor=pointer]:
+                        - generic [ref=e369]: check
+                    - cell "close" [ref=e370]:
+                      - button "close" [ref=e371] [cursor=pointer]:
+                        - generic [ref=e372]: close
+                    - cell "close" [ref=e373]:
+                      - button "close" [ref=e374] [cursor=pointer]:
+                        - generic [ref=e375]: close
+                  - row "HR Notes View and manage confidential HR notes on employees check check check close close" [ref=e376]:
+                    - cell "HR Notes View and manage confidential HR notes on employees" [ref=e377]:
+                      - generic [ref=e378]:
+                        - paragraph [ref=e379]: HR Notes
+                        - paragraph [ref=e380]: View and manage confidential HR notes on employees
+                    - cell "check" [ref=e381]:
+                      - button "check" [disabled] [ref=e382]:
+                        - generic [ref=e383]: check
+                    - cell "check" [ref=e384]:
+                      - button "check" [ref=e385] [cursor=pointer]:
+                        - generic [ref=e386]: check
+                    - cell "check" [ref=e387]:
+                      - button "check" [ref=e388] [cursor=pointer]:
+                        - generic [ref=e389]: check
+                    - cell "close" [ref=e390]:
+                      - button "close" [ref=e391] [cursor=pointer]:
+                        - generic [ref=e392]: close
+                    - cell "close" [ref=e393]:
+                      - button "close" [ref=e394] [cursor=pointer]:
+                        - generic [ref=e395]: close
+                  - row "Recruitment Access recruitment pipeline, candidates, positions check check check check close" [ref=e396]:
+                    - cell "Recruitment Access recruitment pipeline, candidates, positions" [ref=e397]:
+                      - generic [ref=e398]:
+                        - paragraph [ref=e399]: Recruitment
+                        - paragraph [ref=e400]: Access recruitment pipeline, candidates, positions
+                    - cell "check" [ref=e401]:
+                      - button "check" [disabled] [ref=e402]:
+                        - generic [ref=e403]: check
+                    - cell "check" [ref=e404]:
+                      - button "check" [ref=e405] [cursor=pointer]:
+                        - generic [ref=e406]: check
+                    - cell "check" [ref=e407]:
+                      - button "check" [ref=e408] [cursor=pointer]:
+                        - generic [ref=e409]: check
+                    - cell "check" [ref=e410]:
+                      - button "check" [ref=e411] [cursor=pointer]:
+                        - generic [ref=e412]: check
+                    - cell "close" [ref=e413]:
+                      - button "close" [ref=e414] [cursor=pointer]:
+                        - generic [ref=e415]: close
+                  - row "Analytics View company analytics and reports check check check check close" [ref=e416]:
+                    - cell "Analytics View company analytics and reports" [ref=e417]:
+                      - generic [ref=e418]:
+                        - paragraph [ref=e419]: Analytics
+                        - paragraph [ref=e420]: View company analytics and reports
+                    - cell "check" [ref=e421]:
+                      - button "check" [disabled] [ref=e422]:
+                        - generic [ref=e423]: check
+                    - cell "check" [ref=e424]:
+                      - button "check" [ref=e425] [cursor=pointer]:
+                        - generic [ref=e426]: check
+                    - cell "check" [ref=e427]:
+                      - button "check" [ref=e428] [cursor=pointer]:
+                        - generic [ref=e429]: check
+                    - cell "check" [ref=e430]:
+                      - button "check" [ref=e431] [cursor=pointer]:
+                        - generic [ref=e432]: check
+                    - cell "close" [ref=e433]:
+                      - button "close" [ref=e434] [cursor=pointer]:
+                        - generic [ref=e435]: close
+                  - row "Time Off Management Manage PTO policies and balances check check check close close" [ref=e436]:
+                    - cell "Time Off Management Manage PTO policies and balances" [ref=e437]:
+                      - generic [ref=e438]:
+                        - paragraph [ref=e439]: Time Off Management
+                        - paragraph [ref=e440]: Manage PTO policies and balances
+                    - cell "check" [ref=e441]:
+                      - button "check" [disabled] [ref=e442]:
+                        - generic [ref=e443]: check
+                    - cell "check" [ref=e444]:
+                      - button "check" [ref=e445] [cursor=pointer]:
+                        - generic [ref=e446]: check
+                    - cell "check" [ref=e447]:
+                      - button "check" [ref=e448] [cursor=pointer]:
+                        - generic [ref=e449]: check
+                    - cell "close" [ref=e450]:
+                      - button "close" [ref=e451] [cursor=pointer]:
+                        - generic [ref=e452]: close
+                    - cell "close" [ref=e453]:
+                      - button "close" [ref=e454] [cursor=pointer]:
+                        - generic [ref=e455]: close
+                  - row "Approve Time Off Approve or deny time off requests check check check check close" [ref=e456]:
+                    - cell "Approve Time Off Approve or deny time off requests" [ref=e457]:
+                      - generic [ref=e458]:
+                        - paragraph [ref=e459]: Approve Time Off
+                        - paragraph [ref=e460]: Approve or deny time off requests
+                    - cell "check" [ref=e461]:
+                      - button "check" [disabled] [ref=e462]:
+                        - generic [ref=e463]: check
+                    - cell "check" [ref=e464]:
+                      - button "check" [ref=e465] [cursor=pointer]:
+                        - generic [ref=e466]: check
+                    - cell "check" [ref=e467]:
+                      - button "check" [ref=e468] [cursor=pointer]:
+                        - generic [ref=e469]: check
+                    - cell "check" [ref=e470]:
+                      - button "check" [ref=e471] [cursor=pointer]:
+                        - generic [ref=e472]: check
+                    - cell "close" [ref=e473]:
+                      - button "close" [ref=e474] [cursor=pointer]:
+                        - generic [ref=e475]: close
+                  - row "Reviews Manage review cycles and view all reviews check check check check close" [ref=e476]:
+                    - cell "Reviews Manage review cycles and view all reviews" [ref=e477]:
+                      - generic [ref=e478]:
+                        - paragraph [ref=e479]: Reviews
+                        - paragraph [ref=e480]: Manage review cycles and view all reviews
+                    - cell "check" [ref=e481]:
+                      - button "check" [disabled] [ref=e482]:
+                        - generic [ref=e483]: check
+                    - cell "check" [ref=e484]:
+                      - button "check" [ref=e485] [cursor=pointer]:
+                        - generic [ref=e486]: check
+                    - cell "check" [ref=e487]:
+                      - button "check" [ref=e488] [cursor=pointer]:
+                        - generic [ref=e489]: check
+                    - cell "check" [ref=e490]:
+                      - button "check" [ref=e491] [cursor=pointer]:
+                        - generic [ref=e492]: check
+                    - cell "close" [ref=e493]:
+                      - button "close" [ref=e494] [cursor=pointer]:
+                        - generic [ref=e495]: close
+                  - row "Pulse Surveys Create and manage pulse surveys check check check close close" [ref=e496]:
+                    - cell "Pulse Surveys Create and manage pulse surveys" [ref=e497]:
+                      - generic [ref=e498]:
+                        - paragraph [ref=e499]: Pulse Surveys
+                        - paragraph [ref=e500]: Create and manage pulse surveys
+                    - cell "check" [ref=e501]:
+                      - button "check" [disabled] [ref=e502]:
+                        - generic [ref=e503]: check
+                    - cell "check" [ref=e504]:
+                      - button "check" [ref=e505] [cursor=pointer]:
+                        - generic [ref=e506]: check
+                    - cell "check" [ref=e507]:
+                      - button "check" [ref=e508] [cursor=pointer]:
+                        - generic [ref=e509]: check
+                    - cell "close" [ref=e510]:
+                      - button "close" [ref=e511] [cursor=pointer]:
+                        - generic [ref=e512]: close
+                    - cell "close" [ref=e513]:
+                      - button "close" [ref=e514] [cursor=pointer]:
+                        - generic [ref=e515]: close
+                  - row "Post to Feed Create posts in the company feed check check check check check" [ref=e516]:
+                    - cell "Post to Feed Create posts in the company feed" [ref=e517]:
+                      - generic [ref=e518]:
+                        - paragraph [ref=e519]: Post to Feed
+                        - paragraph [ref=e520]: Create posts in the company feed
+                    - cell "check" [ref=e521]:
+                      - button "check" [disabled] [ref=e522]:
+                        - generic [ref=e523]: check
+                    - cell "check" [ref=e524]:
+                      - button "check" [ref=e525] [cursor=pointer]:
+                        - generic [ref=e526]: check
+                    - cell "check" [ref=e527]:
+                      - button "check" [ref=e528] [cursor=pointer]:
+                        - generic [ref=e529]: check
+                    - cell "check" [ref=e530]:
+                      - button "check" [ref=e531] [cursor=pointer]:
+                        - generic [ref=e532]: check
+                    - cell "check" [ref=e533]:
+                      - button "check" [ref=e534] [cursor=pointer]:
+                        - generic [ref=e535]: check
+                  - row "Your Voice (Admin) View anonymous feedback submissions check check check close close" [ref=e536]:
+                    - cell "Your Voice (Admin) View anonymous feedback submissions" [ref=e537]:
+                      - generic [ref=e538]:
+                        - paragraph [ref=e539]: Your Voice (Admin)
+                        - paragraph [ref=e540]: View anonymous feedback submissions
+                    - cell "check" [ref=e541]:
+                      - button "check" [disabled] [ref=e542]:
+                        - generic [ref=e543]: check
+                    - cell "check" [ref=e544]:
+                      - button "check" [ref=e545] [cursor=pointer]:
+                        - generic [ref=e546]: check
+                    - cell "check" [ref=e547]:
+                      - button "check" [ref=e548] [cursor=pointer]:
+                        - generic [ref=e549]: check
+                    - cell "close" [ref=e550]:
+                      - button "close" [ref=e551] [cursor=pointer]:
+                        - generic [ref=e552]: close
+                    - cell "close" [ref=e553]:
+                      - button "close" [ref=e554] [cursor=pointer]:
+                        - generic [ref=e555]: close
+                - rowgroup [ref=e556]:
+                  - row "Quick actions Locked All None Save All None Save All None Save All None Save" [ref=e557]:
+                    - cell "Quick actions" [ref=e558]:
+                      - paragraph [ref=e559]: Quick actions
+                    - cell "Locked" [ref=e560]
+                    - cell "All None Save" [ref=e561]:
+                      - generic [ref=e562]:
+                        - generic [ref=e563]:
+                          - button "All" [ref=e564]
+                          - button "None" [ref=e565]
+                        - button "Save" [ref=e566]
+                    - cell "All None Save" [ref=e567]:
+                      - generic [ref=e568]:
+                        - generic [ref=e569]:
+                          - button "All" [ref=e570]
+                          - button "None" [ref=e571]
+                        - button "Save" [ref=e572]
+                    - cell "All None Save" [ref=e573]:
+                      - generic [ref=e574]:
+                        - generic [ref=e575]:
+                          - button "All" [ref=e576]
+                          - button "None" [ref=e577]
+                        - button "Save" [ref=e578]
+                    - cell "All None Save" [ref=e579]:
+                      - generic [ref=e580]:
+                        - generic [ref=e581]:
+                          - button "All" [ref=e582]
+                          - button "None" [ref=e583]
+                        - button "Save" [ref=e584]
+            - generic [ref=e585]:
+              - generic [ref=e587]:
+                - generic [ref=e588]: how_to_reg
+                - generic [ref=e589]:
+                  - heading "Recruiters" [level=2] [ref=e590]
+                  - paragraph [ref=e591]: Designated recruiters are assigned to candidates when they enter the pipeline
+              - generic [ref=e592]:
+                - generic [ref=e593]:
+                  - generic [ref=e594]:
+                    - generic [ref=e595]: DG
+                    - generic [ref=e596]:
+                      - paragraph [ref=e597]: David Garen
+                      - paragraph [ref=e598]: High Volume Recruiter
+                  - button "close" [ref=e599]:
+                    - generic [ref=e600]: close
+                - generic [ref=e601]:
+                  - generic [ref=e602]:
+                    - generic [ref=e603]: JL
+                    - generic [ref=e604]:
+                      - paragraph [ref=e605]: Jeanne Langlois
+                      - paragraph [ref=e606]: High-Volume Recruiter
+                  - button "close" [ref=e607]:
+                    - generic [ref=e608]: close
+                - button "add Add Recruiter" [ref=e609]:
+                  - generic [ref=e610]: add
+                  - text: Add Recruiter
+            - generic [ref=e611]:
+              - generic [ref=e612]:
+                - generic [ref=e613]:
+                  - generic [ref=e614]: business
+                  - heading "Departments" [level=2] [ref=e615]
+                - button "add Add Department" [ref=e616]:
+                  - generic [ref=e617]: add
+                  - text: Add Department
+              - generic [ref=e618]:
+                - generic [ref=e619]:
+                  - paragraph [ref=e621]: Customer Support
+                  - generic [ref=e622]:
+                    - button "edit" [ref=e623]:
+                      - generic [ref=e624]: edit
+                    - button "delete" [ref=e625]:
+                      - generic [ref=e626]: delete
+                - generic [ref=e627]:
+                  - paragraph [ref=e629]: General & Admin
+                  - generic [ref=e630]:
+                    - button "edit" [ref=e631]:
+                      - generic [ref=e632]: edit
+                    - button "delete" [ref=e633]:
+                      - generic [ref=e634]: delete
+                - generic [ref=e635]:
+                  - paragraph [ref=e637]: Human Resource
+                  - generic [ref=e638]:
+                    - button "edit" [ref=e639]:
+                      - generic [ref=e640]: edit
+                    - button "delete" [ref=e641]:
+                      - generic [ref=e642]: delete
+                - generic [ref=e643]:
+                  - paragraph [ref=e645]: Marketing
+                  - generic [ref=e646]:
+                    - button "edit" [ref=e647]:
+                      - generic [ref=e648]: edit
+                    - button "delete" [ref=e649]:
+                      - generic [ref=e650]: delete
+                - generic [ref=e651]:
+                  - paragraph [ref=e653]: Sales - Closers
+                  - generic [ref=e654]:
+                    - button "edit" [ref=e655]:
+                      - generic [ref=e656]: edit
+                    - button "delete" [ref=e657]:
+                      - generic [ref=e658]: delete
+                - generic [ref=e659]:
+                  - paragraph [ref=e661]: Sales - Openers
+                  - generic [ref=e662]:
+                    - button "edit" [ref=e663]:
+                      - generic [ref=e664]: edit
+                    - button "delete" [ref=e665]:
+                      - generic [ref=e666]: delete
+            - generic [ref=e667]:
+              - generic [ref=e668]:
+                - generic [ref=e669]: work
+                - heading "Job Titles" [level=2] [ref=e670]
+              - generic [ref=e671]:
+                - generic [ref=e672]:
+                  - text: Administrative Assistant
+                  - button "close" [ref=e673]:
+                    - generic [ref=e674]: close
+                - generic [ref=e675]:
+                  - text: Authorized Member
+                  - button "close" [ref=e676]:
+                    - generic [ref=e677]: close
+                - generic [ref=e678]:
+                  - text: Content Strategist
+                  - button "close" [ref=e679]:
+                    - generic [ref=e680]: close
+                - generic [ref=e681]:
+                  - text: CRM Manager - Retention
+                  - button "close" [ref=e682]:
+                    - generic [ref=e683]: close
+                - generic [ref=e684]:
+                  - text: CRM Manager - Sales
+                  - button "close" [ref=e685]:
+                    - generic [ref=e686]: close
+                - generic [ref=e687]:
+                  - text: Customer Support
+                  - button "close" [ref=e688]:
+                    - generic [ref=e689]: close
+                - generic [ref=e690]:
+                  - text: Customer Support/Retention Manager
+                  - button "close" [ref=e691]:
+                    - generic [ref=e692]: close
+                - generic [ref=e693]:
+                  - text: High Volume Recruiter
+                  - button "close" [ref=e694]:
+                    - generic [ref=e695]: close
+                - generic [ref=e696]:
+                  - text: High-Volume Recruiter
+                  - button "close" [ref=e697]:
+                    - generic [ref=e698]: close
+                - generic [ref=e699]:
+                  - text: Managing Member
+                  - button "close" [ref=e700]:
+                    - generic [ref=e701]: close
+                - generic [ref=e702]:
+                  - text: Retention Specialist
+                  - button "close" [ref=e703]:
+                    - generic [ref=e704]: close
+                - generic [ref=e705]:
+                  - text: Sales Floor Manager
+                  - button "close" [ref=e706]:
+                    - generic [ref=e707]: close
+                - generic [ref=e708]:
+                  - text: Senior Settlement Advisor
+                  - button "close" [ref=e709]:
+                    - generic [ref=e710]: close
+                - generic [ref=e711]:
+                  - text: Settlement Advisor
+                  - button "close" [ref=e712]:
+                    - generic [ref=e713]: close
+                - generic [ref=e714]:
+                  - text: VP, Human Resources
+                  - button "close" [ref=e715]:
+                    - generic [ref=e716]: close
+              - generic [ref=e717]:
+                - textbox "New job title" [ref=e718]
+                - button "add Add" [disabled] [ref=e719]:
+                  - generic [ref=e720]: add
+                  - text: Add
+            - generic [ref=e721]:
+              - generic [ref=e722]:
+                - generic [ref=e723]: assignment
+                - heading "Pre-Onboarding Setup" [level=2] [ref=e724]
+              - generic [ref=e725]:
+                - generic [ref=e726]: Department
+                - combobox [ref=e727]:
+                  - option "Global (All Departments)" [selected]
+                  - option "Customer Support"
+                  - option "General & Admin"
+                  - option "Human Resource"
+                  - option "Marketing"
+                  - option "Sales - Closers"
+                  - option "Sales - Openers"
+              - generic [ref=e1051]:
+                - heading "verified_user Base Tasks (Global (All Departments))" [level=3] [ref=e1053]:
+                  - generic [ref=e1054]: verified_user
+                  - text: Base Tasks
+                  - generic [ref=e1055]: (Global (All Departments))
+                - generic [ref=e1056]:
+                  - paragraph [ref=e1057]: No onboarding checklist for Global (All Departments). Create one to get started.
+                  - button "add Create Onboarding Checklist" [ref=e1058]:
+                    - generic [ref=e1059]: add
+                    - text: Create Onboarding Checklist
+            - generic [ref=e731]:
+              - generic [ref=e732]:
+                - generic [ref=e733]: assignment
+                - heading "Onboarding Setup" [level=2] [ref=e734]
+              - generic [ref=e735]:
+                - generic [ref=e736]: Department
+                - combobox [ref=e737]:
+                  - option "Global (All Departments)" [selected]
+                  - option "Customer Support"
+                  - option "General & Admin"
+                  - option "Human Resource"
+                  - option "Marketing"
+                  - option "Sales - Closers"
+                  - option "Sales - Openers"
+              - generic [ref=e1060]:
+                - generic [ref=e1061]:
+                  - heading "verified_user Base Tasks (Global (All Departments))" [level=3] [ref=e1062]:
+                    - generic [ref=e1063]: verified_user
+                    - text: Base Tasks
+                    - generic [ref=e1064]: (Global (All Departments))
+                  - button "add Add Task" [ref=e1065]:
+                    - generic [ref=e1066]: add
+                    - text: Add Task
+                - paragraph [ref=e1067]: No tasks yet. Add one to get started.
+            - generic [ref=e741]:
+              - generic [ref=e742]:
+                - generic [ref=e743]: logout
+                - heading "Offboarding Setup" [level=2] [ref=e744]
+              - generic [ref=e745]:
+                - generic [ref=e746]: Department
+                - combobox [ref=e747]:
+                  - option "Global (All Departments)" [selected]
+                  - option "Customer Support"
+                  - option "General & Admin"
+                  - option "Human Resource"
+                  - option "Marketing"
+                  - option "Sales - Closers"
+                  - option "Sales - Openers"
+              - generic [ref=e1068]:
+                - generic [ref=e1069]:
+                  - heading "verified_user Base Tasks (Global (All Departments))" [level=3] [ref=e1070]:
+                    - generic [ref=e1071]: verified_user
+                    - text: Base Tasks
+                    - generic [ref=e1072]: (Global (All Departments))
+                  - button "add Add Task" [ref=e1073]:
+                    - generic [ref=e1074]: add
+                    - text: Add Task
+                - paragraph [ref=e1075]: No tasks yet. Add one to get started.
+            - generic [ref=e751]:
+              - generic [ref=e752]:
+                - generic [ref=e753]: beach_access
+                - heading "PTO Policies" [level=2] [ref=e754]
+              - generic [ref=e755]:
+                - generic [ref=e756]:
+                  - generic [ref=e757]:
+                    - generic [ref=e758]: Policy Name
+                    - textbox "e.g. Vacation" [ref=e759]
+                  - generic [ref=e760]:
+                    - generic [ref=e761]: Days Per Year
+                    - spinbutton [ref=e762]: "20"
+                - generic [ref=e763]:
+                  - checkbox "Unlimited PTO" [ref=e764]
+                  - text: Unlimited PTO
+                - generic [ref=e765]:
+                  - generic [ref=e766]: Policy Document (optional)
+                  - button "Choose File" [ref=e767]
+                - button "add Add Policy" [disabled] [ref=e768]:
+                  - generic [ref=e769]: add
+                  - text: Add Policy
+            - generic [ref=e770]:
+              - generic [ref=e771]:
+                - generic [ref=e772]: mail
+                - heading "Email Templates" [level=2] [ref=e773]
+              - paragraph [ref=e774]: "Customize the emails sent by the system. Use {{variable}} placeholders for dynamic content. Test emails are sent to bar@coastaldebt.com."
+              - generic [ref=e775]:
+                - button "WELCOME Sent when a new user is invited to the platform expand_more" [ref=e777]:
+                  - generic [ref=e778]:
+                    - paragraph [ref=e780]: WELCOME
+                    - paragraph [ref=e781]: Sent when a new user is invited to the platform
+                  - generic [ref=e782]: expand_more
+                - button "SIGNING REQUEST Sent when an employee needs to sign a document expand_more" [ref=e784]:
+                  - generic [ref=e785]:
+                    - paragraph [ref=e787]: SIGNING REQUEST
+                    - paragraph [ref=e788]: Sent when an employee needs to sign a document
+                  - generic [ref=e789]: expand_more
+                - button "TASK ASSIGNMENT Sent when an onboarding task is assigned to an employee expand_more" [ref=e791]:
+                  - generic [ref=e792]:
+                    - paragraph [ref=e794]: TASK ASSIGNMENT
+                    - paragraph [ref=e795]: Sent when an onboarding task is assigned to an employee
+                  - generic [ref=e796]: expand_more
+                - button "SIGNING CONFIRMATION Sent after a document has been successfully signed expand_more" [ref=e798]:
+                  - generic [ref=e799]:
+                    - paragraph [ref=e801]: SIGNING CONFIRMATION
+                    - paragraph [ref=e802]: Sent after a document has been successfully signed
+                  - generic [ref=e803]: expand_more
+                - button "ONBOARDING General onboarding email with optional document attachment expand_more" [ref=e805]:
+                  - generic [ref=e806]:
+                    - paragraph [ref=e808]: ONBOARDING
+                    - paragraph [ref=e809]: General onboarding email with optional document attachment
+                  - generic [ref=e810]: expand_more
+            - generic [ref=e811]:
+              - generic [ref=e812]:
+                - generic [ref=e813]: monitoring
+                - heading "Pulse Surveys" [level=2] [ref=e814]
+              - generic [ref=e815]:
+                - textbox "How are you feeling about your workload this week?" [ref=e816]
+                - button "add Create" [disabled] [ref=e817]:
+                  - generic [ref=e818]: add
+                  - text: Create
+              - generic [ref=e819]:
+                - generic [ref=e820]:
+                  - generic [ref=e821]:
+                    - paragraph [ref=e822]: How was your Weekend
+                    - generic [ref=e823]:
+                      - generic [ref=e824]: ACTIVE
+                      - generic [ref=e825]: 2 responses
+                  - generic [ref=e826]:
+                    - button "bar_chart" [ref=e827]:
+                      - generic [ref=e828]: bar_chart
+                    - button "close" [ref=e829]:
+                      - generic [ref=e830]: close
+                - generic [ref=e831]:
+                  - generic [ref=e832]:
+                    - paragraph [ref=e833]: How do you feel about Eli
+                    - generic [ref=e834]:
+                      - generic [ref=e835]: CLOSED
+                      - generic [ref=e836]: 0 responses
+                  - button "bar_chart" [ref=e838]:
+                    - generic [ref=e839]: bar_chart
+                - generic [ref=e840]:
+                  - generic [ref=e841]:
+                    - paragraph [ref=e842]: How was your week?
+                    - generic [ref=e843]:
+                      - generic [ref=e844]: CLOSED
+                      - generic [ref=e845]: 1 responses
+                  - button "bar_chart" [ref=e847]:
+                    - generic [ref=e848]: bar_chart
+            - generic [ref=e849]:
+              - generic [ref=e850]:
+                - generic [ref=e851]: cable
+                - heading "Platform Integrations" [level=2] [ref=e852]
+              - paragraph [ref=e853]: Connect your recruitment accounts to sync candidates automatically
+              - generic [ref=e854]:
+                - generic [ref=e855]:
+                  - generic [ref=e856]:
+                    - generic [ref=e857]: L
+                    - generic [ref=e858]:
+                      - paragraph [ref=e860]: LinkedIn Recruiter
+                      - paragraph [ref=e861]: Import senior candidates from LinkedIn's recruiter pipeline
+                  - button "login Sign in with LinkedIn Recruiter" [ref=e862]:
+                    - generic [ref=e863]: login
+                    - text: Sign in with LinkedIn Recruiter
+                - generic [ref=e864]:
+                  - generic [ref=e865]:
+                    - generic [ref=e866]: I
+                    - generic [ref=e867]:
+                      - paragraph [ref=e869]: Indeed
+                      - paragraph [ref=e870]: Sync candidates & post jobs via Unified.to integration
+                  - button "login Sign in with Indeed" [ref=e871]:
+                    - generic [ref=e872]: login
+                    - text: Sign in with Indeed
+                - generic [ref=e873]:
+                  - generic [ref=e874]:
+                    - generic [ref=e875]: H
+                    - generic [ref=e876]:
+                      - paragraph [ref=e878]: Handshake
+                      - paragraph [ref=e879]: Connect with college students and recent graduates
+                  - button "login Sign in with Handshake" [ref=e880]:
+                    - generic [ref=e881]: login
+                    - text: Sign in with Handshake
+                - generic [ref=e882]:
+                  - generic [ref=e883]:
+                    - generic [ref=e884]: E
+                    - generic [ref=e885]:
+                      - paragraph [ref=e887]: EmployFL
+                      - paragraph [ref=e888]: Florida-based talent pool with bilingual candidates
+                  - button "login Sign in with EmployFL" [ref=e889]:
+                    - generic [ref=e890]: login
+                    - text: Sign in with EmployFL
+                - generic [ref=e891]:
+                  - generic [ref=e892]:
+                    - generic [ref=e893]: J
+                    - generic [ref=e894]:
+                      - generic [ref=e895]:
+                        - paragraph [ref=e896]: Jobing
+                        - generic [ref=e897]: Connected
+                      - paragraph [ref=e898]: Import applicants from Jobing/NOLIG job board
+                  - generic [ref=e899]:
+                    - paragraph [ref=e901]: Last sync Mar 13, 2026 · 0 imported
+                    - button "link_off Disconnect" [ref=e902]:
+                      - generic [ref=e903]: link_off
+                      - text: Disconnect
+                - generic [ref=e904]:
+                  - generic [ref=e905]:
+                    - generic [ref=e906]: B
+                    - generic [ref=e907]:
+                      - generic [ref=e908]:
+                        - paragraph [ref=e909]: Breezy HR
+                        - generic [ref=e910]: Connected
+                      - paragraph [ref=e911]: Sync candidates from Indeed & LinkedIn via Breezy HR
+                  - generic [ref=e912]:
+                    - paragraph [ref=e914]: Last sync 4d ago · 0 imported
+                    - button "link_off Disconnect" [ref=e915]:
+                      - generic [ref=e916]: link_off
+                      - text: Disconnect
+                - generic [ref=e917]:
+                  - generic [ref=e918]:
+                    - generic [ref=e919]: G
+                    - generic [ref=e920]:
+                      - generic [ref=e921]:
+                        - paragraph [ref=e922]: Google Calendar
+                        - generic [ref=e923]: Connected
+                      - paragraph [ref=e924]: Schedule interviews with automatic Google Meet links
+                  - generic [ref=e925]:
+                    - paragraph [ref=e927]: Ready to sync candidates
+                    - button "link_off Disconnect" [ref=e928]:
+                      - generic [ref=e929]: link_off
+                      - text: Disconnect
+            - generic [ref=e930]:
+              - heading "Cleanup Demo Data" [level=3] [ref=e931]
+              - paragraph [ref=e932]: Remove all demo/seed employees (non @coastaldebt.com) and empty departments.
+              - button "delete Remove Demo Employees" [ref=e933]:
+                - generic [ref=e934]: delete
+                - text: Remove Demo Employees
+            - generic [ref=e935]:
+              - generic [ref=e936]:
+                - generic [ref=e937]:
+                  - generic [ref=e938]: cable
+                  - heading "Platform Integrations" [level=2] [ref=e939]
+                - button "add Add Platform" [ref=e940]:
+                  - generic [ref=e941]: add
+                  - text: Add Platform
+              - generic [ref=e942]:
+                - generic [ref=e943]:
+                  - generic [ref=e946]:
+                    - generic [ref=e947]:
+                      - paragraph [ref=e948]: Breezy HR
+                      - generic [ref=e949]: Premium
+                      - generic [ref=e950]: Connected
+                    - generic [ref=e951]:
+                      - paragraph [ref=e952]: 543dfd5ebdba01
+                      - paragraph [ref=e953]: $0/mo
+                      - paragraph [ref=e954]: "Last sync: 4d ago · 0 imported"
+                  - generic [ref=e955]:
+                    - button "link_off Disconnect" [ref=e956]:
+                      - generic [ref=e957]: link_off
+                      - text: Disconnect
+                    - button "edit" [ref=e958]:
+                      - generic [ref=e959]: edit
+                    - button "delete" [ref=e960]:
+                      - generic [ref=e961]: delete
+                - generic [ref=e962]:
+                  - generic [ref=e965]:
+                    - generic [ref=e966]:
+                      - paragraph [ref=e967]: Google Calendar
+                      - generic [ref=e968]: Premium
+                    - paragraph [ref=e970]: $0/mo
+                  - generic [ref=e971]:
+                    - button "edit" [ref=e972]:
+                      - generic [ref=e973]: edit
+                    - button "delete" [ref=e974]:
+                      - generic [ref=e975]: delete
+                - generic [ref=e976]:
+                  - generic [ref=e979]:
+                    - generic [ref=e980]:
+                      - paragraph [ref=e981]: Jobing
+                      - generic [ref=e982]: Job Board
+                      - generic [ref=e983]: Connected
+                    - generic [ref=e984]:
+                      - paragraph [ref=e985]: $0/mo
+                      - paragraph [ref=e986]: "Last sync: Mar 13, 2026 · 0 imported"
+                  - generic [ref=e987]:
+                    - button "link_off Disconnect" [ref=e988]:
+                      - generic [ref=e989]: link_off
+                      - text: Disconnect
+                    - button "edit" [ref=e990]:
+                      - generic [ref=e991]: edit
+                    - button "delete" [ref=e992]:
+                      - generic [ref=e993]: delete
+                - generic [ref=e994]:
+                  - generic [ref=e997]:
+                    - generic [ref=e998]:
+                      - paragraph [ref=e999]: LinkedIn Recruiter
+                      - generic [ref=e1000]: Premium
+                    - paragraph [ref=e1002]: $825/mo
+                  - generic [ref=e1003]:
+                    - button "link Connect" [ref=e1004]:
+                      - generic [ref=e1005]: link
+                      - text: Connect
+                    - button "edit" [ref=e1006]:
+                      - generic [ref=e1007]: edit
+                    - button "delete" [ref=e1008]:
+                      - generic [ref=e1009]: delete
+            - generic [ref=e1010]:
+              - heading "payments Gusto Integration" [level=3] [ref=e1012]:
+                - generic [ref=e1013]: payments
+                - text: Gusto Integration
+              - generic [ref=e1014]:
+                - generic [ref=e1015]:
+                  - generic [ref=e1016]: link_off
+                  - generic [ref=e1017]:
+                    - paragraph [ref=e1018]: Gusto is not connected
+                    - paragraph [ref=e1019]: Connect in Settings to enable payroll and time-off sync.
+                  - link "Connect" [ref=e1020] [cursor=pointer]:
+                    - /url: /settings
+                    - button "Connect" [ref=e1021]
+                - link "link Connect Gusto" [ref=e1022] [cursor=pointer]:
+                  - /url: /api/platforms/gusto/authorize
+                  - button "link Connect Gusto" [ref=e1023]:
+                    - generic [ref=e1024]: link
+                    - text: Connect Gusto
+  - alert [ref=e1025]

@@ -7,31 +7,78 @@ import { bulkImportCandidates } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 
-type CandidateField = "firstName" | "lastName" | "email" | "phone" | "skills" | "experience" | "source" | "linkedinUrl" | "notes" | "skip";
+type CandidateField = "fullName" | "firstName" | "lastName" | "email" | "phone" | "skills" | "experience" | "source" | "linkedinUrl" | "notes" | "jobTitle" | "location" | "education" | "status" | "skip";
 
 const FIELD_OPTIONS: { value: CandidateField; label: string }[] = [
   { value: "skip", label: "(Skip)" },
+  { value: "fullName", label: "Full Name" },
   { value: "firstName", label: "First Name" },
   { value: "lastName", label: "Last Name" },
   { value: "email", label: "Email" },
   { value: "phone", label: "Phone" },
+  { value: "jobTitle", label: "Job Title" },
   { value: "skills", label: "Skills" },
   { value: "experience", label: "Experience" },
+  { value: "education", label: "Education" },
+  { value: "location", label: "Location" },
   { value: "source", label: "Source" },
+  { value: "status", label: "Status" },
   { value: "linkedinUrl", label: "LinkedIn URL" },
   { value: "notes", label: "Notes" },
 ];
 
 const HEADER_MAP: Record<string, CandidateField> = {
-  "first name": "firstName", "firstname": "firstName", "first": "firstName", "given name": "firstName",
-  "last name": "lastName", "lastname": "lastName", "last": "lastName", "surname": "lastName", "family name": "lastName",
+  // Full name
+  "name": "fullName", "full name": "fullName", "fullname": "fullName",
+  "candidate name": "fullName", "candidate": "fullName", "applicant": "fullName",
+  "applicant name": "fullName",
+  // First name
+  "first name": "firstName", "firstname": "firstName", "first": "firstName",
+  "given name": "firstName", "givenname": "firstName",
+  // Last name
+  "last name": "lastName", "lastname": "lastName", "last": "lastName",
+  "surname": "lastName", "family name": "lastName", "familyname": "lastName",
+  // Email
   "email": "email", "e-mail": "email", "email address": "email",
-  "phone": "phone", "phone number": "phone", "telephone": "phone", "mobile": "phone",
-  "skills": "skills", "skill": "skills",
-  "experience": "experience", "years of experience": "experience", "exp": "experience",
-  "source": "source", "referral source": "source",
-  "linkedin": "linkedinUrl", "linkedin url": "linkedinUrl", "linkedin profile": "linkedinUrl",
-  "notes": "notes", "note": "notes", "comments": "notes", "comment": "notes",
+  "emailaddress": "email", "mail": "email", "contact email": "email",
+  // Phone
+  "phone": "phone", "phone number": "phone", "telephone": "phone",
+  "mobile": "phone", "cell": "phone", "cell phone": "phone",
+  "contact number": "phone", "tel": "phone",
+  // Job title
+  "job title": "jobTitle", "jobtitle": "jobTitle", "title": "jobTitle",
+  "position": "jobTitle", "role": "jobTitle", "job role": "jobTitle",
+  "current title": "jobTitle", "current position": "jobTitle",
+  // Skills
+  "skills": "skills", "skill": "skills", "qualifications": "skills",
+  "qualification": "skills", "qualification 1": "skills",
+  "key skills": "skills", "competencies": "skills",
+  // Experience
+  "experience": "experience", "years of experience": "experience",
+  "exp": "experience", "work experience": "experience",
+  "relevant experience": "experience", "years": "experience",
+  "total experience": "experience",
+  // Education
+  "education": "education", "degree": "education", "qualification level": "education",
+  "school": "education", "university": "education", "college": "education",
+  // Location
+  "location": "location", "city": "location", "address": "location",
+  "candidate location": "location", "job location": "location",
+  "region": "location", "state": "location", "country": "location",
+  // Source
+  "source": "source", "referral source": "source", "channel": "source",
+  "origin": "source", "how found": "source", "referred by": "source",
+  "apply source": "source",
+  // Status
+  "status": "status", "candidate status": "status", "stage": "status",
+  "pipeline stage": "status", "interest level": "status",
+  // LinkedIn
+  "linkedin": "linkedinUrl", "linkedin url": "linkedinUrl",
+  "linkedin profile": "linkedinUrl", "linkedin link": "linkedinUrl",
+  // Notes
+  "notes": "notes", "note": "notes", "comments": "notes",
+  "comment": "notes", "additional info": "notes",
+  "additional notes": "notes", "remarks": "notes",
 };
 
 function parseCsv(text: string): { headers: string[]; rows: string[][] } {
@@ -74,8 +121,26 @@ function parseCsv(text: string): { headers: string[]; rows: string[][] } {
 function autoDetectMapping(headers: string[]): CandidateField[] {
   return headers.map((h) => {
     const normalized = h.toLowerCase().trim();
-    return HEADER_MAP[normalized] || "skip";
+    // Exact match first
+    if (HEADER_MAP[normalized]) return HEADER_MAP[normalized];
+    // Partial/fuzzy match
+    for (const [key, field] of Object.entries(HEADER_MAP)) {
+      if (normalized.includes(key) || key.includes(normalized)) {
+        return field;
+      }
+    }
+    return "skip";
   });
+}
+
+function splitFullName(fullName: string): { firstName: string; lastName: string } {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length === 0) return { firstName: "", lastName: "" };
+  if (parts.length === 1) return { firstName: parts[0], lastName: "" };
+  return {
+    firstName: parts[0],
+    lastName: parts.slice(1).join(" "),
+  };
 }
 
 export function CsvImport() {
@@ -124,28 +189,44 @@ export function CsvImport() {
     setMapping((m) => m.map((v, i) => (i === index ? value : v)));
   }
 
-  const hasRequired = mapping.includes("firstName") && mapping.includes("lastName") && mapping.includes("email");
+  // Either fullName or (firstName + lastName) is required, plus email
+  const hasFullName = mapping.includes("fullName");
+  const hasFirstLast = mapping.includes("firstName") && mapping.includes("lastName");
+  const hasName = hasFullName || hasFirstLast;
+  const hasEmail = mapping.includes("email");
+  const hasRequired = hasName && hasEmail;
+
+  // Count mapped fields (excluding skip)
+  const mappedCount = mapping.filter((m) => m !== "skip").length;
 
   async function handleImport() {
     setImporting(true);
     const candidates = rows.map((row) => {
       const entry: Record<string, string> = {};
       mapping.forEach((field, i) => {
-        if (field !== "skip" && row[i]) entry[field] = row[i];
+        if (field !== "skip" && row[i]) {
+          if (field === "fullName") {
+            const { firstName, lastName } = splitFullName(row[i]);
+            entry.firstName = firstName;
+            entry.lastName = lastName;
+          } else {
+            entry[field] = row[i];
+          }
+        }
       });
       return entry;
-    }).filter((e) => e.firstName && e.lastName && e.email);
+    }).filter((e) => e.firstName && e.email);
 
     const payload = candidates.map((c) => ({
       firstName: c.firstName,
-      lastName: c.lastName,
+      lastName: c.lastName || "",
       email: c.email,
       phone: c.phone || undefined,
       skills: c.skills ? c.skills.split(/[,;]/).map((s) => s.trim()).filter(Boolean).join(", ") : undefined,
-      experience: c.experience || undefined,
+      experience: [c.experience, c.jobTitle, c.education].filter(Boolean).join(" · ") || undefined,
       source: c.source || undefined,
       linkedinUrl: c.linkedinUrl || undefined,
-      notes: c.notes || undefined,
+      notes: [c.notes, c.location ? `Location: ${c.location}` : "", c.status ? `Status: ${c.status}` : ""].filter(Boolean).join("\n") || undefined,
     }));
 
     try {
@@ -180,7 +261,7 @@ export function CsvImport() {
       <button
         onClick={() => { reset(); setOpen(true); }}
         className={cn(
-          "flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium",
+          "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
           "bg-[var(--color-surface)] border border-[var(--color-border)]",
           "text-[var(--color-text-primary)]",
           "hover:bg-[var(--color-surface-hover)] transition-colors"
@@ -217,7 +298,7 @@ export function CsvImport() {
               Drop a CSV file here or click to browse
             </span>
             <span className="text-xs text-[var(--color-text-muted)]">
-              First row should contain column headers
+              Columns are auto-detected from headers
             </span>
           </div>
         )}
@@ -226,28 +307,33 @@ export function CsvImport() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
               <Icon name="table_chart" size={16} />
-              <span>{fileName}</span>
-              <span className="ml-auto">{rows.length} rows found</span>
+              <span className="truncate">{fileName}</span>
+              <span className="ml-auto shrink-0">{rows.length} rows · {mappedCount} fields mapped</span>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-[var(--color-text-primary)]">Map columns to candidate fields:</p>
-              {headers.map((header, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <span className="text-sm text-[var(--color-text-muted)] w-32 truncate shrink-0" title={header}>
-                    {header}
-                  </span>
-                  <select
-                    value={mapping[i]}
-                    onChange={(e) => updateMapping(i, e.target.value as CandidateField)}
-                    className={selectClass}
-                  >
-                    {FIELD_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-              ))}
+            <div className="space-y-1.5 max-h-[40vh] overflow-y-auto pr-1">
+              <p className="text-xs font-medium text-[var(--color-text-primary)] sticky top-0 bg-[var(--color-surface)] py-1">Map columns to candidate fields:</p>
+              {headers.map((header, i) => {
+                const isMapped = mapping[i] !== "skip";
+                return (
+                  <div key={i} className={cn("flex items-center gap-3 p-1.5 rounded-lg transition-colors", isMapped && "bg-[var(--color-accent)]/5")}>
+                    <span className="text-sm text-[var(--color-text-muted)] w-36 truncate shrink-0" title={header}>
+                      {header}
+                    </span>
+                    {isMapped && <Icon name="arrow_forward" size={14} className="text-[var(--color-accent)] shrink-0" />}
+                    {!isMapped && <Icon name="arrow_forward" size={14} className="text-[var(--color-border)] shrink-0" />}
+                    <select
+                      value={mapping[i]}
+                      onChange={(e) => updateMapping(i, e.target.value as CandidateField)}
+                      className={cn(selectClass, isMapped && "border-[var(--color-accent)]/30")}
+                    >
+                      {FIELD_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
             </div>
 
             {previewRows.length > 0 && (
@@ -258,9 +344,11 @@ export function CsvImport() {
                     <thead>
                       <tr className="bg-[var(--color-background)]">
                         {headers.map((h, i) => (
-                          <th key={i} className="px-2 py-1.5 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
-                            {h}
-                          </th>
+                          mapping[i] !== "skip" && (
+                            <th key={i} className="px-2 py-1.5 text-left font-medium text-[var(--color-text-muted)] whitespace-nowrap">
+                              {FIELD_OPTIONS.find((f) => f.value === mapping[i])?.label || h}
+                            </th>
+                          )
                         ))}
                       </tr>
                     </thead>
@@ -268,9 +356,11 @@ export function CsvImport() {
                       {previewRows.map((row, ri) => (
                         <tr key={ri} className="border-t border-[var(--color-border)]">
                           {row.map((cell, ci) => (
-                            <td key={ci} className="px-2 py-1.5 text-[var(--color-text-primary)] whitespace-nowrap max-w-[150px] truncate">
-                              {cell}
-                            </td>
+                            mapping[ci] !== "skip" && (
+                              <td key={ci} className="px-2 py-1.5 text-[var(--color-text-primary)] whitespace-nowrap max-w-[150px] truncate">
+                                {cell}
+                              </td>
+                            )
                           ))}
                         </tr>
                       ))}
@@ -281,8 +371,9 @@ export function CsvImport() {
             )}
 
             {!hasRequired && (
-              <p className="text-xs text-red-500">
-                Please map First Name, Last Name, and Email columns to proceed.
+              <p className="text-xs text-amber-500 flex items-center gap-1">
+                <Icon name="warning" size={14} />
+                {!hasName ? "Map a Full Name or First Name + Last Name column" : "Map an Email column"} to proceed.
               </p>
             )}
 
@@ -340,9 +431,12 @@ export function CsvImport() {
               {result.errors.length > 0 && (
                 <div className="pt-2 border-t border-[var(--color-border)]">
                   <p className="text-xs font-medium text-red-500 mb-1">Errors:</p>
-                  {result.errors.map((err, i) => (
+                  {result.errors.slice(0, 5).map((err, i) => (
                     <p key={i} className="text-xs text-red-400 truncate" title={err}>{err}</p>
                   ))}
+                  {result.errors.length > 5 && (
+                    <p className="text-xs text-red-400">...and {result.errors.length - 5} more</p>
+                  )}
                 </div>
               )}
             </div>
