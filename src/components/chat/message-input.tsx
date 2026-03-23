@@ -1,10 +1,8 @@
 "use client";
 
 import { useCallback, useRef, useState, useEffect } from "react";
-import { createRoot } from "react-dom/client";
 import { EmojiPicker } from "./emoji-picker";
-import { MentionList } from "./mention-list";
-import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
 import LinkExtension from "@tiptap/extension-link";
@@ -14,7 +12,6 @@ import { sendMessage } from "@/lib/actions/chat-messages";
 import { getWorkspaceMembers } from "@/lib/actions/chat-workspace";
 import { useChatStore } from "@/lib/chat/use-chat-store";
 import type { MessagePayload } from "@/lib/chat/ws-types";
-import type { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
 
 interface UploadedFile {
   fileName: string;
@@ -35,7 +32,10 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-// Cache members so we don't refetch every keystroke
+function getInitials(firstName: string, lastName: string) {
+  return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
+}
+
 let cachedMembers: any[] | null = null;
 
 export function MessageInput({ channelId, channelType, channelName }: Props) {
@@ -44,10 +44,13 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionItems, setMentionItems] = useState<any[]>([]);
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [mentionCommand, setMentionCommand] = useState<((props: { id: string; label: string }) => void) | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addMessage, workspaceId } = useChatStore();
 
-  // Preload members for mentions
   useEffect(() => {
     if (workspaceId && !cachedMembers) {
       getWorkspaceMembers(workspaceId).then((m: any) => {
@@ -67,9 +70,7 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
       LinkExtension.configure({ openOnClick: false }),
       Underline,
       Mention.configure({
-        HTMLAttributes: {
-          class: "mention",
-        },
+        HTMLAttributes: { class: "mention" },
         suggestion: {
           items: ({ query }: { query: string }) => {
             if (!cachedMembers) return [];
@@ -80,48 +81,45 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
               .slice(0, 8);
           },
           render: () => {
-            let component: ReactRenderer | null = null;
-            let popup: HTMLDivElement | null = null;
-
             return {
-              onStart: (props: SuggestionProps) => {
-                component = new ReactRenderer(MentionList, {
-                  props,
-                  editor: props.editor,
-                });
-
-                popup = document.createElement("div");
-                popup.style.position = "absolute";
-                popup.style.zIndex = "50";
-
-                const editorEl = props.editor.view.dom.closest(".border") as HTMLElement | null;
-                if (editorEl) {
-                  editorEl.style.position = "relative";
-                  // Position above the editor
-                  popup.style.bottom = "100%";
-                  popup.style.left = "16px";
-                  popup.style.marginBottom = "4px";
-                  editorEl.appendChild(popup);
-                } else {
-                  document.body.appendChild(popup);
-                }
-
-                popup.appendChild(component.element);
+              onStart: (props: any) => {
+                setMentionQuery(props.query);
+                setMentionItems(props.items);
+                setMentionIndex(0);
+                setMentionCommand(() => props.command);
               },
-              onUpdate: (props: SuggestionProps) => {
-                component?.updateProps(props);
+              onUpdate: (props: any) => {
+                setMentionQuery(props.query);
+                setMentionItems(props.items);
+                setMentionIndex(0);
+                setMentionCommand(() => props.command);
               },
-              onKeyDown: (props: SuggestionKeyDownProps) => {
-                if (props.event.key === "Escape") {
-                  popup?.remove();
-                  component?.destroy();
+              onKeyDown: (props: any) => {
+                if (props.event.key === "ArrowUp") {
+                  setMentionIndex((prev) => (prev + mentionItems.length - 1) % mentionItems.length);
                   return true;
                 }
-                return (component?.ref as any)?.onKeyDown?.(props) ?? false;
+                if (props.event.key === "ArrowDown") {
+                  setMentionIndex((prev) => (prev + 1) % mentionItems.length);
+                  return true;
+                }
+                if (props.event.key === "Enter" || props.event.key === "Tab") {
+                  const item = mentionItems[mentionIndex];
+                  if (item && mentionCommand) {
+                    mentionCommand({ id: item.id, label: `${item.firstName} ${item.lastName}` });
+                  }
+                  return true;
+                }
+                if (props.event.key === "Escape") {
+                  setMentionQuery(null);
+                  return true;
+                }
+                return false;
               },
               onExit: () => {
-                popup?.remove();
-                component?.destroy();
+                setMentionQuery(null);
+                setMentionItems([]);
+                setMentionCommand(null);
               },
             };
           },
@@ -133,11 +131,10 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
         class: "outline-none px-4 py-3 text-sm min-h-[44px] max-h-[200px] overflow-y-auto",
       },
       handleKeyDown: (_view, event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
-          // Don't submit if mention suggestion is open
-          const mentionPopup = document.querySelector("[data-tippy-root]");
-          if (mentionPopup) return false;
+        // Don't submit if mention dropdown is open
+        if (mentionQuery !== null) return false;
 
+        if (event.key === "Enter" && !event.shiftKey) {
           event.preventDefault();
           handleSubmit();
           return true;
@@ -220,6 +217,35 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
   return (
     <div className="px-5 py-3 border-t border-gray-200 bg-white flex-shrink-0">
       <div className="border border-gray-300 rounded-xl overflow-hidden focus-within:border-[#7C3AED] focus-within:ring-1 focus-within:ring-[#7C3AED]/20 transition-colors relative">
+
+        {/* Mention dropdown */}
+        {mentionQuery !== null && mentionItems.length > 0 && (
+          <div className="absolute bottom-full left-4 mb-1 z-50 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden max-h-52 overflow-y-auto min-w-[220px]">
+            {mentionItems.map((item: any, index: number) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  if (mentionCommand) {
+                    mentionCommand({ id: item.id, label: `${item.firstName} ${item.lastName}` });
+                  }
+                }}
+                className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                  index === mentionIndex ? "bg-[#7C3AED]/10 text-[#7C3AED]" : "hover:bg-gray-50 text-gray-800"
+                }`}
+              >
+                {item.profilePhoto ? (
+                  <img src={item.profilePhoto} alt="" className="w-6 h-6 rounded-md object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-6 h-6 rounded-md bg-[#7C3AED] flex items-center justify-center text-white text-[9px] font-semibold flex-shrink-0">
+                    {getInitials(item.firstName, item.lastName)}
+                  </div>
+                )}
+                <span>{item.firstName} {item.lastName}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         {showToolbar && (
           <div className="flex items-center gap-1 px-3 py-1.5 border-b border-gray-100">
             <ToolbarButton active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()} label="B" className="font-bold" />
@@ -238,7 +264,6 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
 
         <EditorContent editor={editor} />
 
-        {/* Pending file previews */}
         {pendingFiles.length > 0 && (
           <div className="px-3 py-2 flex flex-wrap gap-2 border-t border-gray-100">
             {pendingFiles.map((f, i) => (
@@ -272,9 +297,7 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
               className="hidden"
               onChange={(e) => {
                 const files = e.target.files;
-                if (files) {
-                  Array.from(files).forEach((f) => handleFileUpload(f));
-                }
+                if (files) Array.from(files).forEach((f) => handleFileUpload(f));
                 e.target.value = "";
               }}
             />
