@@ -63,7 +63,8 @@ export function ChatWidget() {
       <button
         onClick={() => { setOpen(!open); if (!open) loadData(); }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all hidden md:flex",
+          "fixed bottom-6 right-6 z-[60] w-14 h-14 rounded-full items-center justify-center shadow-2xl transition-all hidden md:flex",
+          "ring-4 ring-white",
           open ? "bg-gray-700 hover:bg-gray-800" : "bg-[#7C3AED] hover:bg-[#6D28D9]"
         )}
       >
@@ -74,7 +75,7 @@ export function ChatWidget() {
 
       {/* Right-side panel */}
       {open && (
-        <div className="fixed right-6 bottom-24 z-40 w-80 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden md:flex">
+        <div className="fixed right-6 bottom-24 z-[60] w-80 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden md:flex">
           {/* Header */}
           <div className="bg-[#1A1D21] px-4 py-3 flex items-center justify-between">
             <h3 className="text-white font-semibold text-sm">HT Chat</h3>
@@ -154,7 +155,7 @@ export function ChatWidget() {
       )}
 
       {/* Mini chat windows at bottom */}
-      <div className="fixed bottom-0 right-24 z-30 flex items-end gap-2 hidden md:flex">
+      <div className="fixed bottom-0 right-24 z-[55] flex items-end gap-2 hidden md:flex">
         {miniChats.map((chat) => (
           <MiniChatWindow key={chat.id} chat={chat} onClose={() => closeMiniChat(chat.id)} />
         ))}
