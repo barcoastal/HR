@@ -162,44 +162,58 @@ export async function bulkImportCandidates(
     notes?: string;
   }[]
 ): Promise<{ created: number; skipped: string[]; errors: string[] }> {
-  let created = 0;
-  const skipped: string[] = [];
   const errors: string[] = [];
 
-  for (const candidate of candidates) {
+  // Filter out candidates without email
+  const valid = candidates.filter((c) => c.email && c.firstName);
+
+  // Get all existing emails in one query
+  const existingEmails = new Set(
+    (await db.candidate.findMany({
+      where: { email: { in: valid.map((c) => c.email) } },
+      select: { email: true },
+    })).map((c) => c.email)
+  );
+
+  const skipped = valid.filter((c) => existingEmails.has(c.email)).map((c) => c.email);
+  const toCreate = valid.filter((c) => !existingEmails.has(c.email));
+
+  // Deduplicate by email within the batch
+  const seen = new Set<string>();
+  const uniqueToCreate = toCreate.filter((c) => {
+    if (seen.has(c.email)) return false;
+    seen.add(c.email);
+    return true;
+  });
+
+  // Batch create in chunks of 500
+  let created = 0;
+  const CHUNK_SIZE = 500;
+
+  for (let i = 0; i < uniqueToCreate.length; i += CHUNK_SIZE) {
+    const chunk = uniqueToCreate.slice(i, i + CHUNK_SIZE);
     try {
-      const existing = await db.candidate.findUnique({
-        where: { email: candidate.email },
+      const result = await db.candidate.createMany({
+        data: chunk.map((c) => ({
+          firstName: c.firstName,
+          lastName: c.lastName,
+          email: c.email,
+          phone: c.phone || null,
+          skills: c.skills
+            ? JSON.stringify(c.skills.split(/[,;]/).map((s) => s.trim()).filter(Boolean))
+            : null,
+          experience: c.experience || null,
+          source: c.source || null,
+          linkedinUrl: c.linkedinUrl || null,
+          notes: c.notes || null,
+          inPipeline: false,
+        })),
+        skipDuplicates: true,
       });
-
-      if (existing) {
-        skipped.push(candidate.email);
-        continue;
-      }
-
-      const skillsArray = candidate.skills
-        ? candidate.skills.split(",").map((s) => s.trim()).filter(Boolean)
-        : [];
-
-      await db.candidate.create({
-        data: {
-          firstName: candidate.firstName,
-          lastName: candidate.lastName,
-          email: candidate.email,
-          phone: candidate.phone,
-          skills: JSON.stringify(skillsArray),
-          experience: candidate.experience,
-          source: candidate.source,
-          linkedinUrl: candidate.linkedinUrl,
-          notes: candidate.notes,
-        },
-      });
-
-      created++;
+      created += result.count;
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unknown error";
-      errors.push(`Failed to import ${candidate.email}: ${message}`);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      errors.push(`Batch ${Math.floor(i / CHUNK_SIZE) + 1} failed: ${message}`);
     }
   }
 
