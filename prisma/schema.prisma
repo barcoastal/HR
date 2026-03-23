@@ -345,14 +345,18 @@ model EmployeeTask {
 }
 
 model ReviewCycle {
-  id        String            @id @default(uuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
-  status    ReviewCycleStatus @default(DRAFT)
-  createdAt DateTime          @default(now())
+  id              String            @id @default(uuid())
+  name            String
+  startDate       DateTime
+  endDate         DateTime
+  status          ReviewCycleStatus @default(DRAFT)
+  template        Json?
+  selfTemplate    Json?
+  managerTemplate Json?
+  peerTemplate    Json?
+  createdAt       DateTime          @default(now())
 
-  reviews   Review[]
+  reviews         Review[]
 }
 
 model Review {
@@ -365,6 +369,7 @@ model Review {
   strengths    String?
   improvements String?
   goals        String?
+  responses    Json?
   status       ReviewStatus @default(PENDING)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
