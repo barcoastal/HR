@@ -11,6 +11,7 @@ import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
 import { updatePositionStatus, postPositionToBreezy } from "@/lib/actions/candidates";
+import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
@@ -514,6 +515,7 @@ export function CVTabs({
             <CsvImport />
             <CleanDuplicatesButton />
             <FixNamesButton />
+            <DownloadResumesButton />
           </div>
           <CandidateDatabase
             candidates={allCandidates}
@@ -618,6 +620,52 @@ function FixNamesButton() {
           <p className="text-xs font-medium text-gray-900">
             {result.fixed > 0 ? `Fixed ${result.fixed} candidate names` : "All names look good"}
           </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DownloadResumesButton() {
+  const [downloading, setDownloading] = useState(false);
+  const [result, setResult] = useState<{ total: number; downloaded: number; alreadyLocal: number; failed: number } | null>(null);
+  const router = useRouter();
+
+  async function handleDownload() {
+    if (!confirm("This will download all pending resume PDFs from Jobing. This may take a few minutes. Continue?")) return;
+    setDownloading(true);
+    setResult(null);
+    try {
+      const res = await batchDownloadResumes();
+      setResult(res);
+      if (res.downloaded > 0) router.refresh();
+    } catch {
+      alert("Failed to download resumes.");
+    }
+    setDownloading(false);
+  }
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleDownload}
+        disabled={downloading}
+        className={cn(
+          "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20",
+          "border border-emerald-500/20",
+          "disabled:opacity-50"
+        )}
+      >
+        <Icon name={downloading ? "progress_activity" : "download"} size={16} className={downloading ? "animate-material-spin" : ""} />
+        {downloading ? "Downloading..." : "Download Resumes"}
+      </button>
+      {result && (
+        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[220px]">
+          <p className="text-xs font-medium text-gray-900 mb-1">Resume Download Complete</p>
+          <p className="text-[11px] text-gray-500">Downloaded: {result.downloaded}</p>
+          <p className="text-[11px] text-gray-500">Already local: {result.alreadyLocal}</p>
+          {result.failed > 0 && <p className="text-[11px] text-red-500">Failed: {result.failed}</p>}
         </div>
       )}
     </div>
