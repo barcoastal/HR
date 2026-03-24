@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getOrCreateWorkspace } from "@/lib/actions/chat-workspace";
-import { getChannels } from "@/lib/actions/chat-channels";
-import { getDmThreads } from "@/lib/actions/chat-dms";
+import { getOrCreateWorkspace, getWorkspaceMembers } from "@/lib/actions/chat-workspace";
+import { getChannels, createChannel } from "@/lib/actions/chat-channels";
+import { getDmThreads, getOrCreateDmThread } from "@/lib/actions/chat-dms";
 import { getMessages, sendMessage } from "@/lib/actions/chat-messages";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -33,6 +33,14 @@ export function ChatWidget() {
   const [miniChats, setMiniChats] = useState<MiniChat[]>([]);
   const { data: session } = useSession();
   const myId = session?.user?.employeeId;
+  const [workspaceIdState, setWorkspaceIdState] = useState<string | null>(null);
+  const [showNewDm, setShowNewDm] = useState(false);
+  const [showNewChannel, setShowNewChannel] = useState(false);
+  const [allMembers, setAllMembers] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedPeople, setSelectedPeople] = useState<any[]>([]);
+  const [channelName, setChannelName] = useState("");
+  const [creating, setCreating] = useState(false);
 
   const loadData = useCallback(async () => {
     if (channels.length > 0) return;
@@ -40,6 +48,7 @@ export function ChatWidget() {
     try {
       const workspace = await getOrCreateWorkspace();
       if (!workspace) return;
+      setWorkspaceIdState(workspace.id);
       const [ch, dm] = await Promise.all([
         getChannels(workspace.id),
         getDmThreads(workspace.id),
@@ -59,6 +68,62 @@ export function ChatWidget() {
   const closeMiniChat = (id: string) => {
     setMiniChats((prev) => prev.filter((c) => c.id !== id));
   };
+
+  const openNewDm = async () => {
+    setShowNewDm(true);
+    setShowNewChannel(false);
+    setSearchQuery("");
+    setSelectedPeople([]);
+    if (allMembers.length === 0 && workspaceIdState) {
+      const m = await getWorkspaceMembers(workspaceIdState) as any[];
+      setAllMembers(m);
+    }
+  };
+
+  const togglePerson = (person: any) => {
+    setSelectedPeople((prev) =>
+      prev.some((p) => p.id === person.id)
+        ? prev.filter((p) => p.id !== person.id)
+        : [...prev, person]
+    );
+  };
+
+  const startDm = async () => {
+    if (!workspaceIdState || selectedPeople.length === 0) return;
+    setCreating(true);
+    const dm = await getOrCreateDmThread(workspaceIdState, selectedPeople.map((p) => p.id)) as any;
+    const members = dm.members?.map((m: any) => m.employee) || [];
+    const otherMembers = myId ? members.filter((m: any) => m.id !== myId) : members;
+    const displayMembers = otherMembers.length > 0 ? otherMembers : members;
+    const name = displayMembers.map((m: any) => `${m.firstName} ${m.lastName}`).join(", ");
+    openMiniChat({ id: dm.id, name, type: "dm", profilePhoto: displayMembers[0]?.profilePhoto });
+    setShowNewDm(false);
+    setSelectedPeople([]);
+    setCreating(false);
+    // Refresh DM list
+    const freshDms = await getDmThreads(workspaceIdState);
+    setDms(freshDms as any[]);
+  };
+
+  const handleCreateChannel = async () => {
+    if (!workspaceIdState || !channelName.trim()) return;
+    setCreating(true);
+    const channel = await createChannel({
+      workspaceId: workspaceIdState,
+      name: channelName.trim(),
+    });
+    setChannels((prev) => [...prev, channel]);
+    openMiniChat({ id: channel.id, name: channel.name, type: "channel" });
+    setShowNewChannel(false);
+    setChannelName("");
+    setCreating(false);
+  };
+
+  const filteredMembers = searchQuery
+    ? allMembers.filter((m: any) =>
+        `${m.firstName} ${m.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : allMembers;
 
   return (
     <>
@@ -80,17 +145,121 @@ export function ChatWidget() {
       {open && (
         <div className="fixed right-6 bottom-24 z-[60] w-80 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden md:flex">
           {/* Header */}
-          <div className="bg-[#1A1D21] px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#1A1D21] px-3 py-2.5 flex items-center justify-between">
             <h3 className="text-white font-semibold text-sm">Calatrava Connect</h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={openNewDm}
+                title="New message"
+                className="text-gray-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors"
+              >
+                <span className="material-symbols-rounded text-[18px]">edit_square</span>
+              </button>
+              <button
+                onClick={() => { setShowNewChannel(true); setShowNewDm(false); setChannelName(""); }}
+                title="New channel"
+                className="text-gray-400 hover:text-white p-1 rounded hover:bg-white/10 transition-colors"
+              >
+                <span className="material-symbols-rounded text-[18px]">add_circle</span>
+              </button>
               <Link
                 href="/chat"
                 className="text-[11px] text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-white/10 transition-colors"
               >
-                Open full →
+                Open →
               </Link>
             </div>
           </div>
+
+          {/* New DM picker */}
+          {showNewDm && (
+            <div className="border-b border-gray-200">
+              <div className="px-3 py-2 flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-700">New Message</p>
+                <button onClick={() => setShowNewDm(false)} className="text-gray-400 hover:text-gray-600">
+                  <span className="material-symbols-rounded text-[16px]">close</span>
+                </button>
+              </div>
+              {selectedPeople.length > 0 && (
+                <div className="px-3 pb-1 flex flex-wrap gap-1">
+                  {selectedPeople.map((p) => (
+                    <span key={p.id} className="inline-flex items-center gap-1 bg-[#7C3AED]/10 text-[#7C3AED] text-[10px] px-2 py-0.5 rounded-full">
+                      {p.firstName}
+                      <button onClick={() => togglePerson(p)} className="hover:text-red-500">×</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div className="px-3 pb-2">
+                <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search people..."
+                  autoFocus
+                  className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded-lg outline-none focus:border-[#7C3AED]"
+                />
+              </div>
+              <div className="max-h-36 overflow-y-auto px-2 pb-2">
+                {filteredMembers.map((m: any) => {
+                  const isSelected = selectedPeople.some((p) => p.id === m.id);
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => togglePerson(m)}
+                      className={cn("w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-left text-xs", isSelected ? "bg-[#7C3AED]/10" : "hover:bg-gray-50")}
+                    >
+                      {m.profilePhoto ? (
+                        <img src={m.profilePhoto} alt="" className="w-6 h-6 rounded-md object-cover shrink-0" />
+                      ) : (
+                        <div className="w-6 h-6 rounded-md bg-[#7C3AED] flex items-center justify-center text-white text-[8px] font-semibold shrink-0">
+                          {getInitials(m.firstName, m.lastName)}
+                        </div>
+                      )}
+                      <span className="text-gray-800">{m.firstName} {m.lastName}</span>
+                      {isSelected && <span className="ml-auto text-[#7C3AED]">✓</span>}
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedPeople.length > 0 && (
+                <div className="px-3 pb-2">
+                  <button
+                    onClick={startDm}
+                    disabled={creating}
+                    className="w-full bg-[#7C3AED] text-white text-xs font-medium py-1.5 rounded-lg hover:bg-[#6D28D9] disabled:opacity-50"
+                  >
+                    {creating ? "Creating..." : selectedPeople.length === 1 ? "Message" : `Create Group (${selectedPeople.length})`}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* New Channel */}
+          {showNewChannel && (
+            <div className="border-b border-gray-200 px-3 py-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold text-gray-700">New Channel</p>
+                <button onClick={() => setShowNewChannel(false)} className="text-gray-400 hover:text-gray-600">
+                  <span className="material-symbols-rounded text-[16px]">close</span>
+                </button>
+              </div>
+              <input
+                value={channelName}
+                onChange={(e) => setChannelName(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))}
+                placeholder="channel-name"
+                autoFocus
+                className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded-lg outline-none focus:border-[#7C3AED]"
+              />
+              <button
+                onClick={handleCreateChannel}
+                disabled={!channelName.trim() || creating}
+                className="w-full bg-[#7C3AED] text-white text-xs font-medium py-1.5 rounded-lg hover:bg-[#6D28D9] disabled:opacity-50"
+              >
+                {creating ? "Creating..." : "Create Channel"}
+              </button>
+            </div>
+          )}
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
