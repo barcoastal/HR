@@ -1,6 +1,9 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import type { MessagePayload, AttachmentPayload } from "@/lib/chat/ws-types";
+import { MessageActions } from "./message-actions";
+import { ReactionBar } from "./reaction-bar";
 
 function getInitials(firstName: string, lastName: string) {
   return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
@@ -69,10 +72,16 @@ function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
 }
 
 export function MessageItem({ message, isGrouped = false }: { message: MessagePayload; isGrouped?: boolean }) {
+  const { data: session } = useSession();
   const { author } = message;
   const fullTime = new Date(message.createdAt).toLocaleString();
   const hasContent = message.contentPlain && !message.contentPlain.startsWith("[");
   const attachments = message.attachments || [];
+
+  const channelId = message.channelId || message.dmThreadId || "";
+  const isOwnMessage =
+    message.authorId === "self" ||
+    (!!session?.user?.employeeId && session.user.employeeId === message.authorId);
 
   // Grouped message (same author, within 5 min) — no avatar, just content with hover timestamp
   if (isGrouped) {
@@ -98,7 +107,9 @@ export function MessageItem({ message, isGrouped = false }: { message: MessagePa
               ))}
             </div>
           )}
+          <ReactionBar messageId={message.id} reactions={[]} />
         </div>
+        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} />
       </div>
     );
   }
@@ -140,7 +151,9 @@ export function MessageItem({ message, isGrouped = false }: { message: MessagePa
             ))}
           </div>
         )}
+        <ReactionBar messageId={message.id} reactions={[]} />
       </div>
+      <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} />
     </div>
   );
 }
