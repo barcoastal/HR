@@ -34,14 +34,22 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   // If body has candidates array, use push mode (data fetched externally)
+  let body: Record<string, unknown> | null = null;
   try {
-    const body = await request.json();
-    if (body.candidates && Array.isArray(body.candidates)) {
-      return runPush(body.candidates, body.deleteExisting !== false);
-    }
-  } catch {
-    // No JSON body — fall through to normal fetch mode
+    body = await request.json();
+  } catch (err) {
+    console.error("[Resync Jobing] JSON parse failed:", err instanceof Error ? err.message : err);
+    // Check if it's a body size issue
+    return NextResponse.json(
+      { error: "Failed to parse request body — payload may be too large", mode: "error" },
+      { status: 413 }
+    );
   }
+
+  if (body?.candidates && Array.isArray(body.candidates)) {
+    return runPush(body.candidates as Parameters<typeof runPush>[0], body.deleteExisting !== false);
+  }
+
   return runFetch();
 }
 

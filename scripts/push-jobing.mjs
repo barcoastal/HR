@@ -140,7 +140,7 @@ async function main() {
 
   // 5. Push to Railway in chunks (request body can be huge with base64 PDFs)
   console.log("\n=== Pushing to Railway ===");
-  const CHUNK_SIZE = 50;
+  const CHUNK_SIZE = 10; // Keep small to avoid body size limits on Railway
   let totalCreated = 0;
   let totalResumes = 0;
 
@@ -158,9 +158,22 @@ async function main() {
       body: JSON.stringify({ candidates: chunk, deleteExisting: isFirstChunk }),
     });
 
-    const result = await res.json();
+    if (!res.ok) {
+      console.log(`    HTTP ${res.status}: ${await res.text().catch(() => "no body")}`);
+      continue;
+    }
+
+    const text = await res.text();
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch {
+      console.log(`    Invalid JSON response: ${text.slice(0, 200)}`);
+      continue;
+    }
+
     console.log(
-      `    Created: ${result.step3_created}, Resumes: ${result.resumesDownloaded}, Errors: ${(result.errors || []).length}`
+      `    Mode: ${result.mode}, Created: ${result.step3_created}, Resumes: ${result.resumesDownloaded}, Errors: ${(result.errors || []).length}, Deleted: ${result.step1_deleted || 0}`
     );
 
     if (result.errors?.length > 0) {
