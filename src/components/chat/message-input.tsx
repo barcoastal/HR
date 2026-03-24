@@ -27,6 +27,8 @@ interface Props {
   channelName: string;
   replyTo?: MessagePayload | null;
   onClearReply?: () => void;
+  droppedFiles?: File[];
+  onClearDroppedFiles?: () => void;
 }
 
 function formatFileSize(bytes: number): string {
@@ -41,7 +43,7 @@ function getInitials(firstName: string, lastName: string) {
 
 let cachedMembers: any[] | null = null;
 
-export function MessageInput({ channelId, channelType, channelName, replyTo, onClearReply }: Props) {
+export function MessageInput({ channelId, channelType, channelName, replyTo, onClearReply, droppedFiles, onClearDroppedFiles }: Props) {
   const [sending, setSending] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
@@ -173,6 +175,14 @@ export function MessageInput({ channelId, channelType, channelName, replyTo, onC
       setUploading(false);
     }
   }, []);
+
+  // Handle files dropped onto the chat area
+  useEffect(() => {
+    if (droppedFiles && droppedFiles.length > 0) {
+      droppedFiles.forEach((f) => handleFileUpload(f));
+      onClearDroppedFiles?.();
+    }
+  }, [droppedFiles, handleFileUpload, onClearDroppedFiles]);
 
   const removePendingFile = (index: number) => {
     setPendingFiles((prev) => prev.filter((_, i) => i !== index));

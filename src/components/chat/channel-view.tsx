@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { MessageList } from "./message-list";
 import { MessageInput } from "./message-input";
 import { TypingIndicator } from "./typing-indicator";
@@ -37,9 +37,46 @@ export function ChannelView({
   members,
 }: Props) {
   const [replyTo, setReplyTo] = useState<MessagePayload | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0) {
+      setDroppedFiles(files);
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col h-full">
+    <div
+      className="flex flex-col h-full relative"
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {/* Drag overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 z-50 bg-[#7C3AED]/5 border-2 border-dashed border-[#7C3AED] rounded-lg flex items-center justify-center pointer-events-none">
+          <div className="bg-white rounded-xl px-6 py-4 shadow-lg text-center">
+            <span className="material-symbols-rounded text-[40px] text-[#7C3AED]">upload_file</span>
+            <p className="text-sm font-medium text-gray-900 mt-2">Drop files to upload</p>
+            <p className="text-xs text-gray-500">Files will be attached to your message</p>
+          </div>
+        </div>
+      )}
+
       <ChannelHeader
         name={channelName}
         topic={channelTopic}
@@ -79,6 +116,8 @@ export function ChannelView({
         channelName={channelName}
         replyTo={replyTo}
         onClearReply={() => setReplyTo(null)}
+        droppedFiles={droppedFiles}
+        onClearDroppedFiles={() => setDroppedFiles([])}
       />
     </div>
   );
