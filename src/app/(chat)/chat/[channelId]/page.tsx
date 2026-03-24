@@ -1,10 +1,7 @@
 import { requireAuth } from "@/lib/auth-helpers";
 import { getChannelById } from "@/lib/actions/chat-channels";
 import { getMessages } from "@/lib/actions/chat-messages";
-import { ChannelHeader } from "@/components/chat/channel-header";
-import { MessageList } from "@/components/chat/message-list";
-import { MessageInput } from "@/components/chat/message-input";
-import { TypingIndicator } from "@/components/chat/typing-indicator";
+import { ChannelView } from "@/components/chat/channel-view";
 import { ChatProvider } from "@/components/chat/chat-provider";
 
 interface Props {
@@ -50,30 +47,22 @@ export default async function ChannelPage({ params, searchParams }: Props) {
       initialMessages={serializedMessages}
       hasMore={hasMore}
     >
-      <div className="flex flex-col h-full">
-        <ChannelHeader
-          name={channel?.name ?? "Direct Message"}
-          topic={channel?.topic ?? undefined}
-          memberCount={channel?._count.members ?? 0}
-          isPrivate={channel?.isPrivate ?? false}
-          isDm={isDm}
-          channelId={channelId}
-          members={(channel?.members ?? []).map((m: any) => ({
-            id: m.employee.id,
-            firstName: m.employee.firstName,
-            lastName: m.employee.lastName,
-            profilePhoto: m.employee.profilePhoto,
-            jobTitle: m.employee.jobTitle,
-          }))}
-        />
-        <MessageList />
-        <TypingIndicator channelId={channelId} />
-        <MessageInput
-          channelId={channelId}
-          channelType={isDm ? "dm" : "channel"}
-          channelName={channel?.name ?? "Direct Message"}
-        />
-      </div>
+      <ChannelView
+        channelId={channelId}
+        channelType={isDm ? "dm" : "channel"}
+        channelName={channel?.name ?? "Direct Message"}
+        channelTopic={channel?.topic ?? undefined}
+        memberCount={channel?._count.members ?? 0}
+        isPrivate={channel?.isPrivate ?? false}
+        isDm={isDm}
+        members={(channel?.members ?? []).map((m: any) => ({
+          id: m.employee.id,
+          firstName: m.employee.firstName,
+          lastName: m.employee.lastName,
+          profilePhoto: m.employee.profilePhoto,
+          jobTitle: m.employee.jobTitle,
+        }))}
+      />
     </ChatProvider>
   );
 }

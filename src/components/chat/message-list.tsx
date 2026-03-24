@@ -34,7 +34,7 @@ function isSameAuthorGroup(prev: MessagePayload, curr: MessagePayload): boolean 
   return diff < 5 * 60 * 1000; // Within 5 minutes
 }
 
-export function MessageList() {
+export function MessageList({ onReplyInThread }: { onReplyInThread?: (msg: MessagePayload) => void } = {}) {
   const { activeChannelId, messages } = useChatStore();
   const bottomRef = useRef<HTMLDivElement>(null);
   const channelMessages = activeChannelId ? messages.get(activeChannelId) || [] : [];
@@ -70,7 +70,7 @@ export function MessageList() {
                   <div className="flex-1 h-px bg-gray-200" />
                 </div>
               )}
-              <MessageItem message={msg} isGrouped={!!isGrouped} />
+              <MessageItem message={msg} isGrouped={!!isGrouped} onReplyInThread={onReplyInThread} />
             </div>
           );
         })}

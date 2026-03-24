@@ -71,7 +71,7 @@ function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
   );
 }
 
-export function MessageItem({ message, isGrouped = false }: { message: MessagePayload; isGrouped?: boolean }) {
+export function MessageItem({ message, isGrouped = false, onReplyInThread }: { message: MessagePayload; isGrouped?: boolean; onReplyInThread?: (msg: MessagePayload) => void }) {
   const { data: session } = useSession();
   const { author } = message;
   const fullTime = new Date(message.createdAt).toLocaleString();
@@ -109,7 +109,7 @@ export function MessageItem({ message, isGrouped = false }: { message: MessagePa
           )}
           <ReactionBar messageId={message.id} reactions={[]} />
         </div>
-        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} />
+        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onReplyInThread={() => onReplyInThread?.(message)} />
       </div>
     );
   }

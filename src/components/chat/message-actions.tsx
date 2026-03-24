@@ -10,11 +10,12 @@ interface Props {
   isOwnMessage: boolean;
   onEdit?: () => void;
   onRefresh?: () => void;
+  onReplyInThread?: () => void;
 }
 
 const QUICK_EMOJIS = ["👍", "❤️", "😂", "🎉", "🚀", "👀"];
 
-export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onRefresh }: Props) {
+export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onRefresh, onReplyInThread }: Props) {
   const [showEmojiRow, setShowEmojiRow] = useState(false);
 
   const handleReact = async (emoji: string) => {
@@ -56,6 +57,7 @@ export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onR
       )}
       <div className="flex items-center bg-white rounded-lg shadow-lg border border-gray-200">
         <ActionButton icon="mood" title="React" onClick={() => setShowEmojiRow(!showEmojiRow)} />
+        <ActionButton icon="chat_bubble" title="Reply in thread" onClick={onReplyInThread} />
         {isOwnMessage && <ActionButton icon="edit" title="Edit" onClick={onEdit} />}
         <ActionButton icon="push_pin" title="Pin" onClick={handlePin} />
         <ActionButton icon="bookmark" title="Save" onClick={handleSave} />
