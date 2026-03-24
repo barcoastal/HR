@@ -24,7 +24,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
     <SigningPage
       token={token}
       data={{
-        documentUrl: signingRequest.documentUrl,
+        documentUrl: `/api/sign/${token}/document`,
         documentName: signingRequest.documentName,
         employeeName: `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}`,
         status: signingRequest.status,
