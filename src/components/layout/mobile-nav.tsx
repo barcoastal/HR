@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { useUnread } from "@/lib/chat/use-unread";
 import {
   canAccessSettings,
   canAccessRecruitment,
@@ -50,6 +51,7 @@ export function MobileNav() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data: session } = useSession();
   const role = (session?.user?.role || "EMPLOYEE") as UserRole;
+  const { totalUnread } = useUnread();
   const drawerLinks = allDrawerLinks.filter((l) => l.access(role));
 
   // Group links by section
@@ -86,7 +88,14 @@ export function MobileNav() {
                 active ? "text-[var(--color-accent)]" : "text-[var(--color-text-muted)]"
               )}
             >
-              <Icon name={icon} size={24} />
+              <div className="relative">
+                <Icon name={icon} size={24} />
+                {label === "Chat" && totalUnread > 0 && (
+                  <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold min-w-[16px] h-4 rounded-full flex items-center justify-center px-1">
+                    {totalUnread > 99 ? "99+" : totalUnread}
+                  </span>
+                )}
+              </div>
               <span className="text-[11px] font-medium">{label}</span>
               {active && (
                 <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-[var(--color-accent)]" />

@@ -8,6 +8,7 @@ import { getChannels, createChannel } from "@/lib/actions/chat-channels";
 import { getDmThreads, getOrCreateDmThread } from "@/lib/actions/chat-dms";
 import { getMessages, sendMessage } from "@/lib/actions/chat-messages";
 import { useSession } from "next-auth/react";
+import { useUnread } from "@/lib/chat/use-unread";
 import { cn } from "@/lib/utils";
 
 function getInitials(firstName: string, lastName: string) {
@@ -33,6 +34,7 @@ export function ChatWidget() {
   const [miniChats, setMiniChats] = useState<MiniChat[]>([]);
   const { data: session } = useSession();
   const myId = session?.user?.employeeId;
+  const { totalUnread } = useUnread();
   const [workspaceIdState, setWorkspaceIdState] = useState<string | null>(null);
   const [showNewDm, setShowNewDm] = useState(false);
   const [showNewChannel, setShowNewChannel] = useState(false);
@@ -139,6 +141,11 @@ export function ChatWidget() {
         <span className="material-symbols-rounded text-white text-[24px]">
           {open ? "close" : "chat"}
         </span>
+        {!open && totalUnread > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-[20px] h-5 rounded-full flex items-center justify-center px-1 ring-2 ring-white">
+            {totalUnread > 99 ? "99+" : totalUnread}
+          </span>
+        )}
       </button>
 
       {/* Right-side panel */}
