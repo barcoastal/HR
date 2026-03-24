@@ -24,11 +24,18 @@ export interface ReactionInfo {
   employeeId: string;
 }
 
+export interface ParentMessageInfo {
+  id: string;
+  contentPlain: string;
+  authorName: string;
+}
+
 export interface MessagePayload {
   id: string;
   channelId: string | null;
   dmThreadId: string | null;
   parentId: string | null;
+  parentMessage?: ParentMessageInfo | null;
   authorId: string;
   content: string;
   contentPlain: string;

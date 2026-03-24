@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState, useEffect } from "react";
 import { EmojiPicker } from "./emoji-picker";
+import { VoiceRecorder } from "./voice-recorder";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -45,6 +46,7 @@ let cachedMembers: any[] | null = null;
 
 export function MessageInput({ channelId, channelType, channelName, replyTo, onClearReply, droppedFiles, onClearDroppedFiles }: Props) {
   const [sending, setSending] = useState(false);
+  const [voiceRecording, setVoiceRecording] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -380,6 +382,33 @@ export function MessageInput({ channelId, channelType, channelName, replyTo, onC
                 }
               }}
               icon="video_call"
+            />
+            {/* Voice recorder */}
+            <VoiceRecorder
+              onRecorded={async (blob, duration) => {
+                setVoiceRecording(false);
+                // Upload voice message
+                const formData = new FormData();
+                formData.append("file", blob, `voice-${Date.now()}.webm`);
+                try {
+                  const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+                  if (res.ok) {
+                    const data = await res.json();
+                    await sendMessage({
+                      channelId,
+                      content: `🎤 Voice message (${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, "0")})`,
+                      contentPlain: `Voice message (${duration}s)`,
+                      type: channelType,
+                      parentId: replyTo?.id,
+                      attachments: [{ ...data, fileType: "audio/webm" }],
+                    });
+                    onClearReply?.();
+                  }
+                } catch {
+                  alert("Failed to send voice message");
+                }
+              }}
+              onCancel={() => setVoiceRecording(false)}
             />
           </div>
           <div className="flex items-center gap-1">

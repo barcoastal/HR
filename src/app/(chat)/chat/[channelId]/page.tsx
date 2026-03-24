@@ -25,6 +25,11 @@ export default async function ChannelPage({ params, searchParams }: Props) {
     channelId: m.channelId,
     dmThreadId: m.dmThreadId,
     parentId: m.parentId,
+    parentMessage: m.parent ? {
+      id: m.parent.id,
+      contentPlain: m.parent.contentPlain,
+      authorName: `${m.parent.author.firstName} ${m.parent.author.lastName}`,
+    } : null,
     authorId: m.authorId,
     content: m.content,
     contentPlain: m.contentPlain,

@@ -50,6 +50,16 @@ export async function getMessages(
       reactions: {
         select: { emoji: true, employeeId: true },
       },
+      parent: {
+        select: {
+          id: true,
+          contentPlain: true,
+          authorId: true,
+          author: {
+            select: { firstName: true, lastName: true },
+          },
+        },
+      },
       _count: { select: { replies: true } },
     },
   });

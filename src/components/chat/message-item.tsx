@@ -6,6 +6,7 @@ import type { MessagePayload, AttachmentPayload, ReactionInfo } from "@/lib/chat
 import { MessageActions } from "./message-actions";
 import { ReactionBar } from "./reaction-bar";
 import { editMessage } from "@/lib/actions/chat-messages";
+import { VoiceMessagePlayer } from "./voice-recorder";
 
 function getInitials(firstName: string, lastName: string) {
   return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
@@ -23,6 +24,11 @@ function formatFileSize(bytes: number): string {
 
 function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
   const isImage = attachment.fileType.startsWith("image/");
+  const isAudio = attachment.fileType.startsWith("audio/");
+
+  if (isAudio) {
+    return <VoiceMessagePlayer url={attachment.url} />;
+  }
 
   if (isImage) {
     return (
@@ -120,9 +126,37 @@ export function MessageItem({
 
   const replyCount = message.replyCount ?? 0;
 
+  // Reply preview bubble (like WhatsApp)
+  const replyPreview = message.parentMessage ? (
+    <div className="flex items-stretch gap-0 mb-1.5 cursor-pointer" onClick={() => {
+      // Scroll to parent message
+      const el = document.getElementById(`msg-${message.parentMessage?.id}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+      el?.classList.add("bg-yellow-50");
+      setTimeout(() => el?.classList.remove("bg-yellow-50"), 2000);
+    }}>
+      <div className="w-1 bg-[#7C3AED] rounded-full shrink-0" />
+      <div className="bg-[#7C3AED]/5 rounded-r-lg px-3 py-1.5 min-w-0">
+        <p className="text-[11px] font-semibold text-[#7C3AED]">{message.parentMessage.authorName}</p>
+        <p className="text-[12px] text-gray-600 truncate">{message.parentMessage.contentPlain?.slice(0, 80) || "attachment"}</p>
+      </div>
+    </div>
+  ) : null;
+
+  // Read receipt checkmarks for own messages
+  const readReceipt = isOwnMessage && message.id && !message.id.startsWith("temp-") ? (
+    <span className="inline-flex items-center ml-1" title="Sent">
+      <svg width="16" height="10" viewBox="0 0 16 10" fill="none" className="text-[#7C3AED]">
+        <path d="M1.5 5L5 8.5L14.5 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M5 5L8.5 8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.4"/>
+      </svg>
+    </span>
+  ) : null;
+
   // Content block (shared between grouped and full)
   const contentBlock = (
     <>
+      {replyPreview}
       {editing ? (
         <div className="mt-1">
           <textarea
@@ -176,7 +210,7 @@ export function MessageItem({
   // Grouped message
   if (isGrouped) {
     return (
-      <div className="flex gap-3 px-5 py-0.5 hover:bg-gray-50 group transition-colors relative">
+      <div id={`msg-${message.id}`} className="flex gap-3 px-5 py-0.5 hover:bg-gray-50 group transition-colors relative">
         <div className="w-9 flex items-center justify-center shrink-0">
           <span className="text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" title={fullTime}>
             {formatTime(message.createdAt)}
@@ -197,7 +231,7 @@ export function MessageItem({
 
   // Full message
   return (
-    <div className="flex gap-3 px-5 pt-2 pb-1 hover:bg-gray-50 group transition-colors relative mt-1">
+    <div id={`msg-${message.id}`} className="flex gap-3 px-5 pt-2 pb-1 hover:bg-gray-50 group transition-colors relative mt-1">
       {author.profilePhoto ? (
         <img src={author.profilePhoto} alt={`${author.firstName} ${author.lastName}`} className="w-9 h-9 rounded-lg object-cover flex-shrink-0 mt-0.5" />
       ) : (
@@ -209,6 +243,7 @@ export function MessageItem({
         <div className="flex items-baseline gap-2">
           <span className="font-bold text-[15px] text-gray-900">{author.firstName} {author.lastName}</span>
           <span className="text-xs text-gray-500 cursor-default" title={fullTime}>{formatTime(message.createdAt)}</span>
+          {readReceipt}
         </div>
         {contentBlock}
       </div>
