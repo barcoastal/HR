@@ -26,12 +26,21 @@ export async function GET() {
         data: { passwordHash: hash },
       });
     } else {
+      // Check if another user already has this employee linked
+      let employeeId = employee?.id || null;
+      if (employeeId) {
+        const existingLink = await db.user.findFirst({ where: { employeeId } });
+        if (existingLink) {
+          // Unlink the old user so we can link to the new credential user
+          await db.user.update({ where: { id: existingLink.id }, data: { employeeId: null } });
+        }
+      }
       user = await db.user.create({
         data: {
           email: username,
           passwordHash: hash,
           role: "EMPLOYEE",
-          employeeId: employee?.id || null,
+          employeeId,
         },
       });
     }
