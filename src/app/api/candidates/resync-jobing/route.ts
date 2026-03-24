@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     if (body.candidates && Array.isArray(body.candidates)) {
-      return runPush(body.candidates);
+      return runPush(body.candidates, body.deleteExisting !== false);
     }
   } catch {
     // No JSON body — fall through to normal fetch mode
@@ -92,19 +92,24 @@ async function runPush(
     resumeUrl?: string;
     jobAppliedTo?: string;
     resumeBase64?: string; // base64-encoded PDF
-  }[]
+  }[],
+  deleteExisting: boolean = true
 ) {
   await mkdir(RESUMES_DIR, { recursive: true });
 
   try {
-    const deleted = await db.candidate.deleteMany({
-      where: {
-        OR: [
-          { source: { contains: "jobing" } },
-          { source: { contains: "pro.jobing" } },
-        ],
-      },
-    });
+    let deletedCount = 0;
+    if (deleteExisting) {
+      const deleted = await db.candidate.deleteMany({
+        where: {
+          OR: [
+            { source: { contains: "jobing" } },
+            { source: { contains: "pro.jobing" } },
+          ],
+        },
+      });
+      deletedCount = deleted.count;
+    }
 
     let created = 0;
     let resumesDownloaded = 0;
@@ -167,7 +172,7 @@ async function runPush(
 
     return NextResponse.json({
       mode: "push",
-      step1_deleted: deleted.count,
+      step1_deleted: deletedCount,
       step2_fetched: candidates.length,
       step3_created: created,
       resumesDownloaded,
