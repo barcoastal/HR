@@ -4,6 +4,7 @@ import { getMessages } from "@/lib/actions/chat-messages";
 import { ChannelHeader } from "@/components/chat/channel-header";
 import { MessageList } from "@/components/chat/message-list";
 import { MessageInput } from "@/components/chat/message-input";
+import { TypingIndicator } from "@/components/chat/typing-indicator";
 import { ChatProvider } from "@/components/chat/chat-provider";
 
 interface Props {
@@ -66,6 +67,7 @@ export default async function ChannelPage({ params, searchParams }: Props) {
           }))}
         />
         <MessageList />
+        <TypingIndicator channelId={channelId} />
         <MessageInput
           channelId={channelId}
           channelType={isDm ? "dm" : "channel"}

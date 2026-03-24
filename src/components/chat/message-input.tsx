@@ -11,6 +11,7 @@ import Mention from "@tiptap/extension-mention";
 import { sendMessage } from "@/lib/actions/chat-messages";
 import { getWorkspaceMembers } from "@/lib/actions/chat-workspace";
 import { useChatStore } from "@/lib/chat/use-chat-store";
+import { useChatContext } from "./chat-provider";
 import type { MessagePayload } from "@/lib/chat/ws-types";
 
 interface UploadedFile {
@@ -48,7 +49,18 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
   const [mentionIndex, setMentionIndex] = useState(0);
   const [mentionCommand, setMentionCommand] = useState<((props: { id: string; label: string }) => void) | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const typingTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const { addMessage, workspaceId } = useChatStore();
+  const { send: wsSend } = useChatContext();
+
+  // Send typing indicator
+  const sendTyping = useCallback(() => {
+    wsSend({ type: "typing:start", channelId });
+    clearTimeout(typingTimeout.current);
+    typingTimeout.current = setTimeout(() => {
+      wsSend({ type: "typing:stop", channelId });
+    }, 3000);
+  }, [wsSend, channelId]);
 
   useEffect(() => {
     if (workspaceId && !cachedMembers) {
@@ -59,6 +71,7 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
   }, [workspaceId]);
 
   const editor = useEditor({
+    onUpdate: () => sendTyping(),
     extensions: [
       StarterKit.configure({
         codeBlock: { HTMLAttributes: { class: "chat-code-block" } },
