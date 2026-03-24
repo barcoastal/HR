@@ -120,6 +120,72 @@ export async function addMembersToChannel(channelId: string, employeeIds: string
   revalidatePath("/chat");
 }
 
+export async function updateChannel(channelId: string, data: {
+  name?: string;
+  topic?: string;
+  description?: string;
+}) {
+  await requireAuth();
+
+  await db.channel.update({
+    where: { id: channelId },
+    data: {
+      ...(data.name ? { name: data.name, slug: data.name.toLowerCase().replace(/[^a-z0-9-]/g, "-") } : {}),
+      ...(data.topic !== undefined ? { topic: data.topic } : {}),
+      ...(data.description !== undefined ? { description: data.description } : {}),
+    },
+  });
+
+  revalidatePath("/chat");
+}
+
+export async function archiveChannel(channelId: string) {
+  await requireAuth();
+  await db.channel.update({
+    where: { id: channelId },
+    data: { isArchived: true },
+  });
+  revalidatePath("/chat");
+}
+
+export async function toggleMuteChannel(channelId: string) {
+  const session = await requireAuth();
+  const employeeId = session.user.employeeId!;
+
+  const member = await db.channelMember.findUnique({
+    where: { channelId_employeeId: { channelId, employeeId } },
+  });
+
+  if (member) {
+    await db.channelMember.update({
+      where: { id: member.id },
+      data: { isMuted: !member.isMuted },
+    });
+  }
+
+  revalidatePath("/chat");
+  return { muted: member ? !member.isMuted : false };
+}
+
+export async function toggleStarChannel(channelId: string) {
+  const session = await requireAuth();
+  const employeeId = session.user.employeeId!;
+
+  const member = await db.channelMember.findUnique({
+    where: { channelId_employeeId: { channelId, employeeId } },
+  });
+
+  if (member) {
+    await db.channelMember.update({
+      where: { id: member.id },
+      data: { isStarred: !member.isStarred },
+    });
+  }
+
+  revalidatePath("/chat");
+  return { starred: member ? !member.isStarred : false };
+}
+
 export async function updateLastRead(channelId: string) {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
