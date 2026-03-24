@@ -486,7 +486,20 @@ export async function ensureJobingPlatform() {
   if (!apiKey) return;
 
   const existing = await db.recruitmentPlatform.findUnique({ where: { name: "Jobing" } });
-  if (existing) return;
+  if (existing) {
+    // Reconnect if previously disconnected
+    if (existing.status === "DISCONNECTED" || !existing.apiKey) {
+      await db.recruitmentPlatform.update({
+        where: { name: "Jobing" },
+        data: {
+          status: "ACTIVE",
+          apiKey,
+          connectedAt: new Date(),
+        },
+      });
+    }
+    return;
+  }
 
   await db.recruitmentPlatform.create({
     data: {
