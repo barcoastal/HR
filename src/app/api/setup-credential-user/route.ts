@@ -5,35 +5,43 @@ import bcrypt from "bcryptjs";
 // One-time setup route — creates credential user for Eli
 // DELETE THIS ROUTE AFTER FIRST USE for security
 export async function GET() {
-  const username = "Eli";
-  const password = "shvufhiscs";
+  try {
+    const username = "Eli";
+    const password = "shvufhiscs";
 
-  const hash = await bcrypt.hash(password, 12);
+    const hash = await bcrypt.hash(password, 12);
 
-  // Find Eli's employee record
-  const employee = await db.employee.findFirst({
-    where: {
-      firstName: { equals: "Eli", mode: "insensitive" },
-    },
-  });
+    // Find Eli's employee record
+    const employee = await db.employee.findFirst({
+      where: {
+        firstName: { equals: "Eli", mode: "insensitive" },
+      },
+    });
 
-  // Create or update user with credential login
-  const user = await db.user.upsert({
-    where: { email: username },
-    update: { passwordHash: hash },
-    create: {
-      email: username,
-      passwordHash: hash,
-      role: "EMPLOYEE",
-      employeeId: employee?.id || null,
-    },
-  });
+    // Create or update user with credential login
+    const user = await db.user.upsert({
+      where: { email: username },
+      update: { passwordHash: hash },
+      create: {
+        email: username,
+        passwordHash: hash,
+        role: "EMPLOYEE",
+        employeeId: employee?.id || null,
+      },
+    });
 
-  return NextResponse.json({
-    success: true,
-    userId: user.id,
-    username,
-    employeeLinked: !!employee,
-    employeeName: employee ? `${employee.firstName} ${employee.lastName}` : null,
-  });
+    return NextResponse.json({
+      success: true,
+      userId: user.id,
+      username,
+      employeeLinked: !!employee,
+      employeeName: employee ? `${employee.firstName} ${employee.lastName}` : null,
+    });
+  } catch (error) {
+    console.error("[setup-credential-user] Error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error", stack: error instanceof Error ? error.stack : undefined },
+      { status: 500 }
+    );
+  }
 }
