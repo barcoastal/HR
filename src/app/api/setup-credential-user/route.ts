@@ -19,16 +19,22 @@ export async function GET() {
     });
 
     // Create or update user with credential login
-    const user = await db.user.upsert({
-      where: { email: username },
-      update: { passwordHash: hash },
-      create: {
-        email: username,
-        passwordHash: hash,
-        role: "EMPLOYEE",
-        employeeId: employee?.id || null,
-      },
-    });
+    let user = await db.user.findUnique({ where: { email: username } });
+    if (user) {
+      user = await db.user.update({
+        where: { email: username },
+        data: { passwordHash: hash },
+      });
+    } else {
+      user = await db.user.create({
+        data: {
+          email: username,
+          passwordHash: hash,
+          role: "EMPLOYEE",
+          employeeId: employee?.id || null,
+        },
+      });
+    }
 
     return NextResponse.json({
       success: true,
