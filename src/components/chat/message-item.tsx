@@ -96,8 +96,19 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
     }, new Map<string, { emoji: string; count: number; hasReacted: boolean }>())
   ).map(([, v]) => v);
 
-  const handleReactionToggle = () => {
-    // Refresh reactions from server would be ideal, but for now just re-render
+  const handleReactionToggle = (emoji?: string) => {
+    if (!emoji || !session?.user?.employeeId) return;
+    const myId = session.user.employeeId;
+    setLocalReactions((prev) => {
+      const existing = prev.find((r) => r.emoji === emoji && r.employeeId === myId);
+      if (existing) {
+        // Remove my reaction
+        return prev.filter((r) => !(r.emoji === emoji && r.employeeId === myId));
+      } else {
+        // Add my reaction
+        return [...prev, { emoji, employeeId: myId }];
+      }
+    });
   };
 
   // Grouped message (same author, within 5 min) — no avatar, just content with hover timestamp
@@ -126,7 +137,7 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
           )}
           <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
         </div>
-        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onReplyInThread={() => onReplyInThread?.(message)} />
+        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onRefresh={handleReactionToggle} onReplyInThread={() => onReplyInThread?.(message)} />
       </div>
     );
   }

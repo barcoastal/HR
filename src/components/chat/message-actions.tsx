@@ -9,7 +9,7 @@ interface Props {
   channelId: string;
   isOwnMessage: boolean;
   onEdit?: () => void;
-  onRefresh?: () => void;
+  onRefresh?: (emoji?: string) => void;
   onReplyInThread?: () => void;
 }
 
@@ -25,9 +25,9 @@ export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onR
   };
 
   const handleReact = async (emoji: string) => {
-    await toggleReaction(messageId, emoji);
     setShowEmojiRow(false);
-    onRefresh?.();
+    onRefresh?.(emoji); // Optimistic update in parent
+    await toggleReaction(messageId, emoji);
   };
 
   const handleDelete = async () => {

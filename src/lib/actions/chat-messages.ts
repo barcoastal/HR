@@ -69,6 +69,7 @@ export async function sendMessage(data: {
   content: string;
   contentPlain?: string;
   type?: "channel" | "dm";
+  parentId?: string;
   attachments?: Array<{ fileName: string; fileType: string; fileSize: number; url: string }>;
 }) {
   const session = await requireAuth();
@@ -81,6 +82,7 @@ export async function sendMessage(data: {
       authorId: employeeId,
       content: data.content,
       contentPlain: data.contentPlain || data.content,
+      ...(data.parentId ? { parentId: data.parentId } : {}),
       ...(data.attachments && data.attachments.length > 0
         ? {
             attachments: {
@@ -217,4 +219,20 @@ export async function saveMessage(messageId: string) {
 
   await db.savedMessage.create({ data: { employeeId, messageId } });
   return { action: "saved" };
+}
+
+export async function getThreadReplies(parentId: string) {
+  await requireAuth();
+
+  const replies = await db.message.findMany({
+    where: { parentId, isDeleted: false },
+    orderBy: { createdAt: "asc" },
+    include: {
+      author: {
+        select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+      },
+    },
+  });
+
+  return replies;
 }
