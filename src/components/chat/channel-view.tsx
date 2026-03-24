@@ -4,9 +4,7 @@ import { useState } from "react";
 import { MessageList } from "./message-list";
 import { MessageInput } from "./message-input";
 import { TypingIndicator } from "./typing-indicator";
-import { ThreadPanel } from "./thread-panel";
 import { ChannelHeader } from "./channel-header";
-import { useChatStore } from "@/lib/chat/use-chat-store";
 import type { MessagePayload } from "@/lib/chat/ws-types";
 
 interface Member {
@@ -38,39 +36,50 @@ export function ChannelView({
   isDm,
   members,
 }: Props) {
-  const [threadMessage, setThreadMessage] = useState<MessagePayload | null>(null);
+  const [replyTo, setReplyTo] = useState<MessagePayload | null>(null);
 
   return (
-    <div className="flex h-full">
-      {/* Main chat area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <ChannelHeader
-          name={channelName}
-          topic={channelTopic}
-          memberCount={memberCount}
-          isPrivate={isPrivate}
-          isDm={isDm}
-          channelId={channelId}
-          members={members}
-        />
-        <MessageList onReplyInThread={(msg) => setThreadMessage(msg)} />
-        <TypingIndicator channelId={channelId} />
-        <MessageInput
-          channelId={channelId}
-          channelType={channelType}
-          channelName={channelName}
-        />
-      </div>
+    <div className="flex flex-col h-full">
+      <ChannelHeader
+        name={channelName}
+        topic={channelTopic}
+        memberCount={memberCount}
+        isPrivate={isPrivate}
+        isDm={isDm}
+        channelId={channelId}
+        members={members}
+      />
+      <MessageList onReply={(msg) => setReplyTo(msg)} />
+      <TypingIndicator channelId={channelId} />
 
-      {/* Thread panel */}
-      {threadMessage && (
-        <ThreadPanel
-          parentMessage={threadMessage}
-          channelId={channelId}
-          channelType={channelType}
-          onClose={() => setThreadMessage(null)}
-        />
+      {/* Reply reference bar */}
+      {replyTo && (
+        <div className="px-5 py-2 bg-gray-50 border-t border-gray-200 flex items-center gap-3">
+          <div className="w-1 h-8 bg-[#7C3AED] rounded-full shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] text-[#7C3AED] font-medium">
+              Replying to {replyTo.author.firstName} {replyTo.author.lastName}
+            </p>
+            <p className="text-xs text-gray-500 truncate">
+              {replyTo.contentPlain || "attachment"}
+            </p>
+          </div>
+          <button
+            onClick={() => setReplyTo(null)}
+            className="text-gray-400 hover:text-gray-600 shrink-0"
+          >
+            <span className="material-symbols-rounded text-[18px]">close</span>
+          </button>
+        </div>
       )}
+
+      <MessageInput
+        channelId={channelId}
+        channelType={channelType}
+        channelName={channelName}
+        replyTo={replyTo}
+        onClearReply={() => setReplyTo(null)}
+      />
     </div>
   );
 }

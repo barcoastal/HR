@@ -25,6 +25,8 @@ interface Props {
   channelId: string;
   channelType: "channel" | "dm";
   channelName: string;
+  replyTo?: MessagePayload | null;
+  onClearReply?: () => void;
 }
 
 function formatFileSize(bytes: number): string {
@@ -39,7 +41,7 @@ function getInitials(firstName: string, lastName: string) {
 
 let cachedMembers: any[] | null = null;
 
-export function MessageInput({ channelId, channelType, channelName }: Props) {
+export function MessageInput({ channelId, channelType, channelName, replyTo, onClearReply }: Props) {
   const [sending, setSending] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const [pendingFiles, setPendingFiles] = useState<UploadedFile[]>([]);
@@ -208,8 +210,10 @@ export function MessageInput({ channelId, channelType, channelName }: Props) {
         content: text ? html : "",
         contentPlain: text || (filesToSend.length > 0 ? `[${filesToSend.length} file(s)]` : ""),
         type: channelType,
+        parentId: replyTo?.id,
         attachments: filesToSend,
       });
+      onClearReply?.();
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {

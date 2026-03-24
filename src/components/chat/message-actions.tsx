@@ -69,7 +69,7 @@ export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onR
       )}
       <div className="flex items-center bg-white rounded-lg shadow-lg border border-gray-200">
         <ActionButton icon="mood" title="React" onClick={() => setShowEmojiRow(!showEmojiRow)} />
-        <ActionButton icon="chat_bubble" title="Reply in thread" onClick={onReplyInThread} />
+        <ActionButton icon="reply" title="Reply" onClick={onReplyInThread} />
         {isOwnMessage && <ActionButton icon="edit" title="Edit" onClick={onEdit} />}
         <ActionButton icon="push_pin" title="Pin" onClick={handlePin} />
         <ActionButton icon="bookmark" title="Save" onClick={handleSave} />

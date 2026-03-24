@@ -5,14 +5,14 @@ import { useSession } from "next-auth/react";
 import type { MessagePayload, AttachmentPayload, ReactionInfo } from "@/lib/chat/ws-types";
 import { MessageActions } from "./message-actions";
 import { ReactionBar } from "./reaction-bar";
+import { editMessage } from "@/lib/actions/chat-messages";
 
 function getInitials(firstName: string, lastName: string) {
   return `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
 }
 
 function formatTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+  return new Date(dateStr).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 }
 
 function formatFileSize(bytes: number): string {
@@ -27,24 +27,14 @@ function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
   if (isImage) {
     return (
       <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="block">
-        <img
-          src={attachment.url}
-          alt={attachment.fileName}
-          className="max-w-xs md:max-w-sm max-h-64 rounded-lg border border-gray-200 hover:border-[#7C3AED] transition-colors cursor-pointer"
-        />
+        <img src={attachment.url} alt={attachment.fileName} className="max-w-xs md:max-w-sm max-h-64 rounded-lg border border-gray-200 hover:border-[#7C3AED] transition-colors cursor-pointer" />
       </a>
     );
   }
 
-  // Google Meet link card
   if (attachment.url.includes("meet.google.com")) {
     return (
-      <a
-        href={attachment.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-3 bg-[#1a73e8]/5 hover:bg-[#1a73e8]/10 rounded-lg px-4 py-3 transition-colors border border-[#1a73e8]/20"
-      >
+      <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 bg-[#1a73e8]/5 hover:bg-[#1a73e8]/10 rounded-lg px-4 py-3 transition-colors border border-[#1a73e8]/20">
         <span className="material-symbols-rounded text-[24px] text-[#1a73e8]">video_call</span>
         <div className="min-w-0">
           <p className="text-sm font-medium text-[#1a73e8]">Google Meet</p>
@@ -56,12 +46,7 @@ function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
   }
 
   return (
-    <a
-      href={attachment.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm transition-colors"
-    >
+    <a href={attachment.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 text-sm transition-colors">
       <span className="material-symbols-rounded text-[20px] text-gray-500">description</span>
       <div className="min-w-0">
         <p className="text-gray-900 truncate max-w-[200px]">{attachment.fileName}</p>
@@ -72,7 +57,15 @@ function FileAttachment({ attachment }: { attachment: AttachmentPayload }) {
   );
 }
 
-export function MessageItem({ message, isGrouped = false, onReplyInThread }: { message: MessagePayload; isGrouped?: boolean; onReplyInThread?: (msg: MessagePayload) => void }) {
+export function MessageItem({
+  message,
+  isGrouped = false,
+  onReply,
+}: {
+  message: MessagePayload;
+  isGrouped?: boolean;
+  onReply?: (msg: MessagePayload) => void;
+}) {
   const { data: session } = useSession();
   const { author } = message;
   const fullTime = new Date(message.createdAt).toLocaleString();
@@ -83,7 +76,11 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
   const isOwnMessage =
     message.authorId === "self" ||
     (!!session?.user?.employeeId && session.user.employeeId === message.authorId);
+
   const [localReactions, setLocalReactions] = useState<ReactionInfo[]>(message.reactions || []);
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState(message.contentPlain || "");
+  const [saving, setSaving] = useState(false);
 
   // Group reactions by emoji
   const groupedReactions = Array.from(
@@ -102,95 +99,127 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
     setLocalReactions((prev) => {
       const existing = prev.find((r) => r.emoji === emoji && r.employeeId === myId);
       if (existing) {
-        // Remove my reaction
         return prev.filter((r) => !(r.emoji === emoji && r.employeeId === myId));
       } else {
-        // Add my reaction
         return [...prev, { emoji, employeeId: myId }];
       }
     });
   };
 
-  // Grouped message (same author, within 5 min) — no avatar, just content with hover timestamp
+  const handleEdit = async () => {
+    if (!editText.trim() || saving) return;
+    setSaving(true);
+    try {
+      await editMessage(message.id, editText.trim());
+      setEditing(false);
+    } catch (err) {
+      console.error("Edit failed:", err);
+    }
+    setSaving(false);
+  };
+
+  const replyCount = message.replyCount ?? 0;
+
+  // Content block (shared between grouped and full)
+  const contentBlock = (
+    <>
+      {editing ? (
+        <div className="mt-1">
+          <textarea
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleEdit(); } if (e.key === "Escape") setEditing(false); }}
+            className="w-full px-3 py-2 text-sm border border-[#7C3AED] rounded-lg outline-none focus:ring-1 focus:ring-[#7C3AED]/30 resize-none"
+            rows={2}
+            autoFocus
+          />
+          <div className="flex items-center gap-2 mt-1">
+            <button onClick={handleEdit} disabled={saving} className="text-xs px-2 py-1 bg-[#007a5a] text-white rounded font-medium disabled:opacity-50">
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button onClick={() => setEditing(false)} className="text-xs px-2 py-1 text-gray-500 hover:text-gray-700">
+              Cancel
+            </button>
+            <span className="text-[10px] text-gray-400">Esc to cancel · Enter to save</span>
+          </div>
+        </div>
+      ) : (
+        <>
+          {hasContent && (
+            <div
+              className="text-[15px] text-gray-800 mt-0.5 leading-relaxed [&>p]:my-0 [&_code]:bg-gray-100 [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[13px] [&_code]:text-rose-600 [&_blockquote]:border-l-3 [&_blockquote]:border-[#7C3AED] [&_blockquote]:pl-3 [&_blockquote]:text-gray-500 [&_ul]:pl-5 [&_ol]:pl-5 [&_a]:text-[#1264a3] [&_a]:hover:underline"
+              dangerouslySetInnerHTML={{ __html: message.content }}
+            />
+          )}
+        </>
+      )}
+      {attachments.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {attachments.map((att) => (
+            <FileAttachment key={att.id} attachment={att} />
+          ))}
+        </div>
+      )}
+      <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
+      {replyCount > 0 && (
+        <button
+          onClick={() => onReply?.(message)}
+          className="flex items-center gap-1.5 mt-1 text-xs text-[#1264a3] hover:underline"
+        >
+          <span className="material-symbols-rounded text-[14px]">reply</span>
+          {replyCount} {replyCount === 1 ? "reply" : "replies"}
+        </button>
+      )}
+    </>
+  );
+
+  // Grouped message
   if (isGrouped) {
     return (
       <div className="flex gap-3 px-5 py-0.5 hover:bg-gray-50 group transition-colors relative">
-        {/* Hover timestamp in avatar column */}
         <div className="w-9 flex items-center justify-center shrink-0">
           <span className="text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" title={fullTime}>
             {formatTime(message.createdAt)}
           </span>
         </div>
-        <div className="min-w-0 flex-1">
-          {hasContent && (
-            <div
-              className="text-sm text-gray-800 [&>p]:my-0 [&_code]:bg-gray-100 [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[13px] [&_code]:text-rose-600 [&_blockquote]:border-l-3 [&_blockquote]:border-[#7C3AED] [&_blockquote]:pl-3 [&_blockquote]:text-gray-500 [&_ul]:pl-5 [&_ol]:pl-5 [&_a]:text-[#7C3AED] [&_a]:underline"
-              dangerouslySetInnerHTML={{ __html: message.content }}
-            />
-          )}
-          {attachments.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-2">
-              {attachments.map((att) => (
-                <FileAttachment key={att.id} attachment={att} />
-              ))}
-            </div>
-          )}
-          <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
-        </div>
-        <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onRefresh={handleReactionToggle} onReplyInThread={() => onReplyInThread?.(message)} />
+        <div className="min-w-0 flex-1">{contentBlock}</div>
+        <MessageActions
+          messageId={message.id}
+          channelId={channelId}
+          isOwnMessage={isOwnMessage}
+          onEdit={() => setEditing(true)}
+          onRefresh={handleReactionToggle}
+          onReplyInThread={() => onReply?.(message)}
+        />
       </div>
     );
   }
 
-  // Full message with avatar
+  // Full message
   return (
     <div className="flex gap-3 px-5 pt-2 pb-1 hover:bg-gray-50 group transition-colors relative mt-1">
       {author.profilePhoto ? (
-        <img
-          src={author.profilePhoto}
-          alt={`${author.firstName} ${author.lastName}`}
-          className="w-9 h-9 rounded-lg object-cover flex-shrink-0 mt-0.5"
-        />
+        <img src={author.profilePhoto} alt={`${author.firstName} ${author.lastName}`} className="w-9 h-9 rounded-lg object-cover flex-shrink-0 mt-0.5" />
       ) : (
         <div className="w-9 h-9 rounded-lg bg-[#7C3AED] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 mt-0.5">
           {getInitials(author.firstName, author.lastName)}
         </div>
       )}
-
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <span className="font-bold text-[15px] text-gray-900 hover:underline cursor-pointer">
-            {author.firstName} {author.lastName}
-          </span>
-          <span className="text-xs text-gray-500 cursor-default" title={fullTime}>
-            {formatTime(message.createdAt)}
-          </span>
+          <span className="font-bold text-[15px] text-gray-900">{author.firstName} {author.lastName}</span>
+          <span className="text-xs text-gray-500 cursor-default" title={fullTime}>{formatTime(message.createdAt)}</span>
         </div>
-        {hasContent && (
-          <div
-            className="text-[15px] text-gray-800 mt-0.5 leading-relaxed [&>p]:my-0 [&_code]:bg-gray-100 [&_code]:rounded [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-[13px] [&_code]:text-rose-600 [&_blockquote]:border-l-3 [&_blockquote]:border-[#7C3AED] [&_blockquote]:pl-3 [&_blockquote]:text-gray-500 [&_ul]:pl-5 [&_ol]:pl-5 [&_a]:text-[#1264a3] [&_a]:hover:underline"
-            dangerouslySetInnerHTML={{ __html: message.content }}
-          />
-        )}
-        {attachments.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {attachments.map((att) => (
-              <FileAttachment key={att.id} attachment={att} />
-            ))}
-          </div>
-        )}
-        <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
-        {(message.replyCount ?? 0) > 0 && (
-          <button
-            onClick={() => onReplyInThread?.(message)}
-            className="flex items-center gap-1.5 mt-1 text-xs text-[#1264a3] hover:underline"
-          >
-            <span className="material-symbols-rounded text-[14px]">chat_bubble</span>
-            {message.replyCount} {message.replyCount === 1 ? "reply" : "replies"}
-          </button>
-        )}
+        {contentBlock}
       </div>
-      <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onReplyInThread={() => onReplyInThread?.(message)} />
+      <MessageActions
+        messageId={message.id}
+        channelId={channelId}
+        isOwnMessage={isOwnMessage}
+        onEdit={() => setEditing(true)}
+        onRefresh={handleReactionToggle}
+        onReplyInThread={() => onReply?.(message)}
+      />
     </div>
   );
 }
