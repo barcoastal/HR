@@ -7,6 +7,7 @@ import { getOrCreateWorkspace } from "@/lib/actions/chat-workspace";
 import { getChannels } from "@/lib/actions/chat-channels";
 import { getDmThreads } from "@/lib/actions/chat-dms";
 import { getMessages, sendMessage } from "@/lib/actions/chat-messages";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 
 function getInitials(firstName: string, lastName: string) {
@@ -30,6 +31,8 @@ export function ChatWidget() {
   const [dms, setDms] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [miniChats, setMiniChats] = useState<MiniChat[]>([]);
+  const { data: session } = useSession();
+  const myId = session?.user?.employeeId;
 
   const loadData = useCallback(async () => {
     if (channels.length > 0) return;
@@ -78,7 +81,7 @@ export function ChatWidget() {
         <div className="fixed right-6 bottom-24 z-[60] w-80 max-h-[70vh] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden hidden md:flex">
           {/* Header */}
           <div className="bg-[#1A1D21] px-4 py-3 flex items-center justify-between">
-            <h3 className="text-white font-semibold text-sm">HT Chat</h3>
+            <h3 className="text-white font-semibold text-sm">Calatrava Connect</h3>
             <div className="flex items-center gap-2">
               <Link
                 href="/chat"
@@ -121,9 +124,11 @@ export function ChatWidget() {
                   <div className="px-3 pt-2 pb-3">
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 px-1 mb-1">Direct Messages</p>
                     {dms.map((dm: any) => {
-                      const members = dm.members?.map((m: any) => m.employee) || [];
-                      const name = members.map((m: any) => m.firstName).join(", ");
-                      const firstMember = members[0];
+                      const allMembers = dm.members?.map((m: any) => m.employee) || [];
+                      const otherMembers = myId ? allMembers.filter((m: any) => m.id !== myId) : allMembers;
+                      const displayMembers = otherMembers.length > 0 ? otherMembers : allMembers;
+                      const name = displayMembers.map((m: any) => `${m.firstName} ${m.lastName}`).join(", ");
+                      const firstMember = displayMembers[0];
                       return (
                         <button
                           key={dm.id}

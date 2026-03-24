@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { getOrCreateWorkspace } from "@/lib/actions/chat-workspace";
 import { getChannels } from "@/lib/actions/chat-channels";
 import { getDmThreads } from "@/lib/actions/chat-dms";
+import { requireAuth } from "@/lib/auth-helpers";
 import Link from "next/link";
 
 function getInitials(firstName: string, lastName: string) {
@@ -11,6 +12,8 @@ function getInitials(firstName: string, lastName: string) {
 
 export default async function ChatPage() {
   try {
+    const session = await requireAuth();
+    const myId = session.user?.employeeId;
     const workspace = await getOrCreateWorkspace();
     if (!workspace) {
       return (
@@ -41,7 +44,7 @@ export default async function ChatPage() {
         <div className="px-4 py-4 border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">HT Platform</h1>
+              <h1 className="text-xl font-bold text-gray-900">Calatrava Connect</h1>
               <p className="text-xs text-gray-500">Team Chat</p>
             </div>
             <Link href="/" className="text-xs px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600">
@@ -82,9 +85,11 @@ export default async function ChatPage() {
               <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Direct Messages</p>
               <div className="space-y-0.5">
                 {dmList.map((dm: any) => {
-                  const otherMembers = dm.members.map((m: any) => m.employee);
-                  const displayName = otherMembers.map((m: any) => m.firstName).join(", ");
-                  const firstMember = otherMembers[0];
+                  const allMembers = dm.members.map((m: any) => m.employee);
+                  const otherMembers = myId ? allMembers.filter((m: any) => m.id !== myId) : allMembers;
+                  const displayMembers = otherMembers.length > 0 ? otherMembers : allMembers;
+                  const displayName = displayMembers.map((m: any) => `${m.firstName} ${m.lastName}`).join(", ");
+                  const firstMember = displayMembers[0];
                   const lastMsg = dm.messages?.[0];
 
                   return (

@@ -7,6 +7,7 @@ import { getChannels, createChannel } from "@/lib/actions/chat-channels";
 import { getDmThreads, getOrCreateDmThread } from "@/lib/actions/chat-dms";
 import { getWorkspaceMembers } from "@/lib/actions/chat-workspace";
 import { useChatStore } from "@/lib/chat/use-chat-store";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 function getInitials(firstName: string, lastName: string) {
@@ -16,6 +17,8 @@ function getInitials(firstName: string, lastName: string) {
 export function ChatSidebar() {
   const params = useParams();
   const router = useRouter();
+  const { data: session } = useSession();
+  const currentEmployeeId = session?.user?.employeeId || "";
   const activeChannelId = params.channelId as string | undefined;
   const { channels, setChannels, setWorkspace, workspaceId, dmThreads, setDmThreads } = useChatStore();
   const [loading, setLoading] = useState(true);
@@ -172,7 +175,7 @@ export function ChatSidebar() {
         <Link href="/" className="text-xs px-2 py-1 rounded hover:bg-white/10 text-gray-400 transition-colors">
           &larr; HR
         </Link>
-        <h1 className="text-white font-bold text-base">HT Platform</h1>
+        <h1 className="text-white font-bold text-base">Calatrava Connect</h1>
         <div className="w-10" />
       </div>
 
@@ -207,7 +210,7 @@ export function ChatSidebar() {
           <button onClick={openNewDm} className="text-gray-400 hover:text-white transition-colors">+</button>
         </p>
         {dmThreads.map((dm) => (
-          <DmLink key={dm.id} dm={dm} isActive={dm.id === activeChannelId} />
+          <DmLink key={dm.id} dm={dm} isActive={dm.id === activeChannelId} currentUserId={currentEmployeeId} />
         ))}
       </nav>
 
@@ -375,15 +378,22 @@ function ChannelLink({
 function DmLink({
   dm,
   isActive,
+  currentUserId,
 }: {
   dm: {
     id: string;
     members: Array<{ id: string; firstName: string; lastName: string; profilePhoto: string | null }>;
   };
   isActive: boolean;
+  currentUserId?: string;
 }) {
-  const displayName = dm.members.map((m) => m.firstName).join(", ");
-  const firstMember = dm.members[0];
+  // Show only the OTHER person's name, not the current user
+  const otherMembers = currentUserId
+    ? dm.members.filter((m) => m.id !== currentUserId)
+    : dm.members;
+  const displayMembers = otherMembers.length > 0 ? otherMembers : dm.members;
+  const displayName = displayMembers.map((m) => `${m.firstName} ${m.lastName}`).join(", ");
+  const firstMember = displayMembers[0];
 
   return (
     <Link
