@@ -19,6 +19,11 @@ export interface AttachmentPayload {
   thumbnailUrl: string | null;
 }
 
+export interface ReactionInfo {
+  emoji: string;
+  employeeId: string;
+}
+
 export interface MessagePayload {
   id: string;
   channelId: string | null;
@@ -29,6 +34,8 @@ export interface MessagePayload {
   contentPlain: string;
   createdAt: string;
   attachments?: AttachmentPayload[];
+  reactions?: ReactionInfo[];
+  replyCount?: number;
   author: {
     id: string;
     firstName: string;

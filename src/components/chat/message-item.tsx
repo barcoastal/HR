@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useSession } from "next-auth/react";
-import type { MessagePayload, AttachmentPayload } from "@/lib/chat/ws-types";
+import type { MessagePayload, AttachmentPayload, ReactionInfo } from "@/lib/chat/ws-types";
 import { MessageActions } from "./message-actions";
 import { ReactionBar } from "./reaction-bar";
 
@@ -82,6 +83,22 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
   const isOwnMessage =
     message.authorId === "self" ||
     (!!session?.user?.employeeId && session.user.employeeId === message.authorId);
+  const [localReactions, setLocalReactions] = useState<ReactionInfo[]>(message.reactions || []);
+
+  // Group reactions by emoji
+  const groupedReactions = Array.from(
+    localReactions.reduce((map, r) => {
+      const existing = map.get(r.emoji) || { emoji: r.emoji, count: 0, hasReacted: false };
+      existing.count++;
+      if (r.employeeId === session?.user?.employeeId) existing.hasReacted = true;
+      map.set(r.emoji, existing);
+      return map;
+    }, new Map<string, { emoji: string; count: number; hasReacted: boolean }>())
+  ).map(([, v]) => v);
+
+  const handleReactionToggle = () => {
+    // Refresh reactions from server would be ideal, but for now just re-render
+  };
 
   // Grouped message (same author, within 5 min) — no avatar, just content with hover timestamp
   if (isGrouped) {
@@ -107,7 +124,7 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
               ))}
             </div>
           )}
-          <ReactionBar messageId={message.id} reactions={[]} />
+          <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
         </div>
         <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onReplyInThread={() => onReplyInThread?.(message)} />
       </div>
@@ -151,9 +168,18 @@ export function MessageItem({ message, isGrouped = false, onReplyInThread }: { m
             ))}
           </div>
         )}
-        <ReactionBar messageId={message.id} reactions={[]} />
+        <ReactionBar messageId={message.id} reactions={groupedReactions} onReactionToggle={handleReactionToggle} />
+        {(message.replyCount ?? 0) > 0 && (
+          <button
+            onClick={() => onReplyInThread?.(message)}
+            className="flex items-center gap-1.5 mt-1 text-xs text-[#1264a3] hover:underline"
+          >
+            <span className="material-symbols-rounded text-[14px]">chat_bubble</span>
+            {message.replyCount} {message.replyCount === 1 ? "reply" : "replies"}
+          </button>
+        )}
       </div>
-      <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} />
+      <MessageActions messageId={message.id} channelId={channelId} isOwnMessage={isOwnMessage} onReplyInThread={() => onReplyInThread?.(message)} />
     </div>
   );
 }

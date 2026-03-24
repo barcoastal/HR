@@ -38,6 +38,11 @@ export default async function ChannelPage({ params, searchParams }: Props) {
       url: a.url,
       thumbnailUrl: a.thumbnailUrl,
     })),
+    reactions: (m.reactions || []).map((r: any) => ({
+      emoji: r.emoji,
+      employeeId: r.employeeId,
+    })),
+    replyCount: m._count?.replies ?? 0,
   }));
 
   return (

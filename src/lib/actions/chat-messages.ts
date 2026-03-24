@@ -47,6 +47,10 @@ export async function getMessages(
         select: { id: true, firstName: true, lastName: true, profilePhoto: true },
       },
       attachments: true,
+      reactions: {
+        select: { emoji: true, employeeId: true },
+      },
+      _count: { select: { replies: true } },
     },
   });
 

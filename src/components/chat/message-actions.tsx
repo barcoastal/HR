@@ -17,6 +17,12 @@ const QUICK_EMOJIS = ["👍", "❤️", "😂", "🎉", "🚀", "👀"];
 
 export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onRefresh, onReplyInThread }: Props) {
   const [showEmojiRow, setShowEmojiRow] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
+
+  const showFeedback = (msg: string) => {
+    setFeedback(msg);
+    setTimeout(() => setFeedback(null), 2000);
+  };
 
   const handleReact = async (emoji: string) => {
     await toggleReaction(messageId, emoji);
@@ -31,21 +37,27 @@ export function MessageActions({ messageId, channelId, isOwnMessage, onEdit, onR
   };
 
   const handlePin = async () => {
-    await pinMessage(messageId, channelId);
-    onRefresh?.();
+    const result = await pinMessage(messageId, channelId);
+    showFeedback(result.action === "pinned" ? "Pinned!" : "Unpinned");
   };
 
   const handleSave = async () => {
-    await saveMessage(messageId);
-    onRefresh?.();
+    const result = await saveMessage(messageId);
+    showFeedback(result.action === "saved" ? "Saved!" : "Unsaved");
   };
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(`${window.location.origin}/chat/${channelId}#${messageId}`);
+    showFeedback("Link copied!");
   };
 
   return (
     <div className="absolute -top-3 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      {feedback && (
+        <div className="absolute -top-8 right-0 bg-gray-800 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap">
+          {feedback}
+        </div>
+      )}
       {showEmojiRow && (
         <div className="flex gap-1 mb-1 bg-white rounded-lg shadow-lg border border-gray-200 px-2 py-1">
           {QUICK_EMOJIS.map((emoji) => (
