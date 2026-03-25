@@ -224,8 +224,8 @@ function PdfDocumentEditor({
       const pdf = await pdfjsLib.getDocument(source).promise;
       pdfDocRef.current = pdf;
       setPageCount(pdf.numPages);
-      setCurrentPage(1);
-      await renderPage(1);
+      // Reset to page 0 first so setting to 1 always triggers the effect
+      setCurrentPage(0);
     } catch (err) {
       console.error("Failed to load PDF:", err);
       setPdfError("Failed to load PDF. Try re-uploading the file.");
@@ -233,7 +233,7 @@ function PdfDocumentEditor({
     } finally {
       setPdfLoading(false);
     }
-  }, [renderPage]);
+  }, []);
 
   // Load existing PDF
   useEffect(() => {
@@ -241,6 +241,13 @@ function PdfDocumentEditor({
       loadPdf(pdfUrl);
     }
   }, [existing, pdfUrl, loadPdf]);
+
+  // When pageCount is set and currentPage is 0, set to page 1 (after canvas mounts)
+  useEffect(() => {
+    if (pageCount > 0 && currentPage === 0) {
+      setCurrentPage(1);
+    }
+  }, [pageCount, currentPage]);
 
   // Re-render on page change
   useEffect(() => {
