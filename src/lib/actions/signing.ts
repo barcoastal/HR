@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import crypto from "crypto";
+import { randomUUID } from "crypto";
 import { PDFDocument } from "pdf-lib";
 import { revalidatePath } from "next/cache";
 
@@ -142,13 +143,19 @@ export async function submitSignature(
   }
 
   try {
-    // Fetch original PDF
-    const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const pdfResponse = await fetch(`${baseUrl}${request.documentUrl}`);
-    if (!pdfResponse.ok) {
+    // Fetch original PDF from database
+    const docFilename = request.documentUrl.split("/").pop();
+    if (!docFilename) {
+      return { success: false, error: "Invalid document URL" };
+    }
+    const fileBlob = await db.fileBlob.findUnique({
+      where: { filename: docFilename },
+      select: { data: true },
+    });
+    if (!fileBlob) {
       return { success: false, error: "Could not fetch document" };
     }
-    const pdfBytes = await pdfResponse.arrayBuffer();
+    const pdfBytes = fileBlob.data;
 
     // Load PDF and add signature
     const pdfDoc = await PDFDocument.load(pdfBytes);
@@ -213,21 +220,18 @@ export async function submitSignature(
 
     const signedPdfBytes = await pdfDoc.save();
 
-    // Store signed PDF via upload
-    const formData = new FormData();
-    const signedBlob = new Blob([signedPdfBytes as BlobPart], { type: "application/pdf" });
-    formData.append("file", signedBlob, `signed-${request.documentName}`);
-
-    const uploadResponse = await fetch(`${baseUrl}/api/onboarding-docs/upload`, {
-      method: "POST",
-      body: formData,
+    // Store signed PDF directly in database
+    const signedFilename = `${randomUUID()}.pdf`;
+    const signedBuffer = Buffer.from(signedPdfBytes);
+    await db.fileBlob.create({
+      data: {
+        filename: signedFilename,
+        mimeType: "application/pdf",
+        size: signedBuffer.length,
+        data: signedBuffer,
+      },
     });
-
-    if (!uploadResponse.ok) {
-      return { success: false, error: "Failed to store signed document" };
-    }
-
-    const { url: signedDocUrl } = await uploadResponse.json();
+    const signedDocUrl = `/api/onboarding-docs/${signedFilename}`;
 
     // Update signing request
     await db.signingRequest.update({

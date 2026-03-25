@@ -104,6 +104,7 @@ export const ModelName = {
   Mention: 'Mention',
   PinnedMessage: 'PinnedMessage',
   SavedMessage: 'SavedMessage',
+  FileBlob: 'FileBlob',
   GustoConnection: 'GustoConnection'
 } as const
 
@@ -895,6 +896,18 @@ export const SavedMessageScalarFieldEnum = {
 } as const
 
 export type SavedMessageScalarFieldEnum = (typeof SavedMessageScalarFieldEnum)[keyof typeof SavedMessageScalarFieldEnum]
+
+
+export const FileBlobScalarFieldEnum = {
+  id: 'id',
+  filename: 'filename',
+  mimeType: 'mimeType',
+  size: 'size',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type FileBlobScalarFieldEnum = (typeof FileBlobScalarFieldEnum)[keyof typeof FileBlobScalarFieldEnum]
 
 
 export const GustoConnectionScalarFieldEnum = {

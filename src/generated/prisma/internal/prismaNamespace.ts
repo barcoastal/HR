@@ -437,6 +437,7 @@ export const ModelName = {
   Mention: 'Mention',
   PinnedMessage: 'PinnedMessage',
   SavedMessage: 'SavedMessage',
+  FileBlob: 'FileBlob',
   GustoConnection: 'GustoConnection'
 } as const
 
@@ -453,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4379,6 +4380,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FileBlob: {
+      payload: Prisma.$FileBlobPayload<ExtArgs>
+      fields: Prisma.FileBlobFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FileBlobFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FileBlobFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        findFirst: {
+          args: Prisma.FileBlobFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FileBlobFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        findMany: {
+          args: Prisma.FileBlobFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>[]
+        }
+        create: {
+          args: Prisma.FileBlobCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        createMany: {
+          args: Prisma.FileBlobCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FileBlobCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>[]
+        }
+        delete: {
+          args: Prisma.FileBlobDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        update: {
+          args: Prisma.FileBlobUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        deleteMany: {
+          args: Prisma.FileBlobDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FileBlobUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FileBlobUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>[]
+        }
+        upsert: {
+          args: Prisma.FileBlobUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileBlobPayload>
+        }
+        aggregate: {
+          args: Prisma.FileBlobAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFileBlob>
+        }
+        groupBy: {
+          args: Prisma.FileBlobGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileBlobGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FileBlobCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileBlobCountAggregateOutputType> | number
+        }
+      }
+    }
     GustoConnection: {
       payload: Prisma.$GustoConnectionPayload<ExtArgs>
       fields: Prisma.GustoConnectionFieldRefs
@@ -5266,6 +5341,18 @@ export const SavedMessageScalarFieldEnum = {
 export type SavedMessageScalarFieldEnum = (typeof SavedMessageScalarFieldEnum)[keyof typeof SavedMessageScalarFieldEnum]
 
 
+export const FileBlobScalarFieldEnum = {
+  id: 'id',
+  filename: 'filename',
+  mimeType: 'mimeType',
+  size: 'size',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type FileBlobScalarFieldEnum = (typeof FileBlobScalarFieldEnum)[keyof typeof FileBlobScalarFieldEnum]
+
+
 export const GustoConnectionScalarFieldEnum = {
   id: 'id',
   companyId: 'companyId',
@@ -5742,6 +5829,20 @@ export type EnumMentionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
 export type ListEnumMentionTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MentionType[]'>
     
 
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+    
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -5890,6 +5991,7 @@ export type GlobalOmitConfig = {
   mention?: Prisma.MentionOmit
   pinnedMessage?: Prisma.PinnedMessageOmit
   savedMessage?: Prisma.SavedMessageOmit
+  fileBlob?: Prisma.FileBlobOmit
   gustoConnection?: Prisma.GustoConnectionOmit
 }
 

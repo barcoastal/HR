@@ -1160,6 +1160,15 @@ model SavedMessage {
   @@unique([employeeId, messageId])
 }
 
+model FileBlob {
+  id        String   @id @default(uuid())
+  filename  String   @unique  // uuid.ext
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
 model GustoConnection {
   id             String   @id @default(uuid())
   companyId      String   @unique

@@ -283,6 +283,11 @@ export type PinnedMessage = Prisma.PinnedMessageModel
  */
 export type SavedMessage = Prisma.SavedMessageModel
 /**
+ * Model FileBlob
+ * 
+ */
+export type FileBlob = Prisma.FileBlobModel
+/**
  * Model GustoConnection
  * 
  */

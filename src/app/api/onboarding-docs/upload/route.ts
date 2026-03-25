@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
 import { randomUUID } from "crypto";
-import path from "path";
 import { requireApiAdmin } from "@/lib/auth-helpers";
+import { db } from "@/lib/db";
 
 const ALLOWED_TYPES = new Set([
   "application/pdf",
@@ -50,11 +49,16 @@ export async function POST(request: NextRequest) {
 
   const ext = EXT_MAP[file.type] || "bin";
   const filename = `${randomUUID()}.${ext}`;
-  const dir = path.join(process.cwd(), "data", "onboarding-docs");
-
-  await mkdir(dir, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(dir, filename), buffer);
+
+  await db.fileBlob.create({
+    data: {
+      filename,
+      mimeType: file.type,
+      size: buffer.length,
+      data: buffer,
+    },
+  });
 
   return NextResponse.json({
     url: `/api/onboarding-docs/${filename}`,
