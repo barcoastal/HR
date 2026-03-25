@@ -667,6 +667,8 @@ export const CompanySettingsScalarFieldEnum = {
   recruiterIds: 'recruiterIds',
   pipelineStages: 'pipelineStages',
   candidateCustomFields: 'candidateCustomFields',
+  stageNotifyRecipients: 'stageNotifyRecipients',
+  stageNotifyEmployeeIds: 'stageNotifyEmployeeIds',
   updatedAt: 'updatedAt'
 } as const
 

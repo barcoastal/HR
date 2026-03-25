@@ -864,6 +864,8 @@ model CompanySettings {
   recruiterIds  String  @default("[]")
   pipelineStages String @default("[]")
   candidateCustomFields String @default("[]")
+  stageNotifyRecipients String @default("[\"candidate\"]") // JSON array: "candidate", "recruiter", "manager"
+  stageNotifyEmployeeIds String @default("[]") // JSON array of employee IDs to always notify
   updatedAt     DateTime @updatedAt
 }
 

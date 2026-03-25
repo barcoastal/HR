@@ -28,6 +28,7 @@ export async function getCompanySettings() {
       pipelineStages: "[]",
       candidateCustomFields: "[]",
       stageNotifyRecipients: '["candidate"]',
+      stageNotifyEmployeeIds: '[]',
       updatedAt: new Date(),
     };
   }
@@ -154,12 +155,27 @@ export async function getStageNotifyRecipients(): Promise<StageNotifyRecipient[]
   return ["candidate"];
 }
 
-export async function saveStageNotifyRecipients(recipients: StageNotifyRecipient[]) {
+export async function saveStageNotifyRecipients(recipients: StageNotifyRecipient[], employeeIds: string[]) {
   await db.companySettings.upsert({
     where: { id: SINGLETON_ID },
-    update: { stageNotifyRecipients: JSON.stringify(recipients) },
-    create: { id: SINGLETON_ID, stageNotifyRecipients: JSON.stringify(recipients) },
+    update: {
+      stageNotifyRecipients: JSON.stringify(recipients),
+      stageNotifyEmployeeIds: JSON.stringify(employeeIds),
+    },
+    create: {
+      id: SINGLETON_ID,
+      stageNotifyRecipients: JSON.stringify(recipients),
+      stageNotifyEmployeeIds: JSON.stringify(employeeIds),
+    },
   });
   revalidatePath("/settings");
   revalidatePath("/cv");
+}
+
+export async function getStageNotifyEmployeeIds(): Promise<string[]> {
+  const settings = await getCompanySettings();
+  try {
+    return JSON.parse(settings.stageNotifyEmployeeIds || "[]");
+  } catch {}
+  return [];
 }

@@ -90,7 +90,7 @@ export async function updateCandidateStatus(
   if (previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
-      const { getStageNotifyRecipients } = await import("@/lib/actions/company-settings");
+      const { getStageNotifyRecipients, getStageNotifyEmployeeIds } = await import("@/lib/actions/company-settings");
       const recipients = await getStageNotifyRecipients();
       const stageLabel = STAGE_LABELS[status] || status;
       const rateInfo = candidate.hourlyRate
@@ -135,6 +135,23 @@ export async function updateCandidateStatus(
             <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
             ${rateInfo}`
           );
+        }
+      }
+
+      // Send to additional HR team members
+      const extraIds = await getStageNotifyEmployeeIds();
+      if (extraIds.length > 0) {
+        const extras = await db.employee.findMany({ where: { id: { in: extraIds } }, select: { email: true, firstName: true } });
+        for (const emp of extras) {
+          if (emp.email) {
+            await sendEmail(
+              emp.email,
+              `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+              `<p>Hi ${emp.firstName},</p>
+              <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+              ${rateInfo}`
+            );
+          }
         }
       }
     } catch (err) {
@@ -339,7 +356,7 @@ export async function updateCandidate(
   if (status && previousStatus && previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
-      const { getStageNotifyRecipients } = await import("@/lib/actions/company-settings");
+      const { getStageNotifyRecipients, getStageNotifyEmployeeIds } = await import("@/lib/actions/company-settings");
       const recipients = await getStageNotifyRecipients();
       const stageLabel = STAGE_LABELS[status] || status;
       const rate = candidate.hourlyRate;
@@ -382,6 +399,23 @@ export async function updateCandidate(
             <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
             ${rateInfo}`
           );
+        }
+      }
+
+      // Send to additional HR team members
+      const extraIds = await getStageNotifyEmployeeIds();
+      if (extraIds.length > 0) {
+        const extras = await db.employee.findMany({ where: { id: { in: extraIds } }, select: { email: true, firstName: true } });
+        for (const emp of extras) {
+          if (emp.email) {
+            await sendEmail(
+              emp.email,
+              `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+              `<p>Hi ${emp.firstName},</p>
+              <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+              ${rateInfo}`
+            );
+          }
         }
       }
     } catch (err) {
