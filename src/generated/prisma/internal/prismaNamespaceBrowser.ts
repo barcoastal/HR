@@ -450,6 +450,7 @@ export const CandidateScalarFieldEnum = {
   backgroundCheckStatus: 'backgroundCheckStatus',
   backgroundCheckId: 'backgroundCheckId',
   backgroundCheckDate: 'backgroundCheckDate',
+  backgroundCheckOptions: 'backgroundCheckOptions',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

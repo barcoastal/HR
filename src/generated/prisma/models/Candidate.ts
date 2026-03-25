@@ -62,6 +62,7 @@ export type CandidateMinAggregateOutputType = {
   backgroundCheckStatus: string | null
   backgroundCheckId: string | null
   backgroundCheckDate: Date | null
+  backgroundCheckOptions: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,6 +93,7 @@ export type CandidateMaxAggregateOutputType = {
   backgroundCheckStatus: string | null
   backgroundCheckId: string | null
   backgroundCheckDate: Date | null
+  backgroundCheckOptions: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -122,6 +124,7 @@ export type CandidateCountAggregateOutputType = {
   backgroundCheckStatus: number
   backgroundCheckId: number
   backgroundCheckDate: number
+  backgroundCheckOptions: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -164,6 +167,7 @@ export type CandidateMinAggregateInputType = {
   backgroundCheckStatus?: true
   backgroundCheckId?: true
   backgroundCheckDate?: true
+  backgroundCheckOptions?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -194,6 +198,7 @@ export type CandidateMaxAggregateInputType = {
   backgroundCheckStatus?: true
   backgroundCheckId?: true
   backgroundCheckDate?: true
+  backgroundCheckOptions?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -224,6 +229,7 @@ export type CandidateCountAggregateInputType = {
   backgroundCheckStatus?: true
   backgroundCheckId?: true
   backgroundCheckDate?: true
+  backgroundCheckOptions?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -341,6 +347,7 @@ export type CandidateGroupByOutputType = {
   backgroundCheckStatus: string | null
   backgroundCheckId: string | null
   backgroundCheckDate: Date | null
+  backgroundCheckOptions: string | null
   createdAt: Date
   updatedAt: Date
   _count: CandidateCountAggregateOutputType | null
@@ -394,6 +401,7 @@ export type CandidateWhereInput = {
   backgroundCheckStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckDate?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
@@ -427,6 +435,7 @@ export type CandidateOrderByWithRelationInput = {
   backgroundCheckStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundCheckId?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundCheckDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  backgroundCheckOptions?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   position?: Prisma.PositionOrderByWithRelationInput
@@ -463,6 +472,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   backgroundCheckStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckDate?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
@@ -496,6 +506,7 @@ export type CandidateOrderByWithAggregationInput = {
   backgroundCheckStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundCheckId?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundCheckDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  backgroundCheckOptions?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CandidateCountOrderByAggregateInput
@@ -534,6 +545,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   backgroundCheckStatus?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   backgroundCheckId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   backgroundCheckDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
+  backgroundCheckOptions?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
 }
@@ -562,6 +574,7 @@ export type CandidateCreateInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
@@ -595,6 +608,7 @@ export type CandidateUncheckedCreateInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
@@ -624,6 +638,7 @@ export type CandidateUpdateInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
@@ -657,6 +672,7 @@ export type CandidateUncheckedUpdateInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
@@ -688,6 +704,7 @@ export type CandidateCreateManyInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -716,6 +733,7 @@ export type CandidateUpdateManyMutationInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -746,6 +764,7 @@ export type CandidateUncheckedUpdateManyInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -786,6 +805,7 @@ export type CandidateCountOrderByAggregateInput = {
   backgroundCheckStatus?: Prisma.SortOrder
   backgroundCheckId?: Prisma.SortOrder
   backgroundCheckDate?: Prisma.SortOrder
+  backgroundCheckOptions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -821,6 +841,7 @@ export type CandidateMaxOrderByAggregateInput = {
   backgroundCheckStatus?: Prisma.SortOrder
   backgroundCheckId?: Prisma.SortOrder
   backgroundCheckDate?: Prisma.SortOrder
+  backgroundCheckOptions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -851,6 +872,7 @@ export type CandidateMinOrderByAggregateInput = {
   backgroundCheckStatus?: Prisma.SortOrder
   backgroundCheckId?: Prisma.SortOrder
   backgroundCheckDate?: Prisma.SortOrder
+  backgroundCheckOptions?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -999,6 +1021,7 @@ export type CandidateCreateWithoutManagerInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
@@ -1030,6 +1053,7 @@ export type CandidateUncheckedCreateWithoutManagerInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
@@ -1090,6 +1114,7 @@ export type CandidateScalarWhereInput = {
   backgroundCheckStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundCheckDate?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
 }
@@ -1118,6 +1143,7 @@ export type CandidateCreateWithoutPositionInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
@@ -1149,6 +1175,7 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
@@ -1204,6 +1231,7 @@ export type CandidateCreateWithoutInterviewsInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
@@ -1236,6 +1264,7 @@ export type CandidateUncheckedCreateWithoutInterviewsInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1280,6 +1309,7 @@ export type CandidateUpdateWithoutInterviewsInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
@@ -1312,6 +1342,7 @@ export type CandidateUncheckedUpdateWithoutInterviewsInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1341,6 +1372,7 @@ export type CandidateCreateManyManagerInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1369,6 +1401,7 @@ export type CandidateUpdateWithoutManagerInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
@@ -1400,6 +1433,7 @@ export type CandidateUncheckedUpdateWithoutManagerInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
@@ -1430,6 +1464,7 @@ export type CandidateUncheckedUpdateManyWithoutManagerInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1459,6 +1494,7 @@ export type CandidateCreateManyPositionInput = {
   backgroundCheckStatus?: string | null
   backgroundCheckId?: string | null
   backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1487,6 +1523,7 @@ export type CandidateUpdateWithoutPositionInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
@@ -1518,6 +1555,7 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
@@ -1548,6 +1586,7 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1609,6 +1648,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   backgroundCheckStatus?: boolean
   backgroundCheckId?: boolean
   backgroundCheckDate?: boolean
+  backgroundCheckOptions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -1643,6 +1683,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   backgroundCheckStatus?: boolean
   backgroundCheckId?: boolean
   backgroundCheckDate?: boolean
+  backgroundCheckOptions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -1675,6 +1716,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   backgroundCheckStatus?: boolean
   backgroundCheckId?: boolean
   backgroundCheckDate?: boolean
+  backgroundCheckOptions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -1707,11 +1749,12 @@ export type CandidateSelectScalar = {
   backgroundCheckStatus?: boolean
   backgroundCheckId?: boolean
   backgroundCheckDate?: boolean
+  backgroundCheckOptions?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
   manager?: boolean | Prisma.Candidate$managerArgs<ExtArgs>
@@ -1760,6 +1803,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     backgroundCheckStatus: string | null
     backgroundCheckId: string | null
     backgroundCheckDate: Date | null
+    backgroundCheckOptions: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["candidate"]>
@@ -2213,6 +2257,7 @@ export interface CandidateFieldRefs {
   readonly backgroundCheckStatus: Prisma.FieldRef<"Candidate", 'String'>
   readonly backgroundCheckId: Prisma.FieldRef<"Candidate", 'String'>
   readonly backgroundCheckDate: Prisma.FieldRef<"Candidate", 'DateTime'>
+  readonly backgroundCheckOptions: Prisma.FieldRef<"Candidate", 'String'>
   readonly createdAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
 }

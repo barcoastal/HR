@@ -28,6 +28,7 @@ type CandidateItem = {
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
+  backgroundCheckOptions: string | null;
   position: { title: string } | null;
 };
 

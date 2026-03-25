@@ -50,6 +50,7 @@ type CandidateForDialog = {
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
+  backgroundCheckOptions: string | null;
   position: { title: string } | null;
 };
 
@@ -136,6 +137,10 @@ export function CandidateDetailDialog({
     education: "Y",
     blj: "Y",
     federal_criminal: "Y",
+    bankruptcy: "N",
+    civil_judgment: "N",
+    tax_lien: "N",
+    credit_report: "N",
   });
   const router = useRouter();
 
@@ -418,6 +423,7 @@ export function CandidateDetailDialog({
                     <option value="HIRE3">HIRE3 — Comprehensive</option>
                   </select>
                 </div>
+                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Criminal & Verification</p>
                 <div className="grid grid-cols-2 gap-2">
                   {([
                     { key: "federal_criminal", label: "Federal Criminal" },
@@ -426,6 +432,25 @@ export function CandidateDetailDialog({
                     { key: "mvr", label: "Motor Vehicle Record" },
                     { key: "blj", label: "County Criminal" },
                     { key: "drug_test", label: "Drug Test" },
+                  ] as const).map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={bgCheckOptions[key] === "Y"}
+                        onChange={(e) => setBgCheckOptions((o) => ({ ...o, [key]: e.target.checked ? "Y" : "N" }))}
+                        className="rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-2">Financial Background</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {([
+                    { key: "bankruptcy", label: "Bankruptcy Records" },
+                    { key: "civil_judgment", label: "Civil Judgments" },
+                    { key: "tax_lien", label: "Tax Liens" },
+                    { key: "credit_report", label: "Credit Report" },
                   ] as const).map(({ key, label }) => (
                     <label key={key} className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer">
                       <input
@@ -532,6 +557,50 @@ export function CandidateDetailDialog({
                   {bgCheckStatus === "PASSED" && " — ready to hire"}
                   {bgCheckStatus === "FAILED" && " — review required before proceeding"}
                 </p>
+                {(() => {
+                  try {
+                    const opts = JSON.parse(candidate.backgroundCheckOptions || "{}");
+                    const financialChecks = [
+                      opts.bankruptcy === "Y" && "Bankruptcy",
+                      opts.civil_judgment === "Y" && "Civil Judgments",
+                      opts.tax_lien === "Y" && "Tax Liens",
+                      opts.credit_report === "Y" && "Credit Report",
+                    ].filter(Boolean);
+                    const standardChecks = [
+                      opts.federal_criminal === "Y" && "Federal Criminal",
+                      opts.blj === "Y" && "County Criminal",
+                      opts.employment === "Y" && "Employment",
+                      opts.education === "Y" && "Education",
+                      opts.mvr === "Y" && "MVR",
+                      opts.drug_test === "Y" && "Drug Test",
+                    ].filter(Boolean);
+                    if (financialChecks.length === 0 && standardChecks.length === 0) return null;
+                    return (
+                      <div className="mt-2 space-y-1.5">
+                        {standardChecks.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Checks Requested</p>
+                            <div className="flex flex-wrap gap-1">
+                              {standardChecks.map((c) => (
+                                <span key={c as string} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-orange-500/10 text-orange-400">{c}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        {financialChecks.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mb-0.5">Financial Checks</p>
+                            <div className="flex flex-wrap gap-1">
+                              {financialChecks.map((c) => (
+                                <span key={c as string} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400">{c}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  } catch { return null; }
+                })()}
               </div>
             )}
 

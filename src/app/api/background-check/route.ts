@@ -28,6 +28,10 @@ export async function POST(req: NextRequest) {
       education?: "Y" | "N";
       blj?: "Y" | "N";
       federal_criminal?: "Y" | "N";
+      bankruptcy?: "Y" | "N";
+      civil_judgment?: "Y" | "N";
+      tax_lien?: "Y" | "N";
+      credit_report?: "Y" | "N";
     };
   };
 
@@ -45,7 +49,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const payload = {
+    const payload: Record<string, unknown> = {
       report_sku: options?.report_sku || "HIRE1",
       order_quantity: 1,
       applicant_emails: [candidate.email],
@@ -56,6 +60,10 @@ export async function POST(req: NextRequest) {
       education: options?.education || "Y",
       blj: options?.blj || "Y",
       federal_criminal: options?.federal_criminal || "Y",
+      bankruptcy: options?.bankruptcy || "N",
+      civil_judgment: options?.civil_judgment || "N",
+      tax_lien: options?.tax_lien || "N",
+      credit_report: options?.credit_report || "N",
       terms_agree: "Y",
     };
 
@@ -74,6 +82,7 @@ export async function POST(req: NextRequest) {
             status: "BACKGROUND_CHECK",
             backgroundCheckStatus: "PENDING",
             backgroundCheckDate: new Date(),
+            backgroundCheckOptions: JSON.stringify(options || {}),
           },
         });
         return NextResponse.json({
@@ -99,6 +108,7 @@ export async function POST(req: NextRequest) {
         backgroundCheckStatus: "AWAITING_APPLICANT",
         backgroundCheckId: reportKey,
         backgroundCheckDate: new Date(),
+        backgroundCheckOptions: JSON.stringify(options || {}),
       },
     });
 
@@ -116,6 +126,7 @@ export async function POST(req: NextRequest) {
         status: "BACKGROUND_CHECK",
         backgroundCheckStatus: "PENDING",
         backgroundCheckDate: new Date(),
+        backgroundCheckOptions: JSON.stringify(options || {}),
       },
     });
 
