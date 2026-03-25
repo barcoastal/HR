@@ -31,6 +31,7 @@ type CandidateItem = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  hourlyRate: number | null;
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
@@ -305,6 +306,7 @@ function PositionPipeline({
                 status: c.status,
                 positionId: c.positionId,
                 costOfHire: c.costOfHire,
+                hourlyRate: c.hourlyRate,
                 managerId: c.managerId || null,
                 recruiterId: c.recruiterId || null,
                 backgroundCheckStatus: c.backgroundCheckStatus || null,
