@@ -13,11 +13,21 @@ export async function getStageDocuments(stage: string) {
 }
 
 export async function getAllStageDocuments() {
-  // Don't return pdfData in list queries (too large)
-  return db.stageDocument.findMany({
-    select: { id: true, stage: true, name: true, placeholders: true, order: true, createdAt: true, updatedAt: true },
+  // Don't return pdfData in list queries (too large), but indicate if it exists
+  const docs = await db.stageDocument.findMany({
+    select: { id: true, stage: true, name: true, placeholders: true, order: true, pdfData: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
+  return docs.map((d) => ({
+    id: d.id,
+    stage: d.stage,
+    name: d.name,
+    placeholders: d.placeholders,
+    order: d.order,
+    hasPdf: !!d.pdfData,
+    createdAt: d.createdAt,
+    updatedAt: d.updatedAt,
+  }));
 }
 
 export async function getStageDocumentWithPdf(id: string) {

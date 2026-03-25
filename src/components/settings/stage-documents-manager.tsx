@@ -26,6 +26,7 @@ type StageDoc = {
   name: string;
   placeholders: string; // JSON
   order: number;
+  hasPdf: boolean;
 };
 
 const STAGES = [
@@ -102,8 +103,8 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
                     <Icon name="picture_as_pdf" size={18} className="text-red-400 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
-                      <p className="text-xs text-[var(--color-text-muted)]">
-                        {placeholders.length} placeholder{placeholders.length !== 1 ? "s" : ""} marked
+                      <p className={cn("text-xs", !doc.hasPdf ? "text-amber-400" : "text-[var(--color-text-muted)]")}>
+                        {!doc.hasPdf ? "No PDF — click edit to upload" : `${placeholders.length} placeholder${placeholders.length !== 1 ? "s" : ""} marked`}
                       </p>
                     </div>
                   </div>
@@ -168,8 +169,9 @@ function PdfDocumentEditor({
   const [name, setName] = useState(existing?.name || "");
   const [pdfBase64, setPdfBase64] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(
-    existing ? `/api/stage-documents/${existing.id}` : null
+    existing?.hasPdf ? `/api/stage-documents/${existing.id}` : null
   );
+  const needsUpload = existing && !existing.hasPdf && !pdfBase64;
   const [placeholders, setPlaceholders] = useState<PlaceholderPosition[]>(
     existing ? JSON.parse(existing.placeholders || "[]") : []
   );
@@ -338,15 +340,19 @@ function PdfDocumentEditor({
         />
       </div>
 
-      {/* PDF Upload */}
-      {!pdfBase64 && !existing && (
+      {/* PDF Upload — show for new docs or existing docs without PDF */}
+      {!pdfBase64 && (!existing || needsUpload) && (
         <div
           onClick={() => fileInputRef.current?.click()}
           className="border-2 border-dashed border-[var(--color-border)] rounded-lg p-8 text-center cursor-pointer hover:border-[var(--color-accent)]/50 transition-colors"
         >
           <Icon name="upload_file" size={32} className="text-[var(--color-text-muted)] mx-auto mb-2" />
-          <p className="text-sm text-[var(--color-text-primary)] font-medium">Click to upload PDF</p>
-          <p className="text-xs text-[var(--color-text-muted)] mt-1">Upload a contract, NDA, or any document template</p>
+          <p className="text-sm text-[var(--color-text-primary)] font-medium">
+            {needsUpload ? "Upload a PDF to add placeholders" : "Click to upload PDF"}
+          </p>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">
+            {needsUpload ? "This document needs a PDF file to mark placeholder positions" : "Upload a contract, NDA, or any document template"}
+          </p>
           <input
             ref={fileInputRef}
             type="file"
