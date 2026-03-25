@@ -586,6 +586,7 @@ model Candidate {
   notes         String?
   jobAppliedTo  String?
   costOfHire    Float?
+  hourlyRate    Float?
   appliedAt     DateTime        @default(now())
   hiredAt       DateTime?
   positionId              String?

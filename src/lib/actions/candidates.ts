@@ -63,16 +63,52 @@ export async function createCandidate(data: {
   return candidate;
 }
 
+const STAGE_LABELS: Record<string, string> = {
+  NEW: "New",
+  SCREENING: "Screening",
+  INTERVIEW: "Interview",
+  OFFER: "Offer",
+  BACKGROUND_CHECK: "Background Check",
+  HIRED: "Hired",
+  REJECTED: "Rejected",
+};
+
 export async function updateCandidateStatus(
   id: string,
   status: CandidateStatus
 ) {
+  const candidate = await db.candidate.findUnique({ where: { id } });
+  if (!candidate) throw new Error("Candidate not found");
+
+  const previousStatus = candidate.status;
   const data: Record<string, unknown> = { status };
   if (status === "HIRED") data.hiredAt = new Date();
 
-  const candidate = await db.candidate.update({ where: { id }, data });
+  const updated = await db.candidate.update({ where: { id }, data });
+
+  // Send stage-change notification email to the candidate
+  if (previousStatus !== status && candidate.email) {
+    try {
+      const { sendEmail } = await import("@/lib/email");
+      const stageLabel = STAGE_LABELS[status] || status;
+      const rateInfo = candidate.hourlyRate
+        ? `<p>Your hourly rate: <strong>$${candidate.hourlyRate.toFixed(2)}/hr</strong></p>`
+        : "";
+      await sendEmail(
+        candidate.email,
+        `Application Update: ${stageLabel}`,
+        `<p>Hi ${candidate.firstName},</p>
+        <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
+        ${rateInfo}
+        <p>We'll be in touch with next steps shortly.</p>`
+      );
+    } catch (err) {
+      console.error("[candidates] Failed to send stage notification:", err);
+    }
+  }
+
   revalidatePath("/cv");
-  return candidate;
+  return updated;
 }
 
 export async function searchCandidates(query: string) {
@@ -246,11 +282,15 @@ export async function updateCandidate(
     notes?: string;
     positionId?: string;
     costOfHire?: number;
+    hourlyRate?: number;
     managerId?: string;
     recruiterId?: string;
     status?: CandidateStatus;
   }
 ) {
+  const existing = await db.candidate.findUnique({ where: { id } });
+  const previousStatus = existing?.status;
+
   const { skills, status, ...rest } = data;
   const updateData: Record<string, unknown> = { ...rest };
   if (skills !== undefined) updateData.skills = JSON.stringify(skills);
@@ -259,6 +299,29 @@ export async function updateCandidate(
     if (status === "HIRED") updateData.hiredAt = new Date();
   }
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
+
+  // Send stage-change notification email if status changed
+  if (status && previousStatus && previousStatus !== status && candidate.email) {
+    try {
+      const { sendEmail } = await import("@/lib/email");
+      const stageLabel = STAGE_LABELS[status] || status;
+      const rate = candidate.hourlyRate;
+      const rateInfo = rate
+        ? `<p>Your hourly rate: <strong>$${rate.toFixed(2)}/hr</strong></p>`
+        : "";
+      await sendEmail(
+        candidate.email,
+        `Application Update: ${stageLabel}`,
+        `<p>Hi ${candidate.firstName},</p>
+        <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
+        ${rateInfo}
+        <p>We'll be in touch with next steps shortly.</p>`
+      );
+    } catch (err) {
+      console.error("[candidates] Failed to send stage notification:", err);
+    }
+  }
+
   revalidatePath("/cv");
   return candidate;
 }

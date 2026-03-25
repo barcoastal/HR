@@ -46,6 +46,7 @@ type CandidateForDialog = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  hourlyRate: number | null;
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
@@ -117,6 +118,7 @@ export function CandidateDetailDialog({
     notes: "",
     positionId: "",
     costOfHire: "",
+    hourlyRate: "",
     managerId: "",
     recruiterId: "",
     status: "NEW" as CandidateStatus,
@@ -171,6 +173,7 @@ export function CandidateDetailDialog({
         notes: candidate.notes || "",
         positionId: candidate.positionId || "",
         costOfHire: candidate.costOfHire?.toString() || "",
+        hourlyRate: candidate.hourlyRate?.toString() || "",
         managerId: candidate.managerId || "",
         recruiterId: candidate.recruiterId || "",
         status: candidate.status,
@@ -205,6 +208,7 @@ export function CandidateDetailDialog({
           notes: form.notes || undefined,
           positionId: form.positionId || undefined,
           costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+          hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : undefined,
           managerId: form.managerId || undefined,
           recruiterId: form.recruiterId || undefined,
         });
@@ -710,6 +714,12 @@ export function CandidateDetailDialog({
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Skills (comma separated)</label>
               <input value={form.skills} onChange={(e) => update("skills", e.target.value)} className={inputClass} />
+            </div>
+
+            {/* Hourly Rate */}
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Hourly Rate ($)</label>
+              <input value={form.hourlyRate} onChange={(e) => update("hourlyRate", e.target.value)} type="number" step="0.01" className={inputClass} placeholder="e.g. 25.00" />
             </div>
 
             {/* Cost */}

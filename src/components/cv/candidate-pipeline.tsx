@@ -24,6 +24,7 @@ type CandidateItem = {
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
+  hourlyRate: number | null;
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
