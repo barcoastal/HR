@@ -4661,6 +4661,7 @@ export const CandidateScalarFieldEnum = {
   notes: 'notes',
   jobAppliedTo: 'jobAppliedTo',
   costOfHire: 'costOfHire',
+  hourlyRate: 'hourlyRate',
   appliedAt: 'appliedAt',
   hiredAt: 'hiredAt',
   positionId: 'positionId',

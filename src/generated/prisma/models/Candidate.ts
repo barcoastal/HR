@@ -28,10 +28,12 @@ export type AggregateCandidate = {
 
 export type CandidateAvgAggregateOutputType = {
   costOfHire: number | null
+  hourlyRate: number | null
 }
 
 export type CandidateSumAggregateOutputType = {
   costOfHire: number | null
+  hourlyRate: number | null
 }
 
 export type CandidateMinAggregateOutputType = {
@@ -51,6 +53,7 @@ export type CandidateMinAggregateOutputType = {
   notes: string | null
   jobAppliedTo: string | null
   costOfHire: number | null
+  hourlyRate: number | null
   appliedAt: Date | null
   hiredAt: Date | null
   positionId: string | null
@@ -80,6 +83,7 @@ export type CandidateMaxAggregateOutputType = {
   notes: string | null
   jobAppliedTo: string | null
   costOfHire: number | null
+  hourlyRate: number | null
   appliedAt: Date | null
   hiredAt: Date | null
   positionId: string | null
@@ -109,6 +113,7 @@ export type CandidateCountAggregateOutputType = {
   notes: number
   jobAppliedTo: number
   costOfHire: number
+  hourlyRate: number
   appliedAt: number
   hiredAt: number
   positionId: number
@@ -125,10 +130,12 @@ export type CandidateCountAggregateOutputType = {
 
 export type CandidateAvgAggregateInputType = {
   costOfHire?: true
+  hourlyRate?: true
 }
 
 export type CandidateSumAggregateInputType = {
   costOfHire?: true
+  hourlyRate?: true
 }
 
 export type CandidateMinAggregateInputType = {
@@ -148,6 +155,7 @@ export type CandidateMinAggregateInputType = {
   notes?: true
   jobAppliedTo?: true
   costOfHire?: true
+  hourlyRate?: true
   appliedAt?: true
   hiredAt?: true
   positionId?: true
@@ -177,6 +185,7 @@ export type CandidateMaxAggregateInputType = {
   notes?: true
   jobAppliedTo?: true
   costOfHire?: true
+  hourlyRate?: true
   appliedAt?: true
   hiredAt?: true
   positionId?: true
@@ -206,6 +215,7 @@ export type CandidateCountAggregateInputType = {
   notes?: true
   jobAppliedTo?: true
   costOfHire?: true
+  hourlyRate?: true
   appliedAt?: true
   hiredAt?: true
   positionId?: true
@@ -322,6 +332,7 @@ export type CandidateGroupByOutputType = {
   notes: string | null
   jobAppliedTo: string | null
   costOfHire: number | null
+  hourlyRate: number | null
   appliedAt: Date
   hiredAt: Date | null
   positionId: string | null
@@ -374,6 +385,7 @@ export type CandidateWhereInput = {
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
+  hourlyRate?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   positionId?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -406,6 +418,7 @@ export type CandidateOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   jobAppliedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   positionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -441,6 +454,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
+  hourlyRate?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   positionId?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -473,6 +487,7 @@ export type CandidateOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   jobAppliedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   costOfHire?: Prisma.SortOrderInput | Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrderInput | Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrderInput | Prisma.SortOrder
   positionId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -510,6 +525,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   jobAppliedTo?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableWithAggregatesFilter<"Candidate"> | number | null
+  hourlyRate?: Prisma.FloatNullableWithAggregatesFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
   positionId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
@@ -539,6 +555,7 @@ export type CandidateCreateInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -569,6 +586,7 @@ export type CandidateUncheckedCreateInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   positionId?: string | null
@@ -599,6 +617,7 @@ export type CandidateUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -629,6 +648,7 @@ export type CandidateUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -659,6 +679,7 @@ export type CandidateCreateManyInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   positionId?: string | null
@@ -688,6 +709,7 @@ export type CandidateUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -715,6 +737,7 @@ export type CandidateUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -754,6 +777,7 @@ export type CandidateCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
@@ -768,6 +792,7 @@ export type CandidateCountOrderByAggregateInput = {
 
 export type CandidateAvgOrderByAggregateInput = {
   costOfHire?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
 }
 
 export type CandidateMaxOrderByAggregateInput = {
@@ -787,6 +812,7 @@ export type CandidateMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
@@ -816,6 +842,7 @@ export type CandidateMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   jobAppliedTo?: Prisma.SortOrder
   costOfHire?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
   appliedAt?: Prisma.SortOrder
   hiredAt?: Prisma.SortOrder
   positionId?: Prisma.SortOrder
@@ -830,6 +857,7 @@ export type CandidateMinOrderByAggregateInput = {
 
 export type CandidateSumOrderByAggregateInput = {
   costOfHire?: Prisma.SortOrder
+  hourlyRate?: Prisma.SortOrder
 }
 
 export type CandidateScalarRelationFilter = {
@@ -964,6 +992,7 @@ export type CandidateCreateWithoutManagerInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -993,6 +1022,7 @@ export type CandidateUncheckedCreateWithoutManagerInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   positionId?: string | null
@@ -1051,6 +1081,7 @@ export type CandidateScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
   jobAppliedTo?: Prisma.StringNullableFilter<"Candidate"> | string | null
   costOfHire?: Prisma.FloatNullableFilter<"Candidate"> | number | null
+  hourlyRate?: Prisma.FloatNullableFilter<"Candidate"> | number | null
   appliedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   hiredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   positionId?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -1080,6 +1111,7 @@ export type CandidateCreateWithoutPositionInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -1109,6 +1141,7 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -1164,6 +1197,7 @@ export type CandidateCreateWithoutInterviewsInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -1193,6 +1227,7 @@ export type CandidateUncheckedCreateWithoutInterviewsInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   positionId?: string | null
@@ -1238,6 +1273,7 @@ export type CandidateUpdateWithoutInterviewsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1267,6 +1303,7 @@ export type CandidateUncheckedUpdateWithoutInterviewsInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1296,6 +1333,7 @@ export type CandidateCreateManyManagerInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   positionId?: string | null
@@ -1324,6 +1362,7 @@ export type CandidateUpdateWithoutManagerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1353,6 +1392,7 @@ export type CandidateUncheckedUpdateWithoutManagerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1382,6 +1422,7 @@ export type CandidateUncheckedUpdateManyWithoutManagerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1410,6 +1451,7 @@ export type CandidateCreateManyPositionInput = {
   notes?: string | null
   jobAppliedTo?: string | null
   costOfHire?: number | null
+  hourlyRate?: number | null
   appliedAt?: Date | string
   hiredAt?: Date | string | null
   recruiterId?: string | null
@@ -1438,6 +1480,7 @@ export type CandidateUpdateWithoutPositionInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1467,6 +1510,7 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1496,6 +1540,7 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1555,6 +1600,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   notes?: boolean
   jobAppliedTo?: boolean
   costOfHire?: boolean
+  hourlyRate?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
   positionId?: boolean
@@ -1588,6 +1634,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   notes?: boolean
   jobAppliedTo?: boolean
   costOfHire?: boolean
+  hourlyRate?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
   positionId?: boolean
@@ -1619,6 +1666,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   notes?: boolean
   jobAppliedTo?: boolean
   costOfHire?: boolean
+  hourlyRate?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
   positionId?: boolean
@@ -1650,6 +1698,7 @@ export type CandidateSelectScalar = {
   notes?: boolean
   jobAppliedTo?: boolean
   costOfHire?: boolean
+  hourlyRate?: boolean
   appliedAt?: boolean
   hiredAt?: boolean
   positionId?: boolean
@@ -1662,7 +1711,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
   manager?: boolean | Prisma.Candidate$managerArgs<ExtArgs>
@@ -1702,6 +1751,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     notes: string | null
     jobAppliedTo: string | null
     costOfHire: number | null
+    hourlyRate: number | null
     appliedAt: Date
     hiredAt: Date | null
     positionId: string | null
@@ -2154,6 +2204,7 @@ export interface CandidateFieldRefs {
   readonly notes: Prisma.FieldRef<"Candidate", 'String'>
   readonly jobAppliedTo: Prisma.FieldRef<"Candidate", 'String'>
   readonly costOfHire: Prisma.FieldRef<"Candidate", 'Float'>
+  readonly hourlyRate: Prisma.FieldRef<"Candidate", 'Float'>
   readonly appliedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly hiredAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly positionId: Prisma.FieldRef<"Candidate", 'String'>
