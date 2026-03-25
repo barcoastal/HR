@@ -73,15 +73,8 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
   const [hiringId, setHiringId] = useState<string | null>(null);
 
   async function moveCandidate(id: string, newStatus: CandidateStatus) {
-    if (newStatus === "HIRED") {
-      setHiringId(id);
-      await hireCandidateAndStartOnboarding(id);
-      setHiringId(null);
-      router.refresh();
-      return;
-    }
-    if (newStatus === "BACKGROUND_CHECK") {
-      // Open the detail dialog so user can configure BG check options
+    if (newStatus === "HIRED" || newStatus === "BACKGROUND_CHECK") {
+      // Open detail dialog so user can provide company email / configure options
       const c = candidates.find((c) => c.id === id);
       if (c) setSelectedCandidate(c);
       return;

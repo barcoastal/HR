@@ -158,6 +158,24 @@ export async function updateCandidateStatus(
         }
       }
 
+      // Create in-app notifications for recruiter, manager, and extra HR members
+      const notifyEmployeeIds: string[] = [];
+      if (candidate.recruiterId) notifyEmployeeIds.push(candidate.recruiterId);
+      if (candidate.managerId && candidate.managerId !== candidate.recruiterId) notifyEmployeeIds.push(candidate.managerId);
+      for (const eid of (extraIds ?? [])) {
+        if (!notifyEmployeeIds.includes(eid)) notifyEmployeeIds.push(eid);
+      }
+      if (notifyEmployeeIds.length > 0) {
+        await db.notification.createMany({
+          data: notifyEmployeeIds.map((recipientId) => ({
+            recipientId,
+            type: "stage_change",
+            message: `${candidateName} moved to ${stageLabel}`,
+            link: "/cv",
+          })),
+        });
+      }
+
       // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
       if (DOC_STAGES.includes(status) && candidate.email) {
@@ -397,9 +415,10 @@ export async function updateCandidate(
     updateData.status = status;
     if (status === "HIRED") updateData.hiredAt = new Date();
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
 
-  // Send stage-change notification emails if status changed
+  // Send stage-change notification emails + in-app notifications if status changed
   if (status && previousStatus && previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
@@ -466,6 +485,24 @@ export async function updateCandidate(
         }
       }
 
+
+      // Create in-app notifications for recruiter, manager, and extra HR members
+      const notifyIds: string[] = [];
+      if (candidate.recruiterId) notifyIds.push(candidate.recruiterId);
+      if (candidate.managerId && candidate.managerId !== candidate.recruiterId) notifyIds.push(candidate.managerId);
+      for (const eid of (extraIds ?? [])) {
+        if (!notifyIds.includes(eid)) notifyIds.push(eid);
+      }
+      if (notifyIds.length > 0) {
+        await db.notification.createMany({
+          data: notifyIds.map((recipientId) => ({
+            recipientId,
+            type: "stage_change",
+            message: `${candidateName} moved to ${stageLabel}`,
+            link: "/cv",
+          })),
+        });
+      }
       // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
       if (DOC_STAGES.includes(status) && candidate.email) {
@@ -598,7 +635,7 @@ export async function hireCandidateAndStartOnboarding(
       });
     }
 
-    sendWelcomeEmail({
+    await sendWelcomeEmail({
       to: employeeEmail,
       role: "Employee",
       loginUrl: `${baseUrl}/login`,
@@ -697,7 +734,7 @@ export async function hireCandidateAndStartOnboarding(
 
     // Handle document actions — send to company email
     if (task.documentAction === "SEND" && task.sendEmail && task.emailSubject && task.emailBody) {
-      sendOnboardingEmail({
+      await sendOnboardingEmail({
         to: employeeEmail,
         subject: task.emailSubject,
         body: task.emailBody,
@@ -711,14 +748,14 @@ export async function hireCandidateAndStartOnboarding(
         task.documentUrl,
         task.documentName
       );
-      sendSigningRequestEmail({
+      await sendSigningRequestEmail({
         to: employeeEmail,
         firstName: candidate.firstName,
         documentName: task.documentName,
         signingUrl: `${baseUrl}/sign/${signingReq.token}`,
       });
     } else if (task.sendEmail && task.emailSubject && task.emailBody) {
-      sendOnboardingEmail({
+      await sendOnboardingEmail({
         to: employeeEmail,
         subject: task.emailSubject,
         body: task.emailBody,
@@ -729,7 +766,7 @@ export async function hireCandidateAndStartOnboarding(
     if (task.assigneeId) {
       const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
       if (assignee) {
-        sendTaskAssignmentEmail({
+        await sendTaskAssignmentEmail({
           to: assignee.email,
           assigneeName: assignee.firstName,
           newHireName: `${candidate.firstName} ${candidate.lastName}`,
