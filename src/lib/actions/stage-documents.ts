@@ -13,18 +13,28 @@ export async function getStageDocuments(stage: string) {
 }
 
 export async function getAllStageDocuments() {
-  // Don't return pdfData in list queries (too large), but indicate if it exists
+  // Don't return pdfData in list queries (too large)
+  // Use raw query to check if pdfData exists without loading it
   const docs = await db.stageDocument.findMany({
-    select: { id: true, stage: true, name: true, placeholders: true, order: true, pdfData: true, createdAt: true, updatedAt: true },
+    select: { id: true, stage: true, name: true, placeholders: true, order: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
+  // Check which docs have PDF data without loading the blobs
+  const ids = docs.map((d) => d.id);
+  const withPdf = ids.length > 0
+    ? await db.stageDocument.findMany({
+        where: { id: { in: ids }, pdfData: { not: null } },
+        select: { id: true },
+      })
+    : [];
+  const pdfSet = new Set(withPdf.map((d) => d.id));
   return docs.map((d) => ({
     id: d.id,
     stage: d.stage,
     name: d.name,
     placeholders: d.placeholders,
     order: d.order,
-    hasPdf: !!d.pdfData,
+    hasPdf: pdfSet.has(d.id),
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   }));

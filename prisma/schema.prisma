@@ -635,6 +635,8 @@ model Candidate {
   @@index([status])
   @@index([source])
   @@index([managerId])
+  @@index([recruiterId])
+  @@index([inPipeline])
 }
 
 model Position {
@@ -908,6 +910,8 @@ model StageDocument {
   order        Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([stage])
 }
 
 model EmailTemplate {

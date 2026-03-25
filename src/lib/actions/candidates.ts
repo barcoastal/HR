@@ -89,71 +89,77 @@ export async function updateCandidateStatus(
 
   const updated = await db.candidate.update({ where: { id }, data });
 
-  // Send stage-change notification emails based on settings
+  // Send stage-change notification emails based on settings (non-blocking)
   if (previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
       const { getStageNotifyRecipients, getStageNotifyEmployeeIds } = await import("@/lib/actions/company-settings");
-      const recipients = await getStageNotifyRecipients();
+      const [recipients, extraIds] = await Promise.all([
+        getStageNotifyRecipients(),
+        getStageNotifyEmployeeIds(),
+      ]);
       const stageLabel = STAGE_LABELS[status] || status;
       const rateInfo = candidate.hourlyRate
         ? `<p>Hourly rate: <strong>$${candidate.hourlyRate.toFixed(2)}/hr</strong></p>`
         : "";
       const candidateName = `${candidate.firstName} ${candidate.lastName}`;
 
-      // Send to candidate
+      // Collect all email promises to send in parallel
+      const emailPromises: Promise<unknown>[] = [];
+
+      // Email to candidate
       if (recipients.includes("candidate") && candidate.email) {
-        await sendEmail(
+        emailPromises.push(sendEmail(
           candidate.email,
           `Application Update: ${stageLabel}`,
           `<p>Hi ${candidate.firstName},</p>
           <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
           ${rateInfo}
           <p>We'll be in touch with next steps shortly.</p>`
-        );
+        ));
       }
 
-      // Send to recruiter
-      if (recipients.includes("recruiter") && candidate.recruiterId) {
-        const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
-        if (recruiter?.email) {
-          await sendEmail(
-            recruiter.email,
-            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
-            `<p>Hi ${recruiter.firstName},</p>
-            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
-            ${rateInfo}`
-          );
-        }
+      // Look up recruiter + manager in parallel
+      const [recruiter, manager] = await Promise.all([
+        recipients.includes("recruiter") && candidate.recruiterId
+          ? db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } })
+          : null,
+        recipients.includes("manager") && candidate.managerId
+          ? db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } })
+          : null,
+      ]);
+
+      if (recruiter?.email) {
+        emailPromises.push(sendEmail(
+          recruiter.email,
+          `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+          `<p>Hi ${recruiter.firstName},</p>
+          <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}`
+        ));
+      }
+      if (manager?.email) {
+        emailPromises.push(sendEmail(
+          manager.email,
+          `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+          `<p>Hi ${manager.firstName},</p>
+          <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}`
+        ));
       }
 
-      // Send to manager
-      if (recipients.includes("manager") && candidate.managerId) {
-        const manager = await db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } });
-        if (manager?.email) {
-          await sendEmail(
-            manager.email,
-            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
-            `<p>Hi ${manager.firstName},</p>
-            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
-            ${rateInfo}`
-          );
-        }
-      }
-
-      // Send to additional HR team members
-      const extraIds = await getStageNotifyEmployeeIds();
+      // Extra HR team members
       if (extraIds.length > 0) {
         const extras = await db.employee.findMany({ where: { id: { in: extraIds } }, select: { email: true, firstName: true } });
         for (const emp of extras) {
           if (emp.email) {
-            await sendEmail(
+            emailPromises.push(sendEmail(
               emp.email,
               `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
               `<p>Hi ${emp.firstName},</p>
               <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
               ${rateInfo}`
-            );
+            ));
           }
         }
       }
@@ -162,19 +168,24 @@ export async function updateCandidateStatus(
       const notifyEmployeeIds: string[] = [];
       if (candidate.recruiterId) notifyEmployeeIds.push(candidate.recruiterId);
       if (candidate.managerId && candidate.managerId !== candidate.recruiterId) notifyEmployeeIds.push(candidate.managerId);
-      for (const eid of (extraIds ?? [])) {
+      for (const eid of extraIds) {
         if (!notifyEmployeeIds.includes(eid)) notifyEmployeeIds.push(eid);
       }
-      if (notifyEmployeeIds.length > 0) {
-        await db.notification.createMany({
-          data: notifyEmployeeIds.map((recipientId) => ({
-            recipientId,
-            type: "stage_change",
-            message: `${candidateName} moved to ${stageLabel}`,
-            link: "/cv",
-          })),
-        });
-      }
+
+      // Send all emails + create notifications in parallel
+      await Promise.allSettled([
+        ...emailPromises,
+        notifyEmployeeIds.length > 0
+          ? db.notification.createMany({
+              data: notifyEmployeeIds.map((recipientId) => ({
+                recipientId,
+                type: "stage_change",
+                message: `${candidateName} moved to ${stageLabel}`,
+                link: "/cv",
+              })),
+            })
+          : Promise.resolve(),
+      ]);
 
       // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
@@ -423,7 +434,10 @@ export async function updateCandidate(
     try {
       const { sendEmail } = await import("@/lib/email");
       const { getStageNotifyRecipients, getStageNotifyEmployeeIds } = await import("@/lib/actions/company-settings");
-      const recipients = await getStageNotifyRecipients();
+      const [recipients, extraIds] = await Promise.all([
+        getStageNotifyRecipients(),
+        getStageNotifyEmployeeIds(),
+      ]);
       const stageLabel = STAGE_LABELS[status] || status;
       const rate = candidate.hourlyRate;
       const rateInfo = rate
@@ -431,78 +445,87 @@ export async function updateCandidate(
         : "";
       const candidateName = `${candidate.firstName} ${candidate.lastName}`;
 
+      // Collect all email promises to send in parallel
+      const emailPromises: Promise<unknown>[] = [];
+
       if (recipients.includes("candidate") && candidate.email) {
-        await sendEmail(
+        emailPromises.push(sendEmail(
           candidate.email,
           `Application Update: ${stageLabel}`,
           `<p>Hi ${candidate.firstName},</p>
           <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
           ${rateInfo}
           <p>We'll be in touch with next steps shortly.</p>`
-        );
+        ));
       }
 
-      if (recipients.includes("recruiter") && candidate.recruiterId) {
-        const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
-        if (recruiter?.email) {
-          await sendEmail(
-            recruiter.email,
-            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
-            `<p>Hi ${recruiter.firstName},</p>
-            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
-            ${rateInfo}`
-          );
-        }
+      // Look up recruiter + manager in parallel
+      const [recruiter, manager] = await Promise.all([
+        recipients.includes("recruiter") && candidate.recruiterId
+          ? db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } })
+          : null,
+        recipients.includes("manager") && candidate.managerId
+          ? db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } })
+          : null,
+      ]);
+
+      if (recruiter?.email) {
+        emailPromises.push(sendEmail(
+          recruiter.email,
+          `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+          `<p>Hi ${recruiter.firstName},</p>
+          <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}`
+        ));
+      }
+      if (manager?.email) {
+        emailPromises.push(sendEmail(
+          manager.email,
+          `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+          `<p>Hi ${manager.firstName},</p>
+          <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}`
+        ));
       }
 
-      if (recipients.includes("manager") && candidate.managerId) {
-        const manager = await db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } });
-        if (manager?.email) {
-          await sendEmail(
-            manager.email,
-            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
-            `<p>Hi ${manager.firstName},</p>
-            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
-            ${rateInfo}`
-          );
-        }
-      }
-
-      // Send to additional HR team members
-      const extraIds = await getStageNotifyEmployeeIds();
       if (extraIds.length > 0) {
         const extras = await db.employee.findMany({ where: { id: { in: extraIds } }, select: { email: true, firstName: true } });
         for (const emp of extras) {
           if (emp.email) {
-            await sendEmail(
+            emailPromises.push(sendEmail(
               emp.email,
               `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
               `<p>Hi ${emp.firstName},</p>
               <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
               ${rateInfo}`
-            );
+            ));
           }
         }
       }
-
 
       // Create in-app notifications for recruiter, manager, and extra HR members
       const notifyIds: string[] = [];
       if (candidate.recruiterId) notifyIds.push(candidate.recruiterId);
       if (candidate.managerId && candidate.managerId !== candidate.recruiterId) notifyIds.push(candidate.managerId);
-      for (const eid of (extraIds ?? [])) {
+      for (const eid of extraIds) {
         if (!notifyIds.includes(eid)) notifyIds.push(eid);
       }
-      if (notifyIds.length > 0) {
-        await db.notification.createMany({
-          data: notifyIds.map((recipientId) => ({
-            recipientId,
-            type: "stage_change",
-            message: `${candidateName} moved to ${stageLabel}`,
-            link: "/cv",
-          })),
-        });
-      }
+
+      // Send all emails + create notifications in parallel
+      await Promise.allSettled([
+        ...emailPromises,
+        notifyIds.length > 0
+          ? db.notification.createMany({
+              data: notifyIds.map((recipientId) => ({
+                recipientId,
+                type: "stage_change",
+                message: `${candidateName} moved to ${stageLabel}`,
+                link: "/cv",
+              })),
+            })
+          : Promise.resolve(),
+      ]);
+
       // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
       if (DOC_STAGES.includes(status) && candidate.email) {
