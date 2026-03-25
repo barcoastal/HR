@@ -69,6 +69,9 @@ const STAGE_LABELS: Record<string, string> = {
   INTERVIEW: "Interview",
   OFFER: "Offer",
   BACKGROUND_CHECK: "Background Check",
+  PRE_ONBOARDING: "Pre-Onboarding",
+  ONBOARDING: "Onboarding",
+  OFFBOARDING: "Offboarding",
   HIRED: "Hired",
   REJECTED: "Rejected",
 };
@@ -152,6 +155,36 @@ export async function updateCandidateStatus(
               ${rateInfo}`
             );
           }
+        }
+      }
+
+      // Send stage documents for onboarding/offboarding stages
+      const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
+      if (DOC_STAGES.includes(status) && candidate.email) {
+        const { getStageDocuments } = await import("@/lib/actions/stage-documents");
+        const { fillPlaceholders } = await import("@/lib/stage-document-utils");
+        const { getCompanySettings } = await import("@/lib/actions/company-settings");
+        const [docs, settings] = await Promise.all([
+          getStageDocuments(status),
+          getCompanySettings(),
+        ]);
+        const position = candidate.positionId
+          ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
+          : null;
+        for (const doc of docs) {
+          const filled = fillPlaceholders(doc.content, {
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            email: candidate.email,
+            phone: candidate.phone,
+            hourlyRate: candidate.hourlyRate,
+            position,
+          }, settings.companyName);
+          await sendEmail(
+            candidate.email,
+            doc.name,
+            filled
+          );
         }
       }
     } catch (err) {
@@ -416,6 +449,36 @@ export async function updateCandidate(
               ${rateInfo}`
             );
           }
+        }
+      }
+
+      // Send stage documents for onboarding/offboarding stages
+      const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
+      if (DOC_STAGES.includes(status) && candidate.email) {
+        const { getStageDocuments } = await import("@/lib/actions/stage-documents");
+        const { fillPlaceholders } = await import("@/lib/stage-document-utils");
+        const { getCompanySettings } = await import("@/lib/actions/company-settings");
+        const [docs, settings] = await Promise.all([
+          getStageDocuments(status),
+          getCompanySettings(),
+        ]);
+        const position = candidate.positionId
+          ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
+          : null;
+        for (const doc of docs) {
+          const filled = fillPlaceholders(doc.content, {
+            firstName: candidate.firstName,
+            lastName: candidate.lastName,
+            email: candidate.email,
+            phone: candidate.phone,
+            hourlyRate: candidate.hourlyRate,
+            position,
+          }, settings.companyName);
+          await sendEmail(
+            candidate.email,
+            doc.name,
+            filled
+          );
         }
       }
     } catch (err) {

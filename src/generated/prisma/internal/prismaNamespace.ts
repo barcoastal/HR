@@ -420,6 +420,7 @@ export const ModelName = {
   PulseSurvey: 'PulseSurvey',
   PulseResponse: 'PulseResponse',
   CompanySettings: 'CompanySettings',
+  StageDocument: 'StageDocument',
   EmailTemplate: 'EmailTemplate',
   RolePermission: 'RolePermission',
   OAuthState: 'OAuthState',
@@ -451,7 +452,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3119,6 +3120,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    StageDocument: {
+      payload: Prisma.$StageDocumentPayload<ExtArgs>
+      fields: Prisma.StageDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StageDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StageDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.StageDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StageDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.StageDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.StageDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.StageDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StageDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.StageDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        update: {
+          args: Prisma.StageDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.StageDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StageDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StageDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.StageDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StageDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.StageDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStageDocument>
+        }
+        groupBy: {
+          args: Prisma.StageDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StageDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StageDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StageDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
     EmailTemplate: {
       payload: Prisma.$EmailTemplatePayload<ExtArgs>
       fields: Prisma.EmailTemplateFieldRefs
@@ -4896,6 +4971,19 @@ export const CompanySettingsScalarFieldEnum = {
 export type CompanySettingsScalarFieldEnum = (typeof CompanySettingsScalarFieldEnum)[keyof typeof CompanySettingsScalarFieldEnum]
 
 
+export const StageDocumentScalarFieldEnum = {
+  id: 'id',
+  stage: 'stage',
+  name: 'name',
+  content: 'content',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StageDocumentScalarFieldEnum = (typeof StageDocumentScalarFieldEnum)[keyof typeof StageDocumentScalarFieldEnum]
+
+
 export const EmailTemplateScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -5691,6 +5779,7 @@ export type GlobalOmitConfig = {
   pulseSurvey?: Prisma.PulseSurveyOmit
   pulseResponse?: Prisma.PulseResponseOmit
   companySettings?: Prisma.CompanySettingsOmit
+  stageDocument?: Prisma.StageDocumentOmit
   emailTemplate?: Prisma.EmailTemplateOmit
   rolePermission?: Prisma.RolePermissionOmit
   oAuthState?: Prisma.OAuthStateOmit

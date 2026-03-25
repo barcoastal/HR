@@ -44,7 +44,10 @@ const DEFAULT_COLUMNS: { status: CandidateStatus; label: string; color: string; 
   { status: "INTERVIEW", label: "Interview", color: "text-purple-400", bg: "bg-purple-500/10" },
   { status: "OFFER", label: "Offer", color: "text-emerald-400", bg: "bg-emerald-500/10" },
   { status: "BACKGROUND_CHECK", label: "BG Check", color: "text-orange-400", bg: "bg-orange-500/10" },
+  { status: "PRE_ONBOARDING", label: "Pre-Onboarding", color: "text-teal-400", bg: "bg-teal-500/10" },
+  { status: "ONBOARDING", label: "Onboarding", color: "text-cyan-400", bg: "bg-cyan-500/10" },
   { status: "HIRED", label: "Hired", color: "text-green-400", bg: "bg-green-500/10" },
+  { status: "OFFBOARDING", label: "Offboarding", color: "text-slate-400", bg: "bg-slate-500/10" },
   { status: "REJECTED", label: "Rejected", color: "text-red-400", bg: "bg-red-500/10" },
 ];
 

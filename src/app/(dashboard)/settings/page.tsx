@@ -29,7 +29,9 @@ import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 import { RecruiterManager } from "@/components/settings/recruiter-manager";
 import { PipelineSettings } from "@/components/settings/pipeline-settings";
 import { getRecruiters, getPipelineStages, getCandidateCustomFields, getStageNotifyRecipients, getStageNotifyEmployeeIds } from "@/lib/actions/company-settings";
+import { getAllStageDocuments } from "@/lib/actions/stage-documents";
 import { StageNotificationSettings } from "@/components/settings/stage-notification-settings";
+import { StageDocumentsManager } from "@/components/settings/stage-documents-manager";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 
@@ -37,7 +39,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -54,6 +56,7 @@ export default async function SettingsPage() {
     getCandidateCustomFields(),
     getStageNotifyRecipients(),
     getStageNotifyEmployeeIds(),
+    getAllStageDocuments(),
   ]);
 
   let gustoMapping = null;
@@ -126,6 +129,16 @@ export default async function SettingsPage() {
           initialRecipients={stageNotifyRecipients}
           initialEmployeeIds={stageNotifyEmployeeIds}
           allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
+        />
+
+        <StageDocumentsManager
+          documents={stageDocuments.map((d) => ({
+            id: d.id,
+            stage: d.stage,
+            name: d.name,
+            content: d.content,
+            order: d.order,
+          }))}
         />
 
         <DepartmentManager

@@ -198,6 +198,11 @@ export type PulseResponse = Prisma.PulseResponseModel
  */
 export type CompanySettings = Prisma.CompanySettingsModel
 /**
+ * Model StageDocument
+ * 
+ */
+export type StageDocument = Prisma.StageDocumentModel
+/**
  * Model EmailTemplate
  * 
  */

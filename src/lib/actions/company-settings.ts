@@ -102,8 +102,11 @@ const DEFAULT_STAGES: PipelineStage[] = [
   { id: "interview", label: "Interview", color: "text-purple-400", bgColor: "bg-purple-500", enumValue: "INTERVIEW", visible: true, order: 2 },
   { id: "offer", label: "Offer", color: "text-emerald-400", bgColor: "bg-emerald-500", enumValue: "OFFER", visible: true, order: 3 },
   { id: "bg_check", label: "BG Check", color: "text-orange-400", bgColor: "bg-orange-500", enumValue: "BACKGROUND_CHECK", visible: true, order: 4 },
-  { id: "hired", label: "Hired", color: "text-green-400", bgColor: "bg-green-500", enumValue: "HIRED", visible: true, order: 5 },
-  { id: "rejected", label: "Rejected", color: "text-red-400", bgColor: "bg-red-500", enumValue: "REJECTED", visible: true, order: 6 },
+  { id: "pre_onboarding", label: "Pre-Onboarding", color: "text-teal-400", bgColor: "bg-teal-500", enumValue: "PRE_ONBOARDING", visible: true, order: 5 },
+  { id: "onboarding", label: "Onboarding", color: "text-cyan-400", bgColor: "bg-cyan-500", enumValue: "ONBOARDING", visible: true, order: 6 },
+  { id: "hired", label: "Hired", color: "text-green-400", bgColor: "bg-green-500", enumValue: "HIRED", visible: true, order: 7 },
+  { id: "offboarding", label: "Offboarding", color: "text-slate-400", bgColor: "bg-slate-500", enumValue: "OFFBOARDING", visible: true, order: 8 },
+  { id: "rejected", label: "Rejected", color: "text-red-400", bgColor: "bg-red-500", enumValue: "REJECTED", visible: true, order: 9 },
 ];
 
 export async function getPipelineStages(): Promise<PipelineStage[]> {

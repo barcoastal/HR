@@ -109,6 +109,9 @@ enum CandidateStatus {
   INTERVIEW
   OFFER
   BACKGROUND_CHECK
+  PRE_ONBOARDING
+  ONBOARDING
+  OFFBOARDING
   HIRED
   REJECTED
 }
@@ -867,6 +870,16 @@ model CompanySettings {
   stageNotifyRecipients String @default("[\"candidate\"]") // JSON array: "candidate", "recruiter", "manager"
   stageNotifyEmployeeIds String @default("[]") // JSON array of employee IDs to always notify
   updatedAt     DateTime @updatedAt
+}
+
+model StageDocument {
+  id        String   @id @default(uuid())
+  stage     String   // PRE_ONBOARDING, ONBOARDING, OFFBOARDING
+  name      String   // e.g. "Employment Contract", "NDA"
+  content   String   // HTML with placeholders like {{firstName}}, {{hourlyRate}}
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model EmailTemplate {
