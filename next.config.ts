@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: [
+      "recharts",
+      "framer-motion",
+      "@tiptap/react",
+      "@tiptap/starter-kit",
+      "googleapis",
+      "emoji-mart",
+    ],
+  },
 };
 
 export default nextConfig;

@@ -187,8 +187,7 @@ export async function sendOnboardingEmail({
   to: string; subject: string; body: string;
   documentUrl?: string | null; documentName?: string | null;
 }) {
-  const branding = await getCompanyBranding();
-  const template = await getTemplate("ONBOARDING");
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("ONBOARDING")]);
   const vars: Record<string, string> = {
     subject, body, companyName: branding.companyName, logoUrl: branding.logoUrl || "",
   };
@@ -213,8 +212,7 @@ export async function sendSigningRequestEmail({
 }: {
   to: string; firstName: string; documentName: string; signingUrl: string;
 }) {
-  const branding = await getCompanyBranding();
-  const template = await getTemplate("SIGNING_REQUEST");
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("SIGNING_REQUEST")]);
   const vars = { firstName, documentName, signingUrl, companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
   if (template) {
     await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
@@ -234,8 +232,7 @@ export async function sendTaskAssignmentEmail({
   to: string; assigneeName: string; newHireName: string;
   taskTitle: string; taskDescription?: string | null;
 }) {
-  const branding = await getCompanyBranding();
-  const template = await getTemplate("TASK_ASSIGNMENT");
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("TASK_ASSIGNMENT")]);
   const vars = { assigneeName, newHireName, taskTitle, taskDescription: taskDescription || "", companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
   if (template) {
     await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
@@ -254,8 +251,7 @@ export async function sendWelcomeEmail({
 }: {
   to: string; role: string; loginUrl: string;
 }) {
-  const branding = await getCompanyBranding();
-  const template = await getTemplate("WELCOME");
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("WELCOME")]);
   const vars = { role, loginUrl, companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
   if (template) {
     await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
@@ -277,8 +273,7 @@ export async function sendSigningConfirmationEmail({
 }: {
   to: string; firstName: string; documentName: string;
 }) {
-  const branding = await getCompanyBranding();
-  const template = await getTemplate("SIGNING_CONFIRMATION");
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("SIGNING_CONFIRMATION")]);
   const vars = { firstName, documentName, companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
   if (template) {
     await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));

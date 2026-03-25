@@ -1,38 +1,41 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { cache } from "react";
 import { revalidatePath } from "next/cache";
 
 const SINGLETON_ID = "singleton";
 
-export async function getCompanySettings() {
+const DEFAULTS = {
+  id: SINGLETON_ID,
+  companyName: "Coastal HR",
+  domain: "",
+  industry: "",
+  companySize: "",
+  logoUrl: null as string | null,
+  faviconUrl: null as string | null,
+  senderEmail: "noreply@hr.coastaldebt-tools.com",
+  senderName: "Coastal HR",
+  recruiterIds: "[]",
+  pipelineStages: "[]",
+  candidateCustomFields: "[]",
+  stageNotifyRecipients: '["candidate"]',
+  stageNotifyEmployeeIds: '[]',
+  updatedAt: new Date(),
+};
+
+// Deduplicate within a single request (React.cache)
+export const getCompanySettings = cache(async () => {
   try {
-    return await db.companySettings.upsert({
-      where: { id: SINGLETON_ID },
-      update: {},
-      create: { id: SINGLETON_ID },
-    });
+    const settings = await db.companySettings.findUnique({ where: { id: SINGLETON_ID } });
+    if (settings) return settings;
+    // Only create on first boot
+    return await db.companySettings.create({ data: { id: SINGLETON_ID } });
   } catch {
     // DB unreachable during build — return defaults
-    return {
-      id: SINGLETON_ID,
-      companyName: "Coastal HR",
-      domain: "",
-      industry: "",
-      companySize: "",
-      logoUrl: null,
-      faviconUrl: null,
-      senderEmail: "noreply@hr.coastaldebt-tools.com",
-      senderName: "Coastal HR",
-      recruiterIds: "[]",
-      pipelineStages: "[]",
-      candidateCustomFields: "[]",
-      stageNotifyRecipients: '["candidate"]',
-      stageNotifyEmployeeIds: '[]',
-      updatedAt: new Date(),
-    };
+    return DEFAULTS;
   }
-}
+});
 
 export async function getRecruiters() {
   const settings = await getCompanySettings();
