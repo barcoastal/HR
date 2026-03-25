@@ -34,12 +34,14 @@ import { StageNotificationSettings } from "@/components/settings/stage-notificat
 import { StageDocumentsManager } from "@/components/settings/stage-documents-manager";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
+import { DepartmentReviewTemplates } from "@/components/settings/department-review-templates";
+import { getDepartmentReviewTemplates } from "@/lib/actions/reviews";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -57,6 +59,7 @@ export default async function SettingsPage() {
     getStageNotifyRecipients(),
     getStageNotifyEmployeeIds(),
     getAllStageDocuments(),
+    getDepartmentReviewTemplates(),
   ]);
 
   let gustoMapping = null;
@@ -138,6 +141,17 @@ export default async function SettingsPage() {
             name: d.name,
             placeholders: d.placeholders,
             order: d.order,
+          }))}
+        />
+
+        <DepartmentReviewTemplates
+          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+          templates={deptReviewTemplates.map((t) => ({
+            departmentId: t.departmentId,
+            departmentName: t.department.name,
+            name: t.name,
+            selfTemplate: t.selfTemplate,
+            managerTemplate: t.managerTemplate,
           }))}
         />
 

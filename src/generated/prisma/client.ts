@@ -85,6 +85,11 @@ export type EmployeeTask = Prisma.EmployeeTaskModel
  */
 export type ReviewCycle = Prisma.ReviewCycleModel
 /**
+ * Model DepartmentReviewTemplate
+ * 
+ */
+export type DepartmentReviewTemplate = Prisma.DepartmentReviewTemplateModel
+/**
  * Model Review
  * 
  */

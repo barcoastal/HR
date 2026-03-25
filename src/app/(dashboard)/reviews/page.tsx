@@ -12,6 +12,7 @@ import { GenerateReviewsDialog } from "@/components/reviews/generate-reviews-dia
 import { Icon } from "@/components/ui/icon";
 import { resolveTemplate } from "@/lib/review-templates";
 import type { TemplateField } from "@/lib/review-templates";
+import { getUpcomingAnniversaryReviews } from "@/lib/actions/reviews";
 
 const statusConfig: Record<string, { color: string; bg: string; icon: string }> = {
   SUBMITTED: { color: "text-emerald-400", bg: "bg-emerald-500/15", icon: "check_circle" },
@@ -36,7 +37,7 @@ export default async function ReviewsPage() {
   const isManager = role === "MANAGER";
   const currentEmployeeId = session.user?.employeeId;
 
-  const [cycles, employees, departments] = await Promise.all([
+  const [cycles, employees, departments, anniversaryReviews] = await Promise.all([
     db.reviewCycle.findMany({
       include: {
         reviews: {
@@ -75,6 +76,7 @@ export default async function ReviewsPage() {
       include: { _count: { select: { employees: { where: { status: "ACTIVE" } } } } },
       orderBy: { name: "asc" },
     }),
+    isAdmin ? getUpcomingAnniversaryReviews() : Promise.resolve([]),
   ]);
 
   const employeeList = employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName }));
@@ -149,6 +151,41 @@ export default async function ReviewsPage() {
         <StatCard title="Submitted" value={submittedReviews} icon={<Icon name="description" size={20} />} color="purple" />
         <StatCard title="Avg Rating" value={avgRating} icon={<Icon name="star" size={20} />} color="amber" animate={false} />
       </div>
+
+      {/* Anniversary Reviews Banner */}
+      {isAdmin && anniversaryReviews.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-3">
+            <Icon name="celebration" size={20} className="text-purple-400" />
+            <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Upcoming Anniversary Reviews</h2>
+            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-500/15 text-purple-400">{anniversaryReviews.length}</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {anniversaryReviews.map((rc) => {
+              const submitted = rc.reviews.filter((r) => r.status === "SUBMITTED").length;
+              const total = rc.reviews.length;
+              const daysLeft = Math.ceil((new Date(rc.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+              return (
+                <div key={rc.id} className={cn("rounded-xl p-4 border", daysLeft <= 7 ? "border-red-500/30 bg-red-500/5" : "border-purple-500/20 bg-purple-500/5")}>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name="person" size={16} className="text-purple-400" />
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{rc.employee?.firstName} {rc.employee?.lastName}</p>
+                  </div>
+                  {rc.employee?.department && (
+                    <p className="text-xs text-[var(--color-text-muted)] mb-2">{rc.employee.department.name}</p>
+                  )}
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[var(--color-text-muted)]">{submitted}/{total} submitted</span>
+                    <span className={cn("font-medium", daysLeft <= 7 ? "text-red-400" : "text-purple-400")}>
+                      {daysLeft > 0 ? `${daysLeft} days left` : "Overdue"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* My pending reviews */}
       {myPendingReviews.length > 0 && (

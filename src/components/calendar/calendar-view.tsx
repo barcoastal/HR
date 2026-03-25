@@ -9,7 +9,7 @@ export type CalendarEvent = {
   id: string;
   name: string;
   date: string; // ISO string
-  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar";
+  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review";
   department?: string;
   years?: number;
   meetLink?: string | null;
@@ -45,6 +45,7 @@ const chipStyles: Record<string, string> = {
   benefits: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
   "feed-event": "bg-blue-500/10 text-blue-600",
   "google-calendar": "bg-emerald-500/10 text-emerald-600",
+  "performance-review": "bg-purple-500/10 text-purple-600",
 };
 
 const holidayStyle = "bg-[var(--color-error-container)]/20 text-[var(--color-on-error-container)]";
@@ -65,6 +66,7 @@ function chipIconForType(type: CalendarEvent["type"]): string {
   }
   if (type === "feed-event") return "Event";
   if (type === "google-calendar") return "Google Calendar";
+  if (type === "performance-review") return "Review Due";
   return type;
 }
 

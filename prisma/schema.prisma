@@ -157,6 +157,8 @@ model Department {
   employees          Employee[]   @relation("EmployeeDepartment")
   positions          Position[]
   checklists         OnboardingChecklist[]
+  reviewCycles       ReviewCycle[]
+  reviewTemplate     DepartmentReviewTemplate?
 
   @@index([headId])
   @@index([parentDepartmentId])
@@ -221,6 +223,7 @@ model Employee {
 
   reviewsAsEmployee  Review[]        @relation("ReviewEmployee")
   reviewsAsReviewer  Review[]        @relation("ReviewReviewer")
+  anniversaryReviewCycles ReviewCycle[] @relation("AnniversaryReviewCycle")
   feedPosts          FeedPost[]
   feedComments       FeedComment[]
   feedReactions      FeedReaction[]
@@ -369,9 +372,31 @@ model ReviewCycle {
   selfTemplate    Json?
   managerTemplate Json?
   peerTemplate    Json?
+  departmentId    String?
+  employeeId      String?           // for anniversary-based single-employee cycles
+  isAnniversary   Boolean           @default(false)
   createdAt       DateTime          @default(now())
 
+  department      Department?       @relation(fields: [departmentId], references: [id])
+  employee        Employee?         @relation("AnniversaryReviewCycle", fields: [employeeId], references: [id])
   reviews         Review[]
+
+  @@index([departmentId])
+  @@index([employeeId])
+}
+
+model DepartmentReviewTemplate {
+  id              String   @id @default(uuid())
+  departmentId    String
+  name            String   @default("Default Review")
+  selfTemplate    Json?
+  managerTemplate Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  department      Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+
+  @@unique([departmentId])
 }
 
 model Review {

@@ -13,7 +13,7 @@ export default async function CalendarPage() {
   const userId = session.user?.id;
   const isManagerOrAbove = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR" || role === "MANAGER";
 
-  const [employees, interviews, syncStatus, feedEvents] = await Promise.all([
+  const [employees, interviews, syncStatus, feedEvents, reviewCycles] = await Promise.all([
     db.employee.findMany({
       where: { status: "ACTIVE" },
       select: {
@@ -37,6 +37,16 @@ export default async function CalendarPage() {
         eventDate: true,
         eventEndDate: true,
         eventLocation: true,
+      },
+    }),
+    db.reviewCycle.findMany({
+      where: { isAnniversary: true, status: { in: ["ACTIVE", "DRAFT"] } },
+      select: {
+        id: true,
+        name: true,
+        startDate: true,
+        endDate: true,
+        employee: { select: { firstName: true, lastName: true } },
       },
     }),
   ]);
@@ -106,6 +116,18 @@ export default async function CalendarPage() {
       date: h.date.toISOString(),
       type: `holiday-${h.category}` as CalendarEvent["type"],
     });
+  }
+
+  // Performance review events
+  for (const rc of reviewCycles) {
+    if (rc.employee) {
+      events.push({
+        id: `review-${rc.id}`,
+        name: `Review: ${rc.employee.firstName} ${rc.employee.lastName}`,
+        date: rc.endDate.toISOString(),
+        type: "performance-review" as CalendarEvent["type"],
+      });
+    }
   }
 
   // Feed events

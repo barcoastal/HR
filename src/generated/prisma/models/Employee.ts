@@ -424,6 +424,7 @@ export type EmployeeWhereInput = {
   headOf?: Prisma.DepartmentListRelationFilter
   reviewsAsEmployee?: Prisma.ReviewListRelationFilter
   reviewsAsReviewer?: Prisma.ReviewListRelationFilter
+  anniversaryReviewCycles?: Prisma.ReviewCycleListRelationFilter
   feedPosts?: Prisma.FeedPostListRelationFilter
   feedComments?: Prisma.FeedCommentListRelationFilter
   feedReactions?: Prisma.FeedReactionListRelationFilter
@@ -498,6 +499,7 @@ export type EmployeeOrderByWithRelationInput = {
   headOf?: Prisma.DepartmentOrderByRelationAggregateInput
   reviewsAsEmployee?: Prisma.ReviewOrderByRelationAggregateInput
   reviewsAsReviewer?: Prisma.ReviewOrderByRelationAggregateInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleOrderByRelationAggregateInput
   feedPosts?: Prisma.FeedPostOrderByRelationAggregateInput
   feedComments?: Prisma.FeedCommentOrderByRelationAggregateInput
   feedReactions?: Prisma.FeedReactionOrderByRelationAggregateInput
@@ -575,6 +577,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   headOf?: Prisma.DepartmentListRelationFilter
   reviewsAsEmployee?: Prisma.ReviewListRelationFilter
   reviewsAsReviewer?: Prisma.ReviewListRelationFilter
+  anniversaryReviewCycles?: Prisma.ReviewCycleListRelationFilter
   feedPosts?: Prisma.FeedPostListRelationFilter
   feedComments?: Prisma.FeedCommentListRelationFilter
   feedReactions?: Prisma.FeedReactionListRelationFilter
@@ -725,6 +728,7 @@ export type EmployeeCreateInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -795,6 +799,7 @@ export type EmployeeUncheckedCreateInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -865,6 +870,7 @@ export type EmployeeUpdateInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -935,6 +941,7 @@ export type EmployeeUncheckedUpdateInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1488,6 +1495,22 @@ export type EmployeeUpdateOneWithoutAssignedTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAssignedTasksInput, Prisma.EmployeeUpdateWithoutAssignedTasksInput>, Prisma.EmployeeUncheckedUpdateWithoutAssignedTasksInput>
 }
 
+export type EmployeeCreateNestedOneWithoutAnniversaryReviewCyclesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAnniversaryReviewCyclesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutAnniversaryReviewCyclesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutAnniversaryReviewCyclesInput
+  upsert?: Prisma.EmployeeUpsertWithoutAnniversaryReviewCyclesInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUpdateWithoutAnniversaryReviewCyclesInput>, Prisma.EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutReviewsAsEmployeeInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutReviewsAsEmployeeInput, Prisma.EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutReviewsAsEmployeeInput
@@ -1898,6 +1921,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -1967,6 +1991,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2041,6 +2066,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -2110,6 +2136,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2200,6 +2227,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -2269,6 +2297,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2394,6 +2423,7 @@ export type EmployeeCreateWithoutTeamInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -2463,6 +2493,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2558,6 +2589,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -2627,6 +2659,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2701,6 +2734,7 @@ export type EmployeeCreateWithoutManagerInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -2770,6 +2804,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2849,6 +2884,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -2918,6 +2954,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2992,6 +3029,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -3061,6 +3099,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3151,6 +3190,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -3220,6 +3260,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3316,6 +3357,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -3385,6 +3427,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3470,6 +3513,7 @@ export type EmployeeCreateWithoutUserInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -3539,6 +3583,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3624,6 +3669,7 @@ export type EmployeeUpdateWithoutUserInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -3693,6 +3739,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3763,6 +3810,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -3832,6 +3880,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3917,6 +3966,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -3986,6 +4036,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4055,6 +4106,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -4124,6 +4176,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4198,6 +4251,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -4267,6 +4321,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4352,6 +4407,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -4421,6 +4477,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4501,6 +4558,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -4570,6 +4628,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4583,6 +4642,302 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutAnniversaryReviewCyclesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput>
+}
+
+export type EmployeeUpsertWithoutAnniversaryReviewCyclesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutAnniversaryReviewCyclesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutAnniversaryReviewCyclesInput, Prisma.EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput>
+}
+
+export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4638,6 +4993,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -4707,6 +5063,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4781,6 +5138,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -4850,6 +5208,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4935,6 +5294,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -5004,6 +5364,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5084,6 +5445,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -5153,6 +5515,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5223,6 +5586,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
@@ -5292,6 +5656,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5366,6 +5731,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -5435,6 +5801,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5520,6 +5887,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
@@ -5589,6 +5957,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5669,6 +6038,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -5738,6 +6108,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5807,6 +6178,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
@@ -5876,6 +6248,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5961,6 +6334,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
@@ -6030,6 +6404,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6099,6 +6474,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
@@ -6168,6 +6544,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6253,6 +6630,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
@@ -6322,6 +6700,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6391,6 +6770,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -6460,6 +6840,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6545,6 +6926,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -6614,6 +6996,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6683,6 +7066,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -6752,6 +7136,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6837,6 +7222,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -6906,6 +7292,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6975,6 +7362,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -7044,6 +7432,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7129,6 +7518,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -7198,6 +7588,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7267,6 +7658,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -7336,6 +7728,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7410,6 +7803,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -7479,6 +7873,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7564,6 +7959,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -7633,6 +8029,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7713,6 +8110,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -7782,6 +8180,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7851,6 +8250,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -7920,6 +8320,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8005,6 +8406,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -8074,6 +8476,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8143,6 +8546,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -8212,6 +8616,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8297,6 +8702,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -8366,6 +8772,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8435,6 +8842,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -8504,6 +8912,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8589,6 +8998,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -8658,6 +9068,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8727,6 +9138,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -8796,6 +9208,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8870,6 +9283,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -8939,6 +9353,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9024,6 +9439,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -9093,6 +9509,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9173,6 +9590,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -9242,6 +9660,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9311,6 +9730,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -9380,6 +9800,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9465,6 +9886,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -9534,6 +9956,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9603,6 +10026,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -9672,6 +10096,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9757,6 +10182,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -9826,6 +10252,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9895,6 +10322,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -9964,6 +10392,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10049,6 +10478,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -10118,6 +10548,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10187,6 +10618,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -10256,6 +10688,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10341,6 +10774,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -10410,6 +10844,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10479,6 +10914,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -10548,6 +10984,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10633,6 +11070,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -10702,6 +11140,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10771,6 +11210,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -10840,6 +11280,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10925,6 +11366,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -10994,6 +11436,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11063,6 +11506,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -11132,6 +11576,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11217,6 +11662,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -11286,6 +11732,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11355,6 +11802,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -11424,6 +11872,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11509,6 +11958,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -11578,6 +12028,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11647,6 +12098,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -11716,6 +12168,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11801,6 +12254,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -11870,6 +12324,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11939,6 +12394,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
@@ -12008,6 +12464,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12093,6 +12550,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -12162,6 +12620,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12266,6 +12725,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -12335,6 +12795,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12476,6 +12937,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -12545,6 +13007,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12722,6 +13185,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -12791,6 +13255,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12896,6 +13361,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
@@ -12965,6 +13431,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
   reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
   reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -13041,6 +13508,7 @@ export type EmployeeCountOutputType = {
   headOf: number
   reviewsAsEmployee: number
   reviewsAsReviewer: number
+  anniversaryReviewCycles: number
   feedPosts: number
   feedComments: number
   feedReactions: number
@@ -13076,6 +13544,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   headOf?: boolean | EmployeeCountOutputTypeCountHeadOfArgs
   reviewsAsEmployee?: boolean | EmployeeCountOutputTypeCountReviewsAsEmployeeArgs
   reviewsAsReviewer?: boolean | EmployeeCountOutputTypeCountReviewsAsReviewerArgs
+  anniversaryReviewCycles?: boolean | EmployeeCountOutputTypeCountAnniversaryReviewCyclesArgs
   feedPosts?: boolean | EmployeeCountOutputTypeCountFeedPostsArgs
   feedComments?: boolean | EmployeeCountOutputTypeCountFeedCommentsArgs
   feedReactions?: boolean | EmployeeCountOutputTypeCountFeedReactionsArgs
@@ -13148,6 +13617,13 @@ export type EmployeeCountOutputTypeCountReviewsAsEmployeeArgs<ExtArgs extends ru
  */
 export type EmployeeCountOutputTypeCountReviewsAsReviewerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReviewWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountAnniversaryReviewCyclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReviewCycleWhereInput
 }
 
 /**
@@ -13385,6 +13861,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   headOf?: boolean | Prisma.Employee$headOfArgs<ExtArgs>
   reviewsAsEmployee?: boolean | Prisma.Employee$reviewsAsEmployeeArgs<ExtArgs>
   reviewsAsReviewer?: boolean | Prisma.Employee$reviewsAsReviewerArgs<ExtArgs>
+  anniversaryReviewCycles?: boolean | Prisma.Employee$anniversaryReviewCyclesArgs<ExtArgs>
   feedPosts?: boolean | Prisma.Employee$feedPostsArgs<ExtArgs>
   feedComments?: boolean | Prisma.Employee$feedCommentsArgs<ExtArgs>
   feedReactions?: boolean | Prisma.Employee$feedReactionsArgs<ExtArgs>
@@ -13546,6 +14023,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   headOf?: boolean | Prisma.Employee$headOfArgs<ExtArgs>
   reviewsAsEmployee?: boolean | Prisma.Employee$reviewsAsEmployeeArgs<ExtArgs>
   reviewsAsReviewer?: boolean | Prisma.Employee$reviewsAsReviewerArgs<ExtArgs>
+  anniversaryReviewCycles?: boolean | Prisma.Employee$anniversaryReviewCyclesArgs<ExtArgs>
   feedPosts?: boolean | Prisma.Employee$feedPostsArgs<ExtArgs>
   feedComments?: boolean | Prisma.Employee$feedCommentsArgs<ExtArgs>
   feedReactions?: boolean | Prisma.Employee$feedReactionsArgs<ExtArgs>
@@ -13601,6 +14079,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     headOf: Prisma.$DepartmentPayload<ExtArgs>[]
     reviewsAsEmployee: Prisma.$ReviewPayload<ExtArgs>[]
     reviewsAsReviewer: Prisma.$ReviewPayload<ExtArgs>[]
+    anniversaryReviewCycles: Prisma.$ReviewCyclePayload<ExtArgs>[]
     feedPosts: Prisma.$FeedPostPayload<ExtArgs>[]
     feedComments: Prisma.$FeedCommentPayload<ExtArgs>[]
     feedReactions: Prisma.$FeedReactionPayload<ExtArgs>[]
@@ -14068,6 +14547,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   headOf<T extends Prisma.Employee$headOfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$headOfArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewsAsEmployee<T extends Prisma.Employee$reviewsAsEmployeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$reviewsAsEmployeeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewsAsReviewer<T extends Prisma.Employee$reviewsAsReviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$reviewsAsReviewerArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  anniversaryReviewCycles<T extends Prisma.Employee$anniversaryReviewCyclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$anniversaryReviewCyclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewCyclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedPosts<T extends Prisma.Employee$feedPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedComments<T extends Prisma.Employee$feedCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedReactions<T extends Prisma.Employee$feedReactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedReactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -14766,6 +15246,30 @@ export type Employee$reviewsAsReviewerArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.ReviewScalarFieldEnum | Prisma.ReviewScalarFieldEnum[]
+}
+
+/**
+ * Employee.anniversaryReviewCycles
+ */
+export type Employee$anniversaryReviewCyclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReviewCycle
+   */
+  select?: Prisma.ReviewCycleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReviewCycle
+   */
+  omit?: Prisma.ReviewCycleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewCycleInclude<ExtArgs> | null
+  where?: Prisma.ReviewCycleWhereInput
+  orderBy?: Prisma.ReviewCycleOrderByWithRelationInput | Prisma.ReviewCycleOrderByWithRelationInput[]
+  cursor?: Prisma.ReviewCycleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReviewCycleScalarFieldEnum | Prisma.ReviewCycleScalarFieldEnum[]
 }
 
 /**

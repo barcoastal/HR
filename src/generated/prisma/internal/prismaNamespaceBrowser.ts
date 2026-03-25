@@ -60,6 +60,7 @@ export const ModelName = {
   ChecklistOverrideExclusion: 'ChecklistOverrideExclusion',
   EmployeeTask: 'EmployeeTask',
   ReviewCycle: 'ReviewCycle',
+  DepartmentReviewTemplate: 'DepartmentReviewTemplate',
   Review: 'Review',
   FeedPost: 'FeedPost',
   EventAttendance: 'EventAttendance',
@@ -272,10 +273,26 @@ export const ReviewCycleScalarFieldEnum = {
   selfTemplate: 'selfTemplate',
   managerTemplate: 'managerTemplate',
   peerTemplate: 'peerTemplate',
+  departmentId: 'departmentId',
+  employeeId: 'employeeId',
+  isAnniversary: 'isAnniversary',
   createdAt: 'createdAt'
 } as const
 
 export type ReviewCycleScalarFieldEnum = (typeof ReviewCycleScalarFieldEnum)[keyof typeof ReviewCycleScalarFieldEnum]
+
+
+export const DepartmentReviewTemplateScalarFieldEnum = {
+  id: 'id',
+  departmentId: 'departmentId',
+  name: 'name',
+  selfTemplate: 'selfTemplate',
+  managerTemplate: 'managerTemplate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartmentReviewTemplateScalarFieldEnum = (typeof DepartmentReviewTemplateScalarFieldEnum)[keyof typeof DepartmentReviewTemplateScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {

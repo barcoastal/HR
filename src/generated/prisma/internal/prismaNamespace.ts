@@ -393,6 +393,7 @@ export const ModelName = {
   ChecklistOverrideExclusion: 'ChecklistOverrideExclusion',
   EmployeeTask: 'EmployeeTask',
   ReviewCycle: 'ReviewCycle',
+  DepartmentReviewTemplate: 'DepartmentReviewTemplate',
   Review: 'Review',
   FeedPost: 'FeedPost',
   EventAttendance: 'EventAttendance',
@@ -452,7 +453,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1119,6 +1120,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ReviewCycleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ReviewCycleCountAggregateOutputType> | number
+        }
+      }
+    }
+    DepartmentReviewTemplate: {
+      payload: Prisma.$DepartmentReviewTemplatePayload<ExtArgs>
+      fields: Prisma.DepartmentReviewTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DepartmentReviewTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DepartmentReviewTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.DepartmentReviewTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DepartmentReviewTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.DepartmentReviewTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.DepartmentReviewTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.DepartmentReviewTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DepartmentReviewTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.DepartmentReviewTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        update: {
+          args: Prisma.DepartmentReviewTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.DepartmentReviewTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DepartmentReviewTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DepartmentReviewTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.DepartmentReviewTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentReviewTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.DepartmentReviewTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDepartmentReviewTemplate>
+        }
+        groupBy: {
+          args: Prisma.DepartmentReviewTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartmentReviewTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DepartmentReviewTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DepartmentReviewTemplateCountAggregateOutputType> | number
         }
       }
     }
@@ -4567,10 +4642,26 @@ export const ReviewCycleScalarFieldEnum = {
   selfTemplate: 'selfTemplate',
   managerTemplate: 'managerTemplate',
   peerTemplate: 'peerTemplate',
+  departmentId: 'departmentId',
+  employeeId: 'employeeId',
+  isAnniversary: 'isAnniversary',
   createdAt: 'createdAt'
 } as const
 
 export type ReviewCycleScalarFieldEnum = (typeof ReviewCycleScalarFieldEnum)[keyof typeof ReviewCycleScalarFieldEnum]
+
+
+export const DepartmentReviewTemplateScalarFieldEnum = {
+  id: 'id',
+  departmentId: 'departmentId',
+  name: 'name',
+  selfTemplate: 'selfTemplate',
+  managerTemplate: 'managerTemplate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartmentReviewTemplateScalarFieldEnum = (typeof DepartmentReviewTemplateScalarFieldEnum)[keyof typeof DepartmentReviewTemplateScalarFieldEnum]
 
 
 export const ReviewScalarFieldEnum = {
@@ -5755,6 +5846,7 @@ export type GlobalOmitConfig = {
   checklistOverrideExclusion?: Prisma.ChecklistOverrideExclusionOmit
   employeeTask?: Prisma.EmployeeTaskOmit
   reviewCycle?: Prisma.ReviewCycleOmit
+  departmentReviewTemplate?: Prisma.DepartmentReviewTemplateOmit
   review?: Prisma.ReviewOmit
   feedPost?: Prisma.FeedPostOmit
   eventAttendance?: Prisma.EventAttendanceOmit

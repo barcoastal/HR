@@ -178,6 +178,8 @@ function PdfDocumentEditor({
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageRendering, setPageRendering] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -188,31 +190,49 @@ function PdfDocumentEditor({
   const renderPage = useCallback(async (pageNum: number) => {
     if (!pdfDocRef.current || !canvasRef.current) return;
     setPageRendering(true);
-    const page = await pdfDocRef.current.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 1.5 });
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d")!;
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
-    await page.render({ canvasContext: context, viewport }).promise;
+    try {
+      const page = await pdfDocRef.current.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d")!;
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+      await page.render({ canvasContext: context, viewport }).promise;
+    } catch (err) {
+      console.error("Failed to render PDF page:", err);
+    }
     setPageRendering(false);
   }, []);
 
   const loadPdf = useCallback(async (data: ArrayBuffer | string) => {
-    const pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    setPdfLoading(true);
+    setPdfError(null);
+    try {
+      const pdfjsLib = await import("pdfjs-dist");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
-    let source: { data: ArrayBuffer } | { url: string };
-    if (typeof data === "string") {
-      source = { url: data };
-    } else {
-      source = { data };
+      let source: { data: ArrayBuffer } | { url: string };
+      if (typeof data === "string") {
+        // For URL sources, fetch as ArrayBuffer first to avoid CORS/streaming issues
+        const resp = await fetch(data);
+        if (!resp.ok) throw new Error(`Failed to fetch PDF: ${resp.status}`);
+        const arrayBuf = await resp.arrayBuffer();
+        source = { data: arrayBuf };
+      } else {
+        source = { data };
+      }
+      const pdf = await pdfjsLib.getDocument(source).promise;
+      pdfDocRef.current = pdf;
+      setPageCount(pdf.numPages);
+      setCurrentPage(1);
+      await renderPage(1);
+    } catch (err) {
+      console.error("Failed to load PDF:", err);
+      setPdfError("Failed to load PDF. Try re-uploading the file.");
+      setPageCount(0);
+    } finally {
+      setPdfLoading(false);
     }
-    const pdf = await pdfjsLib.getDocument(source).promise;
-    pdfDocRef.current = pdf;
-    setPageCount(pdf.numPages);
-    setCurrentPage(1);
-    await renderPage(1);
   }, [renderPage]);
 
   // Load existing PDF
@@ -330,8 +350,39 @@ function PdfDocumentEditor({
         </div>
       )}
 
+      {/* Loading state */}
+      {pdfLoading && (
+        <div className="flex items-center justify-center py-12 border border-[var(--color-border)] rounded-lg bg-[var(--color-bg)]">
+          <div className="text-center">
+            <Icon name="hourglass_empty" size={32} className="text-[var(--color-accent)] mx-auto mb-2 animate-spin" />
+            <p className="text-sm text-[var(--color-text-muted)]">Loading PDF...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error state */}
+      {pdfError && (
+        <div className="flex flex-col items-center py-8 border border-red-500/30 rounded-lg bg-red-500/5">
+          <Icon name="error" size={32} className="text-red-400 mb-2" />
+          <p className="text-sm text-red-400 mb-3">{pdfError}</p>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90"
+          >
+            Re-upload PDF
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </div>
+      )}
+
       {/* PDF Preview + Placeholder Placement */}
-      {(pdfBase64 || existing) && pageCount > 0 && (
+      {(pdfBase64 || existing) && pageCount > 0 && !pdfLoading && (
         <>
           {/* Placeholder selector */}
           <div>

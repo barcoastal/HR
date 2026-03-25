@@ -30,6 +30,9 @@ export type ReviewCycleMinAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   status: $Enums.ReviewCycleStatus | null
+  departmentId: string | null
+  employeeId: string | null
+  isAnniversary: boolean | null
   createdAt: Date | null
 }
 
@@ -39,6 +42,9 @@ export type ReviewCycleMaxAggregateOutputType = {
   startDate: Date | null
   endDate: Date | null
   status: $Enums.ReviewCycleStatus | null
+  departmentId: string | null
+  employeeId: string | null
+  isAnniversary: boolean | null
   createdAt: Date | null
 }
 
@@ -52,6 +58,9 @@ export type ReviewCycleCountAggregateOutputType = {
   selfTemplate: number
   managerTemplate: number
   peerTemplate: number
+  departmentId: number
+  employeeId: number
+  isAnniversary: number
   createdAt: number
   _all: number
 }
@@ -63,6 +72,9 @@ export type ReviewCycleMinAggregateInputType = {
   startDate?: true
   endDate?: true
   status?: true
+  departmentId?: true
+  employeeId?: true
+  isAnniversary?: true
   createdAt?: true
 }
 
@@ -72,6 +84,9 @@ export type ReviewCycleMaxAggregateInputType = {
   startDate?: true
   endDate?: true
   status?: true
+  departmentId?: true
+  employeeId?: true
+  isAnniversary?: true
   createdAt?: true
 }
 
@@ -85,6 +100,9 @@ export type ReviewCycleCountAggregateInputType = {
   selfTemplate?: true
   managerTemplate?: true
   peerTemplate?: true
+  departmentId?: true
+  employeeId?: true
+  isAnniversary?: true
   createdAt?: true
   _all?: true
 }
@@ -171,6 +189,9 @@ export type ReviewCycleGroupByOutputType = {
   selfTemplate: runtime.JsonValue | null
   managerTemplate: runtime.JsonValue | null
   peerTemplate: runtime.JsonValue | null
+  departmentId: string | null
+  employeeId: string | null
+  isAnniversary: boolean
   createdAt: Date
   _count: ReviewCycleCountAggregateOutputType | null
   _min: ReviewCycleMinAggregateOutputType | null
@@ -205,7 +226,12 @@ export type ReviewCycleWhereInput = {
   selfTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   managerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   peerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  departmentId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  employeeId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  isAnniversary?: Prisma.BoolFilter<"ReviewCycle"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   reviews?: Prisma.ReviewListRelationFilter
 }
 
@@ -219,7 +245,12 @@ export type ReviewCycleOrderByWithRelationInput = {
   selfTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   managerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   peerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isAnniversary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  department?: Prisma.DepartmentOrderByWithRelationInput
+  employee?: Prisma.EmployeeOrderByWithRelationInput
   reviews?: Prisma.ReviewOrderByRelationAggregateInput
 }
 
@@ -236,7 +267,12 @@ export type ReviewCycleWhereUniqueInput = Prisma.AtLeast<{
   selfTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   managerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
   peerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  departmentId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  employeeId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  isAnniversary?: Prisma.BoolFilter<"ReviewCycle"> | boolean
   createdAt?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
+  employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   reviews?: Prisma.ReviewListRelationFilter
 }, "id">
 
@@ -250,6 +286,9 @@ export type ReviewCycleOrderByWithAggregationInput = {
   selfTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   managerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   peerTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isAnniversary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.ReviewCycleCountOrderByAggregateInput
   _max?: Prisma.ReviewCycleMaxOrderByAggregateInput
@@ -269,6 +308,9 @@ export type ReviewCycleScalarWhereWithAggregatesInput = {
   selfTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
   managerTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
   peerTemplate?: Prisma.JsonNullableWithAggregatesFilter<"ReviewCycle">
+  departmentId?: Prisma.StringNullableWithAggregatesFilter<"ReviewCycle"> | string | null
+  employeeId?: Prisma.StringNullableWithAggregatesFilter<"ReviewCycle"> | string | null
+  isAnniversary?: Prisma.BoolWithAggregatesFilter<"ReviewCycle"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ReviewCycle"> | Date | string
 }
 
@@ -282,7 +324,10 @@ export type ReviewCycleCreateInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: boolean
   createdAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutReviewCyclesInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutAnniversaryReviewCyclesInput
   reviews?: Prisma.ReviewCreateNestedManyWithoutCycleInput
 }
 
@@ -296,6 +341,9 @@ export type ReviewCycleUncheckedCreateInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: string | null
+  employeeId?: string | null
+  isAnniversary?: boolean
   createdAt?: Date | string
   reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutCycleInput
 }
@@ -310,7 +358,10 @@ export type ReviewCycleUpdateInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutReviewCyclesNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutAnniversaryReviewCyclesNestedInput
   reviews?: Prisma.ReviewUpdateManyWithoutCycleNestedInput
 }
 
@@ -324,6 +375,9 @@ export type ReviewCycleUncheckedUpdateInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviews?: Prisma.ReviewUncheckedUpdateManyWithoutCycleNestedInput
 }
@@ -338,6 +392,9 @@ export type ReviewCycleCreateManyInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: string | null
+  employeeId?: string | null
+  isAnniversary?: boolean
   createdAt?: Date | string
 }
 
@@ -351,6 +408,7 @@ export type ReviewCycleUpdateManyMutationInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -364,7 +422,20 @@ export type ReviewCycleUncheckedUpdateManyInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReviewCycleListRelationFilter = {
+  every?: Prisma.ReviewCycleWhereInput
+  some?: Prisma.ReviewCycleWhereInput
+  none?: Prisma.ReviewCycleWhereInput
+}
+
+export type ReviewCycleOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ReviewCycleCountOrderByAggregateInput = {
@@ -377,6 +448,9 @@ export type ReviewCycleCountOrderByAggregateInput = {
   selfTemplate?: Prisma.SortOrder
   managerTemplate?: Prisma.SortOrder
   peerTemplate?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
+  isAnniversary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -386,6 +460,9 @@ export type ReviewCycleMaxOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
+  isAnniversary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -395,12 +472,99 @@ export type ReviewCycleMinOrderByAggregateInput = {
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  employeeId?: Prisma.SortOrder
+  isAnniversary?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type ReviewCycleScalarRelationFilter = {
   is?: Prisma.ReviewCycleWhereInput
   isNot?: Prisma.ReviewCycleWhereInput
+}
+
+export type ReviewCycleCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput> | Prisma.ReviewCycleCreateWithoutDepartmentInput[] | Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput | Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.ReviewCycleCreateManyDepartmentInputEnvelope
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+}
+
+export type ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput> | Prisma.ReviewCycleCreateWithoutDepartmentInput[] | Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput | Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.ReviewCycleCreateManyDepartmentInputEnvelope
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+}
+
+export type ReviewCycleUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput> | Prisma.ReviewCycleCreateWithoutDepartmentInput[] | Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput | Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.ReviewCycleUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.ReviewCycleUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.ReviewCycleCreateManyDepartmentInputEnvelope
+  set?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  disconnect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  delete?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  update?: Prisma.ReviewCycleUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.ReviewCycleUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.ReviewCycleUpdateManyWithWhereWithoutDepartmentInput | Prisma.ReviewCycleUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
+}
+
+export type ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput> | Prisma.ReviewCycleCreateWithoutDepartmentInput[] | Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput | Prisma.ReviewCycleCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.ReviewCycleUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.ReviewCycleUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.ReviewCycleCreateManyDepartmentInputEnvelope
+  set?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  disconnect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  delete?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  update?: Prisma.ReviewCycleUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.ReviewCycleUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.ReviewCycleUpdateManyWithWhereWithoutDepartmentInput | Prisma.ReviewCycleUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
+}
+
+export type ReviewCycleCreateNestedManyWithoutEmployeeInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput> | Prisma.ReviewCycleCreateWithoutEmployeeInput[] | Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput | Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput[]
+  createMany?: Prisma.ReviewCycleCreateManyEmployeeInputEnvelope
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+}
+
+export type ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput> | Prisma.ReviewCycleCreateWithoutEmployeeInput[] | Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput | Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput[]
+  createMany?: Prisma.ReviewCycleCreateManyEmployeeInputEnvelope
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+}
+
+export type ReviewCycleUpdateManyWithoutEmployeeNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput> | Prisma.ReviewCycleCreateWithoutEmployeeInput[] | Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput | Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput[]
+  upsert?: Prisma.ReviewCycleUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.ReviewCycleUpsertWithWhereUniqueWithoutEmployeeInput[]
+  createMany?: Prisma.ReviewCycleCreateManyEmployeeInputEnvelope
+  set?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  disconnect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  delete?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  update?: Prisma.ReviewCycleUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.ReviewCycleUpdateWithWhereUniqueWithoutEmployeeInput[]
+  updateMany?: Prisma.ReviewCycleUpdateManyWithWhereWithoutEmployeeInput | Prisma.ReviewCycleUpdateManyWithWhereWithoutEmployeeInput[]
+  deleteMany?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
+}
+
+export type ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput = {
+  create?: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput> | Prisma.ReviewCycleCreateWithoutEmployeeInput[] | Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput[]
+  connectOrCreate?: Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput | Prisma.ReviewCycleCreateOrConnectWithoutEmployeeInput[]
+  upsert?: Prisma.ReviewCycleUpsertWithWhereUniqueWithoutEmployeeInput | Prisma.ReviewCycleUpsertWithWhereUniqueWithoutEmployeeInput[]
+  createMany?: Prisma.ReviewCycleCreateManyEmployeeInputEnvelope
+  set?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  disconnect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  delete?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  connect?: Prisma.ReviewCycleWhereUniqueInput | Prisma.ReviewCycleWhereUniqueInput[]
+  update?: Prisma.ReviewCycleUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.ReviewCycleUpdateWithWhereUniqueWithoutEmployeeInput[]
+  updateMany?: Prisma.ReviewCycleUpdateManyWithWhereWithoutEmployeeInput | Prisma.ReviewCycleUpdateManyWithWhereWithoutEmployeeInput[]
+  deleteMany?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
 }
 
 export type EnumReviewCycleStatusFieldUpdateOperationsInput = {
@@ -421,6 +585,141 @@ export type ReviewCycleUpdateOneRequiredWithoutReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ReviewCycleUpdateToOneWithWhereWithoutReviewsInput, Prisma.ReviewCycleUpdateWithoutReviewsInput>, Prisma.ReviewCycleUncheckedUpdateWithoutReviewsInput>
 }
 
+export type ReviewCycleCreateWithoutDepartmentInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: boolean
+  createdAt?: Date | string
+  employee?: Prisma.EmployeeCreateNestedOneWithoutAnniversaryReviewCyclesInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutCycleInput
+}
+
+export type ReviewCycleUncheckedCreateWithoutDepartmentInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  employeeId?: string | null
+  isAnniversary?: boolean
+  createdAt?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutCycleInput
+}
+
+export type ReviewCycleCreateOrConnectWithoutDepartmentInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput>
+}
+
+export type ReviewCycleCreateManyDepartmentInputEnvelope = {
+  data: Prisma.ReviewCycleCreateManyDepartmentInput | Prisma.ReviewCycleCreateManyDepartmentInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReviewCycleUpsertWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReviewCycleUpdateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedUpdateWithoutDepartmentInput>
+  create: Prisma.XOR<Prisma.ReviewCycleCreateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedCreateWithoutDepartmentInput>
+}
+
+export type ReviewCycleUpdateWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReviewCycleUpdateWithoutDepartmentInput, Prisma.ReviewCycleUncheckedUpdateWithoutDepartmentInput>
+}
+
+export type ReviewCycleUpdateManyWithWhereWithoutDepartmentInput = {
+  where: Prisma.ReviewCycleScalarWhereInput
+  data: Prisma.XOR<Prisma.ReviewCycleUpdateManyMutationInput, Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentInput>
+}
+
+export type ReviewCycleScalarWhereInput = {
+  AND?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
+  OR?: Prisma.ReviewCycleScalarWhereInput[]
+  NOT?: Prisma.ReviewCycleScalarWhereInput | Prisma.ReviewCycleScalarWhereInput[]
+  id?: Prisma.StringFilter<"ReviewCycle"> | string
+  name?: Prisma.StringFilter<"ReviewCycle"> | string
+  startDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
+  endDate?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
+  status?: Prisma.EnumReviewCycleStatusFilter<"ReviewCycle"> | $Enums.ReviewCycleStatus
+  template?: Prisma.JsonNullableFilter<"ReviewCycle">
+  selfTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  managerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  peerTemplate?: Prisma.JsonNullableFilter<"ReviewCycle">
+  departmentId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  employeeId?: Prisma.StringNullableFilter<"ReviewCycle"> | string | null
+  isAnniversary?: Prisma.BoolFilter<"ReviewCycle"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"ReviewCycle"> | Date | string
+}
+
+export type ReviewCycleCreateWithoutEmployeeInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: boolean
+  createdAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutReviewCyclesInput
+  reviews?: Prisma.ReviewCreateNestedManyWithoutCycleInput
+}
+
+export type ReviewCycleUncheckedCreateWithoutEmployeeInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: string | null
+  isAnniversary?: boolean
+  createdAt?: Date | string
+  reviews?: Prisma.ReviewUncheckedCreateNestedManyWithoutCycleInput
+}
+
+export type ReviewCycleCreateOrConnectWithoutEmployeeInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput>
+}
+
+export type ReviewCycleCreateManyEmployeeInputEnvelope = {
+  data: Prisma.ReviewCycleCreateManyEmployeeInput | Prisma.ReviewCycleCreateManyEmployeeInput[]
+  skipDuplicates?: boolean
+}
+
+export type ReviewCycleUpsertWithWhereUniqueWithoutEmployeeInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReviewCycleUpdateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedUpdateWithoutEmployeeInput>
+  create: Prisma.XOR<Prisma.ReviewCycleCreateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedCreateWithoutEmployeeInput>
+}
+
+export type ReviewCycleUpdateWithWhereUniqueWithoutEmployeeInput = {
+  where: Prisma.ReviewCycleWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReviewCycleUpdateWithoutEmployeeInput, Prisma.ReviewCycleUncheckedUpdateWithoutEmployeeInput>
+}
+
+export type ReviewCycleUpdateManyWithWhereWithoutEmployeeInput = {
+  where: Prisma.ReviewCycleScalarWhereInput
+  data: Prisma.XOR<Prisma.ReviewCycleUpdateManyMutationInput, Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeInput>
+}
+
 export type ReviewCycleCreateWithoutReviewsInput = {
   id?: string
   name: string
@@ -431,7 +730,10 @@ export type ReviewCycleCreateWithoutReviewsInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: boolean
   createdAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutReviewCyclesInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutAnniversaryReviewCyclesInput
 }
 
 export type ReviewCycleUncheckedCreateWithoutReviewsInput = {
@@ -444,6 +746,9 @@ export type ReviewCycleUncheckedCreateWithoutReviewsInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: string | null
+  employeeId?: string | null
+  isAnniversary?: boolean
   createdAt?: Date | string
 }
 
@@ -473,7 +778,10 @@ export type ReviewCycleUpdateWithoutReviewsInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutReviewCyclesNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutAnniversaryReviewCyclesNestedInput
 }
 
 export type ReviewCycleUncheckedUpdateWithoutReviewsInput = {
@@ -486,6 +794,133 @@ export type ReviewCycleUncheckedUpdateWithoutReviewsInput = {
   selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReviewCycleCreateManyDepartmentInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  employeeId?: string | null
+  isAnniversary?: boolean
+  createdAt?: Date | string
+}
+
+export type ReviewCycleUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employee?: Prisma.EmployeeUpdateOneWithoutAnniversaryReviewCyclesNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutCycleNestedInput
+}
+
+export type ReviewCycleUncheckedUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutCycleNestedInput
+}
+
+export type ReviewCycleUncheckedUpdateManyWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReviewCycleCreateManyEmployeeInput = {
+  id?: string
+  name: string
+  startDate: Date | string
+  endDate: Date | string
+  status?: $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: string | null
+  isAnniversary?: boolean
+  createdAt?: Date | string
+}
+
+export type ReviewCycleUpdateWithoutEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutReviewCyclesNestedInput
+  reviews?: Prisma.ReviewUpdateManyWithoutCycleNestedInput
+}
+
+export type ReviewCycleUncheckedUpdateWithoutEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reviews?: Prisma.ReviewUncheckedUpdateManyWithoutCycleNestedInput
+}
+
+export type ReviewCycleUncheckedUpdateManyWithoutEmployeeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  status?: Prisma.EnumReviewCycleStatusFieldUpdateOperationsInput | $Enums.ReviewCycleStatus
+  template?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  selfTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  managerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  peerTemplate?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnniversary?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -530,7 +965,12 @@ export type ReviewCycleSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   selfTemplate?: boolean
   managerTemplate?: boolean
   peerTemplate?: boolean
+  departmentId?: boolean
+  employeeId?: boolean
+  isAnniversary?: boolean
   createdAt?: boolean
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
   reviews?: boolean | Prisma.ReviewCycle$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ReviewCycleCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reviewCycle"]>
@@ -545,7 +985,12 @@ export type ReviewCycleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   selfTemplate?: boolean
   managerTemplate?: boolean
   peerTemplate?: boolean
+  departmentId?: boolean
+  employeeId?: boolean
+  isAnniversary?: boolean
   createdAt?: boolean
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
 }, ExtArgs["result"]["reviewCycle"]>
 
 export type ReviewCycleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -558,7 +1003,12 @@ export type ReviewCycleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   selfTemplate?: boolean
   managerTemplate?: boolean
   peerTemplate?: boolean
+  departmentId?: boolean
+  employeeId?: boolean
+  isAnniversary?: boolean
   createdAt?: boolean
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
 }, ExtArgs["result"]["reviewCycle"]>
 
 export type ReviewCycleSelectScalar = {
@@ -571,20 +1021,33 @@ export type ReviewCycleSelectScalar = {
   selfTemplate?: boolean
   managerTemplate?: boolean
   peerTemplate?: boolean
+  departmentId?: boolean
+  employeeId?: boolean
+  isAnniversary?: boolean
   createdAt?: boolean
 }
 
-export type ReviewCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "status" | "template" | "selfTemplate" | "managerTemplate" | "peerTemplate" | "createdAt", ExtArgs["result"]["reviewCycle"]>
+export type ReviewCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "status" | "template" | "selfTemplate" | "managerTemplate" | "peerTemplate" | "departmentId" | "employeeId" | "isAnniversary" | "createdAt", ExtArgs["result"]["reviewCycle"]>
 export type ReviewCycleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
   reviews?: boolean | Prisma.ReviewCycle$reviewsArgs<ExtArgs>
   _count?: boolean | Prisma.ReviewCycleCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ReviewCycleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ReviewCycleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ReviewCycleIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
+}
+export type ReviewCycleIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  department?: boolean | Prisma.ReviewCycle$departmentArgs<ExtArgs>
+  employee?: boolean | Prisma.ReviewCycle$employeeArgs<ExtArgs>
+}
 
 export type $ReviewCyclePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ReviewCycle"
   objects: {
+    department: Prisma.$DepartmentPayload<ExtArgs> | null
+    employee: Prisma.$EmployeePayload<ExtArgs> | null
     reviews: Prisma.$ReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -597,6 +1060,9 @@ export type $ReviewCyclePayload<ExtArgs extends runtime.Types.Extensions.Interna
     selfTemplate: runtime.JsonValue | null
     managerTemplate: runtime.JsonValue | null
     peerTemplate: runtime.JsonValue | null
+    departmentId: string | null
+    employeeId: string | null
+    isAnniversary: boolean
     createdAt: Date
   }, ExtArgs["result"]["reviewCycle"]>
   composites: {}
@@ -992,6 +1458,8 @@ readonly fields: ReviewCycleFieldRefs;
  */
 export interface Prisma__ReviewCycleClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  department<T extends Prisma.ReviewCycle$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReviewCycle$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  employee<T extends Prisma.ReviewCycle$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReviewCycle$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reviews<T extends Prisma.ReviewCycle$reviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReviewCycle$reviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1031,6 +1499,9 @@ export interface ReviewCycleFieldRefs {
   readonly selfTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
   readonly managerTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
   readonly peerTemplate: Prisma.FieldRef<"ReviewCycle", 'Json'>
+  readonly departmentId: Prisma.FieldRef<"ReviewCycle", 'String'>
+  readonly employeeId: Prisma.FieldRef<"ReviewCycle", 'String'>
+  readonly isAnniversary: Prisma.FieldRef<"ReviewCycle", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"ReviewCycle", 'DateTime'>
 }
     
@@ -1281,6 +1752,10 @@ export type ReviewCycleCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    */
   data: Prisma.ReviewCycleCreateManyInput | Prisma.ReviewCycleCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewCycleIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1351,6 +1826,10 @@ export type ReviewCycleUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Ext
    * Limit how many ReviewCycles to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReviewCycleIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1417,6 +1896,44 @@ export type ReviewCycleDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many ReviewCycles to delete.
    */
   limit?: number
+}
+
+/**
+ * ReviewCycle.department
+ */
+export type ReviewCycle$departmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Department
+   */
+  select?: Prisma.DepartmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Department
+   */
+  omit?: Prisma.DepartmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentInclude<ExtArgs> | null
+  where?: Prisma.DepartmentWhereInput
+}
+
+/**
+ * ReviewCycle.employee
+ */
+export type ReviewCycle$employeeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Employee
+   */
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Employee
+   */
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
 }
 
 /**

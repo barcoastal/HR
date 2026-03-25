@@ -208,6 +208,59 @@ export async function getMyPendingReviews(employeeId: string) {
  * (they review themselves) and a MANAGER review (their manager
  * reviews them). Employees without a manager only get SELF.
  */
+export async function getUpcomingAnniversaryReviews() {
+  return db.reviewCycle.findMany({
+    where: {
+      isAnniversary: true,
+      status: "ACTIVE",
+    },
+    include: {
+      employee: { select: { id: true, firstName: true, lastName: true, department: { select: { name: true } } } },
+      reviews: { include: { reviewer: { select: { firstName: true, lastName: true } } } },
+      _count: { select: { reviews: true } },
+    },
+    orderBy: { endDate: "asc" },
+  });
+}
+
+export async function getDepartmentReviewTemplates() {
+  return db.departmentReviewTemplate.findMany({
+    include: { department: { select: { name: true } } },
+    orderBy: { department: { name: "asc" } },
+  });
+}
+
+export async function saveDepartmentReviewTemplate(data: {
+  departmentId: string;
+  name: string;
+  selfTemplate: unknown;
+  managerTemplate: unknown;
+}) {
+  const template = await db.departmentReviewTemplate.upsert({
+    where: { departmentId: data.departmentId },
+    update: {
+      name: data.name,
+      selfTemplate: data.selfTemplate as any,
+      managerTemplate: data.managerTemplate as any,
+    },
+    create: {
+      departmentId: data.departmentId,
+      name: data.name,
+      selfTemplate: data.selfTemplate as any,
+      managerTemplate: data.managerTemplate as any,
+    },
+  });
+  revalidatePath("/settings");
+  revalidatePath("/reviews");
+  return template;
+}
+
+export async function deleteDepartmentReviewTemplate(departmentId: string) {
+  await db.departmentReviewTemplate.delete({ where: { departmentId } });
+  revalidatePath("/settings");
+  revalidatePath("/reviews");
+}
+
 export async function generateReviewsForCycle(
   cycleId: string,
   departmentIds: string[]
