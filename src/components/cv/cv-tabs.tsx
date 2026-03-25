@@ -450,6 +450,7 @@ export function CVTabs({
                       status: c.status,
                       positionId: c.positionId,
                       costOfHire: c.costOfHire,
+                      hourlyRate: c.hourlyRate,
                       managerId: c.managerId || null,
                       recruiterId: c.recruiterId || null,
                       backgroundCheckStatus: c.backgroundCheckStatus || null,
