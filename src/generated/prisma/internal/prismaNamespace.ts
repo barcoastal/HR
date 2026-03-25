@@ -4977,6 +4977,8 @@ export const StageDocumentScalarFieldEnum = {
   stage: 'stage',
   name: 'name',
   content: 'content',
+  pdfData: 'pdfData',
+  placeholders: 'placeholders',
   order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

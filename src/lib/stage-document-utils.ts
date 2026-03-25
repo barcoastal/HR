@@ -10,16 +10,45 @@ export const AVAILABLE_PLACEHOLDERS = [
   { key: "{{company}}", description: "Company name" },
 ];
 
+type CandidateData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  hourlyRate: number | null;
+  position: { title: string } | null;
+};
+
+export function resolvePlaceholder(
+  placeholder: string,
+  candidate: CandidateData,
+  companyName: string
+): string {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  const map: Record<string, string> = {
+    "{{firstName}}": candidate.firstName,
+    "{{lastName}}": candidate.lastName,
+    "{{fullName}}": `${candidate.firstName} ${candidate.lastName}`,
+    "{{email}}": candidate.email,
+    "{{phone}}": candidate.phone || "N/A",
+    "{{hourlyRate}}": candidate.hourlyRate ? `$${candidate.hourlyRate.toFixed(2)}/hr` : "N/A",
+    "{{position}}": candidate.position?.title || "N/A",
+    "{{date}}": dateStr,
+    "{{company}}": companyName,
+  };
+
+  return map[placeholder] || placeholder;
+}
+
 export function fillPlaceholders(
   content: string,
-  candidate: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string | null;
-    hourlyRate: number | null;
-    position: { title: string } | null;
-  },
+  candidate: CandidateData,
   companyName: string
 ): string {
   const now = new Date();
@@ -42,4 +71,54 @@ export function fillPlaceholders(
     .replace(/\{\{position\}\}/g, candidate.position?.title || "N/A")
     .replace(/\{\{date\}\}/g, dateStr)
     .replace(/\{\{company\}\}/g, companyName);
+}
+
+type PlaceholderPosition = {
+  id: string;
+  page: number;
+  x: number;
+  y: number;
+  placeholder: string;
+  fontSize: number;
+};
+
+export async function fillPdfPlaceholders(
+  pdfBase64: string,
+  positions: PlaceholderPosition[],
+  candidate: CandidateData,
+  companyName: string
+): Promise<Uint8Array> {
+  const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
+
+  const pdfBytes = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
+  const pdfDoc = await PDFDocument.load(pdfBytes);
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const pages = pdfDoc.getPages();
+
+  for (const pos of positions) {
+    const pageIndex = pos.page - 1;
+    if (pageIndex < 0 || pageIndex >= pages.length) continue;
+
+    const page = pages[pageIndex];
+    const { width, height } = page.getSize();
+    const text = resolvePlaceholder(pos.placeholder, candidate, companyName);
+    const fontSize = pos.fontSize || 12;
+
+    // x/y are percentages — convert to PDF coordinates
+    // PDF origin is bottom-left, UI origin is top-left
+    const xPos = (pos.x / 100) * width;
+    const yPos = height - (pos.y / 100) * height;
+
+    // Center the text on the marker position
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+    page.drawText(text, {
+      x: xPos - textWidth / 2,
+      y: yPos - fontSize / 2,
+      size: fontSize,
+      font,
+      color: rgb(0, 0, 0),
+    });
+  }
+
+  return pdfDoc.save();
 }

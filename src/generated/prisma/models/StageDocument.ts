@@ -39,6 +39,8 @@ export type StageDocumentMinAggregateOutputType = {
   stage: string | null
   name: string | null
   content: string | null
+  pdfData: string | null
+  placeholders: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +51,8 @@ export type StageDocumentMaxAggregateOutputType = {
   stage: string | null
   name: string | null
   content: string | null
+  pdfData: string | null
+  placeholders: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +63,8 @@ export type StageDocumentCountAggregateOutputType = {
   stage: number
   name: number
   content: number
+  pdfData: number
+  placeholders: number
   order: number
   createdAt: number
   updatedAt: number
@@ -79,6 +85,8 @@ export type StageDocumentMinAggregateInputType = {
   stage?: true
   name?: true
   content?: true
+  pdfData?: true
+  placeholders?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +97,8 @@ export type StageDocumentMaxAggregateInputType = {
   stage?: true
   name?: true
   content?: true
+  pdfData?: true
+  placeholders?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +109,8 @@ export type StageDocumentCountAggregateInputType = {
   stage?: true
   name?: true
   content?: true
+  pdfData?: true
+  placeholders?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +208,8 @@ export type StageDocumentGroupByOutputType = {
   stage: string
   name: string
   content: string
+  pdfData: string | null
+  placeholders: string
   order: number
   createdAt: Date
   updatedAt: Date
@@ -229,6 +243,8 @@ export type StageDocumentWhereInput = {
   stage?: Prisma.StringFilter<"StageDocument"> | string
   name?: Prisma.StringFilter<"StageDocument"> | string
   content?: Prisma.StringFilter<"StageDocument"> | string
+  pdfData?: Prisma.StringNullableFilter<"StageDocument"> | string | null
+  placeholders?: Prisma.StringFilter<"StageDocument"> | string
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
@@ -239,6 +255,8 @@ export type StageDocumentOrderByWithRelationInput = {
   stage?: Prisma.SortOrder
   name?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  pdfData?: Prisma.SortOrderInput | Prisma.SortOrder
+  placeholders?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -252,6 +270,8 @@ export type StageDocumentWhereUniqueInput = Prisma.AtLeast<{
   stage?: Prisma.StringFilter<"StageDocument"> | string
   name?: Prisma.StringFilter<"StageDocument"> | string
   content?: Prisma.StringFilter<"StageDocument"> | string
+  pdfData?: Prisma.StringNullableFilter<"StageDocument"> | string | null
+  placeholders?: Prisma.StringFilter<"StageDocument"> | string
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
@@ -262,6 +282,8 @@ export type StageDocumentOrderByWithAggregationInput = {
   stage?: Prisma.SortOrder
   name?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  pdfData?: Prisma.SortOrderInput | Prisma.SortOrder
+  placeholders?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -280,6 +302,8 @@ export type StageDocumentScalarWhereWithAggregatesInput = {
   stage?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
   name?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
   content?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
+  pdfData?: Prisma.StringNullableWithAggregatesFilter<"StageDocument"> | string | null
+  placeholders?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
   order?: Prisma.IntWithAggregatesFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
@@ -289,7 +313,9 @@ export type StageDocumentCreateInput = {
   id?: string
   stage: string
   name: string
-  content: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -299,7 +325,9 @@ export type StageDocumentUncheckedCreateInput = {
   id?: string
   stage: string
   name: string
-  content: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -310,6 +338,8 @@ export type StageDocumentUpdateInput = {
   stage?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -320,6 +350,8 @@ export type StageDocumentUncheckedUpdateInput = {
   stage?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -329,7 +361,9 @@ export type StageDocumentCreateManyInput = {
   id?: string
   stage: string
   name: string
-  content: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -340,6 +374,8 @@ export type StageDocumentUpdateManyMutationInput = {
   stage?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -350,6 +386,8 @@ export type StageDocumentUncheckedUpdateManyInput = {
   stage?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -360,6 +398,8 @@ export type StageDocumentCountOrderByAggregateInput = {
   stage?: Prisma.SortOrder
   name?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  pdfData?: Prisma.SortOrder
+  placeholders?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -374,6 +414,8 @@ export type StageDocumentMaxOrderByAggregateInput = {
   stage?: Prisma.SortOrder
   name?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  pdfData?: Prisma.SortOrder
+  placeholders?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -384,6 +426,8 @@ export type StageDocumentMinOrderByAggregateInput = {
   stage?: Prisma.SortOrder
   name?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  pdfData?: Prisma.SortOrder
+  placeholders?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -400,6 +444,8 @@ export type StageDocumentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   stage?: boolean
   name?: boolean
   content?: boolean
+  pdfData?: boolean
+  placeholders?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -410,6 +456,8 @@ export type StageDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   stage?: boolean
   name?: boolean
   content?: boolean
+  pdfData?: boolean
+  placeholders?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -420,6 +468,8 @@ export type StageDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   stage?: boolean
   name?: boolean
   content?: boolean
+  pdfData?: boolean
+  placeholders?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -430,12 +480,14 @@ export type StageDocumentSelectScalar = {
   stage?: boolean
   name?: boolean
   content?: boolean
+  pdfData?: boolean
+  placeholders?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
+export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "pdfData" | "placeholders" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
 
 export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StageDocument"
@@ -445,6 +497,8 @@ export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     stage: string
     name: string
     content: string
+    pdfData: string | null
+    placeholders: string
     order: number
     createdAt: Date
     updatedAt: Date
@@ -875,6 +929,8 @@ export interface StageDocumentFieldRefs {
   readonly stage: Prisma.FieldRef<"StageDocument", 'String'>
   readonly name: Prisma.FieldRef<"StageDocument", 'String'>
   readonly content: Prisma.FieldRef<"StageDocument", 'String'>
+  readonly pdfData: Prisma.FieldRef<"StageDocument", 'String'>
+  readonly placeholders: Prisma.FieldRef<"StageDocument", 'String'>
   readonly order: Prisma.FieldRef<"StageDocument", 'Int'>
   readonly createdAt: Prisma.FieldRef<"StageDocument", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StageDocument", 'DateTime'>

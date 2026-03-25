@@ -136,7 +136,7 @@ export default async function SettingsPage() {
             id: d.id,
             stage: d.stage,
             name: d.name,
-            content: d.content,
+            placeholders: d.placeholders,
             order: d.order,
           }))}
         />

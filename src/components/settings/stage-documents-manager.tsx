@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   createStageDocument,
@@ -11,18 +11,27 @@ import { AVAILABLE_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
+type PlaceholderPosition = {
+  id: string;
+  page: number;
+  x: number; // percentage of page width
+  y: number; // percentage of page height
+  placeholder: string; // e.g. "{{firstName}}"
+  fontSize: number;
+};
+
 type StageDoc = {
   id: string;
   stage: string;
   name: string;
-  content: string;
+  placeholders: string; // JSON
   order: number;
 };
 
 const STAGES = [
-  { value: "PRE_ONBOARDING", label: "Pre-Onboarding", color: "text-teal-400", bg: "bg-teal-500/10" },
-  { value: "ONBOARDING", label: "Onboarding", color: "text-cyan-400", bg: "bg-cyan-500/10" },
-  { value: "OFFBOARDING", label: "Offboarding", color: "text-slate-400", bg: "bg-slate-500/10" },
+  { value: "PRE_ONBOARDING", label: "Pre-Onboarding" },
+  { value: "ONBOARDING", label: "Onboarding" },
+  { value: "OFFBOARDING", label: "Offboarding" },
 ];
 
 export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) {
@@ -30,73 +39,13 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
   const [activeStage, setActiveStage] = useState("PRE_ONBOARDING");
   const [editing, setEditing] = useState<StageDoc | null>(null);
   const [creating, setCreating] = useState(false);
-  const [name, setName] = useState("");
-  const [content, setContent] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [preview, setPreview] = useState(false);
 
   const stageDocs = documents.filter((d) => d.stage === activeStage);
-
-  function startCreate() {
-    setCreating(true);
-    setEditing(null);
-    setName("");
-    setContent("");
-    setPreview(false);
-  }
-
-  function startEdit(doc: StageDoc) {
-    setEditing(doc);
-    setCreating(false);
-    setName(doc.name);
-    setContent(doc.content);
-    setPreview(false);
-  }
 
   function cancel() {
     setCreating(false);
     setEditing(null);
-    setName("");
-    setContent("");
-    setPreview(false);
   }
-
-  async function handleSave() {
-    if (!name.trim() || !content.trim()) return;
-    setSaving(true);
-    try {
-      if (editing) {
-        await updateStageDocument(editing.id, { name: name.trim(), content: content.trim() });
-      } else {
-        await createStageDocument({ stage: activeStage, name: name.trim(), content: content.trim() });
-      }
-      cancel();
-      router.refresh();
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm("Delete this document template?")) return;
-    await deleteStageDocument(id);
-    router.refresh();
-  }
-
-  function insertPlaceholder(placeholder: string) {
-    setContent((prev) => prev + placeholder);
-  }
-
-  const previewContent = content
-    .replace(/\{\{firstName\}\}/g, "John")
-    .replace(/\{\{lastName\}\}/g, "Smith")
-    .replace(/\{\{fullName\}\}/g, "John Smith")
-    .replace(/\{\{email\}\}/g, "john.smith@email.com")
-    .replace(/\{\{phone\}\}/g, "(555) 123-4567")
-    .replace(/\{\{hourlyRate\}\}/g, "$25.00/hr")
-    .replace(/\{\{position\}\}/g, "Software Engineer")
-    .replace(/\{\{date\}\}/g, new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }))
-    .replace(/\{\{company\}\}/g, "Coastal HR");
 
   return (
     <section className="rounded-xl p-6 bg-[var(--color-surface)] border border-[var(--color-border)]">
@@ -106,7 +55,7 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
           <div>
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Stage Documents</h2>
             <p className="text-xs text-[var(--color-text-muted)]">
-              Documents auto-sent when a candidate moves to a stage. Use placeholders for dynamic content.
+              Upload PDFs and mark where to fill in candidate data. Sent automatically on stage change.
             </p>
           </div>
         </div>
@@ -142,70 +91,265 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
                 No documents configured for this stage yet.
               </p>
             )}
-            {stageDocs.map((doc) => (
-              <div
-                key={doc.id}
-                className="flex items-center justify-between p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon name="article" size={18} className="text-[var(--color-text-muted)] shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
-                    <p className="text-xs text-[var(--color-text-muted)] truncate">
-                      {doc.content.replace(/<[^>]*>/g, "").slice(0, 80)}...
-                    </p>
+            {stageDocs.map((doc) => {
+              const placeholders: PlaceholderPosition[] = JSON.parse(doc.placeholders || "[]");
+              return (
+                <div
+                  key={doc.id}
+                  className="flex items-center justify-between p-3 rounded-lg border border-[var(--color-border)] hover:border-[var(--color-accent)]/30 transition-colors"
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <Icon name="picture_as_pdf" size={18} className="text-red-400 shrink-0" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
+                      <p className="text-xs text-[var(--color-text-muted)]">
+                        {placeholders.length} placeholder{placeholders.length !== 1 ? "s" : ""} marked
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => setEditing(doc)}
+                      className="p-1.5 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                    >
+                      <Icon name="edit" size={16} />
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!confirm("Delete this document?")) return;
+                        await deleteStageDocument(doc.id);
+                        router.refresh();
+                      }}
+                      className="p-1.5 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <Icon name="delete" size={16} />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => startEdit(doc)}
-                    className="p-1.5 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
-                  >
-                    <Icon name="edit" size={16} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(doc.id)}
-                    className="p-1.5 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
-                  >
-                    <Icon name="delete" size={16} />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <button
-            onClick={startCreate}
+            onClick={() => setCreating(true)}
             className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90 transition-opacity"
           >
-            + Add Document
+            + Upload PDF Document
           </button>
         </>
       )}
 
       {/* Create/Edit form */}
       {(creating || editing) && (
-        <div className="space-y-4">
-          <div>
-            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Document Name</label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Employment Contract, NDA, Welcome Letter"
-              className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
-            />
-          </div>
+        <PdfDocumentEditor
+          stage={activeStage}
+          existing={editing}
+          onDone={() => { cancel(); router.refresh(); }}
+          onCancel={cancel}
+        />
+      )}
+    </section>
+  );
+}
 
-          {/* Placeholder buttons */}
+// ─── PDF Document Editor ───
+
+function PdfDocumentEditor({
+  stage,
+  existing,
+  onDone,
+  onCancel,
+}: {
+  stage: string;
+  existing: StageDoc | null;
+  onDone: () => void;
+  onCancel: () => void;
+}) {
+  const [name, setName] = useState(existing?.name || "");
+  const [pdfBase64, setPdfBase64] = useState<string | null>(null);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(
+    existing ? `/api/stage-documents/${existing.id}` : null
+  );
+  const [placeholders, setPlaceholders] = useState<PlaceholderPosition[]>(
+    existing ? JSON.parse(existing.placeholders || "[]") : []
+  );
+  const [saving, setSaving] = useState(false);
+  const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
+  const [pageCount, setPageCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageRendering, setPageRendering] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const pdfDocRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load PDF.js
+  const renderPage = useCallback(async (pageNum: number) => {
+    if (!pdfDocRef.current || !canvasRef.current) return;
+    setPageRendering(true);
+    const page = await pdfDocRef.current.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 1.5 });
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d")!;
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+    await page.render({ canvasContext: context, viewport }).promise;
+    setPageRendering(false);
+  }, []);
+
+  const loadPdf = useCallback(async (data: ArrayBuffer | string) => {
+    const pdfjsLib = await import("pdfjs-dist");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
+    let source: { data: ArrayBuffer } | { url: string };
+    if (typeof data === "string") {
+      source = { url: data };
+    } else {
+      source = { data };
+    }
+    const pdf = await pdfjsLib.getDocument(source).promise;
+    pdfDocRef.current = pdf;
+    setPageCount(pdf.numPages);
+    setCurrentPage(1);
+    await renderPage(1);
+  }, [renderPage]);
+
+  // Load existing PDF
+  useEffect(() => {
+    if (existing && pdfUrl) {
+      loadPdf(pdfUrl);
+    }
+  }, [existing, pdfUrl, loadPdf]);
+
+  // Re-render on page change
+  useEffect(() => {
+    if (pdfDocRef.current && currentPage > 0) {
+      renderPage(currentPage);
+    }
+  }, [currentPage, renderPage]);
+
+  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || file.type !== "application/pdf") return;
+    if (!name) setName(file.name.replace(/\.pdf$/i, ""));
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const base64 = btoa(
+        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), "")
+      );
+      setPdfBase64(base64);
+      setPdfUrl(null);
+      setPlaceholders([]);
+      await loadPdf(arrayBuffer);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function handleCanvasClick(e: React.MouseEvent<HTMLCanvasElement>) {
+    const canvas = canvasRef.current;
+    if (!canvas || !activePlaceholder) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    const newPlaceholder: PlaceholderPosition = {
+      id: crypto.randomUUID(),
+      page: currentPage,
+      x,
+      y,
+      placeholder: activePlaceholder,
+      fontSize: 12,
+    };
+    setPlaceholders((prev) => [...prev, newPlaceholder]);
+  }
+
+  function removePlaceholder(id: string) {
+    setPlaceholders((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  async function handleSave() {
+    if (!name.trim()) return;
+    if (!pdfBase64 && !existing) return;
+    setSaving(true);
+    try {
+      const placeholdersJson = JSON.stringify(placeholders);
+      if (existing) {
+        const updateData: { name: string; placeholders: string; pdfData?: string } = {
+          name: name.trim(),
+          placeholders: placeholdersJson,
+        };
+        if (pdfBase64) updateData.pdfData = pdfBase64;
+        await updateStageDocument(existing.id, updateData);
+      } else {
+        await createStageDocument({
+          stage,
+          name: name.trim(),
+          pdfData: pdfBase64!,
+          placeholders: placeholdersJson,
+        });
+      }
+      onDone();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const currentPagePlaceholders = placeholders.filter((p) => p.page === currentPage);
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Document Name</label>
+        <input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. Employment Contract, NDA"
+          className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
+        />
+      </div>
+
+      {/* PDF Upload */}
+      {!pdfBase64 && !existing && (
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          className="border-2 border-dashed border-[var(--color-border)] rounded-lg p-8 text-center cursor-pointer hover:border-[var(--color-accent)]/50 transition-colors"
+        >
+          <Icon name="upload_file" size={32} className="text-[var(--color-text-muted)] mx-auto mb-2" />
+          <p className="text-sm text-[var(--color-text-primary)] font-medium">Click to upload PDF</p>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Upload a contract, NDA, or any document template</p>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </div>
+      )}
+
+      {/* PDF Preview + Placeholder Placement */}
+      {(pdfBase64 || existing) && pageCount > 0 && (
+        <>
+          {/* Placeholder selector */}
           <div>
-            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Insert Placeholder</label>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+              Click on the PDF to place a field. Select which field:
+            </label>
             <div className="flex flex-wrap gap-1.5">
               {AVAILABLE_PLACEHOLDERS.map((p) => (
                 <button
                   key={p.key}
-                  onClick={() => insertPlaceholder(p.key)}
+                  onClick={() => setActivePlaceholder(p.key)}
                   title={p.description}
-                  className="px-2 py-1 rounded text-xs font-mono bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
+                  className={cn(
+                    "px-2 py-1 rounded text-xs font-mono transition-colors",
+                    activePlaceholder === p.key
+                      ? "bg-[var(--color-accent)] text-white"
+                      : "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20"
+                  )}
                 >
                   {p.key}
                 </button>
@@ -213,51 +357,115 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-medium text-[var(--color-text-primary)]">
-                Content {preview ? "(Preview)" : "(HTML)"}
-              </label>
+          {/* Page navigation */}
+          {pageCount > 1 && (
+            <div className="flex items-center justify-center gap-3">
               <button
-                onClick={() => setPreview(!preview)}
-                className="text-xs text-[var(--color-accent)] hover:underline"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage <= 1}
+                className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-primary)] disabled:opacity-30"
               >
-                {preview ? "Edit" : "Preview"}
+                Previous
+              </button>
+              <span className="text-xs text-[var(--color-text-muted)]">
+                Page {currentPage} of {pageCount}
+              </span>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(pageCount, p + 1))}
+                disabled={currentPage >= pageCount}
+                className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-primary)] disabled:opacity-30"
+              >
+                Next
               </button>
             </div>
-            {preview ? (
+          )}
+
+          {/* Canvas with overlaid placeholders */}
+          <div ref={containerRef} className="relative border border-[var(--color-border)] rounded-lg overflow-hidden bg-white">
+            <canvas
+              ref={canvasRef}
+              onClick={handleCanvasClick}
+              className={cn("w-full cursor-crosshair", pageRendering && "opacity-50")}
+            />
+            {/* Placeholder markers */}
+            {currentPagePlaceholders.map((p) => (
               <div
-                className="w-full min-h-[200px] px-3 py-2 rounded-lg text-sm bg-white text-gray-900 border border-[var(--color-border)] prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: previewContent }}
-              />
-            ) : (
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder={`<p>Dear {{fullName}},</p>\n<p>Welcome to {{company}}! Your hourly rate is {{hourlyRate}}.</p>\n<p>Your position: {{position}}</p>\n<p>Date: {{date}}</p>`}
-                rows={12}
-                className="w-full px-3 py-2 rounded-lg text-sm font-mono bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] resize-y"
-              />
-            )}
+                key={p.id}
+                className="absolute flex items-center gap-0.5 group"
+                style={{ left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%, -50%)" }}
+              >
+                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--color-accent)] text-white shadow-md whitespace-nowrap">
+                  {p.placeholder}
+                </span>
+                <button
+                  onClick={(e) => { e.stopPropagation(); removePlaceholder(p.id); }}
+                  className="hidden group-hover:flex h-4 w-4 rounded-full bg-red-500 text-white items-center justify-center text-[8px] font-bold shadow"
+                >
+                  X
+                </button>
+              </div>
+            ))}
           </div>
 
+          {/* Replace PDF */}
           <div className="flex items-center gap-2">
             <button
-              onClick={handleSave}
-              disabled={saving || !name.trim() || !content.trim()}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-xs text-[var(--color-accent)] hover:underline"
             >
-              {saving ? "Saving..." : editing ? "Update Document" : "Add Document"}
+              Replace PDF
             </button>
-            <button
-              onClick={cancel}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
-            >
-              Cancel
-            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
           </div>
-        </div>
+
+          {/* Placed placeholders summary */}
+          {placeholders.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1">
+                Placed Fields ({placeholders.length})
+              </p>
+              <div className="flex flex-wrap gap-1">
+                {placeholders.map((p) => (
+                  <span
+                    key={p.id}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
+                  >
+                    {p.placeholder} (p{p.page})
+                    <button
+                      onClick={() => removePlaceholder(p.id)}
+                      className="text-red-400 hover:text-red-500 font-bold"
+                    >
+                      x
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
-    </section>
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handleSave}
+          disabled={saving || !name.trim() || (!pdfBase64 && !existing)}
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+        >
+          {saving ? "Saving..." : existing ? "Update Document" : "Save Document"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
   );
 }

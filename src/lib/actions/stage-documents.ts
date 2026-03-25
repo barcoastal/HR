@@ -13,34 +13,41 @@ export async function getStageDocuments(stage: string) {
 }
 
 export async function getAllStageDocuments() {
+  // Don't return pdfData in list queries (too large)
   return db.stageDocument.findMany({
+    select: { id: true, stage: true, name: true, placeholders: true, order: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
+}
+
+export async function getStageDocumentWithPdf(id: string) {
+  return db.stageDocument.findUnique({ where: { id } });
 }
 
 export async function createStageDocument(data: {
   stage: string;
   name: string;
-  content: string;
+  pdfData: string; // base64
+  placeholders: string; // JSON
 }) {
   if (!DOCUMENT_STAGES.includes(data.stage)) {
     throw new Error("Invalid stage for documents");
   }
   const count = await db.stageDocument.count({ where: { stage: data.stage } });
   const doc = await db.stageDocument.create({
-    data: { ...data, order: count },
+    data: { stage: data.stage, name: data.name, pdfData: data.pdfData, placeholders: data.placeholders, order: count },
   });
   revalidatePath("/settings");
-  return doc;
+  return { id: doc.id, stage: doc.stage, name: doc.name, placeholders: doc.placeholders, order: doc.order };
 }
 
 export async function updateStageDocument(
   id: string,
-  data: { name?: string; content?: string; order?: number }
+  data: { name?: string; placeholders?: string; pdfData?: string }
 ) {
   const doc = await db.stageDocument.update({ where: { id }, data });
   revalidatePath("/settings");
-  return doc;
+  return { id: doc.id, stage: doc.stage, name: doc.name, placeholders: doc.placeholders, order: doc.order };
 }
 
 export async function deleteStageDocument(id: string) {

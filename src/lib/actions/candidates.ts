@@ -158,11 +158,12 @@ export async function updateCandidateStatus(
         }
       }
 
-      // Send stage documents for onboarding/offboarding stages
+      // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
       if (DOC_STAGES.includes(status) && candidate.email) {
         const { getStageDocuments } = await import("@/lib/actions/stage-documents");
-        const { fillPlaceholders } = await import("@/lib/stage-document-utils");
+        const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
+        const { sendEmailWithAttachments } = await import("@/lib/email");
         const { getCompanySettings } = await import("@/lib/actions/company-settings");
         const [docs, settings] = await Promise.all([
           getStageDocuments(status),
@@ -171,19 +172,32 @@ export async function updateCandidateStatus(
         const position = candidate.positionId
           ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
           : null;
-        for (const doc of docs) {
-          const filled = fillPlaceholders(doc.content, {
-            firstName: candidate.firstName,
-            lastName: candidate.lastName,
-            email: candidate.email,
-            phone: candidate.phone,
-            hourlyRate: candidate.hourlyRate,
-            position,
-          }, settings.companyName);
-          await sendEmail(
+        const candidateInfo = {
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          email: candidate.email,
+          phone: candidate.phone,
+          hourlyRate: candidate.hourlyRate,
+          position,
+        };
+        const pdfDocs = docs.filter((d) => d.pdfData);
+        if (pdfDocs.length > 0) {
+          const attachments = [];
+          for (const doc of pdfDocs) {
+            const positions = JSON.parse(doc.placeholders || "[]");
+            const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+            attachments.push({
+              filename: `${doc.name}.pdf`,
+              content: Buffer.from(filledPdf),
+            });
+          }
+          await sendEmailWithAttachments(
             candidate.email,
-            doc.name,
-            filled
+            `Documents: ${STAGE_LABELS[status] || status}`,
+            `<p>Hi ${candidate.firstName},</p>
+            <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
+            <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
+            attachments
           );
         }
       }
@@ -452,11 +466,12 @@ export async function updateCandidate(
         }
       }
 
-      // Send stage documents for onboarding/offboarding stages
+      // Send stage PDF documents for onboarding/offboarding stages
       const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
       if (DOC_STAGES.includes(status) && candidate.email) {
         const { getStageDocuments } = await import("@/lib/actions/stage-documents");
-        const { fillPlaceholders } = await import("@/lib/stage-document-utils");
+        const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
+        const { sendEmailWithAttachments } = await import("@/lib/email");
         const { getCompanySettings } = await import("@/lib/actions/company-settings");
         const [docs, settings] = await Promise.all([
           getStageDocuments(status),
@@ -465,19 +480,32 @@ export async function updateCandidate(
         const position = candidate.positionId
           ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
           : null;
-        for (const doc of docs) {
-          const filled = fillPlaceholders(doc.content, {
-            firstName: candidate.firstName,
-            lastName: candidate.lastName,
-            email: candidate.email,
-            phone: candidate.phone,
-            hourlyRate: candidate.hourlyRate,
-            position,
-          }, settings.companyName);
-          await sendEmail(
+        const candidateInfo = {
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          email: candidate.email,
+          phone: candidate.phone,
+          hourlyRate: candidate.hourlyRate,
+          position,
+        };
+        const pdfDocs = docs.filter((d) => d.pdfData);
+        if (pdfDocs.length > 0) {
+          const attachments = [];
+          for (const doc of pdfDocs) {
+            const positions = JSON.parse(doc.placeholders || "[]");
+            const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+            attachments.push({
+              filename: `${doc.name}.pdf`,
+              content: Buffer.from(filledPdf),
+            });
+          }
+          await sendEmailWithAttachments(
             candidate.email,
-            doc.name,
-            filled
+            `Documents: ${STAGE_LABELS[status] || status}`,
+            `<p>Hi ${candidate.firstName},</p>
+            <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
+            <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
+            attachments
           );
         }
       }

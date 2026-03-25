@@ -99,6 +99,39 @@ export async function sendEmail(to: string, subject: string, html: string) {
   }
 }
 
+export async function sendEmailWithAttachments(
+  to: string,
+  subject: string,
+  html: string,
+  attachments: { filename: string; content: Buffer }[]
+) {
+  if (!resend) {
+    console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
+    return;
+  }
+  const branding = await getCompanyBranding();
+  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const senderEmail = branding.senderEmail.trim();
+  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  console.log(`[email] Sending with ${attachments.length} attachment(s) from: "${from}" to: ${to}`);
+  try {
+    const { data, error } = await resend.emails.send({
+      from,
+      to,
+      subject,
+      html: wrapHtml(html, branding.companyName, branding.logoUrl),
+      attachments,
+    });
+    if (error) {
+      console.error(`[email] Resend error for ${to}: "${subject}"`, error);
+    } else {
+      console.log(`[email] Sent to ${to}: "${subject}"`, data);
+    }
+  } catch (error) {
+    console.error(`[email] Failed to send to ${to}: "${subject}"`, error);
+  }
+}
+
 export async function sendTestEmail(to: string, type: string, subject: string, body: string) {
   if (!resend) {
     return { success: false, error: "RESEND_API_KEY not configured" };
