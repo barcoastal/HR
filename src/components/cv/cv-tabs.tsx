@@ -36,6 +36,8 @@ type CandidateItem = {
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
   backgroundCheckOptions: string | null;
+  offerDocUrl: string | null;
+  offerSentAt: Date | null;
   jobAppliedTo: string | null;
   inPipeline: boolean;
   position: { title: string } | null;
@@ -312,6 +314,8 @@ function PositionPipeline({
                 recruiterId: c.recruiterId || null,
                 backgroundCheckStatus: c.backgroundCheckStatus || null,
                 backgroundCheckOptions: c.backgroundCheckOptions || null,
+                offerDocUrl: c.offerDocUrl || null,
+                offerSentAt: c.offerSentAt || null,
                 position: c.position,
               }))}
               positions={allPositions}
@@ -457,6 +461,8 @@ export function CVTabs({
                       recruiterId: c.recruiterId || null,
                       backgroundCheckStatus: c.backgroundCheckStatus || null,
                 backgroundCheckOptions: c.backgroundCheckOptions || null,
+                      offerDocUrl: c.offerDocUrl || null,
+                      offerSentAt: c.offerSentAt || null,
                       position: c.position,
                     }))}
                     positions={positions}

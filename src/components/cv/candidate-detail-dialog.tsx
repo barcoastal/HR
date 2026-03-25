@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
-import { updateCandidate, hireCandidateAndStartOnboarding } from "@/lib/actions/candidates";
+import { updateCandidate, hireCandidateAndStartOnboarding, sendOfferLetter } from "@/lib/actions/candidates";
 import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
@@ -51,6 +51,8 @@ type CandidateForDialog = {
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
   backgroundCheckOptions: string | null;
+  offerDocUrl: string | null;
+  offerSentAt: Date | null;
   position: { title: string } | null;
 };
 
@@ -148,6 +150,11 @@ export function CandidateDetailDialog({
   const [calendarConnected, setCalendarConnected] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [offerUploading, setOfferUploading] = useState(false);
+  const [offerSending, setOfferSending] = useState(false);
+  const [offerDocUrl, setOfferDocUrl] = useState<string | null>(null);
+  const [offerSentAt, setOfferSentAt] = useState<Date | null>(null);
+  const [offerError, setOfferError] = useState<string | null>(null);
 
   const loadInterviews = useCallback(async (candidateId: string) => {
     const [data, connected] = await Promise.all([
@@ -187,6 +194,9 @@ export function CandidateDetailDialog({
       });
       setBgCheckStatus(candidate.backgroundCheckStatus || null);
       setHireResult(null);
+      setOfferDocUrl(candidate.offerDocUrl || null);
+      setOfferSentAt(candidate.offerSentAt ? new Date(candidate.offerSentAt) : null);
+      setOfferError(null);
     }
   }, [candidate]);
 
@@ -348,6 +358,112 @@ export function CandidateDetailDialog({
                 ))}
               </div>
             </div>
+
+            {/* Offer Letter — shown when in OFFER stage */}
+            {(form.status === "OFFER" || candidate.status === "OFFER") && (
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 space-y-3">
+                <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Offer Letter</p>
+
+                {offerSentAt && (
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                    <Icon name="check_circle" size={14} className="text-emerald-500" />
+                    <p className="text-xs text-emerald-400">
+                      Offer sent on {new Date(offerSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                    </p>
+                  </div>
+                )}
+
+                {offerDocUrl ? (
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 flex items-center gap-2 p-2 rounded-lg bg-[var(--color-surface-hover)]">
+                      <Icon name="description" size={16} className="text-emerald-400" />
+                      <span className="text-xs text-[var(--color-text-primary)] truncate">Offer PDF uploaded</span>
+                    </div>
+                    <button
+                      onClick={() => { setOfferDocUrl(null); setOfferSentAt(null); }}
+                      className="p-1.5 rounded text-[var(--color-text-muted)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                      title="Remove and upload a different file"
+                    >
+                      <Icon name="close" size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <label className={cn(
+                    "flex flex-col items-center gap-2 p-4 rounded-lg border-2 border-dashed cursor-pointer transition-colors",
+                    "border-[var(--color-border)] hover:border-emerald-500/50 hover:bg-emerald-500/5",
+                    offerUploading && "opacity-50 pointer-events-none"
+                  )}>
+                    <Icon name="upload_file" size={24} className="text-[var(--color-text-muted)]" />
+                    <span className="text-xs text-[var(--color-text-muted)]">
+                      {offerUploading ? "Uploading..." : "Click to upload offer PDF"}
+                    </span>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setOfferUploading(true);
+                        setOfferError(null);
+                        try {
+                          const formData = new FormData();
+                          formData.append("file", file);
+                          const res = await fetch("/api/onboarding-docs/upload", { method: "POST", body: formData });
+                          if (!res.ok) {
+                            const data = await res.json();
+                            setOfferError(data.error || "Upload failed");
+                            return;
+                          }
+                          const { url } = await res.json();
+                          setOfferDocUrl(url);
+                        } catch {
+                          setOfferError("Upload failed");
+                        } finally {
+                          setOfferUploading(false);
+                        }
+                      }}
+                    />
+                  </label>
+                )}
+
+                {offerError && <p className="text-xs text-red-400">{offerError}</p>}
+
+                {offerDocUrl && (
+                  <button
+                    onClick={async () => {
+                      if (!candidate) return;
+                      setOfferSending(true);
+                      setOfferError(null);
+                      const result = await sendOfferLetter(candidate.id, offerDocUrl);
+                      if (result.success) {
+                        setOfferSentAt(new Date());
+                      } else {
+                        setOfferError(result.error || "Failed to send offer");
+                      }
+                      setOfferSending(false);
+                    }}
+                    disabled={offerSending}
+                    className={cn(
+                      "w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                      "bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50"
+                    )}
+                  >
+                    {offerSending ? (
+                      <><Icon name="progress_activity" size={14} className="animate-material-spin" />Sending...</>
+                    ) : offerSentAt ? (
+                      <><Icon name="send" size={14} />Resend Offer</>
+                    ) : (
+                      <><Icon name="send" size={14} />Send Offer to {candidate.firstName}</>
+                    )}
+                  </button>
+                )}
+
+                <p className="text-[10px] text-[var(--color-text-muted)]">
+                  The PDF will be emailed to {form.email || "the candidate"} as an attachment
+                </p>
+              </div>
+            )}
 
             {/* Hire fields - shown when switching to HIRED */}
             {form.status === "HIRED" && candidate.status !== "HIRED" && (

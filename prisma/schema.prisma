@@ -624,6 +624,8 @@ model Candidate {
   backgroundCheckId       String?           // External ID from backgroundchecks.com
   backgroundCheckDate     DateTime?
   backgroundCheckOptions  String?           // JSON: which checks were requested
+  offerDocUrl             String?           // URL to uploaded offer PDF
+  offerSentAt             DateTime?         // When offer was emailed to candidate
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
 

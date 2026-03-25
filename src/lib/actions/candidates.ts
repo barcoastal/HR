@@ -1008,6 +1008,56 @@ export async function deleteCandidate(id: string) {
   revalidatePath("/cv");
 }
 
+export async function sendOfferLetter(
+  candidateId: string,
+  offerDocUrl: string
+): Promise<{ success: boolean; error?: string }> {
+  const candidate = await db.candidate.findUnique({
+    where: { id: candidateId },
+    include: { position: true },
+  });
+  if (!candidate) return { success: false, error: "Candidate not found" };
+
+  // Extract filename from URL to get the PDF from DB
+  const filename = offerDocUrl.split("/").pop();
+  if (!filename) return { success: false, error: "Invalid document URL" };
+
+  const fileBlob = await db.fileBlob.findUnique({
+    where: { filename },
+    select: { data: true, mimeType: true },
+  });
+  if (!fileBlob) return { success: false, error: "Offer document not found" };
+
+  try {
+    const { sendEmailWithAttachments } = await import("@/lib/email");
+    const { getCompanySettings } = await import("@/lib/actions/company-settings");
+    const settings = await getCompanySettings();
+
+    const positionTitle = candidate.position?.title || "the position";
+
+    await sendEmailWithAttachments(
+      candidate.email,
+      `Offer Letter — ${positionTitle} at ${settings.companyName}`,
+      `<p>Hi ${candidate.firstName},</p>
+      <p>We're pleased to extend an offer for the <strong>${positionTitle}</strong> position at <strong>${settings.companyName}</strong>.</p>
+      <p>Please find the attached offer letter for your review. If you have any questions, don't hesitate to reach out.</p>
+      <p>We look forward to hearing from you!</p>`,
+      [{ filename: `Offer Letter - ${candidate.firstName} ${candidate.lastName}.pdf`, content: Buffer.from(fileBlob.data) }]
+    );
+
+    await db.candidate.update({
+      where: { id: candidateId },
+      data: { offerDocUrl, offerSentAt: new Date() },
+    });
+
+    revalidatePath("/cv");
+    return { success: true };
+  } catch (err) {
+    console.error("[candidates] Failed to send offer letter:", err);
+    return { success: false, error: "Failed to send offer email" };
+  }
+}
+
 export async function pullCandidateToRecruitment(
   candidateId: string,
   positionId?: string
