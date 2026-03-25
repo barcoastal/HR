@@ -86,22 +86,57 @@ export async function updateCandidateStatus(
 
   const updated = await db.candidate.update({ where: { id }, data });
 
-  // Send stage-change notification email to the candidate
-  if (previousStatus !== status && candidate.email) {
+  // Send stage-change notification emails based on settings
+  if (previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
+      const { getStageNotifyRecipients } = await import("@/lib/actions/company-settings");
+      const recipients = await getStageNotifyRecipients();
       const stageLabel = STAGE_LABELS[status] || status;
       const rateInfo = candidate.hourlyRate
-        ? `<p>Your hourly rate: <strong>$${candidate.hourlyRate.toFixed(2)}/hr</strong></p>`
+        ? `<p>Hourly rate: <strong>$${candidate.hourlyRate.toFixed(2)}/hr</strong></p>`
         : "";
-      await sendEmail(
-        candidate.email,
-        `Application Update: ${stageLabel}`,
-        `<p>Hi ${candidate.firstName},</p>
-        <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
-        ${rateInfo}
-        <p>We'll be in touch with next steps shortly.</p>`
-      );
+      const candidateName = `${candidate.firstName} ${candidate.lastName}`;
+
+      // Send to candidate
+      if (recipients.includes("candidate") && candidate.email) {
+        await sendEmail(
+          candidate.email,
+          `Application Update: ${stageLabel}`,
+          `<p>Hi ${candidate.firstName},</p>
+          <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}
+          <p>We'll be in touch with next steps shortly.</p>`
+        );
+      }
+
+      // Send to recruiter
+      if (recipients.includes("recruiter") && candidate.recruiterId) {
+        const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
+        if (recruiter?.email) {
+          await sendEmail(
+            recruiter.email,
+            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+            `<p>Hi ${recruiter.firstName},</p>
+            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+            ${rateInfo}`
+          );
+        }
+      }
+
+      // Send to manager
+      if (recipients.includes("manager") && candidate.managerId) {
+        const manager = await db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } });
+        if (manager?.email) {
+          await sendEmail(
+            manager.email,
+            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+            `<p>Hi ${manager.firstName},</p>
+            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+            ${rateInfo}`
+          );
+        }
+      }
     } catch (err) {
       console.error("[candidates] Failed to send stage notification:", err);
     }
@@ -300,23 +335,55 @@ export async function updateCandidate(
   }
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
 
-  // Send stage-change notification email if status changed
-  if (status && previousStatus && previousStatus !== status && candidate.email) {
+  // Send stage-change notification emails if status changed
+  if (status && previousStatus && previousStatus !== status) {
     try {
       const { sendEmail } = await import("@/lib/email");
+      const { getStageNotifyRecipients } = await import("@/lib/actions/company-settings");
+      const recipients = await getStageNotifyRecipients();
       const stageLabel = STAGE_LABELS[status] || status;
       const rate = candidate.hourlyRate;
       const rateInfo = rate
-        ? `<p>Your hourly rate: <strong>$${rate.toFixed(2)}/hr</strong></p>`
+        ? `<p>Hourly rate: <strong>$${rate.toFixed(2)}/hr</strong></p>`
         : "";
-      await sendEmail(
-        candidate.email,
-        `Application Update: ${stageLabel}`,
-        `<p>Hi ${candidate.firstName},</p>
-        <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
-        ${rateInfo}
-        <p>We'll be in touch with next steps shortly.</p>`
-      );
+      const candidateName = `${candidate.firstName} ${candidate.lastName}`;
+
+      if (recipients.includes("candidate") && candidate.email) {
+        await sendEmail(
+          candidate.email,
+          `Application Update: ${stageLabel}`,
+          `<p>Hi ${candidate.firstName},</p>
+          <p>Your application has been moved to <strong>${stageLabel}</strong>.</p>
+          ${rateInfo}
+          <p>We'll be in touch with next steps shortly.</p>`
+        );
+      }
+
+      if (recipients.includes("recruiter") && candidate.recruiterId) {
+        const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
+        if (recruiter?.email) {
+          await sendEmail(
+            recruiter.email,
+            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+            `<p>Hi ${recruiter.firstName},</p>
+            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+            ${rateInfo}`
+          );
+        }
+      }
+
+      if (recipients.includes("manager") && candidate.managerId) {
+        const manager = await db.employee.findUnique({ where: { id: candidate.managerId }, select: { email: true, firstName: true } });
+        if (manager?.email) {
+          await sendEmail(
+            manager.email,
+            `Candidate Stage Update: ${candidateName} → ${stageLabel}`,
+            `<p>Hi ${manager.firstName},</p>
+            <p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>
+            ${rateInfo}`
+          );
+        }
+      }
     } catch (err) {
       console.error("[candidates] Failed to send stage notification:", err);
     }

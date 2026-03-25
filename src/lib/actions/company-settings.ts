@@ -27,6 +27,7 @@ export async function getCompanySettings() {
       recruiterIds: "[]",
       pipelineStages: "[]",
       candidateCustomFields: "[]",
+      stageNotifyRecipients: '["candidate"]',
       updatedAt: new Date(),
     };
   }
@@ -139,4 +140,26 @@ export async function saveCandidateCustomFields(fields: CandidateCustomField[]) 
   });
   revalidatePath("/cv");
   revalidatePath("/settings");
+}
+
+// ─── Stage Notification Recipients ───
+
+export type StageNotifyRecipient = "candidate" | "recruiter" | "manager";
+
+export async function getStageNotifyRecipients(): Promise<StageNotifyRecipient[]> {
+  const settings = await getCompanySettings();
+  try {
+    return JSON.parse(settings.stageNotifyRecipients || '["candidate"]');
+  } catch {}
+  return ["candidate"];
+}
+
+export async function saveStageNotifyRecipients(recipients: StageNotifyRecipient[]) {
+  await db.companySettings.upsert({
+    where: { id: SINGLETON_ID },
+    update: { stageNotifyRecipients: JSON.stringify(recipients) },
+    create: { id: SINGLETON_ID, stageNotifyRecipients: JSON.stringify(recipients) },
+  });
+  revalidatePath("/settings");
+  revalidatePath("/cv");
 }

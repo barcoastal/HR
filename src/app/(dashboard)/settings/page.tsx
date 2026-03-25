@@ -28,7 +28,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 import { RecruiterManager } from "@/components/settings/recruiter-manager";
 import { PipelineSettings } from "@/components/settings/pipeline-settings";
-import { getRecruiters, getPipelineStages, getCandidateCustomFields } from "@/lib/actions/company-settings";
+import { getRecruiters, getPipelineStages, getCandidateCustomFields, getStageNotifyRecipients } from "@/lib/actions/company-settings";
+import { StageNotificationSettings } from "@/components/settings/stage-notification-settings";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 
@@ -36,7 +37,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -51,6 +52,7 @@ export default async function SettingsPage() {
     getGustoConnection(),
     getPipelineStages(),
     getCandidateCustomFields(),
+    getStageNotifyRecipients(),
   ]);
 
   let gustoMapping = null;
@@ -118,6 +120,8 @@ export default async function SettingsPage() {
           initialStages={pipelineStages}
           initialCustomFields={candidateFields}
         />
+
+        <StageNotificationSettings initialRecipients={stageNotifyRecipients} />
 
         <DepartmentManager
           departments={departments.map((d) => ({
