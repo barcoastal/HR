@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { assignCandidateToPosition, createCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
@@ -50,6 +50,7 @@ export function AddCandidateToPosition({
     skills: "",
   });
   const router = useRouter();
+  const [, startTransition] = useTransition();
 
   const hasRecruiters = recruiters.length > 0;
 
@@ -71,7 +72,8 @@ export function AddCandidateToPosition({
     setSaving(true);
     await assignCandidateToPosition(candidateId, positionId, selectedRecruiterId || undefined);
     setSaving(false);
-    router.refresh();
+    setOpen(false);
+    startTransition(() => { router.refresh(); });
   }
 
   async function handleCreateNew() {
@@ -95,7 +97,7 @@ export function AddCandidateToPosition({
     setSaving(false);
     setOpen(false);
     setNewForm({ firstName: "", lastName: "", email: "", phone: "", skills: "" });
-    router.refresh();
+    startTransition(() => { router.refresh(); });
   }
 
   const inputClass = cn(

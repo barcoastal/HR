@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { createCandidate } from "@/lib/actions/candidates";
 import { parseResume } from "@/lib/actions/parse-resume";
@@ -36,6 +36,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
     costOfHire: "",
   });
   const router = useRouter();
+  const [, startTransition] = useTransition();
 
   function update(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -133,7 +134,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
     setParseError("");
     setLoading(false);
     setOpen(false);
-    router.refresh();
+    startTransition(() => { router.refresh(); });
   }
 
   const inputClass = cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40");
