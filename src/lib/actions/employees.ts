@@ -385,6 +385,36 @@ export async function completePreOnboarding(employeeId: string) {
     data: { status: "ONBOARDING" },
   });
 
+  // Create user account if missing (pre-onboarding hires skip user creation)
+  const existingUser = await db.user.findFirst({ where: { employeeId } });
+  if (!existingUser) {
+    const userByEmail = await db.user.findUnique({ where: { email: employee.email } });
+    if (!userByEmail) {
+      await db.user.create({
+        data: {
+          email: employee.email,
+          role: "EMPLOYEE",
+          employeeId: employee.id,
+        },
+      });
+      const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      try {
+        await sendWelcomeEmail({
+          to: employee.email,
+          role: "Employee",
+          loginUrl: `${baseUrl}/login`,
+        });
+      } catch (e) {
+        console.error("[pre-onboarding] Failed to send welcome email:", e);
+      }
+    } else if (!userByEmail.employeeId) {
+      await db.user.update({
+        where: { id: userByEmail.id },
+        data: { employeeId: employee.id },
+      });
+    }
+  }
+
   // Resolve and assign regular onboarding tasks
   const { resolveOnboardingTasks } = await import("./onboarding-resolution");
   const { createSigningRequest } = await import("./signing");
@@ -448,6 +478,40 @@ export async function completeOnboarding(employeeId: string) {
     where: { id: employeeId },
     data: { status: "ACTIVE" },
   });
+
+  // Ensure the employee has a user account (may be missing if they came through pre-onboarding)
+  const existingUser = await db.user.findFirst({
+    where: { employeeId },
+  });
+  if (!existingUser) {
+    const userByEmail = await db.user.findUnique({ where: { email: employee.email } });
+    if (!userByEmail) {
+      await db.user.create({
+        data: {
+          email: employee.email,
+          role: "EMPLOYEE",
+          employeeId: employee.id,
+        },
+      });
+      // Send welcome email
+      const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      try {
+        await sendWelcomeEmail({
+          to: employee.email,
+          role: "Employee",
+          loginUrl: `${baseUrl}/login`,
+        });
+      } catch (e) {
+        console.error("[onboarding] Failed to send welcome email:", e);
+      }
+    } else if (!userByEmail.employeeId) {
+      await db.user.update({
+        where: { id: userByEmail.id },
+        data: { employeeId: employee.id },
+      });
+    }
+  }
+
   revalidatePath("/onboarding");
   revalidatePath("/people");
   revalidatePath(`/people/${employeeId}`);

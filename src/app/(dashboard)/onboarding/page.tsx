@@ -33,10 +33,21 @@ export default async function OnboardingPage() {
     orderBy: { order: "asc" },
   });
 
+  // "Completed this month" — employees who finished onboarding this calendar month
+  const startOfMonth = new Date();
+  startOfMonth.setDate(1);
+  startOfMonth.setHours(0, 0, 0, 0);
+
   const recentlyCompleted = await db.employee.findMany({
     where: {
       status: "ACTIVE",
-      employeeTasks: { some: { checklistItem: { checklist: { type: "ONBOARDING" } } } },
+      employeeTasks: {
+        some: {
+          checklistItem: { checklist: { type: "ONBOARDING" } },
+          status: "DONE",
+          completedAt: { gte: startOfMonth },
+        },
+      },
     },
     include: {
       department: true,
@@ -49,7 +60,7 @@ export default async function OnboardingPage() {
       },
     },
     orderBy: { startDate: "desc" },
-    take: 5,
+    take: 10,
   });
 
   const completedEmployees = recentlyCompleted.filter((emp) => {
