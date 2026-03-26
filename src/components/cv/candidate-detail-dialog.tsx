@@ -53,6 +53,8 @@ type CandidateForDialog = {
   backgroundCheckOptions: string | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
+  offerSignedDocUrl: string | null;
+  offerSignedAt: Date | null;
   position: { title: string } | null;
 };
 
@@ -154,6 +156,8 @@ export function CandidateDetailDialog({
   const [offerSending, setOfferSending] = useState(false);
   const [offerDocUrl, setOfferDocUrl] = useState<string | null>(null);
   const [offerSentAt, setOfferSentAt] = useState<Date | null>(null);
+  const [offerSignedDocUrl, setOfferSignedDocUrl] = useState<string | null>(null);
+  const [offerSignedAt, setOfferSignedAt] = useState<Date | null>(null);
   const [offerError, setOfferError] = useState<string | null>(null);
 
   const loadInterviews = useCallback(async (candidateId: string) => {
@@ -196,6 +200,8 @@ export function CandidateDetailDialog({
       setHireResult(null);
       setOfferDocUrl(candidate.offerDocUrl || null);
       setOfferSentAt(candidate.offerSentAt ? new Date(candidate.offerSentAt) : null);
+      setOfferSignedDocUrl(candidate.offerSignedDocUrl || null);
+      setOfferSignedAt(candidate.offerSignedAt ? new Date(candidate.offerSignedAt) : null);
       setOfferError(null);
     }
   }, [candidate]);
@@ -364,11 +370,31 @@ export function CandidateDetailDialog({
               <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 space-y-3">
                 <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Offer Letter</p>
 
-                {offerSentAt && (
+                {offerSignedAt && offerSignedDocUrl && (
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                    <Icon name="check_circle" size={14} className="text-emerald-500" />
-                    <p className="text-xs text-emerald-400">
-                      Offer sent on {new Date(offerSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                    <Icon name="verified" size={14} className="text-emerald-500" />
+                    <div className="flex-1">
+                      <p className="text-xs text-emerald-400 font-medium">
+                        Signed on {new Date(offerSignedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })}
+                      </p>
+                    </div>
+                    <a
+                      href={offerSignedDocUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 px-2 py-1 rounded text-xs font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                    >
+                      <Icon name="download" size={12} />
+                      Signed PDF
+                    </a>
+                  </div>
+                )}
+
+                {offerSentAt && !offerSignedAt && (
+                  <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                    <Icon name="schedule" size={14} className="text-amber-500" />
+                    <p className="text-xs text-amber-400">
+                      Sent for signing on {new Date(offerSentAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" })} — awaiting signature
                     </p>
                   </div>
                 )}
@@ -460,7 +486,7 @@ export function CandidateDetailDialog({
                 )}
 
                 <p className="text-[10px] text-[var(--color-text-muted)]">
-                  The PDF will be emailed to {form.email || "the candidate"} as an attachment
+                  A signing link will be emailed to {form.email || "the candidate"}
                 </p>
               </div>
             )}

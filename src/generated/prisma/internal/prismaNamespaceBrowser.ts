@@ -471,6 +471,8 @@ export const CandidateScalarFieldEnum = {
   backgroundCheckOptions: 'backgroundCheckOptions',
   offerDocUrl: 'offerDocUrl',
   offerSentAt: 'offerSentAt',
+  offerSignedDocUrl: 'offerSignedDocUrl',
+  offerSignedAt: 'offerSignedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

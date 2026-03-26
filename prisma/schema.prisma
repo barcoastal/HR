@@ -626,6 +626,8 @@ model Candidate {
   backgroundCheckOptions  String?           // JSON: which checks were requested
   offerDocUrl             String?           // URL to uploaded offer PDF
   offerSentAt             DateTime?         // When offer was emailed to candidate
+  offerSignedDocUrl       String?           // URL to signed offer PDF
+  offerSignedAt           DateTime?         // When candidate signed the offer
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
 

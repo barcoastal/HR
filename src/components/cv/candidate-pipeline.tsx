@@ -31,6 +31,8 @@ type CandidateItem = {
   backgroundCheckOptions: string | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
+  offerSignedDocUrl: string | null;
+  offerSignedAt: Date | null;
   position: { title: string } | null;
 };
 

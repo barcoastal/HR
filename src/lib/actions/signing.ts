@@ -276,8 +276,56 @@ export async function submitSignature(
       });
     }
 
+    // If this is a candidate signing (offer letter), update the candidate record
+    if (request.candidateId) {
+      await db.candidate.update({
+        where: { id: request.candidateId },
+        data: { offerSignedDocUrl: signedDocUrl, offerSignedAt: new Date() },
+      });
+
+      // Notify recruiter and admins that the candidate signed
+      try {
+        const candidate = request.candidate;
+        if (candidate) {
+          const candidateName = `${candidate.firstName} ${candidate.lastName}`;
+          const { sendEmail } = await import("@/lib/email");
+
+          // Notify recruiter
+          if (candidate.recruiterId) {
+            const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
+            if (recruiter?.email) {
+              await sendEmail(
+                recruiter.email,
+                `Offer Signed: ${candidateName}`,
+                `<p>Hi ${recruiter.firstName},</p>
+                <p><strong>${candidateName}</strong> has signed the offer letter: <strong>${request.documentName}</strong>.</p>
+                <p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/cv">View in Recruitment</a></p>`
+              );
+            }
+          }
+
+          // Notify all admins
+          const admins = await db.user.findMany({
+            where: { role: { in: ["SUPER_ADMIN", "ADMIN", "HR"] } },
+            select: { email: true },
+          });
+          for (const admin of admins) {
+            await sendEmail(
+              admin.email,
+              `Offer Signed: ${candidateName}`,
+              `<p><strong>${candidateName}</strong> has signed the offer letter: <strong>${request.documentName}</strong>.</p>
+              <p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/cv">View in Recruitment</a></p>`
+            );
+          }
+        }
+      } catch (e) {
+        console.error("[signing] Failed to send offer signed notification:", e);
+      }
+    }
+
     revalidatePath("/onboarding");
     revalidatePath("/documents");
+    revalidatePath("/cv");
     return { success: true };
   } catch (error) {
     console.error("Signing error:", error);

@@ -38,6 +38,8 @@ type CandidateItem = {
   backgroundCheckOptions: string | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
+  offerSignedDocUrl: string | null;
+  offerSignedAt: Date | null;
   jobAppliedTo: string | null;
   inPipeline: boolean;
   position: { title: string } | null;
@@ -316,6 +318,8 @@ function PositionPipeline({
                 backgroundCheckOptions: c.backgroundCheckOptions || null,
                 offerDocUrl: c.offerDocUrl || null,
                 offerSentAt: c.offerSentAt || null,
+                offerSignedDocUrl: c.offerSignedDocUrl || null,
+                offerSignedAt: c.offerSignedAt || null,
                 position: c.position,
               }))}
               positions={allPositions}
@@ -463,6 +467,8 @@ export function CVTabs({
                 backgroundCheckOptions: c.backgroundCheckOptions || null,
                       offerDocUrl: c.offerDocUrl || null,
                       offerSentAt: c.offerSentAt || null,
+                      offerSignedDocUrl: c.offerSignedDocUrl || null,
+                      offerSignedAt: c.offerSignedAt || null,
                       position: c.position,
                     }))}
                     positions={positions}
