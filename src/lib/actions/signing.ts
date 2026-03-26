@@ -148,7 +148,8 @@ export async function getSigningRequestByToken(token: string) {
 export async function submitSignature(
   token: string,
   signatureBase64: string,
-  signaturePosition?: { xPercent: number; yPercent: number; page: number }
+  signaturePosition?: { xPercent: number; yPercent: number; page: number },
+  typedName?: string
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -201,6 +202,42 @@ export async function submitSignature(
       ? pageHeight - (signaturePosition.yPercent / 100) * pageHeight - sigHeight
       : pageHeight * 0.30; // ~30% from bottom — where most signature lines are
 
+    const { rgb } = await import("pdf-lib");
+    const signerFullName = typedName?.trim() || request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer");
+    const signedDate = new Date();
+    const signDate = signedDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    const signTime = signedDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+
+    // DocuSign-style signature block:
+    // ┌─────────────────────────────┐
+    // │  [signature image]          │
+    // │  ─────────────────────────  │
+    // │  Name: Full Name            │
+    // │  Date: March 26, 2026       │
+    // │  Time: 2:30 PM              │
+    // └─────────────────────────────┘
+
+    // Signature block starts at sigY, goes upward
+    const blockPadding = 8;
+    const nameLineY = sigY - 4;
+    const dateLineY = nameLineY - 14;
+    const timeLineY = dateLineY - 13;
+    const blockBottom = timeLineY - blockPadding;
+    const blockTop = sigY + sigHeight + blockPadding;
+    const blockWidth = sigWidth + blockPadding * 2 + 40;
+
+    // Draw signature block background
+    targetPage.drawRectangle({
+      x: sigX - blockPadding,
+      y: blockBottom,
+      width: blockWidth,
+      height: blockTop - blockBottom,
+      color: rgb(0.98, 0.98, 1),
+      borderColor: rgb(0.8, 0.8, 0.85),
+      borderWidth: 0.5,
+    });
+
+    // Draw signature image
     targetPage.drawImage(sigImage, {
       x: sigX,
       y: sigY,
@@ -208,27 +245,40 @@ export async function submitSignature(
       height: sigHeight,
     });
 
-    // Add printed name below signature
-    const { rgb } = await import("pdf-lib");
-    const employeeName = request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer");
-    targetPage.drawText(employeeName, {
+    // Draw separator line under signature
+    targetPage.drawLine({
+      start: { x: sigX, y: sigY - 1 },
+      end: { x: sigX + sigWidth, y: sigY - 1 },
+      thickness: 0.5,
+      color: rgb(0.6, 0.6, 0.65),
+    });
+
+    // Name
+    targetPage.drawText(`Name: ${signerFullName}`, {
       x: sigX,
-      y: sigY - 14,
-      size: 10,
-      color: rgb(0.1, 0.1, 0.1),
+      y: nameLineY - 12,
+      size: 9,
+      color: rgb(0.15, 0.15, 0.2),
     });
 
-    // Add date to the right of the signature
-    const signDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-    targetPage.drawText(signDate, {
-      x: sigX + sigWidth + 40,
-      y: sigY + sigHeight / 2,
-      size: 10,
-      color: rgb(0.1, 0.1, 0.1),
+    // Date
+    targetPage.drawText(`Date: ${signDate}`, {
+      x: sigX,
+      y: dateLineY - 12,
+      size: 9,
+      color: rgb(0.15, 0.15, 0.2),
     });
 
-    // Add small timestamp at the very bottom
-    targetPage.drawText(`Digitally signed: ${new Date().toISOString()} by ${employeeName}`, {
+    // Time
+    targetPage.drawText(`Time: ${signTime}`, {
+      x: sigX,
+      y: timeLineY - 12,
+      size: 9,
+      color: rgb(0.15, 0.15, 0.2),
+    });
+
+    // Small audit trail at the very bottom of the page
+    targetPage.drawText(`Digitally signed: ${signedDate.toISOString()} by ${signerFullName}`, {
       x: 72,
       y: 20,
       size: 7,
