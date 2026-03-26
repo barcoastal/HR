@@ -42,6 +42,7 @@ type Props = {
     firstName: string;
     lastName: string;
     jobTitle: string;
+    email: string;
   };
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
@@ -119,6 +120,9 @@ export function OnboardingTimeline({
   const [addingCustom, setAddingCustom] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
+  const [companyEmail, setCompanyEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
   const router = useRouter();
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
@@ -182,13 +186,37 @@ export function OnboardingTimeline({
     router.refresh();
   }
 
+  const hasCompanyEmail = employee.email.endsWith("@coastaldebt.com");
+
   async function handleCompleteOnboarding() {
+    // For pre-onboarding, require a @coastaldebt.com email before moving to onboarding
+    if (type === "PRE_ONBOARDING" && !hasCompanyEmail) {
+      setShowEmailPrompt(true);
+      setCompanyEmail("");
+      setEmailError(null);
+      return;
+    }
     setCompleting(true);
     if (type === "PRE_ONBOARDING") {
       await completePreOnboarding(employee.id);
     } else {
       await completeOnboarding(employee.id);
     }
+    setCompleting(false);
+    setCompleted(true);
+    router.refresh();
+  }
+
+  async function handleConfirmCompanyEmail() {
+    const email = companyEmail.trim().toLowerCase();
+    if (!email.endsWith("@coastaldebt.com")) {
+      setEmailError("Must be a @coastaldebt.com email");
+      return;
+    }
+    setEmailError(null);
+    setCompleting(true);
+    setShowEmailPrompt(false);
+    await completePreOnboarding(employee.id, email);
     setCompleting(false);
     setCompleted(true);
     router.refresh();
@@ -514,6 +542,64 @@ export function OnboardingTimeline({
                   </button>
                 )}
               </div>
+
+              {/* Company email prompt for pre-onboarding → onboarding */}
+              <AnimatePresence>
+                {showEmailPrompt && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
+                      <div className="flex items-start gap-3">
+                        <Icon name="mail" size={20} className="text-emerald-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm font-semibold text-[var(--color-text-primary)]">Company email required</p>
+                          <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
+                            {employee.firstName} needs a @coastaldebt.com email to move to onboarding. This will be their login email.
+                          </p>
+                        </div>
+                      </div>
+                      <div>
+                        <input
+                          type="email"
+                          value={companyEmail}
+                          onChange={(e) => { setCompanyEmail(e.target.value); setEmailError(null); }}
+                          placeholder={`${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}@coastaldebt.com`}
+                          className={cn(inputClass, emailError && "border-red-400 focus:ring-red-400/40")}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleConfirmCompanyEmail(); } }}
+                        />
+                        {emailError && <p className="text-xs text-red-400 mt-1">{emailError}</p>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleConfirmCompanyEmail}
+                          disabled={!companyEmail.trim() || completing}
+                          className={cn(
+                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
+                            "bg-emerald-500 text-white hover:bg-emerald-600 transition-colors disabled:opacity-50"
+                          )}
+                        >
+                          {completing ? (
+                            <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</>
+                          ) : (
+                            <><Icon name="check_circle" size={16} />Confirm & Move to Onboarding</>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => setShowEmailPrompt(false)}
+                          className="px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Add Tasks Panel (slide-out inline) */}
               <AnimatePresence>

@@ -117,6 +117,7 @@ export default async function OnboardingPage() {
                 firstName: emp.firstName,
                 lastName: emp.lastName,
                 jobTitle: emp.jobTitle,
+                email: emp.email,
               }}
               tasks={emp.employeeTasks.map((t) => ({
                 id: t.id,

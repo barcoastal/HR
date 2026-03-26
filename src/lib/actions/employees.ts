@@ -375,24 +375,31 @@ export async function addCustomEmployeeTask(
   return task;
 }
 
-export async function completePreOnboarding(employeeId: string) {
+export async function completePreOnboarding(employeeId: string, companyEmail?: string) {
   const employee = await db.employee.findUnique({ where: { id: employeeId } });
   if (!employee) throw new Error("Employee not found");
+
+  // Update email if a company email was provided
+  const finalEmail = companyEmail?.trim() || employee.email;
+  const updateData: Record<string, unknown> = { status: "ONBOARDING" };
+  if (companyEmail?.trim() && companyEmail.trim() !== employee.email) {
+    updateData.email = companyEmail.trim();
+  }
 
   // Transition to ONBOARDING
   await db.employee.update({
     where: { id: employeeId },
-    data: { status: "ONBOARDING" },
+    data: updateData,
   });
 
   // Create user account if missing (pre-onboarding hires skip user creation)
   const existingUser = await db.user.findFirst({ where: { employeeId } });
   if (!existingUser) {
-    const userByEmail = await db.user.findUnique({ where: { email: employee.email } });
+    const userByEmail = await db.user.findUnique({ where: { email: finalEmail } });
     if (!userByEmail) {
       await db.user.create({
         data: {
-          email: employee.email,
+          email: finalEmail,
           role: "EMPLOYEE",
           employeeId: employee.id,
         },
@@ -400,7 +407,7 @@ export async function completePreOnboarding(employeeId: string) {
       const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
       try {
         await sendWelcomeEmail({
-          to: employee.email,
+          to: finalEmail,
           role: "Employee",
           loginUrl: `${baseUrl}/login`,
         });
