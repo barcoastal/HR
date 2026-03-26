@@ -76,6 +76,65 @@ const STAGE_LABELS: Record<string, string> = {
   REJECTED: "Rejected",
 };
 
+const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
+
+async function sendStageDocumentsEmail(
+  status: string,
+  candidate: { id: string; firstName: string; lastName: string; email: string; phone: string | null; hourlyRate: number | null; positionId: string | null }
+) {
+  if (!DOC_STAGES.includes(status) || !candidate.email) return;
+
+  try {
+    const { getStageDocuments } = await import("@/lib/actions/stage-documents");
+    const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
+    const { sendEmailWithAttachments } = await import("@/lib/email");
+    const { getCompanySettings } = await import("@/lib/actions/company-settings");
+    const [docs, settings] = await Promise.all([
+      getStageDocuments(status),
+      getCompanySettings(),
+    ]);
+    console.log(`[stage-docs] Found ${docs.length} docs for stage ${status}, candidate ${candidate.email}`);
+
+    const position = candidate.positionId
+      ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
+      : null;
+    const candidateInfo = {
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      email: candidate.email,
+      phone: candidate.phone,
+      hourlyRate: candidate.hourlyRate,
+      position,
+    };
+    const pdfDocs = docs.filter((d) => d.pdfData);
+    console.log(`[stage-docs] ${pdfDocs.length} docs have PDF data`);
+    if (pdfDocs.length === 0) return;
+
+    const attachments = [];
+    for (const doc of pdfDocs) {
+      const positions = JSON.parse(doc.placeholders || "[]");
+      console.log(`[stage-docs] Filling "${doc.name}" with ${positions.length} placeholders, pdfData length: ${doc.pdfData!.length}`);
+      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+      attachments.push({
+        filename: `${doc.name}.pdf`,
+        content: Buffer.from(filledPdf),
+      });
+    }
+    console.log(`[stage-docs] Sending ${attachments.length} attachments to ${candidate.email}`);
+    await sendEmailWithAttachments(
+      candidate.email,
+      `Documents: ${STAGE_LABELS[status] || status}`,
+      `<p>Hi ${candidate.firstName},</p>
+      <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
+      <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
+      attachments
+    );
+    console.log(`[stage-docs] Sent successfully to ${candidate.email}`);
+  } catch (err) {
+    console.error(`[stage-docs] Failed to send docs for ${status} to ${candidate.email}:`, err);
+  }
+}
+
 export async function updateCandidateStatus(
   id: string,
   status: CandidateStatus
@@ -188,48 +247,7 @@ export async function updateCandidateStatus(
       ]);
 
       // Send stage PDF documents for onboarding/offboarding stages
-      const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
-      if (DOC_STAGES.includes(status) && candidate.email) {
-        const { getStageDocuments } = await import("@/lib/actions/stage-documents");
-        const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
-        const { sendEmailWithAttachments } = await import("@/lib/email");
-        const { getCompanySettings } = await import("@/lib/actions/company-settings");
-        const [docs, settings] = await Promise.all([
-          getStageDocuments(status),
-          getCompanySettings(),
-        ]);
-        const position = candidate.positionId
-          ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
-          : null;
-        const candidateInfo = {
-          firstName: candidate.firstName,
-          lastName: candidate.lastName,
-          email: candidate.email,
-          phone: candidate.phone,
-          hourlyRate: candidate.hourlyRate,
-          position,
-        };
-        const pdfDocs = docs.filter((d) => d.pdfData);
-        if (pdfDocs.length > 0) {
-          const attachments = [];
-          for (const doc of pdfDocs) {
-            const positions = JSON.parse(doc.placeholders || "[]");
-            const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
-            attachments.push({
-              filename: `${doc.name}.pdf`,
-              content: Buffer.from(filledPdf),
-            });
-          }
-          await sendEmailWithAttachments(
-            candidate.email,
-            `Documents: ${STAGE_LABELS[status] || status}`,
-            `<p>Hi ${candidate.firstName},</p>
-            <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
-            <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
-            attachments
-          );
-        }
-      }
+      await sendStageDocumentsEmail(status, candidate);
     } catch (err) {
       console.error("[candidates] Failed to send stage notification:", err);
     }
@@ -527,48 +545,7 @@ export async function updateCandidate(
       ]);
 
       // Send stage PDF documents for onboarding/offboarding stages
-      const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
-      if (DOC_STAGES.includes(status) && candidate.email) {
-        const { getStageDocuments } = await import("@/lib/actions/stage-documents");
-        const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
-        const { sendEmailWithAttachments } = await import("@/lib/email");
-        const { getCompanySettings } = await import("@/lib/actions/company-settings");
-        const [docs, settings] = await Promise.all([
-          getStageDocuments(status),
-          getCompanySettings(),
-        ]);
-        const position = candidate.positionId
-          ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
-          : null;
-        const candidateInfo = {
-          firstName: candidate.firstName,
-          lastName: candidate.lastName,
-          email: candidate.email,
-          phone: candidate.phone,
-          hourlyRate: candidate.hourlyRate,
-          position,
-        };
-        const pdfDocs = docs.filter((d) => d.pdfData);
-        if (pdfDocs.length > 0) {
-          const attachments = [];
-          for (const doc of pdfDocs) {
-            const positions = JSON.parse(doc.placeholders || "[]");
-            const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
-            attachments.push({
-              filename: `${doc.name}.pdf`,
-              content: Buffer.from(filledPdf),
-            });
-          }
-          await sendEmailWithAttachments(
-            candidate.email,
-            `Documents: ${STAGE_LABELS[status] || status}`,
-            `<p>Hi ${candidate.firstName},</p>
-            <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
-            <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
-            attachments
-          );
-        }
-      }
+      await sendStageDocumentsEmail(status, candidate);
     } catch (err) {
       console.error("[candidates] Failed to send stage notification:", err);
     }
@@ -692,6 +669,9 @@ export async function hireCandidateAndStartOnboarding(
       data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
     });
 
+    // Send stage documents for PRE_ONBOARDING
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate);
+
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
     revalidatePath("/people");
@@ -732,6 +712,9 @@ export async function hireCandidateAndStartOnboarding(
       where: { id: candidateId },
       data: { status: "HIRED", inPipeline: false },
     });
+
+    // Send stage documents for PRE_ONBOARDING
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate);
 
     revalidatePath("/cv");
     revalidatePath("/onboarding");

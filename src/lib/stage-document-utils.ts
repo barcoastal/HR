@@ -90,7 +90,9 @@ export async function fillPdfPlaceholders(
 ): Promise<Uint8Array> {
   const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
 
-  const pdfBytes = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
+  // Decode base64 — strip any whitespace/newlines that may have been added
+  const cleanBase64 = pdfBase64.replace(/\s/g, "");
+  const pdfBytes = Buffer.from(cleanBase64, "base64");
   const pdfDoc = await PDFDocument.load(pdfBytes);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const pages = pdfDoc.getPages();
