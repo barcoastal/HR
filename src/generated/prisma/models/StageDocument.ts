@@ -41,6 +41,7 @@ export type StageDocumentMinAggregateOutputType = {
   content: string | null
   pdfData: string | null
   placeholders: string | null
+  requiresSignature: boolean | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +54,7 @@ export type StageDocumentMaxAggregateOutputType = {
   content: string | null
   pdfData: string | null
   placeholders: string | null
+  requiresSignature: boolean | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -65,6 +67,7 @@ export type StageDocumentCountAggregateOutputType = {
   content: number
   pdfData: number
   placeholders: number
+  requiresSignature: number
   order: number
   createdAt: number
   updatedAt: number
@@ -87,6 +90,7 @@ export type StageDocumentMinAggregateInputType = {
   content?: true
   pdfData?: true
   placeholders?: true
+  requiresSignature?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +103,7 @@ export type StageDocumentMaxAggregateInputType = {
   content?: true
   pdfData?: true
   placeholders?: true
+  requiresSignature?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -111,6 +116,7 @@ export type StageDocumentCountAggregateInputType = {
   content?: true
   pdfData?: true
   placeholders?: true
+  requiresSignature?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -210,6 +216,7 @@ export type StageDocumentGroupByOutputType = {
   content: string
   pdfData: string | null
   placeholders: string
+  requiresSignature: boolean
   order: number
   createdAt: Date
   updatedAt: Date
@@ -245,6 +252,7 @@ export type StageDocumentWhereInput = {
   content?: Prisma.StringFilter<"StageDocument"> | string
   pdfData?: Prisma.StringNullableFilter<"StageDocument"> | string | null
   placeholders?: Prisma.StringFilter<"StageDocument"> | string
+  requiresSignature?: Prisma.BoolFilter<"StageDocument"> | boolean
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
@@ -257,6 +265,7 @@ export type StageDocumentOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   pdfData?: Prisma.SortOrderInput | Prisma.SortOrder
   placeholders?: Prisma.SortOrder
+  requiresSignature?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -272,6 +281,7 @@ export type StageDocumentWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"StageDocument"> | string
   pdfData?: Prisma.StringNullableFilter<"StageDocument"> | string | null
   placeholders?: Prisma.StringFilter<"StageDocument"> | string
+  requiresSignature?: Prisma.BoolFilter<"StageDocument"> | boolean
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
@@ -284,6 +294,7 @@ export type StageDocumentOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   pdfData?: Prisma.SortOrderInput | Prisma.SortOrder
   placeholders?: Prisma.SortOrder
+  requiresSignature?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -304,6 +315,7 @@ export type StageDocumentScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
   pdfData?: Prisma.StringNullableWithAggregatesFilter<"StageDocument"> | string | null
   placeholders?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
+  requiresSignature?: Prisma.BoolWithAggregatesFilter<"StageDocument"> | boolean
   order?: Prisma.IntWithAggregatesFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
@@ -316,6 +328,7 @@ export type StageDocumentCreateInput = {
   content?: string
   pdfData?: string | null
   placeholders?: string
+  requiresSignature?: boolean
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -328,6 +341,7 @@ export type StageDocumentUncheckedCreateInput = {
   content?: string
   pdfData?: string | null
   placeholders?: string
+  requiresSignature?: boolean
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -340,6 +354,7 @@ export type StageDocumentUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,6 +367,7 @@ export type StageDocumentUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -364,6 +380,7 @@ export type StageDocumentCreateManyInput = {
   content?: string
   pdfData?: string | null
   placeholders?: string
+  requiresSignature?: boolean
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,6 +393,7 @@ export type StageDocumentUpdateManyMutationInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -388,6 +406,7 @@ export type StageDocumentUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,6 +419,7 @@ export type StageDocumentCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   pdfData?: Prisma.SortOrder
   placeholders?: Prisma.SortOrder
+  requiresSignature?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -416,6 +436,7 @@ export type StageDocumentMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   pdfData?: Prisma.SortOrder
   placeholders?: Prisma.SortOrder
+  requiresSignature?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -428,6 +449,7 @@ export type StageDocumentMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   pdfData?: Prisma.SortOrder
   placeholders?: Prisma.SortOrder
+  requiresSignature?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -446,6 +468,7 @@ export type StageDocumentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   content?: boolean
   pdfData?: boolean
   placeholders?: boolean
+  requiresSignature?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -458,6 +481,7 @@ export type StageDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   content?: boolean
   pdfData?: boolean
   placeholders?: boolean
+  requiresSignature?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -470,6 +494,7 @@ export type StageDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   content?: boolean
   pdfData?: boolean
   placeholders?: boolean
+  requiresSignature?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -482,12 +507,13 @@ export type StageDocumentSelectScalar = {
   content?: boolean
   pdfData?: boolean
   placeholders?: boolean
+  requiresSignature?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "pdfData" | "placeholders" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
+export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "pdfData" | "placeholders" | "requiresSignature" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
 
 export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StageDocument"
@@ -499,6 +525,7 @@ export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     content: string
     pdfData: string | null
     placeholders: string
+    requiresSignature: boolean
     order: number
     createdAt: Date
     updatedAt: Date
@@ -931,6 +958,7 @@ export interface StageDocumentFieldRefs {
   readonly content: Prisma.FieldRef<"StageDocument", 'String'>
   readonly pdfData: Prisma.FieldRef<"StageDocument", 'String'>
   readonly placeholders: Prisma.FieldRef<"StageDocument", 'String'>
+  readonly requiresSignature: Prisma.FieldRef<"StageDocument", 'Boolean'>
   readonly order: Prisma.FieldRef<"StageDocument", 'Int'>
   readonly createdAt: Prisma.FieldRef<"StageDocument", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StageDocument", 'DateTime'>

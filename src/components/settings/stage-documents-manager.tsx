@@ -25,6 +25,7 @@ type StageDoc = {
   stage: string;
   name: string;
   placeholders: string; // JSON
+  requiresSignature: boolean;
   order: number;
   hasPdf: boolean;
 };
@@ -103,8 +104,13 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
                     <Icon name="picture_as_pdf" size={18} className="text-red-400 shrink-0" />
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
-                      <p className={cn("text-xs", !doc.hasPdf ? "text-amber-400" : "text-[var(--color-text-muted)]")}>
+                      <p className={cn("text-xs flex items-center gap-1.5", !doc.hasPdf ? "text-amber-400" : "text-[var(--color-text-muted)]")}>
                         {!doc.hasPdf ? "No PDF — click edit to upload" : `${placeholders.length} placeholder${placeholders.length !== 1 ? "s" : ""} marked`}
+                        {doc.requiresSignature && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400">
+                            <Icon name="draw" size={10} />sign
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -175,6 +181,7 @@ function PdfDocumentEditor({
   const [placeholders, setPlaceholders] = useState<PlaceholderPosition[]>(
     existing ? JSON.parse(existing.placeholders || "[]") : []
   );
+  const [requiresSignature, setRequiresSignature] = useState(existing?.requiresSignature ?? false);
   const [saving, setSaving] = useState(false);
   const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
   const [pageCount, setPageCount] = useState(0);
@@ -306,9 +313,10 @@ function PdfDocumentEditor({
     try {
       const placeholdersJson = JSON.stringify(placeholders);
       if (existing) {
-        const updateData: { name: string; placeholders: string; pdfData?: string } = {
+        const updateData: { name: string; placeholders: string; requiresSignature: boolean; pdfData?: string } = {
           name: name.trim(),
           placeholders: placeholdersJson,
+          requiresSignature,
         };
         if (pdfBase64) updateData.pdfData = pdfBase64;
         await updateStageDocument(existing.id, updateData);
@@ -318,6 +326,7 @@ function PdfDocumentEditor({
           name: name.trim(),
           pdfData: pdfBase64!,
           placeholders: placeholdersJson,
+          requiresSignature,
         });
       }
       onDone();
@@ -339,6 +348,28 @@ function PdfDocumentEditor({
           className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-bg)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
         />
       </div>
+
+      {/* Requires Signature toggle */}
+      <label className="flex items-center gap-3 cursor-pointer">
+        <div
+          onClick={() => setRequiresSignature(!requiresSignature)}
+          className={cn(
+            "relative w-9 h-5 rounded-full transition-colors",
+            requiresSignature ? "bg-blue-500" : "bg-[var(--color-border)]"
+          )}
+        >
+          <div className={cn(
+            "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform",
+            requiresSignature ? "translate-x-4" : "translate-x-0.5"
+          )} />
+        </div>
+        <div>
+          <span className="text-sm font-medium text-[var(--color-text-primary)]">Requires Signature</span>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            {requiresSignature ? "Will send a signing link instead of just attaching the PDF" : "Will be sent as an email attachment"}
+          </p>
+        </div>
+      </label>
 
       {/* PDF Upload — show for new docs or existing docs without PDF */}
       {!pdfBase64 && (!existing || needsUpload) && (

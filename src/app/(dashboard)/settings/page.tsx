@@ -140,6 +140,7 @@ export default async function SettingsPage() {
             stage: d.stage,
             name: d.name,
             placeholders: d.placeholders,
+            requiresSignature: d.requiresSignature,
             order: d.order,
             hasPdf: d.hasPdf,
           }))}

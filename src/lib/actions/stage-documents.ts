@@ -16,7 +16,7 @@ export async function getAllStageDocuments() {
   // Don't return pdfData in list queries (too large)
   // Use raw query to check if pdfData exists without loading it
   const docs = await db.stageDocument.findMany({
-    select: { id: true, stage: true, name: true, placeholders: true, order: true, createdAt: true, updatedAt: true },
+    select: { id: true, stage: true, name: true, placeholders: true, requiresSignature: true, order: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
   // Check which docs have PDF data without loading the blobs
@@ -33,6 +33,7 @@ export async function getAllStageDocuments() {
     stage: d.stage,
     name: d.name,
     placeholders: d.placeholders,
+    requiresSignature: d.requiresSignature,
     order: d.order,
     hasPdf: pdfSet.has(d.id),
     createdAt: d.createdAt,
@@ -49,13 +50,21 @@ export async function createStageDocument(data: {
   name: string;
   pdfData: string; // base64
   placeholders: string; // JSON
+  requiresSignature?: boolean;
 }) {
   if (!DOCUMENT_STAGES.includes(data.stage)) {
     throw new Error("Invalid stage for documents");
   }
   const count = await db.stageDocument.count({ where: { stage: data.stage } });
   const doc = await db.stageDocument.create({
-    data: { stage: data.stage, name: data.name, pdfData: data.pdfData, placeholders: data.placeholders, order: count },
+    data: {
+      stage: data.stage,
+      name: data.name,
+      pdfData: data.pdfData,
+      placeholders: data.placeholders,
+      requiresSignature: data.requiresSignature ?? false,
+      order: count,
+    },
   });
   revalidatePath("/settings");
   return { id: doc.id, stage: doc.stage, name: doc.name, placeholders: doc.placeholders, order: doc.order };
@@ -63,7 +72,7 @@ export async function createStageDocument(data: {
 
 export async function updateStageDocument(
   id: string,
-  data: { name?: string; placeholders?: string; pdfData?: string }
+  data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean }
 ) {
   const doc = await db.stageDocument.update({ where: { id }, data });
   revalidatePath("/settings");

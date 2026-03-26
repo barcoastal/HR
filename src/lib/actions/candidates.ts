@@ -80,7 +80,8 @@ const DOC_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
 
 async function sendStageDocumentsEmail(
   status: string,
-  candidate: { id: string; firstName: string; lastName: string; email: string; phone: string | null; hourlyRate: number | null; positionId: string | null }
+  candidate: { id: string; firstName: string; lastName: string; email: string; phone: string | null; hourlyRate: number | null; positionId: string | null },
+  employeeId?: string
 ) {
   if (!DOC_STAGES.includes(status) || !candidate.email) return;
 
@@ -110,26 +111,67 @@ async function sendStageDocumentsEmail(
     console.log(`[stage-docs] ${pdfDocs.length} docs have PDF data`);
     if (pdfDocs.length === 0) return;
 
-    const attachments = [];
+    const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const attachmentDocs: typeof pdfDocs = [];
+    const signingDocs: typeof pdfDocs = [];
+
     for (const doc of pdfDocs) {
-      const positions = JSON.parse(doc.placeholders || "[]");
-      console.log(`[stage-docs] Filling "${doc.name}" with ${positions.length} placeholders, pdfData length: ${doc.pdfData!.length}`);
-      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
-      attachments.push({
-        filename: `${doc.name}.pdf`,
-        content: Buffer.from(filledPdf),
-      });
+      if (doc.requiresSignature && employeeId) {
+        signingDocs.push(doc);
+      } else {
+        attachmentDocs.push(doc);
+      }
     }
-    console.log(`[stage-docs] Sending ${attachments.length} attachments to ${candidate.email}`);
-    await sendEmailWithAttachments(
-      candidate.email,
-      `Documents: ${STAGE_LABELS[status] || status}`,
-      `<p>Hi ${candidate.firstName},</p>
-      <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
-      <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
-      attachments
-    );
-    console.log(`[stage-docs] Sent successfully to ${candidate.email}`);
+
+    // Handle docs that require signing — upload filled PDF to FileBlob, create signing request
+    for (const doc of signingDocs) {
+      const positions = JSON.parse(doc.placeholders || "[]");
+      console.log(`[stage-docs] Filling "${doc.name}" for signing, ${positions.length} placeholders`);
+      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+
+      // Store the filled PDF in FileBlob
+      const { randomUUID } = await import("crypto");
+      const filename = `${randomUUID()}.pdf`;
+      const buffer = Buffer.from(filledPdf);
+      await db.fileBlob.create({
+        data: { filename, mimeType: "application/pdf", size: buffer.length, data: buffer },
+      });
+      const documentUrl = `/api/onboarding-docs/${filename}`;
+
+      // Create signing request (sends email automatically)
+      const { createStandaloneSigningRequest } = await import("@/lib/actions/signing");
+      await createStandaloneSigningRequest({
+        employeeId: employeeId!,
+        documentUrl,
+        documentName: doc.name,
+      });
+      console.log(`[stage-docs] Created signing request for "${doc.name}"`);
+    }
+
+    // Handle attachment-only docs
+    if (attachmentDocs.length > 0) {
+      const attachments = [];
+      for (const doc of attachmentDocs) {
+        const positions = JSON.parse(doc.placeholders || "[]");
+        console.log(`[stage-docs] Filling "${doc.name}" as attachment, ${positions.length} placeholders`);
+        const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+        attachments.push({
+          filename: `${doc.name}.pdf`,
+          content: Buffer.from(filledPdf),
+        });
+      }
+      console.log(`[stage-docs] Sending ${attachments.length} attachments to ${candidate.email}`);
+      await sendEmailWithAttachments(
+        candidate.email,
+        `Documents: ${STAGE_LABELS[status] || status}`,
+        `<p>Hi ${candidate.firstName},</p>
+        <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
+        <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
+        attachments
+      );
+    }
+
+    console.log(`[stage-docs] All docs processed for ${candidate.email} (${attachmentDocs.length} attached, ${signingDocs.length} signing)`);
   } catch (err) {
     console.error(`[stage-docs] Failed to send docs for ${status} to ${candidate.email}:`, err);
   }
@@ -670,7 +712,7 @@ export async function hireCandidateAndStartOnboarding(
     });
 
     // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate);
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id);
 
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
@@ -714,7 +756,7 @@ export async function hireCandidateAndStartOnboarding(
     });
 
     // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate);
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id);
 
     revalidatePath("/cv");
     revalidatePath("/onboarding");
