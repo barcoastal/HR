@@ -22,7 +22,6 @@ const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 const allNavLinks = [
   { href: "/", label: "Feed", icon: "newspaper", access: () => true },
   { href: "/alerts", label: "Alerts", icon: "warning", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
-  { href: "/chat", label: "Chat", icon: "chat", access: () => true },
   { href: "/people", label: "People", icon: "group", access: () => true },
   { href: "/org", label: "Organization", icon: "business", access: (r: UserRole) => isManagerOrAbove(r) },
   { href: "/pre-onboarding", label: "Pre-Onboarding", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r) },
