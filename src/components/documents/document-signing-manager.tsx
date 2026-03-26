@@ -13,8 +13,12 @@ import { Icon } from "@/components/ui/icon";
 
 type SigningRequest = {
   id: string;
-  employeeId: string;
-  employee: { id: string; firstName: string; lastName: string; email: string };
+  employeeId: string | null;
+  candidateId?: string | null;
+  signerName?: string | null;
+  signerEmail?: string | null;
+  employee: { id: string; firstName: string; lastName: string; email: string } | null;
+  candidate?: { id: string; firstName: string; lastName: string; email: string } | null;
   token: string;
   documentUrl: string;
   documentName: string;
@@ -363,9 +367,11 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                         <SourceBadge isOnboarding={!!request.employeeTaskId} />
                       </div>
                       <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-                        {request.employee.firstName} {request.employee.lastName}
+                        {request.employee
+                          ? `${request.employee.firstName} ${request.employee.lastName}`
+                          : request.signerName || "Unknown"}
                         <span className="mx-1.5 opacity-40">|</span>
-                        {request.employee.email}
+                        {request.employee?.email || request.signerEmail || ""}
                       </p>
                       <div className="flex items-center gap-3 mt-1 text-xs text-[var(--color-text-muted)]">
                         <span>Sent {formatDate(request.createdAt)}</span>

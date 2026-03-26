@@ -629,9 +629,10 @@ model Candidate {
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
 
-  position      Position?       @relation(fields: [positionId], references: [id])
-  manager       Employee?       @relation("CandidateManager", fields: [managerId], references: [id])
-  interviews    Interview[]
+  position        Position?        @relation(fields: [positionId], references: [id])
+  manager         Employee?        @relation("CandidateManager", fields: [managerId], references: [id])
+  interviews      Interview[]
+  signingRequests SigningRequest[]
 
   @@index([positionId])
   @@index([status])
@@ -736,7 +737,10 @@ model Interview {
 model SigningRequest {
   id              String        @id @default(uuid())
   employeeTaskId  String?       @unique
-  employeeId      String
+  employeeId      String?
+  candidateId     String?
+  signerName      String?       // denormalized for PDF stamp
+  signerEmail     String?       // denormalized — where signing link was sent
   token           String        @unique
   documentUrl     String
   documentName    String
@@ -749,9 +753,11 @@ model SigningRequest {
   message         String?
 
   employeeTask    EmployeeTask? @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
-  employee        Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  employee        Employee?     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  candidate       Candidate?    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+  @@index([candidateId])
   @@index([status])
 }
 

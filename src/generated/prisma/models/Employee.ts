@@ -1689,10 +1689,12 @@ export type EmployeeCreateNestedOneWithoutSigningRequestsInput = {
   connect?: Prisma.EmployeeWhereUniqueInput
 }
 
-export type EmployeeUpdateOneRequiredWithoutSigningRequestsNestedInput = {
+export type EmployeeUpdateOneWithoutSigningRequestsNestedInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSigningRequestsInput, Prisma.EmployeeUncheckedCreateWithoutSigningRequestsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSigningRequestsInput
   upsert?: Prisma.EmployeeUpsertWithoutSigningRequestsInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
   connect?: Prisma.EmployeeWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSigningRequestsInput, Prisma.EmployeeUpdateWithoutSigningRequestsInput>, Prisma.EmployeeUncheckedUpdateWithoutSigningRequestsInput>
 }

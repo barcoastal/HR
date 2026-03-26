@@ -28,7 +28,10 @@ export async function createSigningRequest(
 }
 
 export async function createStandaloneSigningRequest(data: {
-  employeeId: string;
+  employeeId?: string;
+  candidateId?: string;
+  signerName?: string;
+  signerEmail?: string;
   documentUrl: string;
   documentName: string;
   message?: string;
@@ -38,29 +41,38 @@ export async function createStandaloneSigningRequest(data: {
 
   const request = await db.signingRequest.create({
     data: {
-      employeeId: data.employeeId,
+      employeeId: data.employeeId || null,
+      candidateId: data.candidateId || null,
+      signerName: data.signerName || null,
+      signerEmail: data.signerEmail || null,
       token,
       documentUrl: data.documentUrl,
       documentName: data.documentName,
       message: data.message || null,
       expiresAt,
     },
-    include: { employee: true },
+    include: { employee: true, candidate: true },
   });
+
+  // Determine recipient email and name
+  const recipientEmail = data.signerEmail || request.employee?.email;
+  const recipientName = data.signerName || (request.employee ? request.employee.firstName : "there");
 
   // Send signing request email
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const signingUrl = `${baseUrl}/sign/${token}`;
-  try {
-    const { sendSigningRequestEmail } = await import("@/lib/email");
-    await sendSigningRequestEmail({
-      to: request.employee.email,
-      firstName: request.employee.firstName,
-      documentName: data.documentName,
-      signingUrl,
-    });
-  } catch (e) {
-    console.error("[signing] Failed to send email:", e);
+  if (recipientEmail) {
+    try {
+      const { sendSigningRequestEmail } = await import("@/lib/email");
+      await sendSigningRequestEmail({
+        to: recipientEmail,
+        firstName: recipientName,
+        documentName: data.documentName,
+        signingUrl,
+      });
+    } catch (e) {
+      console.error("[signing] Failed to send email:", e);
+    }
   }
 
   revalidatePath("/documents");
@@ -71,6 +83,7 @@ export async function getAllSigningRequests() {
   return db.signingRequest.findMany({
     include: {
       employee: { select: { id: true, firstName: true, lastName: true, email: true } },
+      candidate: { select: { id: true, firstName: true, lastName: true, email: true } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -79,17 +92,21 @@ export async function getAllSigningRequests() {
 export async function resendSigningRequest(id: string) {
   const request = await db.signingRequest.findUnique({
     where: { id },
-    include: { employee: true },
+    include: { employee: true, candidate: true },
   });
   if (!request || request.status === "SIGNED") return { success: false };
+
+  const recipientEmail = request.signerEmail || request.employee?.email;
+  const recipientName = request.signerName || (request.employee ? request.employee.firstName : "there");
+  if (!recipientEmail) return { success: false };
 
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const signingUrl = `${baseUrl}/sign/${request.token}`;
   try {
     const { sendSigningRequestEmail } = await import("@/lib/email");
     await sendSigningRequestEmail({
-      to: request.employee.email,
-      firstName: request.employee.firstName,
+      to: recipientEmail,
+      firstName: recipientName,
       documentName: request.documentName,
       signingUrl,
     });
@@ -110,7 +127,7 @@ export async function voidSigningRequest(id: string) {
 export async function getSigningRequestByToken(token: string) {
   const request = await db.signingRequest.findUnique({
     where: { token },
-    include: { employee: true },
+    include: { employee: true, candidate: true },
   });
 
   if (!request) return null;
@@ -135,7 +152,7 @@ export async function submitSignature(
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
-    include: { employee: true, employeeTask: true },
+    include: { employee: true, candidate: true, employeeTask: true },
   });
 
   if (!request || request.status === "SIGNED" || request.expiresAt < new Date()) {
@@ -193,7 +210,7 @@ export async function submitSignature(
 
     // Add printed name below signature
     const { rgb } = await import("pdf-lib");
-    const employeeName = `${request.employee.firstName} ${request.employee.lastName}`;
+    const employeeName = request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer");
     targetPage.drawText(employeeName, {
       x: sigX,
       y: sigY - 14,
@@ -247,15 +264,17 @@ export async function submitSignature(
       });
     }
 
-    // Store in employee documents
-    await db.document.create({
-      data: {
-        employeeId: request.employeeId,
-        name: `Signed: ${request.documentName}`,
-        url: signedDocUrl,
-        category: "ONBOARDING",
-      },
-    });
+    // Store in employee documents (only if linked to an employee)
+    if (request.employeeId) {
+      await db.document.create({
+        data: {
+          employeeId: request.employeeId,
+          name: `Signed: ${request.documentName}`,
+          url: signedDocUrl,
+          category: "ONBOARDING",
+        },
+      });
+    }
 
     revalidatePath("/onboarding");
     revalidatePath("/documents");

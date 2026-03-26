@@ -20,13 +20,16 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
     );
   }
 
+  const signerName = signingRequest.signerName
+    || (signingRequest.employee ? `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}` : "Signer");
+
   return (
     <SigningPage
       token={token}
       data={{
         documentUrl: `/api/sign/${token}/document`,
         documentName: signingRequest.documentName,
-        employeeName: `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}`,
+        employeeName: signerName,
         status: signingRequest.status,
       }}
     />

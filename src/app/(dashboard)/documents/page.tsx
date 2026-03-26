@@ -26,7 +26,7 @@ export default async function DocumentsPage() {
         select: { id: true },
       });
       const allowedIds = new Set([employeeId, ...directReports.map((r) => r.id)]);
-      filteredRequests = allRequests.filter((r) => allowedIds.has(r.employeeId));
+      filteredRequests = allRequests.filter((r) => r.employeeId && allowedIds.has(r.employeeId));
     } else if (employeeId) {
       // Regular employees see only their own documents
       filteredRequests = allRequests.filter((r) => r.employeeId === employeeId);

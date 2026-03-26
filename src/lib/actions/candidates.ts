@@ -116,7 +116,7 @@ async function sendStageDocumentsEmail(
     const signingDocs: typeof pdfDocs = [];
 
     for (const doc of pdfDocs) {
-      if (doc.requiresSignature && employeeId) {
+      if (doc.requiresSignature) {
         signingDocs.push(doc);
       } else {
         attachmentDocs.push(doc);
@@ -141,7 +141,10 @@ async function sendStageDocumentsEmail(
       // Create signing request (sends email automatically)
       const { createStandaloneSigningRequest } = await import("@/lib/actions/signing");
       await createStandaloneSigningRequest({
-        employeeId: employeeId!,
+        employeeId: employeeId || undefined,
+        candidateId: employeeId ? undefined : candidate.id,
+        signerName: employeeId ? undefined : `${candidate.firstName} ${candidate.lastName}`,
+        signerEmail: employeeId ? undefined : candidate.email,
         documentUrl,
         documentName: doc.name,
       });
@@ -1043,32 +1046,20 @@ export async function sendOfferLetter(
   });
   if (!candidate) return { success: false, error: "Candidate not found" };
 
-  // Extract filename from URL to get the PDF from DB
-  const filename = offerDocUrl.split("/").pop();
-  if (!filename) return { success: false, error: "Invalid document URL" };
-
-  const fileBlob = await db.fileBlob.findUnique({
-    where: { filename },
-    select: { data: true, mimeType: true },
-  });
-  if (!fileBlob) return { success: false, error: "Offer document not found" };
-
   try {
-    const { sendEmailWithAttachments } = await import("@/lib/email");
+    const { createStandaloneSigningRequest } = await import("@/lib/actions/signing");
     const { getCompanySettings } = await import("@/lib/actions/company-settings");
     const settings = await getCompanySettings();
-
     const positionTitle = candidate.position?.title || "the position";
 
-    await sendEmailWithAttachments(
-      candidate.email,
-      `Offer Letter — ${positionTitle} at ${settings.companyName}`,
-      `<p>Hi ${candidate.firstName},</p>
-      <p>We're pleased to extend an offer for the <strong>${positionTitle}</strong> position at <strong>${settings.companyName}</strong>.</p>
-      <p>Please find the attached offer letter for your review. If you have any questions, don't hesitate to reach out.</p>
-      <p>We look forward to hearing from you!</p>`,
-      [{ filename: `Offer Letter - ${candidate.firstName} ${candidate.lastName}.pdf`, content: Buffer.from(fileBlob.data) }]
-    );
+    // Create a signing request for the candidate (email is sent automatically)
+    await createStandaloneSigningRequest({
+      candidateId: candidate.id,
+      signerName: `${candidate.firstName} ${candidate.lastName}`,
+      signerEmail: candidate.email,
+      documentUrl: offerDocUrl,
+      documentName: `Offer Letter — ${positionTitle} at ${settings.companyName}`,
+    });
 
     await db.candidate.update({
       where: { id: candidateId },
