@@ -7,6 +7,7 @@ import { createPosition, pullCandidateToRecruitment } from "@/lib/actions/candid
 import { aiMatchCandidates, type AIMatch } from "@/lib/actions/ai-match";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { JobPostingPreview } from "@/components/cv/job-posting-preview";
 
 type Department = { id: string; name: string };
 
@@ -194,7 +195,7 @@ function Toggle({ checked, onChange, color }: { checked: boolean; onChange: () =
 export function AddPositionForm({ departments }: { departments: Department[] }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"form" | "recommendations">("form");
+  const [step, setStep] = useState<"form" | "preview" | "recommendations">("form");
   const [createdPositionId, setCreatedPositionId] = useState<string | null>(null);
   const [createdPositionTitle, setCreatedPositionTitle] = useState("");
 
@@ -230,7 +231,16 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  async function handleSubmit() {
+  function handlePreview() {
+    if (!form.title) return;
+    if (postToLinkedIn || postToIndeed) {
+      setStep("preview");
+    } else {
+      handlePublish();
+    }
+  }
+
+  async function handlePublish() {
     if (!form.title) return;
     setLoading(true);
     const position = await createPosition({
@@ -241,7 +251,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       salary: form.salary || undefined,
       postToJobing,
       postToIndeed: postToIndeed,
-      postToBreezy: postToLinkedIn || postToIndeed, // Use Breezy when either LinkedIn or Indeed via Breezy is selected
+      postToBreezy: postToLinkedIn || postToIndeed,
       breezyChannels: {
         linkedin: postToLinkedIn,
         indeed: postToIndeed,
@@ -266,6 +276,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     setCreatedPositionTitle("");
     setPostToLinkedIn(false);
     setPostToIndeed(false);
+    setLoading(false);
   }
 
   const inputClass = cn(
@@ -454,13 +465,43 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
           <div className="flex justify-end gap-2 pt-4">
             <button onClick={handleClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
             <button
-              onClick={handleSubmit}
+              onClick={handlePreview}
               disabled={!form.title || loading}
               className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
             >
-              {loading ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : "Create & Find Matches"}
+              {loading ? (
+                <Icon name="progress_activity" size={16} className="animate-material-spin" />
+              ) : (postToLinkedIn || postToIndeed) ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <Icon name="visibility" size={16} />
+                  Preview Posting
+                </span>
+              ) : (
+                "Create & Find Matches"
+              )}
             </button>
           </div>
+        </Dialog>
+      )}
+
+      {step === "preview" && (
+        <Dialog open={open} onClose={handleClose} title="Preview Job Posting">
+          <JobPostingPreview
+            job={{
+              title: form.title,
+              description: form.description,
+              requirements: form.requirements,
+              salary: form.salary,
+              departmentName: departments.find((d) => d.id === form.departmentId)?.name || "",
+              linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
+              indeedSettings: postToIndeed ? indeedSettings : undefined,
+            }}
+            showLinkedIn={postToLinkedIn}
+            showIndeed={postToIndeed}
+            onBack={() => setStep("form")}
+            onPublish={handlePublish}
+            publishing={loading}
+          />
         </Dialog>
       )}
 
