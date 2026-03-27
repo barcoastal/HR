@@ -36,6 +36,7 @@ export function PostComposer({
   const [gifs, setGifs] = useState<{ id: string; url: string; preview: string; title: string }[]>([]);
   const [loadingGifs, setLoadingGifs] = useState(false);
   const [showEventDialog, setShowEventDialog] = useState(false);
+  const [emailTarget, setEmailTarget] = useState<"all" | "none">("all");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -118,18 +119,20 @@ export function PostComposer({
     if (!content.trim() && attachments.length === 0) return;
     setLoading(true);
     if (mode === "shoutout" && selectedEmployee) {
-      await createShoutoutPost(employeeId, selectedEmployee, content.trim());
+      await createShoutoutPost(employeeId, selectedEmployee, content.trim(), emailTarget);
     } else {
       await createFeedPost({
         authorId: employeeId,
         content: content.trim(),
         attachments: attachments.map((a) => ({ url: a.url, type: a.type, name: a.name })),
+        emailTarget,
       });
     }
     setContent("");
     setSelectedEmployee("");
     setMode("general");
     setAttachments([]);
+    setEmailTarget("all");
     setLoading(false);
     router.refresh();
   }
@@ -358,6 +361,12 @@ export function PostComposer({
             <Icon name="event" size={16} />
             Event
           </button>
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] cursor-pointer">
+            <input type="checkbox" checked={emailTarget === "all"} onChange={() => setEmailTarget(emailTarget === "all" ? "none" : "all")} className="accent-[var(--color-accent)]" />
+            Email all
+          </label>
         </div>
         <button
           onClick={handlePost}

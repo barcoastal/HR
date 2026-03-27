@@ -9,6 +9,7 @@ export async function createFeedEvent(data: {
   eventDate: string;
   eventEndDate: string;
   eventLocation?: string;
+  emailTarget?: "all" | "none";
 }) {
   if (!data.eventDate || !data.eventEndDate) {
     throw new Error("Event start and end dates are required");
@@ -22,15 +23,35 @@ export async function createFeedEvent(data: {
       eventDate: new Date(data.eventDate),
       eventEndDate: new Date(data.eventEndDate),
       eventLocation: data.eventLocation || null,
+      notifyViaEmail: data.emailTarget !== "none",
+      emailTargetType: data.emailTarget || "all",
     },
   });
 
-  // Send email notification (awaited to ensure execution in server action context)
-  try {
-    await sendPostNotificationEmail(post.id, data.authorId);
-  } catch (err) {
-    console.error("[feed-events] notification error:", err);
+  // Send email notification (targeted)
+  if (data.emailTarget !== "none") {
+    try {
+      await sendPostNotificationEmail(post.id, data.authorId);
+    } catch (err) {
+      console.error("[feed-events] notification error:", err);
+    }
   }
+
+  // Create in-app notifications for all active employees
+  const activeEmployees = await db.employee.findMany({
+    where: { status: "ACTIVE" },
+    select: { id: true },
+  });
+  await db.notification.createMany({
+    data: activeEmployees
+      .filter((e) => e.id !== data.authorId)
+      .map((e) => ({
+        recipientId: e.id,
+        type: "FEED_EVENT",
+        message: `New event: ${data.content}`,
+        link: "/feed",
+      })),
+  });
 
   revalidatePath("/");
   return post;

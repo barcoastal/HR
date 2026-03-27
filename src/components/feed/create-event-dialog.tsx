@@ -17,6 +17,7 @@ export function CreateEventDialog({
   const [eventDate, setEventDate] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [eventLocation, setEventLocation] = useState("");
+  const [emailTarget, setEmailTarget] = useState<"all" | "none">("all");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -31,6 +32,7 @@ export function CreateEventDialog({
         eventDate,
         eventEndDate,
         eventLocation: eventLocation.trim() || undefined,
+        emailTarget,
       });
       router.refresh();
       onClose();
@@ -68,6 +70,12 @@ export function CreateEventDialog({
           <div>
             <label className="text-sm font-medium text-[var(--color-text-muted)] mb-1 block">Location (optional)</label>
             <input value={eventLocation} onChange={(e) => setEventLocation(e.target.value)} placeholder="Office, Zoom link, restaurant..." className={cn("w-full rounded-lg px-3 py-2 text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")} />
+          </div>
+          <div>
+            <label className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] cursor-pointer">
+              <input type="checkbox" checked={emailTarget === "all"} onChange={() => setEmailTarget(emailTarget === "all" ? "none" : "all")} className="accent-[var(--color-accent)]" />
+              Send email notification to all employees
+            </label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>

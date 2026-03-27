@@ -23,12 +23,15 @@ export async function createFeedPost(data: {
   content: string;
   type?: FeedPostType;
   attachments?: { url: string; type: "IMAGE" | "FILE"; name: string }[];
+  emailTarget?: "all" | "none";
 }) {
   const post = await db.feedPost.create({
     data: {
       authorId: data.authorId,
       content: data.content,
       type: data.type || "GENERAL",
+      notifyViaEmail: data.emailTarget !== "none",
+      emailTargetType: data.emailTarget || "all",
     },
   });
 
@@ -43,13 +46,31 @@ export async function createFeedPost(data: {
     });
   }
 
-  // Send email notification before revalidating (awaited to ensure execution)
-  try {
-    const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
-    await sendPostNotificationEmail(post.id, data.authorId);
-  } catch (err) {
-    console.error("[feed] notification error:", err);
+  // Send email notification (targeted)
+  if (data.emailTarget !== "none") {
+    try {
+      const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
+      await sendPostNotificationEmail(post.id, data.authorId);
+    } catch (err) {
+      console.error("[feed] notification error:", err);
+    }
   }
+
+  // Create in-app notifications for all active employees
+  const activeEmployees = await db.employee.findMany({
+    where: { status: "ACTIVE" },
+    select: { id: true },
+  });
+  await db.notification.createMany({
+    data: activeEmployees
+      .filter((e) => e.id !== data.authorId)
+      .map((e) => ({
+        recipientId: e.id,
+        type: "FEED_POST",
+        message: "New post in feed",
+        link: "/feed",
+      })),
+  });
 
   revalidatePath("/");
   return post;
@@ -70,7 +91,8 @@ export async function createFeedComment(
 export async function createShoutoutPost(
   authorId: string,
   mentionedEmployeeId: string,
-  content: string
+  content: string,
+  emailTarget?: "all" | "none"
 ) {
   const post = await db.feedPost.create({
     data: {
@@ -78,15 +100,36 @@ export async function createShoutoutPost(
       content,
       type: "SHOUTOUT",
       mentionedEmployeeId,
+      notifyViaEmail: emailTarget !== "none",
+      emailTargetType: emailTarget || "all",
     },
   });
-  // Send email notification before revalidating (awaited to ensure execution)
-  try {
-    const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
-    await sendPostNotificationEmail(post.id, authorId);
-  } catch (err) {
-    console.error("[feed] notification error:", err);
+
+  // Send email notification (targeted)
+  if (emailTarget !== "none") {
+    try {
+      const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
+      await sendPostNotificationEmail(post.id, authorId);
+    } catch (err) {
+      console.error("[feed] notification error:", err);
+    }
   }
+
+  // Create in-app notifications for all active employees
+  const activeEmployees = await db.employee.findMany({
+    where: { status: "ACTIVE" },
+    select: { id: true },
+  });
+  await db.notification.createMany({
+    data: activeEmployees
+      .filter((e) => e.id !== authorId)
+      .map((e) => ({
+        recipientId: e.id,
+        type: "FEED_POST",
+        message: "New shoutout in feed",
+        link: "/feed",
+      })),
+  });
 
   revalidatePath("/");
   return post;
