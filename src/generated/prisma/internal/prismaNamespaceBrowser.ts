@@ -69,6 +69,8 @@ export const ModelName = {
   PostAttachment: 'PostAttachment',
   EmergencyAlert: 'EmergencyAlert',
   Notification: 'Notification',
+  NotificationRule: 'NotificationRule',
+  NotificationRecipient: 'NotificationRecipient',
   Document: 'Document',
   HRNote: 'HRNote',
   JobTitle: 'JobTitle',
@@ -326,7 +328,10 @@ export const FeedPostScalarFieldEnum = {
   updatedAt: 'updatedAt',
   eventDate: 'eventDate',
   eventEndDate: 'eventEndDate',
-  eventLocation: 'eventLocation'
+  eventLocation: 'eventLocation',
+  notifyViaEmail: 'notifyViaEmail',
+  emailTargetType: 'emailTargetType',
+  emailTargetIds: 'emailTargetIds'
 } as const
 
 export type FeedPostScalarFieldEnum = (typeof FeedPostScalarFieldEnum)[keyof typeof FeedPostScalarFieldEnum]
@@ -406,6 +411,28 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const NotificationRuleScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  channel: 'channel',
+  recipient: 'recipient',
+  enabled: 'enabled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NotificationRuleScalarFieldEnum = (typeof NotificationRuleScalarFieldEnum)[keyof typeof NotificationRuleScalarFieldEnum]
+
+
+export const NotificationRecipientScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationRecipientScalarFieldEnum = (typeof NotificationRecipientScalarFieldEnum)[keyof typeof NotificationRecipientScalarFieldEnum]
 
 
 export const DocumentScalarFieldEnum = {

@@ -108,6 +108,16 @@ export type EmergencyAlert = Prisma.EmergencyAlertModel
  */
 export type Notification = Prisma.NotificationModel
 /**
+ * Model NotificationRule
+ * 
+ */
+export type NotificationRule = Prisma.NotificationRuleModel
+/**
+ * Model NotificationRecipient
+ * 
+ */
+export type NotificationRecipient = Prisma.NotificationRecipientModel
+/**
  * Model Document
  * 
  */

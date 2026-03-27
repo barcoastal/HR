@@ -36,6 +36,9 @@ export type FeedPostMinAggregateOutputType = {
   eventDate: Date | null
   eventEndDate: Date | null
   eventLocation: string | null
+  notifyViaEmail: boolean | null
+  emailTargetType: string | null
+  emailTargetIds: string | null
 }
 
 export type FeedPostMaxAggregateOutputType = {
@@ -50,6 +53,9 @@ export type FeedPostMaxAggregateOutputType = {
   eventDate: Date | null
   eventEndDate: Date | null
   eventLocation: string | null
+  notifyViaEmail: boolean | null
+  emailTargetType: string | null
+  emailTargetIds: string | null
 }
 
 export type FeedPostCountAggregateOutputType = {
@@ -64,6 +70,9 @@ export type FeedPostCountAggregateOutputType = {
   eventDate: number
   eventEndDate: number
   eventLocation: number
+  notifyViaEmail: number
+  emailTargetType: number
+  emailTargetIds: number
   _all: number
 }
 
@@ -80,6 +89,9 @@ export type FeedPostMinAggregateInputType = {
   eventDate?: true
   eventEndDate?: true
   eventLocation?: true
+  notifyViaEmail?: true
+  emailTargetType?: true
+  emailTargetIds?: true
 }
 
 export type FeedPostMaxAggregateInputType = {
@@ -94,6 +106,9 @@ export type FeedPostMaxAggregateInputType = {
   eventDate?: true
   eventEndDate?: true
   eventLocation?: true
+  notifyViaEmail?: true
+  emailTargetType?: true
+  emailTargetIds?: true
 }
 
 export type FeedPostCountAggregateInputType = {
@@ -108,6 +123,9 @@ export type FeedPostCountAggregateInputType = {
   eventDate?: true
   eventEndDate?: true
   eventLocation?: true
+  notifyViaEmail?: true
+  emailTargetType?: true
+  emailTargetIds?: true
   _all?: true
 }
 
@@ -195,6 +213,9 @@ export type FeedPostGroupByOutputType = {
   eventDate: Date | null
   eventEndDate: Date | null
   eventLocation: string | null
+  notifyViaEmail: boolean
+  emailTargetType: string
+  emailTargetIds: string | null
   _count: FeedPostCountAggregateOutputType | null
   _min: FeedPostMinAggregateOutputType | null
   _max: FeedPostMaxAggregateOutputType | null
@@ -230,6 +251,9 @@ export type FeedPostWhereInput = {
   eventDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventEndDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventLocation?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  notifyViaEmail?: Prisma.BoolFilter<"FeedPost"> | boolean
+  emailTargetType?: Prisma.StringFilter<"FeedPost"> | string
+  emailTargetIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   author?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   mentionedEmployee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   comments?: Prisma.FeedCommentListRelationFilter
@@ -251,6 +275,9 @@ export type FeedPostOrderByWithRelationInput = {
   eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
   eventEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
   eventLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  notifyViaEmail?: Prisma.SortOrder
+  emailTargetType?: Prisma.SortOrder
+  emailTargetIds?: Prisma.SortOrderInput | Prisma.SortOrder
   author?: Prisma.EmployeeOrderByWithRelationInput
   mentionedEmployee?: Prisma.EmployeeOrderByWithRelationInput
   comments?: Prisma.FeedCommentOrderByRelationAggregateInput
@@ -275,6 +302,9 @@ export type FeedPostWhereUniqueInput = Prisma.AtLeast<{
   eventDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventEndDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventLocation?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  notifyViaEmail?: Prisma.BoolFilter<"FeedPost"> | boolean
+  emailTargetType?: Prisma.StringFilter<"FeedPost"> | string
+  emailTargetIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   author?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   mentionedEmployee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   comments?: Prisma.FeedCommentListRelationFilter
@@ -296,6 +326,9 @@ export type FeedPostOrderByWithAggregationInput = {
   eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
   eventEndDate?: Prisma.SortOrderInput | Prisma.SortOrder
   eventLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  notifyViaEmail?: Prisma.SortOrder
+  emailTargetType?: Prisma.SortOrder
+  emailTargetIds?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.FeedPostCountOrderByAggregateInput
   _max?: Prisma.FeedPostMaxOrderByAggregateInput
   _min?: Prisma.FeedPostMinOrderByAggregateInput
@@ -316,6 +349,9 @@ export type FeedPostScalarWhereWithAggregatesInput = {
   eventDate?: Prisma.DateTimeNullableWithAggregatesFilter<"FeedPost"> | Date | string | null
   eventEndDate?: Prisma.DateTimeNullableWithAggregatesFilter<"FeedPost"> | Date | string | null
   eventLocation?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
+  notifyViaEmail?: Prisma.BoolWithAggregatesFilter<"FeedPost"> | boolean
+  emailTargetType?: Prisma.StringWithAggregatesFilter<"FeedPost"> | string
+  emailTargetIds?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
 }
 
 export type FeedPostCreateInput = {
@@ -328,6 +364,9 @@ export type FeedPostCreateInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
@@ -349,6 +388,9 @@ export type FeedPostUncheckedCreateInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
@@ -366,6 +408,9 @@ export type FeedPostUpdateInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
@@ -387,6 +432,9 @@ export type FeedPostUncheckedUpdateInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
@@ -406,6 +454,9 @@ export type FeedPostCreateManyInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
 }
 
 export type FeedPostUpdateManyMutationInput = {
@@ -418,6 +469,9 @@ export type FeedPostUpdateManyMutationInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type FeedPostUncheckedUpdateManyInput = {
@@ -432,6 +486,9 @@ export type FeedPostUncheckedUpdateManyInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type FeedPostListRelationFilter = {
@@ -456,6 +513,9 @@ export type FeedPostCountOrderByAggregateInput = {
   eventDate?: Prisma.SortOrder
   eventEndDate?: Prisma.SortOrder
   eventLocation?: Prisma.SortOrder
+  notifyViaEmail?: Prisma.SortOrder
+  emailTargetType?: Prisma.SortOrder
+  emailTargetIds?: Prisma.SortOrder
 }
 
 export type FeedPostMaxOrderByAggregateInput = {
@@ -470,6 +530,9 @@ export type FeedPostMaxOrderByAggregateInput = {
   eventDate?: Prisma.SortOrder
   eventEndDate?: Prisma.SortOrder
   eventLocation?: Prisma.SortOrder
+  notifyViaEmail?: Prisma.SortOrder
+  emailTargetType?: Prisma.SortOrder
+  emailTargetIds?: Prisma.SortOrder
 }
 
 export type FeedPostMinOrderByAggregateInput = {
@@ -484,6 +547,9 @@ export type FeedPostMinOrderByAggregateInput = {
   eventDate?: Prisma.SortOrder
   eventEndDate?: Prisma.SortOrder
   eventLocation?: Prisma.SortOrder
+  notifyViaEmail?: Prisma.SortOrder
+  emailTargetType?: Prisma.SortOrder
+  emailTargetIds?: Prisma.SortOrder
 }
 
 export type FeedPostScalarRelationFilter = {
@@ -659,6 +725,9 @@ export type FeedPostCreateWithoutAuthorInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
@@ -678,6 +747,9 @@ export type FeedPostUncheckedCreateWithoutAuthorInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
@@ -705,6 +777,9 @@ export type FeedPostCreateWithoutMentionedEmployeeInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
@@ -724,6 +799,9 @@ export type FeedPostUncheckedCreateWithoutMentionedEmployeeInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
@@ -772,6 +850,9 @@ export type FeedPostScalarWhereInput = {
   eventDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventEndDate?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
   eventLocation?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  notifyViaEmail?: Prisma.BoolFilter<"FeedPost"> | boolean
+  emailTargetType?: Prisma.StringFilter<"FeedPost"> | string
+  emailTargetIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
 }
 
 export type FeedPostUpsertWithWhereUniqueWithoutMentionedEmployeeInput = {
@@ -800,6 +881,9 @@ export type FeedPostCreateWithoutAttendeesInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
@@ -820,6 +904,9 @@ export type FeedPostUncheckedCreateWithoutAttendeesInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
@@ -852,6 +939,9 @@ export type FeedPostUpdateWithoutAttendeesInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
@@ -872,6 +962,9 @@ export type FeedPostUncheckedUpdateWithoutAttendeesInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
@@ -888,6 +981,9 @@ export type FeedPostCreateWithoutCommentsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
@@ -908,6 +1004,9 @@ export type FeedPostUncheckedCreateWithoutCommentsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
@@ -940,6 +1039,9 @@ export type FeedPostUpdateWithoutCommentsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
@@ -960,6 +1062,9 @@ export type FeedPostUncheckedUpdateWithoutCommentsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
@@ -976,6 +1081,9 @@ export type FeedPostCreateWithoutReactionsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
@@ -996,6 +1104,9 @@ export type FeedPostUncheckedCreateWithoutReactionsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
@@ -1028,6 +1139,9 @@ export type FeedPostUpdateWithoutReactionsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
@@ -1048,6 +1162,9 @@ export type FeedPostUncheckedUpdateWithoutReactionsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
@@ -1064,6 +1181,9 @@ export type FeedPostCreateWithoutAttachmentsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
@@ -1084,6 +1204,9 @@ export type FeedPostUncheckedCreateWithoutAttachmentsInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
@@ -1116,6 +1239,9 @@ export type FeedPostUpdateWithoutAttachmentsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
@@ -1136,6 +1262,9 @@ export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
@@ -1152,6 +1281,9 @@ export type FeedPostCreateWithoutEmergencyAlertInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
   mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
   comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
@@ -1172,6 +1304,9 @@ export type FeedPostUncheckedCreateWithoutEmergencyAlertInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
   comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
@@ -1204,6 +1339,9 @@ export type FeedPostUpdateWithoutEmergencyAlertInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
@@ -1224,6 +1362,9 @@ export type FeedPostUncheckedUpdateWithoutEmergencyAlertInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
@@ -1241,6 +1382,9 @@ export type FeedPostCreateManyAuthorInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
 }
 
 export type FeedPostCreateManyMentionedEmployeeInput = {
@@ -1254,6 +1398,9 @@ export type FeedPostCreateManyMentionedEmployeeInput = {
   eventDate?: Date | string | null
   eventEndDate?: Date | string | null
   eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
 }
 
 export type FeedPostUpdateWithoutAuthorInput = {
@@ -1266,6 +1413,9 @@ export type FeedPostUpdateWithoutAuthorInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
@@ -1285,6 +1435,9 @@ export type FeedPostUncheckedUpdateWithoutAuthorInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
@@ -1303,6 +1456,9 @@ export type FeedPostUncheckedUpdateManyWithoutAuthorInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type FeedPostUpdateWithoutMentionedEmployeeInput = {
@@ -1315,6 +1471,9 @@ export type FeedPostUpdateWithoutMentionedEmployeeInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
   comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
@@ -1334,6 +1493,9 @@ export type FeedPostUncheckedUpdateWithoutMentionedEmployeeInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
@@ -1352,6 +1514,9 @@ export type FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput = {
   eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1424,6 +1589,9 @@ export type FeedPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   eventDate?: boolean
   eventEndDate?: boolean
   eventLocation?: boolean
+  notifyViaEmail?: boolean
+  emailTargetType?: boolean
+  emailTargetIds?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
   comments?: boolean | Prisma.FeedPost$commentsArgs<ExtArgs>
@@ -1446,6 +1614,9 @@ export type FeedPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   eventDate?: boolean
   eventEndDate?: boolean
   eventLocation?: boolean
+  notifyViaEmail?: boolean
+  emailTargetType?: boolean
+  emailTargetIds?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }, ExtArgs["result"]["feedPost"]>
@@ -1462,6 +1633,9 @@ export type FeedPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   eventDate?: boolean
   eventEndDate?: boolean
   eventLocation?: boolean
+  notifyViaEmail?: boolean
+  emailTargetType?: boolean
+  emailTargetIds?: boolean
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
 }, ExtArgs["result"]["feedPost"]>
@@ -1478,9 +1652,12 @@ export type FeedPostSelectScalar = {
   eventDate?: boolean
   eventEndDate?: boolean
   eventLocation?: boolean
+  notifyViaEmail?: boolean
+  emailTargetType?: boolean
+  emailTargetIds?: boolean
 }
 
-export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "mentionedEmployeeId" | "createdAt" | "updatedAt" | "eventDate" | "eventEndDate" | "eventLocation", ExtArgs["result"]["feedPost"]>
+export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "mentionedEmployeeId" | "createdAt" | "updatedAt" | "eventDate" | "eventEndDate" | "eventLocation" | "notifyViaEmail" | "emailTargetType" | "emailTargetIds", ExtArgs["result"]["feedPost"]>
 export type FeedPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
@@ -1523,6 +1700,9 @@ export type $FeedPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     eventDate: Date | null
     eventEndDate: Date | null
     eventLocation: string | null
+    notifyViaEmail: boolean
+    emailTargetType: string
+    emailTargetIds: string | null
   }, ExtArgs["result"]["feedPost"]>
   composites: {}
 }
@@ -1964,6 +2144,9 @@ export interface FeedPostFieldRefs {
   readonly eventDate: Prisma.FieldRef<"FeedPost", 'DateTime'>
   readonly eventEndDate: Prisma.FieldRef<"FeedPost", 'DateTime'>
   readonly eventLocation: Prisma.FieldRef<"FeedPost", 'String'>
+  readonly notifyViaEmail: Prisma.FieldRef<"FeedPost", 'Boolean'>
+  readonly emailTargetType: Prisma.FieldRef<"FeedPost", 'String'>
+  readonly emailTargetIds: Prisma.FieldRef<"FeedPost", 'String'>
 }
     
 

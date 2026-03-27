@@ -243,6 +243,7 @@ model Employee {
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
   emergencyAlerts    EmergencyAlert[]  @relation("EmergencyAlertSender")
+  notificationRecipients NotificationRecipient[]
 
   // Chat relations
   chatMembers          ChatMember[]
@@ -437,6 +438,10 @@ model FeedPost {
   eventEndDate  DateTime?
   eventLocation String?
 
+  notifyViaEmail   Boolean  @default(true)
+  emailTargetType  String   @default("all")
+  emailTargetIds   String?
+
   author              Employee       @relation(fields: [authorId], references: [id], onDelete: Cascade)
   mentionedEmployee   Employee?      @relation("FeedPostMention", fields: [mentionedEmployeeId], references: [id], onDelete: SetNull)
   comments            FeedComment[]
@@ -541,6 +546,29 @@ model Notification {
   recipient   Employee @relation(fields: [recipientId], references: [id], onDelete: Cascade)
 
   @@index([recipientId])
+}
+
+model NotificationRule {
+  id        String   @id @default(uuid())
+  action    String
+  channel   String
+  recipient String
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([action, channel, recipient])
+  @@index([action])
+}
+
+model NotificationRecipient {
+  id         String   @id @default(uuid())
+  employeeId String
+  createdAt  DateTime @default(now())
+
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId])
 }
 
 model Document {
