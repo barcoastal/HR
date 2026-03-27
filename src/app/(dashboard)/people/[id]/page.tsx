@@ -4,6 +4,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
+import { PromoteEmployeeDialog } from "@/components/people/promote-employee-dialog";
 import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
@@ -83,6 +84,15 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             </div>
             {canEdit && (
               <div className="flex items-center gap-2 shrink-0">
+                {isAdmin && employee.status === "ACTIVE" && (
+                  <PromoteEmployeeDialog
+                    employeeId={employee.id}
+                    employeeName={`${employee.firstName} ${employee.lastName}`}
+                    currentJobTitle={employee.jobTitle}
+                    currentDepartmentId={employee.departmentId}
+                    departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))}
+                  />
+                )}
                 <EditEmployeeDialog employee={{
                   id: employee.id,
                   firstName: employee.firstName,

@@ -37,21 +37,27 @@ export async function createFeedEvent(data: {
     }
   }
 
-  // Create in-app notifications for all active employees
-  const activeEmployees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true },
+  // Create in-app notifications for users who opted in
+  const inAppUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      employeeId: { not: data.authorId },
+      notifyFeedEventInApp: true,
+    },
+    select: { employeeId: true },
   });
-  await db.notification.createMany({
-    data: activeEmployees
-      .filter((e) => e.id !== data.authorId)
-      .map((e) => ({
-        recipientId: e.id,
-        type: "FEED_EVENT",
-        message: `New event: ${data.content}`,
-        link: "/feed",
-      })),
-  });
+  if (inAppUsers.length > 0) {
+    await db.notification.createMany({
+      data: inAppUsers
+        .filter((u) => u.employeeId)
+        .map((u) => ({
+          recipientId: u.employeeId!,
+          type: "FEED_EVENT",
+          message: `New event: ${data.content}`,
+          link: "/feed",
+        })),
+    });
+  }
 
   revalidatePath("/");
   return post;
@@ -210,10 +216,14 @@ export async function sendPostNotificationEmail(
 
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
-  // Get all users with active employee profiles (including the author)
+  // Get all users with active employee profiles who opted into feed emails
+  const isEvent = post.type === "EVENT";
   const users = await db.user.findMany({
     where: {
       emailNotificationsEnabled: true,
+      ...(isEvent
+        ? { notifyFeedEventEmail: true }
+        : { notifyFeedPostEmail: true }),
       employee: {
         status: "ACTIVE",
       },
@@ -233,7 +243,6 @@ export async function sendPostNotificationEmail(
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
 
-  const isEvent = post.type === "EVENT";
   const subject = isEvent
     ? `New event: ${post.content.slice(0, 60)}`
     : `New post from ${authorName}`;

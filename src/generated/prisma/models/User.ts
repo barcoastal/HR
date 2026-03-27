@@ -36,6 +36,17 @@ export type UserMinAggregateOutputType = {
   googleCalendarTokenExpiresAt: Date | null
   googleCalendarSyncEnabled: boolean | null
   emailNotificationsEnabled: boolean | null
+  notifyFeedPostEmail: boolean | null
+  notifyFeedPostInApp: boolean | null
+  notifyFeedEventEmail: boolean | null
+  notifyFeedEventInApp: boolean | null
+  notifyCommentEmail: boolean | null
+  notifyCommentInApp: boolean | null
+  notifyReactionInApp: boolean | null
+  notifyShoutoutEmail: boolean | null
+  notifyShoutoutInApp: boolean | null
+  notifyPromotionEmail: boolean | null
+  notifyPromotionInApp: boolean | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -50,6 +61,17 @@ export type UserMaxAggregateOutputType = {
   googleCalendarTokenExpiresAt: Date | null
   googleCalendarSyncEnabled: boolean | null
   emailNotificationsEnabled: boolean | null
+  notifyFeedPostEmail: boolean | null
+  notifyFeedPostInApp: boolean | null
+  notifyFeedEventEmail: boolean | null
+  notifyFeedEventInApp: boolean | null
+  notifyCommentEmail: boolean | null
+  notifyCommentInApp: boolean | null
+  notifyReactionInApp: boolean | null
+  notifyShoutoutEmail: boolean | null
+  notifyShoutoutInApp: boolean | null
+  notifyPromotionEmail: boolean | null
+  notifyPromotionInApp: boolean | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -64,6 +86,17 @@ export type UserCountAggregateOutputType = {
   googleCalendarTokenExpiresAt: number
   googleCalendarSyncEnabled: number
   emailNotificationsEnabled: number
+  notifyFeedPostEmail: number
+  notifyFeedPostInApp: number
+  notifyFeedEventEmail: number
+  notifyFeedEventInApp: number
+  notifyCommentEmail: number
+  notifyCommentInApp: number
+  notifyReactionInApp: number
+  notifyShoutoutEmail: number
+  notifyShoutoutInApp: number
+  notifyPromotionEmail: number
+  notifyPromotionInApp: number
   _all: number
 }
 
@@ -80,6 +113,17 @@ export type UserMinAggregateInputType = {
   googleCalendarTokenExpiresAt?: true
   googleCalendarSyncEnabled?: true
   emailNotificationsEnabled?: true
+  notifyFeedPostEmail?: true
+  notifyFeedPostInApp?: true
+  notifyFeedEventEmail?: true
+  notifyFeedEventInApp?: true
+  notifyCommentEmail?: true
+  notifyCommentInApp?: true
+  notifyReactionInApp?: true
+  notifyShoutoutEmail?: true
+  notifyShoutoutInApp?: true
+  notifyPromotionEmail?: true
+  notifyPromotionInApp?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -94,6 +138,17 @@ export type UserMaxAggregateInputType = {
   googleCalendarTokenExpiresAt?: true
   googleCalendarSyncEnabled?: true
   emailNotificationsEnabled?: true
+  notifyFeedPostEmail?: true
+  notifyFeedPostInApp?: true
+  notifyFeedEventEmail?: true
+  notifyFeedEventInApp?: true
+  notifyCommentEmail?: true
+  notifyCommentInApp?: true
+  notifyReactionInApp?: true
+  notifyShoutoutEmail?: true
+  notifyShoutoutInApp?: true
+  notifyPromotionEmail?: true
+  notifyPromotionInApp?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -108,6 +163,17 @@ export type UserCountAggregateInputType = {
   googleCalendarTokenExpiresAt?: true
   googleCalendarSyncEnabled?: true
   emailNotificationsEnabled?: true
+  notifyFeedPostEmail?: true
+  notifyFeedPostInApp?: true
+  notifyFeedEventEmail?: true
+  notifyFeedEventInApp?: true
+  notifyCommentEmail?: true
+  notifyCommentInApp?: true
+  notifyReactionInApp?: true
+  notifyShoutoutEmail?: true
+  notifyShoutoutInApp?: true
+  notifyPromotionEmail?: true
+  notifyPromotionInApp?: true
   _all?: true
 }
 
@@ -195,6 +261,17 @@ export type UserGroupByOutputType = {
   googleCalendarTokenExpiresAt: Date | null
   googleCalendarSyncEnabled: boolean
   emailNotificationsEnabled: boolean
+  notifyFeedPostEmail: boolean
+  notifyFeedPostInApp: boolean
+  notifyFeedEventEmail: boolean
+  notifyFeedEventInApp: boolean
+  notifyCommentEmail: boolean
+  notifyCommentInApp: boolean
+  notifyReactionInApp: boolean
+  notifyShoutoutEmail: boolean
+  notifyShoutoutInApp: boolean
+  notifyPromotionEmail: boolean
+  notifyPromotionInApp: boolean
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -230,6 +307,17 @@ export type UserWhereInput = {
   googleCalendarTokenExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFilter<"User"> | boolean
   emailNotificationsEnabled?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedPostEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedPostInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedEventEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedEventInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyCommentEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyCommentInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyReactionInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyShoutoutEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyShoutoutInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyPromotionEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyPromotionInApp?: Prisma.BoolFilter<"User"> | boolean
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   eventAttendances?: Prisma.EventAttendanceListRelationFilter
 }
@@ -246,6 +334,17 @@ export type UserOrderByWithRelationInput = {
   googleCalendarTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarSyncEnabled?: Prisma.SortOrder
   emailNotificationsEnabled?: Prisma.SortOrder
+  notifyFeedPostEmail?: Prisma.SortOrder
+  notifyFeedPostInApp?: Prisma.SortOrder
+  notifyFeedEventEmail?: Prisma.SortOrder
+  notifyFeedEventInApp?: Prisma.SortOrder
+  notifyCommentEmail?: Prisma.SortOrder
+  notifyCommentInApp?: Prisma.SortOrder
+  notifyReactionInApp?: Prisma.SortOrder
+  notifyShoutoutEmail?: Prisma.SortOrder
+  notifyShoutoutInApp?: Prisma.SortOrder
+  notifyPromotionEmail?: Prisma.SortOrder
+  notifyPromotionInApp?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
   eventAttendances?: Prisma.EventAttendanceOrderByRelationAggregateInput
 }
@@ -265,6 +364,17 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   googleCalendarTokenExpiresAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFilter<"User"> | boolean
   emailNotificationsEnabled?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedPostEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedPostInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedEventEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyFeedEventInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyCommentEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyCommentInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyReactionInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyShoutoutEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyShoutoutInApp?: Prisma.BoolFilter<"User"> | boolean
+  notifyPromotionEmail?: Prisma.BoolFilter<"User"> | boolean
+  notifyPromotionInApp?: Prisma.BoolFilter<"User"> | boolean
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   eventAttendances?: Prisma.EventAttendanceListRelationFilter
 }, "id" | "email" | "employeeId">
@@ -281,6 +391,17 @@ export type UserOrderByWithAggregationInput = {
   googleCalendarTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarSyncEnabled?: Prisma.SortOrder
   emailNotificationsEnabled?: Prisma.SortOrder
+  notifyFeedPostEmail?: Prisma.SortOrder
+  notifyFeedPostInApp?: Prisma.SortOrder
+  notifyFeedEventEmail?: Prisma.SortOrder
+  notifyFeedEventInApp?: Prisma.SortOrder
+  notifyCommentEmail?: Prisma.SortOrder
+  notifyCommentInApp?: Prisma.SortOrder
+  notifyReactionInApp?: Prisma.SortOrder
+  notifyShoutoutEmail?: Prisma.SortOrder
+  notifyShoutoutInApp?: Prisma.SortOrder
+  notifyPromotionEmail?: Prisma.SortOrder
+  notifyPromotionInApp?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -301,6 +422,17 @@ export type UserScalarWhereWithAggregatesInput = {
   googleCalendarTokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   emailNotificationsEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyFeedPostEmail?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyFeedPostInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyFeedEventEmail?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyFeedEventInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyCommentEmail?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyCommentInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyReactionInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyShoutoutEmail?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyShoutoutInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyPromotionEmail?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  notifyPromotionInApp?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
 }
 
 export type UserCreateInput = {
@@ -314,6 +446,17 @@ export type UserCreateInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
@@ -330,6 +473,17 @@ export type UserUncheckedCreateInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -344,6 +498,17 @@ export type UserUpdateInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
@@ -360,6 +525,17 @@ export type UserUncheckedUpdateInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -375,6 +551,17 @@ export type UserCreateManyInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
 }
 
 export type UserUpdateManyMutationInput = {
@@ -388,6 +575,17 @@ export type UserUpdateManyMutationInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -402,6 +600,17 @@ export type UserUncheckedUpdateManyInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -421,6 +630,17 @@ export type UserCountOrderByAggregateInput = {
   googleCalendarTokenExpiresAt?: Prisma.SortOrder
   googleCalendarSyncEnabled?: Prisma.SortOrder
   emailNotificationsEnabled?: Prisma.SortOrder
+  notifyFeedPostEmail?: Prisma.SortOrder
+  notifyFeedPostInApp?: Prisma.SortOrder
+  notifyFeedEventEmail?: Prisma.SortOrder
+  notifyFeedEventInApp?: Prisma.SortOrder
+  notifyCommentEmail?: Prisma.SortOrder
+  notifyCommentInApp?: Prisma.SortOrder
+  notifyReactionInApp?: Prisma.SortOrder
+  notifyShoutoutEmail?: Prisma.SortOrder
+  notifyShoutoutInApp?: Prisma.SortOrder
+  notifyPromotionEmail?: Prisma.SortOrder
+  notifyPromotionInApp?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -435,6 +655,17 @@ export type UserMaxOrderByAggregateInput = {
   googleCalendarTokenExpiresAt?: Prisma.SortOrder
   googleCalendarSyncEnabled?: Prisma.SortOrder
   emailNotificationsEnabled?: Prisma.SortOrder
+  notifyFeedPostEmail?: Prisma.SortOrder
+  notifyFeedPostInApp?: Prisma.SortOrder
+  notifyFeedEventEmail?: Prisma.SortOrder
+  notifyFeedEventInApp?: Prisma.SortOrder
+  notifyCommentEmail?: Prisma.SortOrder
+  notifyCommentInApp?: Prisma.SortOrder
+  notifyReactionInApp?: Prisma.SortOrder
+  notifyShoutoutEmail?: Prisma.SortOrder
+  notifyShoutoutInApp?: Prisma.SortOrder
+  notifyPromotionEmail?: Prisma.SortOrder
+  notifyPromotionInApp?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -449,6 +680,17 @@ export type UserMinOrderByAggregateInput = {
   googleCalendarTokenExpiresAt?: Prisma.SortOrder
   googleCalendarSyncEnabled?: Prisma.SortOrder
   emailNotificationsEnabled?: Prisma.SortOrder
+  notifyFeedPostEmail?: Prisma.SortOrder
+  notifyFeedPostInApp?: Prisma.SortOrder
+  notifyFeedEventEmail?: Prisma.SortOrder
+  notifyFeedEventInApp?: Prisma.SortOrder
+  notifyCommentEmail?: Prisma.SortOrder
+  notifyCommentInApp?: Prisma.SortOrder
+  notifyReactionInApp?: Prisma.SortOrder
+  notifyShoutoutEmail?: Prisma.SortOrder
+  notifyShoutoutInApp?: Prisma.SortOrder
+  notifyPromotionEmail?: Prisma.SortOrder
+  notifyPromotionInApp?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -521,6 +763,17 @@ export type UserCreateWithoutEmployeeInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
 }
 
@@ -535,6 +788,17 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -565,6 +829,17 @@ export type UserUpdateWithoutEmployeeInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
 }
 
@@ -579,6 +854,17 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -593,6 +879,17 @@ export type UserCreateWithoutEventAttendancesInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
 }
 
@@ -608,6 +905,17 @@ export type UserUncheckedCreateWithoutEventAttendancesInput = {
   googleCalendarTokenExpiresAt?: Date | string | null
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
 }
 
 export type UserCreateOrConnectWithoutEventAttendancesInput = {
@@ -637,6 +945,17 @@ export type UserUpdateWithoutEventAttendancesInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
 }
 
@@ -652,6 +971,17 @@ export type UserUncheckedUpdateWithoutEventAttendancesInput = {
   googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -697,6 +1027,17 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   googleCalendarTokenExpiresAt?: boolean
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -714,6 +1055,17 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   googleCalendarTokenExpiresAt?: boolean
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -729,6 +1081,17 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   googleCalendarTokenExpiresAt?: boolean
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -744,9 +1107,20 @@ export type UserSelectScalar = {
   googleCalendarTokenExpiresAt?: boolean
   googleCalendarSyncEnabled?: boolean
   emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "employeeId" | "createdAt" | "googleCalendarAccessToken" | "googleCalendarRefreshToken" | "googleCalendarTokenExpiresAt" | "googleCalendarSyncEnabled" | "emailNotificationsEnabled", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "employeeId" | "createdAt" | "googleCalendarAccessToken" | "googleCalendarRefreshToken" | "googleCalendarTokenExpiresAt" | "googleCalendarSyncEnabled" | "emailNotificationsEnabled" | "notifyFeedPostEmail" | "notifyFeedPostInApp" | "notifyFeedEventEmail" | "notifyFeedEventInApp" | "notifyCommentEmail" | "notifyCommentInApp" | "notifyReactionInApp" | "notifyShoutoutEmail" | "notifyShoutoutInApp" | "notifyPromotionEmail" | "notifyPromotionInApp", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
@@ -777,6 +1151,17 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     googleCalendarTokenExpiresAt: Date | null
     googleCalendarSyncEnabled: boolean
     emailNotificationsEnabled: boolean
+    notifyFeedPostEmail: boolean
+    notifyFeedPostInApp: boolean
+    notifyFeedEventEmail: boolean
+    notifyFeedEventInApp: boolean
+    notifyCommentEmail: boolean
+    notifyCommentInApp: boolean
+    notifyReactionInApp: boolean
+    notifyShoutoutEmail: boolean
+    notifyShoutoutInApp: boolean
+    notifyPromotionEmail: boolean
+    notifyPromotionInApp: boolean
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1213,6 +1598,17 @@ export interface UserFieldRefs {
   readonly googleCalendarTokenExpiresAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly googleCalendarSyncEnabled: Prisma.FieldRef<"User", 'Boolean'>
   readonly emailNotificationsEnabled: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyFeedPostEmail: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyFeedPostInApp: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyFeedEventEmail: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyFeedEventInApp: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyCommentEmail: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyCommentInApp: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyReactionInApp: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyShoutoutEmail: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyShoutoutInApp: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyPromotionEmail: Prisma.FieldRef<"User", 'Boolean'>
+  readonly notifyPromotionInApp: Prisma.FieldRef<"User", 'Boolean'>
 }
     
 

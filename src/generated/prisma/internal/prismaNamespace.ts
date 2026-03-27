@@ -4791,7 +4791,18 @@ export const UserScalarFieldEnum = {
   googleCalendarRefreshToken: 'googleCalendarRefreshToken',
   googleCalendarTokenExpiresAt: 'googleCalendarTokenExpiresAt',
   googleCalendarSyncEnabled: 'googleCalendarSyncEnabled',
-  emailNotificationsEnabled: 'emailNotificationsEnabled'
+  emailNotificationsEnabled: 'emailNotificationsEnabled',
+  notifyFeedPostEmail: 'notifyFeedPostEmail',
+  notifyFeedPostInApp: 'notifyFeedPostInApp',
+  notifyFeedEventEmail: 'notifyFeedEventEmail',
+  notifyFeedEventInApp: 'notifyFeedEventInApp',
+  notifyCommentEmail: 'notifyCommentEmail',
+  notifyCommentInApp: 'notifyCommentInApp',
+  notifyReactionInApp: 'notifyReactionInApp',
+  notifyShoutoutEmail: 'notifyShoutoutEmail',
+  notifyShoutoutInApp: 'notifyShoutoutInApp',
+  notifyPromotionEmail: 'notifyPromotionEmail',
+  notifyPromotionInApp: 'notifyPromotionInApp'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

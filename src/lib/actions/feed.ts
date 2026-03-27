@@ -56,21 +56,27 @@ export async function createFeedPost(data: {
     }
   }
 
-  // Create in-app notifications for all active employees
-  const activeEmployees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true },
+  // Create in-app notifications for users who opted in
+  const inAppUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      employeeId: { not: data.authorId },
+      notifyFeedPostInApp: true,
+    },
+    select: { employeeId: true },
   });
-  await db.notification.createMany({
-    data: activeEmployees
-      .filter((e) => e.id !== data.authorId)
-      .map((e) => ({
-        recipientId: e.id,
-        type: "FEED_POST",
-        message: "New post in feed",
-        link: "/feed",
-      })),
-  });
+  if (inAppUsers.length > 0) {
+    await db.notification.createMany({
+      data: inAppUsers
+        .filter((u) => u.employeeId)
+        .map((u) => ({
+          recipientId: u.employeeId!,
+          type: "FEED_POST",
+          message: "New post in feed",
+          link: "/feed",
+        })),
+    });
+  }
 
   revalidatePath("/");
   return post;
@@ -84,6 +90,53 @@ export async function createFeedComment(
   const comment = await db.feedComment.create({
     data: { postId, authorId, content },
   });
+
+  // Notify post author about the comment
+  const post = await db.feedPost.findUnique({
+    where: { id: postId },
+    select: { authorId: true, author: { select: { firstName: true, lastName: true } } },
+  });
+
+  if (post && post.authorId !== authorId) {
+    const commenter = await db.employee.findUnique({
+      where: { id: authorId },
+      select: { firstName: true, lastName: true },
+    });
+    const commenterName = commenter
+      ? `${commenter.firstName} ${commenter.lastName}`
+      : "Someone";
+
+    // Check post author's notification preferences
+    const postAuthorUser = await db.user.findUnique({
+      where: { employeeId: post.authorId },
+      select: { notifyCommentInApp: true, notifyCommentEmail: true, emailNotificationsEnabled: true, email: true },
+    });
+
+    if (postAuthorUser?.notifyCommentInApp) {
+      await db.notification.create({
+        data: {
+          recipientId: post.authorId,
+          type: "FEED_COMMENT",
+          message: `${commenterName} commented on your post`,
+          link: "/feed",
+        },
+      });
+    }
+
+    if (postAuthorUser?.emailNotificationsEnabled && postAuthorUser?.notifyCommentEmail && postAuthorUser?.email) {
+      try {
+        const { sendEmail } = await import("@/lib/email");
+        await sendEmail(
+          postAuthorUser.email,
+          `${commenterName} commented on your post`,
+          `<p>${commenterName} left a comment on your post:</p><p style="color:#666;font-style:italic">"${content.slice(0, 200)}"</p><p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/feed" style="color:#3052FF">View in App</a></p>`
+        );
+      } catch (err) {
+        console.error("[feed] comment notification email error:", err);
+      }
+    }
+  }
+
   revalidatePath("/");
   return comment;
 }
@@ -115,21 +168,65 @@ export async function createShoutoutPost(
     }
   }
 
-  // Create in-app notifications for all active employees
-  const activeEmployees = await db.employee.findMany({
-    where: { status: "ACTIVE" },
-    select: { id: true },
+  const author = await db.employee.findUnique({
+    where: { id: authorId },
+    select: { firstName: true, lastName: true },
   });
-  await db.notification.createMany({
-    data: activeEmployees
-      .filter((e) => e.id !== authorId)
-      .map((e) => ({
-        recipientId: e.id,
-        type: "FEED_POST",
-        message: "New shoutout in feed",
-        link: "/feed",
-      })),
+  const authorName = author ? `${author.firstName} ${author.lastName}` : "Someone";
+
+  // Create in-app notifications for users who opted in
+  const inAppUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      employeeId: { not: authorId },
+      notifyFeedPostInApp: true,
+    },
+    select: { employeeId: true },
   });
+  if (inAppUsers.length > 0) {
+    await db.notification.createMany({
+      data: inAppUsers
+        .filter((u) => u.employeeId)
+        .map((u) => ({
+          recipientId: u.employeeId!,
+          type: "FEED_POST",
+          message: "New shoutout in feed",
+          link: "/feed",
+        })),
+    });
+  }
+
+  // Notify the mentioned employee specifically (shoutout notification)
+  if (mentionedEmployeeId !== authorId) {
+    const mentionedUser = await db.user.findUnique({
+      where: { employeeId: mentionedEmployeeId },
+      select: { notifyShoutoutInApp: true, notifyShoutoutEmail: true, emailNotificationsEnabled: true, email: true },
+    });
+
+    if (mentionedUser?.notifyShoutoutInApp) {
+      await db.notification.create({
+        data: {
+          recipientId: mentionedEmployeeId,
+          type: "FEED_SHOUTOUT",
+          message: `${authorName} gave you a shoutout!`,
+          link: "/feed",
+        },
+      });
+    }
+
+    if (mentionedUser?.emailNotificationsEnabled && mentionedUser?.notifyShoutoutEmail && mentionedUser?.email) {
+      try {
+        const { sendEmail } = await import("@/lib/email");
+        await sendEmail(
+          mentionedUser.email,
+          `${authorName} gave you a shoutout!`,
+          `<p>${authorName} recognized you in the team feed:</p><p style="color:#666;font-style:italic">"${content.slice(0, 300)}"</p><p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/feed" style="color:#3052FF">View in App</a></p>`
+        );
+      } catch (err) {
+        console.error("[feed] shoutout notification email error:", err);
+      }
+    }
+  }
 
   revalidatePath("/");
   return post;
@@ -155,6 +252,8 @@ export async function toggleReaction(
     where: { postId_employeeId: { postId, employeeId } },
   });
 
+  let isNewReaction = false;
+
   if (existing) {
     if (existing.type === type) {
       await db.feedReaction.delete({ where: { id: existing.id } });
@@ -168,6 +267,42 @@ export async function toggleReaction(
     await db.feedReaction.create({
       data: { postId, employeeId, type },
     });
+    isNewReaction = true;
   }
+
+  // Notify post author about the reaction (only for new reactions, not changes/removals)
+  if (isNewReaction) {
+    const post = await db.feedPost.findUnique({
+      where: { id: postId },
+      select: { authorId: true },
+    });
+
+    if (post && post.authorId !== employeeId) {
+      const postAuthorUser = await db.user.findUnique({
+        where: { employeeId: post.authorId },
+        select: { notifyReactionInApp: true },
+      });
+
+      if (postAuthorUser?.notifyReactionInApp) {
+        const reactor = await db.employee.findUnique({
+          where: { id: employeeId },
+          select: { firstName: true, lastName: true },
+        });
+        const reactorName = reactor
+          ? `${reactor.firstName} ${reactor.lastName}`
+          : "Someone";
+
+        await db.notification.create({
+          data: {
+            recipientId: post.authorId,
+            type: "FEED_REACTION",
+            message: `${reactorName} reacted to your post`,
+            link: "/feed",
+          },
+        });
+      }
+    }
+  }
+
   revalidatePath("/");
 }

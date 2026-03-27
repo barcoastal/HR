@@ -259,6 +259,127 @@ export async function updateEmployee(
   return employee;
 }
 
+export async function promoteEmployee(
+  employeeId: string,
+  newJobTitle: string,
+  newDepartmentId?: string | null
+) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to promote employees");
+  }
+
+  const employee = await db.employee.findUnique({
+    where: { id: employeeId },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      jobTitle: true,
+      departmentId: true,
+      department: { select: { name: true } },
+    },
+  });
+  if (!employee) throw new Error("Employee not found");
+
+  const oldTitle = employee.jobTitle;
+  const oldDeptName = employee.department?.name || null;
+
+  // Update employee
+  const updateData: Record<string, unknown> = { jobTitle: newJobTitle };
+  if (newDepartmentId !== undefined) {
+    updateData.departmentId = newDepartmentId || null;
+  }
+  await db.employee.update({ where: { id: employeeId }, data: updateData });
+
+  // Get new department name
+  let newDeptName = oldDeptName;
+  if (newDepartmentId && newDepartmentId !== employee.departmentId) {
+    const newDept = await db.department.findUnique({
+      where: { id: newDepartmentId },
+      select: { name: true },
+    });
+    newDeptName = newDept?.name || null;
+  }
+
+  const fullName = `${employee.firstName} ${employee.lastName}`;
+  const deptChanged = newDepartmentId && newDepartmentId !== employee.departmentId;
+
+  // Build promotion message
+  let promotionMessage = `${fullName} has been promoted to ${newJobTitle}`;
+  if (deptChanged && newDeptName) {
+    promotionMessage += ` in ${newDeptName}`;
+  }
+  promotionMessage += "!";
+
+  // Create a PROMOTION feed post
+  const promoterId = session.user?.employeeId;
+  if (promoterId) {
+    await db.feedPost.create({
+      data: {
+        authorId: promoterId,
+        content: promotionMessage,
+        type: "PROMOTION",
+        mentionedEmployeeId: employeeId,
+        notifyViaEmail: true,
+        emailTargetType: "all",
+      },
+    });
+  }
+
+  // Notify all active employees (in-app) who opted in to promotion notifications
+  const inAppUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      employeeId: { not: employeeId },
+      notifyPromotionInApp: true,
+    },
+    select: { employeeId: true },
+  });
+  if (inAppUsers.length > 0) {
+    await db.notification.createMany({
+      data: inAppUsers
+        .filter((u) => u.employeeId)
+        .map((u) => ({
+          recipientId: u.employeeId!,
+          type: "PROMOTION",
+          message: promotionMessage,
+          link: `/people/${employeeId}`,
+        })),
+    });
+  }
+
+  // Send email to users who opted in
+  const emailUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      emailNotificationsEnabled: true,
+      notifyPromotionEmail: true,
+    },
+    select: { email: true },
+  });
+  if (emailUsers.length > 0) {
+    try {
+      const { sendFeedPostNotification } = await import("@/lib/email");
+      const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+      const html = `<p style="margin:0 0 12px">${promotionMessage}</p><p style="margin:0 0 4px;color:#666">Previously: ${oldTitle}${oldDeptName ? ` in ${oldDeptName}` : ""}</p><p style="margin:16px 0 0"><a href="${baseUrl}/people/${employeeId}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">View Profile</a></p>`;
+      await sendFeedPostNotification(
+        emailUsers.map((u) => u.email),
+        `${fullName} has been promoted!`,
+        html
+      );
+    } catch (err) {
+      console.error("[promote] email notification error:", err);
+    }
+  }
+
+  revalidatePath("/people");
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/");
+}
+
 export async function startOffboarding(employeeId: string, endDate: string) {
   const offboardingChecklists = await db.onboardingChecklist.findMany({
     where: { type: "OFFBOARDING" },

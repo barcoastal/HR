@@ -65,6 +65,7 @@ enum FeedPostType {
   SHOUTOUT
   EMERGENCY
   EVENT
+  PROMOTION
 }
 
 enum TimeOffRequestStatus {
@@ -276,8 +277,21 @@ model User {
   googleCalendarTokenExpiresAt DateTime?
   googleCalendarSyncEnabled    Boolean   @default(false)
 
-  // Email notification preferences
-  emailNotificationsEnabled    Boolean   @default(true)
+  // Notification preferences (per-user granular toggles)
+  emailNotificationsEnabled    Boolean   @default(true)   // Legacy global toggle — still respected as master switch
+
+  // Feed notification preferences
+  notifyFeedPostEmail          Boolean   @default(true)
+  notifyFeedPostInApp          Boolean   @default(true)
+  notifyFeedEventEmail         Boolean   @default(true)
+  notifyFeedEventInApp         Boolean   @default(true)
+  notifyCommentEmail           Boolean   @default(true)
+  notifyCommentInApp           Boolean   @default(true)
+  notifyReactionInApp          Boolean   @default(true)
+  notifyShoutoutEmail          Boolean   @default(true)
+  notifyShoutoutInApp          Boolean   @default(true)
+  notifyPromotionEmail         Boolean   @default(true)
+  notifyPromotionInApp         Boolean   @default(true)
 
   employee          Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull)
   eventAttendances  EventAttendance[]
