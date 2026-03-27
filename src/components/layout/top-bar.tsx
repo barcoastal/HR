@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { Icon } from "@/components/ui/icon";
 import { cn, getInitials } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 
 export function TopBar() {
@@ -45,20 +45,7 @@ export function TopBar() {
           />
         </div>
 
-        <button
-          className={cn(
-            "relative flex h-10 w-10 items-center justify-center rounded-xl",
-            "text-[var(--color-text-muted)] transition-colors duration-200",
-            "hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
-          )}
-        >
-          <Icon name="notifications" size={18} />
-          <motion.span
-            className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500"
-            animate={{ scale: [1, 1.3, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </button>
+        <NotificationBell />
 
         {session?.user?.profilePhoto ? (
           <img src={session.user.profilePhoto} alt="" className="h-9 w-9 rounded-full object-cover shrink-0" />

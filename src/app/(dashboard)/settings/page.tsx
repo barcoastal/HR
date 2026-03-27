@@ -30,7 +30,9 @@ import { RecruiterManager } from "@/components/settings/recruiter-manager";
 import { PipelineSettings } from "@/components/settings/pipeline-settings";
 import { getRecruiters, getPipelineStages, getCandidateCustomFields, getStageNotifyRecipients, getStageNotifyEmployeeIds } from "@/lib/actions/company-settings";
 import { getAllStageDocuments } from "@/lib/actions/stage-documents";
-import { StageNotificationSettings } from "@/components/settings/stage-notification-settings";
+import { NotificationSettings } from "@/components/settings/notification-settings";
+import { getNotificationRules, getNotificationRecipients } from "@/lib/actions/notification-settings";
+import { seedNotificationRules } from "@/lib/notifications/seed";
 import { StageDocumentsManager } from "@/components/settings/stage-documents-manager";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
@@ -41,7 +43,8 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 
 export default async function SettingsPage() {
   const session = await requireAdmin();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates] = await Promise.all([
+  await seedNotificationRules();
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -60,6 +63,8 @@ export default async function SettingsPage() {
     getStageNotifyEmployeeIds(),
     getAllStageDocuments(),
     getDepartmentReviewTemplates(),
+    getNotificationRules(),
+    getNotificationRecipients(),
   ]);
 
   let gustoMapping = null;
@@ -128,9 +133,9 @@ export default async function SettingsPage() {
           initialCustomFields={candidateFields}
         />
 
-        <StageNotificationSettings
-          initialRecipients={stageNotifyRecipients}
-          initialEmployeeIds={stageNotifyEmployeeIds}
+        <NotificationSettings
+          initialRules={notificationRules}
+          initialRecipients={notificationRecipients}
           allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
         />
 
