@@ -75,6 +75,18 @@ export async function createStandaloneSigningRequest(data: {
     }
   }
 
+  // Send DOCUMENT_SIGN_REQUEST notification via rules engine
+  const { sendNotifications } = await import("@/lib/notifications/send");
+  sendNotifications({
+    action: "DOCUMENT_SIGN_REQUEST",
+    candidateId: data.candidateId,
+    employeeId: data.employeeId,
+    message: `Signing request sent: ${data.documentName}`,
+    link: "/documents",
+    emailSubject: `Document Requires Signature: ${data.documentName}`,
+    emailBody: `<p>A document requires your signature: <strong>${data.documentName}</strong>.</p>`,
+  }).catch((err) => console.error("[signing] Sign request notification error:", err));
+
   revalidatePath("/documents");
   return request;
 }
@@ -333,43 +345,18 @@ export async function submitSignature(
         data: { offerSignedDocUrl: signedDocUrl, offerSignedAt: new Date() },
       });
 
-      // Notify recruiter and admins that the candidate signed
-      try {
-        const candidate = request.candidate;
-        if (candidate) {
-          const candidateName = `${candidate.firstName} ${candidate.lastName}`;
-          const { sendEmail } = await import("@/lib/email");
-
-          // Notify recruiter
-          if (candidate.recruiterId) {
-            const recruiter = await db.employee.findUnique({ where: { id: candidate.recruiterId }, select: { email: true, firstName: true } });
-            if (recruiter?.email) {
-              await sendEmail(
-                recruiter.email,
-                `Offer Signed: ${candidateName}`,
-                `<p>Hi ${recruiter.firstName},</p>
-                <p><strong>${candidateName}</strong> has signed the offer letter: <strong>${request.documentName}</strong>.</p>
-                <p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/cv">View in Recruitment</a></p>`
-              );
-            }
-          }
-
-          // Notify all admins
-          const admins = await db.user.findMany({
-            where: { role: { in: ["SUPER_ADMIN", "ADMIN", "HR"] } },
-            select: { email: true },
-          });
-          for (const admin of admins) {
-            await sendEmail(
-              admin.email,
-              `Offer Signed: ${candidateName}`,
-              `<p><strong>${candidateName}</strong> has signed the offer letter: <strong>${request.documentName}</strong>.</p>
-              <p><a href="${process.env.NEXTAUTH_URL || "http://localhost:3000"}/cv">View in Recruitment</a></p>`
-            );
-          }
-        }
-      } catch (e) {
-        console.error("[signing] Failed to send offer signed notification:", e);
+      // Notify via centralized rules engine
+      const { sendNotifications } = await import("@/lib/notifications/send");
+      const candidate = request.candidate;
+      if (candidate) {
+        sendNotifications({
+          action: "DOCUMENT_SIGNED",
+          candidateId: request.candidateId!,
+          message: `${candidate.firstName} ${candidate.lastName} signed ${request.documentName}`,
+          link: "/cv",
+          emailSubject: `Document Signed: ${request.documentName}`,
+          emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has signed <strong>${request.documentName}</strong>.</p>`,
+        }).catch((err) => console.error("[signing] Notification error:", err));
       }
     }
 

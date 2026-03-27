@@ -103,6 +103,17 @@ export async function scheduleInterview(data: {
     console.error("[interview] Failed to send confirmation email:", e);
   }
 
+  // Send INTERVIEW_SCHEDULED notification via rules engine
+  const { sendNotifications } = await import("@/lib/notifications/send");
+  sendNotifications({
+    action: "INTERVIEW_SCHEDULED",
+    candidateId: interview.candidateId,
+    message: `Interview scheduled with ${candidate.firstName} ${candidate.lastName}`,
+    link: "/cv",
+    emailSubject: `Interview Scheduled: ${candidate.firstName} ${candidate.lastName}`,
+    emailBody: `<p>An interview has been scheduled with <strong>${candidate.firstName} ${candidate.lastName}</strong>.</p>`,
+  }).catch((err) => console.error("[interviews] Notification error:", err));
+
   revalidatePath("/cv");
   revalidatePath("/calendar");
 

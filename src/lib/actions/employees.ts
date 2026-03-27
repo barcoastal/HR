@@ -236,6 +236,7 @@ export async function updateEmployee(
   data: Record<string, unknown>
 ) {
   const { startDate, birthday, ...rest } = data;
+  const oldEmployee = data.email ? await db.employee.findUnique({ where: { id }, select: { email: true } }) : null;
   const employee = await db.employee.update({
     where: { id },
     data: {
@@ -244,6 +245,15 @@ export async function updateEmployee(
       ...(birthday ? { birthday: new Date(birthday as string) } : {}),
     },
   });
+
+  // Sync email change to User account so login still works
+  if (data.email && oldEmployee && oldEmployee.email !== data.email) {
+    const user = await db.user.findFirst({ where: { employeeId: id } });
+    if (user) {
+      await db.user.update({ where: { id: user.id }, data: { email: data.email as string } });
+    }
+  }
+
   revalidatePath("/people");
   revalidatePath(`/people/${id}`);
   return employee;
@@ -270,19 +280,39 @@ export async function startOffboarding(employeeId: string, endDate: string) {
         employeeId: employee.id,
         checklistItemId: item.id,
         status: "PENDING",
+        title: item.title,
+        description: item.description,
+        assigneeId: item.assigneeId,
+        documentAction: item.documentAction,
+        documentUrl: item.documentUrl,
+        documentName: item.documentName,
       })),
     });
+  }
+
+  // Deactivate user account so offboarded employee can't log in
+  const user = await db.user.findFirst({ where: { employeeId } });
+  if (user && user.role === "EMPLOYEE") {
+    await db.user.update({ where: { id: user.id }, data: { employeeId: null } });
   }
 
   revalidatePath("/people");
   revalidatePath("/offboarding");
   revalidatePath(`/people/${employeeId}`);
   revalidatePath("/org");
+  revalidatePath("/settings");
 
   return { employee, taskCount: allChecklistItems.length };
 }
 
 export async function setEmployeeManager(employeeId: string, managerId: string | null) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to change managers");
+  }
+
   const employee = await db.employee.update({
     where: { id: employeeId },
     data: { managerId },
@@ -320,16 +350,29 @@ export async function toggleEmployeeTask(taskId: string) {
   });
   revalidatePath("/onboarding");
   revalidatePath("/offboarding");
+  revalidatePath("/pre-onboarding");
   revalidatePath(`/people/${task.employeeId}`);
   return updated;
 }
 
 export async function addEmployeeTask(employeeId: string, checklistItemId: string) {
+  const item = await db.checklistItem.findUnique({ where: { id: checklistItemId } });
   const task = await db.employeeTask.create({
-    data: { employeeId, checklistItemId, status: "PENDING" },
+    data: {
+      employeeId,
+      checklistItemId,
+      status: "PENDING",
+      title: item?.title || undefined,
+      description: item?.description || undefined,
+      assigneeId: item?.assigneeId || undefined,
+      documentAction: item?.documentAction || undefined,
+      documentUrl: item?.documentUrl || undefined,
+      documentName: item?.documentName || undefined,
+    },
   });
   revalidatePath("/onboarding");
   revalidatePath("/offboarding");
+  revalidatePath("/pre-onboarding");
   return task;
 }
 
@@ -371,6 +414,7 @@ export async function addCustomEmployeeTask(
 
   revalidatePath("/onboarding");
   revalidatePath("/offboarding");
+  revalidatePath("/pre-onboarding");
   revalidatePath("/settings");
   return task;
 }
@@ -452,7 +496,7 @@ export async function completePreOnboarding(employeeId: string, companyEmail?: s
         task.documentName
       );
       sendSigningRequestEmail({
-        to: employee.email,
+        to: finalEmail,
         firstName: employee.firstName,
         documentName: task.documentName,
         signingUrl: `${baseUrl}/sign/${signingReq.token}`,
@@ -518,6 +562,17 @@ export async function completeOnboarding(employeeId: string) {
       });
     }
   }
+
+  // Send ONBOARDING_COMPLETED notification
+  const { sendNotifications } = await import("@/lib/notifications/send");
+  sendNotifications({
+    action: "ONBOARDING_COMPLETED",
+    employeeId,
+    message: `${employee.firstName} ${employee.lastName} completed onboarding`,
+    link: "/onboarding",
+    emailSubject: `Onboarding Completed: ${employee.firstName} ${employee.lastName}`,
+    emailBody: `<p><strong>${employee.firstName} ${employee.lastName}</strong> has completed onboarding and is now active.</p>`,
+  }).catch((err) => console.error("[employees] Onboarding complete notification error:", err));
 
   revalidatePath("/onboarding");
   revalidatePath("/people");
