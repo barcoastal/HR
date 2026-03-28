@@ -801,6 +801,8 @@ export async function createPosition(data: {
     }
   }
 
+  const postingErrors: string[] = [];
+
   if (postToBreezy) {
     try {
       const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
@@ -809,11 +811,17 @@ export async function createPosition(data: {
         where: { name: "Breezy HR" },
         select: { id: true, accountIdentifier: true },
       });
-      if (breezyPlatform?.accountIdentifier) {
+      if (!breezyPlatform?.accountIdentifier) {
+        console.error("[createPosition] Breezy HR not configured — no accountIdentifier");
+        postingErrors.push("Breezy HR is not configured. Connect it in Settings first.");
+      } else {
         const tokenResult = await ensureValidToken(breezyPlatform.id);
-        if (tokenResult.valid && tokenResult.accessToken) {
+        if (!tokenResult.valid || !tokenResult.accessToken) {
+          console.error("[createPosition] Breezy token invalid:", tokenResult.error);
+          postingErrors.push(`Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`);
+        } else {
           const [breezyToken] = tokenResult.accessToken.split("::");
-          await postJobToBreezy({
+          const result = await postJobToBreezy({
             accessToken: breezyToken,
             companyId: breezyPlatform.accountIdentifier,
             title: data.title,
@@ -822,15 +830,20 @@ export async function createPosition(data: {
             department: departmentName,
             salary: data.salary,
           });
+          if (!result.success) {
+            console.error("[createPosition] Breezy posting failed:", result.error);
+            postingErrors.push(`Breezy HR: ${result.error || "failed to post"}`);
+          }
         }
       }
     } catch (err) {
-      console.error("[createPosition] Breezy posting failed:", err);
+      console.error("[createPosition] Breezy posting error:", err);
+      postingErrors.push("Breezy HR: unexpected error");
     }
   }
 
   revalidatePath("/cv");
-  return position;
+  return { ...position, postingErrors };
 }
 
 export async function postPositionToBreezy(

@@ -241,13 +241,15 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
   }
 
   const [error, setError] = useState("");
+  const [postingWarnings, setPostingWarnings] = useState<string[]>([]);
 
   async function handlePublish() {
     if (!form.title) return;
     setLoading(true);
     setError("");
+    setPostingWarnings([]);
     try {
-      const position = await createPosition({
+      const result = await createPosition({
         title: form.title,
         departmentId: form.departmentId || undefined,
         description: form.description || undefined,
@@ -263,8 +265,11 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
         linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
         indeedSettings: postToIndeed ? indeedSettings : undefined,
       });
-      setCreatedPositionId(position.id);
+      setCreatedPositionId(result.id);
       setCreatedPositionTitle(form.title);
+      if (result.postingErrors && result.postingErrors.length > 0) {
+        setPostingWarnings(result.postingErrors);
+      }
       setStep("recommendations");
     } catch (err) {
       console.error("[add-position] Failed to create position:", err);
@@ -519,12 +524,38 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       )}
 
       {step === "recommendations" && createdPositionId && (
-        <AIMatchDialog
-          positionId={createdPositionId}
-          positionTitle={createdPositionTitle}
-          open={open}
-          onClose={handleClose}
-        />
+        <>
+          {postingWarnings.length > 0 && (
+            <Dialog open={true} onClose={() => setPostingWarnings([])} title="Posting Issues">
+              <div className="space-y-3">
+                <p className="text-sm text-[var(--color-text-muted)]">
+                  Position was created but some platforms had issues:
+                </p>
+                {postingWarnings.map((w, i) => (
+                  <div key={i} className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-400">
+                    {w}
+                  </div>
+                ))}
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={() => setPostingWarnings([])}
+                    className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]")}
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </Dialog>
+          )}
+          {postingWarnings.length === 0 && (
+            <AIMatchDialog
+              positionId={createdPositionId}
+              positionTitle={createdPositionTitle}
+              open={open}
+              onClose={handleClose}
+            />
+          )}
+        </>
       )}
     </>
   );
