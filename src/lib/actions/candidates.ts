@@ -762,58 +762,70 @@ export async function createPosition(data: {
   }
 
   if (postToJobing) {
-    const { postJobToJobing } = await import("@/lib/platform-sync/clients/jobing");
-    const result = await postJobToJobing({
-      title: data.title,
-      description: data.description,
-      requirements: data.requirements,
-      salary: data.salary,
-      departmentName,
-    });
-    if (result.jobId) {
-      await db.position.update({ where: { id: position.id }, data: { jobingJobId: result.jobId } });
-    }
-  }
-
-  if (postToIndeed) {
-    const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
-    const indeedPlatform = await db.recruitmentPlatform.findUnique({
-      where: { name: "Indeed" },
-      select: { accountIdentifier: true },
-    });
-    if (indeedPlatform?.accountIdentifier) {
-      await postJobToIndeed({
+    try {
+      const { postJobToJobing } = await import("@/lib/platform-sync/clients/jobing");
+      const result = await postJobToJobing({
         title: data.title,
         description: data.description,
         requirements: data.requirements,
         salary: data.salary,
         departmentName,
-        connectionId: indeedPlatform.accountIdentifier,
       });
+      if (result.jobId) {
+        await db.position.update({ where: { id: position.id }, data: { jobingJobId: result.jobId } });
+      }
+    } catch (err) {
+      console.error("[createPosition] Jobing posting failed:", err);
+    }
+  }
+
+  if (postToIndeed) {
+    try {
+      const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
+      const indeedPlatform = await db.recruitmentPlatform.findUnique({
+        where: { name: "Indeed" },
+        select: { accountIdentifier: true },
+      });
+      if (indeedPlatform?.accountIdentifier) {
+        await postJobToIndeed({
+          title: data.title,
+          description: data.description,
+          requirements: data.requirements,
+          salary: data.salary,
+          departmentName,
+          connectionId: indeedPlatform.accountIdentifier,
+        });
+      }
+    } catch (err) {
+      console.error("[createPosition] Indeed posting failed:", err);
     }
   }
 
   if (postToBreezy) {
-    const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
-    const { ensureValidToken } = await import("./platform-sync");
-    const breezyPlatform = await db.recruitmentPlatform.findUnique({
-      where: { name: "Breezy HR" },
-      select: { id: true, accountIdentifier: true },
-    });
-    if (breezyPlatform?.accountIdentifier) {
-      const tokenResult = await ensureValidToken(breezyPlatform.id);
-      if (tokenResult.valid && tokenResult.accessToken) {
-        const [breezyToken] = tokenResult.accessToken.split("::");
-        await postJobToBreezy({
-          accessToken: breezyToken,
-          companyId: breezyPlatform.accountIdentifier,
-          title: data.title,
-          description: data.description,
-          requirements: data.requirements,
-          department: departmentName,
-          salary: data.salary,
-        });
+    try {
+      const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
+      const { ensureValidToken } = await import("./platform-sync");
+      const breezyPlatform = await db.recruitmentPlatform.findUnique({
+        where: { name: "Breezy HR" },
+        select: { id: true, accountIdentifier: true },
+      });
+      if (breezyPlatform?.accountIdentifier) {
+        const tokenResult = await ensureValidToken(breezyPlatform.id);
+        if (tokenResult.valid && tokenResult.accessToken) {
+          const [breezyToken] = tokenResult.accessToken.split("::");
+          await postJobToBreezy({
+            accessToken: breezyToken,
+            companyId: breezyPlatform.accountIdentifier,
+            title: data.title,
+            description: data.description,
+            requirements: data.requirements,
+            department: departmentName,
+            salary: data.salary,
+          });
+        }
       }
+    } catch (err) {
+      console.error("[createPosition] Breezy posting failed:", err);
     }
   }
 

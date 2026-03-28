@@ -240,29 +240,38 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     }
   }
 
+  const [error, setError] = useState("");
+
   async function handlePublish() {
     if (!form.title) return;
     setLoading(true);
-    const position = await createPosition({
-      title: form.title,
-      departmentId: form.departmentId || undefined,
-      description: form.description || undefined,
-      requirements: form.requirements || undefined,
-      salary: form.salary || undefined,
-      postToJobing,
-      postToIndeed: postToIndeed,
-      postToBreezy: postToLinkedIn || postToIndeed,
-      breezyChannels: {
-        linkedin: postToLinkedIn,
-        indeed: postToIndeed,
-      },
-      linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
-      indeedSettings: postToIndeed ? indeedSettings : undefined,
-    });
-    setCreatedPositionId(position.id);
-    setCreatedPositionTitle(form.title);
-    setStep("recommendations");
-    setLoading(false);
+    setError("");
+    try {
+      const position = await createPosition({
+        title: form.title,
+        departmentId: form.departmentId || undefined,
+        description: form.description || undefined,
+        requirements: form.requirements || undefined,
+        salary: form.salary || undefined,
+        postToJobing,
+        postToIndeed: postToIndeed,
+        postToBreezy: postToLinkedIn || postToIndeed,
+        breezyChannels: {
+          linkedin: postToLinkedIn,
+          indeed: postToIndeed,
+        },
+        linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
+        indeedSettings: postToIndeed ? indeedSettings : undefined,
+      });
+      setCreatedPositionId(position.id);
+      setCreatedPositionTitle(form.title);
+      setStep("recommendations");
+    } catch (err) {
+      console.error("[add-position] Failed to create position:", err);
+      setError(err instanceof Error ? err.message : "Failed to create position. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function handleClose() {
@@ -461,6 +470,10 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
               </div>
             </div>
           </div>
+
+          {error && (
+            <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-400">{error}</div>
+          )}
 
           <div className="flex justify-end gap-2 pt-4">
             <button onClick={handleClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
