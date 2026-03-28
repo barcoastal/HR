@@ -40,17 +40,42 @@ export async function GET() {
             tokenLength: result.accessToken?.length || 0,
           };
 
-          // If auth works, try listing positions
+          // If auth works, try listing positions with different auth formats
           if (result.accessToken && hasAccountId) {
-            const res = await fetch(
+            // Try 1: Plain token (current approach)
+            const res1 = await fetch(
               `https://api.breezy.hr/v3/company/${platform.accountIdentifier}/positions?state=published`,
               { headers: { Authorization: result.accessToken } }
             );
-            const body = await res.text();
+            const body1 = await res1.text();
+
+            // Try 2: Bearer prefix
+            const res2 = await fetch(
+              `https://api.breezy.hr/v3/company/${platform.accountIdentifier}/positions?state=published`,
+              { headers: { Authorization: `Bearer ${result.accessToken}` } }
+            );
+            const body2 = await res2.text();
+
+            // Try 3: Get user info to check permissions
+            const res3 = await fetch(
+              `https://api.breezy.hr/v3/user`,
+              { headers: { Authorization: result.accessToken } }
+            );
+            const body3 = await res3.text();
+
+            // Try 4: List companies
+            const res4 = await fetch(
+              `https://api.breezy.hr/v3/companies`,
+              { headers: { Authorization: result.accessToken } }
+            );
+            const body4 = await res4.text();
+
             authResult = {
               ...authResult,
-              listPositionsStatus: res.status,
-              listPositionsBody: body.slice(0, 500),
+              plainToken: { status: res1.status, body: body1.slice(0, 300) },
+              bearerToken: { status: res2.status, body: body2.slice(0, 300) },
+              userInfo: { status: res3.status, body: body3.slice(0, 300) },
+              companies: { status: res4.status, body: body4.slice(0, 300) },
             };
           }
         } else {
