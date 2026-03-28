@@ -843,7 +843,11 @@ export async function createPosition(data: {
   }
 
   revalidatePath("/cv");
-  return { ...position, postingErrors };
+  return {
+    id: position.id,
+    title: position.title,
+    postingErrors,
+  };
 }
 
 export async function postPositionToBreezy(
