@@ -224,6 +224,13 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   }
 
   async function handleGoToSign() {
+    // Capture pages NOW while the PDF container is still in the DOM
+    const images = await captureFilledPages();
+    if (images.length === 0) {
+      setError("Could not capture form pages. Please try again.");
+      return;
+    }
+    setPageImages(images);
     setStep("sign");
   }
 
@@ -233,14 +240,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
     setError(null);
 
     try {
-      // Go back to fill step briefly to capture pages (they're in the DOM)
-      const images = await captureFilledPages();
-      if (images.length === 0) {
-        setError("Could not capture form pages. Please try again.");
-        setSubmitting(false);
-        return;
-      }
-      setPageImages(images);
+      const images = pageImages;
 
       // Send to server to build preview PDF
       const res = await fetch(`/api/fill/${token}/preview`, {
@@ -266,11 +266,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
     setError(null);
 
     try {
-      // Use the already captured images or capture again
-      let images = pageImages;
-      if (images.length === 0) {
-        images = await captureFilledPages();
-      }
+      const images = pageImages;
 
       const res = await fetch(`/api/fill/${token}`, {
         method: "POST",
