@@ -21,8 +21,8 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { fieldValues, textOverlays, signatureBase64 } = body;
+  const { fieldValues, signatureBase64 } = body;
 
-  const result = await submitFilledForm(token, fieldValues || {}, textOverlays || [], signatureBase64);
+  const result = await submitFilledForm(token, fieldValues || {}, [], signatureBase64);
   return NextResponse.json(result, { status: result.success ? 200 : 400 });
 }
