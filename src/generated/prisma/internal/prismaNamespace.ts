@@ -5116,7 +5116,10 @@ export const PositionScalarFieldEnum = {
   description: 'description',
   requirements: 'requirements',
   salary: 'salary',
+  location: 'location',
+  type: 'type',
   status: 'status',
+  published: 'published',
   jobingJobId: 'jobingJobId',
   createdAt: 'createdAt'
 } as const

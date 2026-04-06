@@ -791,6 +791,9 @@ export async function createPosition(data: {
   description?: string;
   requirements?: string;
   salary?: string;
+  location?: string;
+  type?: string;
+  published?: boolean;
   postToJobing?: boolean;
   postToIndeed?: boolean;
   postToBreezy?: boolean;

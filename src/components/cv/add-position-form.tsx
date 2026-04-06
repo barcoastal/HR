@@ -218,12 +218,16 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     jobType: "full-time",
   });
 
+  const [postToCareers, setPostToCareers] = useState(true);
+
   const [form, setForm] = useState({
     title: "",
     departmentId: "",
     description: "",
     requirements: "",
     salary: "",
+    location: "",
+    type: "Full-time",
   });
   const router = useRouter();
 
@@ -255,6 +259,9 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
         description: form.description || undefined,
         requirements: form.requirements || undefined,
         salary: form.salary || undefined,
+        location: form.location || undefined,
+        type: form.type || undefined,
+        published: postToCareers,
         postToJobing,
         postToIndeed: postToIndeed,
         postToBreezy: postToLinkedIn || postToIndeed,
@@ -285,7 +292,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     }
     setOpen(false);
     setStep("form");
-    setForm({ title: "", departmentId: "", description: "", requirements: "", salary: "" });
+    setForm({ title: "", departmentId: "", description: "", requirements: "", salary: "", location: "", type: "Full-time" });
     setCreatedPositionId(null);
     setCreatedPositionTitle("");
     setPostToLinkedIn(false);
@@ -340,9 +347,24 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Requirements</label>
               <textarea value={form.requirements} onChange={(e) => update("requirements", e.target.value)} rows={2} className={cn(inputClass, "resize-none")} placeholder="React, TypeScript, Node.js, 5+ years..." />
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Salary Range</label>
+                <input value={form.salary} onChange={(e) => update("salary", e.target.value)} className={inputClass} placeholder="$80k - $120k" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Job Type</label>
+                <select value={form.type} onChange={(e) => update("type", e.target.value)} className={inputClass}>
+                  <option value="Full-time">Full-time</option>
+                  <option value="Part-time">Part-time</option>
+                  <option value="Contract">Contract</option>
+                  <option value="Internship">Internship</option>
+                </select>
+              </div>
+            </div>
             <div>
-              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Salary Range</label>
-              <input value={form.salary} onChange={(e) => update("salary", e.target.value)} className={inputClass} placeholder="$80k - $120k" />
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Location</label>
+              <input value={form.location} onChange={(e) => update("location", e.target.value)} className={inputClass} placeholder="Fort Lauderdale, FL / Remote" />
             </div>
 
             {/* Publish To section */}
@@ -351,6 +373,22 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
                 <Icon name="public" size={14} />
                 Publish To
               </p>
+
+              {/* Careers Page */}
+              <div className={cn("rounded-lg border mb-2 transition-colors", postToCareers ? "border-[#3052FF]/40 bg-[#3052FF]/5" : "border-[var(--color-border)]")}>
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-md bg-[#3052FF] flex items-center justify-center">
+                      <span className="text-white text-[10px] font-bold">CD</span>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-[var(--color-text-primary)]">Careers Page</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)]">Show on coastaldebt.com/careers</p>
+                    </div>
+                  </div>
+                  <Toggle checked={postToCareers} onChange={() => setPostToCareers(!postToCareers)} color="bg-[#3052FF]" />
+                </div>
+              </div>
 
               {/* LinkedIn */}
               <div className={cn("rounded-lg border mb-2 transition-colors", postToLinkedIn ? "border-[#0A66C2]/40 bg-[#0A66C2]/5" : "border-[var(--color-border)]")}>

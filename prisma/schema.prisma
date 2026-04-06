@@ -693,7 +693,10 @@ model Position {
   description   String?
   requirements  String?
   salary        String?
+  location      String?
+  type          String?        // Full-time, Part-time, Contract
   status        PositionStatus @default(OPEN)
+  published     Boolean        @default(false)
   jobingJobId   String?
   candidates    Candidate[]
   interviews    Interview[]

@@ -31,7 +31,10 @@ export type PositionMinAggregateOutputType = {
   description: string | null
   requirements: string | null
   salary: string | null
+  location: string | null
+  type: string | null
   status: $Enums.PositionStatus | null
+  published: boolean | null
   jobingJobId: string | null
   createdAt: Date | null
 }
@@ -43,7 +46,10 @@ export type PositionMaxAggregateOutputType = {
   description: string | null
   requirements: string | null
   salary: string | null
+  location: string | null
+  type: string | null
   status: $Enums.PositionStatus | null
+  published: boolean | null
   jobingJobId: string | null
   createdAt: Date | null
 }
@@ -55,7 +61,10 @@ export type PositionCountAggregateOutputType = {
   description: number
   requirements: number
   salary: number
+  location: number
+  type: number
   status: number
+  published: number
   jobingJobId: number
   createdAt: number
   _all: number
@@ -69,7 +78,10 @@ export type PositionMinAggregateInputType = {
   description?: true
   requirements?: true
   salary?: true
+  location?: true
+  type?: true
   status?: true
+  published?: true
   jobingJobId?: true
   createdAt?: true
 }
@@ -81,7 +93,10 @@ export type PositionMaxAggregateInputType = {
   description?: true
   requirements?: true
   salary?: true
+  location?: true
+  type?: true
   status?: true
+  published?: true
   jobingJobId?: true
   createdAt?: true
 }
@@ -93,7 +108,10 @@ export type PositionCountAggregateInputType = {
   description?: true
   requirements?: true
   salary?: true
+  location?: true
+  type?: true
   status?: true
+  published?: true
   jobingJobId?: true
   createdAt?: true
   _all?: true
@@ -178,7 +196,10 @@ export type PositionGroupByOutputType = {
   description: string | null
   requirements: string | null
   salary: string | null
+  location: string | null
+  type: string | null
   status: $Enums.PositionStatus
+  published: boolean
   jobingJobId: string | null
   createdAt: Date
   _count: PositionCountAggregateOutputType | null
@@ -211,7 +232,10 @@ export type PositionWhereInput = {
   description?: Prisma.StringNullableFilter<"Position"> | string | null
   requirements?: Prisma.StringNullableFilter<"Position"> | string | null
   salary?: Prisma.StringNullableFilter<"Position"> | string | null
+  location?: Prisma.StringNullableFilter<"Position"> | string | null
+  type?: Prisma.StringNullableFilter<"Position"> | string | null
   status?: Prisma.EnumPositionStatusFilter<"Position"> | $Enums.PositionStatus
+  published?: Prisma.BoolFilter<"Position"> | boolean
   jobingJobId?: Prisma.StringNullableFilter<"Position"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   candidates?: Prisma.CandidateListRelationFilter
@@ -226,7 +250,10 @@ export type PositionOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   requirements?: Prisma.SortOrderInput | Prisma.SortOrder
   salary?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   jobingJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   candidates?: Prisma.CandidateOrderByRelationAggregateInput
@@ -244,7 +271,10 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"Position"> | string | null
   requirements?: Prisma.StringNullableFilter<"Position"> | string | null
   salary?: Prisma.StringNullableFilter<"Position"> | string | null
+  location?: Prisma.StringNullableFilter<"Position"> | string | null
+  type?: Prisma.StringNullableFilter<"Position"> | string | null
   status?: Prisma.EnumPositionStatusFilter<"Position"> | $Enums.PositionStatus
+  published?: Prisma.BoolFilter<"Position"> | boolean
   jobingJobId?: Prisma.StringNullableFilter<"Position"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
   candidates?: Prisma.CandidateListRelationFilter
@@ -259,7 +289,10 @@ export type PositionOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   requirements?: Prisma.SortOrderInput | Prisma.SortOrder
   salary?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   jobingJobId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PositionCountOrderByAggregateInput
@@ -277,7 +310,10 @@ export type PositionScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   requirements?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   salary?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
+  type?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   status?: Prisma.EnumPositionStatusWithAggregatesFilter<"Position"> | $Enums.PositionStatus
+  published?: Prisma.BoolWithAggregatesFilter<"Position"> | boolean
   jobingJobId?: Prisma.StringNullableWithAggregatesFilter<"Position"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Position"> | Date | string
 }
@@ -288,7 +324,10 @@ export type PositionCreateInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
@@ -303,7 +342,10 @@ export type PositionUncheckedCreateInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
@@ -316,7 +358,10 @@ export type PositionUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
@@ -331,7 +376,10 @@ export type PositionUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
@@ -345,7 +393,10 @@ export type PositionCreateManyInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
 }
@@ -356,7 +407,10 @@ export type PositionUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -368,7 +422,10 @@ export type PositionUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,7 +452,10 @@ export type PositionCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   requirements?: Prisma.SortOrder
   salary?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   jobingJobId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -407,7 +467,10 @@ export type PositionMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   requirements?: Prisma.SortOrder
   salary?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   jobingJobId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -419,7 +482,10 @@ export type PositionMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   requirements?: Prisma.SortOrder
   salary?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  published?: Prisma.SortOrder
   jobingJobId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -508,7 +574,10 @@ export type PositionCreateWithoutDepartmentInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
@@ -521,7 +590,10 @@ export type PositionUncheckedCreateWithoutDepartmentInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
@@ -564,7 +636,10 @@ export type PositionScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"Position"> | string | null
   requirements?: Prisma.StringNullableFilter<"Position"> | string | null
   salary?: Prisma.StringNullableFilter<"Position"> | string | null
+  location?: Prisma.StringNullableFilter<"Position"> | string | null
+  type?: Prisma.StringNullableFilter<"Position"> | string | null
   status?: Prisma.EnumPositionStatusFilter<"Position"> | $Enums.PositionStatus
+  published?: Prisma.BoolFilter<"Position"> | boolean
   jobingJobId?: Prisma.StringNullableFilter<"Position"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Position"> | Date | string
 }
@@ -575,7 +650,10 @@ export type PositionCreateWithoutCandidatesInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
@@ -589,7 +667,10 @@ export type PositionUncheckedCreateWithoutCandidatesInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
@@ -617,7 +698,10 @@ export type PositionUpdateWithoutCandidatesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
@@ -631,7 +715,10 @@ export type PositionUncheckedUpdateWithoutCandidatesInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
@@ -643,7 +730,10 @@ export type PositionCreateWithoutInterviewsInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
@@ -657,7 +747,10 @@ export type PositionUncheckedCreateWithoutInterviewsInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
@@ -685,7 +778,10 @@ export type PositionUpdateWithoutInterviewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
@@ -699,7 +795,10 @@ export type PositionUncheckedUpdateWithoutInterviewsInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
@@ -711,7 +810,10 @@ export type PositionCreateManyDepartmentInput = {
   description?: string | null
   requirements?: string | null
   salary?: string | null
+  location?: string | null
+  type?: string | null
   status?: $Enums.PositionStatus
+  published?: boolean
   jobingJobId?: string | null
   createdAt?: Date | string
 }
@@ -722,7 +824,10 @@ export type PositionUpdateWithoutDepartmentInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
@@ -735,7 +840,10 @@ export type PositionUncheckedUpdateWithoutDepartmentInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
@@ -748,7 +856,10 @@ export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -800,7 +911,10 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   description?: boolean
   requirements?: boolean
   salary?: boolean
+  location?: boolean
+  type?: boolean
   status?: boolean
+  published?: boolean
   jobingJobId?: boolean
   createdAt?: boolean
   candidates?: boolean | Prisma.Position$candidatesArgs<ExtArgs>
@@ -816,7 +930,10 @@ export type PositionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   requirements?: boolean
   salary?: boolean
+  location?: boolean
+  type?: boolean
   status?: boolean
+  published?: boolean
   jobingJobId?: boolean
   createdAt?: boolean
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
@@ -829,7 +946,10 @@ export type PositionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   description?: boolean
   requirements?: boolean
   salary?: boolean
+  location?: boolean
+  type?: boolean
   status?: boolean
+  published?: boolean
   jobingJobId?: boolean
   createdAt?: boolean
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
@@ -842,12 +962,15 @@ export type PositionSelectScalar = {
   description?: boolean
   requirements?: boolean
   salary?: boolean
+  location?: boolean
+  type?: boolean
   status?: boolean
+  published?: boolean
   jobingJobId?: boolean
   createdAt?: boolean
 }
 
-export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "departmentId" | "description" | "requirements" | "salary" | "status" | "jobingJobId" | "createdAt", ExtArgs["result"]["position"]>
+export type PositionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "departmentId" | "description" | "requirements" | "salary" | "location" | "type" | "status" | "published" | "jobingJobId" | "createdAt", ExtArgs["result"]["position"]>
 export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidates?: boolean | Prisma.Position$candidatesArgs<ExtArgs>
   interviews?: boolean | Prisma.Position$interviewsArgs<ExtArgs>
@@ -875,7 +998,10 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     description: string | null
     requirements: string | null
     salary: string | null
+    location: string | null
+    type: string | null
     status: $Enums.PositionStatus
+    published: boolean
     jobingJobId: string | null
     createdAt: Date
   }, ExtArgs["result"]["position"]>
@@ -1310,7 +1436,10 @@ export interface PositionFieldRefs {
   readonly description: Prisma.FieldRef<"Position", 'String'>
   readonly requirements: Prisma.FieldRef<"Position", 'String'>
   readonly salary: Prisma.FieldRef<"Position", 'String'>
+  readonly location: Prisma.FieldRef<"Position", 'String'>
+  readonly type: Prisma.FieldRef<"Position", 'String'>
   readonly status: Prisma.FieldRef<"Position", 'PositionStatus'>
+  readonly published: Prisma.FieldRef<"Position", 'Boolean'>
   readonly jobingJobId: Prisma.FieldRef<"Position", 'String'>
   readonly createdAt: Prisma.FieldRef<"Position", 'DateTime'>
 }
