@@ -21,6 +21,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pageImages, setPageImages] = useState<string[]>([]);
+  const [isStaticPdf, setIsStaticPdf] = useState(false);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
 
   // Load and render PDF with form support
@@ -37,6 +38,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
         if (cancelled) return;
 
         container.innerHTML = "";
+        let totalFormFields = 0;
 
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
@@ -52,6 +54,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           pageDiv.style.height = `${viewport.height}px`;
           pageDiv.style.margin = "0 auto 8px";
           pageDiv.className = "shadow-sm border rounded overflow-hidden bg-white";
+          pageDiv.dataset.pageIndex = String(i - 1);
 
           // Canvas
           const canvas = document.createElement("canvas");
@@ -67,15 +70,20 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
 
           // Annotation layer (form fields)
           const annotations = await page.getAnnotations();
-          if (annotations.length > 0) {
-            const annotLayer = document.createElement("div");
-            annotLayer.style.position = "absolute";
-            annotLayer.style.top = "0";
-            annotLayer.style.left = "0";
-            annotLayer.style.width = "100%";
-            annotLayer.style.height = "100%";
+          const formAnnotations = annotations.filter((a: { fieldType?: string }) => a.fieldType);
 
-            for (const annot of annotations) {
+          const annotLayer = document.createElement("div");
+          annotLayer.style.position = "absolute";
+          annotLayer.style.top = "0";
+          annotLayer.style.left = "0";
+          annotLayer.style.width = "100%";
+          annotLayer.style.height = "100%";
+          annotLayer.dataset.annotLayer = "true";
+
+          if (formAnnotations.length > 0) {
+            totalFormFields += formAnnotations.length;
+
+            for (const annot of formAnnotations) {
               if (!annot.rect) continue;
 
               const [x1, y1, x2, y2] = annot.rect;
@@ -139,10 +147,63 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
                 annotLayer.appendChild(select);
               }
             }
-            pageDiv.appendChild(annotLayer);
           }
 
+          pageDiv.appendChild(annotLayer);
           container.appendChild(pageDiv);
+        }
+
+        // If no form fields found, enable click-to-type mode
+        if (totalFormFields === 0 && !cancelled) {
+          setIsStaticPdf(true);
+          // Add click handlers to all pages
+          const allPageDivs = container.querySelectorAll<HTMLDivElement>(":scope > div");
+          allPageDivs.forEach((pageDiv) => {
+            pageDiv.style.cursor = "crosshair";
+            pageDiv.addEventListener("click", (e) => {
+              // Don't add if clicking on an existing input
+              if ((e.target as HTMLElement).tagName === "INPUT") return;
+
+              const rect = pageDiv.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const clickY = e.clientY - rect.top;
+              const leftPct = (clickX / rect.width) * 100;
+              const topPct = (clickY / rect.height) * 100;
+
+              const layer = pageDiv.querySelector("[data-annot-layer]") as HTMLDivElement;
+              if (!layer) return;
+
+              const input = document.createElement("input");
+              input.type = "text";
+              input.dataset.fieldName = `text_${Date.now()}`;
+              input.dataset.page = pageDiv.dataset.pageIndex || "0";
+              input.placeholder = "Type here...";
+              input.style.cssText = `
+                position:absolute;
+                left:${leftPct}%;top:${topPct}%;
+                min-width:100px;max-width:60%;height:18px;
+                border:1px solid #0d9488;background:rgba(255,255,240,0.9);
+                font-size:11px;padding:1px 4px;box-sizing:border-box;
+                font-family:sans-serif;color:#000;outline:none;
+                border-radius:2px;
+              `;
+              input.addEventListener("focus", () => { input.style.borderColor = "#0d9488"; input.style.boxShadow = "0 0 0 2px rgba(13,148,136,0.2)"; });
+              input.addEventListener("blur", () => {
+                input.style.boxShadow = "none";
+                if (!input.value) { input.remove(); }
+                else { input.style.borderColor = "transparent"; input.style.background = "transparent"; }
+              });
+
+              // Delete on backspace when empty
+              input.addEventListener("keydown", (ke) => {
+                if (ke.key === "Backspace" && !input.value) { input.remove(); }
+                if (ke.key === "Enter") { input.blur(); }
+              });
+
+              layer.appendChild(input);
+              input.focus();
+            });
+          });
         }
       } catch (err) {
         console.error("Failed to load PDF:", err);
@@ -347,7 +408,11 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           <>
             <div className="bg-teal-50 border-b border-teal-100 px-4 py-3 flex items-center gap-3">
               <Icon name="edit_document" size={16} className="text-teal-600 shrink-0" />
-              <p className="text-sm text-teal-700">Tap any field and type to fill it in.</p>
+              <p className="text-sm text-teal-700">
+                {isStaticPdf
+                  ? "Tap anywhere on the document to add text."
+                  : "Tap any field and type to fill it in."}
+              </p>
             </div>
             <div ref={pdfContainerRef} className="p-3 space-y-2" />
             <div className="sticky bottom-0 bg-white border-t p-3 shadow-lg">
