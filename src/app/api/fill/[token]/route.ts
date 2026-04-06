@@ -1,6 +1,4 @@
 import { extractPdfFormFields, submitFilledForm } from "@/lib/actions/filling";
-import { sendFillConfirmationEmail } from "@/lib/email";
-import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
@@ -23,12 +21,12 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { fieldValues } = body;
+  const { fieldValues, textOverlays } = body;
 
-  if (!fieldValues || typeof fieldValues !== "object") {
-    return NextResponse.json({ error: "Field values required" }, { status: 400 });
+  if ((!fieldValues || typeof fieldValues !== "object") && (!textOverlays || !Array.isArray(textOverlays))) {
+    return NextResponse.json({ error: "Field values or text overlays required" }, { status: 400 });
   }
 
-  const result = await submitFilledForm(token, fieldValues);
+  const result = await submitFilledForm(token, fieldValues || {}, textOverlays || []);
   return NextResponse.json(result, { status: result.success ? 200 : 400 });
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 
@@ -12,8 +12,17 @@ export type PdfFormField = {
   options?: string[]; // for dropdowns
 };
 
+export type TextOverlay = {
+  page: number;
+  xPercent: number;
+  yPercent: number;
+  text: string;
+  fontSize?: number;
+};
+
 export async function extractPdfFormFields(token: string): Promise<{
   fields: PdfFormField[];
+  pageCount: number;
   documentName: string;
   employeeName: string;
   status: string;
@@ -43,28 +52,41 @@ export async function extractPdfFormFields(token: string): Promise<{
   });
   if (!fileBlob) return null;
 
-  const pdfDoc = await PDFDocument.load(fileBlob.data);
-  const form = pdfDoc.getForm();
-  const pdfFields = form.getFields();
+  let fields: PdfFormField[] = [];
+  let pageCount = 1;
 
-  const fields: PdfFormField[] = [];
-  for (const field of pdfFields) {
-    const name = field.getName();
-    const typeName = field.constructor.name;
+  try {
+    const pdfDoc = await PDFDocument.load(fileBlob.data, { ignoreEncryption: true });
+    pageCount = pdfDoc.getPageCount();
 
-    if (typeName === "PDFTextField") {
-      const tf = form.getTextField(name);
-      fields.push({ name, type: "text", value: tf.getText() || "" });
-    } else if (typeName === "PDFCheckBox") {
-      const cb = form.getCheckBox(name);
-      fields.push({ name, type: "checkbox", value: cb.isChecked() ? "true" : "false" });
-    } else if (typeName === "PDFDropdown") {
-      const dd = form.getDropdown(name);
-      fields.push({ name, type: "dropdown", value: dd.getSelected()?.[0] || "", options: dd.getOptions() });
-    } else if (typeName === "PDFRadioGroup") {
-      const rg = form.getRadioGroup(name);
-      fields.push({ name, type: "radio", value: rg.getSelected() || "", options: rg.getOptions() });
+    const form = pdfDoc.getForm();
+    const pdfFields = form.getFields();
+    console.log(`[filling] Found ${pdfFields.length} AcroForm fields in "${request.documentName}"`);
+
+    for (const field of pdfFields) {
+      const name = field.getName();
+      const typeName = field.constructor.name;
+
+      try {
+        if (typeName === "PDFTextField") {
+          const tf = form.getTextField(name);
+          fields.push({ name, type: "text", value: tf.getText() || "" });
+        } else if (typeName === "PDFCheckBox") {
+          const cb = form.getCheckBox(name);
+          fields.push({ name, type: "checkbox", value: cb.isChecked() ? "true" : "false" });
+        } else if (typeName === "PDFDropdown") {
+          const dd = form.getDropdown(name);
+          fields.push({ name, type: "dropdown", value: dd.getSelected()?.[0] || "", options: dd.getOptions() });
+        } else if (typeName === "PDFRadioGroup") {
+          const rg = form.getRadioGroup(name);
+          fields.push({ name, type: "radio", value: rg.getSelected() || "", options: rg.getOptions() });
+        }
+      } catch (e) {
+        console.warn(`[filling] Could not read field "${name}" (${typeName}):`, e);
+      }
     }
+  } catch (e) {
+    console.error("[filling] Failed to parse PDF form fields:", e);
   }
 
   const employeeName = request.signerName
@@ -72,6 +94,7 @@ export async function extractPdfFormFields(token: string): Promise<{
 
   return {
     fields,
+    pageCount,
     documentName: request.documentName,
     employeeName,
     status: request.status,
@@ -80,7 +103,8 @@ export async function extractPdfFormFields(token: string): Promise<{
 
 export async function submitFilledForm(
   token: string,
-  fieldValues: Record<string, string>
+  fieldValues: Record<string, string>,
+  textOverlays?: TextOverlay[]
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -101,32 +125,52 @@ export async function submitFilledForm(
     });
     if (!fileBlob) return { success: false, error: "Could not fetch document" };
 
-    const pdfDoc = await PDFDocument.load(fileBlob.data);
-    const form = pdfDoc.getForm();
+    const pdfDoc = await PDFDocument.load(fileBlob.data, { ignoreEncryption: true });
 
-    // Fill in the form fields
-    for (const [name, value] of Object.entries(fieldValues)) {
-      try {
-        const field = form.getField(name);
-        const typeName = field.constructor.name;
+    // Mode 1: Fill AcroForm fields
+    if (Object.keys(fieldValues).length > 0) {
+      const form = pdfDoc.getForm();
+      for (const [name, value] of Object.entries(fieldValues)) {
+        try {
+          const field = form.getField(name);
+          const typeName = field.constructor.name;
 
-        if (typeName === "PDFTextField") {
-          form.getTextField(name).setText(value);
-        } else if (typeName === "PDFCheckBox") {
-          const cb = form.getCheckBox(name);
-          if (value === "true") cb.check(); else cb.uncheck();
-        } else if (typeName === "PDFDropdown") {
-          form.getDropdown(name).select(value);
-        } else if (typeName === "PDFRadioGroup") {
-          form.getRadioGroup(name).select(value);
+          if (typeName === "PDFTextField") {
+            form.getTextField(name).setText(value);
+          } else if (typeName === "PDFCheckBox") {
+            const cb = form.getCheckBox(name);
+            if (value === "true") cb.check(); else cb.uncheck();
+          } else if (typeName === "PDFDropdown") {
+            form.getDropdown(name).select(value);
+          } else if (typeName === "PDFRadioGroup") {
+            form.getRadioGroup(name).select(value);
+          }
+        } catch (e) {
+          console.warn(`[filling] Could not set field "${name}":`, e);
         }
-      } catch (e) {
-        console.warn(`[filling] Could not set field "${name}":`, e);
       }
+      form.flatten();
     }
 
-    // Flatten the form so fields are no longer editable
-    form.flatten();
+    // Mode 2: Draw text overlays on pages
+    if (textOverlays && textOverlays.length > 0) {
+      const pages = pdfDoc.getPages();
+      for (const overlay of textOverlays) {
+        if (overlay.page < 0 || overlay.page >= pages.length) continue;
+        const page = pages[overlay.page];
+        const { width, height } = page.getSize();
+        const x = (overlay.xPercent / 100) * width;
+        const y = height - (overlay.yPercent / 100) * height;
+        const fontSize = overlay.fontSize || 11;
+
+        page.drawText(overlay.text, {
+          x,
+          y: y - fontSize,
+          size: fontSize,
+          color: rgb(0.05, 0.05, 0.15),
+        });
+      }
+    }
 
     const filledPdfBytes = await pdfDoc.save();
 
@@ -143,7 +187,7 @@ export async function submitFilledForm(
     });
     const filledDocUrl = `/api/onboarding-docs/${filledFilename}`;
 
-    // Update signing request as completed (reuse SIGNED status)
+    // Update signing request as completed
     await db.signingRequest.update({
       where: { id: request.id },
       data: { status: "SIGNED", signedAt: new Date(), signedDocUrl: filledDocUrl },
