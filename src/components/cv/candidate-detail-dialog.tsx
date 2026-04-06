@@ -253,12 +253,30 @@ export function CandidateDetailDialog({
 
     setSaving(true);
 
-    // If moving to BACKGROUND_CHECK, initiate the check via API
+    // If moving to BACKGROUND_CHECK, initiate the check via API AND update candidate (for notifications)
     if (form.status === "BACKGROUND_CHECK" && candidate.status !== "BACKGROUND_CHECK") {
       await fetch("/api/background-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ candidateId: candidate.id, options: bgCheckOptions }),
+      });
+      // Still call updateCandidate so notifications are sent
+      await updateCandidate(candidate.id, {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone || undefined,
+        linkedinUrl: form.linkedinUrl || undefined,
+        skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
+        experience: form.experience || undefined,
+        source: form.source || undefined,
+        notes: form.notes || undefined,
+        positionId: form.positionId || undefined,
+        costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+        hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : undefined,
+        managerId: form.managerId || undefined,
+        recruiterId: form.recruiterId || undefined,
+        status: form.status,
       });
       setSaving(false);
       router.refresh();
@@ -278,6 +296,7 @@ export function CandidateDetailDialog({
       notes: form.notes || undefined,
       positionId: form.positionId || undefined,
       costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+      hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : undefined,
       managerId: form.managerId || undefined,
       recruiterId: form.recruiterId || undefined,
       status: form.status,
@@ -513,12 +532,13 @@ export function CandidateDetailDialog({
                   </div>
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      Start Date
+                      Start Date <span className="text-red-400">*</span>
                     </label>
                     <input
                       value={form.startDate}
                       onChange={(e) => update("startDate", e.target.value)}
                       type="date"
+                      required
                       className={inputClass}
                     />
                   </div>
@@ -946,7 +966,7 @@ export function CandidateDetailDialog({
             </button>
             <button
               onClick={handleSave}
-              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email || (form.status === "HIRED" && candidate.status !== "HIRED" && !form.companyEmail)}
+              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email || (form.status === "HIRED" && candidate.status !== "HIRED" && (!form.companyEmail || !form.startDate))}
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium text-white",
                 form.status === "HIRED" && candidate.status !== "HIRED"

@@ -81,7 +81,8 @@ const DOC_STAGES = ["HIRED", "PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
 async function sendStageDocumentsEmail(
   status: string,
   candidate: { id: string; firstName: string; lastName: string; email: string; phone: string | null; hourlyRate: number | null; positionId: string | null },
-  employeeId?: string
+  employeeId?: string,
+  startDate?: string | Date | null
 ) {
   if (!DOC_STAGES.includes(status) || !candidate.email) return;
 
@@ -106,6 +107,7 @@ async function sendStageDocumentsEmail(
       phone: candidate.phone,
       hourlyRate: candidate.hourlyRate,
       position,
+      startDate,
     };
     const pdfDocs = docs.filter((d) => d.pdfData);
     console.log(`[stage-docs] ${pdfDocs.length} docs have PDF data`);
@@ -625,7 +627,7 @@ export async function hireCandidateAndStartOnboarding(
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
     // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id);
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
@@ -680,7 +682,7 @@ export async function hireCandidateAndStartOnboarding(
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
     // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id);
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/onboarding");

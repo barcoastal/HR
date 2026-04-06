@@ -7,6 +7,7 @@ export const AVAILABLE_PLACEHOLDERS = [
   { key: "{{hourlyRate}}", description: "Hourly rate" },
   { key: "{{position}}", description: "Position applied to" },
   { key: "{{date}}", description: "Today's date" },
+  { key: "{{startDate}}", description: "Employee start date" },
   { key: "{{company}}", description: "Company name" },
 ];
 
@@ -17,6 +18,7 @@ type CandidateData = {
   phone: string | null;
   hourlyRate: number | null;
   position: { title: string } | null;
+  startDate?: string | Date | null;
 };
 
 export function resolvePlaceholder(
@@ -31,6 +33,10 @@ export function resolvePlaceholder(
     day: "numeric",
   });
 
+  const startDateStr = candidate.startDate
+    ? new Date(candidate.startDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "N/A";
+
   const map: Record<string, string> = {
     "{{firstName}}": candidate.firstName,
     "{{lastName}}": candidate.lastName,
@@ -40,6 +46,7 @@ export function resolvePlaceholder(
     "{{hourlyRate}}": candidate.hourlyRate ? `$${candidate.hourlyRate.toFixed(2)}/hr` : "N/A",
     "{{position}}": candidate.position?.title || "N/A",
     "{{date}}": dateStr,
+    "{{startDate}}": startDateStr,
     "{{company}}": companyName,
   };
 
@@ -58,6 +65,10 @@ export function fillPlaceholders(
     day: "numeric",
   });
 
+  const startDateStr = candidate.startDate
+    ? new Date(candidate.startDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    : "N/A";
+
   return content
     .replace(/\{\{firstName\}\}/g, candidate.firstName)
     .replace(/\{\{lastName\}\}/g, candidate.lastName)
@@ -70,6 +81,7 @@ export function fillPlaceholders(
     )
     .replace(/\{\{position\}\}/g, candidate.position?.title || "N/A")
     .replace(/\{\{date\}\}/g, dateStr)
+    .replace(/\{\{startDate\}\}/g, startDateStr)
     .replace(/\{\{company\}\}/g, companyName);
 }
 
