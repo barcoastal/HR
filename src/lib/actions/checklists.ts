@@ -27,7 +27,8 @@ export async function addChecklistItem(
   emailSubject?: string,
   emailBody?: string,
   documentUrl?: string,
-  documentName?: string
+  documentName?: string,
+  documentAction?: string
 ) {
   const maxOrder = await db.checklistItem.findFirst({
     where: { checklistId },
@@ -48,6 +49,7 @@ export async function addChecklistItem(
       emailBody: emailBody || null,
       documentUrl: documentUrl || null,
       documentName: documentName || null,
+      documentAction: documentAction || "NONE",
     },
   });
   revalidatePath("/settings");

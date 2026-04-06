@@ -298,7 +298,8 @@ export function OnboardingSetup({
       undefined, // emailSubject
       undefined, // emailBody
       newDocAction !== "NONE" ? newDocUrl || undefined : undefined,
-      newDocAction !== "NONE" ? newDocName || undefined : undefined
+      newDocAction !== "NONE" ? newDocName || undefined : undefined,
+      newDocAction
     );
     setAddingItem(false);
     setNewTitle("");
@@ -379,7 +380,8 @@ export function OnboardingSetup({
       undefined,
       undefined,
       (overrideNewDocAction[overrideId] ?? "NONE") !== "NONE" ? overrideNewDocUrl[overrideId] || undefined : undefined,
-      (overrideNewDocAction[overrideId] ?? "NONE") !== "NONE" ? overrideNewDocName[overrideId] || undefined : undefined
+      (overrideNewDocAction[overrideId] ?? "NONE") !== "NONE" ? overrideNewDocName[overrideId] || undefined : undefined,
+      overrideNewDocAction[overrideId] || "NONE"
     );
     setOverrideAddingItem((prev) => ({ ...prev, [overrideId]: false }));
     setOverrideNewTitle((prev) => ({ ...prev, [overrideId]: "" }));

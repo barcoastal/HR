@@ -329,7 +329,7 @@ model ChecklistItem {
   emailBody        String?
   documentUrl      String?
   documentName     String?
-  documentAction   String              @default("NONE") // NONE | SEND | SIGN
+  documentAction   String              @default("NONE") // NONE | SEND | SIGN | FILL
 
   checklist        OnboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   assignee         Employee?           @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
