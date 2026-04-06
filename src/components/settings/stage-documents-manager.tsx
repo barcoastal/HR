@@ -26,6 +26,7 @@ type StageDoc = {
   name: string;
   placeholders: string; // JSON
   requiresSignature: boolean;
+  requiresFill: boolean;
   order: number;
   hasPdf: boolean;
 };
@@ -107,8 +108,13 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
                       <p className={cn("text-xs flex items-center gap-1.5", !doc.hasPdf ? "text-amber-400" : "text-[var(--color-text-muted)]")}>
                         {!doc.hasPdf ? "No PDF — click edit to upload" : `${placeholders.length} placeholder${placeholders.length !== 1 ? "s" : ""} marked`}
                         {doc.requiresSignature && (
-                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-500/10 text-blue-400">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">
                             <Icon name="draw" size={10} />sign
+                          </span>
+                        )}
+                        {doc.requiresFill && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-teal-500/10 text-teal-400">
+                            <Icon name="edit_document" size={10} />fill
                           </span>
                         )}
                       </p>
@@ -182,6 +188,7 @@ function PdfDocumentEditor({
     existing ? JSON.parse(existing.placeholders || "[]") : []
   );
   const [requiresSignature, setRequiresSignature] = useState(existing?.requiresSignature ?? false);
+  const [requiresFill, setRequiresFill] = useState(existing?.requiresFill ?? false);
   const [saving, setSaving] = useState(false);
   const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
   const [pageCount, setPageCount] = useState(0);
@@ -313,10 +320,11 @@ function PdfDocumentEditor({
     try {
       const placeholdersJson = JSON.stringify(placeholders);
       if (existing) {
-        const updateData: { name: string; placeholders: string; requiresSignature: boolean; pdfData?: string } = {
+        const updateData: { name: string; placeholders: string; requiresSignature: boolean; requiresFill: boolean; pdfData?: string } = {
           name: name.trim(),
           placeholders: placeholdersJson,
           requiresSignature,
+          requiresFill,
         };
         if (pdfBase64) updateData.pdfData = pdfBase64;
         await updateStageDocument(existing.id, updateData);
@@ -327,6 +335,7 @@ function PdfDocumentEditor({
           pdfData: pdfBase64!,
           placeholders: placeholdersJson,
           requiresSignature,
+          requiresFill,
         });
       }
       onDone();
@@ -349,27 +358,37 @@ function PdfDocumentEditor({
         />
       </div>
 
-      {/* Requires Signature toggle */}
-      <label className="flex items-center gap-3 cursor-pointer">
-        <div
-          onClick={() => setRequiresSignature(!requiresSignature)}
-          className={cn(
-            "relative w-9 h-5 rounded-full transition-colors",
-            requiresSignature ? "bg-blue-500" : "bg-[var(--color-border)]"
-          )}
-        >
-          <div className={cn(
-            "absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform",
-            requiresSignature ? "translate-x-4" : "translate-x-0.5"
-          )} />
+      {/* Document action selector */}
+      <div>
+        <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-2">Document Action</label>
+        <div className="flex gap-2">
+          {[
+            { value: "attachment", label: "Attachment", desc: "Sent as email attachment", icon: "attach_email" as const, color: "bg-gray-100 text-gray-600 border-gray-200" },
+            { value: "sign", label: "Sign", desc: "Send signing link", icon: "draw" as const, color: "bg-purple-500/10 text-purple-600 border-purple-300" },
+            { value: "fill", label: "Fill", desc: "Send fillable form link", icon: "edit_document" as const, color: "bg-teal-500/10 text-teal-600 border-teal-300" },
+          ].map((opt) => {
+            const isActive = opt.value === "sign" ? requiresSignature : opt.value === "fill" ? requiresFill : !requiresSignature && !requiresFill;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  setRequiresSignature(opt.value === "sign");
+                  setRequiresFill(opt.value === "fill");
+                }}
+                className={cn(
+                  "flex-1 flex flex-col items-center gap-1 px-3 py-2.5 rounded-lg border-2 text-center transition-all",
+                  isActive ? opt.color : "border-transparent bg-[var(--color-bg)] text-[var(--color-text-muted)] hover:border-[var(--color-border)]"
+                )}
+              >
+                <Icon name={opt.icon} size={18} />
+                <span className="text-xs font-medium">{opt.label}</span>
+                <span className="text-[10px] opacity-70">{opt.desc}</span>
+              </button>
+            );
+          })}
         </div>
-        <div>
-          <span className="text-sm font-medium text-[var(--color-text-primary)]">Requires Signature</span>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            {requiresSignature ? "Will send a signing link instead of just attaching the PDF" : "Will be sent as an email attachment"}
-          </p>
-        </div>
-      </label>
+      </div>
 
       {/* PDF Upload — show for new docs or existing docs without PDF */}
       {!pdfBase64 && (!existing || needsUpload) && (

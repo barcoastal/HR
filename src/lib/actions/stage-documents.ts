@@ -16,7 +16,7 @@ export async function getAllStageDocuments() {
   // Don't return pdfData in list queries (too large)
   // Use raw query to check if pdfData exists without loading it
   const docs = await db.stageDocument.findMany({
-    select: { id: true, stage: true, name: true, placeholders: true, requiresSignature: true, order: true, createdAt: true, updatedAt: true },
+    select: { id: true, stage: true, name: true, placeholders: true, requiresSignature: true, requiresFill: true, order: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
   // Check which docs have PDF data without loading the blobs
@@ -34,6 +34,7 @@ export async function getAllStageDocuments() {
     name: d.name,
     placeholders: d.placeholders,
     requiresSignature: d.requiresSignature,
+    requiresFill: d.requiresFill,
     order: d.order,
     hasPdf: pdfSet.has(d.id),
     createdAt: d.createdAt,
@@ -51,6 +52,7 @@ export async function createStageDocument(data: {
   pdfData: string; // base64
   placeholders: string; // JSON
   requiresSignature?: boolean;
+  requiresFill?: boolean;
 }) {
   if (!DOCUMENT_STAGES.includes(data.stage)) {
     throw new Error("Invalid stage for documents");
@@ -63,6 +65,7 @@ export async function createStageDocument(data: {
       pdfData: data.pdfData,
       placeholders: data.placeholders,
       requiresSignature: data.requiresSignature ?? false,
+      requiresFill: data.requiresFill ?? false,
       order: count,
     },
   });
@@ -72,7 +75,7 @@ export async function createStageDocument(data: {
 
 export async function updateStageDocument(
   id: string,
-  data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean }
+  data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean; requiresFill?: boolean }
 ) {
   const doc = await db.stageDocument.update({ where: { id }, data });
   revalidatePath("/settings");

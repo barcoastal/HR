@@ -114,10 +114,13 @@ async function sendStageDocumentsEmail(
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const attachmentDocs: typeof pdfDocs = [];
     const signingDocs: typeof pdfDocs = [];
+    const fillDocs: typeof pdfDocs = [];
 
     for (const doc of pdfDocs) {
       if (doc.requiresSignature) {
         signingDocs.push(doc);
+      } else if (doc.requiresFill) {
+        fillDocs.push(doc);
       } else {
         attachmentDocs.push(doc);
       }
@@ -149,6 +152,47 @@ async function sendStageDocumentsEmail(
         documentName: doc.name,
       });
       console.log(`[stage-docs] Created signing request for "${doc.name}"`);
+    }
+
+    // Handle docs that require filling — upload filled PDF (with placeholders pre-filled), create fill request
+    for (const doc of fillDocs) {
+      const positions = JSON.parse(doc.placeholders || "[]");
+      console.log(`[stage-docs] Filling "${doc.name}" for fill form, ${positions.length} placeholders`);
+      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+
+      const { randomUUID } = await import("crypto");
+      const filename = `${randomUUID()}.pdf`;
+      const buffer = Buffer.from(filledPdf);
+      await db.fileBlob.create({
+        data: { filename, mimeType: "application/pdf", size: buffer.length, data: buffer },
+      });
+      const documentUrl = `/api/onboarding-docs/${filename}`;
+
+      // Create a signing request (reused for fill) and send fill email
+      const crypto = await import("crypto");
+      const token = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+      await db.signingRequest.create({
+        data: {
+          employeeId: employeeId || null,
+          candidateId: employeeId ? null : candidate.id,
+          signerName: `${candidate.firstName} ${candidate.lastName}`,
+          signerEmail: candidate.email,
+          token,
+          documentUrl,
+          documentName: doc.name,
+          expiresAt,
+        },
+      });
+
+      const { sendFillRequestEmail } = await import("@/lib/email");
+      await sendFillRequestEmail({
+        to: candidate.email,
+        firstName: candidate.firstName,
+        documentName: doc.name,
+        fillUrl: `${baseUrl}/fill/${token}`,
+      });
+      console.log(`[stage-docs] Created fill request for "${doc.name}"`);
     }
 
     // Handle attachment-only docs

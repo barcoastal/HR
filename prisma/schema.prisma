@@ -960,6 +960,7 @@ model StageDocument {
   pdfData      String?  // base64-encoded PDF file
   placeholders      String   @default("[]") // JSON: [{page, x, y, width, placeholder, fontSize}]
   requiresSignature Boolean  @default(false)
+  requiresFill      Boolean  @default(false)
   order             Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

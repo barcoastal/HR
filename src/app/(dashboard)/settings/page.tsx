@@ -146,6 +146,7 @@ export default async function SettingsPage() {
             name: d.name,
             placeholders: d.placeholders,
             requiresSignature: d.requiresSignature,
+            requiresFill: d.requiresFill,
             order: d.order,
             hasPdf: d.hasPdf,
           }))}
