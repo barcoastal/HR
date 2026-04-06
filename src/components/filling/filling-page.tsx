@@ -44,7 +44,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   const hasDetectedFields = data.detectedFields.length > 0;
   const useSmartForm = !hasAcroFields && hasDetectedFields;
 
-  const [step, setStep] = useState<"review" | "fill" | "sign" | "done">("review");
+  const [step, setStep] = useState<"review" | "fill" | "sign" | "confirm" | "done">("review");
   const [acroValues, setAcroValues] = useState<Record<string, string>>({});
   const [detectedValues, setDetectedValues] = useState<Record<string, string>>({});
   const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
@@ -145,8 +145,8 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           </div>
           {/* Step indicators */}
           <div className="flex items-center gap-1 shrink-0">
-            {(useSmartForm ? ["Review", "Fill", "Sign"] : ["Review", "Fill"]).map((label, i) => {
-              const steps = useSmartForm ? ["review", "fill", "sign"] : ["review", "fill"];
+            {(useSmartForm ? ["Review", "Fill", "Sign", "Confirm"] : ["Review", "Fill"]).map((label, i) => {
+              const steps = useSmartForm ? ["review", "fill", "sign", "confirm"] : ["review", "fill"];
               const current = steps.indexOf(step);
               return (
                 <div key={label} className={cn(
@@ -280,11 +280,113 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
                 Back
               </button>
               <button
-                onClick={handleSubmit}
-                disabled={submitting || !signatureBase64}
+                onClick={() => setStep("confirm")}
+                disabled={!signatureBase64}
                 className={cn(
                   "flex-1 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-sm",
-                  !submitting && signatureBase64
+                  signatureBase64
+                    ? "bg-teal-600 text-white hover:bg-teal-700"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                )}
+              >
+                <Icon name="preview" size={16} />
+                Review & Submit
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Confirm step ── */}
+        {step === "confirm" && (
+          <div className="space-y-4">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex items-start gap-3">
+              <Icon name="fact_check" size={18} className="text-blue-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-blue-700">Please review your answers below before submitting.</p>
+            </div>
+
+            {/* Review answers */}
+            {useSmartForm && (() => {
+              const sections = new Map<string, typeof data.detectedFields>();
+              for (const f of data.detectedFields) {
+                const sec = f.section || "General";
+                if (!sections.has(sec)) sections.set(sec, []);
+                sections.get(sec)!.push(f);
+              }
+              return Array.from(sections.entries()).map(([section, fields]) => {
+                const filledFields = fields.filter((f) => detectedValues[f.id]?.trim());
+                if (filledFields.length === 0) return null;
+                return (
+                  <div key={section} className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                    <div className="px-4 py-2.5 bg-gray-50 border-b">
+                      <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">{section}</h3>
+                    </div>
+                    <div className="divide-y divide-gray-100">
+                      {filledFields.map((f) => (
+                        <div key={f.id} className="px-4 py-2.5 flex items-center justify-between gap-4">
+                          <span className="text-xs text-gray-500 shrink-0">{f.label}</span>
+                          <span className="text-sm text-gray-900 font-medium text-right truncate">{detectedValues[f.id]}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              });
+            })()}
+
+            {hasAcroFields && (
+              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div className="px-4 py-2.5 bg-gray-50 border-b">
+                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Form Fields</h3>
+                </div>
+                <div className="divide-y divide-gray-100">
+                  {data.fields.filter((f) => acroValues[f.name]?.trim()).map((f) => (
+                    <div key={f.name} className="px-4 py-2.5 flex items-center justify-between gap-4">
+                      <span className="text-xs text-gray-500 shrink-0">{formatFieldLabel(f.name)}</span>
+                      <span className="text-sm text-gray-900 font-medium text-right truncate">
+                        {f.type === "checkbox" ? (acroValues[f.name] === "true" ? "Yes" : "No") : acroValues[f.name]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Signature preview */}
+            {signatureBase64 && (
+              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div className="px-4 py-2.5 bg-gray-50 border-b">
+                  <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">Signature</h3>
+                </div>
+                <div className="p-4 flex items-center gap-4">
+                  <img src={signatureBase64} alt="Your signature" className="h-12 border-b border-gray-200" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{data.employeeName}</p>
+                    <p className="text-xs text-gray-500">{formattedDate}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {error && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                <Icon name="error" size={16} className="text-red-500 shrink-0" />
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setStep("sign")}
+                className="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className={cn(
+                  "flex-1 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-sm",
+                  !submitting
                     ? "bg-teal-600 text-white hover:bg-teal-700"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 )}
@@ -292,7 +394,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
                 {submitting ? (
                   <><Icon name="progress_activity" size={16} className="animate-material-spin" />Submitting...</>
                 ) : (
-                  <><Icon name="check_circle" size={16} />Submit & Sign</>
+                  <><Icon name="check_circle" size={16} />Confirm & Submit</>
                 )}
               </button>
             </div>
