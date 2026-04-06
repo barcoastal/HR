@@ -30,6 +30,7 @@ type SigningRequest = {
   createdAt: Date;
   message: string | null;
   employeeTaskId: string | null;
+  employeeTask?: { documentAction: string | null } | null;
 };
 
 type Props = {
@@ -116,6 +117,7 @@ function SourceBadge({ isOnboarding }: { isOnboarding: boolean }) {
 export function DocumentSigningManager({ signingRequests, employees, isAdmin = false, currentEmployeeId }: Props) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showSendDialog, setShowSendDialog] = useState(false);
+  const [sendAction, setSendAction] = useState<"sign" | "fill">("sign");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [docMessage, setDocMessage] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -176,22 +178,27 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
     }
   }
 
-  // Send for signing
+  // Send for signing or filling
   async function handleSend() {
     if (!selectedEmployeeId || !uploadedDoc) return;
     setSending(true);
     try {
-      await createStandaloneSigningRequest({
-        employeeId: selectedEmployeeId,
-        documentUrl: uploadedDoc.url,
-        documentName: uploadedDoc.name,
-        message: docMessage || undefined,
-      });
+      if (sendAction === "fill") {
+        const { sendDocForFilling } = await import("@/lib/actions/employee-documents");
+        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name);
+      } else {
+        await createStandaloneSigningRequest({
+          employeeId: selectedEmployeeId,
+          documentUrl: uploadedDoc.url,
+          documentName: uploadedDoc.name,
+          message: docMessage || undefined,
+        });
+      }
       setShowSendDialog(false);
       resetForm();
       router.refresh();
     } catch {
-      alert("Failed to send signing request. Please try again.");
+      alert(`Failed to send ${sendAction === "fill" ? "fill" : "signing"} request. Please try again.`);
     } finally {
       setSending(false);
     }
@@ -201,6 +208,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
     setSelectedEmployeeId("");
     setDocMessage("");
     setUploadedDoc(null);
+    setSendAction("sign");
   }
 
   // Resend
@@ -231,8 +239,8 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
   }
 
   // Copy link
-  function handleCopyLink(token: string, id: string) {
-    const url = `${window.location.origin}/sign/${token}`;
+  function handleCopyLink(token: string, id: string, isFill: boolean) {
+    const url = `${window.location.origin}/${isFill ? "fill" : "sign"}/${token}`;
     navigator.clipboard.writeText(url);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -305,13 +313,22 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
         </div>
 
         {isAdmin && (
-          <button
-            onClick={() => setShowSendDialog(true)}
-            className={cn(accentButtonClass, "flex items-center gap-2")}
-          >
-            <Icon name="add" size={16} />
-            Send for Signing
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => { setSendAction("sign"); setShowSendDialog(true); }}
+              className={cn(accentButtonClass, "flex items-center gap-2")}
+            >
+              <Icon name="draw" size={16} />
+              Send for Signing
+            </button>
+            <button
+              onClick={() => { setSendAction("fill"); setShowSendDialog(true); }}
+              className="px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 bg-teal-600 text-white hover:bg-teal-700 transition-colors"
+            >
+              <Icon name="edit_document" size={16} />
+              Send for Filling
+            </button>
+          </div>
         )}
       </div>
 
@@ -335,6 +352,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
             const canResend = effectiveStatus === "PENDING" || effectiveStatus === "VIEWED";
             const canVoid = effectiveStatus !== "SIGNED";
             const isSigned = effectiveStatus === "SIGNED";
+            const isFillRequest = request.employeeTask?.documentAction === "FILL";
 
             return (
               <div
@@ -387,18 +405,18 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
 
                   {/* Actions */}
                   <div className="flex items-center gap-1 flex-shrink-0">
-                    {/* Sign Now — for employee's own pending documents */}
+                    {/* Sign/Fill Now — for employee's own pending documents */}
                     {!isSigned && canResend && currentEmployeeId === request.employeeId && (
                       <a
-                        href={`/sign/${request.token}`}
+                        href={`/${isFillRequest ? "fill" : "sign"}/${request.token}`}
                         className={cn(
                           "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold",
                           "bg-[var(--color-accent)] text-white",
                           "hover:bg-[var(--color-accent-hover)] transition-colors",
                         )}
                       >
-                        <Icon name="edit_note" size={12} />
-                        Sign Now
+                        <Icon name={isFillRequest ? "edit_document" : "edit_note"} size={12} />
+                        {isFillRequest ? "Fill Now" : "Sign Now"}
                       </a>
                     )}
                     {isSigned && request.signedDocUrl && (
@@ -437,9 +455,9 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
                     )}
                     {isAdmin && (
                       <button
-                        onClick={() => handleCopyLink(request.token, request.id)}
+                        onClick={() => handleCopyLink(request.token, request.id, isFillRequest)}
                         className="p-2 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
-                        title="Copy signing link"
+                        title={isFillRequest ? "Copy fill link" : "Copy signing link"}
                       >
                         {copiedId === request.id ? (
                           <Icon name="check_circle" size={16} className="text-emerald-400" />
@@ -472,7 +490,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
           setShowSendDialog(false);
           resetForm();
         }}
-        title="Send Document for Signing"
+        title={sendAction === "fill" ? "Send Document for Filling" : "Send Document for Signing"}
       >
         <div className="space-y-4">
           {/* Employee Selector */}
@@ -575,7 +593,7 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
               ) : (
                 <Icon name="send" size={16} />
               )}
-              {sending ? "Sending..." : "Send for Signing"}
+              {sending ? "Sending..." : sendAction === "fill" ? "Send for Filling" : "Send for Signing"}
             </button>
           </div>
         </div>

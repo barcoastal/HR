@@ -96,6 +96,7 @@ export async function getAllSigningRequests() {
     include: {
       employee: { select: { id: true, firstName: true, lastName: true, email: true } },
       candidate: { select: { id: true, firstName: true, lastName: true, email: true } },
+      employeeTask: { select: { documentAction: true } },
     },
     orderBy: { createdAt: "desc" },
   });
