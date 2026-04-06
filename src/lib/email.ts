@@ -268,6 +268,32 @@ export async function sendWelcomeEmail({
   }
 }
 
+export async function sendFillRequestEmail({
+  to, firstName, documentName, fillUrl,
+}: {
+  to: string; firstName: string; documentName: string; fillUrl: string;
+}) {
+  const branding = await getCompanyBranding();
+  await sendEmail(to, `Please complete: ${documentName}`, `
+    <p>Hi ${firstName},</p>
+    <p>Please fill out <strong>${documentName}</strong> for your onboarding at ${branding.companyName}.</p>
+    <p><a href="${fillUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;">Fill Out Document</a></p>
+    <p>This link expires in 30 days.</p>
+  `);
+}
+
+export async function sendFillConfirmationEmail({
+  to, firstName, documentName,
+}: {
+  to: string; firstName: string; documentName: string;
+}) {
+  const branding = await getCompanyBranding();
+  await sendEmail(to, `Document completed: ${documentName}`, `
+    <p>Hi ${firstName},</p>
+    <p>Thanks for completing <strong>${documentName}</strong>. A copy has been saved to your file.</p>
+  `);
+}
+
 export async function sendSigningConfirmationEmail({
   to, firstName, documentName,
 }: {

@@ -120,6 +120,11 @@ export function OnboardingPreview({ open, onClose, onConfirm, departmentId, jobT
                           <Icon name="edit_note" size={12} />Sign Doc
                         </span>
                       )}
+                      {task.documentAction === "FILL" && (
+                        <span className="inline-flex items-center gap-1 text-xs text-teal-500">
+                          <Icon name="edit_document" size={12} />Fill Doc
+                        </span>
+                      )}
                     </div>
                   </div>
                   <button

@@ -27,6 +27,7 @@ export async function addEmployeeDocument(data: {
   category: DocumentCategory;
   visibility: DocumentVisibility;
   requireSignature?: boolean;
+  requireFill?: boolean;
 }) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
@@ -41,7 +42,9 @@ export async function addEmployeeDocument(data: {
     },
   });
 
-  if (data.requireSignature) {
+  if (data.requireFill) {
+    await sendDocForFilling(data.employeeId, data.url, data.name);
+  } else if (data.requireSignature) {
     await sendDocForSigning(data.employeeId, data.url, data.name);
   }
 
@@ -93,6 +96,54 @@ export async function sendDocForSigning(employeeId: string, documentUrl: string,
     signingUrl: `${baseUrl}/sign/${token}`,
   });
   console.log(`[signing] Sent signing request to ${employee.email} for "${documentName}" — link: ${baseUrl}/sign/${token}`);
+
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/onboarding");
+  return { success: true };
+}
+
+export async function sendDocForFilling(employeeId: string, documentUrl: string, documentName: string) {
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+
+  const employeeTask = await db.employeeTask.create({
+    data: {
+      employeeId,
+      title: `Fill: ${documentName}`,
+      description: `Please fill out ${documentName}`,
+      documentAction: "FILL",
+      documentUrl,
+      documentName,
+      status: "PENDING",
+    },
+  });
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  await db.signingRequest.create({
+    data: {
+      employeeTaskId: employeeTask.id,
+      employeeId,
+      token,
+      documentUrl,
+      documentName,
+      expiresAt,
+    },
+  });
+
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const { sendFillRequestEmail } = await import("@/lib/email");
+  await sendFillRequestEmail({
+    to: employee.email,
+    firstName: employee.firstName,
+    documentName,
+    fillUrl: `${baseUrl}/fill/${token}`,
+  });
+  console.log(`[filling] Sent fill request to ${employee.email} for "${documentName}" — link: ${baseUrl}/fill/${token}`);
 
   revalidatePath(`/people/${employeeId}`);
   revalidatePath("/onboarding");

@@ -66,6 +66,7 @@ export async function updateChecklistItem(
     emailBody?: string | null;
     documentUrl?: string | null;
     documentName?: string | null;
+    documentAction?: string;
   }
 ) {
   const item = await db.checklistItem.update({ where: { id }, data });

@@ -480,6 +480,17 @@ export function OnboardingTimeline({
                                               {task.signingStatus === "SIGNED" ? "Signed" : task.signingStatus === "VIEWED" ? "Viewed" : "Pending Signature"}
                                             </span>
                                           )}
+                                          {task.documentAction === "FILL" && (
+                                            <span className={cn(
+                                              "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs",
+                                              task.signingStatus === "SIGNED" ? "bg-emerald-500/10 text-emerald-500" :
+                                              task.signingStatus === "VIEWED" ? "bg-blue-500/10 text-blue-500" :
+                                              "bg-teal-500/10 text-teal-500"
+                                            )}>
+                                              <Icon name="edit_document" size={12} />
+                                              {task.signingStatus === "SIGNED" ? "Completed" : task.signingStatus === "VIEWED" ? "Viewed" : "Pending Fill"}
+                                            </span>
+                                          )}
                                           {task.assigneeName && (
                                             <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
                                               <Icon name="account_circle" size={12} />Assigned to: {task.assigneeName}

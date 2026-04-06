@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/icon";
 import {
   createChecklist,
   addChecklistItem,
+  updateChecklistItem,
   deleteChecklistItem,
   deleteChecklist,
   createOverrideChecklist,
@@ -67,6 +68,7 @@ const DOCUMENT_ACTIONS = [
   { value: "NONE", label: "None" },
   { value: "SEND", label: "Send" },
   { value: "SIGN", label: "Sign" },
+  { value: "FILL", label: "Fill" },
 ];
 
 function getDueDayLabel(dueDay: number | null): string {
@@ -92,6 +94,7 @@ function getDueDayLabel(dueDay: number | null): string {
 function getDocActionBadge(action: string) {
   if (action === "SEND") return { label: "SEND", color: "bg-blue-500/10 text-blue-500" };
   if (action === "SIGN") return { label: "SIGN", color: "bg-purple-500/10 text-purple-500" };
+  if (action === "FILL") return { label: "FILL", color: "bg-teal-500/10 text-teal-500" };
   return null;
 }
 
@@ -512,7 +515,6 @@ export function OffboardingSetup({
             {allBaseItems.length > 0 && (
               <div className="space-y-2">
                 {allBaseItems.map((item) => {
-                  const badge = getDocActionBadge(item.documentAction);
                   return (
                     <div
                       key={item.id}
@@ -548,21 +550,26 @@ export function OffboardingSetup({
                               ? `${item.assignee.firstName} ${item.assignee.lastName}`
                               : "Unassigned"}
                           </span>
-                          {badge && (
-                            <span
-                              className={cn(
-                                "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium",
-                                badge.color
-                              )}
-                            >
-                              {item.documentAction === "SEND" ? (
-                                <Icon name="send" size={12} />
-                              ) : (
-                                <Icon name="edit_note" size={12} />
-                              )}
-                              {badge.label}
-                            </span>
-                          )}
+                          <select
+                            value={item.documentAction}
+                            onChange={async (e) => {
+                              const newAction = e.target.value;
+                              await updateChecklistItem(item.id, { documentAction: newAction });
+                              router.refresh();
+                            }}
+                            className={cn(
+                              "px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer appearance-none pr-5 bg-no-repeat bg-[length:12px] bg-[right_4px_center]",
+                              item.documentAction === "SEND" ? "bg-blue-500/10 text-blue-500" :
+                              item.documentAction === "SIGN" ? "bg-purple-500/10 text-purple-500" :
+                              item.documentAction === "FILL" ? "bg-teal-500/10 text-teal-500" :
+                              "bg-gray-100 text-gray-500"
+                            )}
+                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")` }}
+                          >
+                            {DOCUMENT_ACTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                          </select>
                           {item.documentName && (
                             <span
                               className={cn(

@@ -201,6 +201,20 @@ export async function createEmployee(data: {
           documentName: task.documentName,
           signingUrl: `${baseUrl}/sign/${signingReq.token}`,
         });
+      } else if (task.documentAction === "FILL" && task.documentUrl && task.documentName) {
+        const fillingReq = await createSigningRequest(
+          employeeTask.id,
+          employee.id,
+          task.documentUrl,
+          task.documentName
+        );
+        const { sendFillRequestEmail } = await import("@/lib/email");
+        sendFillRequestEmail({
+          to: data.email,
+          firstName: data.firstName,
+          documentName: task.documentName,
+          fillUrl: `${baseUrl}/fill/${fillingReq.token}`,
+        });
       } else if (task.sendEmail && task.emailSubject && task.emailBody) {
         sendOnboardingEmail({
           to: data.email,
