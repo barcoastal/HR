@@ -21,8 +21,6 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pageImages, setPageImages] = useState<string[]>([]);
   const pdfContainerRef = useRef<HTMLDivElement>(null);
-  const pageCanvasRefs = useRef<HTMLCanvasElement[]>([]);
-  const pageScales = useRef<number[]>([]);
 
   // Load and render PDF with form support
   useEffect(() => {
@@ -38,8 +36,6 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
         if (cancelled) return;
 
         container.innerHTML = "";
-        pageCanvasRefs.current = [];
-        pageScales.current = [];
 
         for (let i = 1; i <= pdf.numPages; i++) {
           const page = await pdf.getPage(i);
@@ -47,8 +43,6 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           const baseViewport = page.getViewport({ scale: 1 });
           const scale = containerWidth / baseViewport.width;
           const viewport = page.getViewport({ scale });
-
-          pageScales.current.push(scale);
 
           // Page wrapper
           const pageDiv = document.createElement("div");
@@ -66,7 +60,6 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           canvas.style.width = "100%";
           canvas.style.height = "100%";
           pageDiv.appendChild(canvas);
-          pageCanvasRefs.current.push(canvas);
 
           const ctx = canvas.getContext("2d")!;
           await page.render({ canvasContext: ctx, viewport }).promise;
@@ -169,7 +162,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
 
     for (let i = 0; i < pageDivs.length; i++) {
       const pageDiv = pageDivs[i];
-      const canvas = pageCanvasRefs.current[i];
+      const canvas = pageDiv.querySelector<HTMLCanvasElement>("canvas");
       if (!canvas) continue;
 
       // Create a copy of the canvas
@@ -224,6 +217,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   }
 
   async function handleGoToSign() {
+    setError(null);
     // Capture pages NOW while the PDF container is still in the DOM
     const images = await captureFilledPages();
     if (images.length === 0) {
@@ -231,6 +225,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
       return;
     }
     setPageImages(images);
+    setError(null);
     setStep("sign");
   }
 
