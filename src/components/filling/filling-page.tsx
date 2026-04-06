@@ -19,6 +19,7 @@ type DetectedField = {
   xPercent: number;
   yPercent: number;
   required: boolean;
+  fontSize?: number;
   section?: string;
 };
 
@@ -78,6 +79,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
               xPercent: f.xPercent,
               yPercent: f.yPercent,
               text: detectedValues[f.id],
+              fontSize: f.fontSize || 9,
             }))
         : [];
 

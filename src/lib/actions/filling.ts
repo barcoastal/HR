@@ -20,7 +20,7 @@ export type DetectedField = {
   xPercent: number;   // position on page (0-100)
   yPercent: number;
   required: boolean;
-  width?: number;     // approximate field width in % of page
+  fontSize?: number;  // recommended font size
   section?: string;   // group label
 };
 
@@ -133,7 +133,7 @@ async function analyzePdfWithClaude(pdfData: Buffer | Uint8Array, documentName: 
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 4096,
+    max_tokens: 8192,
     messages: [
       {
         role: "user",
@@ -148,22 +148,33 @@ async function analyzePdfWithClaude(pdfData: Buffer | Uint8Array, documentName: 
           },
           {
             type: "text",
-            text: `Analyze this PDF document "${documentName}" and identify ALL fillable fields that a person would need to fill in by hand.
+            text: `Analyze this PDF form "${documentName}" and find every blank field/box/line that needs to be filled in.
 
-For each field, return:
-- id: unique identifier (e.g. "last_name", "ssn", "address")
-- label: human-readable label (e.g. "Last Name (Family Name)")
-- type: one of "text", "date", "ssn", "phone", "email", "number", "checkbox"
-- page: 0-indexed page number where the field appears
-- xPercent: horizontal position as percentage of page width (0=left, 100=right)
-- yPercent: vertical position as percentage of page height (0=top, 100=bottom)
+IMPORTANT RULES:
+- Scan ALL pages of the document, not just page 1
+- Include ALL fields the employee/person needs to fill — every blank line, text box, checkbox, and date field
+- For forms like I-9: include Section 1 employee fields AND Supplement A/B fields on later pages if present
+- Skip employer-only sections (Section 2, Section 3 of I-9) and printed instructions
+
+POSITIONING — this is critical, the text will be drawn at these exact coordinates:
+- xPercent: the LEFT EDGE of where the text should START inside the blank field (0=page left margin, 100=page right margin)
+- yPercent: the VERTICAL CENTER of the blank field/line (0=very top of page, 100=very bottom)
+- The position must be INSIDE the white fillable area, NOT on the label text
+- For a field labeled "Last Name" with a blank box to its right, xPercent should be the left edge of the blank box, NOT the label position
+
+For each field return:
+- id: unique snake_case identifier (e.g. "last_name", "ssn", "street_address")
+- label: human-readable label exactly as shown on the form
+- type: "text" | "date" | "ssn" | "phone" | "email" | "number" | "checkbox"
+- page: 0-indexed page number
+- xPercent: horizontal position (0-100) — left edge of the blank field
+- yPercent: vertical position (0-100) — center of the blank field
 - required: boolean
-- section: group/section name (e.g. "Section 1. Employee Information")
+- fontSize: recommended font size in points (typically 8-10 for form fields)
+- section: section/group name from the form
 
-Only include fields that need to be filled by the EMPLOYEE (Section 1 for I-9, etc). Skip employer-only sections, instructions, and pre-printed text.
-
-Return ONLY valid JSON array, no other text:
-[{"id":"...","label":"...","type":"...","page":0,"xPercent":0,"yPercent":0,"required":true,"section":"..."}]`,
+Return ONLY a valid JSON array, no markdown, no explanation:
+[{"id":"...","label":"...","type":"...","page":0,"xPercent":0,"yPercent":0,"required":true,"fontSize":9,"section":"..."}]`,
           },
         ],
       },
@@ -190,6 +201,7 @@ Return ONLY valid JSON array, no other text:
       xPercent: f.xPercent || 0,
       yPercent: f.yPercent || 0,
       required: f.required ?? false,
+      fontSize: f.fontSize || 9,
       section: f.section || undefined,
     }));
   } catch (e) {
@@ -261,12 +273,14 @@ export async function submitFilledForm(
         const page = pages[overlay.page];
         const { width, height } = page.getSize();
         const x = (overlay.xPercent / 100) * width;
-        const y = height - (overlay.yPercent / 100) * height;
-        const fontSize = overlay.fontSize || 10;
+        // yPercent is the vertical CENTER of the field (0=top, 100=bottom)
+        // PDF coordinates: 0=bottom, height=top — so we flip and center the text
+        const fontSize = overlay.fontSize || 9;
+        const y = height - (overlay.yPercent / 100) * height - (fontSize / 2);
 
         page.drawText(overlay.text, {
           x,
-          y: y - fontSize,
+          y,
           size: fontSize,
           color: rgb(0.05, 0.05, 0.15),
         });
