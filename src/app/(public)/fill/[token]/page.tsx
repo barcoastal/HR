@@ -1,12 +1,16 @@
-import { extractPdfFormFields } from "@/lib/actions/filling";
+import { db } from "@/lib/db";
 import { FillingPage } from "@/components/filling/filling-page";
 import { Icon } from "@/components/ui/icon";
 
 export default async function FillPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const result = await extractPdfFormFields(token);
 
-  if (!result) {
+  const request = await db.signingRequest.findUnique({
+    where: { token },
+    include: { employee: true },
+  });
+
+  if (!request || request.expiresAt < new Date() || request.status === "SIGNED" || request.status === "VOIDED") {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full text-center">
@@ -20,16 +24,27 @@ export default async function FillPage({ params }: { params: Promise<{ token: st
     );
   }
 
+  // Mark as viewed
+  if (request.status === "PENDING") {
+    await db.signingRequest.update({
+      where: { id: request.id },
+      data: { status: "VIEWED", viewedAt: new Date() },
+    });
+  }
+
+  const employeeName = request.signerName
+    || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Employee");
+
   return (
     <FillingPage
       token={token}
       data={{
-        fields: result.fields,
-        detectedFields: result.detectedFields,
-        pageCount: result.pageCount,
+        fields: [],
+        detectedFields: [],
+        pageCount: 1,
         documentUrl: `/api/fill/${token}/document`,
-        documentName: result.documentName,
-        employeeName: result.employeeName,
+        documentName: request.documentName,
+        employeeName,
       }}
     />
   );

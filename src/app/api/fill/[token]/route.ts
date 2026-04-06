@@ -1,18 +1,44 @@
-import { extractPdfFormFields, submitFilledForm } from "@/lib/actions/filling";
 import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { PDFDocument } from "pdf-lib";
+import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
-  const result = await extractPdfFormFields(token);
 
-  if (!result) {
+  // Minimal check — just verify the token is valid and return doc info
+  const request = await db.signingRequest.findUnique({
+    where: { token },
+    include: { employee: true },
+  });
+
+  if (!request || request.expiresAt < new Date()) {
     return NextResponse.json({ error: "Invalid or expired request" }, { status: 404 });
   }
+  if (request.status === "SIGNED" || request.status === "VOIDED") {
+    return NextResponse.json({ error: "Already completed" }, { status: 404 });
+  }
 
-  return NextResponse.json(result);
+  // Mark as viewed
+  if (request.status === "PENDING") {
+    await db.signingRequest.update({
+      where: { id: request.id },
+      data: { status: "VIEWED", viewedAt: new Date() },
+    });
+  }
+
+  const employeeName = request.signerName
+    || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Employee");
+
+  return NextResponse.json({
+    documentName: request.documentName,
+    employeeName,
+    status: request.status,
+  });
 }
 
 export async function POST(
@@ -21,8 +47,103 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { fieldValues, signatureBase64 } = body;
+  const { pageImages, signatureBase64 } = body;
 
-  const result = await submitFilledForm(token, fieldValues || {}, [], signatureBase64);
-  return NextResponse.json(result, { status: result.success ? 200 : 400 });
+  const signingRequest = await db.signingRequest.findUnique({
+    where: { token },
+    include: { employee: true, employeeTask: true },
+  });
+
+  if (!signingRequest || signingRequest.status === "SIGNED" || signingRequest.expiresAt < new Date()) {
+    return NextResponse.json({ error: "Invalid or expired request" }, { status: 400 });
+  }
+
+  if (!pageImages || !Array.isArray(pageImages) || pageImages.length === 0) {
+    return NextResponse.json({ error: "No page data" }, { status: 400 });
+  }
+
+  try {
+    const pdfDoc = await PDFDocument.create();
+
+    for (const imgData of pageImages) {
+      const imgBytes = Buffer.from(imgData.replace(/^data:image\/png;base64,/, ""), "base64");
+      const img = await pdfDoc.embedPng(imgBytes);
+      const pageWidth = 612;
+      const pageHeight = (img.height / img.width) * pageWidth;
+      const page = pdfDoc.addPage([pageWidth, pageHeight]);
+      page.drawImage(img, { x: 0, y: 0, width: pageWidth, height: pageHeight });
+    }
+
+    // Add signature to first page
+    if (signatureBase64) {
+      const sigBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
+      const sigImage = await pdfDoc.embedPng(sigBytes);
+      const firstPage = pdfDoc.getPages()[0];
+      const { width: pw, height: ph } = firstPage.getSize();
+      const sigWidth = Math.min(130, pw * 0.2);
+      const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
+
+      firstPage.drawImage(sigImage, {
+        x: pw * 0.05,
+        y: ph * 0.12,
+        width: sigWidth,
+        height: sigHeight,
+      });
+    }
+
+    const pdfBytes = await pdfDoc.save();
+
+    // Store filled PDF
+    const filename = `${randomUUID()}.pdf`;
+    const buffer = Buffer.from(pdfBytes);
+    await db.fileBlob.create({
+      data: { filename, mimeType: "application/pdf", size: buffer.length, data: buffer },
+    });
+    const filledDocUrl = `/api/onboarding-docs/${filename}`;
+
+    // Update signing request
+    await db.signingRequest.update({
+      where: { id: signingRequest.id },
+      data: { status: "SIGNED", signedAt: new Date(), signedDocUrl: filledDocUrl },
+    });
+
+    // Complete employee task
+    if (signingRequest.employeeTaskId) {
+      await db.employeeTask.update({
+        where: { id: signingRequest.employeeTaskId },
+        data: { status: "DONE", completedAt: new Date() },
+      });
+    }
+
+    // Store in employee documents
+    if (signingRequest.employeeId) {
+      await db.document.create({
+        data: {
+          employeeId: signingRequest.employeeId,
+          name: `Filled: ${signingRequest.documentName}`,
+          url: filledDocUrl,
+          category: "ONBOARDING",
+        },
+      });
+    }
+
+    // Confirmation email
+    const email = signingRequest.signerEmail || signingRequest.employee?.email;
+    const name = signingRequest.signerName || signingRequest.employee?.firstName || "there";
+    if (email) {
+      try {
+        const { sendFillConfirmationEmail } = await import("@/lib/email");
+        await sendFillConfirmationEmail({ to: email, firstName: name, documentName: signingRequest.documentName });
+      } catch (e) {
+        console.error("[fill] Confirmation email failed:", e);
+      }
+    }
+
+    revalidatePath("/onboarding");
+    revalidatePath("/documents");
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[fill] Submit error:", error);
+    return NextResponse.json({ success: false, error: "Failed to process" }, { status: 500 });
+  }
 }
