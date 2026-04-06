@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 
@@ -74,21 +74,39 @@ export async function POST(
       page.drawImage(img, { x: 0, y: 0, width: pageWidth, height: pageHeight });
     }
 
-    // Add signature at user-chosen position
+    // Add signature block at user-chosen position
     if (signatureBase64 && sigPosition) {
+      const signerName = signingRequest.signerName
+        || (signingRequest.employee ? `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}` : "Employee");
+      const signDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+
       const sigBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
       const sigImage = await pdfDoc.embedPng(sigBytes);
       const pages = pdfDoc.getPages();
       const pageIdx = Math.min(sigPosition.page || 0, pages.length - 1);
       const page = pages[pageIdx];
       const { width: pw, height: ph } = page.getSize();
-      const sigWidth = Math.min(130, pw * 0.2);
+      const sigWidth = Math.min(150, pw * 0.22);
       const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
 
       const x = (sigPosition.xPercent / 100) * pw;
       const y = ph - (sigPosition.yPercent / 100) * ph - sigHeight;
 
       page.drawImage(sigImage, { x, y, width: sigWidth, height: sigHeight });
+      page.drawLine({
+        start: { x, y: y - 2 },
+        end: { x: x + sigWidth, y: y - 2 },
+        thickness: 0.5,
+        color: rgb(0.5, 0.5, 0.5),
+      });
+      page.drawText(signerName, {
+        x, y: y - 14, size: 9,
+        color: rgb(0.1, 0.1, 0.15),
+      });
+      page.drawText(signDate, {
+        x, y: y - 25, size: 8,
+        color: rgb(0.35, 0.35, 0.4),
+      });
     }
 
     const pdfBytes = await pdfDoc.save();

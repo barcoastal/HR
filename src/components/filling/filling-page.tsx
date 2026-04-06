@@ -387,6 +387,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           <SignaturePlacement
             pageImages={pageImages}
             signatureBase64={signatureBase64!}
+            employeeName={data.employeeName}
             onPlaced={(pos) => handleGoToPreview(pos)}
             onBack={() => setStep("sign")}
             submitting={submitting}
@@ -433,9 +434,10 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
 
 // ── Signature Placement ──
 
-function SignaturePlacement({ pageImages, signatureBase64, onPlaced, onBack, submitting, error }: {
+function SignaturePlacement({ pageImages, signatureBase64, employeeName, onPlaced, onBack, submitting, error }: {
   pageImages: string[];
   signatureBase64: string;
+  employeeName: string;
   onPlaced: (pos: { page: number; xPercent: number; yPercent: number }) => void;
   onBack: () => void;
   submitting: boolean;
@@ -487,9 +489,12 @@ function SignaturePlacement({ pageImages, signatureBase64, onPlaced, onBack, sub
           <img src={pageImages[currentPage]} alt={`Page ${currentPage + 1}`} className="w-full" draggable={false} />
           {hoverPos && (
             <div className="absolute pointer-events-none" style={{ left: hoverPos.x - 5, top: hoverPos.y - 5 }}>
-              <div className="border-2 border-teal-500 border-dashed rounded bg-teal-500/5 p-1" style={{ width: 140, minHeight: 45 }}>
+              <div className="border-2 border-teal-500 border-dashed rounded bg-teal-500/5 p-1" style={{ width: 150, minHeight: 55 }}>
                 <img src={signatureBase64} alt="sig" className="h-6 opacity-60" />
-                <p className="text-[8px] text-teal-500 mt-0.5">{new Date().toLocaleDateString()}</p>
+                <div className="border-t border-teal-300/50 mt-0.5 pt-0.5">
+                  <p className="text-[9px] text-teal-600 font-medium leading-tight">{employeeName}</p>
+                  <p className="text-[8px] text-teal-400">{new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                </div>
               </div>
             </div>
           )}
