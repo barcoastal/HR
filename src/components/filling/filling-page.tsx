@@ -14,8 +14,9 @@ type FillingData = {
 };
 
 export function FillingPage({ token, data }: { token: string; data: FillingData }) {
-  const [step, setStep] = useState<"fill" | "sign" | "preview" | "done">("fill");
+  const [step, setStep] = useState<"fill" | "sign" | "place" | "preview" | "done">("fill");
   const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
+  const [sigPosition, setSigPosition] = useState<{ page: number; xPercent: number; yPercent: number } | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -229,19 +230,23 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
     setStep("sign");
   }
 
-  async function handleGoToPreview() {
+  async function handleGoToPlace() {
     if (!signatureBase64) return;
+    setStep("place");
+  }
+
+  async function handleGoToPreview(placedPosition?: { page: number; xPercent: number; yPercent: number }) {
+    const pos = placedPosition || sigPosition;
+    if (!signatureBase64 || !pos) return;
+    setSigPosition(pos);
     setSubmitting(true);
     setError(null);
 
     try {
-      const images = pageImages;
-
-      // Send to server to build preview PDF
       const res = await fetch(`/api/fill/${token}/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pageImages: images, signatureBase64 }),
+        body: JSON.stringify({ pageImages, signatureBase64, sigPosition: pos }),
       });
       if (!res.ok) throw new Error("Preview failed");
       const blob = await res.blob();
@@ -266,7 +271,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
       const res = await fetch(`/api/fill/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pageImages: images, signatureBase64 }),
+        body: JSON.stringify({ pageImages: images, signatureBase64, sigPosition }),
       });
       const result = await res.json();
       if (result.success) {
@@ -319,8 +324,8 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
             <p className="text-xs text-gray-500">{data.employeeName}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {["Fill", "Sign", "Preview"].map((label, i) => {
-              const steps = ["fill", "sign", "preview"];
+            {["Fill", "Sign", "Place", "Preview"].map((label, i) => {
+              const steps = ["fill", "sign", "place", "preview"];
               const current = steps.indexOf(step);
               return (
                 <div key={label} className="flex items-center gap-1">
@@ -367,16 +372,26 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
             <div className="flex gap-2">
               <button onClick={() => setStep("fill")}
                 className="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200">Back</button>
-              <button onClick={handleGoToPreview} disabled={!signatureBase64 || submitting}
+              <button onClick={handleGoToPlace} disabled={!signatureBase64}
                 className={cn("flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm",
-                  signatureBase64 && !submitting ? "bg-teal-600 text-white hover:bg-teal-700" : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  signatureBase64 ? "bg-teal-600 text-white hover:bg-teal-700" : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 )}>
-                {submitting
-                  ? <><Icon name="progress_activity" size={16} className="animate-material-spin" />Generating preview...</>
-                  : <><Icon name="preview" size={16} />Preview Document</>}
+                <Icon name="place" size={16} />Place Signature
               </button>
             </div>
           </div>
+        )}
+
+        {/* Place signature */}
+        {step === "place" && (
+          <SignaturePlacement
+            pageImages={pageImages}
+            signatureBase64={signatureBase64!}
+            onPlaced={(pos) => handleGoToPreview(pos)}
+            onBack={() => setStep("sign")}
+            submitting={submitting}
+            error={error}
+          />
         )}
 
         {/* Preview */}
@@ -412,6 +427,91 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Signature Placement ──
+
+function SignaturePlacement({ pageImages, signatureBase64, onPlaced, onBack, submitting, error }: {
+  pageImages: string[];
+  signatureBase64: string;
+  onPlaced: (pos: { page: number; xPercent: number; yPercent: number }) => void;
+  onBack: () => void;
+  submitting: boolean;
+  error: string | null;
+}) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
+
+  function handleClick(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
+    onPlaced({ page: currentPage, xPercent, yPercent });
+  }
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setHoverPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }
+
+  return (
+    <div className="p-4 space-y-4">
+      <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 flex items-start gap-3">
+        <Icon name="place" size={18} className="text-teal-600 shrink-0 mt-0.5" />
+        <p className="text-sm text-teal-700">Tap where you want your signature placed on the document.</p>
+      </div>
+
+      {pageImages.length > 1 && (
+        <div className="flex items-center justify-center gap-3">
+          <button onClick={() => setCurrentPage(Math.max(0, currentPage - 1))} disabled={currentPage === 0}
+            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30">
+            <Icon name="chevron_left" size={16} />
+          </button>
+          <span className="text-sm text-gray-600 font-medium">Page {currentPage + 1} of {pageImages.length}</span>
+          <button onClick={() => setCurrentPage(Math.min(pageImages.length - 1, currentPage + 1))} disabled={currentPage === pageImages.length - 1}
+            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30">
+            <Icon name="chevron_right" size={16} />
+          </button>
+        </div>
+      )}
+
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+        <div
+          className="relative cursor-crosshair"
+          onClick={handleClick}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setHoverPos(null)}
+        >
+          <img src={pageImages[currentPage]} alt={`Page ${currentPage + 1}`} className="w-full" draggable={false} />
+          {hoverPos && (
+            <div className="absolute pointer-events-none" style={{ left: hoverPos.x - 5, top: hoverPos.y - 5 }}>
+              <div className="border-2 border-teal-500 border-dashed rounded bg-teal-500/5 p-1" style={{ width: 140, minHeight: 45 }}>
+                <img src={signatureBase64} alt="sig" className="h-6 opacity-60" />
+                <p className="text-[8px] text-teal-500 mt-0.5">{new Date().toLocaleDateString()}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {error && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+          <Icon name="error" size={16} className="text-red-500 shrink-0" />
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
+
+      {submitting && (
+        <div className="flex items-center justify-center gap-2 py-3 text-sm text-gray-500">
+          <Icon name="progress_activity" size={16} className="animate-material-spin" />Generating preview...
+        </div>
+      )}
+
+      <button onClick={onBack} className="w-full py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200">
+        Back to Signature
+      </button>
     </div>
   );
 }

@@ -8,7 +8,7 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { pageImages, signatureBase64 } = body;
+  const { pageImages, signatureBase64, sigPosition } = body;
 
   const signingRequest = await db.signingRequest.findUnique({ where: { token } });
   if (!signingRequest || signingRequest.expiresAt < new Date()) {
@@ -33,22 +33,21 @@ export async function POST(
       page.drawImage(img, { x: 0, y: 0, width: pageWidth, height: pageHeight });
     }
 
-    // Add signature to first page
-    if (signatureBase64) {
+    // Add signature at user-chosen position
+    if (signatureBase64 && sigPosition) {
       const sigBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
       const sigImage = await pdfDoc.embedPng(sigBytes);
-      const firstPage = pdfDoc.getPages()[0];
-      const { width: pw, height: ph } = firstPage.getSize();
+      const pages = pdfDoc.getPages();
+      const pageIdx = Math.min(sigPosition.page || 0, pages.length - 1);
+      const page = pages[pageIdx];
+      const { width: pw, height: ph } = page.getSize();
       const sigWidth = Math.min(130, pw * 0.2);
       const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
 
-      // Place near bottom of page 1 — where signature lines typically are (~15% from bottom)
-      firstPage.drawImage(sigImage, {
-        x: pw * 0.05,
-        y: ph * 0.12,
-        width: sigWidth,
-        height: sigHeight,
-      });
+      const x = (sigPosition.xPercent / 100) * pw;
+      const y = ph - (sigPosition.yPercent / 100) * ph - sigHeight;
+
+      page.drawImage(sigImage, { x, y, width: sigWidth, height: sigHeight });
     }
 
     const pdfBytes = await pdfDoc.save();
