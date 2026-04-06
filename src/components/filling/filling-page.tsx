@@ -11,16 +11,20 @@ type FormField = {
   options?: string[];
 };
 
-type TextOverlay = {
+type DetectedField = {
   id: string;
+  label: string;
+  type: "text" | "date" | "ssn" | "phone" | "email" | "number" | "checkbox";
   page: number;
   xPercent: number;
   yPercent: number;
-  text: string;
+  required: boolean;
+  section?: string;
 };
 
 type FillingData = {
   fields: FormField[];
+  detectedFields: DetectedField[];
   pageCount: number;
   documentName: string;
   employeeName: string;
@@ -36,38 +40,54 @@ function formatFieldLabel(name: string): string {
 }
 
 export function FillingPage({ token, data }: { token: string; data: FillingData }) {
-  const hasFormFields = data.fields.length > 0;
-  const [step, setStep] = useState<"review" | "fill" | "done">("review");
-  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
-  const [textOverlays, setTextOverlays] = useState<TextOverlay[]>([]);
+  const hasAcroFields = data.fields.length > 0;
+  const hasDetectedFields = data.detectedFields.length > 0;
+  const useSmartForm = !hasAcroFields && hasDetectedFields;
+
+  const [step, setStep] = useState<"review" | "fill" | "sign" | "done">("review");
+  const [acroValues, setAcroValues] = useState<Record<string, string>>({});
+  const [detectedValues, setDetectedValues] = useState<Record<string, string>>({});
+  const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (hasFormFields) {
+    if (hasAcroFields) {
       const initial: Record<string, string> = {};
-      for (const field of data.fields) {
-        initial[field.name] = field.value || "";
-      }
-      setFieldValues(initial);
+      for (const field of data.fields) initial[field.name] = field.value || "";
+      setAcroValues(initial);
     }
-  }, [data.fields, hasFormFields]);
-
-  const updateField = (name: string, value: string) => {
-    setFieldValues((prev) => ({ ...prev, [name]: value }));
-  };
+    if (hasDetectedFields) {
+      const initial: Record<string, string> = {};
+      for (const field of data.detectedFields) initial[field.id] = "";
+      setDetectedValues(initial);
+    }
+  }, [data.fields, data.detectedFields, hasAcroFields, hasDetectedFields]);
 
   const handleSubmit = async () => {
     setSubmitting(true);
     setError(null);
 
     try {
+      // Build text overlays from detected fields
+      const textOverlays = useSmartForm
+        ? data.detectedFields
+            .filter((f) => detectedValues[f.id]?.trim())
+            .map((f) => ({
+              page: f.page,
+              xPercent: f.xPercent,
+              yPercent: f.yPercent,
+              text: detectedValues[f.id],
+            }))
+        : [];
+
       const res = await fetch(`/api/fill/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          fieldValues: hasFormFields ? fieldValues : {},
-          textOverlays: !hasFormFields ? textOverlays.map(({ page, xPercent, yPercent, text }) => ({ page, xPercent, yPercent, text })) : [],
+          fieldValues: hasAcroFields ? acroValues : {},
+          textOverlays,
+          signatureBase64: signatureBase64 || undefined,
         }),
       });
       const result = await res.json();
@@ -83,9 +103,9 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
     }
   };
 
-  const now = new Date();
-  const formattedDate = now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  const formattedDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
+  // ── Done screen ──
   if (step === "done") {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -95,7 +115,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           </div>
           <h1 className="text-xl font-bold text-gray-900 mb-2">Document Completed</h1>
           <p className="text-gray-600 mb-4">
-            You have successfully filled out <strong>{data.documentName}</strong>.
+            You have successfully filled out and signed <strong>{data.documentName}</strong>.
           </p>
           <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 border">
             <div className="flex items-center gap-2 text-sm">
@@ -108,11 +128,6 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
               <span className="text-gray-600">Date:</span>
               <span className="font-medium text-gray-900">{formattedDate}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Icon name="description" size={16} className="text-gray-400" />
-              <span className="text-gray-600">Document:</span>
-              <span className="font-medium text-gray-900 truncate">{data.documentName}</span>
-            </div>
           </div>
         </div>
       </div>
@@ -122,62 +137,46 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b shadow-sm">
-        <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-semibold text-gray-900">Fill Out Document</h1>
-            <p className="text-sm text-gray-500">{data.documentName}</p>
+      <header className="bg-white border-b shadow-sm sticky top-0 z-10">
+        <div className="max-w-lg mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="min-w-0">
+            <h1 className="text-base font-semibold text-gray-900 truncate">{data.documentName}</h1>
+            <p className="text-xs text-gray-500">{data.employeeName}</p>
           </div>
-          <div className="hidden sm:flex items-center gap-2">
-            {["Review", "Fill"].map((label, i) => {
-              const steps = ["review", "fill"];
+          {/* Step indicators */}
+          <div className="flex items-center gap-1 shrink-0">
+            {(useSmartForm ? ["Review", "Fill", "Sign"] : ["Review", "Fill"]).map((label, i) => {
+              const steps = useSmartForm ? ["review", "fill", "sign"] : ["review", "fill"];
               const current = steps.indexOf(step);
-              const isActive = i <= current;
               return (
-                <div key={label} className="flex items-center gap-2">
-                  {i > 0 && <div className={cn("w-6 h-0.5", isActive ? "bg-teal-500" : "bg-gray-200")} />}
-                  <div className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
-                    i === current ? "bg-teal-100 text-teal-700" : isActive ? "text-teal-600" : "text-gray-400"
-                  )}>
-                    {i < current ? (
-                      <Icon name="check_circle" size={14} />
-                    ) : (
-                      <span className={cn(
-                        "w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold",
-                        i === current ? "bg-teal-600 text-white" : "bg-gray-200 text-gray-500"
-                      )}>{i + 1}</span>
-                    )}
-                    {label}
-                  </div>
-                </div>
+                <div key={label} className={cn(
+                  "w-2 h-2 rounded-full",
+                  i === current ? "bg-teal-500" : i < current ? "bg-teal-300" : "bg-gray-200"
+                )} />
               );
             })}
           </div>
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto p-6">
+      <div className="max-w-lg mx-auto p-4">
+        {/* ── Review step ── */}
         {step === "review" && (
           <>
-            <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-6 flex items-start gap-3">
-              <Icon name="waving_hand" size={20} className="text-teal-600 shrink-0 mt-0.5" />
+            <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 mb-4 flex items-start gap-3">
+              <Icon name="waving_hand" size={18} className="text-teal-600 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-medium text-teal-900">Hi {data.employeeName},</p>
-                <p className="text-sm text-teal-700 mt-0.5">Please review the document below, then fill out the required fields.</p>
+                <p className="text-sm text-teal-700 mt-0.5">Review the document, then fill out the form.</p>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border mb-6">
-              <div className="flex items-center gap-2 px-4 py-3 border-b bg-gray-50 rounded-t-xl">
-                <Icon name="description" size={16} className="text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">{data.documentName}</span>
-              </div>
-              <div className="p-4">
+            <div className="bg-white rounded-xl shadow-sm border mb-4">
+              <div className="p-3">
                 <iframe
                   src={data.documentUrl}
                   className="w-full rounded border"
-                  style={{ height: "60vh" }}
+                  style={{ height: "55vh" }}
                   title="Document Preview"
                 />
               </div>
@@ -185,7 +184,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
 
             <button
               onClick={() => setStep("fill")}
-              className="w-full py-3.5 rounded-xl bg-teal-600 text-white font-semibold text-base hover:bg-teal-700 transition-all flex items-center justify-center gap-2.5 shadow-sm active:scale-[0.99]"
+              className="w-full py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-all flex items-center justify-center gap-2 shadow-sm"
             >
               <Icon name="edit_document" size={18} />
               Continue to Fill Out
@@ -193,22 +192,27 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
           </>
         )}
 
+        {/* ── Fill step ── */}
         {step === "fill" && (
-          <div className="space-y-6">
-            {hasFormFields ? (
-              <FormFieldsMode
+          <div className="space-y-4">
+            {hasAcroFields ? (
+              <AcroFormFields
                 fields={data.fields}
-                fieldValues={fieldValues}
-                onUpdateField={updateField}
-                onBack={() => setStep("review")}
+                values={acroValues}
+                onChange={(name, val) => setAcroValues((p) => ({ ...p, [name]: val }))}
+              />
+            ) : hasDetectedFields ? (
+              <SmartFormFields
+                fields={data.detectedFields}
+                values={detectedValues}
+                onChange={(id, val) => setDetectedValues((p) => ({ ...p, [id]: val }))}
               />
             ) : (
-              <TextOverlayMode
-                documentUrl={data.documentUrl}
-                overlays={textOverlays}
-                onOverlaysChange={setTextOverlays}
-                onBack={() => setStep("review")}
-              />
+              <div className="bg-white rounded-xl shadow-sm border p-6 text-center">
+                <Icon name="warning" size={32} className="text-amber-500 mx-auto mb-3" />
+                <p className="text-gray-700 font-medium">Could not detect form fields</p>
+                <p className="text-sm text-gray-500 mt-1">Please contact HR for assistance.</p>
+              </div>
             )}
 
             {error && (
@@ -218,22 +222,80 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
               </div>
             )}
 
-            <button
-              onClick={handleSubmit}
-              disabled={submitting || (!hasFormFields && textOverlays.length === 0)}
-              className={cn(
-                "w-full py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2.5 shadow-sm",
-                !submitting && (hasFormFields || textOverlays.length > 0)
-                  ? "bg-teal-600 text-white hover:bg-teal-700 active:scale-[0.99]"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              )}
-            >
-              {submitting ? (
-                <><Icon name="progress_activity" size={18} className="animate-material-spin" />Submitting...</>
-              ) : (
-                <><Icon name="check_circle" size={18} />Submit Completed Form</>
-              )}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setStep("review")}
+                className="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={() => {
+                  if (useSmartForm) {
+                    setStep("sign");
+                  } else {
+                    handleSubmit();
+                  }
+                }}
+                disabled={submitting}
+                className="flex-1 py-3 rounded-xl bg-teal-600 text-white font-semibold text-sm hover:bg-teal-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                {useSmartForm ? (
+                  <><Icon name="draw" size={16} />Continue to Sign</>
+                ) : submitting ? (
+                  <><Icon name="progress_activity" size={16} className="animate-material-spin" />Submitting...</>
+                ) : (
+                  <><Icon name="check_circle" size={16} />Submit</>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Sign step ── */}
+        {step === "sign" && (
+          <div className="space-y-4">
+            <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 flex items-start gap-3">
+              <Icon name="draw" size={18} className="text-teal-600 shrink-0 mt-0.5" />
+              <p className="text-sm text-teal-700">Draw your signature below to complete the form.</p>
+            </div>
+
+            <SignaturePad
+              name={data.employeeName}
+              onSignature={setSignatureBase64}
+            />
+
+            {error && (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                <Icon name="error" size={16} className="text-red-500 shrink-0" />
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setStep("fill")}
+                className="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={submitting || !signatureBase64}
+                className={cn(
+                  "flex-1 py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-sm",
+                  !submitting && signatureBase64
+                    ? "bg-teal-600 text-white hover:bg-teal-700"
+                    : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                )}
+              >
+                {submitting ? (
+                  <><Icon name="progress_activity" size={16} className="animate-material-spin" />Submitting...</>
+                ) : (
+                  <><Icon name="check_circle" size={16} />Submit & Sign</>
+                )}
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -241,355 +303,254 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   );
 }
 
-// ── Mode 1: AcroForm fields as HTML inputs ──
+// ── AcroForm fields (original mode) ──
 
-function FormFieldsMode({
-  fields, fieldValues, onUpdateField, onBack,
-}: {
+function AcroFormFields({ fields, values, onChange }: {
   fields: FormField[];
-  fieldValues: Record<string, string>;
-  onUpdateField: (name: string, value: string) => void;
-  onBack: () => void;
+  values: Record<string, string>;
+  onChange: (name: string, value: string) => void;
 }) {
   return (
-    <>
-      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-teal-50 border border-teal-100">
-        <Icon name="info" size={16} className="text-teal-600 shrink-0" />
-        <p className="text-sm text-teal-700">Fill in all the fields below.</p>
-        <button onClick={onBack} className="ml-auto text-xs text-teal-600 hover:text-teal-800 font-medium underline">
-          Back to review
-        </button>
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="px-4 py-3 bg-gray-50 border-b">
+        <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+          <Icon name="edit_document" size={16} className="text-teal-600" />
+          Form Fields
+        </h2>
       </div>
-
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div className="px-5 py-3 bg-gray-50 border-b">
-          <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-            <Icon name="edit_document" size={16} className="text-teal-600" />
-            Form Fields ({fields.length})
-          </h2>
-        </div>
-        <div className="p-5 space-y-4">
-          {fields.map((field) => (
-            <div key={field.name}>
-              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-1.5">
-                {formatFieldLabel(field.name)}
-              </label>
-              {field.type === "text" && (
-                <input
-                  type="text"
-                  value={fieldValues[field.name] || ""}
-                  onChange={(e) => onUpdateField(field.name, e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500"
-                />
-              )}
-              {field.type === "checkbox" && (
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={fieldValues[field.name] === "true"}
-                    onChange={(e) => onUpdateField(field.name, e.target.checked ? "true" : "false")}
-                    className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
-                  />
-                  <span className="text-sm text-gray-700">Yes</span>
-                </label>
-              )}
-              {field.type === "dropdown" && (
-                <select
-                  value={fieldValues[field.name] || ""}
-                  onChange={(e) => onUpdateField(field.name, e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500"
-                >
-                  <option value="">Select...</option>
-                  {field.options?.map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              )}
-              {field.type === "radio" && (
-                <div className="flex flex-wrap gap-3">
-                  {field.options?.map((opt) => (
-                    <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        name={field.name}
-                        value={opt}
-                        checked={fieldValues[field.name] === opt}
-                        onChange={() => onUpdateField(field.name, opt)}
-                        className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"
-                      />
-                      <span className="text-sm text-gray-700">{opt}</span>
-                    </label>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+      <div className="p-4 space-y-4">
+        {fields.map((field) => (
+          <FieldInput
+            key={field.name}
+            label={formatFieldLabel(field.name)}
+            type={field.type === "text" ? "text" : field.type}
+            value={values[field.name] || ""}
+            onChange={(v) => onChange(field.name, v)}
+            options={field.options}
+          />
+        ))}
       </div>
-    </>
+    </div>
   );
 }
 
-// ── Mode 2: Click-to-type text overlay on PDF pages ──
+// ── Smart form fields (Claude-detected) ──
 
-function TextOverlayMode({
-  documentUrl, overlays, onOverlaysChange, onBack,
-}: {
-  documentUrl: string;
-  overlays: TextOverlay[];
-  onOverlaysChange: (overlays: TextOverlay[]) => void;
-  onBack: () => void;
+function SmartFormFields({ fields, values, onChange }: {
+  fields: DetectedField[];
+  values: Record<string, string>;
+  onChange: (id: string, value: string) => void;
 }) {
-  const [pageImages, setPageImages] = useState<string[]>([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadPdf() {
-      setLoading(true);
-      try {
-        const pdfjsLib = await loadPdfJs();
-        const pdf = await pdfjsLib.getDocument(documentUrl).promise;
-        if (cancelled) return;
-
-        const images: string[] = [];
-        for (let i = 1; i <= pdf.numPages; i++) {
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({ scale: 1.5 });
-          const canvas = document.createElement("canvas");
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const ctx = canvas.getContext("2d")!;
-          await page.render({ canvasContext: ctx, viewport }).promise;
-          images.push(canvas.toDataURL("image/png"));
-        }
-
-        if (!cancelled) {
-          setPageImages(images);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Failed to load PDF:", err);
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    loadPdf();
-    return () => { cancelled = true; };
-  }, [documentUrl]);
-
-  function handlePageClick(e: React.MouseEvent<HTMLDivElement>) {
-    // Don't add new overlay if clicking on an existing one
-    if ((e.target as HTMLElement).closest("[data-overlay]")) return;
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPercent = ((e.clientX - rect.left) / rect.width) * 100;
-    const yPercent = ((e.clientY - rect.top) / rect.height) * 100;
-
-    const id = crypto.randomUUID();
-    const newOverlay: TextOverlay = {
-      id,
-      page: currentPage,
-      xPercent,
-      yPercent,
-      text: "",
-    };
-    onOverlaysChange([...overlays, newOverlay]);
-    setEditingId(id);
-  }
-
-  function updateOverlayText(id: string, text: string) {
-    onOverlaysChange(overlays.map((o) => o.id === id ? { ...o, text } : o));
-  }
-
-  function removeOverlay(id: string) {
-    onOverlaysChange(overlays.filter((o) => o.id !== id));
-    if (editingId === id) setEditingId(null);
-  }
-
-  const currentPageOverlays = overlays.filter((o) => o.page === currentPage);
-  const filledCount = overlays.filter((o) => o.text.trim()).length;
-
-  if (loading) {
-    return (
-      <div className="bg-white rounded-xl shadow-sm border p-12 flex flex-col items-center justify-center">
-        <Icon name="progress_activity" size={32} className="animate-material-spin text-teal-500 mb-3" />
-        <p className="text-sm text-gray-500">Loading document pages...</p>
-      </div>
-    );
+  // Group by section
+  const sections = new Map<string, DetectedField[]>();
+  for (const f of fields) {
+    const section = f.section || "General";
+    if (!sections.has(section)) sections.set(section, []);
+    sections.get(section)!.push(f);
   }
 
   return (
-    <>
-      <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-teal-50 border border-teal-100">
-        <Icon name="mouse" size={16} className="text-teal-600 shrink-0" />
-        <div className="flex-1">
-          <p className="text-sm font-medium text-teal-800">Click anywhere on the document to type text</p>
-          <p className="text-xs text-teal-600 mt-0.5">
-            {filledCount > 0 ? `${filledCount} field${filledCount !== 1 ? "s" : ""} filled` : "Click on a field to start typing"}
-          </p>
-        </div>
-        <button onClick={onBack} className="text-xs text-teal-600 hover:text-teal-800 font-medium underline">
-          Back to review
-        </button>
-      </div>
-
-      {/* Page navigation */}
-      {pageImages.length > 1 && (
-        <div className="flex items-center justify-center gap-3">
-          <button
-            onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-            disabled={currentPage === 0}
-            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
-          >
-            <Icon name="chevron_left" size={16} />
-          </button>
-          <span className="text-sm text-gray-600 font-medium">
-            Page {currentPage + 1} of {pageImages.length}
-          </span>
-          <button
-            onClick={() => setCurrentPage(Math.min(pageImages.length - 1, currentPage + 1))}
-            disabled={currentPage === pageImages.length - 1}
-            className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-30"
-          >
-            <Icon name="chevron_right" size={16} />
-          </button>
-        </div>
-      )}
-
-      {/* PDF page with overlays */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div
-          ref={containerRef}
-          className="relative cursor-crosshair"
-          onClick={handlePageClick}
-        >
-          <img
-            src={pageImages[currentPage]}
-            alt={`Page ${currentPage + 1}`}
-            className="w-full"
-            draggable={false}
-          />
-          {/* Text overlay inputs */}
-          {currentPageOverlays.map((overlay) => (
-            <div
-              key={overlay.id}
-              data-overlay
-              className="absolute group"
-              style={{
-                left: `${overlay.xPercent}%`,
-                top: `${overlay.yPercent}%`,
-                transform: "translate(-4px, -50%)",
-              }}
-            >
-              <div className="flex items-center gap-0.5">
-                <input
-                  type="text"
-                  value={overlay.text}
-                  onChange={(e) => updateOverlayText(overlay.id, e.target.value)}
-                  onFocus={() => setEditingId(overlay.id)}
-                  autoFocus={editingId === overlay.id}
-                  placeholder="Type here..."
-                  className={cn(
-                    "px-1.5 py-0.5 text-sm bg-yellow-50/90 border rounded shadow-sm outline-none min-w-[120px]",
-                    editingId === overlay.id
-                      ? "border-teal-500 ring-2 ring-teal-500/30"
-                      : "border-yellow-300"
-                  )}
-                  style={{ fontSize: "13px" }}
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <button
-                  onClick={(e) => { e.stopPropagation(); removeOverlay(overlay.id); }}
-                  className="hidden group-hover:flex h-5 w-5 rounded-full bg-red-500 text-white items-center justify-center text-[10px] font-bold shadow shrink-0"
-                >
-                  X
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Summary of all overlays */}
-      {overlays.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border p-4">
-          <p className="text-xs font-medium text-gray-700 mb-2">
-            Filled Fields ({filledCount} of {overlays.length})
-          </p>
-          <div className="space-y-1">
-            {overlays.map((o, i) => (
-              <div key={o.id} className="flex items-center gap-2 text-xs">
-                <span className="text-gray-400 w-4">{i + 1}.</span>
-                <span className="text-gray-500">p{o.page + 1}</span>
-                <span className={cn("flex-1 truncate", o.text ? "text-gray-900" : "text-gray-300 italic")}>
-                  {o.text || "empty"}
-                </span>
-                <button
-                  onClick={() => {
-                    setCurrentPage(o.page);
-                    setEditingId(o.id);
-                  }}
-                  className="text-teal-500 hover:text-teal-700"
-                >
-                  <Icon name="edit" size={12} />
-                </button>
-                <button onClick={() => removeOverlay(o.id)} className="text-red-400 hover:text-red-600">
-                  <Icon name="close" size={12} />
-                </button>
-              </div>
+    <div className="space-y-4">
+      {Array.from(sections.entries()).map(([section, sectionFields]) => (
+        <div key={section} className="bg-white rounded-xl shadow-sm border overflow-hidden">
+          <div className="px-4 py-3 bg-gray-50 border-b">
+            <h2 className="text-sm font-semibold text-gray-900">{section}</h2>
+          </div>
+          <div className="p-4 space-y-4">
+            {sectionFields.map((field) => (
+              <FieldInput
+                key={field.id}
+                label={field.label}
+                type={field.type}
+                value={values[field.id] || ""}
+                onChange={(v) => onChange(field.id, v)}
+                required={field.required}
+              />
             ))}
           </div>
         </div>
-      )}
-    </>
+      ))}
+    </div>
   );
 }
 
-// ── PDF.js loader ──
+// ── Generic field input ──
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let pdfJsPromise: Promise<any> | null = null;
+function FieldInput({ label, type, value, onChange, required, options }: {
+  label: string;
+  type: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+  options?: string[];
+}) {
+  const inputClass = "w-full px-3 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/40 focus:border-teal-500";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function loadPdfJs(): Promise<any> {
-  if (pdfJsPromise) return pdfJsPromise;
+  return (
+    <div>
+      <label className="block text-xs font-medium text-gray-500 mb-1">
+        {label} {required && <span className="text-red-400">*</span>}
+      </label>
+      {type === "checkbox" ? (
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={value === "true"}
+            onChange={(e) => onChange(e.target.checked ? "true" : "false")}
+            className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+          />
+          <span className="text-sm text-gray-700">Yes</span>
+        </label>
+      ) : type === "dropdown" && options ? (
+        <select value={value} onChange={(e) => onChange(e.target.value)} className={inputClass}>
+          <option value="">Select...</option>
+          {options.map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+          ))}
+        </select>
+      ) : type === "radio" && options ? (
+        <div className="flex flex-wrap gap-3">
+          {options.map((opt) => (
+            <label key={opt} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                value={opt}
+                checked={value === opt}
+                onChange={() => onChange(opt)}
+                className="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"
+              />
+              <span className="text-sm text-gray-700">{opt}</span>
+            </label>
+          ))}
+        </div>
+      ) : (
+        <input
+          type={type === "date" ? "date" : type === "email" ? "email" : type === "phone" ? "tel" : type === "number" ? "number" : "text"}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={
+            type === "ssn" ? "XXX-XX-XXXX" :
+            type === "phone" ? "(XXX) XXX-XXXX" :
+            type === "date" ? "MM/DD/YYYY" :
+            undefined
+          }
+          inputMode={type === "phone" || type === "ssn" || type === "number" ? "numeric" : undefined}
+          className={inputClass}
+        />
+      )}
+    </div>
+  );
+}
 
-  pdfJsPromise = new Promise((resolve, reject) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((window as any).__pdfjsLib) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolve((window as any).__pdfjsLib);
-      return;
+// ── Signature pad ──
+
+function SignaturePad({ name, onSignature }: { name: string; onSignature: (base64: string | null) => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isDrawing = useRef(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+
+  const getPos = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+  };
+
+  const startDraw = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    isDrawing.current = true;
+    setHasDrawn(true);
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#1a1a2e";
+    const pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+  }, []);
+
+  const draw = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawing.current) return;
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+    const pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.stroke();
+  }, []);
+
+  const endDraw = useCallback(() => {
+    isDrawing.current = false;
+    if (canvasRef.current && hasDrawn) {
+      onSignature(canvasRef.current.toDataURL("image/png"));
     }
+  }, [hasDrawn, onSignature]);
 
-    const moduleScript = document.createElement("script");
-    moduleScript.type = "module";
-    moduleScript.textContent = `
-      import * as pdfjsLib from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs";
-      pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.mjs";
-      window.__pdfjsLib = pdfjsLib;
-      window.dispatchEvent(new Event("pdfjs-ready"));
-    `;
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setHasDrawn(false);
+      onSignature(null);
+    }
+  };
 
-    const handler = () => {
-      window.removeEventListener("pdfjs-ready", handler);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      resolve((window as any).__pdfjsLib);
-    };
-    window.addEventListener("pdfjs-ready", handler);
+  const formattedDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
-    document.head.appendChild(moduleScript);
-
-    setTimeout(() => {
-      window.removeEventListener("pdfjs-ready", handler);
-      reject(new Error("PDF.js load timeout"));
-    }, 10000);
-  });
-
-  return pdfJsPromise;
+  return (
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="px-4 py-3 bg-gray-50 border-b">
+        <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+          <Icon name="draw" size={16} className="text-teal-600" />
+          Your Signature
+        </h2>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="relative border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-white">
+          <canvas
+            ref={canvasRef}
+            width={600}
+            height={150}
+            className="w-full cursor-crosshair touch-none"
+            style={{ height: "120px" }}
+            onMouseDown={startDraw}
+            onMouseMove={draw}
+            onMouseUp={endDraw}
+            onMouseLeave={endDraw}
+            onTouchStart={startDraw}
+            onTouchMove={draw}
+            onTouchEnd={endDraw}
+          />
+          {!hasDrawn && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <p className="text-sm text-gray-300 italic">Sign here</p>
+            </div>
+          )}
+        </div>
+        {hasDrawn && (
+          <button
+            onClick={clearCanvas}
+            className="text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1"
+          >
+            <Icon name="undo" size={12} />
+            Clear & redo
+          </button>
+        )}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Name</label>
+            <div className="px-3 py-2 rounded-lg bg-gray-50 border text-sm text-gray-700 font-medium">{name}</div>
+          </div>
+          <div>
+            <label className="block text-xs text-gray-400 mb-1">Date</label>
+            <div className="px-3 py-2 rounded-lg bg-gray-50 border text-sm text-gray-700 font-medium">{formattedDate}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -25,6 +25,7 @@ export default async function FillPage({ params }: { params: Promise<{ token: st
       token={token}
       data={{
         fields: result.fields,
+        detectedFields: result.detectedFields,
         pageCount: result.pageCount,
         documentUrl: `/api/fill/${token}/document`,
         documentName: result.documentName,

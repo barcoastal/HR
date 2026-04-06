@@ -21,12 +21,8 @@ export async function POST(
 ) {
   const { token } = await params;
   const body = await request.json();
-  const { fieldValues, textOverlays } = body;
+  const { fieldValues, textOverlays, signatureBase64 } = body;
 
-  if ((!fieldValues || typeof fieldValues !== "object") && (!textOverlays || !Array.isArray(textOverlays))) {
-    return NextResponse.json({ error: "Field values or text overlays required" }, { status: 400 });
-  }
-
-  const result = await submitFilledForm(token, fieldValues || {}, textOverlays || []);
+  const result = await submitFilledForm(token, fieldValues || {}, textOverlays || [], signatureBase64);
   return NextResponse.json(result, { status: result.success ? 200 : 400 });
 }

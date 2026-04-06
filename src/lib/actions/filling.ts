@@ -9,7 +9,19 @@ export type PdfFormField = {
   name: string;
   type: "text" | "checkbox" | "dropdown" | "radio";
   value: string;
-  options?: string[]; // for dropdowns
+  options?: string[];
+};
+
+export type DetectedField = {
+  id: string;
+  label: string;
+  type: "text" | "date" | "ssn" | "phone" | "email" | "number" | "checkbox";
+  page: number;       // 0-indexed
+  xPercent: number;   // position on page (0-100)
+  yPercent: number;
+  required: boolean;
+  width?: number;     // approximate field width in % of page
+  section?: string;   // group label
 };
 
 export type TextOverlay = {
@@ -22,6 +34,7 @@ export type TextOverlay = {
 
 export async function extractPdfFormFields(token: string): Promise<{
   fields: PdfFormField[];
+  detectedFields: DetectedField[];
   pageCount: number;
   documentName: string;
   employeeName: string;
@@ -66,7 +79,6 @@ export async function extractPdfFormFields(token: string): Promise<{
     for (const field of pdfFields) {
       const name = field.getName();
       const typeName = field.constructor.name;
-
       try {
         if (typeName === "PDFTextField") {
           const tf = form.getTextField(name);
@@ -89,11 +101,23 @@ export async function extractPdfFormFields(token: string): Promise<{
     console.error("[filling] Failed to parse PDF form fields:", e);
   }
 
+  // If no AcroForm fields, use Claude to analyze the PDF
+  let detectedFields: DetectedField[] = [];
+  if (fields.length === 0) {
+    try {
+      detectedFields = await analyzePdfWithClaude(fileBlob.data, request.documentName);
+      console.log(`[filling] Claude detected ${detectedFields.length} fields in "${request.documentName}"`);
+    } catch (e) {
+      console.error("[filling] Claude PDF analysis failed:", e);
+    }
+  }
+
   const employeeName = request.signerName
     || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Employee");
 
   return {
     fields,
+    detectedFields,
     pageCount,
     documentName: request.documentName,
     employeeName,
@@ -101,10 +125,84 @@ export async function extractPdfFormFields(token: string): Promise<{
   };
 }
 
+async function analyzePdfWithClaude(pdfData: Buffer | Uint8Array, documentName: string): Promise<DetectedField[]> {
+  const Anthropic = (await import("@anthropic-ai/sdk")).default;
+  const client = new Anthropic();
+
+  const pdfBase64 = Buffer.from(pdfData).toString("base64");
+
+  const response = await client.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 4096,
+    messages: [
+      {
+        role: "user",
+        content: [
+          {
+            type: "document",
+            source: {
+              type: "base64",
+              media_type: "application/pdf",
+              data: pdfBase64,
+            },
+          },
+          {
+            type: "text",
+            text: `Analyze this PDF document "${documentName}" and identify ALL fillable fields that a person would need to fill in by hand.
+
+For each field, return:
+- id: unique identifier (e.g. "last_name", "ssn", "address")
+- label: human-readable label (e.g. "Last Name (Family Name)")
+- type: one of "text", "date", "ssn", "phone", "email", "number", "checkbox"
+- page: 0-indexed page number where the field appears
+- xPercent: horizontal position as percentage of page width (0=left, 100=right)
+- yPercent: vertical position as percentage of page height (0=top, 100=bottom)
+- required: boolean
+- section: group/section name (e.g. "Section 1. Employee Information")
+
+Only include fields that need to be filled by the EMPLOYEE (Section 1 for I-9, etc). Skip employer-only sections, instructions, and pre-printed text.
+
+Return ONLY valid JSON array, no other text:
+[{"id":"...","label":"...","type":"...","page":0,"xPercent":0,"yPercent":0,"required":true,"section":"..."}]`,
+          },
+        ],
+      },
+    ],
+  });
+
+  const textContent = response.content.find((c) => c.type === "text");
+  if (!textContent || textContent.type !== "text") return [];
+
+  // Extract JSON from response
+  let jsonStr = textContent.text.trim();
+  // Handle markdown code blocks
+  const jsonMatch = jsonStr.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (jsonMatch) jsonStr = jsonMatch[1].trim();
+
+  try {
+    const parsed = JSON.parse(jsonStr);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.map((f: DetectedField) => ({
+      id: f.id || randomUUID(),
+      label: f.label || "Unknown Field",
+      type: f.type || "text",
+      page: f.page || 0,
+      xPercent: f.xPercent || 0,
+      yPercent: f.yPercent || 0,
+      required: f.required ?? false,
+      section: f.section || undefined,
+    }));
+  } catch (e) {
+    console.error("[filling] Failed to parse Claude response:", e, jsonStr);
+    return [];
+  }
+}
+
 export async function submitFilledForm(
   token: string,
   fieldValues: Record<string, string>,
-  textOverlays?: TextOverlay[]
+  textOverlays?: TextOverlay[],
+  signatureBase64?: string
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -129,39 +227,42 @@ export async function submitFilledForm(
 
     // Mode 1: Fill AcroForm fields
     if (Object.keys(fieldValues).length > 0) {
-      const form = pdfDoc.getForm();
-      for (const [name, value] of Object.entries(fieldValues)) {
-        try {
-          const field = form.getField(name);
-          const typeName = field.constructor.name;
-
-          if (typeName === "PDFTextField") {
-            form.getTextField(name).setText(value);
-          } else if (typeName === "PDFCheckBox") {
-            const cb = form.getCheckBox(name);
-            if (value === "true") cb.check(); else cb.uncheck();
-          } else if (typeName === "PDFDropdown") {
-            form.getDropdown(name).select(value);
-          } else if (typeName === "PDFRadioGroup") {
-            form.getRadioGroup(name).select(value);
+      try {
+        const form = pdfDoc.getForm();
+        for (const [name, value] of Object.entries(fieldValues)) {
+          try {
+            const field = form.getField(name);
+            const typeName = field.constructor.name;
+            if (typeName === "PDFTextField") {
+              form.getTextField(name).setText(value);
+            } else if (typeName === "PDFCheckBox") {
+              const cb = form.getCheckBox(name);
+              if (value === "true") cb.check(); else cb.uncheck();
+            } else if (typeName === "PDFDropdown") {
+              form.getDropdown(name).select(value);
+            } else if (typeName === "PDFRadioGroup") {
+              form.getRadioGroup(name).select(value);
+            }
+          } catch {
+            // Field not found in form — skip
           }
-        } catch (e) {
-          console.warn(`[filling] Could not set field "${name}":`, e);
         }
+        form.flatten();
+      } catch {
+        // No form in this PDF — skip
       }
-      form.flatten();
     }
 
     // Mode 2: Draw text overlays on pages
     if (textOverlays && textOverlays.length > 0) {
       const pages = pdfDoc.getPages();
       for (const overlay of textOverlays) {
-        if (overlay.page < 0 || overlay.page >= pages.length) continue;
+        if (overlay.page < 0 || overlay.page >= pages.length || !overlay.text.trim()) continue;
         const page = pages[overlay.page];
         const { width, height } = page.getSize();
         const x = (overlay.xPercent / 100) * width;
         const y = height - (overlay.yPercent / 100) * height;
-        const fontSize = overlay.fontSize || 11;
+        const fontSize = overlay.fontSize || 10;
 
         page.drawText(overlay.text, {
           x,
@@ -170,6 +271,39 @@ export async function submitFilledForm(
           color: rgb(0.05, 0.05, 0.15),
         });
       }
+    }
+
+    // Add signature if provided
+    if (signatureBase64) {
+      const sigImageBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
+      const sigImage = await pdfDoc.embedPng(sigImageBytes);
+
+      // Find the signature field page — look for the last overlay page, or default to first page
+      const sigPage = textOverlays && textOverlays.length > 0
+        ? pdfDoc.getPages()[textOverlays[textOverlays.length - 1].page] || pdfDoc.getPages()[0]
+        : pdfDoc.getPages()[0];
+
+      const { width: pageWidth } = sigPage.getSize();
+      const sigWidth = Math.min(150, pageWidth * 0.25);
+      const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
+
+      // Place signature at bottom-left area
+      sigPage.drawImage(sigImage, {
+        x: 72,
+        y: 60,
+        width: sigWidth,
+        height: sigHeight,
+      });
+
+      // Add date next to signature
+      const signerName = request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer");
+      const signDate = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+      sigPage.drawText(`Signed by ${signerName} on ${signDate}`, {
+        x: 72,
+        y: 48,
+        size: 8,
+        color: rgb(0.4, 0.4, 0.4),
+      });
     }
 
     const filledPdfBytes = await pdfDoc.save();
