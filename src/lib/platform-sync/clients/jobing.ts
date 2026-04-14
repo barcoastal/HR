@@ -39,14 +39,19 @@ type JobingJob = {
 
 async function fetchJobs(apiKey: string): Promise<JobingJob[]> {
   try {
-    const res = await fetch(
-      `${BASE_URL}/jobs?company=${getCompany()}`,
-      fetchOpts(apiKey)
-    );
-    if (!res.ok) return [];
+    const url = `${BASE_URL}/jobs?company=${getCompany()}`;
+    const res = await fetch(url, fetchOpts(apiKey));
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.error(`[Jobing] jobs HTTP ${res.status} for ${url} — body:`, body.slice(0, 500));
+      return [];
+    }
     const data = await res.json();
-    return Array.isArray(data) ? data : data.results || data.jobs || [];
-  } catch {
+    const jobs = Array.isArray(data) ? data : data.results || data.jobs || [];
+    console.log(`[Jobing] jobs endpoint returned ${jobs.length} jobs (company=${getCompany()})`);
+    return jobs;
+  } catch (e) {
+    console.error("[Jobing] jobs fetch threw:", e);
     return [];
   }
 }
@@ -80,6 +85,11 @@ export class JobingClient implements PlatformClient {
 
   async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
     const token = accessToken || process.env.NOLIG_API_KEY || "";
+    if (!token) {
+      console.error("[Jobing] No API token — NOLIG_API_KEY env var missing and no accessToken passed");
+      return [];
+    }
+    console.log(`[Jobing] fetchCandidates starting (token length=${token.length}, company=${getCompany()})`);
     const jobs = await fetchJobs(token);
     const jobMap: Record<string, string> = {};
     for (const j of jobs) jobMap[j.id] = j.title;
@@ -94,7 +104,8 @@ export class JobingClient implements PlatformClient {
       console.log(`[Jobing] Fetching bulk page ${page}: ${bulkUrl}`);
       const res = await fetch(bulkUrl, fetchOpts(token));
       if (!res.ok) {
-        console.log(`[Jobing] Bulk page ${page} failed: HTTP ${res.status}`);
+        const body = await res.text().catch(() => "");
+        console.error(`[Jobing] Bulk page ${page} HTTP ${res.status} — body:`, body.slice(0, 500));
         break;
       }
 
@@ -119,28 +130,36 @@ export class JobingClient implements PlatformClient {
     }
 
     // Second: pull from each job's applicants endpoint to catch those beyond bulk limit
+    console.log(`[Jobing] Starting per-job walk across ${jobs.length} jobs (bulk collected ${all.length} candidates so far)`);
     for (const job of jobs) {
       const appUrl = job.applicants;
       if (!appUrl) continue;
       try {
         const res = await fetch(appUrl, fetchOpts(token));
-        if (!res.ok) continue;
+        if (!res.ok) {
+          console.error(`[Jobing] job "${job.title}" HTTP ${res.status}`);
+          continue;
+        }
         const data = await res.json();
         const applicants: JobingApplicant[] = Array.isArray(data)
           ? data
           : data.results || data.applicants || [];
+        let newFromThisJob = 0;
         for (const a of applicants) {
           const mc = mapApplicant(a, jobMap);
           if (!seenEmails.has(mc.email)) {
             seenEmails.add(mc.email);
             all.push(mc);
+            newFromThisJob++;
           }
         }
-      } catch {
-        // Skip failed job fetches
+        console.log(`[Jobing] job "${job.title}": ${applicants.length} applicants (${newFromThisJob} new)`);
+      } catch (e) {
+        console.error(`[Jobing] job "${job.title}" threw:`, e);
       }
     }
 
+    console.log(`[Jobing] fetchCandidates complete — ${all.length} unique candidates across bulk + per-job walk`);
     return all;
   }
 
