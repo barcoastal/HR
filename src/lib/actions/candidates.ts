@@ -132,7 +132,7 @@ async function sendStageDocumentsEmail(
     for (const doc of signingDocs) {
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for signing, ${positions.length} placeholders`);
-      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+      const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
 
       // Store the filled PDF in FileBlob
       const { randomUUID } = await import("crypto");
@@ -152,15 +152,16 @@ async function sendStageDocumentsEmail(
         signerEmail: employeeId ? undefined : candidate.email,
         documentUrl,
         documentName: doc.name,
+        signaturePlacements,
       });
-      console.log(`[stage-docs] Created signing request for "${doc.name}"`);
+      console.log(`[stage-docs] Created signing request for "${doc.name}" with ${signaturePlacements.length} signature placements`);
     }
 
     // Handle docs that require filling — upload filled PDF (with placeholders pre-filled), create fill request
     for (const doc of fillDocs) {
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for fill form, ${positions.length} placeholders`);
-      const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+      const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
 
       const { randomUUID } = await import("crypto");
       const filename = `${randomUUID()}.pdf`;
@@ -184,6 +185,7 @@ async function sendStageDocumentsEmail(
           documentUrl,
           documentName: doc.name,
           expiresAt,
+          signaturePlacements: signaturePlacements.length > 0 ? signaturePlacements : undefined,
         },
       });
 
@@ -203,7 +205,7 @@ async function sendStageDocumentsEmail(
       for (const doc of attachmentDocs) {
         const positions = JSON.parse(doc.placeholders || "[]");
         console.log(`[stage-docs] Filling "${doc.name}" as attachment, ${positions.length} placeholders, hourlyRate=${candidateInfo.hourlyRate}`);
-        const filledPdf = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
+        const { pdf: filledPdf } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
         const pdfBuffer = Buffer.from(filledPdf);
         attachments.push({
           filename: `${doc.name}.pdf`,

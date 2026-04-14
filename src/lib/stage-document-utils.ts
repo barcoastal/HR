@@ -11,6 +11,25 @@ export const AVAILABLE_PLACEHOLDERS = [
   { key: "{{company}}", description: "Company name" },
 ];
 
+// Signature-only placeholders (only shown when doc action is Sign or Fill)
+export const SIGNATURE_PLACEHOLDERS = [
+  { key: "{{signature}}", description: "Signer's signature" },
+  { key: "{{signatureDate}}", description: "Date signed" },
+];
+
+export function isSignaturePlaceholder(placeholder: string): boolean {
+  return placeholder === "{{signature}}" || placeholder === "{{signatureDate}}";
+}
+
+export type SignaturePlacement = {
+  page: number;        // 1-indexed
+  xPct: number;        // 0..1, left edge of box relative to page width
+  yPct: number;        // 0..1, top edge of box relative to page height
+  widthPct: number;    // 0..1
+  heightPct: number;   // 0..1
+  kind: "signature" | "signatureDate";
+};
+
 type CandidateData = {
   firstName: string;
   lastName: string;
@@ -99,7 +118,7 @@ export async function fillPdfPlaceholders(
   positions: PlaceholderPosition[],
   candidate: CandidateData,
   companyName: string
-): Promise<Uint8Array> {
+): Promise<{ pdf: Uint8Array; signaturePlacements: SignaturePlacement[] }> {
   const { PDFDocument, rgb, StandardFonts } = await import("pdf-lib");
 
   // Decode base64 — strip any whitespace/newlines that may have been added
@@ -109,9 +128,36 @@ export async function fillPdfPlaceholders(
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const pages = pdfDoc.getPages();
 
+  const signaturePlacements: SignaturePlacement[] = [];
+
+  // Default rendered box size (as % of page) used by the signer-side overlay
+  const DEFAULT_SIG_WIDTH_PCT = 0.26; // ~26% of page width
+  const DEFAULT_SIG_HEIGHT_PCT = 0.08;
+  const DEFAULT_DATE_WIDTH_PCT = 0.18;
+  const DEFAULT_DATE_HEIGHT_PCT = 0.04;
+
   for (const pos of positions) {
     const pageIndex = pos.page - 1;
     if (pageIndex < 0 || pageIndex >= pages.length) continue;
+
+    // Signature placeholders are NOT stamped as text — they are deferred to signing time.
+    if (isSignaturePlaceholder(pos.placeholder)) {
+      const isSig = pos.placeholder === "{{signature}}";
+      // pos.x/y are percentages 0..100 — convert to 0..1 and treat as center, converting to top-left
+      const widthPct = isSig ? DEFAULT_SIG_WIDTH_PCT : DEFAULT_DATE_WIDTH_PCT;
+      const heightPct = isSig ? DEFAULT_SIG_HEIGHT_PCT : DEFAULT_DATE_HEIGHT_PCT;
+      const centerX = pos.x / 100;
+      const centerY = pos.y / 100;
+      signaturePlacements.push({
+        page: pos.page,
+        xPct: Math.max(0, Math.min(1 - widthPct, centerX - widthPct / 2)),
+        yPct: Math.max(0, Math.min(1 - heightPct, centerY - heightPct / 2)),
+        widthPct,
+        heightPct,
+        kind: isSig ? "signature" : "signatureDate",
+      });
+      continue;
+    }
 
     const page = pages[pageIndex];
     const { width, height } = page.getSize();
@@ -134,5 +180,6 @@ export async function fillPdfPlaceholders(
     });
   }
 
-  return pdfDoc.save();
+  const pdf = await pdfDoc.save();
+  return { pdf, signaturePlacements };
 }

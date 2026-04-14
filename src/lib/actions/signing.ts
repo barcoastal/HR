@@ -35,9 +35,12 @@ export async function createStandaloneSigningRequest(data: {
   documentUrl: string;
   documentName: string;
   message?: string;
+  signaturePlacements?: unknown;
 }) {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+  const placementsArray = Array.isArray(data.signaturePlacements) ? data.signaturePlacements : [];
 
   const request = await db.signingRequest.create({
     data: {
@@ -50,6 +53,7 @@ export async function createStandaloneSigningRequest(data: {
       documentName: data.documentName,
       message: data.message || null,
       expiresAt,
+      signaturePlacements: placementsArray.length > 0 ? (placementsArray as object) : undefined,
     },
     include: { employee: true, candidate: true },
   });
@@ -197,106 +201,116 @@ export async function submitSignature(
     const sigImageBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
     const sigImage = await pdfDoc.embedPng(sigImageBytes);
 
-    // Determine which page and position to place signature
-    const targetPage = signaturePosition?.page !== undefined && signaturePosition.page < pages.length
-      ? pages[signaturePosition.page]
-      : lastPage;
-    const { width: pageWidth, height: pageHeight } = targetPage.getSize();
-
-    const sigWidth = 180;
-    const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
-
-    // If position provided from client, use percentage-based coordinates
-    // Otherwise default to a sensible position (where signature lines typically are)
-    const sigX = signaturePosition
-      ? (signaturePosition.xPercent / 100) * pageWidth
-      : 72; // ~1 inch from left
-    const sigY = signaturePosition
-      ? pageHeight - (signaturePosition.yPercent / 100) * pageHeight - sigHeight
-      : pageHeight * 0.30; // ~30% from bottom — where most signature lines are
-
     const { rgb } = await import("pdf-lib");
     const signerFullName = typedName?.trim() || request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer");
     const signedDate = new Date();
     const signDate = signedDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     const signTime = signedDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
-    // DocuSign-style signature block:
-    // ┌─────────────────────────────┐
-    // │  [signature image]          │
-    // │  ─────────────────────────  │
-    // │  Name: Full Name            │
-    // │  Date: March 26, 2026       │
-    // │  Time: 2:30 PM              │
-    // └─────────────────────────────┘
+    // If the request has pre-placed signature slots (from the stage-document editor or ad-hoc editor),
+    // stamp each one with the signature image (for kind=signature) or the date string (for kind=signatureDate).
+    // Otherwise fall back to the legacy single-position behavior.
+    type StoredPlacement = {
+      page: number;
+      xPct: number;
+      yPct: number;
+      widthPct: number;
+      heightPct: number;
+      kind: "signature" | "signatureDate";
+    };
+    const placements = Array.isArray(request.signaturePlacements)
+      ? (request.signaturePlacements as unknown as StoredPlacement[])
+      : [];
 
-    // Signature block starts at sigY, goes upward
-    const blockPadding = 8;
-    const nameLineY = sigY - 4;
-    const dateLineY = nameLineY - 14;
-    const timeLineY = dateLineY - 13;
-    const blockBottom = timeLineY - blockPadding;
-    const blockTop = sigY + sigHeight + blockPadding;
-    const blockWidth = sigWidth + blockPadding * 2 + 40;
+    if (placements.length > 0) {
+      for (const p of placements) {
+        const pageIndex = Math.max(0, Math.min(pages.length - 1, p.page - 1));
+        const target = pages[pageIndex];
+        const { width: pageWidth, height: pageHeight } = target.getSize();
+        const boxX = p.xPct * pageWidth;
+        const boxWidth = p.widthPct * pageWidth;
+        const boxHeight = p.heightPct * pageHeight;
+        // y in stored units is top-edge from top; pdf-lib y is bottom-edge from bottom
+        const boxY = pageHeight - p.yPct * pageHeight - boxHeight;
 
-    // Draw signature block background
-    targetPage.drawRectangle({
-      x: sigX - blockPadding,
-      y: blockBottom,
-      width: blockWidth,
-      height: blockTop - blockBottom,
-      color: rgb(0.98, 0.98, 1),
-      borderColor: rgb(0.8, 0.8, 0.85),
-      borderWidth: 0.5,
-    });
+        if (p.kind === "signature") {
+          // Fit signature image inside the box, preserve aspect ratio
+          const ratio = sigImage.width / sigImage.height;
+          let drawW = boxWidth;
+          let drawH = drawW / ratio;
+          if (drawH > boxHeight) {
+            drawH = boxHeight;
+            drawW = drawH * ratio;
+          }
+          const drawX = boxX + (boxWidth - drawW) / 2;
+          const drawY = boxY + (boxHeight - drawH) / 2;
+          target.drawImage(sigImage, { x: drawX, y: drawY, width: drawW, height: drawH });
+        } else {
+          // signatureDate — draw text centered in the box
+          const dateText = signDate;
+          const fontSize = Math.min(12, boxHeight * 0.7);
+          target.drawText(dateText, {
+            x: boxX + 2,
+            y: boxY + (boxHeight - fontSize) / 2 + 1,
+            size: fontSize,
+            color: rgb(0.1, 0.1, 0.15),
+          });
+        }
+      }
 
-    // Draw signature image
-    targetPage.drawImage(sigImage, {
-      x: sigX,
-      y: sigY,
-      width: sigWidth,
-      height: sigHeight,
-    });
+      // Audit trail on the last page
+      lastPage.drawText(`Digitally signed: ${signedDate.toISOString()} by ${signerFullName}`, {
+        x: 72,
+        y: 20,
+        size: 7,
+        color: rgb(0.6, 0.6, 0.6),
+      });
+    } else {
+      // Legacy single-position path (ad-hoc signs without pre-placed fields)
+      const targetPage = signaturePosition?.page !== undefined && signaturePosition.page < pages.length
+        ? pages[signaturePosition.page]
+        : lastPage;
+      const { width: pageWidth, height: pageHeight } = targetPage.getSize();
+      const sigWidth = 180;
+      const sigHeight = (sigImage.height / sigImage.width) * sigWidth;
+      const sigX = signaturePosition
+        ? (signaturePosition.xPercent / 100) * pageWidth
+        : 72;
+      const sigY = signaturePosition
+        ? pageHeight - (signaturePosition.yPercent / 100) * pageHeight - sigHeight
+        : pageHeight * 0.30;
 
-    // Draw separator line under signature
-    targetPage.drawLine({
-      start: { x: sigX, y: sigY - 1 },
-      end: { x: sigX + sigWidth, y: sigY - 1 },
-      thickness: 0.5,
-      color: rgb(0.6, 0.6, 0.65),
-    });
+      const blockPadding = 8;
+      const nameLineY = sigY - 4;
+      const dateLineY = nameLineY - 14;
+      const timeLineY = dateLineY - 13;
+      const blockBottom = timeLineY - blockPadding;
+      const blockTop = sigY + sigHeight + blockPadding;
+      const blockWidth = sigWidth + blockPadding * 2 + 40;
 
-    // Name
-    targetPage.drawText(`Name: ${signerFullName}`, {
-      x: sigX,
-      y: nameLineY - 12,
-      size: 9,
-      color: rgb(0.15, 0.15, 0.2),
-    });
-
-    // Date
-    targetPage.drawText(`Date: ${signDate}`, {
-      x: sigX,
-      y: dateLineY - 12,
-      size: 9,
-      color: rgb(0.15, 0.15, 0.2),
-    });
-
-    // Time
-    targetPage.drawText(`Time: ${signTime}`, {
-      x: sigX,
-      y: timeLineY - 12,
-      size: 9,
-      color: rgb(0.15, 0.15, 0.2),
-    });
-
-    // Small audit trail at the very bottom of the page
-    targetPage.drawText(`Digitally signed: ${signedDate.toISOString()} by ${signerFullName}`, {
-      x: 72,
-      y: 20,
-      size: 7,
-      color: rgb(0.6, 0.6, 0.6),
-    });
+      targetPage.drawRectangle({
+        x: sigX - blockPadding,
+        y: blockBottom,
+        width: blockWidth,
+        height: blockTop - blockBottom,
+        color: rgb(0.98, 0.98, 1),
+        borderColor: rgb(0.8, 0.8, 0.85),
+        borderWidth: 0.5,
+      });
+      targetPage.drawImage(sigImage, { x: sigX, y: sigY, width: sigWidth, height: sigHeight });
+      targetPage.drawLine({
+        start: { x: sigX, y: sigY - 1 },
+        end: { x: sigX + sigWidth, y: sigY - 1 },
+        thickness: 0.5,
+        color: rgb(0.6, 0.6, 0.65),
+      });
+      targetPage.drawText(`Name: ${signerFullName}`, { x: sigX, y: nameLineY - 12, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      targetPage.drawText(`Date: ${signDate}`, { x: sigX, y: dateLineY - 12, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      targetPage.drawText(`Time: ${signTime}`, { x: sigX, y: timeLineY - 12, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      targetPage.drawText(`Digitally signed: ${signedDate.toISOString()} by ${signerFullName}`, {
+        x: 72, y: 20, size: 7, color: rgb(0.6, 0.6, 0.6),
+      });
+    }
 
     const signedPdfBytes = await pdfDoc.save();
 

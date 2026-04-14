@@ -23,6 +23,10 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
   const signerName = signingRequest.signerName
     || (signingRequest.employee ? `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}` : "Signer");
 
+  const placements = Array.isArray(signingRequest.signaturePlacements)
+    ? (signingRequest.signaturePlacements as unknown as Array<{ page: number; xPct: number; yPct: number; widthPct: number; heightPct: number; kind: "signature" | "signatureDate" }>)
+    : [];
+
   return (
     <SigningPage
       token={token}
@@ -31,6 +35,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
         documentName: signingRequest.documentName,
         employeeName: signerName,
         status: signingRequest.status,
+        signaturePlacements: placements,
       }}
     />
   );

@@ -798,6 +798,7 @@ model SigningRequest {
   expiresAt       DateTime
   createdAt       DateTime      @default(now())
   message         String?
+  signaturePlacements Json? // Placement[] — pre-placed signature/date positions from stage doc or ad-hoc editor
 
   employeeTask    EmployeeTask? @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
   employee        Employee?     @relation(fields: [employeeId], references: [id], onDelete: Cascade)

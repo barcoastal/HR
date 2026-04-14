@@ -4,11 +4,21 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 
+type SignaturePlacement = {
+  page: number;
+  xPct: number;
+  yPct: number;
+  widthPct: number;
+  heightPct: number;
+  kind: "signature" | "signatureDate";
+};
+
 type SigningData = {
   documentUrl: string;
   documentName: string;
   employeeName: string;
   status: string;
+  signaturePlacements?: SignaturePlacement[];
 };
 
 type SignaturePosition = {
@@ -18,6 +28,7 @@ type SignaturePosition = {
 };
 
 export function SigningPage({ token, data, testMode }: { token: string; data: SigningData; testMode?: boolean }) {
+  const hasPrePlaced = (data.signaturePlacements?.length ?? 0) > 0;
   const [step, setStep] = useState<"review" | "place" | "sign" | "confirm" | "done">("review");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -185,8 +196,8 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
           </div>
           {/* Progress indicator */}
           <div className="hidden sm:flex items-center gap-2">
-            {["Review", "Place", "Sign"].map((label, i) => {
-              const steps = ["review", "place", "sign"];
+            {(hasPrePlaced ? ["Review", "Sign"] : ["Review", "Place", "Sign"]).map((label, i) => {
+              const steps = hasPrePlaced ? ["review", "sign"] : ["review", "place", "sign"];
               const current = steps.indexOf(step);
               const isActive = i <= current;
               return (
@@ -239,7 +250,14 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
           /* Signing step */
           <div className="space-y-6">
             {/* Signature placement confirmation */}
-            {sigPosition && (
+            {hasPrePlaced ? (
+              <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-purple-50 border border-purple-100">
+                <Icon name="place" size={16} className="text-purple-600 shrink-0" />
+                <p className="text-sm text-purple-700">
+                  Your signature will be placed at {data.signaturePlacements!.filter(p => p.kind === "signature").length} pre-marked spot{data.signaturePlacements!.filter(p => p.kind === "signature").length > 1 ? "s" : ""} on the document.
+                </p>
+              </div>
+            ) : sigPosition && (
               <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-blue-50 border border-blue-100">
                 <Icon name="place" size={16} className="text-blue-600 shrink-0" />
                 <p className="text-sm text-blue-700">Signature will be placed on page {sigPosition.page + 1}</p>
@@ -414,8 +432,17 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
               </div>
             </div>
 
+            {hasPrePlaced && (
+              <div className="mb-3 px-4 py-3 rounded-xl bg-purple-50 border border-purple-100 flex items-start gap-2">
+                <Icon name="place" size={16} className="text-purple-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-purple-900">Signature locations are pre-marked</p>
+                  <p className="text-xs text-purple-700 mt-0.5">Your signature will be placed at {data.signaturePlacements!.filter(p => p.kind === "signature").length} marked spot{data.signaturePlacements!.filter(p => p.kind === "signature").length > 1 ? "s" : ""} on this document.</p>
+                </div>
+              </div>
+            )}
             <button
-              onClick={() => setStep("place")}
+              onClick={() => setStep(hasPrePlaced ? "sign" : "place")}
               className="w-full py-3.5 rounded-xl bg-[#4C3ACF] text-white font-semibold text-base hover:bg-[#3d2ea6] transition-all flex items-center justify-center gap-2.5 shadow-sm active:scale-[0.99]"
             >
               <Icon name="draw" size={18} />

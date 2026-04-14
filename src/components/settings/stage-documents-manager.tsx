@@ -7,7 +7,7 @@ import {
   updateStageDocument,
   deleteStageDocument,
 } from "@/lib/actions/stage-documents";
-import { AVAILABLE_PLACEHOLDERS } from "@/lib/stage-document-utils";
+import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -316,6 +316,13 @@ function PdfDocumentEditor({
   async function handleSave() {
     if (!name.trim()) return;
     if (!pdfBase64 && !existing) return;
+    if (requiresSignature || requiresFill) {
+      const hasSig = placeholders.some((p) => p.placeholder === "{{signature}}");
+      if (!hasSig) {
+        alert("Please place at least one {{signature}} field on the document before saving. The recipient needs to know where to sign.");
+        return;
+      }
+    }
     setSaving(true);
     try {
       const placeholdersJson = JSON.stringify(placeholders);
@@ -468,7 +475,31 @@ function PdfDocumentEditor({
                   {p.key}
                 </button>
               ))}
+              {(requiresSignature || requiresFill) && SIGNATURE_PLACEHOLDERS.map((p) => {
+                const isSig = p.key === "{{signature}}";
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setActivePlaceholder(p.key)}
+                    title={p.description}
+                    className={cn(
+                      "px-2 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1",
+                      activePlaceholder === p.key
+                        ? isSig ? "bg-purple-600 text-white" : "bg-teal-600 text-white"
+                        : isSig ? "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20" : "bg-teal-500/10 text-teal-600 hover:bg-teal-500/20"
+                    )}
+                  >
+                    <Icon name={isSig ? "draw" : "event"} size={10} />
+                    {p.key}
+                  </button>
+                );
+              })}
             </div>
+            {(requiresSignature || requiresFill) && (
+              <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                Place at least one <span className="font-mono text-purple-500">{"{{signature}}"}</span> field — this is where the recipient&apos;s signature will appear.
+              </p>
+            )}
           </div>
 
           {/* Page navigation */}
@@ -502,23 +533,64 @@ function PdfDocumentEditor({
               className={cn("w-full cursor-crosshair", pageRendering && "opacity-50")}
             />
             {/* Placeholder markers */}
-            {currentPagePlaceholders.map((p) => (
-              <div
-                key={p.id}
-                className="absolute flex items-center gap-0.5 group"
-                style={{ left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%, -50%)" }}
-              >
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--color-accent)] text-white shadow-md whitespace-nowrap">
-                  {p.placeholder}
-                </span>
-                <button
-                  onClick={(e) => { e.stopPropagation(); removePlaceholder(p.id); }}
-                  className="hidden group-hover:flex h-4 w-4 rounded-full bg-red-500 text-white items-center justify-center text-[8px] font-bold shadow"
+            {currentPagePlaceholders.map((p) => {
+              const isSig = p.placeholder === "{{signature}}";
+              const isSigDate = p.placeholder === "{{signatureDate}}";
+              const isSigField = isSig || isSigDate;
+              if (isSigField) {
+                // Render as a dashed box showing where the signature/date will land
+                const widthPct = isSig ? 26 : 18;
+                const heightPct = isSig ? 8 : 4;
+                const color = isSig ? "purple" : "teal";
+                return (
+                  <div
+                    key={p.id}
+                    className="absolute group"
+                    style={{
+                      left: `${p.x - widthPct / 2}%`,
+                      top: `${p.y - heightPct / 2}%`,
+                      width: `${widthPct}%`,
+                      height: `${heightPct}%`,
+                    }}
+                  >
+                    <div className={cn(
+                      "w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm",
+                      color === "purple" ? "border-purple-500 bg-purple-500/10" : "border-teal-500 bg-teal-500/10"
+                    )}>
+                      <span className={cn(
+                        "text-[10px] font-mono font-bold whitespace-nowrap",
+                        color === "purple" ? "text-purple-700" : "text-teal-700"
+                      )}>
+                        {isSig ? "✍ signature" : "📅 date"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); removePlaceholder(p.id); }}
+                      className="absolute -top-2 -right-2 hidden group-hover:flex h-4 w-4 rounded-full bg-red-500 text-white items-center justify-center text-[8px] font-bold shadow"
+                    >
+                      X
+                    </button>
+                  </div>
+                );
+              }
+              return (
+                <div
+                  key={p.id}
+                  className="absolute flex items-center gap-0.5 group"
+                  style={{ left: `${p.x}%`, top: `${p.y}%`, transform: "translate(-50%, -50%)" }}
                 >
-                  X
-                </button>
-              </div>
-            ))}
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[var(--color-accent)] text-white shadow-md whitespace-nowrap">
+                    {p.placeholder}
+                  </span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removePlaceholder(p.id); }}
+                    className="hidden group-hover:flex h-4 w-4 rounded-full bg-red-500 text-white items-center justify-center text-[8px] font-bold shadow"
+                  >
+                    X
+                  </button>
+                </div>
+              );
+            })}
           </div>
 
           {/* Replace PDF */}
