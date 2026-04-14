@@ -29,8 +29,6 @@ const allNavLinks = [
   { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r) },
   { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r) },
   { href: "/calendar", label: "Calendar", icon: "calendar_month", access: () => true },
-  { href: "/time-off", label: "Time Off", icon: "beach_access", access: () => true },
-  { href: "/gusto", label: "Gusto", icon: "payments", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR" },
   { href: "/clubs", label: "Clubs", icon: "groups", access: () => true },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true },
   { href: "/documents", label: "Documents", icon: "draw", access: () => true },
