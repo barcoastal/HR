@@ -36,6 +36,7 @@ type SigningRequest = {
 type Props = {
   signingRequests: SigningRequest[];
   employees: { id: string; firstName: string; lastName: string; email: string }[];
+  countersigners?: { id: string; firstName: string; lastName: string; jobTitle: string }[];
   isAdmin?: boolean;
   currentEmployeeId?: string | null;
 };
@@ -114,7 +115,7 @@ function SourceBadge({ isOnboarding }: { isOnboarding: boolean }) {
   );
 }
 
-export function DocumentSigningManager({ signingRequests, employees, isAdmin = false, currentEmployeeId }: Props) {
+export function DocumentSigningManager({ signingRequests, employees, countersigners = [], isAdmin = false, currentEmployeeId }: Props) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [sendAction, setSendAction] = useState<"sign" | "fill">("sign");
@@ -123,6 +124,8 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
   const [uploading, setUploading] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState<{ url: string; name: string } | null>(null);
   const [sending, setSending] = useState(false);
+  const [requiresCountersign, setRequiresCountersign] = useState(false);
+  const [countersignerId, setCountersignerId] = useState("");
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [voidingId, setVoidingId] = useState<string | null>(null);
   const [confirmVoidId, setConfirmVoidId] = useState<string | null>(null);
@@ -181,17 +184,23 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
   // Send for signing or filling
   async function handleSend() {
     if (!selectedEmployeeId || !uploadedDoc) return;
+    if (requiresCountersign && !countersignerId) {
+      alert("Please select a countersigner.");
+      return;
+    }
     setSending(true);
     try {
+      const effectiveCountersignerId = requiresCountersign ? countersignerId : null;
       if (sendAction === "fill") {
         const { sendDocForFilling } = await import("@/lib/actions/employee-documents");
-        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name);
+        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name, effectiveCountersignerId);
       } else {
         await createStandaloneSigningRequest({
           employeeId: selectedEmployeeId,
           documentUrl: uploadedDoc.url,
           documentName: uploadedDoc.name,
           message: docMessage || undefined,
+          countersignerId: effectiveCountersignerId,
         });
       }
       setShowSendDialog(false);
@@ -209,6 +218,8 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
     setDocMessage("");
     setUploadedDoc(null);
     setSendAction("sign");
+    setRequiresCountersign(false);
+    setCountersignerId("");
   }
 
   // Resend
@@ -570,6 +581,47 @@ export function DocumentSigningManager({ signingRequests, employees, isAdmin = f
               rows={3}
               className={inputClass}
             />
+          </div>
+
+          {/* Countersignature */}
+          <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-3">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={requiresCountersign}
+                onChange={(e) => setRequiresCountersign(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[var(--color-accent)]"
+              />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-[var(--color-text-primary)]">Requires our signature too</p>
+                <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                  After the recipient signs, the document goes to a countersigner to sign as well.
+                </p>
+              </div>
+            </label>
+            {requiresCountersign && (
+              <div className="mt-3 pl-7">
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Countersigner</label>
+                {countersigners.length === 0 ? (
+                  <p className="text-xs text-amber-500">
+                    No eligible countersigners. Add an ADMIN or SUPER_ADMIN user in Settings.
+                  </p>
+                ) : (
+                  <select
+                    value={countersignerId}
+                    onChange={(e) => setCountersignerId(e.target.value)}
+                    className={inputClass}
+                  >
+                    <option value="">Select a countersigner…</option>
+                    {countersigners.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.firstName} {c.lastName} — {c.jobTitle}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Actions */}

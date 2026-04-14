@@ -102,7 +102,7 @@ export async function sendDocForSigning(employeeId: string, documentUrl: string,
   return { success: true };
 }
 
-export async function sendDocForFilling(employeeId: string, documentUrl: string, documentName: string) {
+export async function sendDocForFilling(employeeId: string, documentUrl: string, documentName: string, countersignerId?: string | null) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
@@ -132,6 +132,7 @@ export async function sendDocForFilling(employeeId: string, documentUrl: string,
       documentUrl,
       documentName,
       expiresAt,
+      countersignerId: countersignerId || null,
     },
   });
 

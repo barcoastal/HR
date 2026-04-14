@@ -120,6 +120,22 @@ export async function submitCountersignature(
       ? (request.signaturePlacements as unknown as StoredPlacement[])
       : [];
     const countersignKinds = new Set(["countersignature", "countersignatureDate"]);
+    const hasCountersignSlot = placements.some((p) => p.kind === "countersignature");
+
+    // Fallback for ad-hoc sends without pre-placed countersignature boxes: stamp a
+    // default block on the bottom-right of the last page.
+    if (!hasCountersignSlot) {
+      const last = pages[pages.length - 1];
+      const { width: pw, height: ph } = last.getSize();
+      const bw = 180;
+      const bh = (sigImage.height / sigImage.width) * bw;
+      const bx = pw - bw - 72;
+      const by = 80;
+      last.drawImage(sigImage, { x: bx, y: by, width: bw, height: bh });
+      last.drawLine({ start: { x: bx, y: by - 2 }, end: { x: bx + bw, y: by - 2 }, thickness: 0.5, color: rgb(0.6, 0.6, 0.65) });
+      last.drawText(`Countersigned by: ${countersignerFullName}`, { x: bx, y: by - 14, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      last.drawText(`Date: ${signDate}`, { x: bx, y: by - 26, size: 9, color: rgb(0.15, 0.15, 0.2) });
+    }
 
     for (const p of placements) {
       if (!countersignKinds.has(p.kind)) continue;

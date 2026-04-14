@@ -1,6 +1,7 @@
 import { requireAuth } from "@/lib/auth-helpers";
 import { getAllSigningRequests } from "@/lib/actions/signing";
 import { getEmployees } from "@/lib/actions/employees";
+import { getEligibleCountersigners } from "@/lib/actions/stage-documents";
 import { DocumentSigningManager } from "@/components/documents/document-signing-manager";
 import { PageHeader } from "@/components/ui/page-header";
 import { db } from "@/lib/db";
@@ -37,6 +38,7 @@ export default async function DocumentsPage() {
 
   // Only admins get the employee list for sending new documents
   const employees = isAdmin ? await getEmployees() : [];
+  const countersigners = isAdmin ? await getEligibleCountersigners() : [];
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
@@ -58,6 +60,7 @@ export default async function DocumentsPage() {
           lastName: e.lastName,
           email: e.email,
         }))}
+        countersigners={countersigners}
         isAdmin={isAdmin}
         currentEmployeeId={employeeId}
       />
