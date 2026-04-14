@@ -63,6 +63,8 @@ async function fetchJobMap(apiKey: string): Promise<Record<string, string>> {
 export class JobingClient implements PlatformClient {
   readonly platformName = "Jobing";
   private jobMap: Record<string, string> = {};
+  private cachedJobs: JobingJob[] = [];
+  private seenEmails: Set<string> = new Set();
 
   async validateCredentials(apiKey: string): Promise<boolean> {
     try {
@@ -146,35 +148,100 @@ export class JobingClient implements PlatformClient {
     accessToken: string,
     cursor?: string | null
   ): Promise<CandidatePage> {
-    const page = cursor ? parseInt(cursor, 10) : 1;
+    // Cursor format:
+    //   null / "bulk:1" = start of bulk pagination
+    //   "bulk:N"        = continue bulk on page N
+    //   "job:IDX"       = walking per-job /applicants endpoints (IDX is job index)
+    // Bulk endpoint caps around 1000 applicants; per-job endpoints catch the rest.
+    const parsed = parseCursor(cursor);
 
-    // Fetch job map on first page, reuse cached for subsequent pages
-    if (page <= 1 || Object.keys(this.jobMap).length === 0) {
-      this.jobMap = await fetchJobMap(accessToken);
+    // First call: prime jobs + map, reset dedup
+    if (!cursor) {
+      this.cachedJobs = await fetchJobs(accessToken);
+      this.jobMap = {};
+      for (const j of this.cachedJobs) this.jobMap[j.id] = j.title;
+      this.seenEmails = new Set();
     }
 
-    const res = await fetch(
-      `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
-      fetchOpts(accessToken)
-    );
+    if (parsed.phase === "bulk") {
+      const page = parsed.index;
+      const res = await fetch(
+        `${BASE_URL}/applicants/bulk?company=${getCompany()}&page=${page}`,
+        fetchOpts(accessToken)
+      );
+      if (!res.ok) {
+        return this.advanceToJobsPhase(0);
+      }
+      const data = await res.json();
+      const applicants: JobingApplicant[] = Array.isArray(data)
+        ? data
+        : data.results || data.applicants || [];
 
-    if (!res.ok) {
+      if (applicants.length === 0) {
+        // Bulk exhausted — move on to per-job walk
+        return this.advanceToJobsPhase(0);
+      }
+
+      const candidates: MockCandidate[] = [];
+      for (const a of applicants) {
+        const mc = mapApplicant(a, this.jobMap);
+        if (this.seenEmails.has(mc.email)) continue;
+        this.seenEmails.add(mc.email);
+        candidates.push(mc);
+      }
+
+      const totalEstimate = data.total || data.count || 0;
+      return { candidates, nextCursor: `bulk:${page + 1}`, totalEstimate };
+    }
+
+    // phase === "job"
+    const jobIdx = parsed.index;
+    if (jobIdx >= this.cachedJobs.length) {
       return { candidates: [], nextCursor: null, totalEstimate: 0 };
     }
-
-    const data = await res.json();
-    const applicants: JobingApplicant[] = Array.isArray(data)
-      ? data
-      : data.results || data.applicants || [];
-
-    const totalEstimate = data.total || data.count || 0;
-    const candidates = applicants.map((a) => mapApplicant(a, this.jobMap));
-
-    const hasMore = applicants.length > 0;
-    const nextCursor = hasMore ? String(page + 1) : null;
-
-    return { candidates, nextCursor, totalEstimate };
+    const job = this.cachedJobs[jobIdx];
+    let candidates: MockCandidate[] = [];
+    if (job.applicants) {
+      try {
+        const res = await fetch(job.applicants, fetchOpts(accessToken));
+        if (res.ok) {
+          const data = await res.json();
+          const applicants: JobingApplicant[] = Array.isArray(data)
+            ? data
+            : data.results || data.applicants || [];
+          candidates = [];
+          for (const a of applicants) {
+            const mc = mapApplicant(a, this.jobMap);
+            if (this.seenEmails.has(mc.email)) continue;
+            this.seenEmails.add(mc.email);
+            candidates.push(mc);
+          }
+        }
+      } catch {
+        // Skip this job's failures and continue to the next
+      }
+    }
+    const nextIdx = jobIdx + 1;
+    const nextCursor = nextIdx < this.cachedJobs.length ? `job:${nextIdx}` : null;
+    return { candidates, nextCursor, totalEstimate: 0 };
   }
+
+  private advanceToJobsPhase(jobIdx: number): CandidatePage {
+    if (jobIdx >= this.cachedJobs.length) {
+      return { candidates: [], nextCursor: null, totalEstimate: 0 };
+    }
+    return { candidates: [], nextCursor: `job:${jobIdx}`, totalEstimate: 0 };
+  }
+}
+
+function parseCursor(cursor?: string | null): { phase: "bulk" | "job"; index: number } {
+  if (!cursor) return { phase: "bulk", index: 1 };
+  // Back-compat: plain numeric cursor means bulk page
+  if (/^\d+$/.test(cursor)) return { phase: "bulk", index: parseInt(cursor, 10) };
+  const [phase, idx] = cursor.split(":");
+  if (phase === "bulk") return { phase: "bulk", index: parseInt(idx, 10) || 1 };
+  if (phase === "job") return { phase: "job", index: parseInt(idx, 10) || 0 };
+  return { phase: "bulk", index: 1 };
 }
 
 export async function postJobToJobing(job: {
