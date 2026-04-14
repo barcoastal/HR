@@ -161,6 +161,7 @@ export class JobingClient implements PlatformClient {
       this.jobMap = {};
       for (const j of this.cachedJobs) this.jobMap[j.id] = j.title;
       this.seenEmails = new Set();
+      console.log(`[Jobing paginated] init — ${this.cachedJobs.length} jobs loaded`);
     }
 
     if (parsed.phase === "bulk") {
@@ -170,6 +171,7 @@ export class JobingClient implements PlatformClient {
         fetchOpts(accessToken)
       );
       if (!res.ok) {
+        console.log(`[Jobing paginated] bulk page ${page} HTTP ${res.status} — advancing to per-job phase (${this.cachedJobs.length} jobs cached)`);
         return this.advanceToJobsPhase(0);
       }
       const data = await res.json();
@@ -177,8 +179,10 @@ export class JobingClient implements PlatformClient {
         ? data
         : data.results || data.applicants || [];
 
+      console.log(`[Jobing paginated] bulk page ${page}: ${applicants.length} applicants returned`);
+
       if (applicants.length === 0) {
-        // Bulk exhausted — move on to per-job walk
+        console.log(`[Jobing paginated] bulk exhausted — advancing to per-job phase (${this.cachedJobs.length} jobs cached)`);
         return this.advanceToJobsPhase(0);
       }
 
@@ -197,6 +201,7 @@ export class JobingClient implements PlatformClient {
     // phase === "job"
     const jobIdx = parsed.index;
     if (jobIdx >= this.cachedJobs.length) {
+      console.log(`[Jobing paginated] per-job phase done (${this.cachedJobs.length} jobs walked)`);
       return { candidates: [], nextCursor: null, totalEstimate: 0 };
     }
     const job = this.cachedJobs[jobIdx];
@@ -209,6 +214,7 @@ export class JobingClient implements PlatformClient {
           const applicants: JobingApplicant[] = Array.isArray(data)
             ? data
             : data.results || data.applicants || [];
+          console.log(`[Jobing paginated] job ${jobIdx + 1}/${this.cachedJobs.length} "${job.title}": ${applicants.length} applicants`);
           candidates = [];
           for (const a of applicants) {
             const mc = mapApplicant(a, this.jobMap);
@@ -216,10 +222,14 @@ export class JobingClient implements PlatformClient {
             this.seenEmails.add(mc.email);
             candidates.push(mc);
           }
+        } else {
+          console.log(`[Jobing paginated] job ${jobIdx + 1}/${this.cachedJobs.length} "${job.title}" HTTP ${res.status}`);
         }
-      } catch {
-        // Skip this job's failures and continue to the next
+      } catch (e) {
+        console.log(`[Jobing paginated] job ${jobIdx + 1}/${this.cachedJobs.length} "${job.title}" error:`, e);
       }
+    } else {
+      console.log(`[Jobing paginated] job ${jobIdx + 1}/${this.cachedJobs.length} "${job.title}" has no applicants URL`);
     }
     const nextIdx = jobIdx + 1;
     const nextCursor = nextIdx < this.cachedJobs.length ? `job:${nextIdx}` : null;
