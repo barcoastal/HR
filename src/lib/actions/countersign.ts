@@ -134,7 +134,13 @@ export async function submitCountersignature(
       last.drawImage(sigImage, { x: bx, y: by, width: bw, height: bh });
       last.drawLine({ start: { x: bx, y: by - 2 }, end: { x: bx + bw, y: by - 2 }, thickness: 0.5, color: rgb(0.6, 0.6, 0.65) });
       last.drawText(`Countersigned by: ${countersignerFullName}`, { x: bx, y: by - 14, size: 9, color: rgb(0.15, 0.15, 0.2) });
-      last.drawText(`Date: ${signDate}`, { x: bx, y: by - 26, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      const jobTitle = request.countersigner?.jobTitle;
+      if (jobTitle) {
+        last.drawText(jobTitle, { x: bx, y: by - 26, size: 8, color: rgb(0.45, 0.45, 0.5) });
+        last.drawText(`Date: ${signDate}`, { x: bx, y: by - 38, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      } else {
+        last.drawText(`Date: ${signDate}`, { x: bx, y: by - 26, size: 9, color: rgb(0.15, 0.15, 0.2) });
+      }
     }
 
     for (const p of placements) {
@@ -158,6 +164,22 @@ export async function submitCountersignature(
         const drawX = boxX + (boxWidth - drawW) / 2;
         const drawY = boxY + (boxHeight - drawH) / 2;
         target.drawImage(sigImage, { x: drawX, y: drawY, width: drawW, height: drawH });
+        // Draw name + title directly below the signature box
+        const titleText = request.countersigner?.jobTitle || "";
+        target.drawText(countersignerFullName, {
+          x: boxX,
+          y: boxY - 10,
+          size: 8,
+          color: rgb(0.15, 0.15, 0.2),
+        });
+        if (titleText) {
+          target.drawText(titleText, {
+            x: boxX,
+            y: boxY - 19,
+            size: 7,
+            color: rgb(0.45, 0.45, 0.5),
+          });
+        }
       } else {
         const fontSize = Math.min(12, boxHeight * 0.7);
         target.drawText(signDate, {
