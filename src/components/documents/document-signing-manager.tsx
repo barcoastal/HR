@@ -593,7 +593,7 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
                 </span>
                 <input
                   type="file"
-                  accept=".pdf,.doc,.docx"
+                  accept=".pdf"
                   onChange={handleFileUpload}
                   className="hidden"
                   disabled={uploading}
@@ -602,8 +602,8 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
             )}
           </div>
 
-          {/* Signature placement — only shown once PDF is uploaded */}
-          {uploadedDoc && uploadedDoc.name.toLowerCase().endsWith(".pdf") && (
+          {/* Signature placement — only shown once a PDF is uploaded */}
+          {uploadedDoc && uploadedDoc.url.toLowerCase().endsWith(".pdf") && (
             <div>
               <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">
                 Mark where fields go
@@ -614,6 +614,14 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
                 value={placements}
                 onChange={setPlacements}
               />
+            </div>
+          )}
+          {uploadedDoc && !uploadedDoc.url.toLowerCase().endsWith(".pdf") && (
+            <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
+              <Icon name="warning" size={16} className="text-amber-600 mt-0.5 shrink-0" />
+              <p className="text-xs text-amber-800">
+                Placement editor requires a PDF. Please re-upload as a PDF to mark where fields go.
+              </p>
             </div>
           )}
 
