@@ -36,6 +36,7 @@ export async function createStandaloneSigningRequest(data: {
   documentName: string;
   message?: string;
   signaturePlacements?: unknown;
+  countersignerId?: string | null;
 }) {
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -54,6 +55,7 @@ export async function createStandaloneSigningRequest(data: {
       message: data.message || null,
       expiresAt,
       signaturePlacements: placementsArray.length > 0 ? (placementsArray as object) : undefined,
+      countersignerId: data.countersignerId ?? null,
     },
     include: { employee: true, candidate: true },
   });
@@ -149,7 +151,8 @@ export async function getSigningRequestByToken(token: string) {
 
   if (!request) return null;
   if (request.expiresAt < new Date()) return null;
-  if (request.status === "SIGNED" || request.status === "VOIDED") return null;
+  // Block access once the primary signer has signed — countersigning happens in-system via /sign-queue.
+  if (request.status === "SIGNED" || request.status === "VOIDED" || request.status === "AWAITING_COUNTERSIGN") return null;
 
   // Mark as viewed
   if (request.status === "PENDING") {
@@ -173,7 +176,7 @@ export async function submitSignature(
     include: { employee: true, candidate: true, employeeTask: true },
   });
 
-  if (!request || request.status === "SIGNED" || request.expiresAt < new Date()) {
+  if (!request || request.status === "SIGNED" || request.status === "AWAITING_COUNTERSIGN" || request.status === "VOIDED" || request.expiresAt < new Date()) {
     return { success: false, error: "Invalid or expired signing request" };
   }
 
@@ -223,18 +226,20 @@ export async function submitSignature(
       : [];
 
     if (placements.length > 0) {
+      // Primary signer only stamps signature/signatureDate placements.
+      // Countersignature placements are stamped later when the countersigner signs.
+      const primaryKinds = new Set(["signature", "signatureDate"]);
       for (const p of placements) {
+        if (!primaryKinds.has(p.kind)) continue;
         const pageIndex = Math.max(0, Math.min(pages.length - 1, p.page - 1));
         const target = pages[pageIndex];
         const { width: pageWidth, height: pageHeight } = target.getSize();
         const boxX = p.xPct * pageWidth;
         const boxWidth = p.widthPct * pageWidth;
         const boxHeight = p.heightPct * pageHeight;
-        // y in stored units is top-edge from top; pdf-lib y is bottom-edge from bottom
         const boxY = pageHeight - p.yPct * pageHeight - boxHeight;
 
         if (p.kind === "signature") {
-          // Fit signature image inside the box, preserve aspect ratio
           const ratio = sigImage.width / sigImage.height;
           let drawW = boxWidth;
           let drawH = drawW / ratio;
@@ -246,7 +251,6 @@ export async function submitSignature(
           const drawY = boxY + (boxHeight - drawH) / 2;
           target.drawImage(sigImage, { x: drawX, y: drawY, width: drawW, height: drawH });
         } else {
-          // signatureDate — draw text centered in the box
           const dateText = signDate;
           const fontSize = Math.min(12, boxHeight * 0.7);
           target.drawText(dateText, {
@@ -327,13 +331,34 @@ export async function submitSignature(
     });
     const signedDocUrl = `/api/onboarding-docs/${signedFilename}`;
 
-    // Update signing request
+    const awaitsCountersign = !!request.countersignerId;
+
+    // Update signing request — either fully signed, or awaiting countersignature
     await db.signingRequest.update({
       where: { id: request.id },
-      data: { status: "SIGNED", signedAt: new Date(), signedDocUrl },
+      data: {
+        status: awaitsCountersign ? "AWAITING_COUNTERSIGN" : "SIGNED",
+        signedAt: new Date(),
+        signedDocUrl,
+      },
     });
 
-    // Auto-complete the employee task (if linked to one)
+    if (awaitsCountersign) {
+      // Notify countersigner
+      try {
+        const { notifyCountersigner } = await import("./countersign");
+        await notifyCountersigner(request.id);
+      } catch (e) {
+        console.error("[signing] Failed to notify countersigner:", e);
+      }
+      revalidatePath("/onboarding");
+      revalidatePath("/documents");
+      revalidatePath("/sign-queue");
+      revalidatePath("/cv");
+      return { success: true };
+    }
+
+    // Fully signed — finalize
     if (request.employeeTaskId) {
       await db.employeeTask.update({
         where: { id: request.employeeTaskId },
@@ -341,7 +366,6 @@ export async function submitSignature(
       });
     }
 
-    // Store in employee documents (only if linked to an employee)
     if (request.employeeId) {
       await db.document.create({
         data: {
@@ -353,14 +377,12 @@ export async function submitSignature(
       });
     }
 
-    // If this is a candidate signing (offer letter), update the candidate record
     if (request.candidateId) {
       await db.candidate.update({
         where: { id: request.candidateId },
         data: { offerSignedDocUrl: signedDocUrl, offerSignedAt: new Date() },
       });
 
-      // Notify via centralized rules engine
       const { sendNotifications } = await import("@/lib/notifications/send");
       const candidate = request.candidate;
       if (candidate) {
@@ -377,6 +399,7 @@ export async function submitSignature(
 
     revalidatePath("/onboarding");
     revalidatePath("/documents");
+    revalidatePath("/my-documents");
     revalidatePath("/cv");
     return { success: true };
   } catch (error) {

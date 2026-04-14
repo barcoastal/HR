@@ -43,6 +43,8 @@ export type StageDocumentMinAggregateOutputType = {
   placeholders: string | null
   requiresSignature: boolean | null
   requiresFill: boolean | null
+  requiresCountersignature: boolean | null
+  countersignerId: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -57,6 +59,8 @@ export type StageDocumentMaxAggregateOutputType = {
   placeholders: string | null
   requiresSignature: boolean | null
   requiresFill: boolean | null
+  requiresCountersignature: boolean | null
+  countersignerId: string | null
   order: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -71,6 +75,8 @@ export type StageDocumentCountAggregateOutputType = {
   placeholders: number
   requiresSignature: number
   requiresFill: number
+  requiresCountersignature: number
+  countersignerId: number
   order: number
   createdAt: number
   updatedAt: number
@@ -95,6 +101,8 @@ export type StageDocumentMinAggregateInputType = {
   placeholders?: true
   requiresSignature?: true
   requiresFill?: true
+  requiresCountersignature?: true
+  countersignerId?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -109,6 +117,8 @@ export type StageDocumentMaxAggregateInputType = {
   placeholders?: true
   requiresSignature?: true
   requiresFill?: true
+  requiresCountersignature?: true
+  countersignerId?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -123,6 +133,8 @@ export type StageDocumentCountAggregateInputType = {
   placeholders?: true
   requiresSignature?: true
   requiresFill?: true
+  requiresCountersignature?: true
+  countersignerId?: true
   order?: true
   createdAt?: true
   updatedAt?: true
@@ -224,6 +236,8 @@ export type StageDocumentGroupByOutputType = {
   placeholders: string
   requiresSignature: boolean
   requiresFill: boolean
+  requiresCountersignature: boolean
+  countersignerId: string | null
   order: number
   createdAt: Date
   updatedAt: Date
@@ -261,9 +275,12 @@ export type StageDocumentWhereInput = {
   placeholders?: Prisma.StringFilter<"StageDocument"> | string
   requiresSignature?: Prisma.BoolFilter<"StageDocument"> | boolean
   requiresFill?: Prisma.BoolFilter<"StageDocument"> | boolean
+  requiresCountersignature?: Prisma.BoolFilter<"StageDocument"> | boolean
+  countersignerId?: Prisma.StringNullableFilter<"StageDocument"> | string | null
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
+  countersigner?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }
 
 export type StageDocumentOrderByWithRelationInput = {
@@ -275,9 +292,12 @@ export type StageDocumentOrderByWithRelationInput = {
   placeholders?: Prisma.SortOrder
   requiresSignature?: Prisma.SortOrder
   requiresFill?: Prisma.SortOrder
+  requiresCountersignature?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  countersigner?: Prisma.EmployeeOrderByWithRelationInput
 }
 
 export type StageDocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -292,9 +312,12 @@ export type StageDocumentWhereUniqueInput = Prisma.AtLeast<{
   placeholders?: Prisma.StringFilter<"StageDocument"> | string
   requiresSignature?: Prisma.BoolFilter<"StageDocument"> | boolean
   requiresFill?: Prisma.BoolFilter<"StageDocument"> | boolean
+  requiresCountersignature?: Prisma.BoolFilter<"StageDocument"> | boolean
+  countersignerId?: Prisma.StringNullableFilter<"StageDocument"> | string | null
   order?: Prisma.IntFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
+  countersigner?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }, "id">
 
 export type StageDocumentOrderByWithAggregationInput = {
@@ -306,6 +329,8 @@ export type StageDocumentOrderByWithAggregationInput = {
   placeholders?: Prisma.SortOrder
   requiresSignature?: Prisma.SortOrder
   requiresFill?: Prisma.SortOrder
+  requiresCountersignature?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrderInput | Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -328,6 +353,8 @@ export type StageDocumentScalarWhereWithAggregatesInput = {
   placeholders?: Prisma.StringWithAggregatesFilter<"StageDocument"> | string
   requiresSignature?: Prisma.BoolWithAggregatesFilter<"StageDocument"> | boolean
   requiresFill?: Prisma.BoolWithAggregatesFilter<"StageDocument"> | boolean
+  requiresCountersignature?: Prisma.BoolWithAggregatesFilter<"StageDocument"> | boolean
+  countersignerId?: Prisma.StringNullableWithAggregatesFilter<"StageDocument"> | string | null
   order?: Prisma.IntWithAggregatesFilter<"StageDocument"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StageDocument"> | Date | string
@@ -342,9 +369,11 @@ export type StageDocumentCreateInput = {
   placeholders?: string
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  countersigner?: Prisma.EmployeeCreateNestedOneWithoutCountersignStageDocsInput
 }
 
 export type StageDocumentUncheckedCreateInput = {
@@ -356,6 +385,8 @@ export type StageDocumentUncheckedCreateInput = {
   placeholders?: string
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: string | null
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -370,9 +401,11 @@ export type StageDocumentUpdateInput = {
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  countersigner?: Prisma.EmployeeUpdateOneWithoutCountersignStageDocsNestedInput
 }
 
 export type StageDocumentUncheckedUpdateInput = {
@@ -384,6 +417,8 @@ export type StageDocumentUncheckedUpdateInput = {
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,6 +433,8 @@ export type StageDocumentCreateManyInput = {
   placeholders?: string
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: string | null
   order?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -412,6 +449,7 @@ export type StageDocumentUpdateManyMutationInput = {
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -426,9 +464,21 @@ export type StageDocumentUncheckedUpdateManyInput = {
   placeholders?: Prisma.StringFieldUpdateOperationsInput | string
   requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   order?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type StageDocumentListRelationFilter = {
+  every?: Prisma.StageDocumentWhereInput
+  some?: Prisma.StageDocumentWhereInput
+  none?: Prisma.StageDocumentWhereInput
+}
+
+export type StageDocumentOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type StageDocumentCountOrderByAggregateInput = {
@@ -440,6 +490,8 @@ export type StageDocumentCountOrderByAggregateInput = {
   placeholders?: Prisma.SortOrder
   requiresSignature?: Prisma.SortOrder
   requiresFill?: Prisma.SortOrder
+  requiresCountersignature?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -458,6 +510,8 @@ export type StageDocumentMaxOrderByAggregateInput = {
   placeholders?: Prisma.SortOrder
   requiresSignature?: Prisma.SortOrder
   requiresFill?: Prisma.SortOrder
+  requiresCountersignature?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -472,6 +526,8 @@ export type StageDocumentMinOrderByAggregateInput = {
   placeholders?: Prisma.SortOrder
   requiresSignature?: Prisma.SortOrder
   requiresFill?: Prisma.SortOrder
+  requiresCountersignature?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
   order?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -479,6 +535,183 @@ export type StageDocumentMinOrderByAggregateInput = {
 
 export type StageDocumentSumOrderByAggregateInput = {
   order?: Prisma.SortOrder
+}
+
+export type StageDocumentCreateNestedManyWithoutCountersignerInput = {
+  create?: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput> | Prisma.StageDocumentCreateWithoutCountersignerInput[] | Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput | Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput[]
+  createMany?: Prisma.StageDocumentCreateManyCountersignerInputEnvelope
+  connect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+}
+
+export type StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput = {
+  create?: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput> | Prisma.StageDocumentCreateWithoutCountersignerInput[] | Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput | Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput[]
+  createMany?: Prisma.StageDocumentCreateManyCountersignerInputEnvelope
+  connect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+}
+
+export type StageDocumentUpdateManyWithoutCountersignerNestedInput = {
+  create?: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput> | Prisma.StageDocumentCreateWithoutCountersignerInput[] | Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput | Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput[]
+  upsert?: Prisma.StageDocumentUpsertWithWhereUniqueWithoutCountersignerInput | Prisma.StageDocumentUpsertWithWhereUniqueWithoutCountersignerInput[]
+  createMany?: Prisma.StageDocumentCreateManyCountersignerInputEnvelope
+  set?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  disconnect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  delete?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  connect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  update?: Prisma.StageDocumentUpdateWithWhereUniqueWithoutCountersignerInput | Prisma.StageDocumentUpdateWithWhereUniqueWithoutCountersignerInput[]
+  updateMany?: Prisma.StageDocumentUpdateManyWithWhereWithoutCountersignerInput | Prisma.StageDocumentUpdateManyWithWhereWithoutCountersignerInput[]
+  deleteMany?: Prisma.StageDocumentScalarWhereInput | Prisma.StageDocumentScalarWhereInput[]
+}
+
+export type StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput = {
+  create?: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput> | Prisma.StageDocumentCreateWithoutCountersignerInput[] | Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput | Prisma.StageDocumentCreateOrConnectWithoutCountersignerInput[]
+  upsert?: Prisma.StageDocumentUpsertWithWhereUniqueWithoutCountersignerInput | Prisma.StageDocumentUpsertWithWhereUniqueWithoutCountersignerInput[]
+  createMany?: Prisma.StageDocumentCreateManyCountersignerInputEnvelope
+  set?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  disconnect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  delete?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  connect?: Prisma.StageDocumentWhereUniqueInput | Prisma.StageDocumentWhereUniqueInput[]
+  update?: Prisma.StageDocumentUpdateWithWhereUniqueWithoutCountersignerInput | Prisma.StageDocumentUpdateWithWhereUniqueWithoutCountersignerInput[]
+  updateMany?: Prisma.StageDocumentUpdateManyWithWhereWithoutCountersignerInput | Prisma.StageDocumentUpdateManyWithWhereWithoutCountersignerInput[]
+  deleteMany?: Prisma.StageDocumentScalarWhereInput | Prisma.StageDocumentScalarWhereInput[]
+}
+
+export type StageDocumentCreateWithoutCountersignerInput = {
+  id?: string
+  stage: string
+  name: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
+  requiresSignature?: boolean
+  requiresFill?: boolean
+  requiresCountersignature?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type StageDocumentUncheckedCreateWithoutCountersignerInput = {
+  id?: string
+  stage: string
+  name: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
+  requiresSignature?: boolean
+  requiresFill?: boolean
+  requiresCountersignature?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type StageDocumentCreateOrConnectWithoutCountersignerInput = {
+  where: Prisma.StageDocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput>
+}
+
+export type StageDocumentCreateManyCountersignerInputEnvelope = {
+  data: Prisma.StageDocumentCreateManyCountersignerInput | Prisma.StageDocumentCreateManyCountersignerInput[]
+  skipDuplicates?: boolean
+}
+
+export type StageDocumentUpsertWithWhereUniqueWithoutCountersignerInput = {
+  where: Prisma.StageDocumentWhereUniqueInput
+  update: Prisma.XOR<Prisma.StageDocumentUpdateWithoutCountersignerInput, Prisma.StageDocumentUncheckedUpdateWithoutCountersignerInput>
+  create: Prisma.XOR<Prisma.StageDocumentCreateWithoutCountersignerInput, Prisma.StageDocumentUncheckedCreateWithoutCountersignerInput>
+}
+
+export type StageDocumentUpdateWithWhereUniqueWithoutCountersignerInput = {
+  where: Prisma.StageDocumentWhereUniqueInput
+  data: Prisma.XOR<Prisma.StageDocumentUpdateWithoutCountersignerInput, Prisma.StageDocumentUncheckedUpdateWithoutCountersignerInput>
+}
+
+export type StageDocumentUpdateManyWithWhereWithoutCountersignerInput = {
+  where: Prisma.StageDocumentScalarWhereInput
+  data: Prisma.XOR<Prisma.StageDocumentUpdateManyMutationInput, Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerInput>
+}
+
+export type StageDocumentScalarWhereInput = {
+  AND?: Prisma.StageDocumentScalarWhereInput | Prisma.StageDocumentScalarWhereInput[]
+  OR?: Prisma.StageDocumentScalarWhereInput[]
+  NOT?: Prisma.StageDocumentScalarWhereInput | Prisma.StageDocumentScalarWhereInput[]
+  id?: Prisma.StringFilter<"StageDocument"> | string
+  stage?: Prisma.StringFilter<"StageDocument"> | string
+  name?: Prisma.StringFilter<"StageDocument"> | string
+  content?: Prisma.StringFilter<"StageDocument"> | string
+  pdfData?: Prisma.StringNullableFilter<"StageDocument"> | string | null
+  placeholders?: Prisma.StringFilter<"StageDocument"> | string
+  requiresSignature?: Prisma.BoolFilter<"StageDocument"> | boolean
+  requiresFill?: Prisma.BoolFilter<"StageDocument"> | boolean
+  requiresCountersignature?: Prisma.BoolFilter<"StageDocument"> | boolean
+  countersignerId?: Prisma.StringNullableFilter<"StageDocument"> | string | null
+  order?: Prisma.IntFilter<"StageDocument"> | number
+  createdAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"StageDocument"> | Date | string
+}
+
+export type StageDocumentCreateManyCountersignerInput = {
+  id?: string
+  stage: string
+  name: string
+  content?: string
+  pdfData?: string | null
+  placeholders?: string
+  requiresSignature?: boolean
+  requiresFill?: boolean
+  requiresCountersignature?: boolean
+  order?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type StageDocumentUpdateWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stage?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type StageDocumentUncheckedUpdateWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stage?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type StageDocumentUncheckedUpdateManyWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stage?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  pdfData?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  placeholders?: Prisma.StringFieldUpdateOperationsInput | string
+  requiresSignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresFill?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requiresCountersignature?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  order?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -492,9 +725,12 @@ export type StageDocumentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   placeholders?: boolean
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["stageDocument"]>
 
 export type StageDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -506,9 +742,12 @@ export type StageDocumentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   placeholders?: boolean
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["stageDocument"]>
 
 export type StageDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -520,9 +759,12 @@ export type StageDocumentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   placeholders?: boolean
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["stageDocument"]>
 
 export type StageDocumentSelectScalar = {
@@ -534,16 +776,29 @@ export type StageDocumentSelectScalar = {
   placeholders?: boolean
   requiresSignature?: boolean
   requiresFill?: boolean
+  requiresCountersignature?: boolean
+  countersignerId?: boolean
   order?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "pdfData" | "placeholders" | "requiresSignature" | "requiresFill" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
+export type StageDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stage" | "name" | "content" | "pdfData" | "placeholders" | "requiresSignature" | "requiresFill" | "requiresCountersignature" | "countersignerId" | "order" | "createdAt" | "updatedAt", ExtArgs["result"]["stageDocument"]>
+export type StageDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
+}
+export type StageDocumentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
+}
+export type StageDocumentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  countersigner?: boolean | Prisma.StageDocument$countersignerArgs<ExtArgs>
+}
 
 export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "StageDocument"
-  objects: {}
+  objects: {
+    countersigner: Prisma.$EmployeePayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     stage: string
@@ -553,6 +808,8 @@ export type $StageDocumentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     placeholders: string
     requiresSignature: boolean
     requiresFill: boolean
+    requiresCountersignature: boolean
+    countersignerId: string | null
     order: number
     createdAt: Date
     updatedAt: Date
@@ -950,6 +1207,7 @@ readonly fields: StageDocumentFieldRefs;
  */
 export interface Prisma__StageDocumentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  countersigner<T extends Prisma.StageDocument$countersignerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageDocument$countersignerArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -987,6 +1245,8 @@ export interface StageDocumentFieldRefs {
   readonly placeholders: Prisma.FieldRef<"StageDocument", 'String'>
   readonly requiresSignature: Prisma.FieldRef<"StageDocument", 'Boolean'>
   readonly requiresFill: Prisma.FieldRef<"StageDocument", 'Boolean'>
+  readonly requiresCountersignature: Prisma.FieldRef<"StageDocument", 'Boolean'>
+  readonly countersignerId: Prisma.FieldRef<"StageDocument", 'String'>
   readonly order: Prisma.FieldRef<"StageDocument", 'Int'>
   readonly createdAt: Prisma.FieldRef<"StageDocument", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StageDocument", 'DateTime'>
@@ -1007,6 +1267,10 @@ export type StageDocumentFindUniqueArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * Filter, which StageDocument to fetch.
    */
   where: Prisma.StageDocumentWhereUniqueInput
@@ -1025,6 +1289,10 @@ export type StageDocumentFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Ext
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * Filter, which StageDocument to fetch.
    */
   where: Prisma.StageDocumentWhereUniqueInput
@@ -1042,6 +1310,10 @@ export type StageDocumentFindFirstArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the StageDocument
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
   /**
    * Filter, which StageDocument to fetch.
    */
@@ -1091,6 +1363,10 @@ export type StageDocumentFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Exte
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * Filter, which StageDocument to fetch.
    */
   where?: Prisma.StageDocumentWhereInput
@@ -1139,6 +1415,10 @@ export type StageDocumentFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * Filter, which StageDocuments to fetch.
    */
   where?: Prisma.StageDocumentWhereInput
@@ -1182,6 +1462,10 @@ export type StageDocumentCreateArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * The data needed to create a StageDocument.
    */
   data: Prisma.XOR<Prisma.StageDocumentCreateInput, Prisma.StageDocumentUncheckedCreateInput>
@@ -1215,6 +1499,10 @@ export type StageDocumentCreateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    */
   data: Prisma.StageDocumentCreateManyInput | Prisma.StageDocumentCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1229,6 +1517,10 @@ export type StageDocumentUpdateArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the StageDocument
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
   /**
    * The data needed to update a StageDocument.
    */
@@ -1281,6 +1573,10 @@ export type StageDocumentUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.E
    * Limit how many StageDocuments to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1295,6 +1591,10 @@ export type StageDocumentUpsertArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Omit specific fields from the StageDocument
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
   /**
    * The filter to search for the StageDocument to update in case it exists.
    */
@@ -1322,6 +1622,10 @@ export type StageDocumentDeleteArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
+  /**
    * Filter which StageDocument to delete.
    */
   where: Prisma.StageDocumentWhereUniqueInput
@@ -1342,6 +1646,25 @@ export type StageDocumentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
+ * StageDocument.countersigner
+ */
+export type StageDocument$countersignerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Employee
+   */
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Employee
+   */
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
+}
+
+/**
  * StageDocument without action
  */
 export type StageDocumentDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1353,4 +1676,8 @@ export type StageDocumentDefaultArgs<ExtArgs extends runtime.Types.Extensions.In
    * Omit specific fields from the StageDocument
    */
   omit?: Prisma.StageDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StageDocumentInclude<ExtArgs> | null
 }

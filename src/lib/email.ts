@@ -268,6 +268,33 @@ export async function sendWelcomeEmail({
   }
 }
 
+export async function sendCountersignRequestEmail({
+  to, firstName, documentName, signerName, countersignUrl,
+}: {
+  to: string; firstName: string; documentName: string; signerName: string; countersignUrl: string;
+}) {
+  const branding = await getCompanyBranding();
+  await sendEmail(to, `Countersignature needed: ${documentName}`, `
+    <p>Hi ${firstName},</p>
+    <p><strong>${signerName}</strong> has signed <strong>${documentName}</strong>. It now needs your countersignature to be complete.</p>
+    <p><a href="${countersignUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;">Review & Countersign</a></p>
+    <p style="color:#666;font-size:13px">You can also review all pending countersignatures from the Sign Queue in ${branding.companyName}.</p>
+  `);
+}
+
+export async function sendCountersignCompletedEmail({
+  to, firstName, documentName,
+}: {
+  to: string; firstName: string; documentName: string;
+}) {
+  const branding = await getCompanyBranding();
+  await sendEmail(to, `Document fully signed: ${documentName}`, `
+    <p>Hi ${firstName},</p>
+    <p><strong>${documentName}</strong> has been countersigned by ${branding.companyName} and is now fully executed.</p>
+    <p>A copy is available in your documents page.</p>
+  `);
+}
+
 export async function sendFillRequestEmail({
   to, firstName, documentName, fillUrl,
 }: {

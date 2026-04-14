@@ -41,6 +41,8 @@ export type SigningRequestMinAggregateOutputType = {
   expiresAt: Date | null
   createdAt: Date | null
   message: string | null
+  countersignerId: string | null
+  countersignerSignedAt: Date | null
 }
 
 export type SigningRequestMaxAggregateOutputType = {
@@ -60,6 +62,8 @@ export type SigningRequestMaxAggregateOutputType = {
   expiresAt: Date | null
   createdAt: Date | null
   message: string | null
+  countersignerId: string | null
+  countersignerSignedAt: Date | null
 }
 
 export type SigningRequestCountAggregateOutputType = {
@@ -80,6 +84,8 @@ export type SigningRequestCountAggregateOutputType = {
   createdAt: number
   message: number
   signaturePlacements: number
+  countersignerId: number
+  countersignerSignedAt: number
   _all: number
 }
 
@@ -101,6 +107,8 @@ export type SigningRequestMinAggregateInputType = {
   expiresAt?: true
   createdAt?: true
   message?: true
+  countersignerId?: true
+  countersignerSignedAt?: true
 }
 
 export type SigningRequestMaxAggregateInputType = {
@@ -120,6 +128,8 @@ export type SigningRequestMaxAggregateInputType = {
   expiresAt?: true
   createdAt?: true
   message?: true
+  countersignerId?: true
+  countersignerSignedAt?: true
 }
 
 export type SigningRequestCountAggregateInputType = {
@@ -140,6 +150,8 @@ export type SigningRequestCountAggregateInputType = {
   createdAt?: true
   message?: true
   signaturePlacements?: true
+  countersignerId?: true
+  countersignerSignedAt?: true
   _all?: true
 }
 
@@ -233,6 +245,8 @@ export type SigningRequestGroupByOutputType = {
   createdAt: Date
   message: string | null
   signaturePlacements: runtime.JsonValue | null
+  countersignerId: string | null
+  countersignerSignedAt: Date | null
   _count: SigningRequestCountAggregateOutputType | null
   _min: SigningRequestMinAggregateOutputType | null
   _max: SigningRequestMaxAggregateOutputType | null
@@ -274,9 +288,12 @@ export type SigningRequestWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"SigningRequest"> | Date | string
   message?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
   signaturePlacements?: Prisma.JsonNullableFilter<"SigningRequest">
+  countersignerId?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
+  countersignerSignedAt?: Prisma.DateTimeNullableFilter<"SigningRequest"> | Date | string | null
   employeeTask?: Prisma.XOR<Prisma.EmployeeTaskNullableScalarRelationFilter, Prisma.EmployeeTaskWhereInput> | null
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   candidate?: Prisma.XOR<Prisma.CandidateNullableScalarRelationFilter, Prisma.CandidateWhereInput> | null
+  countersigner?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }
 
 export type SigningRequestOrderByWithRelationInput = {
@@ -297,9 +314,12 @@ export type SigningRequestOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   message?: Prisma.SortOrderInput | Prisma.SortOrder
   signaturePlacements?: Prisma.SortOrderInput | Prisma.SortOrder
+  countersignerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  countersignerSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   employeeTask?: Prisma.EmployeeTaskOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
   candidate?: Prisma.CandidateOrderByWithRelationInput
+  countersigner?: Prisma.EmployeeOrderByWithRelationInput
 }
 
 export type SigningRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -323,9 +343,12 @@ export type SigningRequestWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"SigningRequest"> | Date | string
   message?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
   signaturePlacements?: Prisma.JsonNullableFilter<"SigningRequest">
+  countersignerId?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
+  countersignerSignedAt?: Prisma.DateTimeNullableFilter<"SigningRequest"> | Date | string | null
   employeeTask?: Prisma.XOR<Prisma.EmployeeTaskNullableScalarRelationFilter, Prisma.EmployeeTaskWhereInput> | null
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   candidate?: Prisma.XOR<Prisma.CandidateNullableScalarRelationFilter, Prisma.CandidateWhereInput> | null
+  countersigner?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
 }, "id" | "employeeTaskId" | "token">
 
 export type SigningRequestOrderByWithAggregationInput = {
@@ -346,6 +369,8 @@ export type SigningRequestOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   message?: Prisma.SortOrderInput | Prisma.SortOrder
   signaturePlacements?: Prisma.SortOrderInput | Prisma.SortOrder
+  countersignerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  countersignerSignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SigningRequestCountOrderByAggregateInput
   _max?: Prisma.SigningRequestMaxOrderByAggregateInput
   _min?: Prisma.SigningRequestMinOrderByAggregateInput
@@ -372,6 +397,8 @@ export type SigningRequestScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SigningRequest"> | Date | string
   message?: Prisma.StringNullableWithAggregatesFilter<"SigningRequest"> | string | null
   signaturePlacements?: Prisma.JsonNullableWithAggregatesFilter<"SigningRequest">
+  countersignerId?: Prisma.StringNullableWithAggregatesFilter<"SigningRequest"> | string | null
+  countersignerSignedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SigningRequest"> | Date | string | null
 }
 
 export type SigningRequestCreateInput = {
@@ -389,9 +416,11 @@ export type SigningRequestCreateInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
   employeeTask?: Prisma.EmployeeTaskCreateNestedOneWithoutSigningRequestInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutSigningRequestsInput
   candidate?: Prisma.CandidateCreateNestedOneWithoutSigningRequestsInput
+  countersigner?: Prisma.EmployeeCreateNestedOneWithoutCountersignRequestsInput
 }
 
 export type SigningRequestUncheckedCreateInput = {
@@ -412,6 +441,8 @@ export type SigningRequestUncheckedCreateInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestUpdateInput = {
@@ -429,9 +460,11 @@ export type SigningRequestUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employeeTask?: Prisma.EmployeeTaskUpdateOneWithoutSigningRequestNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutSigningRequestsNestedInput
   candidate?: Prisma.CandidateUpdateOneWithoutSigningRequestsNestedInput
+  countersigner?: Prisma.EmployeeUpdateOneWithoutCountersignRequestsNestedInput
 }
 
 export type SigningRequestUncheckedUpdateInput = {
@@ -452,6 +485,8 @@ export type SigningRequestUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestCreateManyInput = {
@@ -472,6 +507,8 @@ export type SigningRequestCreateManyInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestUpdateManyMutationInput = {
@@ -489,6 +526,7 @@ export type SigningRequestUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestUncheckedUpdateManyInput = {
@@ -509,6 +547,8 @@ export type SigningRequestUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestListRelationFilter = {
@@ -544,6 +584,8 @@ export type SigningRequestCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   message?: Prisma.SortOrder
   signaturePlacements?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
+  countersignerSignedAt?: Prisma.SortOrder
 }
 
 export type SigningRequestMaxOrderByAggregateInput = {
@@ -563,6 +605,8 @@ export type SigningRequestMaxOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
+  countersignerSignedAt?: Prisma.SortOrder
 }
 
 export type SigningRequestMinOrderByAggregateInput = {
@@ -582,6 +626,8 @@ export type SigningRequestMinOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   message?: Prisma.SortOrder
+  countersignerId?: Prisma.SortOrder
+  countersignerSignedAt?: Prisma.SortOrder
 }
 
 export type SigningRequestCreateNestedManyWithoutEmployeeInput = {
@@ -591,10 +637,24 @@ export type SigningRequestCreateNestedManyWithoutEmployeeInput = {
   connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
 }
 
+export type SigningRequestCreateNestedManyWithoutCountersignerInput = {
+  create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput> | Prisma.SigningRequestCreateWithoutCountersignerInput[] | Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput | Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput[]
+  createMany?: Prisma.SigningRequestCreateManyCountersignerInputEnvelope
+  connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+}
+
 export type SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput = {
   create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutEmployeeInput, Prisma.SigningRequestUncheckedCreateWithoutEmployeeInput> | Prisma.SigningRequestCreateWithoutEmployeeInput[] | Prisma.SigningRequestUncheckedCreateWithoutEmployeeInput[]
   connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutEmployeeInput | Prisma.SigningRequestCreateOrConnectWithoutEmployeeInput[]
   createMany?: Prisma.SigningRequestCreateManyEmployeeInputEnvelope
+  connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+}
+
+export type SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput = {
+  create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput> | Prisma.SigningRequestCreateWithoutCountersignerInput[] | Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput | Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput[]
+  createMany?: Prisma.SigningRequestCreateManyCountersignerInputEnvelope
   connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
 }
 
@@ -612,6 +672,20 @@ export type SigningRequestUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.SigningRequestScalarWhereInput | Prisma.SigningRequestScalarWhereInput[]
 }
 
+export type SigningRequestUpdateManyWithoutCountersignerNestedInput = {
+  create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput> | Prisma.SigningRequestCreateWithoutCountersignerInput[] | Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput | Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput[]
+  upsert?: Prisma.SigningRequestUpsertWithWhereUniqueWithoutCountersignerInput | Prisma.SigningRequestUpsertWithWhereUniqueWithoutCountersignerInput[]
+  createMany?: Prisma.SigningRequestCreateManyCountersignerInputEnvelope
+  set?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  disconnect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  delete?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  update?: Prisma.SigningRequestUpdateWithWhereUniqueWithoutCountersignerInput | Prisma.SigningRequestUpdateWithWhereUniqueWithoutCountersignerInput[]
+  updateMany?: Prisma.SigningRequestUpdateManyWithWhereWithoutCountersignerInput | Prisma.SigningRequestUpdateManyWithWhereWithoutCountersignerInput[]
+  deleteMany?: Prisma.SigningRequestScalarWhereInput | Prisma.SigningRequestScalarWhereInput[]
+}
+
 export type SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput = {
   create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutEmployeeInput, Prisma.SigningRequestUncheckedCreateWithoutEmployeeInput> | Prisma.SigningRequestCreateWithoutEmployeeInput[] | Prisma.SigningRequestUncheckedCreateWithoutEmployeeInput[]
   connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutEmployeeInput | Prisma.SigningRequestCreateOrConnectWithoutEmployeeInput[]
@@ -623,6 +697,20 @@ export type SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput = {
   connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
   update?: Prisma.SigningRequestUpdateWithWhereUniqueWithoutEmployeeInput | Prisma.SigningRequestUpdateWithWhereUniqueWithoutEmployeeInput[]
   updateMany?: Prisma.SigningRequestUpdateManyWithWhereWithoutEmployeeInput | Prisma.SigningRequestUpdateManyWithWhereWithoutEmployeeInput[]
+  deleteMany?: Prisma.SigningRequestScalarWhereInput | Prisma.SigningRequestScalarWhereInput[]
+}
+
+export type SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput = {
+  create?: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput> | Prisma.SigningRequestCreateWithoutCountersignerInput[] | Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput[]
+  connectOrCreate?: Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput | Prisma.SigningRequestCreateOrConnectWithoutCountersignerInput[]
+  upsert?: Prisma.SigningRequestUpsertWithWhereUniqueWithoutCountersignerInput | Prisma.SigningRequestUpsertWithWhereUniqueWithoutCountersignerInput[]
+  createMany?: Prisma.SigningRequestCreateManyCountersignerInputEnvelope
+  set?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  disconnect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  delete?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  connect?: Prisma.SigningRequestWhereUniqueInput | Prisma.SigningRequestWhereUniqueInput[]
+  update?: Prisma.SigningRequestUpdateWithWhereUniqueWithoutCountersignerInput | Prisma.SigningRequestUpdateWithWhereUniqueWithoutCountersignerInput[]
+  updateMany?: Prisma.SigningRequestUpdateManyWithWhereWithoutCountersignerInput | Prisma.SigningRequestUpdateManyWithWhereWithoutCountersignerInput[]
   deleteMany?: Prisma.SigningRequestScalarWhereInput | Prisma.SigningRequestScalarWhereInput[]
 }
 
@@ -715,8 +803,10 @@ export type SigningRequestCreateWithoutEmployeeInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
   employeeTask?: Prisma.EmployeeTaskCreateNestedOneWithoutSigningRequestInput
   candidate?: Prisma.CandidateCreateNestedOneWithoutSigningRequestsInput
+  countersigner?: Prisma.EmployeeCreateNestedOneWithoutCountersignRequestsInput
 }
 
 export type SigningRequestUncheckedCreateWithoutEmployeeInput = {
@@ -736,6 +826,8 @@ export type SigningRequestUncheckedCreateWithoutEmployeeInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestCreateOrConnectWithoutEmployeeInput = {
@@ -745,6 +837,58 @@ export type SigningRequestCreateOrConnectWithoutEmployeeInput = {
 
 export type SigningRequestCreateManyEmployeeInputEnvelope = {
   data: Prisma.SigningRequestCreateManyEmployeeInput | Prisma.SigningRequestCreateManyEmployeeInput[]
+  skipDuplicates?: boolean
+}
+
+export type SigningRequestCreateWithoutCountersignerInput = {
+  id?: string
+  signerName?: string | null
+  signerEmail?: string | null
+  token: string
+  documentUrl: string
+  documentName: string
+  status?: string
+  signedDocUrl?: string | null
+  signedAt?: Date | string | null
+  viewedAt?: Date | string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  message?: string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
+  employeeTask?: Prisma.EmployeeTaskCreateNestedOneWithoutSigningRequestInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutSigningRequestsInput
+  candidate?: Prisma.CandidateCreateNestedOneWithoutSigningRequestsInput
+}
+
+export type SigningRequestUncheckedCreateWithoutCountersignerInput = {
+  id?: string
+  employeeTaskId?: string | null
+  employeeId?: string | null
+  candidateId?: string | null
+  signerName?: string | null
+  signerEmail?: string | null
+  token: string
+  documentUrl: string
+  documentName: string
+  status?: string
+  signedDocUrl?: string | null
+  signedAt?: Date | string | null
+  viewedAt?: Date | string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  message?: string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
+}
+
+export type SigningRequestCreateOrConnectWithoutCountersignerInput = {
+  where: Prisma.SigningRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput>
+}
+
+export type SigningRequestCreateManyCountersignerInputEnvelope = {
+  data: Prisma.SigningRequestCreateManyCountersignerInput | Prisma.SigningRequestCreateManyCountersignerInput[]
   skipDuplicates?: boolean
 }
 
@@ -785,6 +929,24 @@ export type SigningRequestScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"SigningRequest"> | Date | string
   message?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
   signaturePlacements?: Prisma.JsonNullableFilter<"SigningRequest">
+  countersignerId?: Prisma.StringNullableFilter<"SigningRequest"> | string | null
+  countersignerSignedAt?: Prisma.DateTimeNullableFilter<"SigningRequest"> | Date | string | null
+}
+
+export type SigningRequestUpsertWithWhereUniqueWithoutCountersignerInput = {
+  where: Prisma.SigningRequestWhereUniqueInput
+  update: Prisma.XOR<Prisma.SigningRequestUpdateWithoutCountersignerInput, Prisma.SigningRequestUncheckedUpdateWithoutCountersignerInput>
+  create: Prisma.XOR<Prisma.SigningRequestCreateWithoutCountersignerInput, Prisma.SigningRequestUncheckedCreateWithoutCountersignerInput>
+}
+
+export type SigningRequestUpdateWithWhereUniqueWithoutCountersignerInput = {
+  where: Prisma.SigningRequestWhereUniqueInput
+  data: Prisma.XOR<Prisma.SigningRequestUpdateWithoutCountersignerInput, Prisma.SigningRequestUncheckedUpdateWithoutCountersignerInput>
+}
+
+export type SigningRequestUpdateManyWithWhereWithoutCountersignerInput = {
+  where: Prisma.SigningRequestScalarWhereInput
+  data: Prisma.XOR<Prisma.SigningRequestUpdateManyMutationInput, Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerInput>
 }
 
 export type SigningRequestCreateWithoutEmployeeTaskInput = {
@@ -802,8 +964,10 @@ export type SigningRequestCreateWithoutEmployeeTaskInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
   employee?: Prisma.EmployeeCreateNestedOneWithoutSigningRequestsInput
   candidate?: Prisma.CandidateCreateNestedOneWithoutSigningRequestsInput
+  countersigner?: Prisma.EmployeeCreateNestedOneWithoutCountersignRequestsInput
 }
 
 export type SigningRequestUncheckedCreateWithoutEmployeeTaskInput = {
@@ -823,6 +987,8 @@ export type SigningRequestUncheckedCreateWithoutEmployeeTaskInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestCreateOrConnectWithoutEmployeeTaskInput = {
@@ -856,8 +1022,10 @@ export type SigningRequestUpdateWithoutEmployeeTaskInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employee?: Prisma.EmployeeUpdateOneWithoutSigningRequestsNestedInput
   candidate?: Prisma.CandidateUpdateOneWithoutSigningRequestsNestedInput
+  countersigner?: Prisma.EmployeeUpdateOneWithoutCountersignRequestsNestedInput
 }
 
 export type SigningRequestUncheckedUpdateWithoutEmployeeTaskInput = {
@@ -877,6 +1045,8 @@ export type SigningRequestUncheckedUpdateWithoutEmployeeTaskInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestCreateWithoutCandidateInput = {
@@ -894,8 +1064,10 @@ export type SigningRequestCreateWithoutCandidateInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
   employeeTask?: Prisma.EmployeeTaskCreateNestedOneWithoutSigningRequestInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutSigningRequestsInput
+  countersigner?: Prisma.EmployeeCreateNestedOneWithoutCountersignRequestsInput
 }
 
 export type SigningRequestUncheckedCreateWithoutCandidateInput = {
@@ -915,6 +1087,8 @@ export type SigningRequestUncheckedCreateWithoutCandidateInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestCreateOrConnectWithoutCandidateInput = {
@@ -960,6 +1134,29 @@ export type SigningRequestCreateManyEmployeeInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
+}
+
+export type SigningRequestCreateManyCountersignerInput = {
+  id?: string
+  employeeTaskId?: string | null
+  employeeId?: string | null
+  candidateId?: string | null
+  signerName?: string | null
+  signerEmail?: string | null
+  token: string
+  documentUrl: string
+  documentName: string
+  status?: string
+  signedDocUrl?: string | null
+  signedAt?: Date | string | null
+  viewedAt?: Date | string | null
+  expiresAt: Date | string
+  createdAt?: Date | string
+  message?: string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestUpdateWithoutEmployeeInput = {
@@ -977,8 +1174,10 @@ export type SigningRequestUpdateWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employeeTask?: Prisma.EmployeeTaskUpdateOneWithoutSigningRequestNestedInput
   candidate?: Prisma.CandidateUpdateOneWithoutSigningRequestsNestedInput
+  countersigner?: Prisma.EmployeeUpdateOneWithoutCountersignRequestsNestedInput
 }
 
 export type SigningRequestUncheckedUpdateWithoutEmployeeInput = {
@@ -998,6 +1197,8 @@ export type SigningRequestUncheckedUpdateWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestUncheckedUpdateManyWithoutEmployeeInput = {
@@ -1017,6 +1218,71 @@ export type SigningRequestUncheckedUpdateManyWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type SigningRequestUpdateWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  signerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  documentUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  documentName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  signedDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  employeeTask?: Prisma.EmployeeTaskUpdateOneWithoutSigningRequestNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutSigningRequestsNestedInput
+  candidate?: Prisma.CandidateUpdateOneWithoutSigningRequestsNestedInput
+}
+
+export type SigningRequestUncheckedUpdateWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  candidateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  documentUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  documentName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  signedDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type SigningRequestUncheckedUpdateManyWithoutCountersignerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeTaskId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  candidateId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signerEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  documentUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  documentName?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  signedDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  viewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestCreateManyCandidateInput = {
@@ -1036,6 +1302,8 @@ export type SigningRequestCreateManyCandidateInput = {
   createdAt?: Date | string
   message?: string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: string | null
+  countersignerSignedAt?: Date | string | null
 }
 
 export type SigningRequestUpdateWithoutCandidateInput = {
@@ -1053,8 +1321,10 @@ export type SigningRequestUpdateWithoutCandidateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   employeeTask?: Prisma.EmployeeTaskUpdateOneWithoutSigningRequestNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutSigningRequestsNestedInput
+  countersigner?: Prisma.EmployeeUpdateOneWithoutCountersignRequestsNestedInput
 }
 
 export type SigningRequestUncheckedUpdateWithoutCandidateInput = {
@@ -1074,6 +1344,8 @@ export type SigningRequestUncheckedUpdateWithoutCandidateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type SigningRequestUncheckedUpdateManyWithoutCandidateInput = {
@@ -1093,6 +1365,8 @@ export type SigningRequestUncheckedUpdateManyWithoutCandidateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signaturePlacements?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  countersignerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  countersignerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1115,9 +1389,12 @@ export type SigningRequestSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   message?: boolean
   signaturePlacements?: boolean
+  countersignerId?: boolean
+  countersignerSignedAt?: boolean
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["signingRequest"]>
 
 export type SigningRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1138,9 +1415,12 @@ export type SigningRequestSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   createdAt?: boolean
   message?: boolean
   signaturePlacements?: boolean
+  countersignerId?: boolean
+  countersignerSignedAt?: boolean
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["signingRequest"]>
 
 export type SigningRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1161,9 +1441,12 @@ export type SigningRequestSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   createdAt?: boolean
   message?: boolean
   signaturePlacements?: boolean
+  countersignerId?: boolean
+  countersignerSignedAt?: boolean
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }, ExtArgs["result"]["signingRequest"]>
 
 export type SigningRequestSelectScalar = {
@@ -1184,23 +1467,28 @@ export type SigningRequestSelectScalar = {
   createdAt?: boolean
   message?: boolean
   signaturePlacements?: boolean
+  countersignerId?: boolean
+  countersignerSignedAt?: boolean
 }
 
-export type SigningRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeTaskId" | "employeeId" | "candidateId" | "signerName" | "signerEmail" | "token" | "documentUrl" | "documentName" | "status" | "signedDocUrl" | "signedAt" | "viewedAt" | "expiresAt" | "createdAt" | "message" | "signaturePlacements", ExtArgs["result"]["signingRequest"]>
+export type SigningRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeTaskId" | "employeeId" | "candidateId" | "signerName" | "signerEmail" | "token" | "documentUrl" | "documentName" | "status" | "signedDocUrl" | "signedAt" | "viewedAt" | "expiresAt" | "createdAt" | "message" | "signaturePlacements" | "countersignerId" | "countersignerSignedAt", ExtArgs["result"]["signingRequest"]>
 export type SigningRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }
 export type SigningRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }
 export type SigningRequestIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employeeTask?: boolean | Prisma.SigningRequest$employeeTaskArgs<ExtArgs>
   employee?: boolean | Prisma.SigningRequest$employeeArgs<ExtArgs>
   candidate?: boolean | Prisma.SigningRequest$candidateArgs<ExtArgs>
+  countersigner?: boolean | Prisma.SigningRequest$countersignerArgs<ExtArgs>
 }
 
 export type $SigningRequestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1209,6 +1497,7 @@ export type $SigningRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     employeeTask: Prisma.$EmployeeTaskPayload<ExtArgs> | null
     employee: Prisma.$EmployeePayload<ExtArgs> | null
     candidate: Prisma.$CandidatePayload<ExtArgs> | null
+    countersigner: Prisma.$EmployeePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1228,6 +1517,8 @@ export type $SigningRequestPayload<ExtArgs extends runtime.Types.Extensions.Inte
     createdAt: Date
     message: string | null
     signaturePlacements: runtime.JsonValue | null
+    countersignerId: string | null
+    countersignerSignedAt: Date | null
   }, ExtArgs["result"]["signingRequest"]>
   composites: {}
 }
@@ -1625,6 +1916,7 @@ export interface Prisma__SigningRequestClient<T, Null = never, ExtArgs extends r
   employeeTask<T extends Prisma.SigningRequest$employeeTaskArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SigningRequest$employeeTaskArgs<ExtArgs>>): Prisma.Prisma__EmployeeTaskClient<runtime.Types.Result.GetResult<Prisma.$EmployeeTaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.SigningRequest$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SigningRequest$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   candidate<T extends Prisma.SigningRequest$candidateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SigningRequest$candidateArgs<ExtArgs>>): Prisma.Prisma__CandidateClient<runtime.Types.Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  countersigner<T extends Prisma.SigningRequest$countersignerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SigningRequest$countersignerArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1671,6 +1963,8 @@ export interface SigningRequestFieldRefs {
   readonly createdAt: Prisma.FieldRef<"SigningRequest", 'DateTime'>
   readonly message: Prisma.FieldRef<"SigningRequest", 'String'>
   readonly signaturePlacements: Prisma.FieldRef<"SigningRequest", 'Json'>
+  readonly countersignerId: Prisma.FieldRef<"SigningRequest", 'String'>
+  readonly countersignerSignedAt: Prisma.FieldRef<"SigningRequest", 'DateTime'>
 }
     
 
@@ -2121,6 +2415,25 @@ export type SigningRequest$candidateArgs<ExtArgs extends runtime.Types.Extension
    */
   include?: Prisma.CandidateInclude<ExtArgs> | null
   where?: Prisma.CandidateWhereInput
+}
+
+/**
+ * SigningRequest.countersigner
+ */
+export type SigningRequest$countersignerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Employee
+   */
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Employee
+   */
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
 }
 
 /**

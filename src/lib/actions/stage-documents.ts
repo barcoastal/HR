@@ -16,7 +16,7 @@ export async function getAllStageDocuments() {
   // Don't return pdfData in list queries (too large)
   // Use raw query to check if pdfData exists without loading it
   const docs = await db.stageDocument.findMany({
-    select: { id: true, stage: true, name: true, placeholders: true, requiresSignature: true, requiresFill: true, order: true, createdAt: true, updatedAt: true },
+    select: { id: true, stage: true, name: true, placeholders: true, requiresSignature: true, requiresFill: true, requiresCountersignature: true, countersignerId: true, order: true, createdAt: true, updatedAt: true },
     orderBy: [{ stage: "asc" }, { order: "asc" }],
   });
   // Check which docs have PDF data without loading the blobs
@@ -35,11 +35,24 @@ export async function getAllStageDocuments() {
     placeholders: d.placeholders,
     requiresSignature: d.requiresSignature,
     requiresFill: d.requiresFill,
+    requiresCountersignature: d.requiresCountersignature,
+    countersignerId: d.countersignerId,
     order: d.order,
     hasPdf: pdfSet.has(d.id),
     createdAt: d.createdAt,
     updatedAt: d.updatedAt,
   }));
+}
+
+export async function getEligibleCountersigners() {
+  const users = await db.user.findMany({
+    where: { role: { in: ["ADMIN", "SUPER_ADMIN"] }, employeeId: { not: null } },
+    include: { employee: { select: { id: true, firstName: true, lastName: true, jobTitle: true } } },
+  });
+  return users
+    .map((u) => u.employee)
+    .filter((e): e is NonNullable<typeof e> => !!e)
+    .sort((a, b) => a.firstName.localeCompare(b.firstName));
 }
 
 export async function getStageDocumentWithPdf(id: string) {
@@ -53,6 +66,8 @@ export async function createStageDocument(data: {
   placeholders: string; // JSON
   requiresSignature?: boolean;
   requiresFill?: boolean;
+  requiresCountersignature?: boolean;
+  countersignerId?: string | null;
 }) {
   if (!DOCUMENT_STAGES.includes(data.stage)) {
     throw new Error("Invalid stage for documents");
@@ -66,6 +81,8 @@ export async function createStageDocument(data: {
       placeholders: data.placeholders,
       requiresSignature: data.requiresSignature ?? false,
       requiresFill: data.requiresFill ?? false,
+      requiresCountersignature: data.requiresCountersignature ?? false,
+      countersignerId: data.countersignerId ?? null,
       order: count,
     },
   });
@@ -75,7 +92,7 @@ export async function createStageDocument(data: {
 
 export async function updateStageDocument(
   id: string,
-  data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean; requiresFill?: boolean }
+  data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean; requiresFill?: boolean; requiresCountersignature?: boolean; countersignerId?: string | null }
 ) {
   const doc = await db.stageDocument.update({ where: { id }, data });
   revalidatePath("/settings");

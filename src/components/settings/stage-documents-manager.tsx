@@ -7,7 +7,7 @@ import {
   updateStageDocument,
   deleteStageDocument,
 } from "@/lib/actions/stage-documents";
-import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS } from "@/lib/stage-document-utils";
+import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS, COUNTERSIGNATURE_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -27,9 +27,13 @@ type StageDoc = {
   placeholders: string; // JSON
   requiresSignature: boolean;
   requiresFill: boolean;
+  requiresCountersignature: boolean;
+  countersignerId: string | null;
   order: number;
   hasPdf: boolean;
 };
+
+type Countersigner = { id: string; firstName: string; lastName: string; jobTitle: string };
 
 const STAGES = [
   { value: "PRE_ONBOARDING", label: "Pre-Onboarding" },
@@ -37,7 +41,7 @@ const STAGES = [
   { value: "OFFBOARDING", label: "Offboarding" },
 ];
 
-export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) {
+export function StageDocumentsManager({ documents, countersigners }: { documents: StageDoc[]; countersigners: Countersigner[] }) {
   const router = useRouter();
   const [activeStage, setActiveStage] = useState("PRE_ONBOARDING");
   const [editing, setEditing] = useState<StageDoc | null>(null);
@@ -157,6 +161,7 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
         <PdfDocumentEditor
           stage={activeStage}
           existing={editing}
+          countersigners={countersigners}
           onDone={() => { cancel(); router.refresh(); }}
           onCancel={cancel}
         />
@@ -170,11 +175,13 @@ export function StageDocumentsManager({ documents }: { documents: StageDoc[] }) 
 function PdfDocumentEditor({
   stage,
   existing,
+  countersigners,
   onDone,
   onCancel,
 }: {
   stage: string;
   existing: StageDoc | null;
+  countersigners: Countersigner[];
   onDone: () => void;
   onCancel: () => void;
 }) {
@@ -189,6 +196,8 @@ function PdfDocumentEditor({
   );
   const [requiresSignature, setRequiresSignature] = useState(existing?.requiresSignature ?? false);
   const [requiresFill, setRequiresFill] = useState(existing?.requiresFill ?? false);
+  const [requiresCountersignature, setRequiresCountersignature] = useState(existing?.requiresCountersignature ?? false);
+  const [countersignerId, setCountersignerId] = useState<string>(existing?.countersignerId ?? "");
   const [saving, setSaving] = useState(false);
   const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
   const [pageCount, setPageCount] = useState(0);
@@ -323,15 +332,28 @@ function PdfDocumentEditor({
         return;
       }
     }
+    if (requiresCountersignature) {
+      if (!countersignerId) {
+        alert("Please choose a countersigner (HR/management) for this document.");
+        return;
+      }
+      const hasCountersig = placeholders.some((p) => p.placeholder === "{{countersignature}}");
+      if (!hasCountersig) {
+        alert("Please place at least one {{countersignature}} field — this is where the countersigner will sign.");
+        return;
+      }
+    }
     setSaving(true);
     try {
       const placeholdersJson = JSON.stringify(placeholders);
       if (existing) {
-        const updateData: { name: string; placeholders: string; requiresSignature: boolean; requiresFill: boolean; pdfData?: string } = {
+        const updateData: { name: string; placeholders: string; requiresSignature: boolean; requiresFill: boolean; requiresCountersignature: boolean; countersignerId: string | null; pdfData?: string } = {
           name: name.trim(),
           placeholders: placeholdersJson,
           requiresSignature,
           requiresFill,
+          requiresCountersignature,
+          countersignerId: requiresCountersignature ? countersignerId : null,
         };
         if (pdfBase64) updateData.pdfData = pdfBase64;
         await updateStageDocument(existing.id, updateData);
@@ -343,6 +365,8 @@ function PdfDocumentEditor({
           placeholders: placeholdersJson,
           requiresSignature,
           requiresFill,
+          requiresCountersignature,
+          countersignerId: requiresCountersignature ? countersignerId : null,
         });
       }
       onDone();
@@ -382,6 +406,9 @@ function PdfDocumentEditor({
                 onClick={() => {
                   setRequiresSignature(opt.value === "sign");
                   setRequiresFill(opt.value === "fill");
+                  if (opt.value === "attachment") {
+                    setRequiresCountersignature(false);
+                  }
                 }}
                 className={cn(
                   "flex-1 flex flex-col items-center gap-1 px-3 py-2.5 rounded-lg border-2 text-center transition-all",
@@ -396,6 +423,50 @@ function PdfDocumentEditor({
           })}
         </div>
       </div>
+
+      {/* Countersignature toggle */}
+      {(requiresSignature || requiresFill) && (
+        <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-bg)] p-3">
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={requiresCountersignature}
+              onChange={(e) => setRequiresCountersignature(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[var(--color-accent)]"
+            />
+            <div className="flex-1">
+              <p className="text-sm font-medium text-[var(--color-text-primary)]">Requires our signature too</p>
+              <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">
+                After the recipient signs, this document will be sent to a countersigner (HR/management) to sign as well.
+              </p>
+            </div>
+          </label>
+
+          {requiresCountersignature && (
+            <div className="mt-3 pl-7 space-y-2">
+              <label className="block text-xs font-medium text-[var(--color-text-primary)]">Countersigner</label>
+              {countersigners.length === 0 ? (
+                <p className="text-xs text-amber-500">
+                  No eligible countersigners found. Countersigners must be employees with role ADMIN or SUPER_ADMIN and a linked user account.
+                </p>
+              ) : (
+                <select
+                  value={countersignerId}
+                  onChange={(e) => setCountersignerId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+                >
+                  <option value="">Select a countersigner…</option>
+                  {countersigners.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.firstName} {c.lastName} — {c.jobTitle}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* PDF Upload — show for new docs or existing docs without PDF */}
       {!pdfBase64 && (!existing || needsUpload) && (
@@ -494,10 +565,32 @@ function PdfDocumentEditor({
                   </button>
                 );
               })}
+              {requiresCountersignature && COUNTERSIGNATURE_PLACEHOLDERS.map((p) => {
+                const isSig = p.key === "{{countersignature}}";
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setActivePlaceholder(p.key)}
+                    title={p.description}
+                    className={cn(
+                      "px-2 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1",
+                      activePlaceholder === p.key
+                        ? isSig ? "bg-amber-600 text-white" : "bg-orange-600 text-white"
+                        : isSig ? "bg-amber-500/10 text-amber-700 hover:bg-amber-500/20" : "bg-orange-500/10 text-orange-700 hover:bg-orange-500/20"
+                    )}
+                  >
+                    <Icon name={isSig ? "verified" : "event"} size={10} />
+                    {p.key}
+                  </button>
+                );
+              })}
             </div>
             {(requiresSignature || requiresFill) && (
               <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
                 Place at least one <span className="font-mono text-purple-500">{"{{signature}}"}</span> field — this is where the recipient&apos;s signature will appear.
+                {requiresCountersignature && (
+                  <> Also place a <span className="font-mono text-amber-600">{"{{countersignature}}"}</span> field for the countersigner.</>
+                )}
               </p>
             )}
           </div>
@@ -534,34 +627,40 @@ function PdfDocumentEditor({
             />
             {/* Placeholder markers */}
             {currentPagePlaceholders.map((p) => {
-              const isSig = p.placeholder === "{{signature}}";
-              const isSigDate = p.placeholder === "{{signatureDate}}";
-              const isSigField = isSig || isSigDate;
-              if (isSigField) {
-                // Render as a dashed box showing where the signature/date will land
-                const widthPct = isSig ? 26 : 18;
-                const heightPct = isSig ? 8 : 4;
-                const color = isSig ? "purple" : "teal";
+              const SIG_MAP: Record<string, { color: "purple" | "teal" | "amber" | "orange"; widthPct: number; heightPct: number; label: string }> = {
+                "{{signature}}": { color: "purple", widthPct: 26, heightPct: 8, label: "✍ signature" },
+                "{{signatureDate}}": { color: "teal", widthPct: 18, heightPct: 4, label: "📅 date" },
+                "{{countersignature}}": { color: "amber", widthPct: 26, heightPct: 8, label: "✍ countersign" },
+                "{{countersignatureDate}}": { color: "orange", widthPct: 18, heightPct: 4, label: "📅 countersign date" },
+              };
+              const sigMeta = SIG_MAP[p.placeholder];
+              if (sigMeta) {
+                const colorClass = {
+                  purple: "border-purple-500 bg-purple-500/10",
+                  teal: "border-teal-500 bg-teal-500/10",
+                  amber: "border-amber-500 bg-amber-500/10",
+                  orange: "border-orange-500 bg-orange-500/10",
+                }[sigMeta.color];
+                const textClass = {
+                  purple: "text-purple-700",
+                  teal: "text-teal-700",
+                  amber: "text-amber-700",
+                  orange: "text-orange-700",
+                }[sigMeta.color];
                 return (
                   <div
                     key={p.id}
                     className="absolute group"
                     style={{
-                      left: `${p.x - widthPct / 2}%`,
-                      top: `${p.y - heightPct / 2}%`,
-                      width: `${widthPct}%`,
-                      height: `${heightPct}%`,
+                      left: `${p.x - sigMeta.widthPct / 2}%`,
+                      top: `${p.y - sigMeta.heightPct / 2}%`,
+                      width: `${sigMeta.widthPct}%`,
+                      height: `${sigMeta.heightPct}%`,
                     }}
                   >
-                    <div className={cn(
-                      "w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm",
-                      color === "purple" ? "border-purple-500 bg-purple-500/10" : "border-teal-500 bg-teal-500/10"
-                    )}>
-                      <span className={cn(
-                        "text-[10px] font-mono font-bold whitespace-nowrap",
-                        color === "purple" ? "text-purple-700" : "text-teal-700"
-                      )}>
-                        {isSig ? "✍ signature" : "📅 date"}
+                    <div className={cn("w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm", colorClass)}>
+                      <span className={cn("text-[10px] font-mono font-bold whitespace-nowrap", textClass)}>
+                        {sigMeta.label}
                       </span>
                     </div>
                     <button

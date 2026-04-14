@@ -17,9 +17,24 @@ export const SIGNATURE_PLACEHOLDERS = [
   { key: "{{signatureDate}}", description: "Date signed" },
 ];
 
+// Countersignature placeholders (only shown when requiresCountersignature is on)
+export const COUNTERSIGNATURE_PLACEHOLDERS = [
+  { key: "{{countersignature}}", description: "Countersigner (HR/management) signature" },
+  { key: "{{countersignatureDate}}", description: "Date countersigned" },
+];
+
+const SIG_KINDS = new Set([
+  "{{signature}}",
+  "{{signatureDate}}",
+  "{{countersignature}}",
+  "{{countersignatureDate}}",
+]);
+
 export function isSignaturePlaceholder(placeholder: string): boolean {
-  return placeholder === "{{signature}}" || placeholder === "{{signatureDate}}";
+  return SIG_KINDS.has(placeholder);
 }
+
+export type PlacementKind = "signature" | "signatureDate" | "countersignature" | "countersignatureDate";
 
 export type SignaturePlacement = {
   page: number;        // 1-indexed
@@ -27,8 +42,18 @@ export type SignaturePlacement = {
   yPct: number;        // 0..1, top edge of box relative to page height
   widthPct: number;    // 0..1
   heightPct: number;   // 0..1
-  kind: "signature" | "signatureDate";
+  kind: PlacementKind;
 };
+
+function placeholderToKind(placeholder: string): PlacementKind | null {
+  switch (placeholder) {
+    case "{{signature}}": return "signature";
+    case "{{signatureDate}}": return "signatureDate";
+    case "{{countersignature}}": return "countersignature";
+    case "{{countersignatureDate}}": return "countersignatureDate";
+    default: return null;
+  }
+}
 
 type CandidateData = {
   firstName: string;
@@ -141,11 +166,11 @@ export async function fillPdfPlaceholders(
     if (pageIndex < 0 || pageIndex >= pages.length) continue;
 
     // Signature placeholders are NOT stamped as text — they are deferred to signing time.
-    if (isSignaturePlaceholder(pos.placeholder)) {
-      const isSig = pos.placeholder === "{{signature}}";
-      // pos.x/y are percentages 0..100 — convert to 0..1 and treat as center, converting to top-left
-      const widthPct = isSig ? DEFAULT_SIG_WIDTH_PCT : DEFAULT_DATE_WIDTH_PCT;
-      const heightPct = isSig ? DEFAULT_SIG_HEIGHT_PCT : DEFAULT_DATE_HEIGHT_PCT;
+    const kind = placeholderToKind(pos.placeholder);
+    if (kind) {
+      const isSigLike = kind === "signature" || kind === "countersignature";
+      const widthPct = isSigLike ? DEFAULT_SIG_WIDTH_PCT : DEFAULT_DATE_WIDTH_PCT;
+      const heightPct = isSigLike ? DEFAULT_SIG_HEIGHT_PCT : DEFAULT_DATE_HEIGHT_PCT;
       const centerX = pos.x / 100;
       const centerY = pos.y / 100;
       signaturePlacements.push({
@@ -154,7 +179,7 @@ export async function fillPdfPlaceholders(
         yPct: Math.max(0, Math.min(1 - heightPct, centerY - heightPct / 2)),
         widthPct,
         heightPct,
-        kind: isSig ? "signature" : "signatureDate",
+        kind,
       });
       continue;
     }

@@ -5212,7 +5212,9 @@ export const SigningRequestScalarFieldEnum = {
   expiresAt: 'expiresAt',
   createdAt: 'createdAt',
   message: 'message',
-  signaturePlacements: 'signaturePlacements'
+  signaturePlacements: 'signaturePlacements',
+  countersignerId: 'countersignerId',
+  countersignerSignedAt: 'countersignerSignedAt'
 } as const
 
 export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]
@@ -5344,6 +5346,8 @@ export const StageDocumentScalarFieldEnum = {
   placeholders: 'placeholders',
   requiresSignature: 'requiresSignature',
   requiresFill: 'requiresFill',
+  requiresCountersignature: 'requiresCountersignature',
+  countersignerId: 'countersignerId',
   order: 'order',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

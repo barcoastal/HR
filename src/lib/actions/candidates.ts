@@ -153,6 +153,7 @@ async function sendStageDocumentsEmail(
         documentUrl,
         documentName: doc.name,
         signaturePlacements,
+        countersignerId: doc.requiresCountersignature ? doc.countersignerId : null,
       });
       console.log(`[stage-docs] Created signing request for "${doc.name}" with ${signaturePlacements.length} signature placements`);
     }
@@ -186,6 +187,7 @@ async function sendStageDocumentsEmail(
           documentName: doc.name,
           expiresAt,
           signaturePlacements: signaturePlacements.length > 0 ? signaturePlacements : undefined,
+          countersignerId: doc.requiresCountersignature ? doc.countersignerId : null,
         },
       });
 

@@ -240,6 +240,8 @@ model Employee {
   mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
   assignedTasks      EmployeeTask[]    @relation("TaskAssignee")
   signingRequests    SigningRequest[]
+  countersignRequests SigningRequest[] @relation("SigningRequestCountersigner")
+  countersignStageDocs StageDocument[] @relation("StageDocumentCountersigner")
   managedCandidates  Candidate[]       @relation("CandidateManager")
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
@@ -799,14 +801,18 @@ model SigningRequest {
   createdAt       DateTime      @default(now())
   message         String?
   signaturePlacements Json? // Placement[] — pre-placed signature/date positions from stage doc or ad-hoc editor
+  countersignerId       String?
+  countersignerSignedAt DateTime?
 
   employeeTask    EmployeeTask? @relation(fields: [employeeTaskId], references: [id], onDelete: Cascade)
   employee        Employee?     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   candidate       Candidate?    @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  countersigner   Employee?     @relation("SigningRequestCountersigner", fields: [countersignerId], references: [id], onDelete: SetNull)
 
   @@index([employeeId])
   @@index([candidateId])
   @@index([status])
+  @@index([countersignerId])
 }
 
 // ---------------------
@@ -965,11 +971,16 @@ model StageDocument {
   placeholders      String   @default("[]") // JSON: [{page, x, y, width, placeholder, fontSize}]
   requiresSignature Boolean  @default(false)
   requiresFill      Boolean  @default(false)
+  requiresCountersignature Boolean @default(false)
+  countersignerId   String?
   order             Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  countersigner     Employee? @relation("StageDocumentCountersigner", fields: [countersignerId], references: [id], onDelete: SetNull)
+
   @@index([stage])
+  @@index([countersignerId])
 }
 
 model EmailTemplate {

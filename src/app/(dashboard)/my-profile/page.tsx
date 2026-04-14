@@ -12,6 +12,8 @@ import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-con
 import { getCalendarSyncStatus } from "@/lib/actions/calendar-sync";
 import { getNotificationPreferences } from "@/lib/actions/notification-preferences";
 import { db } from "@/lib/db";
+import { getMyDocuments } from "@/lib/actions/my-documents";
+import Link from "next/link";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -38,6 +40,7 @@ export default async function MyProfilePage() {
 
   const syncStatus = await getCalendarSyncStatus(session.user.id);
   const notifPrefs = await getNotificationPreferences(session.user.id);
+  const myDocs = (await getMyDocuments()).slice(0, 5);
 
   const initials = getInitials(profile.firstName, profile.lastName);
   const colorIdx = profile.firstName.charCodeAt(0) % avatarColors.length;
@@ -76,6 +79,49 @@ export default async function MyProfilePage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
+          {/* My Documents */}
+          <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+                <Icon name="folder" size={18} className="text-[var(--color-accent)]" />
+                My Documents
+              </h2>
+              <Link href="/my-documents" className="text-xs font-medium text-[var(--color-accent)] hover:underline">
+                View all →
+              </Link>
+            </div>
+            {myDocs.length === 0 ? (
+              <p className="text-sm text-[var(--color-text-muted)] italic">No documents yet.</p>
+            ) : (
+              <div className="space-y-1.5">
+                {myDocs.map((d) => (
+                  <a
+                    key={d.id}
+                    href={d.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[var(--color-bg)] transition-colors"
+                  >
+                    <Icon name="picture_as_pdf" size={16} className="text-red-400 shrink-0" />
+                    <span className="text-sm text-[var(--color-text-primary)] truncate flex-1">{d.name}</span>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-[9px] font-semibold",
+                      d.status === "SIGNED" ? "bg-emerald-500/10 text-emerald-700"
+                      : d.status === "AWAITING_COUNTERSIGN" ? "bg-purple-500/10 text-purple-700"
+                      : d.status === "PENDING" || d.status === "VIEWED" ? "bg-amber-500/10 text-amber-700"
+                      : "bg-gray-500/10 text-gray-600"
+                    )}>
+                      {d.status === "SIGNED" ? "Signed"
+                        : d.status === "AWAITING_COUNTERSIGN" ? "Awaiting countersign"
+                        : d.status === "PENDING" || d.status === "VIEWED" ? "Needs signature"
+                        : "On file"}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </section>
+
           {/* About */}
           <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
             <div className="flex items-center justify-between mb-3">

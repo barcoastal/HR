@@ -34,6 +34,8 @@ const allNavLinks = [
   { href: "/clubs", label: "Clubs", icon: "groups", access: () => true },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true },
   { href: "/documents", label: "Documents", icon: "draw", access: () => true },
+  { href: "/sign-queue", label: "Sign Queue", icon: "verified", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
+  { href: "/my-documents", label: "My Documents", icon: "folder", access: () => true },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r) },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r) },
   { href: "/my-profile", label: "My Profile", icon: "account_circle", access: () => true },

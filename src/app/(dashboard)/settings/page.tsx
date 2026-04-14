@@ -29,7 +29,7 @@ import { CleanupDemoButton } from "@/components/settings/cleanup-demo-button";
 import { RecruiterManager } from "@/components/settings/recruiter-manager";
 import { PipelineSettings } from "@/components/settings/pipeline-settings";
 import { getRecruiters, getPipelineStages, getCandidateCustomFields, getStageNotifyRecipients, getStageNotifyEmployeeIds } from "@/lib/actions/company-settings";
-import { getAllStageDocuments } from "@/lib/actions/stage-documents";
+import { getAllStageDocuments, getEligibleCountersigners } from "@/lib/actions/stage-documents";
 import { NotificationSettings } from "@/components/settings/notification-settings";
 import { getNotificationRules, getNotificationRecipients } from "@/lib/actions/notification-settings";
 import { seedNotificationRules } from "@/lib/notifications/seed";
@@ -44,7 +44,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 export default async function SettingsPage() {
   const session = await requireAdmin();
   await seedNotificationRules();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients, countersigners] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -65,6 +65,7 @@ export default async function SettingsPage() {
     getDepartmentReviewTemplates(),
     getNotificationRules(),
     getNotificationRecipients(),
+    getEligibleCountersigners(),
   ]);
 
   let gustoMapping = null;
@@ -147,9 +148,12 @@ export default async function SettingsPage() {
             placeholders: d.placeholders,
             requiresSignature: d.requiresSignature,
             requiresFill: d.requiresFill,
+            requiresCountersignature: d.requiresCountersignature,
+            countersignerId: d.countersignerId,
             order: d.order,
             hasPdf: d.hasPdf,
           }))}
+          countersigners={countersigners}
         />
 
         <DepartmentReviewTemplates
