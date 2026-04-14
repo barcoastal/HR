@@ -250,6 +250,13 @@ export async function submitSignature(
           const drawX = boxX + (boxWidth - drawW) / 2;
           const drawY = boxY + (boxHeight - drawH) / 2;
           target.drawImage(sigImage, { x: drawX, y: drawY, width: drawW, height: drawH });
+          // Print signer's full name directly below the signature box
+          target.drawText(signerFullName, {
+            x: boxX,
+            y: boxY - 10,
+            size: 8,
+            color: rgb(0.15, 0.15, 0.2),
+          });
         } else {
           const dateText = signDate;
           const fontSize = Math.min(12, boxHeight * 0.7);
