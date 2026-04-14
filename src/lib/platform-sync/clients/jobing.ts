@@ -144,7 +144,11 @@ export class JobingClient implements PlatformClient {
     return all;
   }
 
-  async fetchCandidatesPaginated(
+  // Paginated fetch intentionally disabled — bulk endpoint silently caps around
+  // 1000 applicants, so the streaming sync missed everyone beyond that. The
+  // non-paginated fetchCandidates already walks bulk AND every job's /applicants
+  // endpoint, so the streaming sync falls back to it (see platform-sync-stream.ts).
+  async _disabled_fetchCandidatesPaginated(
     accessToken: string,
     cursor?: string | null
   ): Promise<CandidatePage> {
