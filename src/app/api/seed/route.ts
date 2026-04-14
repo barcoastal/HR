@@ -362,6 +362,6 @@ export async function GET() {
     });
   } catch (e: unknown) {
     const err = e as Error;
-    return NextResponse.json({ error: err.message, stack: err.stack }, { status: 500 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

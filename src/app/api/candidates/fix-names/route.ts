@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
+import { requireApiAdmin } from "@/lib/auth-helpers";
 
 function looksLikeDate(value: string): boolean {
   return /^\d{4}-\d{2}-\d{2}/.test(value) || /^\d{1,2}\/\d{1,2}\/\d{2,4}/.test(value);
@@ -121,6 +122,8 @@ export async function POST() {
 }
 
 async function run() {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const candidates = await db.candidate.findMany({
       select: { id: true, firstName: true, lastName: true, email: true },

@@ -19,6 +19,13 @@ export async function inviteUser(data: {
   role: UserRole;
   employeeId?: string;
 }) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const callerRole = session.user?.role;
+  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
+    throw new Error("Not authorized to invite users");
+  }
+
   const hash = data.password ? await bcrypt.hash(data.password, 10) : null;
 
   // If no employee record is linked, create one so the person appears in People
@@ -72,6 +79,13 @@ export async function inviteUser(data: {
 }
 
 export async function updateUserRole(id: string, role: UserRole) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const callerRole = session.user?.role;
+  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
+    throw new Error("Not authorized to change user roles");
+  }
+
   const user = await db.user.update({ where: { id }, data: { role } });
   revalidatePath("/settings");
   return user;

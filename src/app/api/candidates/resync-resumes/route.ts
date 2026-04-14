@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { revalidatePath } from "next/cache";
+import { requireApiAdmin } from "@/lib/auth-helpers";
 
 const BASE_URL = "https://pro.jobing.com/api";
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
@@ -31,6 +32,8 @@ export async function POST() {
 }
 
 async function run() {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const apiKey = process.env.NOLIG_API_KEY;
   if (!apiKey) {
     return NextResponse.json({ error: "NOLIG_API_KEY not configured" }, { status: 500 });

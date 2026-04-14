@@ -17,9 +17,13 @@ export async function GET(
   const proto = _request.headers.get("x-forwarded-proto") ?? requestUrl.protocol.replace(":", "");
   const baseUrl = `${proto}://${requestUrl.host}`;
 
-  // 1. Verify session (use mock admin fallback)
+  // 1. Verify session
   const session = await getServerSession(authOptions);
-  const userId = session?.user?.id ?? "mock-admin";
+  if (!session?.user?.id) {
+    const url = new URL("/login", baseUrl);
+    return NextResponse.redirect(url);
+  }
+  const userId = session.user.id;
 
   // 2. Look up provider config
   const provider = getOAuthProvider(providerId);

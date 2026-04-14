@@ -83,8 +83,13 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
       if (c) setSelectedCandidate(c);
       return;
     }
-    await updateCandidateStatus(id, newStatus);
-    router.refresh();
+    setHiringId(id);
+    try {
+      await updateCandidateStatus(id, newStatus);
+      router.refresh();
+    } finally {
+      setHiringId(null);
+    }
   }
 
   return (
@@ -247,6 +252,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
         positions={positions}
         employees={employees}
         recruiters={recruiters}
+        pipelineStages={pipelineStages}
         open={!!selectedCandidate}
         onClose={() => setSelectedCandidate(null)}
       />

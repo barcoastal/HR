@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { toggleEmployeeTask } from "@/lib/actions/employees";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Icon } from "@/components/ui/icon";
 
 type AssignedTask = {
@@ -18,6 +18,7 @@ type AssignedTask = {
 
 export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
   const [localTasks, setLocalTasks] = useState(tasks);
+  useEffect(() => { setLocalTasks(tasks); }, [tasks]);
 
   if (localTasks.length === 0) return null;
 

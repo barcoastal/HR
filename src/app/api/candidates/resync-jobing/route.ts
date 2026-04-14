@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireApiAdmin } from "@/lib/auth-helpers";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { revalidatePath } from "next/cache";
@@ -8,6 +9,8 @@ import { JobingClient } from "@/lib/platform-sync/clients/jobing";
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 
 export async function GET(request: Request) {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const url = new URL(request.url);
   if (url.searchParams.get("diagnostic") === "1") {
     const total = await db.candidate.count();
@@ -33,6 +36,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const session = await requireApiAdmin();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   // If body has candidates array, use push mode (data fetched externally)
   let body: Record<string, unknown> | null = null;
   try {

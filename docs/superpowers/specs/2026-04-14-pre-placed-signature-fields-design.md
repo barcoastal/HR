@@ -2,7 +2,12 @@
 
 ## Summary
 
-When HR uploads a document through the SEND or FILL flow, they must place one or more signature boxes on the PDF before it can be sent. The recipient opens the link, draws their signature once, and it is stamped into every placed position along with today's date.
+Every document that will be signed or filled must have at least one signature placement on the PDF before it is sent. The recipient opens the link, draws their signature once, and it is stamped into every placed position along with today's date.
+
+This applies in two places:
+
+1. **Stage Documents** (`Settings → Stage Documents`) — reusable PDFs per stage (Pre-Onboarding / Onboarding / Offboarding). The existing click-to-place UI supports data placeholders like `{{firstName}}`; we extend it to also support `{{signature}}` and `{{signatureDate}}`.
+2. **Ad-hoc SEND / FILL** — one-off document uploads. Uses the same placement editor component as Stage Documents.
 
 ## Goals
 
@@ -20,7 +25,24 @@ When HR uploads a document through the SEND or FILL flow, they must place one or
 
 ## Data Model
 
-Add one column to `SigningRequest` (used by both SEND and FILL):
+### Stage Documents
+
+No schema change. Reuse the existing `StageDocument.placeholders` JSON array. Today each entry looks like:
+
+```ts
+{ page: number; x: number; y: number; width: number; placeholder: string; fontSize: number }
+```
+
+Extend the allowed values of `placeholder` to include two new tokens:
+
+- `{{signature}}` — signer's drawn signature
+- `{{signatureDate}}` — today's date at sign time
+
+At send time, when a `SigningRequest` is created from a `StageDocument`, copy the placements through into the new `signaturePlacements` column (or resolve them on the fly — see Server Changes).
+
+### Ad-hoc SEND / FILL
+
+Add one column to `SigningRequest`:
 
 ```prisma
 signaturePlacements Json?  // Placement[]
@@ -34,16 +56,25 @@ type Placement = {
   yPct: number;        // 0..1, top edge relative to page height
   widthPct: number;    // 0..1
   heightPct: number;   // 0..1
+  kind: "signature" | "signatureDate";
 };
 ```
 
 Percentages make placements resolution-independent across the placement editor, pdf.js render, and server-side screenshot render.
 
-A `SigningRequest` with `status = PENDING` and `signaturePlacements = null` is invalid and cannot be created; the server action enforces ≥1 placement.
+**Validation:** a `SigningRequest` with action SIGN or FILL cannot be created unless the source (Stage Document placements or ad-hoc editor) yields ≥1 placement of `kind = "signature"`.
 
 ## UX Flow
 
-### Uploader (HR) — SEND and FILL
+### HR — Stage Documents setup
+
+1. In `Settings → Stage Documents`, after selecting `Sign` or `Fill` action, the field chip row shows existing data chips plus two new ones: **`{{signature}}`** and **`{{signatureDate}}`**.
+2. Clicking `{{signature}}` switches the active chip; clicking on the PDF drops a signature placeholder (rendered as a dashed box labeled "Signature").
+3. `{{signatureDate}}` behaves the same, labeled "Date".
+4. Save is disabled for Sign/Fill actions until the document has ≥1 `{{signature}}` placement.
+5. Attachment action is unchanged — no signature required.
+
+### HR — Ad-hoc SEND and FILL
 
 1. Existing upload dialog collects file, recipient, message.
 2. **New step: Placement editor.**
@@ -71,21 +102,26 @@ A `SigningRequest` with `status = PENDING` and `signaturePlacements = null` is i
 
 ## Components
 
-New:
-- `src/components/signatures/signature-placement-editor.tsx` — reusable. Props: `pdfUrl`, `initialPlacements?`, `onChange(placements)`, `onContinue()`.
-- `src/components/signatures/placement-overlay.tsx` — renders dashed boxes on top of a pdf.js page layer. Used by recipient views.
-
 Modified:
-- `src/components/filling/filling-page.tsx` — render `PlacementOverlay`, remove the "choose where to place signature" step, stamp signature into all placements.
+- `src/components/settings/stage-documents-manager.tsx` — add `{{signature}}` and `{{signatureDate}}` chips (visible only when action is Sign or Fill); render signature placements with a distinct dashed style; enforce ≥1 signature placement on save.
+- `src/components/filling/filling-page.tsx` — render signature placements as dashed overlays, remove the existing "choose where to place signature" step, stamp signature + date into all placements.
 - `src/components/signing/signing-page.tsx` — same treatment.
-- Send/fill upload dialogs (wherever the existing upload modals live) — insert the placement editor step before final submit.
+- Send/fill ad-hoc upload dialogs — insert the placement editor step before final submit.
+
+New:
+- `src/components/signatures/signature-placement-editor.tsx` — reusable placement UI for ad-hoc SEND/FILL. Props: `pdfUrl`, `initialPlacements?`, `onChange(placements)`, `onContinue()`. Internally uses the same placement primitives as `stage-documents-manager`.
+- `src/components/signatures/placement-overlay.tsx` — renders dashed boxes on top of a pdf.js page layer. Used by recipient views and both editors.
 
 ## Server Changes
 
-- `src/lib/actions/signing.ts` (or whichever action creates `SigningRequest`): accept `signaturePlacements: Placement[]`, validate `placements.length >= 1`, persist.
+- `src/lib/actions/signing.ts` (or whichever action creates `SigningRequest`):
+  - Accept `signaturePlacements: Placement[]` for ad-hoc uploads.
+  - When the request originates from a `StageDocument`, derive placements by filtering `StageDocument.placeholders` for entries with `placeholder in ("{{signature}}", "{{signatureDate}}")` and mapping them to `Placement` (converting stored units to percentages if needed — check current unit in the placeholders JSON before implementation).
+  - Validate ≥1 `kind = "signature"` placement. Reject otherwise.
+  - Persist to `SigningRequest.signaturePlacements`.
 - `src/app/api/sign/[token]/route.ts` and `src/app/api/fill/[token]/route.ts`:
   - Read `signaturePlacements` from the request row.
-  - When compositing the final PDF, for each placement: compute px position from page dimensions × percentages, draw the signature image, draw date string below.
+  - When compositing the final PDF, for each placement: compute px position from page dimensions × percentages, draw the signature image (for `signature`) or today's date string (for `signatureDate`).
 - `src/app/api/fill/[token]/preview/route.ts`: same compositing behavior for preview.
 
 ## Error Handling
@@ -96,8 +132,8 @@ Modified:
 
 ## Migration
 
-- Prisma: `prisma db push` adds nullable column. Existing `SigningRequest` rows keep `null` — they are historical / already completed and aren't rendered through the new flow.
-- No backfill needed.
+- Prisma: `prisma db push` adds the nullable `signaturePlacements` column on `SigningRequest`. Existing rows keep `null` — historical / already completed, not rendered through the new flow.
+- Existing `StageDocument` rows keep working; the new chips just become available in the editor. Each existing Sign/Fill stage document must be opened once and have `{{signature}}` placed before its next send — the server validation enforces this at send time with a clear error. No automated backfill.
 
 ## Testing
 

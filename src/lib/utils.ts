@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getInitials(firstName: string, lastName: string) {
-  return `${firstName[0]}${lastName[0]}`.toUpperCase();
+  return `${(firstName || "?")[0]}${(lastName || "?")[0]}`.toUpperCase();
 }
 
 export function formatDate(date: Date | string) {

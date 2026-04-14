@@ -48,7 +48,10 @@ export async function updateDepartment(
 }
 
 export async function deleteDepartment(id: string) {
+  // Unassign employees from this department before deleting
+  await db.employee.updateMany({ where: { departmentId: id }, data: { departmentId: null } });
   await db.department.delete({ where: { id } });
   revalidatePath("/org");
   revalidatePath("/org/departments");
+  revalidatePath("/people");
 }
