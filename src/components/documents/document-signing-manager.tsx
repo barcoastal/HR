@@ -10,6 +10,7 @@ import {
 } from "@/lib/actions/signing";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { SignaturePlacementPicker, type PickerPlacement } from "@/components/signatures/signature-placement-picker";
 
 type SigningRequest = {
   id: string;
@@ -126,6 +127,7 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
   const [sending, setSending] = useState(false);
   const [requiresCountersign, setRequiresCountersign] = useState(false);
   const [countersignerId, setCountersignerId] = useState("");
+  const [placements, setPlacements] = useState<PickerPlacement[]>([]);
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [voidingId, setVoidingId] = useState<string | null>(null);
   const [confirmVoidId, setConfirmVoidId] = useState<string | null>(null);
@@ -188,12 +190,41 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
       alert("Please select a countersigner.");
       return;
     }
+    const hasSig = placements.some((p) => p.kind === "signature");
+    if (!hasSig) {
+      alert("Please place at least one signature field on the document before sending.");
+      return;
+    }
+    if (requiresCountersign && !placements.some((p) => p.kind === "countersignature")) {
+      alert("Please place at least one countersignature field (for HR/management) on the document.");
+      return;
+    }
     setSending(true);
     try {
       const effectiveCountersignerId = requiresCountersign ? countersignerId : null;
+      // Convert picker placements (center-based, no size) into stored placements
+      // with default box sizes matching the signing-side renderer.
+      const SIZES: Record<PickerPlacement["kind"], { w: number; h: number }> = {
+        signature: { w: 0.26, h: 0.08 },
+        signatureDate: { w: 0.18, h: 0.04 },
+        countersignature: { w: 0.26, h: 0.08 },
+        countersignatureDate: { w: 0.18, h: 0.04 },
+      };
+      const storedPlacements = placements.map((p) => {
+        const s = SIZES[p.kind];
+        return {
+          page: p.page,
+          xPct: Math.max(0, Math.min(1 - s.w, p.xPct - s.w / 2)),
+          yPct: Math.max(0, Math.min(1 - s.h, p.yPct - s.h / 2)),
+          widthPct: s.w,
+          heightPct: s.h,
+          kind: p.kind,
+        };
+      });
+
       if (sendAction === "fill") {
         const { sendDocForFilling } = await import("@/lib/actions/employee-documents");
-        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name, effectiveCountersignerId);
+        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name, effectiveCountersignerId, storedPlacements);
       } else {
         await createStandaloneSigningRequest({
           employeeId: selectedEmployeeId,
@@ -201,6 +232,7 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
           documentName: uploadedDoc.name,
           message: docMessage || undefined,
           countersignerId: effectiveCountersignerId,
+          signaturePlacements: storedPlacements,
         });
       }
       setShowSendDialog(false);
@@ -220,6 +252,7 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
     setSendAction("sign");
     setRequiresCountersign(false);
     setCountersignerId("");
+    setPlacements([]);
   }
 
   // Resend
@@ -535,7 +568,7 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
                   {uploadedDoc.name}
                 </span>
                 <button
-                  onClick={() => setUploadedDoc(null)}
+                  onClick={() => { setUploadedDoc(null); setPlacements([]); }}
                   className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
                 >
                   Change
@@ -568,6 +601,21 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
               </label>
             )}
           </div>
+
+          {/* Signature placement — only shown once PDF is uploaded */}
+          {uploadedDoc && uploadedDoc.name.toLowerCase().endsWith(".pdf") && (
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">
+                Mark where fields go
+              </label>
+              <SignaturePlacementPicker
+                pdfUrl={uploadedDoc.url}
+                showCountersign={requiresCountersign}
+                value={placements}
+                onChange={setPlacements}
+              />
+            </div>
+          )}
 
           {/* Message */}
           <div>

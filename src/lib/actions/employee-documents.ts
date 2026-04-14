@@ -102,7 +102,13 @@ export async function sendDocForSigning(employeeId: string, documentUrl: string,
   return { success: true };
 }
 
-export async function sendDocForFilling(employeeId: string, documentUrl: string, documentName: string, countersignerId?: string | null) {
+export async function sendDocForFilling(
+  employeeId: string,
+  documentUrl: string,
+  documentName: string,
+  countersignerId?: string | null,
+  signaturePlacements?: unknown,
+) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
@@ -124,6 +130,7 @@ export async function sendDocForFilling(employeeId: string, documentUrl: string,
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
+  const placementsArray = Array.isArray(signaturePlacements) ? signaturePlacements : [];
   await db.signingRequest.create({
     data: {
       employeeTaskId: employeeTask.id,
@@ -133,6 +140,7 @@ export async function sendDocForFilling(employeeId: string, documentUrl: string,
       documentName,
       expiresAt,
       countersignerId: countersignerId || null,
+      signaturePlacements: placementsArray.length > 0 ? (placementsArray as object) : undefined,
     },
   });
 
