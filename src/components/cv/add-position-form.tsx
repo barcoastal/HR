@@ -47,6 +47,7 @@ export function AIMatchDialog({
   const [loading, setLoading] = useState(false);
   const [started, setStarted] = useState(false);
   const [pullingId, setPullingId] = useState<string | null>(null);
+  const [previewResume, setPreviewResume] = useState<{ url: string; name: string } | null>(null);
   const router = useRouter();
 
   async function runMatch() {
@@ -132,7 +133,17 @@ export function AIMatchDialog({
                       ))}
                     </div>
                   </div>
-                  <div className="shrink-0">
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    {m.resumeUrl && (
+                      <button
+                        onClick={() => setPreviewResume({ url: m.resumeUrl!, name: `${m.firstName} ${m.lastName}` })}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-[var(--color-background)] text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] border border-[var(--color-border)] transition-colors"
+                        title="Preview resume"
+                      >
+                        <Icon name="description" size={12} />
+                        Resume
+                      </button>
+                    )}
                     {m.inPipeline ? (
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400">
                         <Icon name="check" size={12} />
@@ -170,6 +181,32 @@ export function AIMatchDialog({
           </button>
         </div>
       </div>
+
+      {previewResume && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4"
+          onClick={() => setPreviewResume(null)}
+        >
+          <div
+            className="bg-[var(--color-surface)] rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
+              <div className="flex items-center gap-2 min-w-0">
+                <Icon name="description" size={16} className="text-[var(--color-accent)] shrink-0" />
+                <span className="text-sm font-medium text-[var(--color-text-primary)] truncate">{previewResume.name} — Resume</span>
+              </div>
+              <button
+                onClick={() => setPreviewResume(null)}
+                className="p-1 rounded hover:bg-[var(--color-surface-hover)] text-[var(--color-text-muted)]"
+              >
+                <Icon name="close" size={16} />
+              </button>
+            </div>
+            <iframe src={previewResume.url} className="flex-1 w-full" title={previewResume.name} />
+          </div>
+        </div>
+      )}
     </Dialog>
   );
 }

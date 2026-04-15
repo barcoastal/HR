@@ -141,6 +141,11 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
+  const [positionFilter, setPositionFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dateFilter, setDateFilter] = useState(""); // "", "7", "30", "90"
+  const [resumeFilter, setResumeFilter] = useState(""); // "", "with", "without"
+  const [pipelineFilter, setPipelineFilter] = useState(""); // "", "in", "out"
   const [pullDialogOpen, setPullDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [selectedPosition, setSelectedPosition] = useState("");
@@ -155,9 +160,43 @@ export function CandidateDatabase({ candidates, positions }: Props) {
     return Array.from(sources).sort();
   }, [candidates]);
 
+  const positionLookup = useMemo(() => {
+    const m = new Map<string, string>();
+    for (const p of positions) m.set(p.title.toLowerCase(), p.id);
+    return m;
+  }, [positions]);
+
+  const activeFilterCount =
+    [sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter].filter((x) => x).length;
+
   const filtered = useMemo(() => {
+    const now = Date.now();
+    const dateCutoff = dateFilter ? now - parseInt(dateFilter, 10) * 24 * 60 * 60 * 1000 : null;
+
     return candidates.filter((c) => {
       if (sourceFilter && c.source !== sourceFilter) return false;
+
+      if (positionFilter) {
+        // Match against either the linked positionId or the jobAppliedTo text
+        const matchById = c.positionId === positionFilter;
+        const targetTitle = positions.find((p) => p.id === positionFilter)?.title?.toLowerCase();
+        const matchByText = targetTitle && c.jobAppliedTo && c.jobAppliedTo.toLowerCase().includes(targetTitle);
+        if (!matchById && !matchByText) return false;
+      }
+
+      if (statusFilter && c.status !== statusFilter) return false;
+
+      if (dateCutoff !== null) {
+        const created = new Date(c.createdAt).getTime();
+        if (created < dateCutoff) return false;
+      }
+
+      if (resumeFilter === "with" && !c.resumeUrl) return false;
+      if (resumeFilter === "without" && c.resumeUrl) return false;
+
+      if (pipelineFilter === "in" && !c.inPipeline) return false;
+      if (pipelineFilter === "out" && c.inPipeline) return false;
+
       if (search) {
         const q = search.toLowerCase().trim();
         const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
@@ -176,7 +215,20 @@ export function CandidateDatabase({ candidates, positions }: Props) {
       }
       return true;
     });
-  }, [candidates, search, sourceFilter]);
+  // positionLookup only used indirectly; filter re-runs when positions or filters change
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [candidates, search, sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, positions]);
+
+  function clearFilters() {
+    setSourceFilter("");
+    setPositionFilter("");
+    setStatusFilter("");
+    setDateFilter("");
+    setResumeFilter("");
+    setPipelineFilter("");
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _positionLookup = positionLookup;
 
   function openPullDialog(candidate: CandidateItem) {
     setSelectedCandidate(candidate);
@@ -206,27 +258,89 @@ export function CandidateDatabase({ candidates, positions }: Props) {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="flex-1 relative">
-          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-          <input
-            type="text"
-            placeholder="Search by name, email, skills, or resume content..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className={cn(inputClass, "w-full pl-9")}
-          />
-        </div>
-        <select
-          value={sourceFilter}
-          onChange={(e) => setSourceFilter(e.target.value)}
-          className={inputClass}
-        >
-          <option value="">All Sources</option>
+      {/* Wide search bar */}
+      <div className="relative mb-3">
+        <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
+        <input
+          type="text"
+          placeholder="Search by name, email, phone, skills, experience, position, resume text, notes…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className={cn(
+            "w-full pl-11 pr-4 py-3 rounded-xl text-sm",
+            "bg-[var(--color-surface)] border border-[var(--color-border)]",
+            "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
+            "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]"
+          )}
+        />
+        {search && (
+          <button
+            onClick={() => setSearch("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+            aria-label="Clear search"
+          >
+            <Icon name="close" size={16} />
+          </button>
+        )}
+      </div>
+
+      {/* Filter row */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
+        <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)} className={inputClass}>
+          <option value="">All positions</option>
+          {positions.map((p) => (
+            <option key={p.id} value={p.id}>{p.title}</option>
+          ))}
+        </select>
+        <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className={inputClass}>
+          <option value="">All sources</option>
           {distinctSources.map((s) => (
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputClass}>
+          <option value="">Any status</option>
+          <option value="NEW">New</option>
+          <option value="SCREENING">Screening</option>
+          <option value="INTERVIEW">Interview</option>
+          <option value="OFFER">Offer</option>
+          <option value="HIRED">Hired</option>
+          <option value="REJECTED">Rejected</option>
+        </select>
+        <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className={inputClass}>
+          <option value="">Any time</option>
+          <option value="7">Last 7 days</option>
+          <option value="30">Last 30 days</option>
+          <option value="90">Last 90 days</option>
+        </select>
+        <select value={resumeFilter} onChange={(e) => setResumeFilter(e.target.value)} className={inputClass}>
+          <option value="">Resume: any</option>
+          <option value="with">Has resume</option>
+          <option value="without">No resume</option>
+        </select>
+        <select value={pipelineFilter} onChange={(e) => setPipelineFilter(e.target.value)} className={inputClass}>
+          <option value="">Pipeline: any</option>
+          <option value="in">In pipeline</option>
+          <option value="out">Database only</option>
+        </select>
+      </div>
+
+      {/* Summary + clear */}
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs text-[var(--color-text-muted)]">
+          {filtered.length} of {candidates.length} candidate{candidates.length !== 1 ? "s" : ""}
+          {activeFilterCount > 0 && <> · {activeFilterCount} filter{activeFilterCount !== 1 ? "s" : ""}</>}
+          {search && <> · matching &ldquo;{search}&rdquo;</>}
+        </p>
+        {(activeFilterCount > 0 || search) && (
+          <button
+            onClick={() => { setSearch(""); clearFilters(); }}
+            className="text-xs text-[var(--color-accent)] hover:underline flex items-center gap-1"
+          >
+            <Icon name="close" size={12} />
+            Clear
+          </button>
+        )}
       </div>
 
       {/* Mobile Card View */}

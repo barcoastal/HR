@@ -13,6 +13,7 @@ export type AIMatch = {
   skills: string | null;
   experience: string | null;
   source: string | null;
+  resumeUrl: string | null;
   inPipeline: boolean;
   score: number;
   reason: string;
@@ -123,6 +124,7 @@ ${JSON.stringify(candidateSummaries)}`;
         skills: c.skills,
         experience: c.experience,
         source: c.source,
+        resumeUrl: c.resumeUrl,
         inPipeline: c.inPipeline,
         score: s.score,
         reason: s.reason,
