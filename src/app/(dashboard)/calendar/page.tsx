@@ -158,7 +158,6 @@ export default async function CalendarPage() {
         <div className="flex items-center gap-2">
           {isManagerOrAbove && (
             <CreateEventDialog
-              connected={syncStatus.connected}
               departments={departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
               employees={allActiveEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email, departmentId: e.departmentId }))}
             />

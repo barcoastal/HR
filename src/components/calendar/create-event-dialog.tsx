@@ -13,11 +13,10 @@ type Employee = { id: string; firstName: string; lastName: string; email: string
 export function CreateEventDialog({
   departments,
   employees,
-  connected,
 }: {
   departments: Department[];
   employees: Employee[];
-  connected: boolean;
+  connected?: boolean; // kept for backwards compat — no longer gates the button
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -108,14 +107,7 @@ export function CreateEventDialog({
     <>
       <button
         onClick={() => setOpen(true)}
-        disabled={!connected}
-        title={connected ? undefined : "Connect Google Calendar first"}
-        className={cn(
-          "inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
-          connected
-            ? "bg-[var(--color-accent)] text-white hover:opacity-90"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        )}
+        className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-[var(--color-accent)] text-white hover:opacity-90"
       >
         <Icon name="event" size={16} />
         Create event
