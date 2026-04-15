@@ -268,6 +268,39 @@ export async function sendWelcomeEmail({
   }
 }
 
+export async function sendAdverseActionEmail({
+  to, firstName, positionTitle, reason,
+}: {
+  to: string; firstName: string; positionTitle?: string; reason?: string;
+}) {
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("BACKGROUND_ADVERSE" as never)]);
+  const vars = {
+    firstName,
+    positionTitle: positionTitle || "the position you applied for",
+    reason: reason || "information revealed by your background report",
+    companyName: branding.companyName,
+    logoUrl: branding.logoUrl || "",
+  };
+  if (template) {
+    await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
+  } else {
+    await sendEmail(
+      to,
+      `Update on your application to ${branding.companyName}`,
+      `
+        <p>Dear ${firstName},</p>
+        <p>Thank you for your interest in <strong>${vars.positionTitle}</strong> at ${branding.companyName}.</p>
+        <p>After careful review of your application, including the results of your background check, we have decided not to move forward with your candidacy at this time. This decision was based, in whole or in part, on ${vars.reason}.</p>
+        <p>You have the right to obtain a free copy of the background report from the consumer reporting agency that prepared it, and to dispute any information you believe to be inaccurate or incomplete directly with that agency. A <em>Summary of Your Rights Under the Fair Credit Reporting Act</em> is available upon request.</p>
+        <p>We appreciate the time you invested in the application process and wish you success in your job search.</p>
+        <p>Sincerely,<br/>The ${branding.companyName} team</p>
+        <hr style="border:none;border-top:1px solid #eee;margin:24px 0" />
+        <p style="color:#666;font-size:11px">This notice is being sent in compliance with the federal Fair Credit Reporting Act and any applicable state or local law.</p>
+      `
+    );
+  }
+}
+
 export async function sendCountersignRequestEmail({
   to, firstName, documentName, signerName, countersignUrl,
 }: {

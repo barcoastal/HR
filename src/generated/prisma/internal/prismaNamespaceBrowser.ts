@@ -509,6 +509,7 @@ export const CandidateScalarFieldEnum = {
   backgroundCheckId: 'backgroundCheckId',
   backgroundCheckDate: 'backgroundCheckDate',
   backgroundCheckOptions: 'backgroundCheckOptions',
+  adverseActionLetterSentAt: 'adverseActionLetterSentAt',
   offerDocUrl: 'offerDocUrl',
   offerSentAt: 'offerSentAt',
   offerSignedDocUrl: 'offerSignedDocUrl',

@@ -181,6 +181,14 @@ export async function GET(req: NextRequest) {
             where: { id: candidateId },
             data: { backgroundCheckStatus: newStatus },
           });
+          if (newStatus === "FAILED") {
+            try {
+              const { sendAdverseActionLetter } = await import("@/lib/actions/adverse-action");
+              await sendAdverseActionLetter(candidateId, "information revealed by your background report");
+            } catch (e) {
+              console.error("[background-check] adverse action send failed:", e);
+            }
+          }
         }
 
         return NextResponse.json({
@@ -222,6 +230,15 @@ export async function PATCH(req: NextRequest) {
     where: { id: candidateId },
     data: { backgroundCheckStatus: status },
   });
+
+  if (status === "FAILED") {
+    try {
+      const { sendAdverseActionLetter } = await import("@/lib/actions/adverse-action");
+      await sendAdverseActionLetter(candidateId, "information revealed by your background report");
+    } catch (e) {
+      console.error("[background-check] adverse action send failed:", e);
+    }
+  }
 
   return NextResponse.json({ success: true, status });
 }
