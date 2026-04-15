@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
-export type BoardName = "JOBING" | "INDEED" | "BREEZY";
+export type BoardName = "CAREERS" | "JOBING" | "INDEED" | "BREEZY";
 export type BoardStatus = "NOT_POSTED" | "PUBLISHED" | "PAUSED" | "FAILED";
 
 export type BoardPostingView = {
@@ -17,17 +17,38 @@ export type BoardPostingView = {
 };
 
 export async function getBoardPostings(positionId: string): Promise<BoardPostingView[]> {
-  const existing = await db.positionBoardPosting.findMany({ where: { positionId } });
+  const [existing, position] = await Promise.all([
+    db.positionBoardPosting.findMany({ where: { positionId } }),
+    db.position.findUnique({ where: { id: positionId }, select: { published: true, status: true } }),
+  ]);
   const lookup = new Map(existing.map((p) => [p.board, p]));
 
-  const boards: BoardName[] = ["JOBING", "INDEED", "BREEZY"];
+  const boards: BoardName[] = ["CAREERS", "JOBING", "INDEED", "BREEZY"];
   const supports: Record<BoardName, { post: boolean; pause: boolean; resume: boolean }> = {
+    CAREERS: { post: true, pause: true, resume: true },
     JOBING: { post: false, pause: false, resume: false },
     INDEED: { post: true, pause: true, resume: true },
     BREEZY: { post: true, pause: true, resume: true },
   };
 
   return boards.map((b) => {
+    if (b === "CAREERS") {
+      // Careers state is derived directly from Position.published (and position must be OPEN)
+      const publishable = position?.status === "OPEN";
+      const status: BoardStatus = !publishable
+        ? "NOT_POSTED"
+        : position?.published
+        ? "PUBLISHED"
+        : "PAUSED";
+      return {
+        board: "CAREERS" as const,
+        status,
+        externalId: null,
+        lastError: null,
+        lastSyncAt: new Date(),
+        supports: supports.CAREERS,
+      };
+    }
     const row = lookup.get(b);
     return {
       board: b,
@@ -67,6 +88,16 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
     include: { department: true },
   });
   if (!position) return { success: false, error: "Position not found" };
+
+  if (board === "CAREERS") {
+    if (position.status !== "OPEN") {
+      return { success: false, error: "Position must be OPEN to publish on the careers page. Reopen it first." };
+    }
+    await db.position.update({ where: { id: positionId }, data: { published: true } });
+    revalidatePath("/cv");
+    revalidatePath("/careers");
+    return { success: true };
+  }
 
   if (board === "JOBING") {
     const msg = "Jobing API is read-only — job creation must be done in the pro.jobing dashboard.";
@@ -151,6 +182,14 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
 
 export async function pauseOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
   await requireAuth();
+
+  if (board === "CAREERS") {
+    await db.position.update({ where: { id: positionId }, data: { published: false } });
+    revalidatePath("/cv");
+    revalidatePath("/careers");
+    return { success: true };
+  }
+
   const posting = await db.positionBoardPosting.findUnique({
     where: { positionId_board: { positionId, board } },
   });
@@ -202,6 +241,14 @@ export async function pauseOnBoard(positionId: string, board: BoardName): Promis
 
 export async function resumeOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
   await requireAuth();
+
+  if (board === "CAREERS") {
+    await db.position.update({ where: { id: positionId }, data: { published: true } });
+    revalidatePath("/cv");
+    revalidatePath("/careers");
+    return { success: true };
+  }
+
   const posting = await db.positionBoardPosting.findUnique({
     where: { positionId_board: { positionId, board } },
   });

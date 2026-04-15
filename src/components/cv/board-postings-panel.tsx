@@ -14,6 +14,7 @@ import {
 } from "@/lib/actions/board-postings";
 
 const BOARD_META: Record<BoardName, { label: string; icon: string; color: string }> = {
+  CAREERS: { label: "Our Careers page", icon: "public", color: "text-purple-500" },
   INDEED: { label: "Indeed", icon: "work", color: "text-blue-500" },
   BREEZY: { label: "Breezy HR", icon: "work", color: "text-teal-500" },
   JOBING: { label: "Jobing", icon: "work", color: "text-orange-500" },
