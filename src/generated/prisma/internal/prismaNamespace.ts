@@ -408,6 +408,7 @@ export const ModelName = {
   HRNote: 'HRNote',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
+  CandidateApplication: 'CandidateApplication',
   Position: 'Position',
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
@@ -456,7 +457,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2233,6 +2234,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CandidateCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CandidateCountAggregateOutputType> | number
+        }
+      }
+    }
+    CandidateApplication: {
+      payload: Prisma.$CandidateApplicationPayload<ExtArgs>
+      fields: Prisma.CandidateApplicationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CandidateApplicationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CandidateApplicationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        findFirst: {
+          args: Prisma.CandidateApplicationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CandidateApplicationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        findMany: {
+          args: Prisma.CandidateApplicationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>[]
+        }
+        create: {
+          args: Prisma.CandidateApplicationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        createMany: {
+          args: Prisma.CandidateApplicationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CandidateApplicationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>[]
+        }
+        delete: {
+          args: Prisma.CandidateApplicationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        update: {
+          args: Prisma.CandidateApplicationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        deleteMany: {
+          args: Prisma.CandidateApplicationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CandidateApplicationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CandidateApplicationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>[]
+        }
+        upsert: {
+          args: Prisma.CandidateApplicationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateApplicationPayload>
+        }
+        aggregate: {
+          args: Prisma.CandidateApplicationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCandidateApplication>
+        }
+        groupBy: {
+          args: Prisma.CandidateApplicationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CandidateApplicationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CandidateApplicationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CandidateApplicationCountAggregateOutputType> | number
         }
       }
     }
@@ -5102,11 +5177,32 @@ export const CandidateScalarFieldEnum = {
   offerSentAt: 'offerSentAt',
   offerSignedDocUrl: 'offerSignedDocUrl',
   offerSignedAt: 'offerSignedAt',
+  doNotCall: 'doNotCall',
+  doNotCallReason: 'doNotCallReason',
+  doNotCallAt: 'doNotCallAt',
+  applicationCount: 'applicationCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+export const CandidateApplicationScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  positionId: 'positionId',
+  positionName: 'positionName',
+  status: 'status',
+  source: 'source',
+  resumeUrl: 'resumeUrl',
+  appliedAt: 'appliedAt',
+  stageHistory: 'stageHistory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CandidateApplicationScalarFieldEnum = (typeof CandidateApplicationScalarFieldEnum)[keyof typeof CandidateApplicationScalarFieldEnum]
 
 
 export const PositionScalarFieldEnum = {
@@ -6165,6 +6261,7 @@ export type GlobalOmitConfig = {
   hRNote?: Prisma.HRNoteOmit
   jobTitle?: Prisma.JobTitleOmit
   candidate?: Prisma.CandidateOmit
+  candidateApplication?: Prisma.CandidateApplicationOmit
   position?: Prisma.PositionOmit
   recruitmentPlatform?: Prisma.RecruitmentPlatformOmit
   platformCostEntry?: Prisma.PlatformCostEntryOmit

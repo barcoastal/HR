@@ -160,6 +160,11 @@ export type JobTitle = Prisma.JobTitleModel
  */
 export type Candidate = Prisma.CandidateModel
 /**
+ * Model CandidateApplication
+ * 
+ */
+export type CandidateApplication = Prisma.CandidateApplicationModel
+/**
  * Model Position
  * 
  */

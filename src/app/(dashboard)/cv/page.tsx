@@ -117,6 +117,9 @@ export default async function CVPage() {
           position: c.position ? { title: c.position.title } : null,
           resumeUrl: c.resumeUrl,
           createdAt: c.createdAt,
+          doNotCall: c.doNotCall,
+          doNotCallReason: c.doNotCallReason,
+          applicationCount: c.applicationCount,
         }))}
         positions={positions.map((p) => ({ id: p.id, title: p.title }))}
         openPositions={openPositions.map((p) => ({

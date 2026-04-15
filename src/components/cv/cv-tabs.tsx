@@ -6,6 +6,7 @@ import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
+import { BulkResumeUpload } from "@/components/cv/bulk-resume-upload";
 import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
@@ -531,6 +532,7 @@ export function CVTabs({
               platform={syncablePlatforms.find((p) => p.name === "Indeed") as any}
             />
             <CsvImport />
+            <BulkResumeUpload positions={positions} />
             <CleanDuplicatesButton />
             <FixNamesButton />
             <DownloadResumesButton />

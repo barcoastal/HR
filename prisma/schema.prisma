@@ -672,6 +672,10 @@ model Candidate {
   offerSentAt             DateTime?         // When offer was emailed to candidate
   offerSignedDocUrl       String?           // URL to signed offer PDF
   offerSignedAt           DateTime?         // When candidate signed the offer
+  doNotCall               Boolean         @default(false) // Sticky flag: candidate was rejected and must not be contacted again
+  doNotCallReason         String?
+  doNotCallAt             DateTime?
+  applicationCount        Int             @default(1)
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt
 
@@ -679,6 +683,7 @@ model Candidate {
   manager         Employee?        @relation("CandidateManager", fields: [managerId], references: [id])
   interviews      Interview[]
   signingRequests SigningRequest[]
+  applications    CandidateApplication[]
 
   @@index([positionId])
   @@index([status])
@@ -686,6 +691,30 @@ model Candidate {
   @@index([managerId])
   @@index([recruiterId])
   @@index([inPipeline])
+  @@index([doNotCall])
+}
+
+// One row per application a candidate makes to a specific position.
+// Preserves the history when the same candidate re-applies (via bulk upload or otherwise).
+model CandidateApplication {
+  id           String    @id @default(uuid())
+  candidateId  String
+  positionId   String?
+  positionName String    // denormalized — keeps the name even if the Position is deleted
+  status       CandidateStatus @default(NEW)
+  source       String?
+  resumeUrl    String?
+  appliedAt    DateTime  @default(now())
+  stageHistory Json?     // [{ status, at, by?, note? }] — status transitions over time
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position  Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  @@index([candidateId])
+  @@index([positionId])
+  @@index([status])
 }
 
 model Position {
@@ -702,6 +731,7 @@ model Position {
   jobingJobId   String?
   candidates    Candidate[]
   interviews    Interview[]
+  applications  CandidateApplication[]
   createdAt     DateTime       @default(now())
 
   department    Department?    @relation(fields: [departmentId], references: [id])

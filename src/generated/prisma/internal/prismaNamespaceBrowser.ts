@@ -75,6 +75,7 @@ export const ModelName = {
   HRNote: 'HRNote',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
+  CandidateApplication: 'CandidateApplication',
   Position: 'Position',
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
@@ -511,11 +512,32 @@ export const CandidateScalarFieldEnum = {
   offerSentAt: 'offerSentAt',
   offerSignedDocUrl: 'offerSignedDocUrl',
   offerSignedAt: 'offerSignedAt',
+  doNotCall: 'doNotCall',
+  doNotCallReason: 'doNotCallReason',
+  doNotCallAt: 'doNotCallAt',
+  applicationCount: 'applicationCount',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+export const CandidateApplicationScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  positionId: 'positionId',
+  positionName: 'positionName',
+  status: 'status',
+  source: 'source',
+  resumeUrl: 'resumeUrl',
+  appliedAt: 'appliedAt',
+  stageHistory: 'stageHistory',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CandidateApplicationScalarFieldEnum = (typeof CandidateApplicationScalarFieldEnum)[keyof typeof CandidateApplicationScalarFieldEnum]
 
 
 export const PositionScalarFieldEnum = {

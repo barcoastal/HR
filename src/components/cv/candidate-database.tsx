@@ -28,6 +28,9 @@ type CandidateItem = {
   jobAppliedTo: string | null;
   position: { title: string } | null;
   createdAt: Date;
+  doNotCall?: boolean;
+  doNotCallReason?: string | null;
+  applicationCount?: number;
 };
 
 type Position = { id: string; title: string };
@@ -146,6 +149,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const [dateFilter, setDateFilter] = useState(""); // "", "7", "30", "90"
   const [resumeFilter, setResumeFilter] = useState(""); // "", "with", "without"
   const [pipelineFilter, setPipelineFilter] = useState(""); // "", "in", "out"
+  const [dncFilter, setDncFilter] = useState(""); // "", "yes", "no"
   const [pullDialogOpen, setPullDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [selectedPosition, setSelectedPosition] = useState("");
@@ -167,7 +171,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   }, [positions]);
 
   const activeFilterCount =
-    [sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter].filter((x) => x).length;
+    [sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter].filter((x) => x).length;
 
   const filtered = useMemo(() => {
     const now = Date.now();
@@ -197,6 +201,9 @@ export function CandidateDatabase({ candidates, positions }: Props) {
       if (pipelineFilter === "in" && !c.inPipeline) return false;
       if (pipelineFilter === "out" && c.inPipeline) return false;
 
+      if (dncFilter === "yes" && !c.doNotCall) return false;
+      if (dncFilter === "no" && c.doNotCall) return false;
+
       if (search) {
         const q = search.toLowerCase().trim();
         const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
@@ -217,7 +224,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
     });
   // positionLookup only used indirectly; filter re-runs when positions or filters change
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [candidates, search, sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, positions]);
+  }, [candidates, search, sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter, positions]);
 
   function clearFilters() {
     setSourceFilter("");
@@ -226,6 +233,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
     setDateFilter("");
     setResumeFilter("");
     setPipelineFilter("");
+    setDncFilter("");
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _positionLookup = positionLookup;
@@ -285,7 +293,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
       </div>
 
       {/* Filter row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 mb-4">
         <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)} className={inputClass}>
           <option value="">All positions</option>
           {positions.map((p) => (
@@ -323,6 +331,11 @@ export function CandidateDatabase({ candidates, positions }: Props) {
           <option value="in">In pipeline</option>
           <option value="out">Database only</option>
         </select>
+        <select value={dncFilter} onChange={(e) => setDncFilter(e.target.value)} className={inputClass}>
+          <option value="">DNC: any</option>
+          <option value="yes">Do not call</option>
+          <option value="no">Callable</option>
+        </select>
       </div>
 
       {/* Summary + clear */}
@@ -355,9 +368,21 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                     <Icon name="description" size={16} className="text-blue-400" />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                      {c.firstName} {c.lastName}
-                    </p>
+                    <div className="flex items-center gap-1.5">
+                      <p className={cn("text-sm font-medium truncate", c.doNotCall ? "text-red-600" : "text-[var(--color-text-primary)]")}>
+                        {c.firstName} {c.lastName}
+                      </p>
+                      {c.doNotCall && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500 text-white shrink-0" title={c.doNotCallReason || undefined}>
+                          DO NOT CALL
+                        </span>
+                      )}
+                      {c.applicationCount && c.applicationCount > 1 && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-500/10 text-blue-700 shrink-0">
+                          {c.applicationCount}× applied
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-[var(--color-text-muted)] truncate">{c.email}</p>
                   </div>
                 </div>
@@ -488,9 +513,21 @@ export function CandidateDatabase({ candidates, positions }: Props) {
                         <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
                           <Icon name="description" size={12} className="text-blue-400" />
                         </div>
-                        <span className="text-sm font-medium text-[var(--color-text-primary)]">
-                          {c.firstName} {c.lastName}
-                        </span>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className={cn("text-sm font-medium truncate", c.doNotCall ? "text-red-600" : "text-[var(--color-text-primary)]")}>
+                            {c.firstName} {c.lastName}
+                          </span>
+                          {c.doNotCall && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500 text-white shrink-0" title={c.doNotCallReason || undefined}>
+                              DNC
+                            </span>
+                          )}
+                          {c.applicationCount && c.applicationCount > 1 && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-500/10 text-blue-700 shrink-0">
+                              {c.applicationCount}×
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--color-text-muted)]">{c.email}</td>
