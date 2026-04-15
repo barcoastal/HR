@@ -563,24 +563,60 @@ export function OnboardingSetup({
                               <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                           </select>
-                          {(item.documentAction === "SIGN" || item.documentAction === "FILL") && (
-                            <select
-                              value={(item as unknown as { documentRecipient?: string }).documentRecipient || "EMPLOYEE"}
-                              onChange={async (e) => {
-                                await updateChecklistItem(item.id, { documentRecipient: e.target.value as "EMPLOYEE" | "ASSIGNEE" });
-                                router.refresh();
-                              }}
-                              className={cn(
-                                "px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer appearance-none pr-5 bg-no-repeat bg-[length:12px] bg-[right_4px_center]",
-                                "bg-indigo-500/10 text-indigo-600"
-                              )}
-                              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")` }}
-                              title="Who receives this document"
-                            >
-                              <option value="EMPLOYEE">→ New hire</option>
-                              <option value="ASSIGNEE">→ Assignee</option>
-                            </select>
-                          )}
+                          {(item.documentAction === "SIGN" || item.documentAction === "FILL") && (() => {
+                            const recipient = (item as unknown as { documentRecipient?: string }).documentRecipient || "EMPLOYEE";
+                            const externalEmail = (item as unknown as { externalEmail?: string | null }).externalEmail || "";
+                            const externalName = (item as unknown as { externalName?: string | null }).externalName || "";
+                            return (
+                              <>
+                                <select
+                                  value={recipient}
+                                  onChange={async (e) => {
+                                    await updateChecklistItem(item.id, { documentRecipient: e.target.value as "EMPLOYEE" | "ASSIGNEE" | "EXTERNAL" });
+                                    router.refresh();
+                                  }}
+                                  className={cn(
+                                    "px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer appearance-none pr-5 bg-no-repeat bg-[length:12px] bg-[right_4px_center]",
+                                    "bg-indigo-500/10 text-indigo-600"
+                                  )}
+                                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")` }}
+                                  title="Who receives this document"
+                                >
+                                  <option value="EMPLOYEE">→ New hire</option>
+                                  <option value="ASSIGNEE">→ Assignee</option>
+                                  <option value="EXTERNAL">→ External</option>
+                                </select>
+                                {recipient === "EXTERNAL" && (
+                                  <span className="inline-flex items-center gap-1">
+                                    <input
+                                      type="email"
+                                      defaultValue={externalEmail}
+                                      onBlur={async (e) => {
+                                        if (e.target.value !== externalEmail) {
+                                          await updateChecklistItem(item.id, { externalEmail: e.target.value || null });
+                                          router.refresh();
+                                        }
+                                      }}
+                                      placeholder="external@example.com"
+                                      className="px-2 py-0.5 rounded text-xs bg-[var(--color-background)] border border-[var(--color-border)] w-48"
+                                    />
+                                    <input
+                                      type="text"
+                                      defaultValue={externalName}
+                                      onBlur={async (e) => {
+                                        if (e.target.value !== externalName) {
+                                          await updateChecklistItem(item.id, { externalName: e.target.value || null });
+                                          router.refresh();
+                                        }
+                                      }}
+                                      placeholder="Name"
+                                      className="px-2 py-0.5 rounded text-xs bg-[var(--color-background)] border border-[var(--color-border)] w-24"
+                                    />
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
                           {item.documentName && (
                             <span
                               className={cn(

@@ -12,7 +12,9 @@ type ResolvedTask = {
   documentAction: string;
   documentUrl: string | null;
   documentName: string | null;
-  documentRecipient: string; // EMPLOYEE | ASSIGNEE
+  documentRecipient: string; // EMPLOYEE | ASSIGNEE | EXTERNAL
+  externalEmail: string | null;
+  externalName: string | null;
   sendEmail: boolean;
   emailSubject: string | null;
   emailBody: string | null;
@@ -119,6 +121,8 @@ async function resolveTasksByType(
     documentUrl: item.documentUrl,
     documentName: item.documentName,
     documentRecipient: (item as unknown as { documentRecipient?: string }).documentRecipient ?? "EMPLOYEE",
+    externalEmail: (item as unknown as { externalEmail?: string | null }).externalEmail ?? null,
+    externalName: (item as unknown as { externalName?: string | null }).externalName ?? null,
     sendEmail: item.sendEmail,
     emailSubject: item.emailSubject,
     emailBody: item.emailBody,

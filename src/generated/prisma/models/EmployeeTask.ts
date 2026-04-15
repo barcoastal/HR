@@ -36,6 +36,8 @@ export type EmployeeTaskMinAggregateOutputType = {
   documentAction: string | null
   documentName: string | null
   documentRecipient: string | null
+  externalEmail: string | null
+  externalName: string | null
   assigneeId: string | null
   createdAt: Date | null
 }
@@ -52,6 +54,8 @@ export type EmployeeTaskMaxAggregateOutputType = {
   documentAction: string | null
   documentName: string | null
   documentRecipient: string | null
+  externalEmail: string | null
+  externalName: string | null
   assigneeId: string | null
   createdAt: Date | null
 }
@@ -68,6 +72,8 @@ export type EmployeeTaskCountAggregateOutputType = {
   documentAction: number
   documentName: number
   documentRecipient: number
+  externalEmail: number
+  externalName: number
   assigneeId: number
   createdAt: number
   _all: number
@@ -86,6 +92,8 @@ export type EmployeeTaskMinAggregateInputType = {
   documentAction?: true
   documentName?: true
   documentRecipient?: true
+  externalEmail?: true
+  externalName?: true
   assigneeId?: true
   createdAt?: true
 }
@@ -102,6 +110,8 @@ export type EmployeeTaskMaxAggregateInputType = {
   documentAction?: true
   documentName?: true
   documentRecipient?: true
+  externalEmail?: true
+  externalName?: true
   assigneeId?: true
   createdAt?: true
 }
@@ -118,6 +128,8 @@ export type EmployeeTaskCountAggregateInputType = {
   documentAction?: true
   documentName?: true
   documentRecipient?: true
+  externalEmail?: true
+  externalName?: true
   assigneeId?: true
   createdAt?: true
   _all?: true
@@ -207,6 +219,8 @@ export type EmployeeTaskGroupByOutputType = {
   documentAction: string | null
   documentName: string | null
   documentRecipient: string
+  externalEmail: string | null
+  externalName: string | null
   assigneeId: string | null
   createdAt: Date
   _count: EmployeeTaskCountAggregateOutputType | null
@@ -244,6 +258,8 @@ export type EmployeeTaskWhereInput = {
   documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentRecipient?: Prisma.StringFilter<"EmployeeTask"> | string
+  externalEmail?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  externalName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -264,6 +280,8 @@ export type EmployeeTaskOrderByWithRelationInput = {
   documentAction?: Prisma.SortOrderInput | Prisma.SortOrder
   documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRecipient?: Prisma.SortOrder
+  externalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalName?: Prisma.SortOrderInput | Prisma.SortOrder
   assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -287,6 +305,8 @@ export type EmployeeTaskWhereUniqueInput = Prisma.AtLeast<{
   documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentRecipient?: Prisma.StringFilter<"EmployeeTask"> | string
+  externalEmail?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  externalName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -307,6 +327,8 @@ export type EmployeeTaskOrderByWithAggregationInput = {
   documentAction?: Prisma.SortOrderInput | Prisma.SortOrder
   documentName?: Prisma.SortOrderInput | Prisma.SortOrder
   documentRecipient?: Prisma.SortOrder
+  externalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalName?: Prisma.SortOrderInput | Prisma.SortOrder
   assigneeId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeTaskCountOrderByAggregateInput
@@ -329,6 +351,8 @@ export type EmployeeTaskScalarWhereWithAggregatesInput = {
   documentAction?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   documentName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   documentRecipient?: Prisma.StringWithAggregatesFilter<"EmployeeTask"> | string
+  externalEmail?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
+  externalName?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   assigneeId?: Prisma.StringNullableWithAggregatesFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmployeeTask"> | Date | string
 }
@@ -343,6 +367,8 @@ export type EmployeeTaskCreateInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
   checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
@@ -362,6 +388,8 @@ export type EmployeeTaskUncheckedCreateInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
   signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
@@ -377,6 +405,8 @@ export type EmployeeTaskUpdateInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
   checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
@@ -396,6 +426,8 @@ export type EmployeeTaskUncheckedUpdateInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
@@ -413,6 +445,8 @@ export type EmployeeTaskCreateManyInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
 }
@@ -427,6 +461,8 @@ export type EmployeeTaskUpdateManyMutationInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -442,6 +478,8 @@ export type EmployeeTaskUncheckedUpdateManyInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -468,6 +506,8 @@ export type EmployeeTaskCountOrderByAggregateInput = {
   documentAction?: Prisma.SortOrder
   documentName?: Prisma.SortOrder
   documentRecipient?: Prisma.SortOrder
+  externalEmail?: Prisma.SortOrder
+  externalName?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -484,6 +524,8 @@ export type EmployeeTaskMaxOrderByAggregateInput = {
   documentAction?: Prisma.SortOrder
   documentName?: Prisma.SortOrder
   documentRecipient?: Prisma.SortOrder
+  externalEmail?: Prisma.SortOrder
+  externalName?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -500,6 +542,8 @@ export type EmployeeTaskMinOrderByAggregateInput = {
   documentAction?: Prisma.SortOrder
   documentName?: Prisma.SortOrder
   documentRecipient?: Prisma.SortOrder
+  externalEmail?: Prisma.SortOrder
+  externalName?: Prisma.SortOrder
   assigneeId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -665,6 +709,8 @@ export type EmployeeTaskCreateWithoutEmployeeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
   assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
@@ -682,6 +728,8 @@ export type EmployeeTaskUncheckedCreateWithoutEmployeeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
   signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
@@ -707,6 +755,8 @@ export type EmployeeTaskCreateWithoutAssigneeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
   checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
@@ -725,6 +775,8 @@ export type EmployeeTaskUncheckedCreateWithoutAssigneeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
 }
@@ -770,6 +822,8 @@ export type EmployeeTaskScalarWhereInput = {
   documentAction?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   documentRecipient?: Prisma.StringFilter<"EmployeeTask"> | string
+  externalEmail?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
+  externalName?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   assigneeId?: Prisma.StringNullableFilter<"EmployeeTask"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmployeeTask"> | Date | string
 }
@@ -800,6 +854,8 @@ export type EmployeeTaskCreateWithoutChecklistItemInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
   assignee?: Prisma.EmployeeCreateNestedOneWithoutAssignedTasksInput
@@ -817,6 +873,8 @@ export type EmployeeTaskUncheckedCreateWithoutChecklistItemInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
   signingRequest?: Prisma.SigningRequestUncheckedCreateNestedOneWithoutEmployeeTaskInput
@@ -858,6 +916,8 @@ export type EmployeeTaskCreateWithoutSigningRequestInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutEmployeeTasksInput
   checklistItem?: Prisma.ChecklistItemCreateNestedOneWithoutEmployeeTasksInput
@@ -876,6 +936,8 @@ export type EmployeeTaskUncheckedCreateWithoutSigningRequestInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
 }
@@ -906,6 +968,8 @@ export type EmployeeTaskUpdateWithoutSigningRequestInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
   checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
@@ -924,6 +988,8 @@ export type EmployeeTaskUncheckedUpdateWithoutSigningRequestInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -939,6 +1005,8 @@ export type EmployeeTaskCreateManyEmployeeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
 }
@@ -955,6 +1023,8 @@ export type EmployeeTaskCreateManyAssigneeInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   createdAt?: Date | string
 }
 
@@ -968,6 +1038,8 @@ export type EmployeeTaskUpdateWithoutEmployeeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
   assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
@@ -985,6 +1057,8 @@ export type EmployeeTaskUncheckedUpdateWithoutEmployeeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
@@ -1001,6 +1075,8 @@ export type EmployeeTaskUncheckedUpdateManyWithoutEmployeeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1015,6 +1091,8 @@ export type EmployeeTaskUpdateWithoutAssigneeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
   checklistItem?: Prisma.ChecklistItemUpdateOneWithoutEmployeeTasksNestedInput
@@ -1033,6 +1111,8 @@ export type EmployeeTaskUncheckedUpdateWithoutAssigneeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
 }
@@ -1049,6 +1129,8 @@ export type EmployeeTaskUncheckedUpdateManyWithoutAssigneeInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1063,6 +1145,8 @@ export type EmployeeTaskCreateManyChecklistItemInput = {
   documentAction?: string | null
   documentName?: string | null
   documentRecipient?: string
+  externalEmail?: string | null
+  externalName?: string | null
   assigneeId?: string | null
   createdAt?: Date | string
 }
@@ -1077,6 +1161,8 @@ export type EmployeeTaskUpdateWithoutChecklistItemInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutEmployeeTasksNestedInput
   assignee?: Prisma.EmployeeUpdateOneWithoutAssignedTasksNestedInput
@@ -1094,6 +1180,8 @@ export type EmployeeTaskUncheckedUpdateWithoutChecklistItemInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   signingRequest?: Prisma.SigningRequestUncheckedUpdateOneWithoutEmployeeTaskNestedInput
@@ -1110,6 +1198,8 @@ export type EmployeeTaskUncheckedUpdateManyWithoutChecklistItemInput = {
   documentAction?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   documentRecipient?: Prisma.StringFieldUpdateOperationsInput | string
+  externalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assigneeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1128,6 +1218,8 @@ export type EmployeeTaskSelect<ExtArgs extends runtime.Types.Extensions.Internal
   documentAction?: boolean
   documentName?: boolean
   documentRecipient?: boolean
+  externalEmail?: boolean
+  externalName?: boolean
   assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1148,6 +1240,8 @@ export type EmployeeTaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   documentAction?: boolean
   documentName?: boolean
   documentRecipient?: boolean
+  externalEmail?: boolean
+  externalName?: boolean
   assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1167,6 +1261,8 @@ export type EmployeeTaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   documentAction?: boolean
   documentName?: boolean
   documentRecipient?: boolean
+  externalEmail?: boolean
+  externalName?: boolean
   assigneeId?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -1186,11 +1282,13 @@ export type EmployeeTaskSelectScalar = {
   documentAction?: boolean
   documentName?: boolean
   documentRecipient?: boolean
+  externalEmail?: boolean
+  externalName?: boolean
   assigneeId?: boolean
   createdAt?: boolean
 }
 
-export type EmployeeTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "checklistItemId" | "status" | "documentUrl" | "completedAt" | "title" | "description" | "documentAction" | "documentName" | "documentRecipient" | "assigneeId" | "createdAt", ExtArgs["result"]["employeeTask"]>
+export type EmployeeTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "checklistItemId" | "status" | "documentUrl" | "completedAt" | "title" | "description" | "documentAction" | "documentName" | "documentRecipient" | "externalEmail" | "externalName" | "assigneeId" | "createdAt", ExtArgs["result"]["employeeTask"]>
 export type EmployeeTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   checklistItem?: boolean | Prisma.EmployeeTask$checklistItemArgs<ExtArgs>
@@ -1228,6 +1326,8 @@ export type $EmployeeTaskPayload<ExtArgs extends runtime.Types.Extensions.Intern
     documentAction: string | null
     documentName: string | null
     documentRecipient: string
+    externalEmail: string | null
+    externalName: string | null
     assigneeId: string | null
     createdAt: Date
   }, ExtArgs["result"]["employeeTask"]>
@@ -1668,6 +1768,8 @@ export interface EmployeeTaskFieldRefs {
   readonly documentAction: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly documentName: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly documentRecipient: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly externalEmail: Prisma.FieldRef<"EmployeeTask", 'String'>
+  readonly externalName: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly assigneeId: Prisma.FieldRef<"EmployeeTask", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmployeeTask", 'DateTime'>
 }

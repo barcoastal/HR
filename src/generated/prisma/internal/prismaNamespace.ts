@@ -4986,7 +4986,9 @@ export const ChecklistItemScalarFieldEnum = {
   documentUrl: 'documentUrl',
   documentName: 'documentName',
   documentAction: 'documentAction',
-  documentRecipient: 'documentRecipient'
+  documentRecipient: 'documentRecipient',
+  externalEmail: 'externalEmail',
+  externalName: 'externalName'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
@@ -5013,6 +5015,8 @@ export const EmployeeTaskScalarFieldEnum = {
   documentAction: 'documentAction',
   documentName: 'documentName',
   documentRecipient: 'documentRecipient',
+  externalEmail: 'externalEmail',
+  externalName: 'externalName',
   assigneeId: 'assigneeId',
   createdAt: 'createdAt'
 } as const

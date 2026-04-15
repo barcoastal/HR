@@ -154,6 +154,8 @@ export async function createEmployee(data: {
             documentUrl: task.documentUrl,
             documentName: task.documentName,
             documentRecipient: task.documentRecipient || "EMPLOYEE",
+            externalEmail: task.externalEmail || null,
+            externalName: task.externalName || null,
             assigneeId: task.assigneeId,
           },
         });
@@ -190,7 +192,7 @@ export async function createEmployee(data: {
           documentName: task.documentName,
         });
       } else if ((task.documentAction === "SIGN" || task.documentAction === "FILL") && task.documentUrl && task.documentName) {
-        // Route to the assignee instead of the new hire when documentRecipient = "ASSIGNEE"
+        // Route to assignee or external address when documentRecipient is overridden
         let recipientEmail = data.email;
         let recipientFirstName = data.firstName;
         let recipientEmployeeId = employee.id;
@@ -204,6 +206,11 @@ export async function createEmployee(data: {
             recipientFirstName = assignee.firstName;
             recipientEmployeeId = assignee.id;
           }
+        } else if (task.documentRecipient === "EXTERNAL" && task.externalEmail) {
+          // External recipient — still create the signing request under the employee
+          // (for tracking/audit) but email goes to the outside address.
+          recipientEmail = task.externalEmail;
+          recipientFirstName = task.externalName || "there";
         }
         const req = await createSigningRequest(
           employeeTask.id,
@@ -632,6 +639,8 @@ export async function completePreOnboarding(employeeId: string, companyEmail?: s
         documentUrl: task.documentUrl,
         documentName: task.documentName,
         documentRecipient: task.documentRecipient || "EMPLOYEE",
+        externalEmail: task.externalEmail || null,
+        externalName: task.externalName || null,
         assigneeId: task.assigneeId,
       },
     });
@@ -643,6 +652,9 @@ export async function completePreOnboarding(employeeId: string, companyEmail?: s
       if (task.documentRecipient === "ASSIGNEE" && task.assigneeId) {
         const a = await db.employee.findUnique({ where: { id: task.assigneeId }, select: { id: true, email: true, firstName: true } });
         if (a) { toEmail = a.email; toFirstName = a.firstName; toEmployeeId = a.id; }
+      } else if (task.documentRecipient === "EXTERNAL" && task.externalEmail) {
+        toEmail = task.externalEmail;
+        toFirstName = task.externalName || "there";
       }
       const signingReq = await createSigningRequest(
         employeeTask.id,

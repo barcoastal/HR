@@ -332,7 +332,9 @@ model ChecklistItem {
   documentUrl      String?
   documentName     String?
   documentAction   String              @default("NONE") // NONE | SEND | SIGN | FILL
-  documentRecipient String             @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE — who the doc is sent to
+  documentRecipient String             @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
+  externalEmail    String?             // used when documentRecipient = EXTERNAL
+  externalName     String?             // first name/label for the external recipient
 
   checklist        OnboardingChecklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
   assignee         Employee?           @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
@@ -367,7 +369,9 @@ model EmployeeTask {
   description      String?
   documentAction   String?
   documentName     String?
-  documentRecipient String        @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE
+  documentRecipient String        @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
+  externalEmail    String?
+  externalName     String?
   assigneeId       String?
   createdAt       DateTime      @default(now())
 
