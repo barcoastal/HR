@@ -17,8 +17,14 @@ type SearchResult = {
   source: string | null;
   status: string;
   inPipeline: boolean;
+  doNotCall?: boolean;
+  doNotCallReason?: string | null;
+  resumeUrl?: string | null;
+  applicationCount?: number;
   position: { title: string } | null;
 };
+
+type Position = { id: string; title: string };
 
 function parseSkills(skills: string | null): string[] {
   if (!skills) return [];
@@ -35,12 +41,14 @@ const statusColors: Record<string, string> = {
   REJECTED: "bg-red-500/15 text-red-400",
 };
 
-export function SearchCandidates() {
+export function SearchCandidates({ positions = [] }: { positions?: Position[] }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searched, setSearched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pullingId, setPullingId] = useState<string | null>(null);
+  const [rowPosition, setRowPosition] = useState<Record<string, string>>({});
+  const [previewResume, setPreviewResume] = useState<{ url: string; name: string } | null>(null);
   const router = useRouter();
 
   async function handleSearch() {
@@ -54,7 +62,8 @@ export function SearchCandidates() {
 
   async function handlePull(id: string) {
     setPullingId(id);
-    await pullCandidateToRecruitment(id);
+    const positionId = rowPosition[id] || undefined;
+    await pullCandidateToRecruitment(id, positionId);
     setResults((prev) =>
       prev.map((r) => (r.id === id ? { ...r, inPipeline: true, status: "NEW" } : r))
     );
@@ -64,19 +73,19 @@ export function SearchCandidates() {
 
   return (
     <div className={cn("rounded-xl p-5 mb-6", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-      <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Search All Candidates</h3>
+      <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-3">Search all candidates (pipeline + database)</h3>
       <div className="flex gap-2 mb-3">
         <div className="relative flex-1">
-          <Icon name="search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
+          <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Search by name, skills, experience, or keywords..."
-            className={cn("w-full pl-10 pr-4 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")}
+            placeholder="Search by name, email, skills, experience, resume text, notes…"
+            className={cn("w-full pl-11 pr-4 py-3 rounded-xl text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]")}
           />
         </div>
-        <button onClick={handleSearch} disabled={loading} className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
+        <button onClick={handleSearch} disabled={loading} className={cn("px-4 py-3 rounded-xl text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
           {loading ? "..." : "Search"}
         </button>
       </div>
@@ -92,8 +101,18 @@ export function SearchCandidates() {
                 <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--color-surface-hover)] transition-colors">
                   <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0", avatarColors[colorIdx])}>{initials}</div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{r.firstName} {r.lastName}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className={cn("text-sm font-medium", r.doNotCall ? "text-red-600" : "text-[var(--color-text-primary)]")}>{r.firstName} {r.lastName}</p>
+                      {r.doNotCall && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500 text-white" title={r.doNotCallReason || undefined}>
+                          DO NOT CALL
+                        </span>
+                      )}
+                      {r.applicationCount && r.applicationCount > 1 && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-blue-500/10 text-blue-700">
+                          {r.applicationCount}× applied
+                        </span>
+                      )}
                       {r.position && (
                         <span className="text-[10px] text-[var(--color-text-muted)]">- {r.position.title}</span>
                       )}
@@ -105,29 +124,83 @@ export function SearchCandidates() {
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", statusColors[r.status] || "")}>{r.status}</span>
+                    {r.resumeUrl && (
+                      <button
+                        onClick={() => setPreviewResume({ url: r.resumeUrl!, name: `${r.firstName} ${r.lastName}` })}
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-[var(--color-background)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] border border-[var(--color-border)]"
+                        title="Preview resume"
+                      >
+                        <Icon name="description" />
+                        Resume
+                      </button>
+                    )}
                     {r.inPipeline ? (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400">
                         <Icon name="check" />
                         Pipeline
                       </span>
                     ) : (
-                      <button
-                        onClick={() => handlePull(r.id)}
-                        disabled={pullingId === r.id}
-                        className={cn(
-                          "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium",
-                          "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors",
-                          "disabled:opacity-50"
+                      <>
+                        {positions.length > 0 && (
+                          <select
+                            value={rowPosition[r.id] || ""}
+                            onChange={(e) => setRowPosition((prev) => ({ ...prev, [r.id]: e.target.value }))}
+                            className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+                          >
+                            <option value="">No position</option>
+                            {positions.map((p) => (
+                              <option key={p.id} value={p.id}>{p.title}</option>
+                            ))}
+                          </select>
                         )}
-                      >
-                        <Icon name="open_in_new" />
-                        {pullingId === r.id ? "..." : "Pull"}
-                      </button>
+                        <button
+                          onClick={() => handlePull(r.id)}
+                          disabled={pullingId === r.id}
+                          className={cn(
+                            "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium",
+                            "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors",
+                            "disabled:opacity-50"
+                          )}
+                        >
+                          <Icon name="open_in_new" />
+                          {pullingId === r.id ? "..." : "Pull"}
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {previewResume && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/70 flex items-center justify-center p-4"
+          onClick={() => setPreviewResume(null)}
+        >
+          <div
+            className="bg-[var(--color-surface)] rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
+              <div className="flex items-center gap-2 min-w-0">
+                <Icon name="description" size={16} className="text-[var(--color-accent)] shrink-0" />
+                <span className="text-sm font-medium text-[var(--color-text-primary)] truncate">{previewResume.name} — Resume</span>
+              </div>
+              <button
+                onClick={() => setPreviewResume(null)}
+                className="p-1 rounded hover:bg-[var(--color-surface-hover)] text-[var(--color-text-muted)]"
+              >
+                <Icon name="close" size={16} />
+              </button>
+            </div>
+            <iframe
+              src={previewResume.url.startsWith("/api/resumes/") ? previewResume.url : `/api/platforms/jobing/resume?url=${encodeURIComponent(previewResume.url)}`}
+              className="flex-1 w-full"
+              title={previewResume.name}
+            />
           </div>
         </div>
       )}

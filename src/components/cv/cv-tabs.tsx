@@ -392,7 +392,7 @@ export function CVTabs({
 
       {activeTab === "recruitment" && (
         <div>
-          <SearchCandidates />
+          <SearchCandidates positions={positions} />
 
           {/* Open Positions with Pipelines */}
           {openPositions.length > 0 && (
