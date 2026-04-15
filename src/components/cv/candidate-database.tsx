@@ -293,7 +293,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
       </div>
 
       {/* Filter row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
         <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)} className={inputClass}>
           <option value="">All positions</option>
           {positions.map((p) => (
@@ -476,8 +476,8 @@ export function CandidateDatabase({ candidates, positions }: Props) {
       </div>
 
       {/* Desktop Table View */}
-      <div className={cn("hidden sm:block rounded-xl overflow-hidden", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-        <table className="w-full">
+      <div className={cn("hidden sm:block rounded-xl overflow-x-auto", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+        <table className="w-full min-w-[900px]">
           <thead>
             <tr className="border-b border-[var(--color-border)]">
               <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Name</th>
