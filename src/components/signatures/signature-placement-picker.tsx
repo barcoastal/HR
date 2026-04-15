@@ -91,8 +91,11 @@ export function SignaturePlacementPicker({
   }, [pdfUrl]);
 
   useEffect(() => {
-    if (pdfDocRef.current && currentPage > 0) renderPage(currentPage);
-  }, [currentPage, renderPage]);
+    // Re-render whenever the page changes OR the canvas becomes available after load
+    if (!loading && pdfDocRef.current && currentPage > 0 && canvasRef.current) {
+      renderPage(currentPage);
+    }
+  }, [currentPage, renderPage, loading, pageCount]);
 
   // When countersign is turned off, strip any countersign placements
   useEffect(() => {
@@ -188,7 +191,17 @@ export function SignaturePlacementPicker({
 
       {!loading && !error && (
         <div className="relative rounded-lg border border-[var(--color-border)] bg-white overflow-hidden">
-          <canvas ref={canvasRef} onClick={handleCanvasClick} className="w-full cursor-crosshair" />
+          <canvas
+            ref={(el) => {
+              canvasRef.current = el;
+              // Kick off rendering as soon as the canvas mounts after the PDF finishes loading
+              if (el && pdfDocRef.current && currentPage > 0) {
+                renderPage(currentPage);
+              }
+            }}
+            onClick={handleCanvasClick}
+            className="w-full cursor-crosshair"
+          />
           {currentPagePlacements.map((p) => {
             const meta = BOX_SIZE[p.kind];
             const colorKey = p.kind === "signature" ? "purple" : p.kind === "signatureDate" ? "teal" : p.kind === "countersignature" ? "amber" : "orange";
