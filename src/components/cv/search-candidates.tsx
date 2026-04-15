@@ -49,6 +49,7 @@ export function SearchCandidates({ positions = [] }: { positions?: Position[] })
   const [pullingId, setPullingId] = useState<string | null>(null);
   const [rowPosition, setRowPosition] = useState<Record<string, string>>({});
   const [previewResume, setPreviewResume] = useState<{ url: string; name: string } | null>(null);
+  const [hideDnc, setHideDnc] = useState(true);
   const router = useRouter();
 
   async function handleSearch() {
@@ -61,6 +62,13 @@ export function SearchCandidates({ positions = [] }: { positions?: Position[] })
   }
 
   async function handlePull(id: string) {
+    const target = results.find((r) => r.id === id);
+    if (target?.doNotCall) {
+      const reason = target.doNotCallReason ? ` Reason: ${target.doNotCallReason}.` : "";
+      if (!confirm(`${target.firstName} ${target.lastName} is marked DO NOT CALL.${reason}\n\nAre you sure you want to pull them into the pipeline?`)) {
+        return;
+      }
+    }
     setPullingId(id);
     const positionId = rowPosition[id] || undefined;
     await pullCandidateToRecruitment(id, positionId);
@@ -92,9 +100,33 @@ export function SearchCandidates({ positions = [] }: { positions?: Position[] })
 
       {searched && (
         <div>
-          <p className="text-xs text-[var(--color-text-muted)] mb-2">{results.length} result{results.length !== 1 ? "s" : ""} across pipeline & database</p>
+          {(() => {
+            const hiddenDnc = results.filter((r) => r.doNotCall).length;
+            const visible = hideDnc ? results.filter((r) => !r.doNotCall) : results;
+            return (
+              <>
+                <div className="flex items-center justify-between mb-2 text-xs">
+                  <p className="text-[var(--color-text-muted)]">
+                    {visible.length} result{visible.length !== 1 ? "s" : ""} across pipeline & database
+                    {hideDnc && hiddenDnc > 0 && <> · {hiddenDnc} DNC hidden</>}
+                  </p>
+                  {hiddenDnc > 0 && (
+                    <label className="flex items-center gap-1.5 text-[var(--color-text-muted)] cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={hideDnc}
+                        onChange={(e) => setHideDnc(e.target.checked)}
+                        className="h-3.5 w-3.5 rounded border-gray-300"
+                      />
+                      Hide Do Not Call
+                    </label>
+                  )}
+                </div>
+              </>
+            );
+          })()}
           <div className="space-y-2">
-            {results.map((r) => {
+            {(hideDnc ? results.filter((r) => !r.doNotCall) : results).map((r) => {
               const initials = getInitials(r.firstName, r.lastName);
               const colorIdx = r.firstName.charCodeAt(0) % avatarColors.length;
               return (
