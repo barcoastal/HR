@@ -163,7 +163,7 @@ export function SearchCandidates({ positions = [] }: { positions?: Position[] })
             </div>
             <p className="text-[11px] text-[var(--color-text-muted)] flex-1">
               {aiMode
-                ? "Type free text — e.g. &ldquo;closer with 5+ years in debt relief&rdquo; — AI ranks best fits."
+                ? 'Type free text — e.g. "closer with 5+ years in debt relief" — AI ranks the best fits.'
                 : "Keyword match on name, email, skills, experience, resume text, notes."}
             </p>
           </div>
@@ -174,7 +174,7 @@ export function SearchCandidates({ positions = [] }: { positions?: Position[] })
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                placeholder={aiMode ? "Describe the candidate you&rsquo;re looking for…" : "Search by name, email, skills, experience, resume text, notes…"}
+                placeholder={aiMode ? "Describe the candidate you're looking for…" : "Search by name, email, skills, experience, resume text, notes…"}
                 className={cn("w-full pl-11 pr-4 py-3 rounded-xl text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]")}
               />
             </div>
