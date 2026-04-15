@@ -89,8 +89,8 @@ Candidates:
 ${JSON.stringify(candidateSummaries)}`;
 
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250929",
-    max_tokens: 4096,
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 2048,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -171,18 +171,18 @@ export async function aiSearchCandidates(
         OR: orConditions,
       },
       orderBy: { createdAt: "desc" },
-      take: 300,
+      take: 80,
     });
   }
 
-  if (!candidates || candidates.length < 30) {
+  if (!candidates || candidates.length < 20) {
     candidates = await db.candidate.findMany({
       where: {
         doNotCall: false,
         status: { notIn: ["HIRED", "REJECTED"] },
       },
       orderBy: { createdAt: "desc" },
-      take: 300,
+      take: 80,
     });
   }
 
@@ -199,10 +199,10 @@ export async function aiSearchCandidates(
   const summaries = candidates.map((c) => ({
     id: c.id,
     name: `${c.firstName} ${c.lastName}`,
-    skills: (c.skills || "").slice(0, 400),
-    experience: (c.experience || "").slice(0, 400),
+    skills: (c.skills || "").slice(0, 200),
+    experience: (c.experience || "").slice(0, 200),
     jobAppliedTo: c.jobAppliedTo || "",
-    resumeTextPreview: (c.resumeText || "").slice(0, 800),
+    resume: (c.resumeText || "").slice(0, 300),
   }));
 
   const prompt = `You are a recruitment AI assistant. A recruiter typed this free-text search:
@@ -223,8 +223,8 @@ Candidates:
 ${JSON.stringify(summaries)}`;
 
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-5-20250929",
-    max_tokens: 4096,
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 2048,
     messages: [{ role: "user", content: prompt }],
   });
 
