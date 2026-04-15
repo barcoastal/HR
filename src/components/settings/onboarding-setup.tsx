@@ -563,6 +563,24 @@ export function OnboardingSetup({
                               <option key={opt.value} value={opt.value}>{opt.label}</option>
                             ))}
                           </select>
+                          {(item.documentAction === "SIGN" || item.documentAction === "FILL") && (
+                            <select
+                              value={(item as unknown as { documentRecipient?: string }).documentRecipient || "EMPLOYEE"}
+                              onChange={async (e) => {
+                                await updateChecklistItem(item.id, { documentRecipient: e.target.value as "EMPLOYEE" | "ASSIGNEE" });
+                                router.refresh();
+                              }}
+                              className={cn(
+                                "px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer appearance-none pr-5 bg-no-repeat bg-[length:12px] bg-[right_4px_center]",
+                                "bg-indigo-500/10 text-indigo-600"
+                              )}
+                              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%23888' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E")` }}
+                              title="Who receives this document"
+                            >
+                              <option value="EMPLOYEE">→ New hire</option>
+                              <option value="ASSIGNEE">→ Assignee</option>
+                            </select>
+                          )}
                           {item.documentName && (
                             <span
                               className={cn(

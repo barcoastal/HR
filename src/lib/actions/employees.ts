@@ -153,6 +153,7 @@ export async function createEmployee(data: {
             documentAction: task.documentAction,
             documentUrl: task.documentUrl,
             documentName: task.documentName,
+            documentRecipient: task.documentRecipient || "EMPLOYEE",
             assigneeId: task.assigneeId,
           },
         });
@@ -188,33 +189,44 @@ export async function createEmployee(data: {
           documentUrl: task.documentUrl,
           documentName: task.documentName,
         });
-      } else if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
-        const signingReq = await createSigningRequest(
+      } else if ((task.documentAction === "SIGN" || task.documentAction === "FILL") && task.documentUrl && task.documentName) {
+        // Route to the assignee instead of the new hire when documentRecipient = "ASSIGNEE"
+        let recipientEmail = data.email;
+        let recipientFirstName = data.firstName;
+        let recipientEmployeeId = employee.id;
+        if (task.documentRecipient === "ASSIGNEE" && task.assigneeId) {
+          const assignee = await db.employee.findUnique({
+            where: { id: task.assigneeId },
+            select: { id: true, email: true, firstName: true },
+          });
+          if (assignee) {
+            recipientEmail = assignee.email;
+            recipientFirstName = assignee.firstName;
+            recipientEmployeeId = assignee.id;
+          }
+        }
+        const req = await createSigningRequest(
           employeeTask.id,
-          employee.id,
+          recipientEmployeeId,
           task.documentUrl,
           task.documentName
         );
-        sendSigningRequestEmail({
-          to: data.email,
-          firstName: data.firstName,
-          documentName: task.documentName,
-          signingUrl: `${baseUrl}/sign/${signingReq.token}`,
-        });
-      } else if (task.documentAction === "FILL" && task.documentUrl && task.documentName) {
-        const fillingReq = await createSigningRequest(
-          employeeTask.id,
-          employee.id,
-          task.documentUrl,
-          task.documentName
-        );
-        const { sendFillRequestEmail } = await import("@/lib/email");
-        sendFillRequestEmail({
-          to: data.email,
-          firstName: data.firstName,
-          documentName: task.documentName,
-          fillUrl: `${baseUrl}/fill/${fillingReq.token}`,
-        });
+        if (task.documentAction === "SIGN") {
+          sendSigningRequestEmail({
+            to: recipientEmail,
+            firstName: recipientFirstName,
+            documentName: task.documentName,
+            signingUrl: `${baseUrl}/sign/${req.token}`,
+          });
+        } else {
+          const { sendFillRequestEmail } = await import("@/lib/email");
+          sendFillRequestEmail({
+            to: recipientEmail,
+            firstName: recipientFirstName,
+            documentName: task.documentName,
+            fillUrl: `${baseUrl}/fill/${req.token}`,
+          });
+        }
       } else if (task.sendEmail && task.emailSubject && task.emailBody) {
         sendOnboardingEmail({
           to: data.email,
@@ -619,20 +631,28 @@ export async function completePreOnboarding(employeeId: string, companyEmail?: s
         documentAction: task.documentAction,
         documentUrl: task.documentUrl,
         documentName: task.documentName,
+        documentRecipient: task.documentRecipient || "EMPLOYEE",
         assigneeId: task.assigneeId,
       },
     });
 
     if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
+      let toEmail = finalEmail;
+      let toFirstName = employee.firstName;
+      let toEmployeeId = employeeId;
+      if (task.documentRecipient === "ASSIGNEE" && task.assigneeId) {
+        const a = await db.employee.findUnique({ where: { id: task.assigneeId }, select: { id: true, email: true, firstName: true } });
+        if (a) { toEmail = a.email; toFirstName = a.firstName; toEmployeeId = a.id; }
+      }
       const signingReq = await createSigningRequest(
         employeeTask.id,
-        employeeId,
+        toEmployeeId,
         task.documentUrl,
         task.documentName
       );
       sendSigningRequestEmail({
-        to: finalEmail,
-        firstName: employee.firstName,
+        to: toEmail,
+        firstName: toFirstName,
         documentName: task.documentName,
         signingUrl: `${baseUrl}/sign/${signingReq.token}`,
       });

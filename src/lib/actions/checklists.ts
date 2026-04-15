@@ -28,7 +28,8 @@ export async function addChecklistItem(
   emailBody?: string,
   documentUrl?: string,
   documentName?: string,
-  documentAction?: string
+  documentAction?: string,
+  documentRecipient?: "EMPLOYEE" | "ASSIGNEE"
 ) {
   const maxOrder = await db.checklistItem.findFirst({
     where: { checklistId },
@@ -50,6 +51,7 @@ export async function addChecklistItem(
       documentUrl: documentUrl || null,
       documentName: documentName || null,
       documentAction: documentAction || "NONE",
+      documentRecipient: documentRecipient || "EMPLOYEE",
     },
   });
   revalidatePath("/settings");
@@ -69,6 +71,7 @@ export async function updateChecklistItem(
     documentUrl?: string | null;
     documentName?: string | null;
     documentAction?: string;
+    documentRecipient?: "EMPLOYEE" | "ASSIGNEE";
   }
 ) {
   const item = await db.checklistItem.update({ where: { id }, data });

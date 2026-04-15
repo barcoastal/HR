@@ -12,6 +12,7 @@ type ResolvedTask = {
   documentAction: string;
   documentUrl: string | null;
   documentName: string | null;
+  documentRecipient: string; // EMPLOYEE | ASSIGNEE
   sendEmail: boolean;
   emailSubject: string | null;
   emailBody: string | null;
@@ -117,6 +118,7 @@ async function resolveTasksByType(
     documentAction: item.documentAction ?? "NONE",
     documentUrl: item.documentUrl,
     documentName: item.documentName,
+    documentRecipient: (item as unknown as { documentRecipient?: string }).documentRecipient ?? "EMPLOYEE",
     sendEmail: item.sendEmail,
     emailSubject: item.emailSubject,
     emailBody: item.emailBody,
