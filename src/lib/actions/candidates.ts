@@ -804,9 +804,26 @@ export async function createPosition(data: {
   breezyChannels?: { linkedin?: boolean; indeed?: boolean };
   linkedInSettings?: { premium?: boolean; remote?: boolean; jobType?: string; experienceLevel?: string };
   indeedSettings?: { sponsored?: boolean; budget?: string; remote?: boolean; jobType?: string };
+  indeedTitleOverride?: string | null;
+  breezyTitleOverride?: string | null;
 }) {
-  const { postToJobing, postToIndeed, postToBreezy, breezyChannels, linkedInSettings, indeedSettings, ...positionData } = data;
+  const { postToJobing, postToIndeed, postToBreezy, breezyChannels, linkedInSettings, indeedSettings, indeedTitleOverride, breezyTitleOverride, ...positionData } = data;
   const position = await db.position.create({ data: positionData });
+
+  // Persist title overrides for future re-posts / edits, regardless of whether
+  // we publish now. Only store when non-empty and different from the default.
+  const defaultTitle = data.title.trim();
+  const saveOverride = async (board: "INDEED" | "BREEZY", override: string | null | undefined) => {
+    const clean = override?.trim() || null;
+    if (!clean || clean === defaultTitle) return;
+    await db.positionBoardPosting.upsert({
+      where: { positionId_board: { positionId: position.id, board } },
+      create: { positionId: position.id, board, status: "NOT_POSTED", titleOverride: clean },
+      update: { titleOverride: clean },
+    });
+  };
+  await saveOverride("INDEED", indeedTitleOverride);
+  await saveOverride("BREEZY", breezyTitleOverride);
 
   let departmentName: string | undefined;
   if (data.departmentId) {
@@ -840,13 +857,30 @@ export async function createPosition(data: {
         select: { accountIdentifier: true },
       });
       if (indeedPlatform?.accountIdentifier) {
-        await postJobToIndeed({
-          title: data.title,
+        const titleForIndeed = indeedTitleOverride?.trim() || data.title;
+        const res = await postJobToIndeed({
+          title: titleForIndeed,
           description: data.description,
           requirements: data.requirements,
           salary: data.salary,
           departmentName,
           connectionId: indeedPlatform.accountIdentifier,
+        });
+        await db.positionBoardPosting.upsert({
+          where: { positionId_board: { positionId: position.id, board: "INDEED" } },
+          create: {
+            positionId: position.id,
+            board: "INDEED",
+            status: res.success ? "PUBLISHED" : "FAILED",
+            externalId: res.jobId ?? null,
+            lastError: res.success ? null : res.error ?? "Failed",
+            titleOverride: titleForIndeed === data.title ? null : titleForIndeed,
+          },
+          update: {
+            status: res.success ? "PUBLISHED" : "FAILED",
+            externalId: res.jobId ?? null,
+            lastError: res.success ? null : res.error ?? "Failed",
+          },
         });
       }
     } catch (err) {
@@ -874,14 +908,31 @@ export async function createPosition(data: {
           postingErrors.push(`Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`);
         } else {
           const [breezyToken] = tokenResult.accessToken.split("::");
+          const titleForBreezy = breezyTitleOverride?.trim() || data.title;
           const result = await postJobToBreezy({
             accessToken: breezyToken,
             companyId: breezyPlatform.accountIdentifier,
-            title: data.title,
+            title: titleForBreezy,
             description: data.description,
             requirements: data.requirements,
             department: departmentName,
             salary: data.salary,
+          });
+          await db.positionBoardPosting.upsert({
+            where: { positionId_board: { positionId: position.id, board: "BREEZY" } },
+            create: {
+              positionId: position.id,
+              board: "BREEZY",
+              status: result.success ? "PUBLISHED" : "FAILED",
+              externalId: result.positionId ?? null,
+              lastError: result.success ? null : result.error ?? "Failed",
+              titleOverride: titleForBreezy === data.title ? null : titleForBreezy,
+            },
+            update: {
+              status: result.success ? "PUBLISHED" : "FAILED",
+              externalId: result.positionId ?? null,
+              lastError: result.success ? null : result.error ?? "Failed",
+            },
           });
           if (!result.success) {
             console.error("[createPosition] Breezy posting failed:", result.error);

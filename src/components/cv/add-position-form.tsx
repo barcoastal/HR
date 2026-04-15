@@ -256,6 +256,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
   });
 
   const [postToCareers, setPostToCareers] = useState(true);
+  const [linkedInTitle, setLinkedInTitle] = useState("");
+  const [indeedTitle, setIndeedTitle] = useState("");
 
   const [form, setForm] = useState({
     title: "",
@@ -308,6 +310,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
         },
         linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
         indeedSettings: postToIndeed ? indeedSettings : undefined,
+        breezyTitleOverride: linkedInTitle.trim() || null,
+        indeedTitleOverride: indeedTitle.trim() || null,
       });
       setCreatedPositionId(result.id);
       setCreatedPositionTitle(form.title);
@@ -443,6 +447,15 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
                 </div>
                 {postToLinkedIn && (
                   <div className="px-3 pb-3 pt-1 border-t border-[#0A66C2]/10 space-y-2">
+                    <div>
+                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Title shown on LinkedIn/Breezy</label>
+                      <input
+                        value={linkedInTitle}
+                        onChange={(e) => setLinkedInTitle(e.target.value)}
+                        placeholder={form.title ? `Default: ${form.title}` : "Job title on LinkedIn"}
+                        className={cn(inputClass, "text-xs py-1.5")}
+                      />
+                    </div>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Premium Listing</p>
@@ -496,6 +509,15 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
                 </div>
                 {postToIndeed && (
                   <div className="px-3 pb-3 pt-1 border-t border-[#2164f3]/10 space-y-2">
+                    <div>
+                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Title shown on Indeed</label>
+                      <input
+                        value={indeedTitle}
+                        onChange={(e) => setIndeedTitle(e.target.value)}
+                        placeholder={form.title ? `Default: ${form.title}` : "Job title on Indeed"}
+                        className={cn(inputClass, "text-xs py-1.5")}
+                      />
+                    </div>
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Sponsored Listing</p>
