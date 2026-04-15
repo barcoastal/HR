@@ -8,8 +8,6 @@ import { EditAboutDialog } from "@/components/my-profile/edit-about-dialog";
 import { ProfilePhotoUpload } from "@/components/my-profile/profile-photo-upload";
 import { Icon } from "@/components/ui/icon";
 import { NotificationPreferencesPanel } from "@/components/my-profile/notification-preferences";
-import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-connect";
-import { getCalendarSyncStatus } from "@/lib/actions/calendar-sync";
 import { getNotificationPreferences } from "@/lib/actions/notification-preferences";
 import { db } from "@/lib/db";
 import { getMyDocuments } from "@/lib/actions/my-documents";
@@ -38,7 +36,6 @@ export default async function MyProfilePage() {
   const profile = await getMyProfile(session.user.employeeId);
   if (!profile) redirect("/");
 
-  const syncStatus = await getCalendarSyncStatus(session.user.id);
   const notifPrefs = await getNotificationPreferences(session.user.id);
   const myDocs = (await getMyDocuments()).slice(0, 5);
 
@@ -199,22 +196,6 @@ export default async function MyProfilePage() {
             />
           </section>
 
-          {/* Integrations */}
-          <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
-            <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Integrations</h2>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center">
-                  <Icon name="calendar_month" size={16} className="text-[var(--color-accent)]" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-[var(--color-text-primary)]">Google Calendar</p>
-                  <p className="text-xs text-[var(--color-text-muted)]">Sync your calendar events</p>
-                </div>
-              </div>
-              <GoogleCalendarConnect connected={syncStatus.connected} userId={session.user.id} />
-            </div>
-          </section>
         </div>
 
         {/* Sidebar */}
