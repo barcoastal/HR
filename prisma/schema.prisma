@@ -745,8 +745,9 @@ model Position {
 model PositionBoardPosting {
   id         String   @id @default(uuid())
   positionId String
-  board      String   // JOBING | INDEED | BREEZY
+  board      String   // CAREERS | JOBING | INDEED | BREEZY
   externalId String?
+  titleOverride String? // optional board-specific title (e.g. LinkedIn says "Senior Closer" while Indeed says "Sales Agent")
   status     String   @default("NOT_POSTED") // NOT_POSTED | PUBLISHED | PAUSED | FAILED
   lastError  String?
   lastSyncAt DateTime @default(now())

@@ -11,6 +11,7 @@ export type BoardPostingView = {
   board: BoardName;
   status: BoardStatus;
   externalId: string | null;
+  titleOverride: string | null;
   lastError: string | null;
   lastSyncAt: Date;
   supports: { post: boolean; pause: boolean; resume: boolean };
@@ -33,7 +34,6 @@ export async function getBoardPostings(positionId: string): Promise<BoardPosting
 
   return boards.map((b) => {
     if (b === "CAREERS") {
-      // Careers state is derived directly from Position.published (and position must be OPEN)
       const publishable = position?.status === "OPEN";
       const status: BoardStatus = !publishable
         ? "NOT_POSTED"
@@ -44,6 +44,7 @@ export async function getBoardPostings(positionId: string): Promise<BoardPosting
         board: "CAREERS" as const,
         status,
         externalId: null,
+        titleOverride: null,
         lastError: null,
         lastSyncAt: new Date(),
         supports: supports.CAREERS,
@@ -54,11 +55,27 @@ export async function getBoardPostings(positionId: string): Promise<BoardPosting
       board: b,
       status: (row?.status as BoardStatus) || "NOT_POSTED",
       externalId: row?.externalId || null,
+      titleOverride: row?.titleOverride || null,
       lastError: row?.lastError || null,
       lastSyncAt: row?.lastSyncAt || new Date(0),
       supports: supports[b],
     };
   });
+}
+
+export async function setBoardTitleOverride(positionId: string, board: BoardName, title: string | null) {
+  await requireAuth();
+  if (board === "CAREERS" || board === "JOBING") {
+    return { success: false, error: "Title overrides don't apply to this board" };
+  }
+  const trimmed = title?.trim() || null;
+  await db.positionBoardPosting.upsert({
+    where: { positionId_board: { positionId, board } },
+    create: { positionId, board, status: "NOT_POSTED", titleOverride: trimmed },
+    update: { titleOverride: trimmed },
+  });
+  revalidatePath("/cv");
+  return { success: true };
 }
 
 async function upsertPosting(positionId: string, board: BoardName, data: Partial<{ status: BoardStatus; externalId: string | null; lastError: string | null }>) {
@@ -114,9 +131,13 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
       revalidatePath("/cv");
       return { success: false, error: err };
     }
+    const existing = await db.positionBoardPosting.findUnique({
+      where: { positionId_board: { positionId, board: "INDEED" } },
+      select: { titleOverride: true },
+    });
     const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
     const result = await postJobToIndeed({
-      title: position.title,
+      title: existing?.titleOverride || position.title,
       description: position.description || undefined,
       requirements: position.requirements || undefined,
       salary: position.salary || undefined,
@@ -151,10 +172,14 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
         await upsertPosting(positionId, "BREEZY", { status: "FAILED", lastError: err });
         return { success: false, error: err };
       }
+      const existing = await db.positionBoardPosting.findUnique({
+        where: { positionId_board: { positionId, board: "BREEZY" } },
+        select: { titleOverride: true },
+      });
       const result = await postJobToBreezy({
         accessToken: signin.accessToken,
         companyId: platform.accountIdentifier,
-        title: position.title,
+        title: existing?.titleOverride || position.title,
         description: position.description || undefined,
         requirements: position.requirements || undefined,
         department: position.department?.name,

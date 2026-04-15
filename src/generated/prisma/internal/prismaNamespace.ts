@@ -5303,6 +5303,7 @@ export const PositionBoardPostingScalarFieldEnum = {
   positionId: 'positionId',
   board: 'board',
   externalId: 'externalId',
+  titleOverride: 'titleOverride',
   status: 'status',
   lastError: 'lastError',
   lastSyncAt: 'lastSyncAt',

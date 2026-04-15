@@ -325,7 +325,7 @@ function PositionPipeline({
       {/* Pipeline */}
       {expanded && (
         <div className="px-5 pb-5">
-          <BoardPostingsPanel positionId={position.id} />
+          <BoardPostingsPanel positionId={position.id} defaultTitle={position.title} />
           <div className="h-3" />
           {candidates.length > 0 ? (
             <CandidatePipeline

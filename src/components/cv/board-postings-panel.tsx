@@ -9,6 +9,7 @@ import {
   postToBoard,
   pauseOnBoard,
   resumeOnBoard,
+  setBoardTitleOverride,
   type BoardName,
   type BoardPostingView,
 } from "@/lib/actions/board-postings";
@@ -27,7 +28,7 @@ const STATUS_BADGE: Record<string, string> = {
   NOT_POSTED: "bg-gray-500/10 text-gray-600",
 };
 
-export function BoardPostingsPanel({ positionId }: { positionId: string }) {
+export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: string; defaultTitle: string }) {
   const router = useRouter();
   const [postings, setPostings] = useState<BoardPostingView[] | null>(null);
   const [busyBoard, setBusyBoard] = useState<BoardName | null>(null);
@@ -85,10 +86,29 @@ export function BoardPostingsPanel({ positionId }: { positionId: string }) {
             const badge = STATUS_BADGE[p.status] || STATUS_BADGE.NOT_POSTED;
             const busy = busyBoard === p.board;
             const readonly = p.board === "JOBING";
+            const supportsTitleOverride = p.board === "INDEED" || p.board === "BREEZY";
+            const displayTitle = p.titleOverride || defaultTitle;
             return (
-              <div key={p.board} className="flex items-center gap-3 px-2 py-2 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)]">
+              <div key={p.board} className="flex flex-wrap items-center gap-3 px-2 py-2 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)]">
                 <Icon name={meta.icon} size={14} className={cn(meta.color, "shrink-0")} />
-                <span className="text-xs font-medium text-[var(--color-text-primary)] w-24">{meta.label}</span>
+                <span className="text-xs font-medium text-[var(--color-text-primary)] w-24 shrink-0">{meta.label}</span>
+                {supportsTitleOverride && (
+                  <button
+                    onClick={async () => {
+                      const current = p.titleOverride || "";
+                      const next = prompt(`Title used when posting to ${meta.label}:\n\n(Leave blank to use the position's default title: "${defaultTitle}")`, current);
+                      if (next === null) return;
+                      await setBoardTitleOverride(positionId, p.board, next || null);
+                      await load();
+                    }}
+                    className="text-[11px] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] underline decoration-dotted truncate max-w-[200px] flex items-center gap-1"
+                    title="Click to change"
+                  >
+                    <Icon name="edit" size={10} />
+                    {displayTitle}
+                    {p.titleOverride && <span className="text-purple-500">*</span>}
+                  </button>
+                )}
                 <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold", badge)}>
                   {p.status.replace("_", " ")}
                 </span>

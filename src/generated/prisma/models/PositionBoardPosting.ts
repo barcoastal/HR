@@ -29,6 +29,7 @@ export type PositionBoardPostingMinAggregateOutputType = {
   positionId: string | null
   board: string | null
   externalId: string | null
+  titleOverride: string | null
   status: string | null
   lastError: string | null
   lastSyncAt: Date | null
@@ -41,6 +42,7 @@ export type PositionBoardPostingMaxAggregateOutputType = {
   positionId: string | null
   board: string | null
   externalId: string | null
+  titleOverride: string | null
   status: string | null
   lastError: string | null
   lastSyncAt: Date | null
@@ -53,6 +55,7 @@ export type PositionBoardPostingCountAggregateOutputType = {
   positionId: number
   board: number
   externalId: number
+  titleOverride: number
   status: number
   lastError: number
   lastSyncAt: number
@@ -67,6 +70,7 @@ export type PositionBoardPostingMinAggregateInputType = {
   positionId?: true
   board?: true
   externalId?: true
+  titleOverride?: true
   status?: true
   lastError?: true
   lastSyncAt?: true
@@ -79,6 +83,7 @@ export type PositionBoardPostingMaxAggregateInputType = {
   positionId?: true
   board?: true
   externalId?: true
+  titleOverride?: true
   status?: true
   lastError?: true
   lastSyncAt?: true
@@ -91,6 +96,7 @@ export type PositionBoardPostingCountAggregateInputType = {
   positionId?: true
   board?: true
   externalId?: true
+  titleOverride?: true
   status?: true
   lastError?: true
   lastSyncAt?: true
@@ -176,6 +182,7 @@ export type PositionBoardPostingGroupByOutputType = {
   positionId: string
   board: string
   externalId: string | null
+  titleOverride: string | null
   status: string
   lastError: string | null
   lastSyncAt: Date
@@ -209,6 +216,7 @@ export type PositionBoardPostingWhereInput = {
   positionId?: Prisma.StringFilter<"PositionBoardPosting"> | string
   board?: Prisma.StringFilter<"PositionBoardPosting"> | string
   externalId?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
+  titleOverride?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   status?: Prisma.StringFilter<"PositionBoardPosting"> | string
   lastError?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   lastSyncAt?: Prisma.DateTimeFilter<"PositionBoardPosting"> | Date | string
@@ -222,6 +230,7 @@ export type PositionBoardPostingOrderByWithRelationInput = {
   positionId?: Prisma.SortOrder
   board?: Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  titleOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
@@ -239,6 +248,7 @@ export type PositionBoardPostingWhereUniqueInput = Prisma.AtLeast<{
   positionId?: Prisma.StringFilter<"PositionBoardPosting"> | string
   board?: Prisma.StringFilter<"PositionBoardPosting"> | string
   externalId?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
+  titleOverride?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   status?: Prisma.StringFilter<"PositionBoardPosting"> | string
   lastError?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   lastSyncAt?: Prisma.DateTimeFilter<"PositionBoardPosting"> | Date | string
@@ -252,6 +262,7 @@ export type PositionBoardPostingOrderByWithAggregationInput = {
   positionId?: Prisma.SortOrder
   board?: Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
+  titleOverride?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   lastError?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
@@ -270,6 +281,7 @@ export type PositionBoardPostingScalarWhereWithAggregatesInput = {
   positionId?: Prisma.StringWithAggregatesFilter<"PositionBoardPosting"> | string
   board?: Prisma.StringWithAggregatesFilter<"PositionBoardPosting"> | string
   externalId?: Prisma.StringNullableWithAggregatesFilter<"PositionBoardPosting"> | string | null
+  titleOverride?: Prisma.StringNullableWithAggregatesFilter<"PositionBoardPosting"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"PositionBoardPosting"> | string
   lastError?: Prisma.StringNullableWithAggregatesFilter<"PositionBoardPosting"> | string | null
   lastSyncAt?: Prisma.DateTimeWithAggregatesFilter<"PositionBoardPosting"> | Date | string
@@ -281,6 +293,7 @@ export type PositionBoardPostingCreateInput = {
   id?: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -294,6 +307,7 @@ export type PositionBoardPostingUncheckedCreateInput = {
   positionId: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -305,6 +319,7 @@ export type PositionBoardPostingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,6 +333,7 @@ export type PositionBoardPostingUncheckedUpdateInput = {
   positionId?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -330,6 +346,7 @@ export type PositionBoardPostingCreateManyInput = {
   positionId: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -341,6 +358,7 @@ export type PositionBoardPostingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -353,6 +371,7 @@ export type PositionBoardPostingUncheckedUpdateManyInput = {
   positionId?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -380,6 +399,7 @@ export type PositionBoardPostingCountOrderByAggregateInput = {
   positionId?: Prisma.SortOrder
   board?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  titleOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
@@ -392,6 +412,7 @@ export type PositionBoardPostingMaxOrderByAggregateInput = {
   positionId?: Prisma.SortOrder
   board?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  titleOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
@@ -404,6 +425,7 @@ export type PositionBoardPostingMinOrderByAggregateInput = {
   positionId?: Prisma.SortOrder
   board?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  titleOverride?: Prisma.SortOrder
   status?: Prisma.SortOrder
   lastError?: Prisma.SortOrder
   lastSyncAt?: Prisma.SortOrder
@@ -457,6 +479,7 @@ export type PositionBoardPostingCreateWithoutPositionInput = {
   id?: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -468,6 +491,7 @@ export type PositionBoardPostingUncheckedCreateWithoutPositionInput = {
   id?: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -509,6 +533,7 @@ export type PositionBoardPostingScalarWhereInput = {
   positionId?: Prisma.StringFilter<"PositionBoardPosting"> | string
   board?: Prisma.StringFilter<"PositionBoardPosting"> | string
   externalId?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
+  titleOverride?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   status?: Prisma.StringFilter<"PositionBoardPosting"> | string
   lastError?: Prisma.StringNullableFilter<"PositionBoardPosting"> | string | null
   lastSyncAt?: Prisma.DateTimeFilter<"PositionBoardPosting"> | Date | string
@@ -520,6 +545,7 @@ export type PositionBoardPostingCreateManyPositionInput = {
   id?: string
   board: string
   externalId?: string | null
+  titleOverride?: string | null
   status?: string
   lastError?: string | null
   lastSyncAt?: Date | string
@@ -531,6 +557,7 @@ export type PositionBoardPostingUpdateWithoutPositionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -542,6 +569,7 @@ export type PositionBoardPostingUncheckedUpdateWithoutPositionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -553,6 +581,7 @@ export type PositionBoardPostingUncheckedUpdateManyWithoutPositionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   board?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  titleOverride?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSyncAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -567,6 +596,7 @@ export type PositionBoardPostingSelect<ExtArgs extends runtime.Types.Extensions.
   positionId?: boolean
   board?: boolean
   externalId?: boolean
+  titleOverride?: boolean
   status?: boolean
   lastError?: boolean
   lastSyncAt?: boolean
@@ -580,6 +610,7 @@ export type PositionBoardPostingSelectCreateManyAndReturn<ExtArgs extends runtim
   positionId?: boolean
   board?: boolean
   externalId?: boolean
+  titleOverride?: boolean
   status?: boolean
   lastError?: boolean
   lastSyncAt?: boolean
@@ -593,6 +624,7 @@ export type PositionBoardPostingSelectUpdateManyAndReturn<ExtArgs extends runtim
   positionId?: boolean
   board?: boolean
   externalId?: boolean
+  titleOverride?: boolean
   status?: boolean
   lastError?: boolean
   lastSyncAt?: boolean
@@ -606,6 +638,7 @@ export type PositionBoardPostingSelectScalar = {
   positionId?: boolean
   board?: boolean
   externalId?: boolean
+  titleOverride?: boolean
   status?: boolean
   lastError?: boolean
   lastSyncAt?: boolean
@@ -613,7 +646,7 @@ export type PositionBoardPostingSelectScalar = {
   updatedAt?: boolean
 }
 
-export type PositionBoardPostingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "positionId" | "board" | "externalId" | "status" | "lastError" | "lastSyncAt" | "createdAt" | "updatedAt", ExtArgs["result"]["positionBoardPosting"]>
+export type PositionBoardPostingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "positionId" | "board" | "externalId" | "titleOverride" | "status" | "lastError" | "lastSyncAt" | "createdAt" | "updatedAt", ExtArgs["result"]["positionBoardPosting"]>
 export type PositionBoardPostingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.PositionDefaultArgs<ExtArgs>
 }
@@ -634,6 +667,7 @@ export type $PositionBoardPostingPayload<ExtArgs extends runtime.Types.Extension
     positionId: string
     board: string
     externalId: string | null
+    titleOverride: string | null
     status: string
     lastError: string | null
     lastSyncAt: Date
@@ -1067,6 +1101,7 @@ export interface PositionBoardPostingFieldRefs {
   readonly positionId: Prisma.FieldRef<"PositionBoardPosting", 'String'>
   readonly board: Prisma.FieldRef<"PositionBoardPosting", 'String'>
   readonly externalId: Prisma.FieldRef<"PositionBoardPosting", 'String'>
+  readonly titleOverride: Prisma.FieldRef<"PositionBoardPosting", 'String'>
   readonly status: Prisma.FieldRef<"PositionBoardPosting", 'String'>
   readonly lastError: Prisma.FieldRef<"PositionBoardPosting", 'String'>
   readonly lastSyncAt: Prisma.FieldRef<"PositionBoardPosting", 'DateTime'>
