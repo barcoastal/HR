@@ -44,6 +44,19 @@ export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: s
   }, [open, postings, load]);
 
   async function run(action: "post" | "pause" | "resume", board: BoardName) {
+    // For Indeed/Breezy, confirm the title to use on first post (or when re-posting without an override set)
+    if (action === "post" && (board === "INDEED" || board === "BREEZY")) {
+      const current = postings?.find((p) => p.board === board);
+      const existingTitle = current?.titleOverride || "";
+      const next = prompt(
+        `Title to post on ${BOARD_META[board].label}:\n\n(Shown to applicants. Leave as-is to use the position default.)`,
+        existingTitle || defaultTitle
+      );
+      if (next === null) return; // cancelled
+      const normalized = next.trim() === defaultTitle.trim() ? null : next.trim() || null;
+      await setBoardTitleOverride(positionId, board, normalized);
+    }
+
     setBusyBoard(board);
     const fn = action === "post" ? postToBoard : action === "pause" ? pauseOnBoard : resumeOnBoard;
     const r = await fn(positionId, board);
