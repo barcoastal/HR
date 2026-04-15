@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn, formatDate } from "@/lib/utils";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { pullCandidateToRecruitment, updateCandidateNotes } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
@@ -43,6 +43,29 @@ type Props = {
 function parseSkills(skills: string | null): string[] {
   if (!skills) return [];
   try { return JSON.parse(skills); } catch { return skills.split(",").map((s) => s.trim()).filter(Boolean); }
+}
+
+function ResizableTh({
+  label,
+  colKey,
+  startResize,
+  align = "left",
+}: {
+  label: string;
+  colKey: string;
+  startResize: (key: string, e: React.MouseEvent) => void;
+  align?: "left" | "right";
+}) {
+  return (
+    <th className={cn("text-xs font-medium text-[var(--color-text-muted)] px-4 py-3 relative select-none", align === "right" ? "text-right" : "text-left")}>
+      {label}
+      <div
+        onMouseDown={(e) => startResize(colKey, e)}
+        className="absolute top-0 right-0 h-full w-1.5 cursor-col-resize hover:bg-[var(--color-accent)]/40 active:bg-[var(--color-accent)]"
+        title="Drag to resize"
+      />
+    </th>
+  );
 }
 
 function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initialNotes: string | null }) {
@@ -151,6 +174,56 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const [pipelineFilter, setPipelineFilter] = useState(""); // "", "in", "out"
   const [dncFilter, setDncFilter] = useState(""); // "", "yes", "no"
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [colWidths, setColWidths] = useState<Record<string, number>>({
+    name: 240,
+    email: 220,
+    phone: 140,
+    source: 110,
+    job: 180,
+    date: 120,
+    resume: 130,
+    action: 170,
+  });
+  const resizingRef = useRef<{ key: string; startX: number; startW: number } | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("cv-db-col-widths");
+      if (saved) setColWidths((prev) => ({ ...prev, ...JSON.parse(saved) }));
+    } catch { /* ignore */ }
+  }, []);
+
+  useEffect(() => {
+    function onMove(e: MouseEvent) {
+      const r = resizingRef.current;
+      if (!r) return;
+      const delta = e.clientX - r.startX;
+      const next = Math.max(80, r.startW + delta);
+      setColWidths((prev) => ({ ...prev, [r.key]: next }));
+    }
+    function onUp() {
+      if (resizingRef.current) {
+        resizingRef.current = null;
+        document.body.style.cursor = "";
+        try {
+          localStorage.setItem("cv-db-col-widths", JSON.stringify(colWidths));
+        } catch { /* ignore */ }
+      }
+    }
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, [colWidths]);
+
+  function startResize(key: string, e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    resizingRef.current = { key, startX: e.clientX, startW: colWidths[key] ?? 150 };
+    document.body.style.cursor = "col-resize";
+  }
   const [pullDialogOpen, setPullDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [selectedPosition, setSelectedPosition] = useState("");
@@ -497,17 +570,27 @@ export function CandidateDatabase({ candidates, positions }: Props) {
 
       {/* Desktop Table View */}
       <div className={cn("hidden sm:block rounded-xl overflow-x-auto", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-        <table className="w-full min-w-[900px]">
+        <table className="min-w-[900px]" style={{ tableLayout: "fixed", width: Object.values(colWidths).reduce((s, w) => s + w, 0) }}>
+          <colgroup>
+            <col style={{ width: colWidths.name }} />
+            <col style={{ width: colWidths.email }} />
+            <col style={{ width: colWidths.phone }} />
+            <col style={{ width: colWidths.source }} />
+            <col style={{ width: colWidths.job }} />
+            <col style={{ width: colWidths.date }} />
+            <col style={{ width: colWidths.resume }} />
+            <col style={{ width: colWidths.action }} />
+          </colgroup>
           <thead>
             <tr className="border-b border-[var(--color-border)]">
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Name</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Email</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Phone</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Source</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Job Applied</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Date</th>
-              <th className="text-left text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Resume</th>
-              <th className="text-right text-xs font-medium text-[var(--color-text-muted)] px-4 py-3">Action</th>
+              <ResizableTh label="Name" colKey="name" startResize={startResize} />
+              <ResizableTh label="Email" colKey="email" startResize={startResize} />
+              <ResizableTh label="Phone" colKey="phone" startResize={startResize} />
+              <ResizableTh label="Source" colKey="source" startResize={startResize} />
+              <ResizableTh label="Job Applied" colKey="job" startResize={startResize} />
+              <ResizableTh label="Date" colKey="date" startResize={startResize} />
+              <ResizableTh label="Resume" colKey="resume" startResize={startResize} />
+              <ResizableTh label="Action" colKey="action" startResize={startResize} align="right" />
             </tr>
           </thead>
           <tbody>
