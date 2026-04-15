@@ -958,6 +958,26 @@ export async function updatePositionStatus(
   return position;
 }
 
+export async function deletePosition(id: string): Promise<{ success: boolean; error?: string }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user.role !== "SUPER_ADMIN") {
+    return { success: false, error: "Only super admins can delete positions" };
+  }
+  try {
+    // Detach candidates from this position instead of deleting them
+    await db.candidate.updateMany({ where: { positionId: id }, data: { positionId: null } });
+    // CandidateApplication.positionId is SetNull in the schema, so Prisma handles it.
+    // Interviews cascade via Position relation. Jobing link is just a string field on Position.
+    await db.position.delete({ where: { id } });
+    revalidatePath("/cv");
+    return { success: true };
+  } catch (err) {
+    console.error("[deletePosition]", err);
+    return { success: false, error: err instanceof Error ? err.message : "Delete failed" };
+  }
+}
+
 export async function assignCandidateToPosition(
   candidateId: string,
   positionId: string,

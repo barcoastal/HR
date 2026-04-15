@@ -11,7 +11,8 @@ import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
-import { updatePositionStatus, postPositionToBreezy } from "@/lib/actions/candidates";
+import { updatePositionStatus, postPositionToBreezy, deletePosition } from "@/lib/actions/candidates";
+import { useSession } from "next-auth/react";
 import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
@@ -151,6 +152,21 @@ function PositionPipeline({
     router.refresh();
   }
 
+  const { data: session } = useSession();
+  const isSuperAdmin = session?.user?.role === "SUPER_ADMIN";
+
+  async function handleDeletePosition() {
+    if (!confirm(`Permanently delete the "${position.title}" position?\n\nCandidates previously linked to this position will keep their profiles (just detached). Interviews on this position will be removed. This cannot be undone.`)) return;
+    setClosing(true);
+    const result = await deletePosition(position.id);
+    setClosing(false);
+    if (!result.success) {
+      alert(result.error || "Failed to delete position");
+      return;
+    }
+    router.refresh();
+  }
+
   const existingForAdd = allCandidates.map((c) => ({
     id: c.id,
     firstName: c.firstName,
@@ -286,6 +302,20 @@ function PositionPipeline({
               )}
             >
               <Icon name="work" size={12} />Reopen
+            </button>
+          )}
+          {isSuperAdmin && (
+            <button
+              onClick={handleDeletePosition}
+              disabled={closing}
+              title="Delete position (super admin)"
+              className={cn(
+                "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                "text-red-500 hover:bg-red-500/10 transition-colors",
+                "disabled:opacity-50"
+              )}
+            >
+              <Icon name="delete" size={12} />Delete
             </button>
           )}
         </div>
