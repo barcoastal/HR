@@ -5,6 +5,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback } from "react";
 import { updateCandidate, hireCandidateAndStartOnboarding, sendOfferLetter } from "@/lib/actions/candidates";
 import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
+import { getCandidateApplications, markDoNotCall, unmarkDoNotCall } from "@/lib/actions/candidate-applications";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
 import Link from "next/link";
@@ -55,6 +56,19 @@ type CandidateForDialog = {
   offerSentAt: Date | null;
   offerSignedDocUrl: string | null;
   offerSignedAt: Date | null;
+  position: { title: string } | null;
+  doNotCall?: boolean;
+  doNotCallReason?: string | null;
+  applicationCount?: number;
+};
+
+type ApplicationForDisplay = {
+  id: string;
+  positionName: string;
+  status: CandidateStatus;
+  appliedAt: Date;
+  source: string | null;
+  stageHistory: unknown;
   position: { title: string } | null;
 };
 
@@ -159,6 +173,10 @@ export function CandidateDetailDialog({
   const [offerSignedDocUrl, setOfferSignedDocUrl] = useState<string | null>(null);
   const [offerSignedAt, setOfferSignedAt] = useState<Date | null>(null);
   const [offerError, setOfferError] = useState<string | null>(null);
+  const [applications, setApplications] = useState<ApplicationForDisplay[]>([]);
+  const [dncBusy, setDncBusy] = useState(false);
+  const [localDoNotCall, setLocalDoNotCall] = useState<boolean>(!!candidate?.doNotCall);
+  const [localDncReason, setLocalDncReason] = useState<string | null>(candidate?.doNotCallReason || null);
 
   const loadInterviews = useCallback(async (candidateId: string) => {
     const [data, connected] = await Promise.all([
@@ -172,8 +190,37 @@ export function CandidateDetailDialog({
   useEffect(() => {
     if (candidate && open) {
       loadInterviews(candidate.id);
+      getCandidateApplications(candidate.id).then((apps) => {
+        setApplications(apps as unknown as ApplicationForDisplay[]);
+      }).catch(() => setApplications([]));
+      setLocalDoNotCall(!!candidate.doNotCall);
+      setLocalDncReason(candidate.doNotCallReason || null);
     }
   }, [candidate, open, loadInterviews]);
+
+  async function handleToggleDnc() {
+    if (!candidate) return;
+    setDncBusy(true);
+    try {
+      if (localDoNotCall) {
+        if (!confirm("Remove the Do Not Call flag? This candidate will become callable again.")) {
+          setDncBusy(false);
+          return;
+        }
+        await unmarkDoNotCall(candidate.id);
+        setLocalDoNotCall(false);
+        setLocalDncReason(null);
+      } else {
+        const reason = prompt("Add a reason (optional — shown on hover):", "");
+        await markDoNotCall(candidate.id, reason || undefined);
+        setLocalDoNotCall(true);
+        setLocalDncReason(reason || null);
+      }
+      router.refresh();
+    } finally {
+      setDncBusy(false);
+    }
+  }
 
   useEffect(() => {
     if (candidate) {
@@ -363,6 +410,86 @@ export function CandidateDetailDialog({
       ) : (
         <>
           <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+            {/* Do Not Call banner */}
+            <div className={cn(
+              "rounded-lg border p-3 flex items-start gap-3",
+              localDoNotCall
+                ? "bg-red-50 border-red-200"
+                : "bg-[var(--color-background)] border-[var(--color-border)]"
+            )}>
+              <Icon
+                name={localDoNotCall ? "block" : "phone_enabled"}
+                size={18}
+                className={cn("shrink-0 mt-0.5", localDoNotCall ? "text-red-600" : "text-[var(--color-text-muted)]")}
+              />
+              <div className="flex-1 min-w-0">
+                <p className={cn("text-sm font-medium", localDoNotCall ? "text-red-800" : "text-[var(--color-text-primary)]")}>
+                  {localDoNotCall ? "DO NOT CALL — blacklisted" : "Callable"}
+                </p>
+                {localDoNotCall && localDncReason && (
+                  <p className="text-xs text-red-700 mt-0.5">Reason: {localDncReason}</p>
+                )}
+                {!localDoNotCall && (
+                  <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">If this candidate shouldn&apos;t be contacted again, mark them so their name shows red everywhere.</p>
+                )}
+              </div>
+              <button
+                onClick={handleToggleDnc}
+                disabled={dncBusy}
+                className={cn(
+                  "shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                  localDoNotCall
+                    ? "bg-white text-red-700 border border-red-300 hover:bg-red-50"
+                    : "bg-red-500 text-white hover:bg-red-600",
+                  "disabled:opacity-50"
+                )}
+              >
+                {dncBusy ? "..." : localDoNotCall ? "Remove DNC" : "Mark Do Not Call"}
+              </button>
+            </div>
+
+            {/* Application history */}
+            {applications.length > 0 && (
+              <div className="rounded-lg border border-[var(--color-border)] p-3 bg-[var(--color-background)]">
+                <div className="flex items-center gap-2 mb-2">
+                  <Icon name="history" size={14} className="text-[var(--color-accent)]" />
+                  <p className="text-xs font-semibold text-[var(--color-text-primary)]">Application history ({applications.length})</p>
+                </div>
+                <div className="space-y-2">
+                  {applications.map((a) => {
+                    const history = Array.isArray(a.stageHistory) ? (a.stageHistory as Array<{ status: string; at: string; note?: string }>) : [];
+                    const appliedDate = new Date(a.appliedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+                    return (
+                      <div key={a.id} className="rounded border border-[var(--color-border)] bg-[var(--color-surface)] p-2.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-sm font-medium text-[var(--color-text-primary)]">{a.position?.title || a.positionName}</span>
+                          <span className={cn(
+                            "px-1.5 py-0.5 rounded-full text-[10px] font-medium",
+                            a.status === "HIRED" ? "bg-emerald-500/10 text-emerald-700"
+                            : a.status === "REJECTED" ? "bg-red-500/10 text-red-700"
+                            : a.status === "OFFER" ? "bg-blue-500/10 text-blue-700"
+                            : a.status === "INTERVIEW" ? "bg-purple-500/10 text-purple-700"
+                            : "bg-amber-500/10 text-amber-700"
+                          )}>{a.status}</span>
+                          <span className="text-[10px] text-[var(--color-text-muted)]">· {appliedDate}</span>
+                          {a.source && <span className="text-[10px] text-[var(--color-text-muted)]">· {a.source}</span>}
+                        </div>
+                        {history.length > 1 && (
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {history.map((h, i) => (
+                              <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-[var(--color-bg)] text-[var(--color-text-muted)]" title={h.note}>
+                                {h.status} · {new Date(h.at).toLocaleDateString()}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Status selector */}
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Status</label>

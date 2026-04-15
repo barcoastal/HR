@@ -533,7 +533,7 @@ export function CVTabs({
             />
             <CsvImport />
             <BulkResumeUpload positions={positions} />
-            <CleanDuplicatesButton />
+            <UniteDuplicatesButton />
             <FixNamesButton />
             <DownloadResumesButton />
           </div>
@@ -547,32 +547,38 @@ export function CVTabs({
   );
 }
 
-function CleanDuplicatesButton() {
-  const [cleaning, setCleaning] = useState(false);
-  const [result, setResult] = useState<{ duplicatesFound: number; deleted: number; totalBefore: number; totalAfter: number } | null>(null);
+function UniteDuplicatesButton() {
+  const [working, setWorking] = useState(false);
+  const [result, setResult] = useState<{ unitedGroups?: number; mergedRecords?: number; totalBefore: number; totalAfter: number } | null>(null);
   const router = useRouter();
 
-  async function handleClean() {
-    if (!confirm("This will remove duplicate candidates (same email). Candidates in the active pipeline or hired will be preserved. Continue?")) return;
-    setCleaning(true);
+  async function handleUnite() {
+    if (!confirm(
+      "Unite duplicate candidates by email into a single profile?\n\n" +
+      "• Resumes, applications, interviews, and signing requests from every copy are kept.\n" +
+      "• Application count becomes the sum.\n" +
+      "• If any copy is marked 'Do Not Call', the united profile stays 'Do Not Call'.\n" +
+      "• Notes are concatenated so nothing is lost.\n\nContinue?"
+    )) return;
+    setWorking(true);
     setResult(null);
     try {
       const res = await fetch("/api/candidates/cleanup", { method: "POST" });
-      if (!res.ok) throw new Error("Cleanup failed");
+      if (!res.ok) throw new Error("Unite failed");
       const data = await res.json();
       setResult(data);
-      if (data.deleted > 0) router.refresh();
+      if ((data.mergedRecords ?? 0) > 0) router.refresh();
     } catch {
-      alert("Failed to clean duplicates. Please try again.");
+      alert("Failed to unite duplicates. Please try again.");
     }
-    setCleaning(false);
+    setWorking(false);
   }
 
   return (
     <div className="relative">
       <button
-        onClick={handleClean}
-        disabled={cleaning}
+        onClick={handleUnite}
+        disabled={working}
         className={cn(
           "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
           "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20",
@@ -580,17 +586,18 @@ function CleanDuplicatesButton() {
           "disabled:opacity-50"
         )}
       >
-        <Icon name={cleaning ? "progress_activity" : "delete_sweep"} size={16} className={cleaning ? "animate-material-spin" : ""} />
-        {cleaning ? "Cleaning..." : "Clean Duplicates"}
+        <Icon name={working ? "progress_activity" : "merge"} size={16} className={working ? "animate-material-spin" : ""} />
+        {working ? "Uniting..." : "Unite Duplicates"}
       </button>
-      {result && result.deleted > 0 && (
-        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
-          <p className="text-xs font-medium text-gray-900 mb-1">Cleanup Complete</p>
-          <p className="text-[11px] text-gray-500">{result.deleted} duplicates removed</p>
+      {result && (result.mergedRecords ?? 0) > 0 && (
+        <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[240px]">
+          <p className="text-xs font-medium text-gray-900 mb-1">Unite complete</p>
+          <p className="text-[11px] text-gray-500">{result.unitedGroups ?? 0} profile group{(result.unitedGroups ?? 0) !== 1 ? "s" : ""} merged</p>
+          <p className="text-[11px] text-gray-500">{result.mergedRecords} duplicate record{(result.mergedRecords ?? 0) !== 1 ? "s" : ""} folded in</p>
           <p className="text-[11px] text-gray-500">{result.totalBefore} → {result.totalAfter} candidates</p>
         </div>
       )}
-      {result && result.deleted === 0 && (
+      {result && (result.mergedRecords ?? 0) === 0 && (
         <div className="absolute top-full mt-1 left-0 z-10 bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[200px]">
           <p className="text-xs font-medium text-gray-900">No duplicates found</p>
         </div>
