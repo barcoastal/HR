@@ -150,6 +150,7 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const [resumeFilter, setResumeFilter] = useState(""); // "", "with", "without"
   const [pipelineFilter, setPipelineFilter] = useState(""); // "", "in", "out"
   const [dncFilter, setDncFilter] = useState(""); // "", "yes", "no"
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [pullDialogOpen, setPullDialogOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [selectedPosition, setSelectedPosition] = useState("");
@@ -266,77 +267,96 @@ export function CandidateDatabase({ candidates, positions }: Props) {
 
   return (
     <div>
-      {/* Wide search bar */}
-      <div className="relative mb-3">
-        <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
-        <input
-          type="text"
-          placeholder="Search by name, email, phone, skills, experience, position, resume text, notes…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className={cn(
-            "w-full pl-11 pr-4 py-3 rounded-xl text-sm",
-            "bg-[var(--color-surface)] border border-[var(--color-border)]",
-            "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
-            "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]"
+      {/* Wide search bar + inline filters toggle */}
+      <div className="flex gap-2 mb-3">
+        <div className="relative flex-1">
+          <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
+          <input
+            type="text"
+            placeholder="Search by name, email, phone, skills, experience, position, resume text, notes…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={cn(
+              "w-full pl-11 pr-10 py-3 rounded-xl text-sm",
+              "bg-[var(--color-surface)] border border-[var(--color-border)]",
+              "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
+              "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 focus:border-[var(--color-accent)]"
+            )}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              aria-label="Clear search"
+            >
+              <Icon name="close" size={16} />
+            </button>
           )}
-        />
-        {search && (
-          <button
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-            aria-label="Clear search"
-          >
-            <Icon name="close" size={16} />
-          </button>
-        )}
+        </div>
+        <button
+          onClick={() => setFiltersOpen((v) => !v)}
+          className={cn(
+            "px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors",
+            activeFilterCount > 0 || filtersOpen
+              ? "bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30"
+              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)] hover:text-[var(--color-text-primary)]"
+          )}
+        >
+          <Icon name="tune" size={16} />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-[var(--color-accent)] text-white">{activeFilterCount}</span>
+          )}
+        </button>
       </div>
 
-      {/* Filter row */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
-        <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)} className={inputClass}>
-          <option value="">All positions</option>
-          {positions.map((p) => (
-            <option key={p.id} value={p.id}>{p.title}</option>
-          ))}
-        </select>
-        <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className={inputClass}>
-          <option value="">All sources</option>
-          {distinctSources.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputClass}>
-          <option value="">Any status</option>
-          <option value="NEW">New</option>
-          <option value="SCREENING">Screening</option>
-          <option value="INTERVIEW">Interview</option>
-          <option value="OFFER">Offer</option>
-          <option value="HIRED">Hired</option>
-          <option value="REJECTED">Rejected</option>
-        </select>
-        <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className={inputClass}>
-          <option value="">Any time</option>
-          <option value="7">Last 7 days</option>
-          <option value="30">Last 30 days</option>
-          <option value="90">Last 90 days</option>
-        </select>
-        <select value={resumeFilter} onChange={(e) => setResumeFilter(e.target.value)} className={inputClass}>
-          <option value="">Resume: any</option>
-          <option value="with">Has resume</option>
-          <option value="without">No resume</option>
-        </select>
-        <select value={pipelineFilter} onChange={(e) => setPipelineFilter(e.target.value)} className={inputClass}>
-          <option value="">Pipeline: any</option>
-          <option value="in">In pipeline</option>
-          <option value="out">Database only</option>
-        </select>
-        <select value={dncFilter} onChange={(e) => setDncFilter(e.target.value)} className={inputClass}>
-          <option value="">DNC: any</option>
-          <option value="yes">Do not call</option>
-          <option value="no">Callable</option>
-        </select>
-      </div>
+      {/* Filter row — collapsed by default */}
+      {filtersOpen && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
+          <select value={positionFilter} onChange={(e) => setPositionFilter(e.target.value)} className={inputClass}>
+            <option value="">All positions</option>
+            {positions.map((p) => (
+              <option key={p.id} value={p.id}>{p.title}</option>
+            ))}
+          </select>
+          <select value={sourceFilter} onChange={(e) => setSourceFilter(e.target.value)} className={inputClass}>
+            <option value="">All sources</option>
+            {distinctSources.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputClass}>
+            <option value="">Any status</option>
+            <option value="NEW">New</option>
+            <option value="SCREENING">Screening</option>
+            <option value="INTERVIEW">Interview</option>
+            <option value="OFFER">Offer</option>
+            <option value="HIRED">Hired</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+          <select value={dateFilter} onChange={(e) => setDateFilter(e.target.value)} className={inputClass}>
+            <option value="">Any time</option>
+            <option value="7">Last 7 days</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+          <select value={resumeFilter} onChange={(e) => setResumeFilter(e.target.value)} className={inputClass}>
+            <option value="">Resume: any</option>
+            <option value="with">Has resume</option>
+            <option value="without">No resume</option>
+          </select>
+          <select value={pipelineFilter} onChange={(e) => setPipelineFilter(e.target.value)} className={inputClass}>
+            <option value="">Pipeline: any</option>
+            <option value="in">In pipeline</option>
+            <option value="out">Database only</option>
+          </select>
+          <select value={dncFilter} onChange={(e) => setDncFilter(e.target.value)} className={inputClass}>
+            <option value="">DNC: any</option>
+            <option value="yes">Do not call</option>
+            <option value="no">Callable</option>
+          </select>
+        </div>
+      )}
 
       {/* Summary + clear */}
       <div className="flex items-center justify-between mb-3">
