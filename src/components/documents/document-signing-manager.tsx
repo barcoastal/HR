@@ -36,7 +36,8 @@ type SigningRequest = {
 
 type Props = {
   signingRequests: SigningRequest[];
-  employees: { id: string; firstName: string; lastName: string; email: string }[];
+  employees: { id: string; firstName: string; lastName: string; email: string; departmentId?: string | null }[];
+  departments?: { id: string; name: string }[];
   countersigners?: { id: string; firstName: string; lastName: string; jobTitle: string }[];
   isAdmin?: boolean;
   currentEmployeeId?: string | null;
@@ -116,11 +117,14 @@ function SourceBadge({ isOnboarding }: { isOnboarding: boolean }) {
   );
 }
 
-export function DocumentSigningManager({ signingRequests, employees, countersigners = [], isAdmin = false, currentEmployeeId }: Props) {
+export function DocumentSigningManager({ signingRequests, employees, departments = [], countersigners = [], isAdmin = false, currentEmployeeId }: Props) {
   const [filter, setFilter] = useState<FilterTab>("all");
   const [showSendDialog, setShowSendDialog] = useState(false);
   const [sendAction, setSendAction] = useState<"sign" | "fill">("sign");
+  const [recipientMode, setRecipientMode] = useState<"single" | "everyone" | "department">("single");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
   const [docMessage, setDocMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadedDoc, setUploadedDoc] = useState<{ url: string; name: string } | null>(null);
@@ -185,7 +189,25 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
 
   // Send for signing or filling
   async function handleSend() {
-    if (!selectedEmployeeId || !uploadedDoc) return;
+    if (!uploadedDoc) return;
+
+    // Build the recipient list
+    let recipientIds: string[] = [];
+    if (recipientMode === "single") {
+      if (!selectedEmployeeId) return;
+      recipientIds = [selectedEmployeeId];
+    } else if (recipientMode === "everyone") {
+      recipientIds = employees.map((e) => e.id);
+      if (recipientIds.length === 0) return;
+      if (!confirm(`Send "${uploadedDoc.name}" to all ${recipientIds.length} employees?`)) return;
+    } else if (recipientMode === "department") {
+      if (!selectedDepartmentId) return;
+      recipientIds = employees.filter((e) => e.departmentId === selectedDepartmentId).map((e) => e.id);
+      if (recipientIds.length === 0) { alert("No employees in that department."); return; }
+      const dept = departments.find((d) => d.id === selectedDepartmentId)?.name || "that department";
+      if (!confirm(`Send "${uploadedDoc.name}" to ${recipientIds.length} employee${recipientIds.length !== 1 ? "s" : ""} in ${dept}?`)) return;
+    }
+
     if (requiresCountersign && !countersignerId) {
       alert("Please select a countersigner.");
       return;
@@ -200,10 +222,9 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
       return;
     }
     setSending(true);
+    setBulkProgress(recipientIds.length > 1 ? { done: 0, total: recipientIds.length } : null);
     try {
       const effectiveCountersignerId = requiresCountersign ? countersignerId : null;
-      // Convert picker placements (center-based, no size) into stored placements
-      // with default box sizes matching the signing-side renderer.
       const SIZES: Record<PickerPlacement["kind"], { w: number; h: number }> = {
         signature: { w: 0.26, h: 0.08 },
         signatureDate: { w: 0.18, h: 0.04 },
@@ -222,18 +243,35 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
         };
       });
 
-      if (sendAction === "fill") {
-        const { sendDocForFilling } = await import("@/lib/actions/employee-documents");
-        await sendDocForFilling(selectedEmployeeId, uploadedDoc.url, uploadedDoc.name, effectiveCountersignerId, storedPlacements);
-      } else {
-        await createStandaloneSigningRequest({
-          employeeId: selectedEmployeeId,
-          documentUrl: uploadedDoc.url,
-          documentName: uploadedDoc.name,
-          message: docMessage || undefined,
-          countersignerId: effectiveCountersignerId,
-          signaturePlacements: storedPlacements,
-        });
+      const errors: string[] = [];
+      // Concurrent dispatch in chunks of 5 so many employees don't crush the API
+      const chunkSize = 5;
+      for (let i = 0; i < recipientIds.length; i += chunkSize) {
+        const chunk = recipientIds.slice(i, i + chunkSize);
+        await Promise.all(chunk.map(async (employeeId) => {
+          try {
+            if (sendAction === "fill") {
+              const { sendDocForFilling } = await import("@/lib/actions/employee-documents");
+              await sendDocForFilling(employeeId, uploadedDoc.url, uploadedDoc.name, effectiveCountersignerId, storedPlacements);
+            } else {
+              await createStandaloneSigningRequest({
+                employeeId,
+                documentUrl: uploadedDoc.url,
+                documentName: uploadedDoc.name,
+                message: docMessage || undefined,
+                countersignerId: effectiveCountersignerId,
+                signaturePlacements: storedPlacements,
+              });
+            }
+          } catch (e) {
+            errors.push(`${employeeId}: ${e instanceof Error ? e.message : "failed"}`);
+          }
+        }));
+        setBulkProgress((bp) => bp ? { done: Math.min(bp.total, i + chunk.length), total: bp.total } : null);
+      }
+
+      if (errors.length > 0) {
+        alert(`Sent with ${errors.length} error${errors.length !== 1 ? "s" : ""}. First: ${errors[0]}`);
       }
       setShowSendDialog(false);
       resetForm();
@@ -242,11 +280,14 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
       alert(`Failed to send ${sendAction === "fill" ? "fill" : "signing"} request. Please try again.`);
     } finally {
       setSending(false);
+      setBulkProgress(null);
     }
   }
 
   function resetForm() {
     setSelectedEmployeeId("");
+    setSelectedDepartmentId("");
+    setRecipientMode("single");
     setDocMessage("");
     setUploadedDoc(null);
     setSendAction("sign");
@@ -537,23 +578,73 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
         title={sendAction === "fill" ? "Send Document for Filling" : "Send Document for Signing"}
       >
         <div className="space-y-4">
-          {/* Employee Selector */}
+          {/* Recipient mode */}
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">
-              Recipient
+              Send to
             </label>
-            <select
-              value={selectedEmployeeId}
-              onChange={(e) => setSelectedEmployeeId(e.target.value)}
-              className={inputClass}
-            >
-              <option value="">Select an employee...</option>
-              {employees.map((emp) => (
-                <option key={emp.id} value={emp.id}>
-                  {emp.firstName} {emp.lastName} ({emp.email})
-                </option>
+            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] mb-2">
+              {(
+                [
+                  { v: "single", l: "One employee" },
+                  { v: "everyone", l: `Everyone (${employees.length})` },
+                  { v: "department", l: "By department" },
+                ] as const
+              ).map((opt) => (
+                <button
+                  key={opt.v}
+                  type="button"
+                  onClick={() => setRecipientMode(opt.v)}
+                  className={cn(
+                    "flex-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors",
+                    recipientMode === opt.v
+                      ? "bg-[var(--color-accent)] text-white"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                  )}
+                >
+                  {opt.l}
+                </button>
               ))}
-            </select>
+            </div>
+            {recipientMode === "single" && (
+              <select
+                value={selectedEmployeeId}
+                onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Select an employee...</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.firstName} {emp.lastName} ({emp.email})
+                  </option>
+                ))}
+              </select>
+            )}
+            {recipientMode === "department" && (
+              <select
+                value={selectedDepartmentId}
+                onChange={(e) => setSelectedDepartmentId(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Select department...</option>
+                {departments.map((d) => {
+                  const count = employees.filter((e) => e.departmentId === d.id).length;
+                  return (
+                    <option key={d.id} value={d.id}>{d.name} ({count} {count === 1 ? "person" : "people"})</option>
+                  );
+                })}
+              </select>
+            )}
+            {recipientMode === "everyone" && (
+              <p className="text-[11px] text-[var(--color-text-muted)] px-1">
+                One signing request will be created for every active employee ({employees.length} total).
+              </p>
+            )}
+            {bulkProgress && (
+              <p className="text-[11px] text-[var(--color-accent)] mt-1 px-1">
+                Sending {bulkProgress.done}/{bulkProgress.total}…
+              </p>
+            )}
           </div>
 
           {/* Document Upload */}
@@ -693,7 +784,12 @@ export function DocumentSigningManager({ signingRequests, employees, countersign
             </button>
             <button
               onClick={handleSend}
-              disabled={!selectedEmployeeId || !uploadedDoc || sending}
+              disabled={
+                !uploadedDoc || sending ||
+                (recipientMode === "single" && !selectedEmployeeId) ||
+                (recipientMode === "department" && !selectedDepartmentId) ||
+                (recipientMode === "everyone" && employees.length === 0)
+              }
               className={cn(accentButtonClass, "flex items-center gap-2")}
             >
               {sending ? (

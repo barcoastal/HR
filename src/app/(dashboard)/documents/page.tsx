@@ -2,6 +2,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { getAllSigningRequests } from "@/lib/actions/signing";
 import { getEmployees } from "@/lib/actions/employees";
 import { getEligibleCountersigners } from "@/lib/actions/stage-documents";
+import { getDepartments } from "@/lib/actions/departments";
 import { DocumentSigningManager } from "@/components/documents/document-signing-manager";
 import { PageHeader } from "@/components/ui/page-header";
 import { db } from "@/lib/db";
@@ -39,6 +40,7 @@ export default async function DocumentsPage() {
   // Only admins get the employee list for sending new documents
   const employees = isAdmin ? await getEmployees() : [];
   const countersigners = isAdmin ? await getEligibleCountersigners() : [];
+  const departments = isAdmin ? await getDepartments() : [];
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
@@ -59,7 +61,9 @@ export default async function DocumentsPage() {
           firstName: e.firstName,
           lastName: e.lastName,
           email: e.email,
+          departmentId: e.departmentId,
         }))}
+        departments={departments.map((d) => ({ id: d.id, name: d.name }))}
         countersigners={countersigners}
         isAdmin={isAdmin}
         currentEmployeeId={employeeId}
