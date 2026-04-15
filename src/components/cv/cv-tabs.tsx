@@ -13,7 +13,7 @@ import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
-import { updatePositionStatus, postPositionToBreezy, deletePosition } from "@/lib/actions/candidates";
+import { updatePositionStatus, postPositionToBreezy, deletePosition, clonePosition } from "@/lib/actions/candidates";
 import { useSession } from "next-auth/react";
 import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import { useRouter } from "next/navigation";
@@ -165,6 +165,18 @@ function PositionPipeline({
   const { data: session } = useSession();
   const isSuperAdmin = session?.user?.role === "SUPER_ADMIN";
 
+  async function handleCloneForHiring() {
+    if (!confirm(`Start hiring for "${position.title}" again?\n\nCreates a new OPEN position with the same description/requirements/salary. Past candidates on the original stay linked there — you can AI-search the database to pull them into the new pipeline.`)) return;
+    setClosing(true);
+    const res = await clonePosition(position.id);
+    setClosing(false);
+    if (!res.success) {
+      alert(res.error || "Failed to clone");
+      return;
+    }
+    router.refresh();
+  }
+
   async function handleDeletePosition() {
     if (!confirm(`Permanently delete the "${position.title}" position?\n\nCandidates previously linked to this position will keep their profiles (just detached). Interviews on this position will be removed. This cannot be undone.`)) return;
     setClosing(true);
@@ -309,17 +321,31 @@ function PositionPipeline({
             </>
           )}
           {isArchived && (
-            <button
-              onClick={handleReopenPosition}
-              disabled={closing}
-              className={cn(
-                "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium",
-                "text-emerald-400 hover:bg-emerald-500/10 transition-colors",
-                "disabled:opacity-50"
-              )}
-            >
-              <Icon name="work" size={12} />Reopen
-            </button>
+            <>
+              <button
+                onClick={handleCloneForHiring}
+                disabled={closing}
+                title="Creates a new OPEN position with the same details"
+                className={cn(
+                  "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                  "text-blue-500 hover:bg-blue-500/10 transition-colors",
+                  "disabled:opacity-50"
+                )}
+              >
+                <Icon name="content_copy" size={12} />Hire for this role again
+              </button>
+              <button
+                onClick={handleReopenPosition}
+                disabled={closing}
+                className={cn(
+                  "flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                  "text-emerald-400 hover:bg-emerald-500/10 transition-colors",
+                  "disabled:opacity-50"
+                )}
+              >
+                <Icon name="work" size={12} />Reopen
+              </button>
+            </>
           )}
           {isSuperAdmin && (
             <button

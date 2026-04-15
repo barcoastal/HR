@@ -1038,6 +1038,33 @@ export async function updatePositionStatus(
   return position;
 }
 
+export async function clonePosition(id: string): Promise<{ success: boolean; newId?: string; error?: string }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  await requireAuth();
+  const source = await db.position.findUnique({ where: { id } });
+  if (!source) return { success: false, error: "Position not found" };
+  try {
+    const clone = await db.position.create({
+      data: {
+        title: source.title,
+        departmentId: source.departmentId,
+        description: source.description,
+        requirements: source.requirements,
+        salary: source.salary,
+        location: source.location,
+        type: source.type,
+        status: "OPEN",
+        published: false,
+      },
+    });
+    revalidatePath("/cv");
+    return { success: true, newId: clone.id };
+  } catch (err) {
+    console.error("[clonePosition]", err);
+    return { success: false, error: err instanceof Error ? err.message : "Clone failed" };
+  }
+}
+
 export async function deletePosition(id: string): Promise<{ success: boolean; error?: string }> {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
