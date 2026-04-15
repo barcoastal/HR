@@ -127,6 +127,10 @@ export default async function CVPage() {
           title: p.title,
           status: p.status,
           description: p.description,
+          requirements: p.requirements,
+          location: p.location,
+          type: p.type,
+          departmentId: p.departmentId,
           department: p.department ? { name: p.department.name } : null,
           salary: p.salary,
           _count: p._count,
@@ -136,10 +140,15 @@ export default async function CVPage() {
           title: p.title,
           status: p.status,
           description: p.description,
+          requirements: p.requirements,
+          location: p.location,
+          type: p.type,
+          departmentId: p.departmentId,
           department: p.department ? { name: p.department.name } : null,
           salary: p.salary,
           _count: p._count,
         }))}
+        departments={departments.map((d) => ({ id: d.id, name: d.name }))}
         syncablePlatforms={syncablePlatforms}
         employees={allEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, jobTitle: e.jobTitle }))}
         recruiters={recruiters.map((r) => ({ id: r.id, firstName: r.firstName, lastName: r.lastName }))}

@@ -946,6 +946,35 @@ export async function postPositionToBreezy(
   return { success: true };
 }
 
+export async function updatePosition(
+  id: string,
+  data: {
+    title?: string;
+    description?: string | null;
+    requirements?: string | null;
+    salary?: string | null;
+    location?: string | null;
+    type?: string | null;
+    departmentId?: string | null;
+  }
+) {
+  const position = await db.position.update({
+    where: { id },
+    data: {
+      ...(data.title !== undefined ? { title: data.title } : {}),
+      ...(data.description !== undefined ? { description: data.description } : {}),
+      ...(data.requirements !== undefined ? { requirements: data.requirements } : {}),
+      ...(data.salary !== undefined ? { salary: data.salary } : {}),
+      ...(data.location !== undefined ? { location: data.location } : {}),
+      ...(data.type !== undefined ? { type: data.type } : {}),
+      ...(data.departmentId !== undefined ? { departmentId: data.departmentId } : {}),
+    },
+  });
+  revalidatePath("/cv");
+  revalidatePath("/careers");
+  return position;
+}
+
 export async function updatePositionStatus(
   id: string,
   status: "OPEN" | "CLOSED" | "FILLED"

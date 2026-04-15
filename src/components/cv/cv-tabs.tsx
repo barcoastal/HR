@@ -8,6 +8,7 @@ import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
 import { BulkResumeUpload } from "@/components/cv/bulk-resume-upload";
 import { BoardPostingsPanel } from "@/components/cv/board-postings-panel";
+import { EditPositionDialog } from "@/components/cv/edit-position-dialog";
 import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
@@ -55,6 +56,10 @@ type PositionFull = {
   title: string;
   status: string;
   description: string | null;
+  requirements: string | null;
+  location: string | null;
+  type: string | null;
+  departmentId: string | null;
   department: { name: string } | null;
   salary: string | null;
   _count: { candidates: number };
@@ -92,6 +97,7 @@ type Props = {
   positions: Position[];
   openPositions: PositionFull[];
   closedPositions: PositionFull[];
+  departments?: { id: string; name: string }[];
   syncablePlatforms: SyncablePlatform[];
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
@@ -106,6 +112,7 @@ function PositionPipeline({
   employees,
   recruiters,
   isArchived,
+  departments = [],
 }: {
   position: PositionFull;
   candidates: CandidateItem[];
@@ -114,9 +121,11 @@ function PositionPipeline({
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
   isArchived: boolean;
+  departments?: { id: string; name: string }[];
 }) {
   const [expanded, setExpanded] = useState(!isArchived);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [postingToBreezy, setPostingToBreezy] = useState(false);
   const [breezyResult, setBreezyResult] = useState<{ success: boolean; error?: string } | null>(null);
@@ -240,6 +249,13 @@ function PositionPipeline({
         >
           {!isArchived && (
             <>
+              <button
+                onClick={() => setEditOpen(true)}
+                title="Edit position"
+                className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
+              >
+                <Icon name="edit" size={16} />
+              </button>
               <AddCandidateToPosition
                 positionId={position.id}
                 positionTitle={position.title}
@@ -377,6 +393,22 @@ function PositionPipeline({
           onClose={() => setMatchDialogOpen(false)}
         />
       )}
+
+      <EditPositionDialog
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        position={{
+          id: position.id,
+          title: position.title,
+          description: position.description,
+          requirements: position.requirements,
+          salary: position.salary,
+          location: position.location,
+          type: position.type,
+          departmentId: position.departmentId,
+        }}
+        departments={departments}
+      />
     </div>
   );
 }
@@ -387,6 +419,7 @@ export function CVTabs({
   positions,
   openPositions,
   closedPositions,
+  departments = [],
   syncablePlatforms,
   employees,
   recruiters,
@@ -447,6 +480,7 @@ export function CVTabs({
                       allCandidates={allCandidates}
                       employees={employees}
                       recruiters={recruiters}
+                      departments={departments}
                       isArchived={false}
                     />
                   );
@@ -544,6 +578,7 @@ export function CVTabs({
                         allCandidates={allCandidates}
                         employees={employees}
                         recruiters={recruiters}
+                        departments={departments}
                         isArchived={true}
                       />
                     );
