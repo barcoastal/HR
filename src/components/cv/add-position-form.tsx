@@ -258,6 +258,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
   const [postToCareers, setPostToCareers] = useState(true);
   const [linkedInTitle, setLinkedInTitle] = useState("");
   const [indeedTitle, setIndeedTitle] = useState("");
+  const [showMatchDialog, setShowMatchDialog] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -621,38 +622,55 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
       )}
 
       {step === "recommendations" && createdPositionId && (
-        <>
-          {postingWarnings.length > 0 && (
-            <Dialog open={true} onClose={() => setPostingWarnings([])} title="Posting Issues">
-              <div className="space-y-3">
+        <Dialog open={open} onClose={handleClose} title="Position Created">
+          <div className="space-y-4">
+            {postingWarnings.length > 0 && (
+              <>
                 <p className="text-sm text-[var(--color-text-muted)]">
-                  Position was created but some platforms had issues:
+                  Position created. Some platforms had issues:
                 </p>
                 {postingWarnings.map((w, i) => (
                   <div key={i} className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-xs text-amber-400">
                     {w}
                   </div>
                 ))}
-                <div className="flex justify-end pt-2">
-                  <button
-                    onClick={() => setPostingWarnings([])}
-                    className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]")}
-                  >
-                    Continue
-                  </button>
+              </>
+            )}
+            {postingWarnings.length === 0 && (
+              <div className="flex items-center gap-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <Icon name="check_circle" size={20} className="text-emerald-500 shrink-0" />
+                <div>
+                  <p className="text-sm font-medium text-emerald-700">{createdPositionTitle} is live</p>
+                  <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5">You can run AI matching anytime from the position&rsquo;s sparkle icon.</p>
                 </div>
               </div>
-            </Dialog>
-          )}
-          {postingWarnings.length === 0 && (
-            <AIMatchDialog
-              positionId={createdPositionId}
-              positionTitle={createdPositionTitle}
-              open={open}
-              onClose={handleClose}
-            />
-          )}
-        </>
+            )}
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={handleClose}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+              >
+                Done
+              </button>
+              <button
+                onClick={() => { /* user opted in — show match dialog */ setShowMatchDialog(true); }}
+                className={cn("px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2", "bg-purple-500 text-white hover:bg-purple-600")}
+              >
+                <Icon name="auto_awesome" size={14} />
+                Run AI matching now
+              </button>
+            </div>
+          </div>
+        </Dialog>
+      )}
+
+      {showMatchDialog && createdPositionId && (
+        <AIMatchDialog
+          positionId={createdPositionId}
+          positionTitle={createdPositionTitle}
+          open={true}
+          onClose={() => { setShowMatchDialog(false); handleClose(); }}
+        />
       )}
     </>
   );
