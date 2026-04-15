@@ -77,6 +77,7 @@ export const ModelName = {
   Candidate: 'Candidate',
   CandidateApplication: 'CandidateApplication',
   Position: 'Position',
+  PositionBoardPosting: 'PositionBoardPosting',
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
@@ -556,6 +557,21 @@ export const PositionScalarFieldEnum = {
 } as const
 
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
+
+
+export const PositionBoardPostingScalarFieldEnum = {
+  id: 'id',
+  positionId: 'positionId',
+  board: 'board',
+  externalId: 'externalId',
+  status: 'status',
+  lastError: 'lastError',
+  lastSyncAt: 'lastSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PositionBoardPostingScalarFieldEnum = (typeof PositionBoardPostingScalarFieldEnum)[keyof typeof PositionBoardPostingScalarFieldEnum]
 
 
 export const RecruitmentPlatformScalarFieldEnum = {

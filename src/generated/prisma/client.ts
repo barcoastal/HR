@@ -170,6 +170,11 @@ export type CandidateApplication = Prisma.CandidateApplicationModel
  */
 export type Position = Prisma.PositionModel
 /**
+ * Model PositionBoardPosting
+ * 
+ */
+export type PositionBoardPosting = Prisma.PositionBoardPostingModel
+/**
  * Model RecruitmentPlatform
  * 
  */

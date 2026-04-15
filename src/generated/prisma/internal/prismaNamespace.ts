@@ -410,6 +410,7 @@ export const ModelName = {
   Candidate: 'Candidate',
   CandidateApplication: 'CandidateApplication',
   Position: 'Position',
+  PositionBoardPosting: 'PositionBoardPosting',
   RecruitmentPlatform: 'RecruitmentPlatform',
   PlatformCostEntry: 'PlatformCostEntry',
   PlatformSyncLog: 'PlatformSyncLog',
@@ -457,7 +458,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2382,6 +2383,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PositionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PositionCountAggregateOutputType> | number
+        }
+      }
+    }
+    PositionBoardPosting: {
+      payload: Prisma.$PositionBoardPostingPayload<ExtArgs>
+      fields: Prisma.PositionBoardPostingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PositionBoardPostingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PositionBoardPostingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        findFirst: {
+          args: Prisma.PositionBoardPostingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PositionBoardPostingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        findMany: {
+          args: Prisma.PositionBoardPostingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>[]
+        }
+        create: {
+          args: Prisma.PositionBoardPostingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        createMany: {
+          args: Prisma.PositionBoardPostingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PositionBoardPostingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>[]
+        }
+        delete: {
+          args: Prisma.PositionBoardPostingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        update: {
+          args: Prisma.PositionBoardPostingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        deleteMany: {
+          args: Prisma.PositionBoardPostingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PositionBoardPostingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PositionBoardPostingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>[]
+        }
+        upsert: {
+          args: Prisma.PositionBoardPostingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionBoardPostingPayload>
+        }
+        aggregate: {
+          args: Prisma.PositionBoardPostingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePositionBoardPosting>
+        }
+        groupBy: {
+          args: Prisma.PositionBoardPostingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PositionBoardPostingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PositionBoardPostingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PositionBoardPostingCountAggregateOutputType> | number
         }
       }
     }
@@ -5223,6 +5298,21 @@ export const PositionScalarFieldEnum = {
 export type PositionScalarFieldEnum = (typeof PositionScalarFieldEnum)[keyof typeof PositionScalarFieldEnum]
 
 
+export const PositionBoardPostingScalarFieldEnum = {
+  id: 'id',
+  positionId: 'positionId',
+  board: 'board',
+  externalId: 'externalId',
+  status: 'status',
+  lastError: 'lastError',
+  lastSyncAt: 'lastSyncAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PositionBoardPostingScalarFieldEnum = (typeof PositionBoardPostingScalarFieldEnum)[keyof typeof PositionBoardPostingScalarFieldEnum]
+
+
 export const RecruitmentPlatformScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -6263,6 +6353,7 @@ export type GlobalOmitConfig = {
   candidate?: Prisma.CandidateOmit
   candidateApplication?: Prisma.CandidateApplicationOmit
   position?: Prisma.PositionOmit
+  positionBoardPosting?: Prisma.PositionBoardPostingOmit
   recruitmentPlatform?: Prisma.RecruitmentPlatformOmit
   platformCostEntry?: Prisma.PlatformCostEntryOmit
   platformSyncLog?: Prisma.PlatformSyncLogOmit

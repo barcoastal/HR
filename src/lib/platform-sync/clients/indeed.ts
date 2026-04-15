@@ -267,6 +267,35 @@ export async function postJobToIndeed(data: {
   }
 }
 
+export async function updateIndeedJobStatus(
+  connectionId: string,
+  jobId: string,
+  status: "OPEN" | "CLOSED" | "ARCHIVED" | "DRAFT"
+): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.UNIFIED_API_KEY;
+  if (!apiKey) return { success: false, error: "UNIFIED_API_KEY not configured" };
+  try {
+    const res = await fetch(
+      `${UNIFIED_BASE_URL}/ats/${connectionId}/job/${jobId}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      return { success: false, error: `Indeed/Unified ${res.status}: ${text.slice(0, 200)}` };
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update" };
+  }
+}
+
 // --- Fetch applications from Indeed via Unified.to ---
 
 export async function fetchIndeedApplications(

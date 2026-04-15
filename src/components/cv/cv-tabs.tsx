@@ -7,6 +7,7 @@ import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
 import { BulkResumeUpload } from "@/components/cv/bulk-resume-upload";
+import { BoardPostingsPanel } from "@/components/cv/board-postings-panel";
 import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
@@ -324,6 +325,8 @@ function PositionPipeline({
       {/* Pipeline */}
       {expanded && (
         <div className="px-5 pb-5">
+          <BoardPostingsPanel positionId={position.id} />
+          <div className="h-3" />
           {candidates.length > 0 ? (
             <CandidatePipeline
               candidates={candidates.map((c) => ({

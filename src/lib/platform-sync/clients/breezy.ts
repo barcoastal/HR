@@ -227,6 +227,34 @@ export async function postJobToBreezy(data: {
   }
 }
 
+export async function updateBreezyPositionState(data: {
+  accessToken: string;
+  companyId: string;
+  positionId: string;
+  state: "published" | "draft" | "archived";
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch(
+      `${BREEZY_BASE_URL}/company/${data.companyId}/position/${data.positionId}/state`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: data.accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ state: data.state }),
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err?.error?.message || `Failed (${res.status})` };
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update" };
+  }
+}
+
 // --- Webhook setup ---
 
 export async function setupBreezyWebhook(data: {

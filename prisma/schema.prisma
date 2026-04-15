@@ -732,12 +732,32 @@ model Position {
   candidates    Candidate[]
   interviews    Interview[]
   applications  CandidateApplication[]
+  boardPostings PositionBoardPosting[]
   createdAt     DateTime       @default(now())
 
   department    Department?    @relation(fields: [departmentId], references: [id])
 
   @@index([departmentId])
   @@index([status])
+}
+
+// Tracks where a position is posted and its current state per board.
+model PositionBoardPosting {
+  id         String   @id @default(uuid())
+  positionId String
+  board      String   // JOBING | INDEED | BREEZY
+  externalId String?
+  status     String   @default("NOT_POSTED") // NOT_POSTED | PUBLISHED | PAUSED | FAILED
+  lastError  String?
+  lastSyncAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  position Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@unique([positionId, board])
+  @@index([positionId])
+  @@index([board])
 }
 
 model RecruitmentPlatform {
