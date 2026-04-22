@@ -63,12 +63,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const drugTest = options?.drug_test || "N";
   const payload: Record<string, unknown> = {
     report_sku: options?.report_sku || "HIRE1",
     order_quantity: 1,
     applicant_emails: [candidate.email],
-    drug_test: options?.drug_test || "N",
-    drug_sku: options?.drug_test === "Y" ? (options?.drug_sku || "drug") : "drug",
+    drug_test: drugTest,
     mvr: options?.mvr || "N",
     employment: options?.employment || "Y",
     education: options?.education || "Y",
@@ -80,6 +80,10 @@ export async function POST(req: NextRequest) {
     credit_report: options?.credit_report || "N",
     terms_agree: "Y",
   };
+  // drug_sku is only valid when drug_test is requested
+  if (drugTest === "Y") {
+    payload.drug_sku = options?.drug_sku || "drug";
+  }
 
   console.log(`[background-check] submitting order for ${candidate.email} (${candidateId})`);
 
