@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
 import { PromoteEmployeeDialog } from "@/components/people/promote-employee-dialog";
 import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
+import { ReactivateEmployeeButton } from "@/components/people/reactivate-employee-button";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { getHRNotes } from "@/lib/actions/hr-notes";
@@ -118,6 +119,12 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                   emergencyContactPhone: employee.emergencyContactPhone || "",
                   emergencyContactRelation: employee.emergencyContactRelation || "",
                 }} departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))} />
+                {isAdmin && employee.status === "OFFBOARDED" && (
+                  <ReactivateEmployeeButton
+                    employeeId={employee.id}
+                    employeeName={`${employee.firstName} ${employee.lastName}`}
+                  />
+                )}
                 {isAdmin && (
                   <DeleteEmployeeButton employeeId={employee.id} employeeName={`${employee.firstName} ${employee.lastName}`} />
                 )}

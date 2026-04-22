@@ -459,6 +459,42 @@ export async function startOffboarding(employeeId: string, endDate: string) {
   return { employee, taskCount: allChecklistItems.length };
 }
 
+export async function reactivateEmployee(employeeId: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to reactivate employees");
+  }
+
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+  if (employee.status !== "OFFBOARDED") {
+    throw new Error("Only offboarded employees can be reactivated");
+  }
+
+  await db.employee.update({
+    where: { id: employeeId },
+    data: { status: "ACTIVE", endDate: null },
+  });
+
+  // If startOffboarding detached their user account, try to re-link by email.
+  const detachedUser = await db.user.findFirst({
+    where: { email: employee.email, employeeId: null },
+  });
+  if (detachedUser) {
+    await db.user.update({
+      where: { id: detachedUser.id },
+      data: { employeeId },
+    });
+  }
+
+  revalidatePath("/people");
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/offboarding");
+  revalidatePath("/org");
+}
+
 export async function setEmployeeManager(employeeId: string, managerId: string | null) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
