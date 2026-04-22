@@ -232,7 +232,7 @@ export async function GET(req: NextRequest) {
       // GET /reports/{report_key}/status
       const response = await fetch(
         apiUrl(`/reports/${candidate.backgroundCheckId}/status`),
-        { method: "GET" }
+        { method: "GET", headers: { Accept: "application/json" }, redirect: "manual" }
       );
 
       if (response.ok) {
