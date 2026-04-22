@@ -39,6 +39,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "candidateId is required" }, { status: 400 });
   }
 
+  if (!BG_CHECK_API_KEY) {
+    console.error("[background-check] BACKGROUND_CHECK_API_KEY is not set on the server");
+    return NextResponse.json(
+      { error: "Background check is not configured on the server (missing API key)" },
+      { status: 500 }
+    );
+  }
+
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: true },
@@ -48,94 +56,110 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
   }
 
-  try {
-    const payload: Record<string, unknown> = {
-      report_sku: options?.report_sku || "HIRE1",
-      order_quantity: 1,
-      applicant_emails: [candidate.email],
-      drug_test: options?.drug_test || "N",
-      drug_sku: options?.drug_test === "Y" ? (options?.drug_sku || "drug") : "drug",
-      mvr: options?.mvr || "N",
-      employment: options?.employment || "Y",
-      education: options?.education || "Y",
-      blj: options?.blj || "Y",
-      federal_criminal: options?.federal_criminal || "Y",
-      bankruptcy: options?.bankruptcy || "N",
-      civil_judgment: options?.civil_judgment || "N",
-      tax_lien: options?.tax_lien || "N",
-      credit_report: options?.credit_report || "N",
-      terms_agree: "Y",
-    };
+  if (!candidate.email) {
+    return NextResponse.json(
+      { error: "Candidate has no email on file — cannot send background check" },
+      { status: 400 }
+    );
+  }
 
-    const response = await fetch(apiUrl("/orders/new"), {
+  const payload: Record<string, unknown> = {
+    report_sku: options?.report_sku || "HIRE1",
+    order_quantity: 1,
+    applicant_emails: [candidate.email],
+    drug_test: options?.drug_test || "N",
+    drug_sku: options?.drug_test === "Y" ? (options?.drug_sku || "drug") : "drug",
+    mvr: options?.mvr || "N",
+    employment: options?.employment || "Y",
+    education: options?.education || "Y",
+    blj: options?.blj || "Y",
+    federal_criminal: options?.federal_criminal || "Y",
+    bankruptcy: options?.bankruptcy || "N",
+    civil_judgment: options?.civil_judgment || "N",
+    tax_lien: options?.tax_lien || "N",
+    credit_report: options?.credit_report || "N",
+    terms_agree: "Y",
+  };
+
+  console.log(`[background-check] submitting order for ${candidate.email} (${candidateId})`);
+
+  let response: Response;
+  try {
+    response = await fetch(apiUrl("/orders/new"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      if (!BG_CHECK_API_KEY) {
-        await db.candidate.update({
-          where: { id: candidateId },
-          data: {
-            status: "BACKGROUND_CHECK",
-            backgroundCheckStatus: "PENDING",
-            backgroundCheckDate: new Date(),
-            backgroundCheckOptions: JSON.stringify(options || {}),
-          },
-        });
-        return NextResponse.json({
-          success: true,
-          status: "PENDING",
-          message: "Background check initiated (manual mode — no API key configured)",
-        });
-      }
-      return NextResponse.json(
-        { error: "Background check API error", details: errorText },
-        { status: 502 }
-      );
-    }
-
-    // Response: { applicants: [{ applicant_email, report_key, applicant_invite_url }] }
-    const data = await response.json();
-    const reportKey = data.applicants?.[0]?.report_key || null;
-
-    await db.candidate.update({
-      where: { id: candidateId },
-      data: {
-        status: "BACKGROUND_CHECK",
-        backgroundCheckStatus: "AWAITING_APPLICANT",
-        backgroundCheckId: reportKey,
-        backgroundCheckDate: new Date(),
-        backgroundCheckOptions: JSON.stringify(options || {}),
-      },
-    });
-
-    return NextResponse.json({
-      success: true,
-      reportKey,
-      inviteUrl: data.applicants?.[0]?.applicant_invite_url || null,
-      status: "AWAITING_APPLICANT",
-    });
   } catch (error) {
-    // Fallback: still move candidate to BACKGROUND_CHECK status
-    await db.candidate.update({
-      where: { id: candidateId },
-      data: {
-        status: "BACKGROUND_CHECK",
-        backgroundCheckStatus: "PENDING",
-        backgroundCheckDate: new Date(),
-        backgroundCheckOptions: JSON.stringify(options || {}),
-      },
-    });
-
-    return NextResponse.json({
-      success: true,
-      status: "PENDING",
-      message: "Background check initiated (API unreachable — tracking manually)",
-    });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[background-check] fetch to backgroundchecks.com failed:", msg);
+    return NextResponse.json(
+      { error: "Could not reach backgroundchecks.com", details: msg },
+      { status: 502 }
+    );
   }
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    console.error(
+      `[background-check] backgroundchecks.com returned ${response.status}: ${errorText}`
+    );
+    return NextResponse.json(
+      {
+        error: `Background check API returned ${response.status}`,
+        details: errorText || response.statusText,
+      },
+      { status: 502 }
+    );
+  }
+
+  let data: { applicants?: Array<{ report_key?: string; applicant_invite_url?: string }> };
+  try {
+    data = await response.json();
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[background-check] invalid JSON from backgroundchecks.com:", msg);
+    return NextResponse.json(
+      { error: "Invalid response from backgroundchecks.com", details: msg },
+      { status: 502 }
+    );
+  }
+
+  const reportKey = data.applicants?.[0]?.report_key || null;
+  const inviteUrl = data.applicants?.[0]?.applicant_invite_url || null;
+
+  if (!reportKey) {
+    console.error(
+      "[background-check] backgroundchecks.com response missing report_key:",
+      JSON.stringify(data)
+    );
+    return NextResponse.json(
+      { error: "Background check service did not return an order ID", details: data },
+      { status: 502 }
+    );
+  }
+
+  await db.candidate.update({
+    where: { id: candidateId },
+    data: {
+      status: "BACKGROUND_CHECK",
+      backgroundCheckStatus: "AWAITING_APPLICANT",
+      backgroundCheckId: reportKey,
+      backgroundCheckDate: new Date(),
+      backgroundCheckOptions: JSON.stringify(options || {}),
+    },
+  });
+
+  console.log(
+    `[background-check] order created for ${candidate.email}: report_key=${reportKey}`
+  );
+
+  return NextResponse.json({
+    success: true,
+    reportKey,
+    inviteUrl,
+    status: "AWAITING_APPLICANT",
+  });
 }
 
 // GET /api/background-check?candidateId=xxx  — check/refresh status from API

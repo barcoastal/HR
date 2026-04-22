@@ -394,11 +394,22 @@ export function CandidateDetailDialog({
 
     // If moving to BACKGROUND_CHECK, initiate the check via API AND update candidate (for notifications)
     if (form.status === "BACKGROUND_CHECK" && candidate.status !== "BACKGROUND_CHECK") {
-      await fetch("/api/background-check", {
+      const bgRes = await fetch("/api/background-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ candidateId: candidate.id, options: bgCheckOptions }),
       });
+      if (!bgRes.ok) {
+        const err = await bgRes.json().catch(() => ({ error: `HTTP ${bgRes.status}` }));
+        const detail = typeof err.details === "string" ? err.details : "";
+        alert(
+          `Failed to send background check: ${err.error || "Unknown error"}${
+            detail ? `\n\n${detail}` : ""
+          }`
+        );
+        setSaving(false);
+        return;
+      }
       // Still call updateCandidate so notifications are sent
       await updateCandidate(candidate.id, {
         firstName: form.firstName,
