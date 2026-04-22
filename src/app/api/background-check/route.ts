@@ -87,14 +87,38 @@ export async function POST(req: NextRequest) {
   try {
     response = await fetch(apiUrl("/orders/new"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify(payload),
+      redirect: "manual",
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
     console.error("[background-check] fetch to backgroundchecks.com failed:", msg);
     return NextResponse.json(
       { error: "Could not reach backgroundchecks.com", details: msg },
+      { status: 502 }
+    );
+  }
+
+  // backgroundchecks.com responds to an invalid/expired api_token by redirecting
+  // to /login (302) instead of returning 401. Catch that explicitly.
+  if (response.status >= 300 && response.status < 400) {
+    const location = response.headers.get("location") || "";
+    console.error(
+      `[background-check] backgroundchecks.com redirected ${response.status} → ${location}`
+    );
+    if (location.includes("/login")) {
+      return NextResponse.json(
+        {
+          error: "Background check API token was rejected",
+          details:
+            "backgroundchecks.com redirected the request to its login page. The BACKGROUND_CHECK_API_KEY on the server is likely expired or invalid. Regenerate it at app.backgroundchecks.com and update Railway.",
+        },
+        { status: 502 }
+      );
+    }
+    return NextResponse.json(
+      { error: `Unexpected redirect from backgroundchecks.com`, details: location },
       { status: 502 }
     );
   }
@@ -113,12 +137,29 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const rawBody = await response.text();
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("json")) {
+    console.error(
+      `[background-check] expected JSON but got ${contentType}: ${rawBody.slice(0, 500)}`
+    );
+    return NextResponse.json(
+      {
+        error: "Background check API returned non-JSON response",
+        details: `Content-Type: ${contentType}. First 300 chars: ${rawBody.slice(0, 300)}`,
+      },
+      { status: 502 }
+    );
+  }
+
   let data: { applicants?: Array<{ report_key?: string; applicant_invite_url?: string }> };
   try {
-    data = await response.json();
+    data = JSON.parse(rawBody);
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error("[background-check] invalid JSON from backgroundchecks.com:", msg);
+    console.error(
+      `[background-check] invalid JSON from backgroundchecks.com: ${msg}. Body: ${rawBody.slice(0, 500)}`
+    );
     return NextResponse.json(
       { error: "Invalid response from backgroundchecks.com", details: msg },
       { status: 502 }
