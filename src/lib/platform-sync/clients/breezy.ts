@@ -159,6 +159,29 @@ async function listCandidates(
 
 // --- Job posting ---
 
+// Breezy accepts only these enum values for position.type
+const BREEZY_TYPE_MAP: Record<string, string> = {
+  "full-time": "fullTime",
+  fulltime: "fullTime",
+  full_time: "fullTime",
+  "part-time": "partTime",
+  parttime: "partTime",
+  part_time: "partTime",
+  contract: "contract",
+  contractor: "contract",
+  temporary: "temporary",
+  temp: "temporary",
+  intern: "temporary",
+  internship: "temporary",
+  other: "other",
+};
+
+function mapBreezyType(raw?: string): string {
+  if (!raw) return "fullTime";
+  const key = raw.trim().toLowerCase().replace(/\s+/g, "-");
+  return BREEZY_TYPE_MAP[key] || "other";
+}
+
 export async function postJobToBreezy(data: {
   accessToken: string;
   companyId: string;
@@ -169,7 +192,11 @@ export async function postJobToBreezy(data: {
   location?: string;
   salary?: string;
   type?: string;
+  /** Initial state. Defaults to "draft" so positions don't go live accidentally. */
+  publishState?: "draft" | "published";
 }): Promise<{ success: boolean; positionId?: string; error?: string }> {
+  const locationName = (data.location || "").trim() || "Remote";
+  const isRemote = /remote|anywhere|worldwide/i.test(locationName);
   const body: Record<string, unknown> = {
     name: data.title,
     description: [
@@ -178,8 +205,15 @@ export async function postJobToBreezy(data: {
     ]
       .filter(Boolean)
       .join(""),
-    type: data.type || "fullTime",
-    location: { name: data.location || "Remote" },
+    type: mapBreezyType(data.type),
+    // Breezy requires country as a 2-letter ISO code. We default to US since
+    // Coastal Debt operates in the US; future multi-country support can thread
+    // country through from the UI.
+    location: {
+      name: locationName,
+      country: "US",
+      is_remote: isRemote,
+    },
   };
 
   if (data.department) body.department = data.department;
@@ -199,24 +233,37 @@ export async function postJobToBreezy(data: {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      return { success: false, error: err?.error?.message || `Failed (${res.status})` };
+      const msg =
+        err?.error?.message || err?.message || `Failed (${res.status})`;
+      console.error(`[breezy] create position failed: ${msg}`);
+      return { success: false, error: msg };
     }
 
     const result = await res.json();
     const positionId = result._id;
 
-    // Publish the position so it goes live on Indeed/LinkedIn
-    await fetch(
-      `${BREEZY_BASE_URL}/company/${data.companyId}/position/${positionId}/state`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: data.accessToken,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ state: "published" }),
+    if (data.publishState === "published") {
+      const publishRes = await fetch(
+        `${BREEZY_BASE_URL}/company/${data.companyId}/position/${positionId}/state`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: data.accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ state: "published" }),
+        }
+      );
+      if (!publishRes.ok) {
+        const err = await publishRes.json().catch(() => ({}));
+        const msg =
+          err?.error?.message || err?.message || `Publish failed (${publishRes.status})`;
+        console.error(`[breezy] publish position ${positionId} failed: ${msg}`);
+        // Position was created; surface partial success so caller can still
+        // record the externalId and show the publish error.
+        return { success: false, positionId, error: msg };
       }
-    );
+    }
 
     return { success: true, positionId };
   } catch (err) {

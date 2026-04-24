@@ -890,58 +890,86 @@ export async function createPosition(data: {
 
   const postingErrors: string[] = [];
 
-  if (postToBreezy) {
-    try {
-      const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
-      const { ensureValidToken } = await import("./platform-sync");
-      const breezyPlatform = await db.recruitmentPlatform.findUnique({
-        where: { name: "Breezy HR" },
-        select: { id: true, accountIdentifier: true },
-      });
-      if (!breezyPlatform?.accountIdentifier) {
-        console.error("[createPosition] Breezy HR not configured — no accountIdentifier");
+  // Every new position is mirrored into Breezy HR.
+  //  - If the user ticked LinkedIn or Indeed, we publish via Breezy so it goes
+  //    live on those channels.
+  //  - Otherwise we auto-create as a draft so the position exists in Breezy and
+  //    can be published later from either platform.
+  try {
+    const breezyPlatform = await db.recruitmentPlatform.findUnique({
+      where: { name: "Breezy HR" },
+      select: { id: true, accountIdentifier: true },
+    });
+    if (!breezyPlatform?.accountIdentifier) {
+      if (postToBreezy) {
         postingErrors.push("Breezy HR is not configured. Connect it in Settings first.");
+      }
+    } else {
+      const { ensureValidToken } = await import("./platform-sync");
+      const tokenResult = await ensureValidToken(breezyPlatform.id);
+      if (!tokenResult.valid || !tokenResult.accessToken) {
+        console.error("[createPosition] Breezy token invalid:", tokenResult.error);
+        if (postToBreezy) {
+          postingErrors.push(
+            `Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`
+          );
+        }
       } else {
-        const tokenResult = await ensureValidToken(breezyPlatform.id);
-        if (!tokenResult.valid || !tokenResult.accessToken) {
-          console.error("[createPosition] Breezy token invalid:", tokenResult.error);
-          postingErrors.push(`Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`);
-        } else {
-          const [breezyToken] = tokenResult.accessToken.split("::");
-          const titleForBreezy = breezyTitleOverride?.trim() || data.title;
-          const result = await postJobToBreezy({
-            accessToken: breezyToken,
-            companyId: breezyPlatform.accountIdentifier,
-            title: titleForBreezy,
-            description: data.description,
-            requirements: data.requirements,
-            department: departmentName,
-            salary: data.salary,
-          });
-          await db.positionBoardPosting.upsert({
-            where: { positionId_board: { positionId: position.id, board: "BREEZY" } },
-            create: {
-              positionId: position.id,
-              board: "BREEZY",
-              status: result.success ? "PUBLISHED" : "FAILED",
-              externalId: result.positionId ?? null,
-              lastError: result.success ? null : result.error ?? "Failed",
-              titleOverride: titleForBreezy === data.title ? null : titleForBreezy,
-            },
-            update: {
-              status: result.success ? "PUBLISHED" : "FAILED",
-              externalId: result.positionId ?? null,
-              lastError: result.success ? null : result.error ?? "Failed",
-            },
-          });
-          if (!result.success) {
-            console.error("[createPosition] Breezy posting failed:", result.error);
+        const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
+        const [breezyToken] = tokenResult.accessToken.split("::");
+        const titleForBreezy = breezyTitleOverride?.trim() || data.title;
+        const publishState: "draft" | "published" = postToBreezy ? "published" : "draft";
+        const result = await postJobToBreezy({
+          accessToken: breezyToken,
+          companyId: breezyPlatform.accountIdentifier,
+          title: titleForBreezy,
+          description: data.description,
+          requirements: data.requirements,
+          department: departmentName,
+          location: data.location,
+          type: data.type,
+          salary: data.salary,
+          publishState,
+        });
+
+        const createdInBreezy = result.success || !!result.positionId;
+        // PAUSED maps to Breezy "draft" (matches pauseOnBoard/resumeOnBoard).
+        const status: string = !createdInBreezy
+          ? "FAILED"
+          : publishState === "published" && result.success
+            ? "PUBLISHED"
+            : "PAUSED";
+
+        await db.positionBoardPosting.upsert({
+          where: { positionId_board: { positionId: position.id, board: "BREEZY" } },
+          create: {
+            positionId: position.id,
+            board: "BREEZY",
+            status,
+            externalId: result.positionId ?? null,
+            lastError: result.success ? null : result.error ?? "Failed",
+            titleOverride: titleForBreezy === data.title ? null : titleForBreezy,
+          },
+          update: {
+            status,
+            externalId: result.positionId ?? null,
+            lastError: result.success ? null : result.error ?? "Failed",
+          },
+        });
+
+        if (!result.success) {
+          console.error("[createPosition] Breezy posting failed:", result.error);
+          // Only surface the error to the user when they asked to publish.
+          // Silent drafts shouldn't block position creation on a Breezy hiccup.
+          if (postToBreezy) {
             postingErrors.push(`Breezy HR: ${result.error || "failed to post"}`);
           }
         }
       }
-    } catch (err) {
-      console.error("[createPosition] Breezy posting error:", err);
+    }
+  } catch (err) {
+    console.error("[createPosition] Breezy posting error:", err);
+    if (postToBreezy) {
       postingErrors.push("Breezy HR: unexpected error");
     }
   }
@@ -986,7 +1014,10 @@ export async function postPositionToBreezy(
     description: position.description || undefined,
     requirements: position.requirements || undefined,
     department: position.department?.name,
+    location: position.location || undefined,
+    type: position.type || undefined,
     salary: position.salary || undefined,
+    publishState: "published",
   });
 
   if (!result.success) {
