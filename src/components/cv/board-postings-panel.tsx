@@ -16,8 +16,7 @@ import {
 
 const BOARD_META: Record<BoardName, { label: string; icon: string; color: string }> = {
   CAREERS: { label: "Our Careers page", icon: "public", color: "text-purple-500" },
-  INDEED: { label: "Indeed", icon: "work", color: "text-blue-500" },
-  BREEZY: { label: "Breezy HR", icon: "work", color: "text-teal-500" },
+  BREEZY: { label: "Breezy (LinkedIn + Indeed)", icon: "work", color: "text-teal-500" },
   JOBING: { label: "Jobing", icon: "work", color: "text-orange-500" },
 };
 
@@ -44,8 +43,8 @@ export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: s
   }, [open, postings, load]);
 
   async function run(action: "post" | "pause" | "resume", board: BoardName) {
-    // For Indeed/Breezy, confirm the title to use on first post (or when re-posting without an override set)
-    if (action === "post" && (board === "INDEED" || board === "BREEZY")) {
+    // For Breezy, confirm the title to use on first post (or when re-posting without an override set)
+    if (action === "post" && board === "BREEZY") {
       const current = postings?.find((p) => p.board === board);
       const existingTitle = current?.titleOverride || "";
       const next = prompt(
@@ -99,7 +98,7 @@ export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: s
             const badge = STATUS_BADGE[p.status] || STATUS_BADGE.NOT_POSTED;
             const busy = busyBoard === p.board;
             const readonly = p.board === "JOBING";
-            const supportsTitleOverride = p.board === "INDEED" || p.board === "BREEZY";
+            const supportsTitleOverride = p.board === "BREEZY";
             const displayTitle = p.titleOverride || defaultTitle;
             return (
               <div key={p.board} className="flex flex-wrap items-center gap-3 px-2 py-2 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)]">

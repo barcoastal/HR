@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
-export type BoardName = "CAREERS" | "JOBING" | "INDEED" | "BREEZY";
+export type BoardName = "CAREERS" | "JOBING" | "BREEZY";
 export type BoardStatus = "NOT_POSTED" | "PUBLISHED" | "PAUSED" | "FAILED";
 
 export type BoardPostingView = {
@@ -24,11 +24,10 @@ export async function getBoardPostings(positionId: string): Promise<BoardPosting
   ]);
   const lookup = new Map(existing.map((p) => [p.board, p]));
 
-  const boards: BoardName[] = ["CAREERS", "JOBING", "INDEED", "BREEZY"];
+  const boards: BoardName[] = ["CAREERS", "JOBING", "BREEZY"];
   const supports: Record<BoardName, { post: boolean; pause: boolean; resume: boolean }> = {
     CAREERS: { post: true, pause: true, resume: true },
     JOBING: { post: false, pause: false, resume: false },
-    INDEED: { post: true, pause: true, resume: true },
     BREEZY: { post: true, pause: true, resume: true },
   };
 
@@ -123,37 +122,6 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
     return { success: false, error: msg };
   }
 
-  if (board === "INDEED") {
-    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Indeed" } });
-    if (!platform?.accountIdentifier) {
-      const err = "Indeed is not connected. Connect it in Settings first.";
-      await upsertPosting(positionId, "INDEED", { status: "FAILED", lastError: err });
-      revalidatePath("/cv");
-      return { success: false, error: err };
-    }
-    const existing = await db.positionBoardPosting.findUnique({
-      where: { positionId_board: { positionId, board: "INDEED" } },
-      select: { titleOverride: true },
-    });
-    const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
-    const result = await postJobToIndeed({
-      title: existing?.titleOverride || position.title,
-      description: position.description || undefined,
-      requirements: position.requirements || undefined,
-      salary: position.salary || undefined,
-      departmentName: position.department?.name,
-      connectionId: platform.accountIdentifier,
-    });
-    if (!result.success) {
-      await upsertPosting(positionId, "INDEED", { status: "FAILED", lastError: result.error || "Failed" });
-      revalidatePath("/cv");
-      return { success: false, error: result.error };
-    }
-    await upsertPosting(positionId, "INDEED", { status: "PUBLISHED", externalId: result.jobId ?? null, lastError: null });
-    revalidatePath("/cv");
-    return { success: true };
-  }
-
   if (board === "BREEZY") {
     const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Breezy HR" } });
     if (!platform?.refreshToken || !platform.accountIdentifier) {
@@ -186,6 +154,7 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
         location: position.location || undefined,
         salary: position.salary || undefined,
         type: position.type || undefined,
+        publishState: "published",
       });
       if (!result.success) {
         await upsertPosting(positionId, "BREEZY", { status: "FAILED", lastError: result.error || "Failed" });
@@ -222,20 +191,6 @@ export async function pauseOnBoard(positionId: string, board: BoardName): Promis
 
   if (board === "JOBING") {
     return { success: false, error: "Jobing API is read-only." };
-  }
-
-  if (board === "INDEED") {
-    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Indeed" } });
-    if (!platform?.accountIdentifier) return { success: false, error: "Indeed not connected." };
-    const { updateIndeedJobStatus } = await import("@/lib/platform-sync/clients/indeed");
-    const r = await updateIndeedJobStatus(platform.accountIdentifier, posting.externalId, "CLOSED");
-    if (!r.success) {
-      await upsertPosting(positionId, "INDEED", { lastError: r.error || "Failed" });
-      return r;
-    }
-    await upsertPosting(positionId, "INDEED", { status: "PAUSED", lastError: null });
-    revalidatePath("/cv");
-    return { success: true };
   }
 
   if (board === "BREEZY") {
@@ -281,20 +236,6 @@ export async function resumeOnBoard(positionId: string, board: BoardName): Promi
 
   if (board === "JOBING") {
     return { success: false, error: "Jobing API is read-only." };
-  }
-
-  if (board === "INDEED") {
-    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Indeed" } });
-    if (!platform?.accountIdentifier) return { success: false, error: "Indeed not connected." };
-    const { updateIndeedJobStatus } = await import("@/lib/platform-sync/clients/indeed");
-    const r = await updateIndeedJobStatus(platform.accountIdentifier, posting.externalId, "OPEN");
-    if (!r.success) {
-      await upsertPosting(positionId, "INDEED", { lastError: r.error || "Failed" });
-      return r;
-    }
-    await upsertPosting(positionId, "INDEED", { status: "PUBLISHED", lastError: null });
-    revalidatePath("/cv");
-    return { success: true };
   }
 
   if (board === "BREEZY") {

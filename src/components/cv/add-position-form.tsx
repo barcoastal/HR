@@ -238,26 +238,10 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
 
   // Platform toggles
   const [postToJobing, setPostToJobing] = useState(true);
-  const [postToLinkedIn, setPostToLinkedIn] = useState(false);
-  const [postToIndeed, setPostToIndeed] = useState(false);
-
-  // Platform settings
-  const [linkedInSettings, setLinkedInSettings] = useState({
-    premium: false,
-    remote: false,
-    jobType: "full-time",
-    experienceLevel: "mid-senior",
-  });
-  const [indeedSettings, setIndeedSettings] = useState({
-    sponsored: false,
-    budget: "50",
-    remote: false,
-    jobType: "full-time",
-  });
+  const [postToBreezy, setPostToBreezy] = useState(true);
 
   const [postToCareers, setPostToCareers] = useState(true);
-  const [linkedInTitle, setLinkedInTitle] = useState("");
-  const [indeedTitle, setIndeedTitle] = useState("");
+  const [breezyTitle, setBreezyTitle] = useState("");
   const [showMatchDialog, setShowMatchDialog] = useState(false);
 
   const [form, setForm] = useState({
@@ -277,7 +261,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
 
   function handlePreview() {
     if (!form.title) return;
-    if (postToLinkedIn || postToIndeed) {
+    if (postToBreezy) {
       setStep("preview");
     } else {
       handlePublish();
@@ -303,16 +287,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
         type: form.type || undefined,
         published: postToCareers,
         postToJobing,
-        postToIndeed: postToIndeed,
-        postToBreezy: postToLinkedIn || postToIndeed,
-        breezyChannels: {
-          linkedin: postToLinkedIn,
-          indeed: postToIndeed,
-        },
-        linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
-        indeedSettings: postToIndeed ? indeedSettings : undefined,
-        breezyTitleOverride: linkedInTitle.trim() || null,
-        indeedTitleOverride: indeedTitle.trim() || null,
+        postToBreezy,
+        breezyTitleOverride: breezyTitle.trim() || null,
       });
       setCreatedPositionId(result.id);
       setCreatedPositionTitle(form.title);
@@ -337,8 +313,8 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     setForm({ title: "", departmentId: "", description: "", requirements: "", salary: "", location: "", type: "Full-time" });
     setCreatedPositionId(null);
     setCreatedPositionTitle("");
-    setPostToLinkedIn(false);
-    setPostToIndeed(false);
+    setPostToBreezy(true);
+    setBreezyTitle("");
     setLoading(false);
   }
 
@@ -348,8 +324,6 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
     "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]",
     "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
   );
-
-  const selectClass = cn(inputClass, "appearance-none");
 
   return (
     <>
@@ -432,125 +406,30 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
                 </div>
               </div>
 
-              {/* LinkedIn */}
-              <div className={cn("rounded-lg border mb-2 transition-colors", postToLinkedIn ? "border-[#0A66C2]/40 bg-[#0A66C2]/5" : "border-[var(--color-border)]")}>
+              {/* Breezy (LinkedIn + Indeed) */}
+              <div className={cn("rounded-lg border mb-2 transition-colors", postToBreezy ? "border-[#0A66C2]/40 bg-[#0A66C2]/5" : "border-[var(--color-border)]")}>
                 <div className="flex items-center justify-between p-3">
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-md bg-[#0A66C2] flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">in</span>
+                      <span className="text-white text-[10px] font-bold">Bz</span>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-[var(--color-text-primary)]">LinkedIn</p>
-                      <p className="text-[10px] text-[var(--color-text-muted)]">Post via Breezy HR integration</p>
+                      <p className="text-xs font-medium text-[var(--color-text-primary)]">Breezy (LinkedIn + Indeed)</p>
+                      <p className="text-[10px] text-[var(--color-text-muted)]">Publishes to LinkedIn & Indeed via Breezy HR</p>
                     </div>
                   </div>
-                  <Toggle checked={postToLinkedIn} onChange={() => setPostToLinkedIn(!postToLinkedIn)} color="bg-[#0A66C2]" />
+                  <Toggle checked={postToBreezy} onChange={() => setPostToBreezy(!postToBreezy)} color="bg-[#0A66C2]" />
                 </div>
-                {postToLinkedIn && (
+                {postToBreezy && (
                   <div className="px-3 pb-3 pt-1 border-t border-[#0A66C2]/10 space-y-2">
                     <div>
-                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Title shown on LinkedIn/Breezy</label>
+                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Title shown on LinkedIn / Indeed</label>
                       <input
-                        value={linkedInTitle}
-                        onChange={(e) => setLinkedInTitle(e.target.value)}
-                        placeholder={form.title ? `Default: ${form.title}` : "Job title on LinkedIn"}
+                        value={breezyTitle}
+                        onChange={(e) => setBreezyTitle(e.target.value)}
+                        placeholder={form.title ? `Default: ${form.title}` : "Job title for Breezy"}
                         className={cn(inputClass, "text-xs py-1.5")}
                       />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Premium Listing</p>
-                        <p className="text-[10px] text-[var(--color-text-muted)]">Boost visibility with promoted placement</p>
-                      </div>
-                      <Toggle checked={linkedInSettings.premium} onChange={() => setLinkedInSettings(s => ({ ...s, premium: !s.premium }))} color="bg-[#0A66C2]" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Remote Position</p>
-                      <Toggle checked={linkedInSettings.remote} onChange={() => setLinkedInSettings(s => ({ ...s, remote: !s.remote }))} color="bg-[#0A66C2]" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Job Type</label>
-                        <select value={linkedInSettings.jobType} onChange={(e) => setLinkedInSettings(s => ({ ...s, jobType: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
-                          <option value="full-time">Full-time</option>
-                          <option value="part-time">Part-time</option>
-                          <option value="contract">Contract</option>
-                          <option value="internship">Internship</option>
-                          <option value="temporary">Temporary</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Experience Level</label>
-                        <select value={linkedInSettings.experienceLevel} onChange={(e) => setLinkedInSettings(s => ({ ...s, experienceLevel: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
-                          <option value="entry">Entry Level</option>
-                          <option value="associate">Associate</option>
-                          <option value="mid-senior">Mid-Senior</option>
-                          <option value="director">Director</option>
-                          <option value="executive">Executive</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Indeed */}
-              <div className={cn("rounded-lg border mb-2 transition-colors", postToIndeed ? "border-[#2164f3]/40 bg-[#2164f3]/5" : "border-[var(--color-border)]")}>
-                <div className="flex items-center justify-between p-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-md bg-[#2164f3] flex items-center justify-center">
-                      <span className="text-white text-[10px] font-bold">iD</span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-[var(--color-text-primary)]">Indeed</p>
-                      <p className="text-[10px] text-[var(--color-text-muted)]">Post via Breezy HR integration</p>
-                    </div>
-                  </div>
-                  <Toggle checked={postToIndeed} onChange={() => setPostToIndeed(!postToIndeed)} color="bg-[#2164f3]" />
-                </div>
-                {postToIndeed && (
-                  <div className="px-3 pb-3 pt-1 border-t border-[#2164f3]/10 space-y-2">
-                    <div>
-                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Title shown on Indeed</label>
-                      <input
-                        value={indeedTitle}
-                        onChange={(e) => setIndeedTitle(e.target.value)}
-                        placeholder={form.title ? `Default: ${form.title}` : "Job title on Indeed"}
-                        className={cn(inputClass, "text-xs py-1.5")}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Sponsored Listing</p>
-                        <p className="text-[10px] text-[var(--color-text-muted)]">Pay-per-click to appear higher in search</p>
-                      </div>
-                      <Toggle checked={indeedSettings.sponsored} onChange={() => setIndeedSettings(s => ({ ...s, sponsored: !s.sponsored }))} color="bg-[#2164f3]" />
-                    </div>
-                    {indeedSettings.sponsored && (
-                      <div>
-                        <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Daily Budget ($)</label>
-                        <input
-                          type="number"
-                          value={indeedSettings.budget}
-                          onChange={(e) => setIndeedSettings(s => ({ ...s, budget: e.target.value }))}
-                          className={cn(inputClass, "text-xs py-1.5")}
-                          placeholder="50"
-                        />
-                      </div>
-                    )}
-                    <div className="flex items-center justify-between">
-                      <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Remote Position</p>
-                      <Toggle checked={indeedSettings.remote} onChange={() => setIndeedSettings(s => ({ ...s, remote: !s.remote }))} color="bg-[#2164f3]" />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-[var(--color-text-muted)] mb-0.5 block">Job Type</label>
-                      <select value={indeedSettings.jobType} onChange={(e) => setIndeedSettings(s => ({ ...s, jobType: e.target.value }))} className={cn(selectClass, "text-xs py-1.5")}>
-                        <option value="full-time">Full-time</option>
-                        <option value="part-time">Part-time</option>
-                        <option value="contract">Contract</option>
-                        <option value="internship">Internship</option>
-                        <option value="temporary">Temporary</option>
-                      </select>
                     </div>
                   </div>
                 )}
@@ -587,7 +466,7 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
             >
               {loading ? (
                 <Icon name="progress_activity" size={16} className="animate-material-spin" />
-              ) : (postToLinkedIn || postToIndeed) ? (
+              ) : postToBreezy ? (
                 <span className="inline-flex items-center gap-1.5">
                   <Icon name="visibility" size={16} />
                   Preview Posting
@@ -604,16 +483,14 @@ export function AddPositionForm({ departments }: { departments: Department[] }) 
         <Dialog open={open} onClose={handleClose} title="Preview Job Posting">
           <JobPostingPreview
             job={{
-              title: form.title,
+              title: breezyTitle.trim() || form.title,
               description: form.description,
               requirements: form.requirements,
               salary: form.salary,
               departmentName: departments.find((d) => d.id === form.departmentId)?.name || "",
-              linkedInSettings: postToLinkedIn ? linkedInSettings : undefined,
-              indeedSettings: postToIndeed ? indeedSettings : undefined,
             }}
-            showLinkedIn={postToLinkedIn}
-            showIndeed={postToIndeed}
+            showLinkedIn={postToBreezy}
+            showIndeed={postToBreezy}
             onBack={() => setStep("form")}
             onPublish={handlePublish}
             publishing={loading}

@@ -799,31 +799,23 @@ export async function createPosition(data: {
   type?: string;
   published?: boolean;
   postToJobing?: boolean;
-  postToIndeed?: boolean;
   postToBreezy?: boolean;
-  breezyChannels?: { linkedin?: boolean; indeed?: boolean };
-  linkedInSettings?: { premium?: boolean; remote?: boolean; jobType?: string; experienceLevel?: string };
-  indeedSettings?: { sponsored?: boolean; budget?: string; remote?: boolean; jobType?: string };
-  indeedTitleOverride?: string | null;
   breezyTitleOverride?: string | null;
 }) {
-  const { postToJobing, postToIndeed, postToBreezy, breezyChannels, linkedInSettings, indeedSettings, indeedTitleOverride, breezyTitleOverride, ...positionData } = data;
+  const { postToJobing, postToBreezy, breezyTitleOverride, ...positionData } = data;
   const position = await db.position.create({ data: positionData });
 
-  // Persist title overrides for future re-posts / edits, regardless of whether
-  // we publish now. Only store when non-empty and different from the default.
+  // Persist Breezy title override for future re-posts. Only store when non-empty
+  // and different from the default position title.
   const defaultTitle = data.title.trim();
-  const saveOverride = async (board: "INDEED" | "BREEZY", override: string | null | undefined) => {
-    const clean = override?.trim() || null;
-    if (!clean || clean === defaultTitle) return;
+  const breezyOverride = breezyTitleOverride?.trim() || null;
+  if (breezyOverride && breezyOverride !== defaultTitle) {
     await db.positionBoardPosting.upsert({
-      where: { positionId_board: { positionId: position.id, board } },
-      create: { positionId: position.id, board, status: "NOT_POSTED", titleOverride: clean },
-      update: { titleOverride: clean },
+      where: { positionId_board: { positionId: position.id, board: "BREEZY" } },
+      create: { positionId: position.id, board: "BREEZY", status: "NOT_POSTED", titleOverride: breezyOverride },
+      update: { titleOverride: breezyOverride },
     });
-  };
-  await saveOverride("INDEED", indeedTitleOverride);
-  await saveOverride("BREEZY", breezyTitleOverride);
+  }
 
   let departmentName: string | undefined;
   if (data.departmentId) {
@@ -849,76 +841,30 @@ export async function createPosition(data: {
     }
   }
 
-  if (postToIndeed) {
-    try {
-      const { postJobToIndeed } = await import("@/lib/platform-sync/clients/indeed");
-      const indeedPlatform = await db.recruitmentPlatform.findUnique({
-        where: { name: "Indeed" },
-        select: { accountIdentifier: true },
-      });
-      if (indeedPlatform?.accountIdentifier) {
-        const titleForIndeed = indeedTitleOverride?.trim() || data.title;
-        const res = await postJobToIndeed({
-          title: titleForIndeed,
-          description: data.description,
-          requirements: data.requirements,
-          salary: data.salary,
-          departmentName,
-          connectionId: indeedPlatform.accountIdentifier,
-        });
-        await db.positionBoardPosting.upsert({
-          where: { positionId_board: { positionId: position.id, board: "INDEED" } },
-          create: {
-            positionId: position.id,
-            board: "INDEED",
-            status: res.success ? "PUBLISHED" : "FAILED",
-            externalId: res.jobId ?? null,
-            lastError: res.success ? null : res.error ?? "Failed",
-            titleOverride: titleForIndeed === data.title ? null : titleForIndeed,
-          },
-          update: {
-            status: res.success ? "PUBLISHED" : "FAILED",
-            externalId: res.jobId ?? null,
-            lastError: res.success ? null : res.error ?? "Failed",
-          },
-        });
-      }
-    } catch (err) {
-      console.error("[createPosition] Indeed posting failed:", err);
-    }
-  }
-
   const postingErrors: string[] = [];
 
-  // Every new position is mirrored into Breezy HR.
-  //  - If the user ticked LinkedIn or Indeed, we publish via Breezy so it goes
-  //    live on those channels.
-  //  - Otherwise we auto-create as a draft so the position exists in Breezy and
-  //    can be published later from either platform.
-  try {
+  // Mirror to Breezy HR only when the user opts in. Always publish — Breezy
+  // syndicates to LinkedIn and Indeed automatically.
+  if (postToBreezy) {
+   try {
     const breezyPlatform = await db.recruitmentPlatform.findUnique({
       where: { name: "Breezy HR" },
       select: { id: true, accountIdentifier: true },
     });
     if (!breezyPlatform?.accountIdentifier) {
-      if (postToBreezy) {
-        postingErrors.push("Breezy HR is not configured. Connect it in Settings first.");
-      }
+      postingErrors.push("Breezy HR is not configured. Connect it in Settings first.");
     } else {
       const { ensureValidToken } = await import("./platform-sync");
       const tokenResult = await ensureValidToken(breezyPlatform.id);
       if (!tokenResult.valid || !tokenResult.accessToken) {
         console.error("[createPosition] Breezy token invalid:", tokenResult.error);
-        if (postToBreezy) {
-          postingErrors.push(
-            `Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`
-          );
-        }
+        postingErrors.push(
+          `Breezy HR authentication failed: ${tokenResult.error || "invalid token"}`
+        );
       } else {
         const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
         const [breezyToken] = tokenResult.accessToken.split("::");
         const titleForBreezy = breezyTitleOverride?.trim() || data.title;
-        const publishState: "draft" | "published" = postToBreezy ? "published" : "draft";
         const result = await postJobToBreezy({
           accessToken: breezyToken,
           companyId: breezyPlatform.accountIdentifier,
@@ -929,16 +875,12 @@ export async function createPosition(data: {
           location: data.location,
           type: data.type,
           salary: data.salary,
-          publishState,
+          publishState: "published",
         });
 
-        const createdInBreezy = result.success || !!result.positionId;
-        // PAUSED maps to Breezy "draft" (matches pauseOnBoard/resumeOnBoard).
-        const status: string = !createdInBreezy
-          ? "FAILED"
-          : publishState === "published" && result.success
-            ? "PUBLISHED"
-            : "PAUSED";
+        const status: string = result.success
+          ? "PUBLISHED"
+          : "FAILED";
 
         await db.positionBoardPosting.upsert({
           where: { positionId_board: { positionId: position.id, board: "BREEZY" } },
@@ -959,19 +901,14 @@ export async function createPosition(data: {
 
         if (!result.success) {
           console.error("[createPosition] Breezy posting failed:", result.error);
-          // Only surface the error to the user when they asked to publish.
-          // Silent drafts shouldn't block position creation on a Breezy hiccup.
-          if (postToBreezy) {
-            postingErrors.push(`Breezy HR: ${result.error || "failed to post"}`);
-          }
+          postingErrors.push(`Breezy HR: ${result.error || "failed to post"}`);
         }
       }
     }
-  } catch (err) {
+   } catch (err) {
     console.error("[createPosition] Breezy posting error:", err);
-    if (postToBreezy) {
-      postingErrors.push("Breezy HR: unexpected error");
-    }
+    postingErrors.push("Breezy HR: unexpected error");
+   }
   }
 
   revalidatePath("/cv");

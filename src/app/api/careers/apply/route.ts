@@ -17,6 +17,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    if (!resume || resume.size === 0) {
+      return NextResponse.json({ error: "Resume (PDF) is required" }, { status: 400 });
+    }
+
     // Verify position exists and is published
     const position = await db.position.findUnique({ where: { id: positionId } });
     if (!position || position.status !== "OPEN" || !position.published) {

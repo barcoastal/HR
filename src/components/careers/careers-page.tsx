@@ -245,6 +245,10 @@ function ApplyModal({ positionId, positionTitle, onClose }: { positionId: string
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!form.firstName || !form.lastName || !form.email) return;
+    if (!resume) {
+      setError("Please attach your resume (PDF).");
+      return;
+    }
     setSubmitting(true);
     setError("");
 
@@ -335,9 +339,9 @@ function ApplyModal({ positionId, positionTitle, onClose }: { positionId: string
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Resume (PDF)</label>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Resume (PDF) *</label>
                   <input
-                    type="file" accept=".pdf"
+                    type="file" accept=".pdf" required
                     onChange={(e) => setResume(e.target.files?.[0] || null)}
                     className="w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-[#3052FF] hover:file:bg-blue-100"
                   />
@@ -352,7 +356,7 @@ function ApplyModal({ positionId, positionTitle, onClose }: { positionId: string
             <div className="px-6 sm:px-8 pb-6 sm:pb-8">
               <button
                 type="submit"
-                disabled={submitting || !form.firstName || !form.lastName || !form.email}
+                disabled={submitting || !form.firstName || !form.lastName || !form.email || !resume}
                 className="w-full py-3 rounded-xl text-sm font-semibold bg-[#3052FF] text-white hover:bg-[#2442dd] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {submitting ? "Submitting..." : "Submit Application"}

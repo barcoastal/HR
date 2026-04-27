@@ -36,19 +36,10 @@ const BOARD_META: Record<BoardName, {
     ring: "bg-purple-500",
     tintBg: "border-purple-500/10",
   },
-  INDEED: {
-    label: "Indeed",
-    subtitle: "Post via Unified.to",
-    initials: "iD",
-    bg: "bg-[#2164f3]",
-    tint: "border-[#2164f3]/40 bg-[#2164f3]/5",
-    ring: "bg-[#2164f3]",
-    tintBg: "border-[#2164f3]/10",
-  },
   BREEZY: {
-    label: "Breezy HR (LinkedIn)",
-    subtitle: "Publishes to LinkedIn & Breezy",
-    initials: "in",
+    label: "Breezy (LinkedIn + Indeed)",
+    subtitle: "Publishes to LinkedIn & Indeed via Breezy",
+    initials: "Bz",
     bg: "bg-[#0a66c2]",
     tint: "border-[#0a66c2]/40 bg-[#0a66c2]/5",
     ring: "bg-[#0a66c2]",
@@ -160,7 +151,7 @@ export function EditPositionDialog({
   async function run(action: "post" | "pause" | "resume", board: BoardName) {
     setBusyBoard(board);
     // Save title override first if set
-    if ((board === "INDEED" || board === "BREEZY") && overrides[board] !== undefined) {
+    if (board === "BREEZY" && overrides[board] !== undefined) {
       await setBoardTitleOverride(position.id, board, overrides[board]?.trim() || null);
     }
     const fn = action === "post" ? postToBoard : action === "pause" ? pauseOnBoard : resumeOnBoard;
@@ -223,7 +214,7 @@ export function EditPositionDialog({
           <div className="space-y-2">
             {postings.map((p) => {
               const meta = BOARD_META[p.board];
-              const supportsOverride = p.board === "INDEED" || p.board === "BREEZY";
+              const supportsOverride = p.board === "BREEZY";
               const busy = busyBoard === p.board;
               const readonly = p.board === "JOBING";
               const active = p.status === "PUBLISHED" || p.status === "PAUSED";
