@@ -35,7 +35,11 @@ function LoginForm() {
           ? "You don't have permission to access that page."
           : errorParam === "CredentialsSignin"
             ? "Invalid username or password."
-            : null;
+            : errorParam === "signin-failed"
+              ? "Sign-in failed. Please try again or contact your admin."
+              : errorParam === "Configuration" || errorParam === "AccessDenied" || errorParam === "Verification"
+                ? "Sign-in failed. Please try again or contact your admin."
+                : null;
 
   async function handleCredentialLogin(e: React.FormEvent) {
     e.preventDefault();

@@ -62,91 +62,96 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: { strategy: "jwt" },
-  pages: { signIn: "/login" },
+  pages: { signIn: "/login", error: "/login" },
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Allow credentials login (already validated in authorize)
-      if (account?.provider === "credentials") return true;
+      try {
+        // Allow credentials login (already validated in authorize)
+        if (account?.provider === "credentials") return true;
 
-      const email = profile?.email;
-      if (!email) return false;
+        const email = profile?.email;
+        if (!email) return false;
 
-      // Only allow @coastaldebt.com emails
-      if (!email.endsWith("@coastaldebt.com")) {
-        return "/login?error=domain";
-      }
+        // Only allow @coastaldebt.com emails
+        if (!email.endsWith("@coastaldebt.com")) {
+          return "/login?error=domain";
+        }
 
-      // Ensure seeded admins exist before checking
-      await ensureAdminExists();
+        // Ensure seeded admins exist before checking
+        await ensureAdminExists();
 
-      // Only allow pre-invited users (no auto-creation)
-      // Case-insensitive lookup since Google may return different casing
-      const emailLower = email.toLowerCase();
-      let dbUser = await db.user.findUnique({
-        where: { email: emailLower },
-        include: { employee: true },
-      });
-      // Fallback: try original casing
-      if (!dbUser) {
-        dbUser = await db.user.findUnique({
-          where: { email },
+        // Only allow pre-invited users (no auto-creation)
+        // Case-insensitive lookup since Google may return different casing
+        const emailLower = email.toLowerCase();
+        let dbUser = await db.user.findUnique({
+          where: { email: emailLower },
           include: { employee: true },
         });
-      }
-      // Fallback: try finding by employee email
-      if (!dbUser) {
-        const emp = await db.employee.findFirst({
-          where: { email: { equals: emailLower, mode: "insensitive" } },
-        });
-        if (emp) {
-          dbUser = await db.user.findFirst({
-            where: { employeeId: emp.id },
+        // Fallback: try original casing
+        if (!dbUser) {
+          dbUser = await db.user.findUnique({
+            where: { email },
             include: { employee: true },
           });
         }
+        // Fallback: try finding by employee email
+        if (!dbUser) {
+          const emp = await db.employee.findFirst({
+            where: { email: { equals: emailLower, mode: "insensitive" } },
+          });
+          if (emp) {
+            dbUser = await db.user.findFirst({
+              where: { employeeId: emp.id },
+              include: { employee: true },
+            });
+          }
+        }
+
+        if (!dbUser) {
+          return "/login?error=not-invited";
+        }
+
+        // Auto-create employee profile if missing
+        if (!dbUser.employeeId) {
+          const profileName = (profile as { name?: string })?.name || email.split("@")[0];
+          const nameParts = profileName.split(" ");
+          const firstName = nameParts[0] || email.split("@")[0];
+          const lastName = nameParts.slice(1).join(" ") || "";
+
+          const employee = await db.employee.create({
+            data: {
+              firstName,
+              lastName,
+              email,
+              jobTitle: "",
+              startDate: new Date(),
+              status: "ACTIVE",
+            },
+          });
+
+          await db.user.update({
+            where: { id: dbUser.id },
+            data: { employeeId: employee.id },
+          });
+
+          dbUser.employeeId = employee.id;
+          dbUser.employee = employee;
+        }
+
+        // Populate the user object so the jwt callback can read it
+        user.id = dbUser.id;
+        user.role = dbUser.role;
+        user.employeeId = dbUser.employeeId;
+        user.profilePhoto = dbUser.employee?.profilePhoto || null;
+        user.name = dbUser.employee
+          ? `${dbUser.employee.firstName} ${dbUser.employee.lastName}`
+          : dbUser.email;
+
+        return true;
+      } catch (err) {
+        console.error("[auth] signIn callback failed:", err);
+        return "/login?error=signin-failed";
       }
-
-      if (!dbUser) {
-        return "/login?error=not-invited";
-      }
-
-      // Auto-create employee profile if missing
-      if (!dbUser.employeeId) {
-        const profileName = (profile as { name?: string })?.name || email.split("@")[0];
-        const nameParts = profileName.split(" ");
-        const firstName = nameParts[0] || email.split("@")[0];
-        const lastName = nameParts.slice(1).join(" ") || "";
-
-        const employee = await db.employee.create({
-          data: {
-            firstName,
-            lastName,
-            email,
-            jobTitle: "",
-            startDate: new Date(),
-            status: "ACTIVE",
-          },
-        });
-
-        await db.user.update({
-          where: { id: dbUser.id },
-          data: { employeeId: employee.id },
-        });
-
-        dbUser.employeeId = employee.id;
-        dbUser.employee = employee;
-      }
-
-      // Populate the user object so the jwt callback can read it
-      user.id = dbUser.id;
-      user.role = dbUser.role;
-      user.employeeId = dbUser.employeeId;
-      user.profilePhoto = dbUser.employee?.profilePhoto || null;
-      user.name = dbUser.employee
-        ? `${dbUser.employee.firstName} ${dbUser.employee.lastName}`
-        : dbUser.email;
-
-      return true;
     },
     async jwt({ token, user, account }) {
       if (user) {
@@ -165,31 +170,36 @@ export const authOptions: NextAuthOptions = {
         token.profilePhoto = emp?.profilePhoto || null;
       }
 
-      // Persist Google OAuth tokens to RecruitmentPlatform for calendar access
+      // Persist Google OAuth tokens to RecruitmentPlatform for calendar access.
+      // Fail-soft: never block sign-in if the token write fails.
       if (account?.provider === "google") {
-        await db.recruitmentPlatform.upsert({
-          where: { name: "Google Calendar" },
-          update: {
-            apiKey: account.access_token,
-            refreshToken: account.refresh_token ?? undefined,
-            tokenExpiresAt: account.expires_at
-              ? new Date(account.expires_at * 1000)
-              : null,
-            oauthProvider: "google_calendar",
-            status: "ACTIVE",
-          },
-          create: {
-            name: "Google Calendar",
-            type: "PREMIUM",
-            apiKey: account.access_token,
-            refreshToken: account.refresh_token,
-            tokenExpiresAt: account.expires_at
-              ? new Date(account.expires_at * 1000)
-              : null,
-            oauthProvider: "google_calendar",
-            status: "ACTIVE",
-          },
-        });
+        try {
+          await db.recruitmentPlatform.upsert({
+            where: { name: "Google Calendar" },
+            update: {
+              apiKey: account.access_token,
+              refreshToken: account.refresh_token ?? undefined,
+              tokenExpiresAt: account.expires_at
+                ? new Date(account.expires_at * 1000)
+                : null,
+              oauthProvider: "google_calendar",
+              status: "ACTIVE",
+            },
+            create: {
+              name: "Google Calendar",
+              type: "PREMIUM",
+              apiKey: account.access_token,
+              refreshToken: account.refresh_token,
+              tokenExpiresAt: account.expires_at
+                ? new Date(account.expires_at * 1000)
+                : null,
+              oauthProvider: "google_calendar",
+              status: "ACTIVE",
+            },
+          });
+        } catch (err) {
+          console.error("[auth] Failed to persist Google Calendar tokens:", err);
+        }
       }
 
       return token;
