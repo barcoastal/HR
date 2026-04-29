@@ -78,6 +78,22 @@ export async function inviteUser(data: {
   return user;
 }
 
+export async function setUserPassword(userId: string, password: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const callerRole = session.user?.role;
+  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
+    throw new Error("Not authorized to set passwords");
+  }
+  if (!password || password.length < 8) {
+    return { success: false, error: "Password must be at least 8 characters." };
+  }
+  const passwordHash = await bcrypt.hash(password, 10);
+  await db.user.update({ where: { id: userId }, data: { passwordHash } });
+  revalidatePath("/settings");
+  return { success: true };
+}
+
 export async function updateUserRole(id: string, role: UserRole) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();

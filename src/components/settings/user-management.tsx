@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { inviteUser, updateUserRole, deleteUser } from "@/lib/actions/users";
+import { inviteUser, updateUserRole, deleteUser, setUserPassword } from "@/lib/actions/users";
 import { useRouter } from "next/navigation";
 import type { UserRole } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
@@ -31,7 +31,40 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<UserRole>("EMPLOYEE");
   const [loading, setLoading] = useState(false);
+  const [pwUser, setPwUser] = useState<UserItem | null>(null);
+  const [pwValue, setPwValue] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwError, setPwError] = useState("");
+  const [pwSuccess, setPwSuccess] = useState("");
   const router = useRouter();
+
+  function generatePassword() {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    let out = "";
+    for (let i = 0; i < 12; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    setPwValue(out);
+  }
+
+  async function handleSetPassword() {
+    if (!pwUser || !pwValue) return;
+    setPwSaving(true);
+    setPwError("");
+    setPwSuccess("");
+    const r = await setUserPassword(pwUser.id, pwValue);
+    setPwSaving(false);
+    if (!r.success) {
+      setPwError(r.error || "Failed");
+      return;
+    }
+    setPwSuccess(`Password set. Username: ${pwUser.email}`);
+  }
+
+  function closePwDialog() {
+    setPwUser(null);
+    setPwValue("");
+    setPwError("");
+    setPwSuccess("");
+  }
 
   async function handleInvite() {
     if (!email) return;
@@ -106,6 +139,13 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
                   </td>
                   <td className="px-3 py-3">
                     <div className="flex items-center justify-end gap-1">
+                      <button
+                        onClick={() => setPwUser(user)}
+                        title="Set password"
+                        className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-[var(--color-accent)]/15 hover:text-[var(--color-accent)] transition-colors"
+                      >
+                        <Icon name="key" size={12} />
+                      </button>
                       <button onClick={() => handleDelete(user.id)} className="p-1.5 rounded-lg text-[var(--color-text-muted)] hover:bg-red-500/15 hover:text-red-400 transition-colors">
                         <Icon name="delete" size={12} />
                       </button>
@@ -134,6 +174,57 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
           ))}
         </div>
       </section>
+
+      <Dialog open={!!pwUser} onClose={closePwDialog} title="Set password">
+        {pwUser && (
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-[var(--color-text-primary)]">{pwUser.name}</p>
+              <p className="text-xs text-[var(--color-text-muted)]">{pwUser.email}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">New password</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={pwValue}
+                  onChange={(e) => setPwValue(e.target.value)}
+                  placeholder="At least 8 characters"
+                  className={cn("flex-1 px-3 py-2 rounded-lg text-sm font-mono", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40")}
+                />
+                <button
+                  type="button"
+                  onClick={generatePassword}
+                  className="px-3 py-2 rounded-lg text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-primary)]"
+                >
+                  Generate
+                </button>
+              </div>
+              <p className="text-xs text-[var(--color-text-muted)] mt-1">
+                Username will be the user's email: <span className="font-mono">{pwUser.email}</span>
+              </p>
+            </div>
+            {pwError && <p className="text-xs text-red-500">{pwError}</p>}
+            {pwSuccess && (
+              <div className="px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
+                {pwSuccess}
+              </div>
+            )}
+            <div className="flex justify-end gap-2 pt-2">
+              <button onClick={closePwDialog} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">
+                Close
+              </button>
+              <button
+                onClick={handleSetPassword}
+                disabled={!pwValue || pwSaving}
+                className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
+              >
+                {pwSaving ? "Saving..." : "Save password"}
+              </button>
+            </div>
+          </div>
+        )}
+      </Dialog>
 
       <Dialog open={inviteOpen} onClose={() => setInviteOpen(false)} title="Invite User">
         <div className="space-y-4">
