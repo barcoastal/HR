@@ -378,29 +378,6 @@ export function CalendarView({ events }: Props) {
           )}
         </div>
 
-        {/* Promo card */}
-        <div className="col-span-2 bg-[var(--color-inverse-surface)] rounded-[var(--radius-xl)] p-8 relative overflow-hidden flex items-center">
-          <div className="relative z-10 space-y-4 max-w-md">
-            <span className="bg-[var(--color-primary)]/20 text-[var(--color-primary-fixed-dim)] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full inline-block">
-              Pro Tip
-            </span>
-            <h3 className="text-2xl font-black text-white leading-tight">
-              Sync your calendar with Google or Outlook.
-            </h3>
-            <p className="text-[var(--color-surface-variant)]/70 text-sm">
-              Keep your professional and personal life in perfect harmony.
-            </p>
-            <button className="bg-[var(--color-surface)] text-[var(--color-on-surface)] px-6 py-2.5 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
-              Enable Sync Now
-            </button>
-          </div>
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-gradient-to-l from-[var(--color-primary)]/30 to-transparent" />
-          <Icon
-            name="calendar_month"
-            size={200}
-            className="absolute -right-10 -bottom-10 text-white/5 rotate-12"
-          />
-        </div>
       </div>
 
       <FAB icon="event" variant="solid" />
