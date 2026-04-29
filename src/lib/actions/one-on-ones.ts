@@ -120,12 +120,36 @@ export async function ensureAnnualCoverage() {
   }
 }
 
+/**
+ * Retroactively create Google Calendar events (with Meet link) for any
+ * SCHEDULED 1:1 that is missing one. Covers meetings created before Google
+ * Calendar was connected, before auto-create shipped, or where the API call
+ * failed. Capped per call so a single page load doesn't burn the API quota.
+ */
+export async function backfillGoogleEvents(limit = 25) {
+  if (!(await isCalendarConnected())) return;
+  const missing = await db.oneOnOne.findMany({
+    where: {
+      status: "SCHEDULED",
+      googleEventId: null,
+      scheduledAt: { gte: new Date() },
+    },
+    select: { id: true },
+    take: limit,
+    orderBy: { scheduledAt: "asc" },
+  });
+  for (const m of missing) {
+    await autoCreateGoogleEvent(m.id);
+  }
+}
+
 export async function listOneOnOnes() {
   const session = await requireAuth();
   const role = session.user?.role;
   const myEmployeeId = session.user?.employeeId;
 
   await ensureAnnualCoverage();
+  await backfillGoogleEvents();
 
   const where = isAdmin(role)
     ? {}
