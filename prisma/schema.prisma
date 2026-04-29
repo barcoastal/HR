@@ -55,6 +55,18 @@ enum ReviewStatus {
   SUBMITTED
 }
 
+enum OneOnOneType {
+  THIRTY_DAY
+  QUARTERLY
+  ANNUAL
+}
+
+enum OneOnOneStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
 enum FeedPostType {
   ANNOUNCEMENT
   GENERAL
@@ -225,6 +237,8 @@ model Employee {
   reviewsAsEmployee  Review[]        @relation("ReviewEmployee")
   reviewsAsReviewer  Review[]        @relation("ReviewReviewer")
   anniversaryReviewCycles ReviewCycle[] @relation("AnniversaryReviewCycle")
+  oneOnOnesAsEmployee OneOnOne[]     @relation("OneOnOneEmployee")
+  oneOnOnesAsManager  OneOnOne[]     @relation("OneOnOneManager")
   feedPosts          FeedPost[]
   feedComments       FeedComment[]
   feedReactions      FeedReaction[]
@@ -1294,6 +1308,28 @@ model FileBlob {
   size      Int
   data      Bytes
   createdAt DateTime @default(now())
+}
+
+model OneOnOne {
+  id               String         @id @default(uuid())
+  employeeId       String
+  managerId        String
+  scheduledAt      DateTime
+  completedAt      DateTime?
+  type             OneOnOneType
+  status           OneOnOneStatus @default(SCHEDULED)
+  notebookMarkdown String?
+  meetingLink      String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  employee Employee @relation("OneOnOneEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+  manager  Employee @relation("OneOnOneManager", fields: [managerId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([managerId])
+  @@index([scheduledAt])
+  @@index([status])
 }
 
 model GustoConnection {

@@ -11,6 +11,8 @@ import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { getHRNotes } from "@/lib/actions/hr-notes";
 import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
+import { getNextOneOnOneForEmployee } from "@/lib/actions/one-on-ones";
+import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
 
@@ -36,10 +38,11 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
   const currentEmployeeId = session.user?.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const { id } = await params;
-  const [employee, hrNotes, documents] = await Promise.all([
+  const [employee, hrNotes, documents, nextOneOnOne] = await Promise.all([
     getEmployeeById(id),
     getHRNotes(id),
     getEmployeeDocuments(id),
+    getNextOneOnOneForEmployee(id),
   ]);
   if (!employee) notFound();
 
@@ -168,6 +171,31 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 <InfoRow icon="person" label="Name" value={employee.emergencyContactName} />
                 {employee.emergencyContactPhone && <InfoRow icon="phone" label="Phone" value={employee.emergencyContactPhone} />}
                 {employee.emergencyContactRelation && <InfoRow icon="shield" label="Relationship" value={employee.emergencyContactRelation} />}
+              </div>
+            </section>
+          )}
+
+          {nextOneOnOne && (canViewDocuments || isOwnProfile) && (
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-lg bg-[var(--color-accent)]/10 flex items-center justify-center shrink-0">
+                    <Icon name="forum" size={20} className="text-[var(--color-accent)]" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Next 1:1</p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)] mt-0.5">
+                      {new Date(nextOneOnOne.scheduledAt).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+                      <span className="font-normal text-[var(--color-text-muted)]"> · with {nextOneOnOne.manager.firstName} {nextOneOnOne.manager.lastName}</span>
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href={`/one-on-ones/${nextOneOnOne.id}`}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--color-accent)] text-white hover:opacity-90 inline-flex items-center gap-1"
+                >
+                  Open <Icon name="arrow_forward" size={14} />
+                </Link>
               </div>
             </section>
           )}

@@ -330,6 +330,11 @@ export type SavedMessage = Prisma.SavedMessageModel
  */
 export type FileBlob = Prisma.FileBlobModel
 /**
+ * Model OneOnOne
+ * 
+ */
+export type OneOnOne = Prisma.OneOnOneModel
+/**
  * Model GustoConnection
  * 
  */

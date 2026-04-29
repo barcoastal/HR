@@ -777,6 +777,14 @@ export async function completeOnboarding(employeeId: string) {
     emailBody: `<p><strong>${employee.firstName} ${employee.lastName}</strong> has completed onboarding and is now active.</p>`,
   }).catch((err) => console.error("[employees] Onboarding complete notification error:", err));
 
+  // Schedule the standard new-hire 1:1 cadence (30d / 90d / 1y).
+  try {
+    const { scheduleNewHireOneOnOnes } = await import("./one-on-ones");
+    await scheduleNewHireOneOnOnes(employeeId);
+  } catch (err) {
+    console.error("[employees] Failed to schedule new-hire 1:1s:", err);
+  }
+
   revalidatePath("/onboarding");
   revalidatePath("/people");
   revalidatePath(`/people/${employeeId}`);

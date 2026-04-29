@@ -442,6 +442,7 @@ export const ModelName = {
   PinnedMessage: 'PinnedMessage',
   SavedMessage: 'SavedMessage',
   FileBlob: 'FileBlob',
+  OneOnOne: 'OneOnOne',
   GustoConnection: 'GustoConnection'
 } as const
 
@@ -458,7 +459,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4754,6 +4755,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OneOnOne: {
+      payload: Prisma.$OneOnOnePayload<ExtArgs>
+      fields: Prisma.OneOnOneFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OneOnOneFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OneOnOneFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        findFirst: {
+          args: Prisma.OneOnOneFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OneOnOneFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        findMany: {
+          args: Prisma.OneOnOneFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>[]
+        }
+        create: {
+          args: Prisma.OneOnOneCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        createMany: {
+          args: Prisma.OneOnOneCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OneOnOneCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>[]
+        }
+        delete: {
+          args: Prisma.OneOnOneDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        update: {
+          args: Prisma.OneOnOneUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        deleteMany: {
+          args: Prisma.OneOnOneDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OneOnOneUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OneOnOneUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>[]
+        }
+        upsert: {
+          args: Prisma.OneOnOneUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OneOnOnePayload>
+        }
+        aggregate: {
+          args: Prisma.OneOnOneAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOneOnOne>
+        }
+        groupBy: {
+          args: Prisma.OneOnOneGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OneOnOneGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OneOnOneCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OneOnOneCountAggregateOutputType> | number
+        }
+      }
+    }
     GustoConnection: {
       payload: Prisma.$GustoConnectionPayload<ExtArgs>
       fields: Prisma.GustoConnectionFieldRefs
@@ -5750,6 +5825,23 @@ export const FileBlobScalarFieldEnum = {
 export type FileBlobScalarFieldEnum = (typeof FileBlobScalarFieldEnum)[keyof typeof FileBlobScalarFieldEnum]
 
 
+export const OneOnOneScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  managerId: 'managerId',
+  scheduledAt: 'scheduledAt',
+  completedAt: 'completedAt',
+  type: 'type',
+  status: 'status',
+  notebookMarkdown: 'notebookMarkdown',
+  meetingLink: 'meetingLink',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OneOnOneScalarFieldEnum = (typeof OneOnOneScalarFieldEnum)[keyof typeof OneOnOneScalarFieldEnum]
+
+
 export const GustoConnectionScalarFieldEnum = {
   id: 'id',
   companyId: 'companyId',
@@ -6240,6 +6332,34 @@ export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
     
 
+
+/**
+ * Reference to a field of type 'OneOnOneType'
+ */
+export type EnumOneOnOneTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OneOnOneType'>
+    
+
+
+/**
+ * Reference to a field of type 'OneOnOneType[]'
+ */
+export type ListEnumOneOnOneTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OneOnOneType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OneOnOneStatus'
+ */
+export type EnumOneOnOneStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OneOnOneStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OneOnOneStatus[]'
+ */
+export type ListEnumOneOnOneStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OneOnOneStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -6393,6 +6513,7 @@ export type GlobalOmitConfig = {
   pinnedMessage?: Prisma.PinnedMessageOmit
   savedMessage?: Prisma.SavedMessageOmit
   fileBlob?: Prisma.FileBlobOmit
+  oneOnOne?: Prisma.OneOnOneOmit
   gustoConnection?: Prisma.GustoConnectionOmit
 }
 

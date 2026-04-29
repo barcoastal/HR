@@ -27,6 +27,7 @@ const allNavLinks = [
   { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r) },
   { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/one-on-ones", label: "1:1 Reviews", icon: "forum", access: () => true },
   { href: "/calendar", label: "Calendar", icon: "calendar_month", access: () => true },
   { href: "/clubs", label: "Clubs", icon: "groups", access: () => true },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true },

@@ -732,6 +732,40 @@ export type BytesWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBytesFilter<$PrismaModel>
 }
 
+export type EnumOneOnOneTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneType | Prisma.EnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel> | $Enums.OneOnOneType
+}
+
+export type EnumOneOnOneStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneStatus | Prisma.EnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel> | $Enums.OneOnOneStatus
+}
+
+export type EnumOneOnOneTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneType | Prisma.EnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneTypeWithAggregatesFilter<$PrismaModel> | $Enums.OneOnOneType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel>
+}
+
+export type EnumOneOnOneStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneStatus | Prisma.EnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneStatusWithAggregatesFilter<$PrismaModel> | $Enums.OneOnOneStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1412,6 +1446,40 @@ export type NestedBytesWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedBytesFilter<$PrismaModel>
   _max?: Prisma.NestedBytesFilter<$PrismaModel>
+}
+
+export type NestedEnumOneOnOneTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneType | Prisma.EnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel> | $Enums.OneOnOneType
+}
+
+export type NestedEnumOneOnOneStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneStatus | Prisma.EnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel> | $Enums.OneOnOneStatus
+}
+
+export type NestedEnumOneOnOneTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneType | Prisma.EnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneType[] | Prisma.ListEnumOneOnOneTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneTypeWithAggregatesFilter<$PrismaModel> | $Enums.OneOnOneType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOneOnOneTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumOneOnOneStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OneOnOneStatus | Prisma.EnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OneOnOneStatus[] | Prisma.ListEnumOneOnOneStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOneOnOneStatusWithAggregatesFilter<$PrismaModel> | $Enums.OneOnOneStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOneOnOneStatusFilter<$PrismaModel>
 }
 
 

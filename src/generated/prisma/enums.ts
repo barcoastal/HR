@@ -74,6 +74,24 @@ export const ReviewStatus = {
 export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
 
 
+export const OneOnOneType = {
+  THIRTY_DAY: 'THIRTY_DAY',
+  QUARTERLY: 'QUARTERLY',
+  ANNUAL: 'ANNUAL'
+} as const
+
+export type OneOnOneType = (typeof OneOnOneType)[keyof typeof OneOnOneType]
+
+
+export const OneOnOneStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type OneOnOneStatus = (typeof OneOnOneStatus)[keyof typeof OneOnOneStatus]
+
+
 export const FeedPostType = {
   ANNOUNCEMENT: 'ANNOUNCEMENT',
   GENERAL: 'GENERAL',
