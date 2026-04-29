@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn, getInitials } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
-import { reschedule, sendInvite, cancelMeeting } from "@/lib/actions/one-on-ones";
+import { Dialog } from "@/components/ui/dialog";
+import {
+  reschedule,
+  sendInvite,
+  cancelMeeting,
+  createOneOnOne,
+  listEligibleEmployeesForCreate,
+} from "@/lib/actions/one-on-ones";
 
 type Person = {
   id: string;
@@ -63,30 +70,45 @@ export function OneOnOnesView({
   currentRole: string;
 }) {
   const [tab, setTab] = useState<"upcoming" | "completed">("upcoming");
+  const [showNew, setShowNew] = useState(false);
 
   const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
   const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
 
   const list = tab === "upcoming" ? upcoming : completed;
+  const canCreate =
+    currentRole === "SUPER_ADMIN" || currentRole === "ADMIN" || currentRole === "HR" || currentRole === "MANAGER";
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-6 border-b border-[var(--color-border)]">
-        {(["upcoming", "completed"] as const).map((t) => (
+      <div className="flex items-center justify-between gap-2 mb-6 border-b border-[var(--color-border)]">
+        <div className="flex items-center gap-2">
+          {(["upcoming", "completed"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={cn(
+                "px-3 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
+                tab === t
+                  ? "border-[var(--color-accent)] text-[var(--color-text-primary)]"
+                  : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              )}
+            >
+              {t === "upcoming" ? `Upcoming (${upcoming.length})` : `Completed (${completed.length})`}
+            </button>
+          ))}
+        </div>
+        {canCreate && (
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={cn(
-              "px-3 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
-              tab === t
-                ? "border-[var(--color-accent)] text-[var(--color-text-primary)]"
-                : "border-transparent text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-            )}
+            onClick={() => setShowNew(true)}
+            className="mb-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--color-accent)] text-white hover:opacity-90"
           >
-            {t === "upcoming" ? `Upcoming (${upcoming.length})` : `Completed (${completed.length})`}
+            <Icon name="add" size={14} /> New 1:1
           </button>
-        ))}
+        )}
       </div>
+
+      {showNew && <NewOneOnOneDialog onClose={() => setShowNew(false)} />}
 
       {list.length === 0 ? (
         <div className="text-center py-16 text-[var(--color-text-muted)]">
@@ -167,6 +189,136 @@ function Avatar({ person }: { person: Person }) {
     >
       {getInitials(person.firstName, person.lastName)}
     </div>
+  );
+}
+
+type EligibleEmployee = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  jobTitle: string;
+  manager: { id: string; firstName: string; lastName: string } | null;
+};
+
+function defaultDateTimeLocal() {
+  // Default to tomorrow at 10:00 in the user's local timezone.
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(10, 0, 0, 0);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function NewOneOnOneDialog({ onClose }: { onClose: () => void }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [employees, setEmployees] = useState<EligibleEmployee[] | null>(null);
+  const [employeeId, setEmployeeId] = useState("");
+  const [type, setType] = useState<Meeting["type"]>("QUARTERLY");
+  const [scheduledAt, setScheduledAt] = useState(defaultDateTimeLocal());
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    listEligibleEmployeesForCreate().then(setEmployees).catch(() => setEmployees([]));
+  }, []);
+
+  const selected = employees?.find((e) => e.id === employeeId);
+
+  function handleSubmit() {
+    if (!employeeId) {
+      setError("Pick an employee");
+      return;
+    }
+    startTransition(async () => {
+      const r = await createOneOnOne({
+        employeeId,
+        type,
+        scheduledAt: new Date(scheduledAt),
+      });
+      if (!r.success) {
+        setError(r.error || "Failed");
+        return;
+      }
+      onClose();
+      router.refresh();
+    });
+  }
+
+  return (
+    <Dialog open onClose={onClose} title="Schedule a 1:1">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Employee</label>
+          {employees === null ? (
+            <p className="text-xs text-[var(--color-text-muted)]">Loading…</p>
+          ) : employees.length === 0 ? (
+            <p className="text-xs text-[var(--color-text-muted)]">
+              No eligible employees. Make sure each employee has an assigned manager.
+            </p>
+          ) : (
+            <select
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+            >
+              <option value="">Select…</option>
+              {employees.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.firstName} {e.lastName} — {e.jobTitle}
+                </option>
+              ))}
+            </select>
+          )}
+          {selected?.manager && (
+            <p className="text-[10px] text-[var(--color-text-muted)] mt-1">
+              Manager: {selected.manager.firstName} {selected.manager.lastName}
+            </p>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Type</label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value as Meeting["type"])}
+              className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+            >
+              <option value="THIRTY_DAY">30-Day Check-In</option>
+              <option value="QUARTERLY">Quarterly Review</option>
+              <option value="ANNUAL">Annual Review</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">When</label>
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+            />
+          </div>
+        </div>
+
+        {error && <p className="text-xs text-red-500">{error}</p>}
+
+        <div className="flex justify-end gap-2 pt-2">
+          <button
+            onClick={onClose}
+            className="px-3 py-2 rounded-lg text-sm text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={pending || !employeeId}
+            className="px-4 py-2 rounded-lg text-sm font-semibold bg-[var(--color-accent)] text-white hover:opacity-90 disabled:opacity-50"
+          >
+            {pending ? "Creating…" : "Schedule"}
+          </button>
+        </div>
+      </div>
+    </Dialog>
   );
 }
 

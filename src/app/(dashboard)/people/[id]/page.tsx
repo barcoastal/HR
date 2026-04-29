@@ -11,7 +11,7 @@ import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { getHRNotes } from "@/lib/actions/hr-notes";
 import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
-import { getNextOneOnOneForEmployee } from "@/lib/actions/one-on-ones";
+import { getNextOneOnOneForEmployee, getPastOneOnOnesForEmployee } from "@/lib/actions/one-on-ones";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
@@ -38,11 +38,12 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
   const currentEmployeeId = session.user?.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const { id } = await params;
-  const [employee, hrNotes, documents, nextOneOnOne] = await Promise.all([
+  const [employee, hrNotes, documents, nextOneOnOne, pastOneOnOnes] = await Promise.all([
     getEmployeeById(id),
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
+    getPastOneOnOnesForEmployee(id),
   ]);
   if (!employee) notFound();
 
@@ -225,6 +226,45 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 author: n.author,
               }))}
             />
+          )}
+
+          {(canViewDocuments || isOwnProfile) && pastOneOnOnes.length > 0 && (
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
+              <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-4">Past 1:1 Reviews</h2>
+              <div className="space-y-3">
+                {pastOneOnOnes.map((o) => {
+                  const TYPE_LABEL: Record<typeof o.type, string> = {
+                    THIRTY_DAY: "30-Day Check-In",
+                    QUARTERLY: "Quarterly Review",
+                    ANNUAL: "Annual Review",
+                  };
+                  return (
+                    <details key={o.id} className="group rounded-lg border border-[var(--color-border)] bg-[var(--color-background)]">
+                      <summary className="px-4 py-3 cursor-pointer flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Icon name="forum" size={14} className="text-[var(--color-accent)]" />
+                          <span className="font-medium text-[var(--color-text-primary)]">{TYPE_LABEL[o.type]}</span>
+                          <span className="text-xs text-[var(--color-text-muted)]">
+                            {o.completedAt ? formatDate(o.completedAt) : formatDate(o.scheduledAt)}
+                          </span>
+                          <span className="text-xs text-[var(--color-text-muted)]">
+                            · with {o.manager.firstName} {o.manager.lastName}
+                          </span>
+                        </div>
+                        <Icon name="expand_more" size={16} className="text-[var(--color-text-muted)] group-open:rotate-180 transition-transform" />
+                      </summary>
+                      <div className="px-4 pb-4 text-sm text-[var(--color-text-primary)] whitespace-pre-wrap">
+                        {o.notebookMarkdown?.trim() ? (
+                          o.notebookMarkdown
+                        ) : (
+                          <span className="text-[var(--color-text-muted)] italic">No notes recorded.</span>
+                        )}
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            </section>
           )}
 
           {canViewDocuments && employee.reviewsAsEmployee.length > 0 && (

@@ -207,6 +207,93 @@ export async function getOneOnOne(id: string) {
   return { meeting: m, history };
 }
 
+export async function getPastOneOnOnesForEmployee(employeeId: string) {
+  return db.oneOnOne.findMany({
+    where: { employeeId, status: "COMPLETED" },
+    orderBy: { completedAt: "desc" },
+    include: {
+      manager: { select: { id: true, firstName: true, lastName: true } },
+    },
+  });
+}
+
+export async function listEligibleEmployeesForCreate() {
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const myEmployeeId = session.user?.employeeId;
+
+  if (isAdmin(role)) {
+    return db.employee.findMany({
+      where: { status: { in: ["ACTIVE", "ONBOARDING"] }, managerId: { not: null } },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        jobTitle: true,
+        manager: { select: { id: true, firstName: true, lastName: true } },
+      },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    });
+  }
+  if (role === "MANAGER" && myEmployeeId) {
+    return db.employee.findMany({
+      where: { managerId: myEmployeeId, status: { in: ["ACTIVE", "ONBOARDING"] } },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        jobTitle: true,
+        manager: { select: { id: true, firstName: true, lastName: true } },
+      },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    });
+  }
+  return [];
+}
+
+export async function createOneOnOne(input: {
+  employeeId: string;
+  type: OneOnOneType;
+  scheduledAt: Date;
+}) {
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const myEmployeeId = session.user?.employeeId;
+
+  if (!isManagerOrAbove(role)) {
+    return { success: false, error: "Forbidden" };
+  }
+
+  const employee = await db.employee.findUnique({
+    where: { id: input.employeeId },
+    select: { id: true, managerId: true, status: true },
+  });
+  if (!employee) return { success: false, error: "Employee not found" };
+  if (!employee.managerId) {
+    return { success: false, error: "Employee has no assigned manager" };
+  }
+
+  // Managers can only schedule for their own direct reports.
+  if (!isAdmin(role) && employee.managerId !== myEmployeeId) {
+    return { success: false, error: "You can only schedule 1:1s for your direct reports" };
+  }
+
+  const created = await db.oneOnOne.create({
+    data: {
+      employeeId: employee.id,
+      managerId: employee.managerId,
+      scheduledAt: input.scheduledAt,
+      type: input.type,
+    },
+  });
+
+  await autoCreateGoogleEvent(created.id);
+
+  revalidatePath("/one-on-ones");
+  revalidatePath(`/people/${employee.id}`);
+  return { success: true, id: created.id };
+}
+
 export async function getNextOneOnOneForEmployee(employeeId: string) {
   return db.oneOnOne.findFirst({
     where: { employeeId, status: "SCHEDULED", scheduledAt: { gte: new Date() } },
