@@ -111,23 +111,32 @@ export const authOptions: NextAuthOptions = {
           return "/login?error=not-invited";
         }
 
-        // Auto-create employee profile if missing
+        // Auto-link or create the employee profile if the User row has none.
         if (!dbUser.employeeId) {
-          const profileName = (profile as { name?: string })?.name || email.split("@")[0];
-          const nameParts = profileName.split(" ");
-          const firstName = nameParts[0] || email.split("@")[0];
-          const lastName = nameParts.slice(1).join(" ") || "";
-
-          const employee = await db.employee.create({
-            data: {
-              firstName,
-              lastName,
-              email,
-              jobTitle: "",
-              startDate: new Date(),
-              status: "ACTIVE",
-            },
+          // Reuse an existing employee with this email (case-insensitive)
+          // before creating a new one — otherwise the create hits a unique
+          // constraint on Employee.email.
+          let employee = await db.employee.findFirst({
+            where: { email: { equals: email, mode: "insensitive" } },
           });
+
+          if (!employee) {
+            const profileName = (profile as { name?: string })?.name || email.split("@")[0];
+            const nameParts = profileName.split(" ");
+            const firstName = nameParts[0] || email.split("@")[0];
+            const lastName = nameParts.slice(1).join(" ") || "";
+
+            employee = await db.employee.create({
+              data: {
+                firstName,
+                lastName,
+                email,
+                jobTitle: "",
+                startDate: new Date(),
+                status: "ACTIVE",
+              },
+            });
+          }
 
           await db.user.update({
             where: { id: dbUser.id },
