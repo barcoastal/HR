@@ -1022,6 +1022,7 @@ export const OneOnOneScalarFieldEnum = {
   status: 'status',
   notebookMarkdown: 'notebookMarkdown',
   meetingLink: 'meetingLink',
+  googleEventId: 'googleEventId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

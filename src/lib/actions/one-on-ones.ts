@@ -5,6 +5,12 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import { sendEmailWithAttachments } from "@/lib/email";
 import { buildIcsInvite } from "@/lib/ics";
+import {
+  createOneOnOneEvent,
+  updateOneOnOneEvent,
+  cancelOneOnOneEvent,
+  isCalendarConnected,
+} from "@/lib/google-calendar";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
 
 const DEFAULT_TIME = { hour: 10, minute: 0 };
@@ -70,7 +76,7 @@ export async function scheduleNewHireOneOnOnes(employeeId: string) {
       select: { id: true },
     });
     if (exists) continue;
-    await db.oneOnOne.create({
+    const created = await db.oneOnOne.create({
       data: {
         employeeId,
         managerId: employee.managerId,
@@ -78,6 +84,7 @@ export async function scheduleNewHireOneOnOnes(employeeId: string) {
         type: t.type,
       },
     });
+    await autoCreateGoogleEvent(created.id);
   }
 }
 
@@ -101,7 +108,7 @@ export async function ensureAnnualCoverage() {
     if (upcoming) continue;
     const reference = e.anniversaryDate || e.startDate;
     if (!reference) continue;
-    await db.oneOnOne.create({
+    const created = await db.oneOnOne.create({
       data: {
         employeeId: e.id,
         managerId: e.managerId,
@@ -109,6 +116,7 @@ export async function ensureAnnualCoverage() {
         type: "ANNUAL",
       },
     });
+    await autoCreateGoogleEvent(created.id);
   }
 }
 
@@ -219,10 +227,24 @@ export async function updateMeetingLink(meetingId: string, meetingLink: string |
 
 export async function reschedule(meetingId: string, newDate: Date) {
   await assertCanEdit(meetingId);
-  await db.oneOnOne.update({
+  const updated = await db.oneOnOne.update({
     where: { id: meetingId },
     data: { scheduledAt: newDate },
   });
+
+  // Mirror the change to the Google event so attendees are notified.
+  if (updated.googleEventId) {
+    try {
+      await updateOneOnOneEvent({
+        googleEventId: updated.googleEventId,
+        startTime: newDate,
+        durationMinutes: DEFAULT_DURATION_MIN,
+      });
+    } catch (err) {
+      console.error("[one-on-one] Failed to update Google event:", err);
+    }
+  }
+
   revalidatePath("/one-on-ones");
   revalidatePath(`/one-on-ones/${meetingId}`);
   return { success: true };
@@ -230,10 +252,23 @@ export async function reschedule(meetingId: string, newDate: Date) {
 
 export async function cancelMeeting(meetingId: string) {
   await assertCanEdit(meetingId);
-  await db.oneOnOne.update({
+  const cancelled = await db.oneOnOne.update({
     where: { id: meetingId },
     data: { status: "CANCELLED" },
   });
+
+  if (cancelled.googleEventId) {
+    try {
+      await cancelOneOnOneEvent(cancelled.googleEventId);
+      await db.oneOnOne.update({
+        where: { id: meetingId },
+        data: { googleEventId: null },
+      });
+    } catch (err) {
+      console.error("[one-on-one] Failed to cancel Google event:", err);
+    }
+  }
+
   revalidatePath("/one-on-ones");
   return { success: true };
 }
@@ -258,7 +293,7 @@ export async function markComplete(meetingId: string) {
     if (!upcoming) {
       const reference = meeting.employee.anniversaryDate || meeting.employee.startDate;
       if (reference) {
-        await db.oneOnOne.create({
+        const created = await db.oneOnOne.create({
           data: {
             employeeId: meeting.employeeId,
             managerId: meeting.employee.managerId,
@@ -266,6 +301,7 @@ export async function markComplete(meetingId: string) {
             type: "ANNUAL",
           },
         });
+        await autoCreateGoogleEvent(created.id);
       }
     }
   }
@@ -281,6 +317,44 @@ const TYPE_LABEL: Record<OneOnOneType, string> = {
   ANNUAL: "Annual Review",
 };
 
+/**
+ * Create a Google Calendar event (with Meet link) for a freshly-scheduled 1:1.
+ * Fail-soft: any error is logged but does not throw — the OneOnOne still
+ * exists in the DB and the event can be created later via sendInvite().
+ */
+async function autoCreateGoogleEvent(oneOnOneId: string) {
+  if (!(await isCalendarConnected())) return;
+  const m = await db.oneOnOne.findUnique({
+    where: { id: oneOnOneId },
+    include: {
+      employee: { select: { firstName: true, lastName: true, email: true } },
+      manager: { select: { firstName: true, lastName: true, email: true } },
+    },
+  });
+  if (!m || m.googleEventId) return;
+  try {
+    const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
+    const { eventId, meetLink } = await createOneOnOneEvent({
+      summary,
+      description: "1:1 Performance Review",
+      startTime: m.scheduledAt,
+      durationMinutes: DEFAULT_DURATION_MIN,
+      managerEmail: m.manager.email,
+      employeeEmail: m.employee.email,
+      oneOnOneId: m.id,
+    });
+    await db.oneOnOne.update({
+      where: { id: m.id },
+      data: {
+        googleEventId: eventId || null,
+        meetingLink: meetLink || null,
+      },
+    });
+  } catch (err) {
+    console.error("[one-on-one] auto-create Google event failed:", err);
+  }
+}
+
 export async function sendInvite(meetingId: string) {
   await assertCanEdit(meetingId);
   const m = await db.oneOnOne.findUnique({
@@ -294,13 +368,37 @@ export async function sendInvite(meetingId: string) {
   if (m.status !== "SCHEDULED") return { success: false, error: "Meeting is not scheduled" };
 
   const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
-  const description = [
-    "1:1 Performance Review",
-    m.meetingLink ? `Join: ${m.meetingLink}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n\n");
+  const description = "1:1 Performance Review";
 
+  // Preferred path: create a real Google Calendar event with Meet so the
+  // meeting auto-lands on both calendars and the join link is ready.
+  if (await isCalendarConnected()) {
+    try {
+      const { eventId, meetLink } = await createOneOnOneEvent({
+        summary,
+        description,
+        startTime: m.scheduledAt,
+        durationMinutes: DEFAULT_DURATION_MIN,
+        managerEmail: m.manager.email,
+        employeeEmail: m.employee.email,
+        oneOnOneId: m.id,
+      });
+      await db.oneOnOne.update({
+        where: { id: m.id },
+        data: {
+          googleEventId: eventId || null,
+          meetingLink: meetLink || m.meetingLink,
+        },
+      });
+      revalidatePath(`/one-on-ones/${m.id}`);
+      return { success: true, meetLink };
+    } catch (err) {
+      console.error("[one-on-one] Google Calendar invite failed, falling back to .ics:", err);
+      // fall through to ICS path
+    }
+  }
+
+  // Fallback: Resend email with .ics attachment.
   const ics = buildIcsInvite({
     uid: `${m.id}@calatrava.hr`,
     start: m.scheduledAt,

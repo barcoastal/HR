@@ -182,10 +182,28 @@ export function OneOnOneDetail({
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         <PersonCard label="Employee" person={meeting.employee} />
         <PersonCard label="Manager" person={meeting.manager} />
       </div>
+
+      {meeting.meetingLink && meeting.status === "SCHEDULED" && (
+        <a
+          href={meeting.meetingLink}
+          target="_blank"
+          rel="noreferrer"
+          className="mb-6 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#00897B]/10 border border-[#00897B]/30 hover:bg-[#00897B]/20 transition-colors"
+        >
+          <div className="h-9 w-9 rounded-lg bg-[#00897B] flex items-center justify-center shrink-0">
+            <Icon name="videocam" size={18} className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-[var(--color-text-primary)]">Join Google Meet</p>
+            <p className="text-xs text-[var(--color-text-muted)] truncate">{meeting.meetingLink}</p>
+          </div>
+          <Icon name="open_in_new" size={16} className="text-[var(--color-text-muted)]" />
+        </a>
+      )}
 
       {canEdit && (
         <div className="mb-6">

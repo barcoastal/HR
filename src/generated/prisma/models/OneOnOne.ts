@@ -34,6 +34,7 @@ export type OneOnOneMinAggregateOutputType = {
   status: $Enums.OneOnOneStatus | null
   notebookMarkdown: string | null
   meetingLink: string | null
+  googleEventId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,6 +49,7 @@ export type OneOnOneMaxAggregateOutputType = {
   status: $Enums.OneOnOneStatus | null
   notebookMarkdown: string | null
   meetingLink: string | null
+  googleEventId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type OneOnOneCountAggregateOutputType = {
   status: number
   notebookMarkdown: number
   meetingLink: number
+  googleEventId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -78,6 +81,7 @@ export type OneOnOneMinAggregateInputType = {
   status?: true
   notebookMarkdown?: true
   meetingLink?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -92,6 +96,7 @@ export type OneOnOneMaxAggregateInputType = {
   status?: true
   notebookMarkdown?: true
   meetingLink?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -106,6 +111,7 @@ export type OneOnOneCountAggregateInputType = {
   status?: true
   notebookMarkdown?: true
   meetingLink?: true
+  googleEventId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -193,6 +199,7 @@ export type OneOnOneGroupByOutputType = {
   status: $Enums.OneOnOneStatus
   notebookMarkdown: string | null
   meetingLink: string | null
+  googleEventId: string | null
   createdAt: Date
   updatedAt: Date
   _count: OneOnOneCountAggregateOutputType | null
@@ -228,6 +235,7 @@ export type OneOnOneWhereInput = {
   status?: Prisma.EnumOneOnOneStatusFilter<"OneOnOne"> | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -244,6 +252,7 @@ export type OneOnOneOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   notebookMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   meetingLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -263,6 +272,7 @@ export type OneOnOneWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumOneOnOneStatusFilter<"OneOnOne"> | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -279,6 +289,7 @@ export type OneOnOneOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   notebookMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   meetingLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OneOnOneCountOrderByAggregateInput
@@ -299,6 +310,7 @@ export type OneOnOneScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumOneOnOneStatusWithAggregatesFilter<"OneOnOne"> | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
+  googleEventId?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OneOnOne"> | Date | string
 }
@@ -311,6 +323,7 @@ export type OneOnOneCreateInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsEmployeeInput
@@ -327,6 +340,7 @@ export type OneOnOneUncheckedCreateInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -339,6 +353,7 @@ export type OneOnOneUpdateInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsEmployeeNestedInput
@@ -355,6 +370,7 @@ export type OneOnOneUncheckedUpdateInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -369,6 +385,7 @@ export type OneOnOneCreateManyInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -381,6 +398,7 @@ export type OneOnOneUpdateManyMutationInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -395,6 +413,7 @@ export type OneOnOneUncheckedUpdateManyInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -419,6 +438,7 @@ export type OneOnOneCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,6 +453,7 @@ export type OneOnOneMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -447,6 +468,7 @@ export type OneOnOneMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
+  googleEventId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -551,6 +573,7 @@ export type OneOnOneCreateWithoutEmployeeInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsManagerInput
@@ -565,6 +588,7 @@ export type OneOnOneUncheckedCreateWithoutEmployeeInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -587,6 +611,7 @@ export type OneOnOneCreateWithoutManagerInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsEmployeeInput
@@ -601,6 +626,7 @@ export type OneOnOneUncheckedCreateWithoutManagerInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -644,6 +670,7 @@ export type OneOnOneScalarWhereInput = {
   status?: Prisma.EnumOneOnOneStatusFilter<"OneOnOne"> | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
 }
@@ -673,6 +700,7 @@ export type OneOnOneCreateManyEmployeeInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -686,6 +714,7 @@ export type OneOnOneCreateManyManagerInput = {
   status?: $Enums.OneOnOneStatus
   notebookMarkdown?: string | null
   meetingLink?: string | null
+  googleEventId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -698,6 +727,7 @@ export type OneOnOneUpdateWithoutEmployeeInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsManagerNestedInput
@@ -712,6 +742,7 @@ export type OneOnOneUncheckedUpdateWithoutEmployeeInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -725,6 +756,7 @@ export type OneOnOneUncheckedUpdateManyWithoutEmployeeInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -737,6 +769,7 @@ export type OneOnOneUpdateWithoutManagerInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsEmployeeNestedInput
@@ -751,6 +784,7 @@ export type OneOnOneUncheckedUpdateWithoutManagerInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -764,6 +798,7 @@ export type OneOnOneUncheckedUpdateManyWithoutManagerInput = {
   status?: Prisma.EnumOneOnOneStatusFieldUpdateOperationsInput | $Enums.OneOnOneStatus
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -780,6 +815,7 @@ export type OneOnOneSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   notebookMarkdown?: boolean
   meetingLink?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -796,6 +832,7 @@ export type OneOnOneSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   notebookMarkdown?: boolean
   meetingLink?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -812,6 +849,7 @@ export type OneOnOneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   notebookMarkdown?: boolean
   meetingLink?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -828,11 +866,12 @@ export type OneOnOneSelectScalar = {
   status?: boolean
   notebookMarkdown?: boolean
   meetingLink?: boolean
+  googleEventId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OneOnOneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "managerId" | "scheduledAt" | "completedAt" | "type" | "status" | "notebookMarkdown" | "meetingLink" | "createdAt" | "updatedAt", ExtArgs["result"]["oneOnOne"]>
+export type OneOnOneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "managerId" | "scheduledAt" | "completedAt" | "type" | "status" | "notebookMarkdown" | "meetingLink" | "googleEventId" | "createdAt" | "updatedAt", ExtArgs["result"]["oneOnOne"]>
 export type OneOnOneInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -862,6 +901,7 @@ export type $OneOnOnePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: $Enums.OneOnOneStatus
     notebookMarkdown: string | null
     meetingLink: string | null
+    googleEventId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["oneOnOne"]>
@@ -1298,6 +1338,7 @@ export interface OneOnOneFieldRefs {
   readonly status: Prisma.FieldRef<"OneOnOne", 'OneOnOneStatus'>
   readonly notebookMarkdown: Prisma.FieldRef<"OneOnOne", 'String'>
   readonly meetingLink: Prisma.FieldRef<"OneOnOne", 'String'>
+  readonly googleEventId: Prisma.FieldRef<"OneOnOne", 'String'>
   readonly createdAt: Prisma.FieldRef<"OneOnOne", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OneOnOne", 'DateTime'>
 }

@@ -99,3 +99,71 @@ export async function cancelInterviewEvent(googleEventId: string): Promise<void>
     sendUpdates: "all",
   });
 }
+
+export async function createOneOnOneEvent(params: {
+  summary: string;
+  description?: string;
+  startTime: Date;
+  durationMinutes: number;
+  managerEmail: string;
+  employeeEmail: string;
+  oneOnOneId: string;
+}): Promise<{ eventId: string; meetLink: string | null }> {
+  const calendar = await getCalendarClient();
+  const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
+
+  const event = await calendar.events.insert({
+    calendarId: "primary",
+    conferenceDataVersion: 1,
+    sendUpdates: "all",
+    requestBody: {
+      summary: params.summary,
+      description: params.description,
+      start: { dateTime: params.startTime.toISOString() },
+      end: { dateTime: endTime.toISOString() },
+      attendees: [
+        { email: params.managerEmail, responseStatus: "accepted" },
+        { email: params.employeeEmail },
+      ],
+      conferenceData: {
+        createRequest: {
+          requestId: `one-on-one-${params.oneOnOneId}-${Date.now()}`,
+          conferenceSolutionKey: { type: "hangoutsMeet" },
+        },
+      },
+      reminders: { useDefault: true },
+    },
+  });
+
+  return {
+    eventId: event.data.id ?? "",
+    meetLink: event.data.hangoutLink ?? null,
+  };
+}
+
+export async function updateOneOnOneEvent(params: {
+  googleEventId: string;
+  startTime: Date;
+  durationMinutes: number;
+}): Promise<void> {
+  const calendar = await getCalendarClient();
+  const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
+  await calendar.events.patch({
+    calendarId: "primary",
+    eventId: params.googleEventId,
+    sendUpdates: "all",
+    requestBody: {
+      start: { dateTime: params.startTime.toISOString() },
+      end: { dateTime: endTime.toISOString() },
+    },
+  });
+}
+
+export async function cancelOneOnOneEvent(googleEventId: string): Promise<void> {
+  const calendar = await getCalendarClient();
+  await calendar.events.delete({
+    calendarId: "primary",
+    eventId: googleEventId,
+    sendUpdates: "all",
+  });
+}
