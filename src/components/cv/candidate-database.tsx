@@ -128,8 +128,8 @@ function NotesEditor({ candidateId, initialNotes }: { candidateId: string; initi
 }
 
 function ResumeViewer({ resumeUrl, candidateName }: { resumeUrl: string; candidateName: string }) {
-  // Local resumes use /api/resumes/{id}, Jobing URLs need the proxy
-  const isLocal = resumeUrl.startsWith("/api/resumes/");
+  // Any relative URL is local (e.g. /api/resumes/, /api/onboarding-docs/); absolute URLs go through the Jobing proxy
+  const isLocal = resumeUrl.startsWith("/");
   const pdfSrc = isLocal
     ? resumeUrl
     : `/api/platforms/jobing/resume?url=${encodeURIComponent(resumeUrl)}`;

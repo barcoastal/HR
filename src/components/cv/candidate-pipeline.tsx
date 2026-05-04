@@ -179,7 +179,11 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                         <div className="flex items-center gap-1.5 mb-2">
                           {candidate.resumeUrl && (
                             <a
-                              href={`/api/platforms/jobing/resume?url=${encodeURIComponent(candidate.resumeUrl)}`}
+                              href={
+                                candidate.resumeUrl.startsWith("/")
+                                  ? candidate.resumeUrl
+                                  : `/api/platforms/jobing/resume?url=${encodeURIComponent(candidate.resumeUrl)}`
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
