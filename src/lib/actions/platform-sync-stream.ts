@@ -206,11 +206,20 @@ export async function* syncCandidatesStreaming(
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 
-function buildResumeAuthHeaders(platformName: string, accessToken: string): Record<string, string> {
+function buildResumeAuthHeaders(
+  platformName: string,
+  resumeUrl: string,
+  accessToken: string
+): Record<string, string> {
   if (platformName === "Breezy HR") {
-    // accessToken is "TOKEN::COMPANY_ID"; the Breezy API takes the bare token.
-    const token = accessToken.split("::")[0] || accessToken;
-    return { Authorization: token };
+    let host = "";
+    try { host = new URL(resumeUrl).hostname; } catch { /* ignore */ }
+    // Only api.breezy.hr requires the token; CDN/file URLs are presigned
+    if (host === "api.breezy.hr") {
+      const token = accessToken.split("::")[0] || accessToken;
+      return { Authorization: token };
+    }
+    return {};
   }
   // Default: Jobing/NOLIG bearer token
   const apiKey = process.env.NOLIG_API_KEY || "";
@@ -225,7 +234,7 @@ async function downloadResumePdf(
 ): Promise<boolean> {
   try {
     const res = await fetch(resumeUrl, {
-      headers: buildResumeAuthHeaders(platformName, accessToken),
+      headers: buildResumeAuthHeaders(platformName, resumeUrl, accessToken),
     });
     if (!res.ok) return false;
     const ct = res.headers.get("content-type") || "";

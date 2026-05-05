@@ -386,14 +386,14 @@ type BreezyCandidate = {
   social_profiles?: { type: string; url: string }[];
   creation_date?: string;
   origin?: string;
-  resume?: { url?: string; file_name?: string } | null;
+  resume?: { url?: string; pdf_url?: string; file_name?: string } | null;
 };
 
 function mapBreezyCandidate(
   c: BreezyCandidate,
   positionTitle: string,
-  companyId: string,
-  positionId: string
+  _companyId: string,
+  _positionId: string
 ): MockCandidate | null {
   if (!c.email_address) return null;
 
@@ -422,10 +422,9 @@ function mapBreezyCandidate(
     .filter(Boolean)
     .join(". ");
 
-  // Breezy serves resume PDFs via the candidate resume endpoint, authenticated
-  // with the access token. We always set the URL — downloadResumePdf will 404
-  // gracefully for candidates without a resume.
-  const resumeUrl = `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidate/${c._id}/resume`;
+  // Breezy candidate detail exposes resume.pdf_url (preferred) or resume.url —
+  // direct download links served from Breezy/CDN.
+  const resumeUrl = c.resume?.pdf_url || c.resume?.url || undefined;
 
   return {
     firstName,
