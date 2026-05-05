@@ -42,8 +42,9 @@ export class BreezyHRClient implements PlatformClient {
 
       for (const pos of positions) {
         const candidates = await listCandidates(token, companyId, pos._id);
-        for (const c of candidates) {
-          const mapped = mapBreezyCandidate(c, pos.name);
+        for (const summary of candidates) {
+          const detail = await getCandidateDetail(token, companyId, pos._id, summary._id);
+          const mapped = mapBreezyCandidate(detail || summary, pos.name, companyId, pos._id);
           if (mapped) all.push(mapped);
         }
       }
@@ -80,9 +81,12 @@ export class BreezyHRClient implements PlatformClient {
 
     const pos = positions[posIdx];
     const candidates = await listCandidates(token, companyId, pos._id);
-    const mapped = candidates
-      .map((c) => mapBreezyCandidate(c, pos.name))
-      .filter((c): c is MockCandidate => c !== null);
+    const mapped: MockCandidate[] = [];
+    for (const summary of candidates) {
+      const detail = await getCandidateDetail(token, companyId, pos._id, summary._id);
+      const m = mapBreezyCandidate(detail || summary, pos.name, companyId, pos._id);
+      if (m) mapped.push(m);
+    }
 
     const nextIdx = posIdx + 1;
     return {
@@ -90,6 +94,24 @@ export class BreezyHRClient implements PlatformClient {
       nextCursor: nextIdx < positions.length ? String(nextIdx) : null,
       totalEstimate: 0,
     };
+  }
+}
+
+async function getCandidateDetail(
+  accessToken: string,
+  companyId: string,
+  positionId: string,
+  candidateId: string
+): Promise<BreezyCandidate | null> {
+  try {
+    const res = await fetch(
+      `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidate/${candidateId}`,
+      { headers: { Authorization: accessToken } }
+    );
+    if (!res.ok) return null;
+    return (await res.json()) as BreezyCandidate;
+  } catch {
+    return null;
   }
 }
 
@@ -364,11 +386,14 @@ type BreezyCandidate = {
   social_profiles?: { type: string; url: string }[];
   creation_date?: string;
   origin?: string;
+  resume?: { url?: string; file_name?: string } | null;
 };
 
 function mapBreezyCandidate(
   c: BreezyCandidate,
-  positionTitle: string
+  positionTitle: string,
+  companyId: string,
+  positionId: string
 ): MockCandidate | null {
   if (!c.email_address) return null;
 
@@ -397,6 +422,11 @@ function mapBreezyCandidate(
     .filter(Boolean)
     .join(". ");
 
+  // Breezy serves resume PDFs via the candidate resume endpoint, authenticated
+  // with the access token. We always set the URL — downloadResumePdf will 404
+  // gracefully for candidates without a resume.
+  const resumeUrl = `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidate/${c._id}/resume`;
+
   return {
     firstName,
     lastName,
@@ -407,6 +437,7 @@ function mapBreezyCandidate(
     experience: c.headline || undefined,
     notes: notes || undefined,
     source: displaySource,
+    resumeUrl,
     jobAppliedTo: positionTitle || undefined,
     appliedAt: c.creation_date || undefined,
   };

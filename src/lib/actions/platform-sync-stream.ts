@@ -94,7 +94,7 @@ export async function* syncCandidatesStreaming(
         await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
         continue;
       }
-      const ok = await downloadResumePdf(url, id);
+      const ok = await downloadResumePdf(url, id, platform.name, tokenResult.accessToken);
       if (ok) {
         await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
         resumesDownloaded++;
@@ -206,11 +206,26 @@ export async function* syncCandidatesStreaming(
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 
-async function downloadResumePdf(resumeUrl: string, candidateId: string): Promise<boolean> {
+function buildResumeAuthHeaders(platformName: string, accessToken: string): Record<string, string> {
+  if (platformName === "Breezy HR") {
+    // accessToken is "TOKEN::COMPANY_ID"; the Breezy API takes the bare token.
+    const token = accessToken.split("::")[0] || accessToken;
+    return { Authorization: token };
+  }
+  // Default: Jobing/NOLIG bearer token
+  const apiKey = process.env.NOLIG_API_KEY || "";
+  return { Authorization: `Bearer token=${apiKey}` };
+}
+
+async function downloadResumePdf(
+  resumeUrl: string,
+  candidateId: string,
+  platformName: string,
+  accessToken: string
+): Promise<boolean> {
   try {
-    const apiKey = process.env.NOLIG_API_KEY || "";
     const res = await fetch(resumeUrl, {
-      headers: { Authorization: `Bearer token=${apiKey}` },
+      headers: buildResumeAuthHeaders(platformName, accessToken),
     });
     if (!res.ok) return false;
     const ct = res.headers.get("content-type") || "";
@@ -369,7 +384,7 @@ export async function* resyncCandidatesStreaming(
         await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
         resumesDownloaded++;
       } else {
-        const ok = await downloadResumePdf(url, id);
+        const ok = await downloadResumePdf(url, id, platform.name, tokenResult.accessToken);
         if (ok) {
           await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
           resumesDownloaded++;
