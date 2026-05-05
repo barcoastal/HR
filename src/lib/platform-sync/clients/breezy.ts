@@ -31,28 +31,23 @@ export class BreezyHRClient implements PlatformClient {
   async fetchCandidates(accessToken?: string): Promise<MockCandidate[]> {
     if (!accessToken) return [];
 
-    try {
-      // accessToken format: TOKEN::COMPANY_ID
-      const [token, companyId] = parseAccessToken(accessToken);
-      if (!token || !companyId) return [];
+    // accessToken format: TOKEN::COMPANY_ID
+    const [token, companyId] = parseAccessToken(accessToken);
+    if (!token || !companyId) return [];
 
-      // Get all published positions
-      const positions = await listPositions(token, companyId);
-      const all: MockCandidate[] = [];
+    const positions = await listPositions(token, companyId);
+    const all: MockCandidate[] = [];
 
-      for (const pos of positions) {
-        const candidates = await listCandidates(token, companyId, pos._id);
-        for (const summary of candidates) {
-          const detail = await getCandidateDetail(token, companyId, pos._id, summary._id);
-          const mapped = mapBreezyCandidate(detail || summary, pos.name, companyId, pos._id);
-          if (mapped) all.push(mapped);
-        }
+    for (const pos of positions) {
+      const candidates = await listCandidates(token, companyId, pos._id);
+      for (const summary of candidates) {
+        const detail = await getCandidateDetail(token, companyId, pos._id, summary._id);
+        const mapped = mapBreezyCandidate(detail || summary, pos.name, companyId, pos._id);
+        if (mapped) all.push(mapped);
       }
-
-      return all;
-    } catch {
-      return [];
     }
+
+    return all;
   }
 
   async fetchCandidatesPaginated(
@@ -158,11 +153,16 @@ async function listPositions(
   accessToken: string,
   companyId: string
 ): Promise<BreezyPosition[]> {
+  // No state filter — pull all positions so candidates from draft/archived
+  // postings still surface.
   const res = await fetch(
-    `${BREEZY_BASE_URL}/company/${companyId}/positions?state=published`,
+    `${BREEZY_BASE_URL}/company/${companyId}/positions`,
     { headers: { Authorization: accessToken } }
   );
-  if (!res.ok) return [];
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Breezy listPositions failed (${res.status}): ${body.slice(0, 200)}`);
+  }
   return res.json();
 }
 
@@ -175,7 +175,10 @@ async function listCandidates(
     `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidates`,
     { headers: { Authorization: accessToken } }
   );
-  if (!res.ok) return [];
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Breezy listCandidates failed (${res.status}): ${body.slice(0, 200)}`);
+  }
   return res.json();
 }
 
