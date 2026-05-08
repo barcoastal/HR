@@ -19,7 +19,12 @@ async function updateExistingCandidate(
   if (!existing.experience && mc.experience) updates.experience = mc.experience;
   if (!existing.positionId && resolvedPositionId) {
     updates.positionId = resolvedPositionId;
-    if (!existing.inPipeline) updates.inPipeline = true;
+  }
+  // If the candidate has (or just got) a position but isn't in the pipeline yet,
+  // surface them in the kanban.
+  const willHavePosition = existing.positionId || resolvedPositionId;
+  if (willHavePosition && !existing.inPipeline) {
+    updates.inPipeline = true;
   }
   if (Object.keys(updates).length > 0) {
     await db.candidate.update({ where: { id: existing.id }, data: updates });
@@ -375,7 +380,9 @@ export async function* resyncCandidatesStreaming(
           if (mc.phone && !existing.phone) data.phone = mc.phone;
           if (resolvedPositionId && !existing.positionId) {
             data.positionId = resolvedPositionId;
-            if (!existing.inPipeline) data.inPipeline = true;
+          }
+          if ((existing.positionId || resolvedPositionId) && !existing.inPipeline) {
+            data.inPipeline = true;
           }
           if (Object.keys(data).length > 0) {
             await db.candidate.update({ where: { id: existing.id }, data });
