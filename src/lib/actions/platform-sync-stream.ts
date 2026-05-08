@@ -9,7 +9,7 @@ import { existsSync } from "fs";
 import path from "path";
 
 async function updateExistingCandidate(
-  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null; positionId: string | null },
+  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null; positionId: string | null; inPipeline: boolean },
   mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string },
   resolvedPositionId?: string | null
 ): Promise<boolean> {
@@ -17,7 +17,10 @@ async function updateExistingCandidate(
   if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
   if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
   if (!existing.experience && mc.experience) updates.experience = mc.experience;
-  if (!existing.positionId && resolvedPositionId) updates.positionId = resolvedPositionId;
+  if (!existing.positionId && resolvedPositionId) {
+    updates.positionId = resolvedPositionId;
+    if (!existing.inPipeline) updates.inPipeline = true;
+  }
   if (Object.keys(updates).length > 0) {
     await db.candidate.update({ where: { id: existing.id }, data: updates });
     return true;
@@ -104,7 +107,7 @@ export async function* syncCandidatesStreaming(
         source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
         resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo,
         positionId: resolvedPositionId ?? undefined,
-        inPipeline: false,
+        inPipeline: !!resolvedPositionId,
       });
       created++;
       if (mc.resumeUrl && newCandidate?.id) {
@@ -370,7 +373,10 @@ export async function* resyncCandidatesStreaming(
           if (mc.jobAppliedTo) data.jobAppliedTo = mc.jobAppliedTo;
           if (mc.experience) data.experience = mc.experience;
           if (mc.phone && !existing.phone) data.phone = mc.phone;
-          if (resolvedPositionId && !existing.positionId) data.positionId = resolvedPositionId;
+          if (resolvedPositionId && !existing.positionId) {
+            data.positionId = resolvedPositionId;
+            if (!existing.inPipeline) data.inPipeline = true;
+          }
           if (Object.keys(data).length > 0) {
             await db.candidate.update({ where: { id: existing.id }, data });
             updated++;
