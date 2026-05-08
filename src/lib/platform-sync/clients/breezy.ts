@@ -396,7 +396,7 @@ function mapBreezyCandidate(
   c: BreezyCandidate,
   positionTitle: string,
   _companyId: string,
-  _positionId: string
+  positionId: string
 ): MockCandidate | null {
   if (!c.email_address) return null;
 
@@ -442,6 +442,8 @@ function mapBreezyCandidate(
     resumeUrl,
     jobAppliedTo: positionTitle || undefined,
     appliedAt: c.creation_date || undefined,
+    externalPlatform: "BREEZY",
+    externalPositionId: positionId,
   };
 }
 

@@ -9,18 +9,46 @@ import { existsSync } from "fs";
 import path from "path";
 
 async function updateExistingCandidate(
-  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null },
-  mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string }
+  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null; positionId: string | null },
+  mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string },
+  resolvedPositionId?: string | null
 ): Promise<boolean> {
   const updates: Record<string, unknown> = {};
   if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
   if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
   if (!existing.experience && mc.experience) updates.experience = mc.experience;
+  if (!existing.positionId && resolvedPositionId) updates.positionId = resolvedPositionId;
   if (Object.keys(updates).length > 0) {
     await db.candidate.update({ where: { id: existing.id }, data: updates });
     return true;
   }
   return false;
+}
+
+/**
+ * Resolve a synced candidate's local position via PositionBoardPosting (preferred)
+ * or by case-insensitive title match on `jobAppliedTo`.
+ */
+async function resolveLocalPositionId(mc: {
+  externalPlatform?: string;
+  externalPositionId?: string;
+  jobAppliedTo?: string;
+}): Promise<string | null> {
+  if (mc.externalPlatform && mc.externalPositionId) {
+    const link = await db.positionBoardPosting.findFirst({
+      where: { board: mc.externalPlatform, externalId: mc.externalPositionId },
+      select: { positionId: true },
+    });
+    if (link?.positionId) return link.positionId;
+  }
+  if (mc.jobAppliedTo) {
+    const byTitle = await db.position.findFirst({
+      where: { title: { equals: mc.jobAppliedTo, mode: "insensitive" } },
+      select: { id: true },
+    });
+    if (byTitle?.id) return byTitle.id;
+  }
+  return null;
 }
 
 export async function* syncCandidatesStreaming(
@@ -55,9 +83,10 @@ export async function* syncCandidatesStreaming(
     let skipped = 0;
     const needsResume: { id: string; url: string }[] = [];
     for (const mc of candidates) {
+      const resolvedPositionId = await resolveLocalPositionId(mc);
       const existing = await db.candidate.findUnique({ where: { email: mc.email } });
       if (existing) {
-        const wasUpdated = await updateExistingCandidate(existing, mc);
+        const wasUpdated = await updateExistingCandidate(existing, mc, resolvedPositionId);
         if (wasUpdated) updated++;
         skipped++;
         // Queue resume download if the local PDF file is missing
@@ -73,7 +102,9 @@ export async function* syncCandidatesStreaming(
         firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
         phone: mc.phone, skills: mc.skills, experience: mc.experience,
         source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-        resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
+        resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo,
+        positionId: resolvedPositionId ?? undefined,
+        inPipeline: false,
       });
       created++;
       if (mc.resumeUrl && newCandidate?.id) {
@@ -137,9 +168,10 @@ export async function* syncCandidatesStreaming(
         if (seenEmails.has(mc.email)) { totalSkipped++; continue; }
         seenEmails.add(mc.email);
 
+        const resolvedPositionId = await resolveLocalPositionId(mc);
         const existing = await db.candidate.findUnique({ where: { email: mc.email } });
         if (existing) {
-          const wasUpdated = await updateExistingCandidate(existing, mc);
+          const wasUpdated = await updateExistingCandidate(existing, mc, resolvedPositionId);
           if (wasUpdated) totalUpdated++;
           totalSkipped++;
           continue;
@@ -149,7 +181,9 @@ export async function* syncCandidatesStreaming(
           firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
           phone: mc.phone, skills: mc.skills, experience: mc.experience,
           source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-          resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
+          resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo,
+          positionId: resolvedPositionId ?? undefined,
+          inPipeline: false,
         });
         totalCreated++;
       }
@@ -327,6 +361,7 @@ export async function* resyncCandidatesStreaming(
     for (const mc of allCandidates) {
       processed++;
       try {
+        const resolvedPositionId = await resolveLocalPositionId(mc);
         const existing = await db.candidate.findUnique({ where: { email: mc.email } });
 
         if (existing) {
@@ -335,6 +370,7 @@ export async function* resyncCandidatesStreaming(
           if (mc.jobAppliedTo) data.jobAppliedTo = mc.jobAppliedTo;
           if (mc.experience) data.experience = mc.experience;
           if (mc.phone && !existing.phone) data.phone = mc.phone;
+          if (resolvedPositionId && !existing.positionId) data.positionId = resolvedPositionId;
           if (Object.keys(data).length > 0) {
             await db.candidate.update({ where: { id: existing.id }, data });
             updated++;
@@ -347,7 +383,9 @@ export async function* resyncCandidatesStreaming(
             firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
             phone: mc.phone, skills: mc.skills, experience: mc.experience,
             source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
-            resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo, inPipeline: false,
+            resumeUrl: mc.resumeUrl, jobAppliedTo: mc.jobAppliedTo,
+            positionId: resolvedPositionId ?? undefined,
+            inPipeline: false,
           });
           created++;
           if (mc.resumeUrl && newCandidate?.id) {

@@ -11,6 +11,9 @@ export type MockCandidate = {
   resumeUrl?: string;
   appliedAt?: string;
   jobAppliedTo?: string;
+  // Used to resolve to a local Position via PositionBoardPosting
+  externalPlatform?: string; // "BREEZY" | "JOBING" | etc.
+  externalPositionId?: string;
 };
 
 export type CandidatePage = {
