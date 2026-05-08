@@ -36,17 +36,34 @@ export async function GET(request: Request) {
     select: { positionId: true, externalId: true, status: true, titleOverride: true },
   });
 
-  const recentCandidates = await db.candidate.findMany({
-    where: { source: { in: ["Breezy HR", "Indeed", "LinkedIn"] } },
-    orderBy: { createdAt: "desc" },
-    take: 10,
-    select: { id: true, email: true, source: true, positionId: true, jobAppliedTo: true },
+  // Live fetch from Breezy (per-position candidates) so we can see the actual
+  // emails + originating position the next sync would process.
+  const livePerPos: { positionId: string; positionName: string; candidates: { id: string; email?: string; name?: string; origin?: string; source?: string }[] }[] = [];
+  for (const p of breezyPositions) {
+    const res = await fetch(
+      `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidates`,
+      { headers: { Authorization: token } }
+    );
+    const data = res.ok ? ((await res.json()) as { _id: string; name?: string; email_address?: string; origin?: string; source?: string }[]) : [];
+    livePerPos.push({
+      positionId: p._id,
+      positionName: p.name,
+      candidates: data.map((c) => ({ id: c._id, email: c.email_address, name: c.name, origin: c.origin, source: c.source })),
+    });
+  }
+
+  // Show DB state for any candidate emails that Breezy currently returns
+  const breezyEmails = livePerPos.flatMap((p) => p.candidates.map((c) => c.email).filter(Boolean) as string[]);
+  const dbMatches = breezyEmails.length === 0 ? [] : await db.candidate.findMany({
+    where: { email: { in: breezyEmails } },
+    select: { id: true, email: true, source: true, positionId: true, jobAppliedTo: true, createdAt: true },
   });
 
   return NextResponse.json({
     breezyPositions: breezyPositions.map((p) => ({ id: p._id, name: p.name, state: p.state })),
     hrPositions,
     breezyLinks: links,
-    recentCandidates,
+    livePerPos,
+    dbMatches,
   });
 }
