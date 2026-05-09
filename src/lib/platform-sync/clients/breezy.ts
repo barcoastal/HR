@@ -207,6 +207,49 @@ function mapBreezyType(raw?: string): string {
   return BREEZY_TYPE_MAP[key] || "other";
 }
 
+const HQ_LOCATION = {
+  name: "Fort Lauderdale, FL",
+  country: "US",
+  city: "Fort Lauderdale",
+  state: "FL",
+};
+
+/**
+ * Build a Breezy location object. Indeed requires country+city+state on every
+ * job, so we always emit those fields, defaulting to the Coastal Debt HQ.
+ *
+ * Accepted user input (`location` string from the post-job form):
+ *   - "" / undefined / "Remote" / "Anywhere" → HQ city, is_remote: true
+ *   - "Fort Lauderdale, FL" → city: "Fort Lauderdale", state: "FL"
+ *   - "Miami, FL, US" → city: "Miami", state: "FL", country: "US"
+ *   - any single token → treated as a city, state defaults to FL
+ */
+function buildBreezyLocation(raw?: string) {
+  const trimmed = (raw || "").trim();
+  const isRemote = !trimmed || /remote|anywhere|worldwide/i.test(trimmed);
+
+  if (isRemote) {
+    return {
+      ...HQ_LOCATION,
+      name: trimmed || "Remote",
+      is_remote: true,
+    };
+  }
+
+  const parts = trimmed.split(",").map((p) => p.trim()).filter(Boolean);
+  const city = parts[0] || HQ_LOCATION.city;
+  const state = (parts[1] || HQ_LOCATION.state).toUpperCase();
+  const country = (parts[2] || HQ_LOCATION.country).toUpperCase();
+
+  return {
+    name: parts.length >= 2 ? `${city}, ${state}` : `${city}, ${HQ_LOCATION.state}`,
+    country,
+    city,
+    state,
+    is_remote: false,
+  };
+}
+
 export async function postJobToBreezy(data: {
   accessToken: string;
   companyId: string;
@@ -220,8 +263,6 @@ export async function postJobToBreezy(data: {
   /** Initial state. Defaults to "draft" so positions don't go live accidentally. */
   publishState?: "draft" | "published";
 }): Promise<{ success: boolean; positionId?: string; error?: string }> {
-  const locationName = (data.location || "").trim() || "Remote";
-  const isRemote = /remote|anywhere|worldwide/i.test(locationName);
   const body: Record<string, unknown> = {
     name: data.title,
     description: [
@@ -231,14 +272,11 @@ export async function postJobToBreezy(data: {
       .filter(Boolean)
       .join(""),
     type: mapBreezyType(data.type),
-    // Breezy requires country as a 2-letter ISO code. We default to US since
-    // Coastal Debt operates in the US; future multi-country support can thread
-    // country through from the UI.
-    location: {
-      name: locationName,
-      country: "US",
-      is_remote: isRemote,
-    },
+    // Indeed requires country + city + state on every job, otherwise it
+    // refuses to syndicate. Default everything to the Coastal Debt HQ
+    // (Fort Lauderdale, FL, US); parse the user-provided location when one
+    // is supplied.
+    location: buildBreezyLocation(data.location),
   };
 
   if (data.department) body.department = data.department;
