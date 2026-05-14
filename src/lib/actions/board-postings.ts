@@ -5,7 +5,7 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
 export type BoardName = "CAREERS" | "JOBING" | "BREEZY";
-export type BoardStatus = "NOT_POSTED" | "PUBLISHED" | "PAUSED" | "FAILED";
+export type BoardStatus = "NOT_POSTED" | "PUBLISHED" | "PAUSED" | "CLOSED" | "FAILED";
 
 export type BoardPostingView = {
   board: BoardName;
@@ -217,6 +217,64 @@ export async function pauseOnBoard(positionId: string, board: BoardName): Promis
   }
 
   return { success: false, error: "Unsupported board" };
+}
+
+export async function closeOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
+  await requireAuth();
+
+  if (board === "CAREERS") {
+    await db.position.update({ where: { id: positionId }, data: { published: false } });
+    revalidatePath("/cv");
+    revalidatePath("/careers");
+    return { success: true };
+  }
+
+  const posting = await db.positionBoardPosting.findUnique({
+    where: { positionId_board: { positionId, board } },
+  });
+  if (!posting || !posting.externalId) return { success: true }; // never posted — nothing to close
+
+  if (board === "JOBING") {
+    return { success: false, error: "Jobing API is read-only." };
+  }
+
+  if (board === "BREEZY") {
+    const platform = await db.recruitmentPlatform.findUnique({ where: { name: "Breezy HR" } });
+    if (!platform?.refreshToken || !platform.accountIdentifier) return { success: false, error: "Breezy not connected." };
+    const decoded = Buffer.from(platform.refreshToken, "base64").toString("utf-8");
+    const [email, password] = decoded.split("::");
+    const { breezySignIn, updateBreezyPositionState } = await import("@/lib/platform-sync/clients/breezy");
+    const signin = await breezySignIn(email, password);
+    if (!signin.accessToken) return { success: false, error: "Breezy auth failed — reconnect it." };
+    const r = await updateBreezyPositionState({
+      accessToken: signin.accessToken,
+      companyId: platform.accountIdentifier,
+      positionId: posting.externalId,
+      state: "closed",
+    });
+    if (!r.success) {
+      await upsertPosting(positionId, "BREEZY", { lastError: r.error || "Failed" });
+      return r;
+    }
+    await upsertPosting(positionId, "BREEZY", { status: "CLOSED", lastError: null });
+    revalidatePath("/cv");
+    return { success: true };
+  }
+
+  return { success: false, error: "Unsupported board" };
+}
+
+/** Close the position on every board it's currently posted to. Errors per board are swallowed and logged. */
+export async function closeAllBoardsForPosition(positionId: string) {
+  const boards: BoardName[] = ["CAREERS", "JOBING", "BREEZY"];
+  for (const board of boards) {
+    try {
+      const r = await closeOnBoard(positionId, board);
+      if (!r.success) console.error(`[closeAllBoards] ${board} failed:`, r.error);
+    } catch (err) {
+      console.error(`[closeAllBoards] ${board} threw:`, err);
+    }
+  }
 }
 
 export async function resumeOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {

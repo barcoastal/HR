@@ -998,10 +998,21 @@ export async function updatePositionStatus(
   id: string,
   status: "OPEN" | "CLOSED" | "FILLED"
 ) {
+  const previous = await db.position.findUnique({ where: { id }, select: { status: true } });
   const position = await db.position.update({
     where: { id },
     data: { status },
   });
+
+  // If the position just transitioned to a "no longer accepting" state, close
+  // it on every board (Breezy, careers, etc.) so we stop pulling in applicants.
+  const wasOpen = previous?.status === "OPEN";
+  const nowClosed = status === "CLOSED" || status === "FILLED";
+  if (wasOpen && nowClosed) {
+    const { closeAllBoardsForPosition } = await import("./board-postings");
+    await closeAllBoardsForPosition(id);
+  }
+
   revalidatePath("/cv");
   return position;
 }

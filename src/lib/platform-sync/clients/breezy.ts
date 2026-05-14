@@ -341,7 +341,7 @@ export async function updateBreezyPositionState(data: {
   accessToken: string;
   companyId: string;
   positionId: string;
-  state: "published" | "draft" | "archived";
+  state: "published" | "draft" | "archived" | "closed";
 }): Promise<{ success: boolean; error?: string }> {
   try {
     const res = await fetch(
