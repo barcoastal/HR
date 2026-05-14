@@ -15,6 +15,36 @@ export async function GET(
     return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
   }
 
+  // If this blob is referenced by an employee Document row, enforce that
+  // row's visibility / ownership. Files used outside the Document table
+  // (resumes, templates, fill packets) keep their existing auth-only access.
+  const role = session.user?.role;
+  const requesterEmployeeId = session.user?.employeeId ?? null;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+
+  const docRow = await db.document.findFirst({
+    where: { url: `/api/onboarding-docs/${filename}` },
+    select: {
+      visibility: true,
+      employeeId: true,
+      employee: { select: { managerId: true } },
+    },
+  });
+
+  if (docRow) {
+    if (docRow.visibility === "HR_ONLY" && !isAdmin) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    if (docRow.visibility === "EVERYONE" && !isAdmin) {
+      const isOwner = requesterEmployeeId === docRow.employeeId;
+      const isManager =
+        requesterEmployeeId != null && docRow.employee?.managerId === requesterEmployeeId;
+      if (!isOwner && !isManager) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
+  }
+
   const blob = await db.fileBlob.findUnique({
     where: { filename },
     select: { data: true, mimeType: true },
@@ -28,7 +58,7 @@ export async function GET(
     headers: {
       "Content-Type": blob.mimeType,
       "Content-Disposition": `inline; filename="${filename}"`,
-      "Cache-Control": "public, max-age=86400",
+      "Cache-Control": "private, no-store",
     },
   });
 }
