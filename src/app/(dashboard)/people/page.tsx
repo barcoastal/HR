@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
@@ -9,6 +10,7 @@ export default async function PeoplePage() {
   const session = await requireAuth();
   const role = session.user?.role;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isSuperAdmin = role === "SUPER_ADMIN";
 
   const [allEmployees, departments] = await Promise.all([
     getEmployees({ status: undefined }),
@@ -36,6 +38,14 @@ export default async function PeoplePage() {
             </p>
           </div>
           <div className="flex gap-3">
+            {isSuperAdmin && (
+              <Link
+                href="/people/archive"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-background)] transition-colors"
+              >
+                Archive
+              </Link>
+            )}
             {isAdmin && (
               <>
                 <BulkEmployeeImport departments={departments.map((d) => ({ id: d.id, name: d.name }))} />

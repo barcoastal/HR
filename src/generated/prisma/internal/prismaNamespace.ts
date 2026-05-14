@@ -4998,6 +4998,9 @@ export const EmployeeScalarFieldEnum = {
   buddyId: 'buddyId',
   status: 'status',
   gustoEmployeeId: 'gustoEmployeeId',
+  archivedAt: 'archivedAt',
+  archivedById: 'archivedById',
+  archivedReason: 'archivedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

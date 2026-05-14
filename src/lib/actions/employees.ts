@@ -792,23 +792,75 @@ export async function completeOnboarding(employeeId: string) {
   return employee;
 }
 
-export async function deleteEmployee(id: string) {
+/**
+ * Soft-delete an employee. Sets archivedAt + revokes their login. The record
+ * stays in the DB and is visible only on the Archive page (SUPER_ADMIN).
+ *
+ * Kept the export name `deleteEmployee` so existing UI callers keep working.
+ * For a true permanent delete, see `purgeEmployee`.
+ */
+export async function deleteEmployee(id: string, reason?: string) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   const role = session.user?.role;
   if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to delete employees");
+    throw new Error("Not authorized to archive employees");
   }
 
-  // Unlink manager/buddy/department head references
+  // Revoke the user's login so an archived person can't sign back in.
+  await db.user.deleteMany({ where: { employeeId: id } });
+
+  // Unlink manager/buddy/department-head references so directories stop
+  // pointing at the archived person.
   await db.employee.updateMany({ where: { managerId: id }, data: { managerId: null } });
   await db.employee.updateMany({ where: { buddyId: id }, data: { buddyId: null } });
   await db.department.updateMany({ where: { headId: id }, data: { headId: null } });
 
-  // Unlink/delete user account
+  await db.employee.update({
+    where: { id },
+    data: {
+      archivedAt: new Date(),
+      archivedById: session.user?.employeeId ?? null,
+      archivedReason: reason ?? null,
+    },
+  });
+
+  revalidatePath("/people");
+  revalidatePath("/people/archive");
+  revalidatePath("/org");
+  revalidatePath("/org/departments");
+  revalidatePath("/onboarding");
+  revalidatePath("/offboarding");
+}
+
+/** Restore an archived employee. SUPER_ADMIN only. Does not re-create the User row. */
+export async function restoreEmployee(id: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    throw new Error("Only super admins can restore employees");
+  }
+
+  await db.employee.update({
+    where: { id },
+    data: { archivedAt: null, archivedById: null, archivedReason: null },
+  });
+
+  revalidatePath("/people");
+  revalidatePath("/people/archive");
+  revalidatePath("/org");
+}
+
+/** Permanently delete an archived employee + cascade their data. SUPER_ADMIN only. */
+export async function purgeEmployee(id: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    throw new Error("Only super admins can permanently delete employees");
+  }
+
   await db.user.deleteMany({ where: { employeeId: id } });
 
-  // Clean up chat data (chat relations don't cascade on Employee delete)
   try {
     await db.reaction.deleteMany({ where: { employeeId: id } });
     await db.savedMessage.deleteMany({ where: { employeeId: id } });
@@ -817,15 +869,10 @@ export async function deleteEmployee(id: string) {
     await db.channelMember.deleteMany({ where: { employeeId: id } });
     await db.dmMember.deleteMany({ where: { employeeId: id } });
     await db.chatMember.deleteMany({ where: { employeeId: id } });
-    // These models may be added in later phases
-    // await db.chatNotification.deleteMany({ where: { employeeId: id } });
-    // await db.messageDraft.deleteMany({ where: { employeeId: id } });
-    // await db.reminder.deleteMany({ where: { employeeId: id } });
   } catch {
     // Chat tables may not exist yet
   }
 
-  // Clean up other relations (some cascade via onDelete, but clean explicitly to be safe)
   try {
     await db.feedReaction.deleteMany({ where: { employeeId: id } });
     await db.feedComment.deleteMany({ where: { authorId: id } });
@@ -839,14 +886,25 @@ export async function deleteEmployee(id: string) {
     // Ignore if any fail
   }
 
-  // Cascade handles: employeeTasks, signingRequests, reviews, documents, hrNotes, etc.
   await db.employee.delete({ where: { id } });
 
   revalidatePath("/people");
+  revalidatePath("/people/archive");
   revalidatePath("/org");
-  revalidatePath("/org/departments");
-  revalidatePath("/onboarding");
-  revalidatePath("/offboarding");
+}
+
+/** List archived employees (SUPER_ADMIN only). */
+export async function getArchivedEmployees() {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    throw new Error("Only super admins can view the archive");
+  }
+  return db.employee.findMany({
+    where: { archivedAt: { not: null } },
+    include: { department: true },
+    orderBy: { archivedAt: "desc" },
+  });
 }
 
 export async function bulkImportEmployees(
