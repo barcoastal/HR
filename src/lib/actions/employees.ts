@@ -922,6 +922,12 @@ export async function bulkImportEmployees(
     location?: string;
   }[]
 ): Promise<{ created: number; skipped: string[]; errors: string[] }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to bulk-import employees");
+  }
   let created = 0;
   const skipped: string[] = [];
   const errors: string[] = [];

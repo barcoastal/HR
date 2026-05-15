@@ -1,11 +1,14 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { requireAdmin } from "@/lib/auth-helpers";
+import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
 export async function cleanupDemoData() {
-  await requireAdmin();
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    throw new Error("Only a SUPER_ADMIN can run demo cleanup");
+  }
 
   // Find all demo employees (non-coastaldebt, non-pending.local emails)
   const demoEmployees = await db.employee.findMany({

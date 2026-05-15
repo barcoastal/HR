@@ -6,7 +6,23 @@ import type { UserRole } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendWelcomeEmail } from "@/lib/email";
 
+/**
+ * Hierarchy guard: an ADMIN cannot attack a SUPER_ADMIN account, and cannot
+ * mint another SUPER_ADMIN. Only a SUPER_ADMIN can manage SUPER_ADMINs.
+ */
+function assertCanActOnRole(callerRole: UserRole | undefined, targetRole: UserRole | undefined) {
+  if (targetRole === "SUPER_ADMIN" && callerRole !== "SUPER_ADMIN") {
+    throw new Error("Only a SUPER_ADMIN can manage SUPER_ADMIN accounts");
+  }
+}
+
 export async function getUsers() {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const callerRole = session.user?.role;
+  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
+    throw new Error("Not authorized to view users");
+  }
   return db.user.findMany({
     include: { employee: true },
     orderBy: { createdAt: "asc" },
@@ -25,6 +41,7 @@ export async function inviteUser(data: {
   if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
     throw new Error("Not authorized to invite users");
   }
+  assertCanActOnRole(callerRole, data.role);
 
   const hash = data.password ? await bcrypt.hash(data.password, 10) : null;
 
@@ -88,6 +105,12 @@ export async function setUserPassword(userId: string, password: string) {
   if (!password || password.length < 8) {
     return { success: false, error: "Password must be at least 8 characters." };
   }
+  const target = await db.user.findUnique({ where: { id: userId }, select: { role: true } });
+  if (!target) {
+    return { success: false, error: "User not found." };
+  }
+  assertCanActOnRole(callerRole, target.role);
+
   const passwordHash = await bcrypt.hash(password, 10);
   await db.user.update({ where: { id: userId }, data: { passwordHash } });
   revalidatePath("/settings");
@@ -101,6 +124,14 @@ export async function updateUserRole(id: string, role: UserRole) {
   if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
     throw new Error("Not authorized to change user roles");
   }
+  const target = await db.user.findUnique({ where: { id }, select: { role: true } });
+  if (!target) {
+    throw new Error("User not found");
+  }
+  // Block touching a SUPER_ADMIN unless caller is also one, AND block any
+  // non-SUPER_ADMIN from promoting another user to SUPER_ADMIN.
+  assertCanActOnRole(callerRole, target.role);
+  assertCanActOnRole(callerRole, role);
 
   const user = await db.user.update({ where: { id }, data: { role } });
   revalidatePath("/settings");
@@ -108,11 +139,10 @@ export async function updateUserRole(id: string, role: UserRole) {
 }
 
 export async function deleteUser(id: string) {
-  // Only SUPER_ADMIN and ADMIN can delete users
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
+  const callerRole = session.user?.role;
+  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
     throw new Error("Not authorized to delete users");
   }
 
@@ -120,6 +150,12 @@ export async function deleteUser(id: string) {
   if (session.user?.id === id) {
     throw new Error("You cannot delete your own account");
   }
+
+  const target = await db.user.findUnique({ where: { id }, select: { role: true } });
+  if (!target) {
+    throw new Error("User not found");
+  }
+  assertCanActOnRole(callerRole, target.role);
 
   await db.user.delete({ where: { id } });
   revalidatePath("/settings");
