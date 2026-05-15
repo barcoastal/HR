@@ -3,8 +3,18 @@
 import { db } from "@/lib/db";
 import type { ChecklistType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { requireAuth } from "@/lib/auth-helpers";
+
+async function assertCanManageOnboarding() {
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to manage onboarding checklists");
+  }
+}
 
 export async function createChecklist(name: string, type: ChecklistType, departmentId?: string) {
+  await assertCanManageOnboarding();
   const checklist = await db.onboardingChecklist.create({
     data: { name, type, departmentId: departmentId || null },
   });
@@ -13,6 +23,7 @@ export async function createChecklist(name: string, type: ChecklistType, departm
 }
 
 export async function deleteChecklist(id: string) {
+  await assertCanManageOnboarding();
   await db.onboardingChecklist.delete({ where: { id } });
   revalidatePath("/settings");
 }
@@ -33,6 +44,7 @@ export async function addChecklistItem(
   externalEmail?: string | null,
   externalName?: string | null
 ) {
+  await assertCanManageOnboarding();
   const maxOrder = await db.checklistItem.findFirst({
     where: { checklistId },
     orderBy: { order: "desc" },
@@ -80,12 +92,14 @@ export async function updateChecklistItem(
     externalName?: string | null;
   }
 ) {
+  await assertCanManageOnboarding();
   const item = await db.checklistItem.update({ where: { id }, data });
   revalidatePath("/settings");
   return item;
 }
 
 export async function deleteChecklistItem(id: string) {
+  await assertCanManageOnboarding();
   await db.checklistItem.delete({ where: { id } });
   revalidatePath("/settings");
 }
@@ -95,6 +109,7 @@ export async function createOverrideChecklist(
   jobTitleId: string,
   type: ChecklistType = "ONBOARDING"
 ) {
+  await assertCanManageOnboarding();
   const jobTitle = await db.jobTitle.findUnique({ where: { id: jobTitleId } });
   if (!jobTitle) throw new Error("Job title not found");
 
@@ -117,11 +132,13 @@ export async function createOverrideChecklist(
 }
 
 export async function deleteOverrideChecklist(id: string) {
+  await assertCanManageOnboarding();
   await db.onboardingChecklist.delete({ where: { id } });
   revalidatePath("/settings");
 }
 
 export async function addExclusion(overrideChecklistId: string, excludedItemId: string) {
+  await assertCanManageOnboarding();
   await db.checklistOverrideExclusion.create({
     data: { overrideChecklistId, excludedItemId },
   });
@@ -129,6 +146,7 @@ export async function addExclusion(overrideChecklistId: string, excludedItemId: 
 }
 
 export async function removeExclusion(overrideChecklistId: string, excludedItemId: string) {
+  await assertCanManageOnboarding();
   await db.checklistOverrideExclusion.deleteMany({
     where: { overrideChecklistId, excludedItemId },
   });

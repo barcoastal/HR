@@ -4,8 +4,12 @@ import { authOptions } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id && process.env.NODE_ENV === "production") {
+  if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const role = (session.user as { role?: string }).role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const url = request.nextUrl.searchParams.get("url");

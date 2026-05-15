@@ -152,6 +152,13 @@ export async function getInterviewsForCandidate(candidateId: string) {
 }
 
 export async function getUpcomingInterviews() {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  // Interview rosters expose candidate PII — gate to recruitment-capable roles.
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
+    return [];
+  }
   return db.interview.findMany({
     where: {
       status: "SCHEDULED",

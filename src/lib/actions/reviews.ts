@@ -3,8 +3,19 @@
 import { db } from "@/lib/db";
 import type { ReviewCycleStatus, ReviewType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { requireAuth } from "@/lib/auth-helpers";
+
+async function assertCanManageReviews() {
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to access review cycles");
+  }
+  return session;
+}
 
 export async function getReviewCycles() {
+  await assertCanManageReviews();
   return db.reviewCycle.findMany({
     include: {
       reviews: {
@@ -17,6 +28,7 @@ export async function getReviewCycles() {
 }
 
 export async function getReviewCycle(id: string) {
+  await assertCanManageReviews();
   return db.reviewCycle.findUnique({
     where: { id },
     include: {

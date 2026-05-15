@@ -31,8 +31,10 @@ export async function getChannels(workspaceId: string) {
 
 export async function getChannelById(channelId: string) {
   const session = await requireAuth();
+  const employeeId = session.user?.employeeId;
+  if (!employeeId) return null;
 
-  return db.channel.findUnique({
+  const channel = await db.channel.findUnique({
     where: { id: channelId },
     include: {
       _count: { select: { members: true, messages: true } },
@@ -45,6 +47,13 @@ export async function getChannelById(channelId: string) {
       },
     },
   });
+  if (!channel) return null;
+  // Private channels are only visible to current members
+  if (channel.isPrivate) {
+    const isMember = channel.members.some((m) => m.employeeId === employeeId);
+    if (!isMember) return null;
+  }
+  return channel;
 }
 
 export async function createChannel(data: {
@@ -86,6 +95,17 @@ export async function joinChannel(channelId: string) {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
 
+  // Private channels can only be joined by invitation (addMembersToChannel) —
+  // self-join is restricted to public channels.
+  const channel = await db.channel.findUnique({
+    where: { id: channelId },
+    select: { isPrivate: true },
+  });
+  if (!channel) throw new Error("Channel not found");
+  if (channel.isPrivate) {
+    throw new Error("This channel is private — you need to be invited");
+  }
+
   await db.channelMember.upsert({
     where: { channelId_employeeId: { channelId, employeeId } },
     create: { channelId, employeeId },
@@ -106,13 +126,27 @@ export async function leaveChannel(channelId: string) {
   revalidatePath("/chat");
 }
 
+async function assertCanAdminChannel(channelId: string, employeeId: string, callerRole: string | undefined) {
+  if (callerRole === "SUPER_ADMIN" || callerRole === "ADMIN") return;
+  const member = await db.channelMember.findUnique({
+    where: { channelId_employeeId: { channelId, employeeId } },
+    select: { isAdmin: true },
+  });
+  if (!member?.isAdmin) {
+    throw new Error("Only a channel admin can perform this action");
+  }
+}
+
 export async function addMembersToChannel(channelId: string, employeeIds: string[]) {
-  await requireAuth();
+  const session = await requireAuth();
+  const employeeId = session.user?.employeeId;
+  if (!employeeId) throw new Error("No employee profile linked to this account");
+  await assertCanAdminChannel(channelId, employeeId, session.user?.role);
 
   await db.channelMember.createMany({
-    data: employeeIds.map((employeeId) => ({
+    data: employeeIds.map((id) => ({
       channelId,
-      employeeId,
+      employeeId: id,
     })),
     skipDuplicates: true,
   });
@@ -125,7 +159,10 @@ export async function updateChannel(channelId: string, data: {
   topic?: string;
   description?: string;
 }) {
-  await requireAuth();
+  const session = await requireAuth();
+  const employeeId = session.user?.employeeId;
+  if (!employeeId) throw new Error("No employee profile linked to this account");
+  await assertCanAdminChannel(channelId, employeeId, session.user?.role);
 
   await db.channel.update({
     where: { id: channelId },
@@ -140,7 +177,10 @@ export async function updateChannel(channelId: string, data: {
 }
 
 export async function archiveChannel(channelId: string) {
-  await requireAuth();
+  const session = await requireAuth();
+  const employeeId = session.user?.employeeId;
+  if (!employeeId) throw new Error("No employee profile linked to this account");
+  await assertCanAdminChannel(channelId, employeeId, session.user?.role);
   await db.channel.update({
     where: { id: channelId },
     data: { isArchived: true },

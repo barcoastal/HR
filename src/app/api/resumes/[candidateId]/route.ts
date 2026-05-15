@@ -43,6 +43,11 @@ export async function GET(
 ) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const role = session.user?.role;
+  // Resumes belong to the recruitment pipeline — gate to recruitment-capable roles.
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const { candidateId } = await params;
 
   if (!/^[a-zA-Z0-9-]+$/.test(candidateId)) {
@@ -58,7 +63,7 @@ export async function GET(
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="${candidateId}.pdf"`,
-        "Cache-Control": "public, max-age=86400",
+        "Cache-Control": "private, no-store",
       },
     });
   }
@@ -84,7 +89,7 @@ export async function GET(
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="${candidateId}.pdf"`,
-        "Cache-Control": "public, max-age=86400",
+        "Cache-Control": "private, no-store",
       },
     });
   }

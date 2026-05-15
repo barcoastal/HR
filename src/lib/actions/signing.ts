@@ -5,6 +5,21 @@ import crypto from "crypto";
 import { randomUUID } from "crypto";
 import { PDFDocument } from "pdf-lib";
 import { revalidatePath } from "next/cache";
+import { requireAuth } from "@/lib/auth-helpers";
+
+/**
+ * Signing actions are dangerous: they generate tokens that bypass auth on the
+ * sign/fill flow and they fire emails to attacker-controlled addresses from
+ * our domain. Gate them all behind HR-or-up.
+ */
+async function assertCanIssueSigning() {
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to issue signing requests");
+  }
+  return session;
+}
 
 export async function createSigningRequest(
   employeeTaskId: string,
@@ -12,6 +27,7 @@ export async function createSigningRequest(
   documentUrl: string,
   documentName: string
 ) {
+  await assertCanIssueSigning();
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
 
@@ -38,6 +54,7 @@ export async function createStandaloneSigningRequest(data: {
   signaturePlacements?: unknown;
   countersignerId?: string | null;
 }) {
+  await assertCanIssueSigning();
   const token = crypto.randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
@@ -98,17 +115,38 @@ export async function createStandaloneSigningRequest(data: {
 }
 
 export async function getAllSigningRequests() {
-  return db.signingRequest.findMany({
+  // The /documents page already scopes results client-side per role, but the
+  // raw action is a "use server" endpoint so it needs its own gate. The page
+  // requires login (which middleware enforces); we additionally filter so
+  // EMPLOYEE callers can only see their own and managers only see their
+  // direct reports.
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const callerEmployeeId = session.user?.employeeId;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+
+  const all = await db.signingRequest.findMany({
     include: {
-      employee: { select: { id: true, firstName: true, lastName: true, email: true } },
+      employee: { select: { id: true, firstName: true, lastName: true, email: true, managerId: true } },
       candidate: { select: { id: true, firstName: true, lastName: true, email: true } },
       employeeTask: { select: { documentAction: true } },
     },
     orderBy: { createdAt: "desc" },
   });
+  if (isAdmin) return all;
+  if (!callerEmployeeId) return [];
+  if (role === "MANAGER") {
+    return all.filter(
+      (r) =>
+        r.employeeId === callerEmployeeId ||
+        r.employee?.managerId === callerEmployeeId
+    );
+  }
+  return all.filter((r) => r.employeeId === callerEmployeeId);
 }
 
 export async function resendSigningRequest(id: string) {
+  await assertCanIssueSigning();
   const request = await db.signingRequest.findUnique({
     where: { id },
     include: { employee: true, candidate: true },
@@ -136,6 +174,7 @@ export async function resendSigningRequest(id: string) {
 }
 
 export async function voidSigningRequest(id: string) {
+  await assertCanIssueSigning();
   await db.signingRequest.update({
     where: { id },
     data: { status: "VOIDED", expiresAt: new Date() },

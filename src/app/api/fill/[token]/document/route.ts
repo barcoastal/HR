@@ -15,6 +15,9 @@ export async function GET(
   if (!request || request.expiresAt < new Date()) {
     return NextResponse.json({ error: "Invalid or expired link" }, { status: 404 });
   }
+  if (request.status === "SIGNED" || request.status === "VOIDED" || request.status === "AWAITING_COUNTERSIGN") {
+    return NextResponse.json({ error: "Document is no longer available" }, { status: 410 });
+  }
 
   const docUrl = request.documentUrl;
   const filename = docUrl.split("/").pop();
@@ -35,7 +38,7 @@ export async function GET(
     headers: {
       "Content-Type": blob.mimeType,
       "Content-Disposition": `inline; filename="${filename}"`,
-      "Cache-Control": "private, max-age=3600",
+      "Cache-Control": "private, no-store",
     },
   });
 }
