@@ -33,7 +33,7 @@ export default async function MyProfilePage() {
   const session = await requireAuth();
   if (!session.user.employeeId) redirect("/");
 
-  const profile = await getMyProfile(session.user.employeeId);
+  const profile = await getMyProfile();
   if (!profile) redirect("/");
 
   const notifPrefs = await getNotificationPreferences(session.user.id);

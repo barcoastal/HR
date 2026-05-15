@@ -30,7 +30,7 @@ export function EditEmergencyContactDialog({ data }: { data: EmergencyContactDat
 
   async function handleSave() {
     setSaving(true);
-    await updateMyProfile(data.employeeId, {
+    await updateMyProfile({
       emergencyContactName: form.emergencyContactName || null,
       emergencyContactPhone: form.emergencyContactPhone || null,
       emergencyContactRelation: form.emergencyContactRelation || null,

@@ -30,7 +30,7 @@ export function EditAboutDialog({ data }: { data: AboutData }) {
 
   async function handleSave() {
     setSaving(true);
-    await updateMyProfile(data.employeeId, {
+    await updateMyProfile({
       bio: form.bio || null,
       hobbies: form.hobbies || null,
       dietaryRestrictions: form.dietaryRestrictions || null,

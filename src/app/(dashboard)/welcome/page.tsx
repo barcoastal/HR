@@ -10,7 +10,7 @@ export default async function WelcomePage() {
   const session = await requireAuth();
   if (!session.user.employeeId) redirect("/");
 
-  const data = await getWelcomeData(session.user.employeeId);
+  const data = await getWelcomeData();
   if (!data) redirect("/");
 
   const { employee, totalTasks, completedTasks, progressPercent } = data;

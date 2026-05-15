@@ -30,7 +30,7 @@ export function PulsePopup({
 
   async function handleResponse(mood: number) {
     setLoading(true);
-    await submitPulseResponse(surveyId, employeeId, mood);
+    await submitPulseResponse(surveyId, mood);
     setSubmitted(true);
     setLoading(false);
   }

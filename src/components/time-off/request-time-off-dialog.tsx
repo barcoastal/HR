@@ -56,7 +56,6 @@ export function RequestTimeOffDialog({
     if (!form.policyId || !form.startDate || !form.endDate || daysCount <= 0) return;
     setSaving(true);
     await createTimeOffRequest({
-      employeeId,
       policyId: form.policyId,
       startDate: form.startDate,
       endDate: form.endDate,
