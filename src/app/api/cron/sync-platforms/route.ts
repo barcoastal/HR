@@ -2,17 +2,16 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { syncCandidatesStreaming } from "@/lib/actions/platform-sync-stream";
 
-const CRON_SECRET = process.env.CRON_SECRET || "";
+import { isAuthorizedCronRequest } from "@/lib/cron-auth";
 
 /**
- * GET /api/cron/sync-platforms?secret=...
+ * GET /api/cron/sync-platforms
+ * Auth: `Authorization: Bearer $CRON_SECRET` (preferred) or `?secret=...`
  * Pulls candidates from every connected recruitment platform.
  * Wire to a 5-minute schedule in Railway / external scheduler.
  */
 export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const secret = url.searchParams.get("secret");
-  if (!CRON_SECRET || secret !== CRON_SECRET) {
+  if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

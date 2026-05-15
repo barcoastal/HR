@@ -9,11 +9,28 @@ import crypto from "crypto";
 
 export async function getEmployeeDocuments(employeeId: string) {
   const session = await requireAuth();
-  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
+  const role = session.user?.role;
+  const callerEmployeeId = session.user?.employeeId;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isOwner = !!callerEmployeeId && callerEmployeeId === employeeId;
+
+  // Match the gate on /api/onboarding-docs/[filename]: only admins, the
+  // employee themselves, or their direct manager may see the file list.
+  // Other employees (peers) get nothing — even EVERYONE-visibility docs.
+  let isManager = false;
+  if (!isAdmin && !isOwner && callerEmployeeId) {
+    const target = await db.employee.findUnique({
+      where: { id: employeeId },
+      select: { managerId: true },
+    });
+    isManager = target?.managerId === callerEmployeeId;
+  }
+  if (!isAdmin && !isOwner && !isManager) return [];
 
   return db.document.findMany({
     where: {
       employeeId,
+      // Only admins see HR_ONLY rows. Owners and managers see EVERYONE only.
       ...(!isAdmin ? { visibility: "EVERYONE" } : {}),
     },
     orderBy: { uploadedAt: "desc" },

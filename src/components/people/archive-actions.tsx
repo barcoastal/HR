@@ -13,12 +13,15 @@ export function ArchiveActions({ id, name }: { id: string; name: string }) {
       <button
         type="button"
         disabled={pending}
-        onClick={() =>
+        onClick={() => {
+          const withLogin = window.confirm(
+            `Restore ${name}?\n\nClick OK to also re-enable their login account.\nClick Cancel to only restore the employee record (login stays disabled).`
+          );
           startTransition(async () => {
-            await restoreEmployee(id);
+            await restoreEmployee(id, { restoreLogin: withLogin });
             router.refresh();
-          })
-        }
+          });
+        }}
         className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 disabled:opacity-50"
       >
         Restore
