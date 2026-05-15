@@ -20,7 +20,9 @@ export async function getMyDocuments(): Promise<MyDocument[]> {
 
   const [documents, signingRequests] = await Promise.all([
     db.document.findMany({
-      where: { employeeId },
+      // HR_ONLY documents are off-limits to the employee, even on their own
+      // profile.
+      where: { employeeId, visibility: "EVERYONE" },
       orderBy: { uploadedAt: "desc" },
       select: { id: true, name: true, url: true, category: true, uploadedAt: true },
     }),
