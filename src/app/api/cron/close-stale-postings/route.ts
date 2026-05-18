@@ -2,17 +2,18 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { breezySignIn, updateBreezyPositionState } from "@/lib/platform-sync/clients/breezy";
 
-import { isAuthorizedCronRequest } from "@/lib/cron-auth";
+const CRON_SECRET = process.env.CRON_SECRET || "";
 
 /**
- * GET /api/cron/close-stale-postings
- * Auth: `Authorization: Bearer $CRON_SECRET` (preferred) or `?secret=...`
+ * GET /api/cron/close-stale-postings?secret=...
  * Finds positions whose HR status is CLOSED/FILLED but still have a PUBLISHED
  * board posting and closes them on each board. Inlines Breezy auth so it
  * works without a user session.
  */
 export async function GET(request: Request) {
-  if (!isAuthorizedCronRequest(request)) {
+  const url = new URL(request.url);
+  const secret = url.searchParams.get("secret");
+  if (!CRON_SECRET || secret !== CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

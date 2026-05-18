@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-import { isAuthorizedCronRequest } from "@/lib/cron-auth";
-
+const CRON_SECRET = process.env.CRON_SECRET || "";
 const ADVANCE_DAYS = 14; // 2 weeks before anniversary
 
 /**
@@ -14,7 +13,10 @@ const ADVANCE_DAYS = 14; // 2 weeks before anniversary
  *  3. Creates in-app notifications
  */
 export async function GET(request: Request) {
-  if (!isAuthorizedCronRequest(request)) {
+  // Verify cron secret
+  const url = new URL(request.url);
+  const secret = url.searchParams.get("secret");
+  if (!CRON_SECRET || secret !== CRON_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

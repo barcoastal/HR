@@ -51,9 +51,6 @@ export async function getEmployees(filters?: {
 }
 
 export async function getEmployeeById(id: string) {
-  // Note: do NOT include `documents` here. Document visibility is enforced
-  // separately by getEmployeeDocuments(), which scopes by role + ownership.
-  // Pulling them inline would bypass that check for any caller.
   return db.employee.findUnique({
     where: { id },
     include: {
@@ -62,6 +59,7 @@ export async function getEmployeeById(id: string) {
       manager: true,
       buddy: true,
       directReports: true,
+      documents: true,
       reviewsAsEmployee: {
         include: { reviewer: true, cycle: true },
         orderBy: { createdAt: "desc" },
@@ -865,42 +863,18 @@ export async function deleteEmployee(id: string, reason?: string) {
   revalidatePath("/offboarding");
 }
 
-/**
- * Restore an archived employee. SUPER_ADMIN only.
- * Pass restoreLogin=true to also recreate the User row so the employee can
- * sign back in immediately. Default is false (admin must explicitly opt in
- * to re-enable login).
- */
-export async function restoreEmployee(id: string, options?: { restoreLogin?: boolean }) {
+/** Restore an archived employee. SUPER_ADMIN only. Does not re-create the User row. */
+export async function restoreEmployee(id: string) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN") {
     throw new Error("Only super admins can restore employees");
   }
 
-  const employee = await db.employee.update({
+  await db.employee.update({
     where: { id },
     data: { archivedAt: null, archivedById: null, archivedReason: null },
   });
-
-  if (options?.restoreLogin) {
-    const existingUser = await db.user.findUnique({ where: { email: employee.email } });
-    if (!existingUser) {
-      await db.user.create({
-        data: {
-          email: employee.email,
-          role: "EMPLOYEE",
-          employeeId: employee.id,
-        },
-      });
-    } else if (!existingUser.employeeId) {
-      await db.user.update({
-        where: { id: existingUser.id },
-        data: { employeeId: employee.id },
-      });
-    }
-    revalidatePath("/settings");
-  }
 
   revalidatePath("/people");
   revalidatePath("/people/archive");
@@ -914,25 +888,6 @@ export async function purgeEmployee(id: string) {
   if (session.user?.role !== "SUPER_ADMIN") {
     throw new Error("Only super admins can permanently delete employees");
   }
-
-  // Capture an audit snapshot before we destroy the data — there's no
-  // dedicated audit table yet, so log a structured line that ends up in
-  // Railway logs alongside the actor and target.
-  const target = await db.employee.findUnique({
-    where: { id },
-    select: { firstName: true, lastName: true, email: true, archivedAt: true },
-  });
-  console.log(
-    JSON.stringify({
-      audit: "purge_employee",
-      at: new Date().toISOString(),
-      actorUserId: session.user?.id ?? null,
-      actorEmployeeId: session.user?.employeeId ?? null,
-      target: target
-        ? { id, name: `${target.firstName} ${target.lastName}`, email: target.email, archivedAt: target.archivedAt }
-        : { id, notFound: true },
-    })
-  );
 
   await db.user.deleteMany({ where: { employeeId: id } });
 
