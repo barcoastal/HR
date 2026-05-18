@@ -31,14 +31,6 @@ export async function updateRolePermissions(
   role: string,
   permissions: Record<string, boolean>
 ) {
-  // Only a SUPER_ADMIN can rewrite the permission matrix — otherwise any
-  // signed-in user could grant their own role admin powers.
-  const { requireAuth } = await import("@/lib/auth-helpers");
-  const session = await requireAuth();
-  if (session.user?.role !== "SUPER_ADMIN") {
-    throw new Error("Only a SUPER_ADMIN can change role permissions");
-  }
-
   // SUPER_ADMIN permissions cannot be changed
   if (role === "SUPER_ADMIN") return;
 

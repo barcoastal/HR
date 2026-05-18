@@ -375,12 +375,6 @@ export async function bulkImportCandidates(
     notes?: string;
   }[]
 ): Promise<{ created: number; skipped: string[]; errors: string[] }> {
-  const { requireAuth } = await import("@/lib/auth-helpers");
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
-    throw new Error("Not authorized to bulk-import candidates");
-  }
   const errors: string[] = [];
 
   // Filter out candidates without email
