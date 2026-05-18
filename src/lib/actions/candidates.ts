@@ -52,9 +52,12 @@ export async function getCandidates(filters?: {
     ];
   }
 
+  // Drop the giant resumeText blob from list responses — pipeline cards only
+  // render a badge based on whether one exists, not the content itself.
   return db.candidate.findMany({
     where,
-    include: { position: true },
+    omit: { resumeText: true },
+    include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -1146,10 +1149,18 @@ export async function findMatchingCandidates(keywords: string[]) {
 
 export async function getAllCandidatesForDatabase() {
   await assertCanManageCandidates();
+  // Database tab needs resumeText for client-side search, but we still slim
+  // the position relation down to the title field to keep payload tight.
   return db.candidate.findMany({
-    include: { position: true },
+    include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
+}
+
+/** Cheap count for stat cards — avoids loading every candidate row. */
+export async function getTotalCandidateCount() {
+  await assertCanManageCandidates();
+  return db.candidate.count();
 }
 
 export async function deleteCandidate(id: string) {

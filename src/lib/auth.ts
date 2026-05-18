@@ -157,7 +157,7 @@ export const authOptions: NextAuthOptions = {
         return "/login?error=signin-failed";
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -165,8 +165,12 @@ export const authOptions: NextAuthOptions = {
         token.profilePhoto = user.profilePhoto;
       }
 
-      // Refresh profile photo from DB on each token refresh
-      if (token.employeeId) {
+      // Refresh profile photo from DB ONLY when explicitly triggered (e.g.
+      // after the user uploads a new photo and the client calls
+      // useSession().update()). Doing this on every JWT decode was a hidden
+      // DB hit on every server action / page load, which added up fast when
+      // pages fire many parallel server actions.
+      if (trigger === "update" && token.employeeId) {
         const emp = await db.employee.findUnique({
           where: { id: token.employeeId as string },
           select: { profilePhoto: true },
