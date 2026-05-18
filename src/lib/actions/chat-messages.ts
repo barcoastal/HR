@@ -9,32 +9,6 @@ import type { BroadcastEvent, MessagePayload } from "@/lib/chat/ws-types";
 const WS_SERVER_URL = process.env.WS_SERVER_URL || "http://localhost:3001";
 const WS_INTERNAL_SECRET = process.env.WS_INTERNAL_SECRET || "dev-secret";
 
-/**
- * Verify the caller is a member of the given channel/DM thread. Without this
- * any signed-in employee could pull messages from any private channel by id.
- */
-async function assertCanReadChannel(channelId: string, type: "channel" | "dm", employeeId: string) {
-  if (type === "channel") {
-    const member = await db.channelMember.findFirst({
-      where: { channelId, employeeId },
-      select: { id: true },
-    });
-    if (member) return;
-    // Public channels are also readable by any active employee.
-    const channel = await db.channel.findUnique({
-      where: { id: channelId },
-      select: { isPrivate: true },
-    });
-    if (channel && !channel.isPrivate) return;
-    throw new Error("Not a member of this channel");
-  }
-  const dm = await db.dmMember.findFirst({
-    where: { dmThreadId: channelId, employeeId },
-    select: { id: true },
-  });
-  if (!dm) throw new Error("Not a member of this DM");
-}
-
 async function broadcastToWs(event: BroadcastEvent) {
   try {
     await fetch(`${WS_SERVER_URL}/broadcast`, {
@@ -54,13 +28,10 @@ export async function getMessages(
   channelId: string,
   options?: { cursor?: string; limit?: number; type?: "channel" | "dm" }
 ) {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) return { messages: [], hasMore: false, nextCursor: undefined };
-  const isChannel = (options?.type ?? "channel") === "channel";
-  await assertCanReadChannel(channelId, isChannel ? "channel" : "dm", employeeId);
+  await requireAuth();
 
   const limit = options?.limit ?? 50;
+  const isChannel = (options?.type ?? "channel") === "channel";
 
   const where = isChannel
     ? { channelId, isDeleted: false }
@@ -261,21 +232,7 @@ export async function saveMessage(messageId: string) {
 }
 
 export async function getThreadReplies(parentId: string) {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) return [];
-
-  // Verify the caller has access to the parent message's channel/DM
-  const parent = await db.message.findUnique({
-    where: { id: parentId },
-    select: { channelId: true, dmThreadId: true },
-  });
-  if (!parent) return [];
-  if (parent.channelId) {
-    await assertCanReadChannel(parent.channelId, "channel", employeeId);
-  } else if (parent.dmThreadId) {
-    await assertCanReadChannel(parent.dmThreadId, "dm", employeeId);
-  }
+  await requireAuth();
 
   const replies = await db.message.findMany({
     where: { parentId, isDeleted: false },

@@ -4,15 +4,6 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
-async function assertCanManageBoards() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to manage board postings");
-  }
-  return session;
-}
-
 export type BoardName = "CAREERS" | "JOBING" | "BREEZY";
 export type BoardStatus = "NOT_POSTED" | "PUBLISHED" | "PAUSED" | "CLOSED" | "FAILED";
 
@@ -72,7 +63,7 @@ export async function getBoardPostings(positionId: string): Promise<BoardPosting
 }
 
 export async function setBoardTitleOverride(positionId: string, board: BoardName, title: string | null) {
-  await assertCanManageBoards();
+  await requireAuth();
   if (board === "CAREERS" || board === "JOBING") {
     return { success: false, error: "Title overrides don't apply to this board" };
   }
@@ -107,7 +98,7 @@ async function upsertPosting(positionId: string, board: BoardName, data: Partial
 }
 
 export async function postToBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
-  await assertCanManageBoards();
+  await requireAuth();
   const position = await db.position.findUnique({
     where: { id: positionId },
     include: { department: true },
@@ -184,7 +175,7 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
 }
 
 export async function pauseOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
-  await assertCanManageBoards();
+  await requireAuth();
 
   if (board === "CAREERS") {
     await db.position.update({ where: { id: positionId }, data: { published: false } });
@@ -229,7 +220,7 @@ export async function pauseOnBoard(positionId: string, board: BoardName): Promis
 }
 
 export async function closeOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
-  await assertCanManageBoards();
+  await requireAuth();
 
   if (board === "CAREERS") {
     await db.position.update({ where: { id: positionId }, data: { published: false } });
@@ -287,7 +278,7 @@ export async function closeAllBoardsForPosition(positionId: string) {
 }
 
 export async function resumeOnBoard(positionId: string, board: BoardName): Promise<{ success: boolean; error?: string }> {
-  await assertCanManageBoards();
+  await requireAuth();
 
   if (board === "CAREERS") {
     await db.position.update({ where: { id: positionId }, data: { published: true } });

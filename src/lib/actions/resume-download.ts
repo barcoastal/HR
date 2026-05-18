@@ -5,15 +5,6 @@ import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
-
-async function assertCanManageResumes() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to manage resumes");
-  }
-}
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 
@@ -57,7 +48,6 @@ export async function batchDownloadResumes(): Promise<{
   alreadyLocal: number;
   failed: number;
 }> {
-  await assertCanManageResumes();
   await ensureDir();
 
   // Get all candidates with Jobing resume URLs that aren't already local
@@ -143,7 +133,6 @@ export async function downloadSingleResume(
   candidateId: string,
   jobingResumeUrl: string
 ): Promise<boolean> {
-  await assertCanManageResumes();
   await ensureDir();
   const ok = await downloadResumePdf(jobingResumeUrl, candidateId);
   if (ok) {

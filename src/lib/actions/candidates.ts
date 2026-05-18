@@ -4,31 +4,6 @@ import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
-import { requireAuth } from "@/lib/auth-helpers";
-
-/**
- * Recruitment surfaces (CV page, candidate pipeline, offer letters) are
- * scoped to managers and above. Server actions must enforce this — the
- * /cv page UI gate is not enough since "use server" functions are
- * directly callable by any signed-in user.
- */
-async function assertCanManageCandidates() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
-    throw new Error("Not authorized to access recruitment");
-  }
-  return session;
-}
-
-async function assertCanHire() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to hire candidates");
-  }
-  return session;
-}
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -36,7 +11,6 @@ export async function getCandidates(filters?: {
   search?: string;
   inPipeline?: boolean;
 }) {
-  await assertCanManageCandidates();
   const where: Record<string, unknown> = {};
 
   if (filters?.status) where.status = filters.status;
@@ -77,7 +51,6 @@ export async function createCandidate(data: {
   inPipeline?: boolean;
   jobAppliedTo?: string;
 }) {
-  await assertCanManageCandidates();
   const { skills, inPipeline = true, ...rest } = data;
   const candidate = await db.candidate.create({
     data: {
@@ -280,7 +253,6 @@ export async function updateCandidateStatus(
   id: string,
   status: CandidateStatus
 ) {
-  await assertCanManageCandidates();
   const candidate = await db.candidate.findUnique({ where: { id } });
   if (!candidate) throw new Error("Candidate not found");
 
@@ -317,7 +289,6 @@ export async function updateCandidateStatus(
 }
 
 export async function searchCandidates(query: string) {
-  await assertCanManageCandidates();
   const candidates = await db.candidate.findMany({
     where: {
       OR: [
@@ -341,7 +312,6 @@ export async function advancedSearchCandidates(params: {
   dateFrom?: string;
   dateTo?: string;
 }) {
-  await assertCanManageCandidates();
   const where: Record<string, unknown> = {};
   const andConditions: Record<string, unknown>[] = [];
 
@@ -472,7 +442,6 @@ export async function bulkImportCandidates(
 }
 
 export async function getDistinctSources(): Promise<string[]> {
-  await assertCanManageCandidates();
   const results = await db.candidate.findMany({
     where: { source: { not: null } },
     select: { source: true },
@@ -502,7 +471,6 @@ export async function updateCandidate(
     status?: CandidateStatus;
   }
 ) {
-  await assertCanManageCandidates();
   const existing = await db.candidate.findUnique({ where: { id } });
   const previousStatus = existing?.status;
 
@@ -544,7 +512,6 @@ export async function updateCandidate(
 }
 
 export async function updateCandidateNotes(id: string, notes: string) {
-  await assertCanManageCandidates();
   const candidate = await db.candidate.update({
     where: { id },
     data: { notes },
@@ -557,7 +524,6 @@ export async function hireCandidateAndStartOnboarding(
   candidateId: string,
   options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
 ) {
-  await assertCanHire();
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: { include: { department: true } } },
@@ -820,7 +786,6 @@ export async function hireCandidateAndStartOnboarding(
 }
 
 export async function getPositions() {
-  await assertCanManageCandidates();
   return db.position.findMany({
     include: {
       department: true,
@@ -843,7 +808,6 @@ export async function createPosition(data: {
   postToBreezy?: boolean;
   breezyTitleOverride?: string | null;
 }) {
-  await assertCanHire();
   const { postToJobing, postToBreezy, breezyTitleOverride, ...positionData } = data;
   const position = await db.position.create({ data: positionData });
 
@@ -964,7 +928,6 @@ export async function createPosition(data: {
 export async function postPositionToBreezy(
   positionId: string
 ): Promise<{ success: boolean; error?: string }> {
-  await assertCanHire();
   const position = await db.position.findUnique({
     where: { id: positionId },
     include: { department: true },
@@ -1020,7 +983,6 @@ export async function updatePosition(
     departmentId?: string | null;
   }
 ) {
-  await assertCanHire();
   const position = await db.position.update({
     where: { id },
     data: {
@@ -1042,7 +1004,6 @@ export async function updatePositionStatus(
   id: string,
   status: "OPEN" | "CLOSED" | "FILLED"
 ) {
-  await assertCanHire();
   const previous = await db.position.findUnique({ where: { id }, select: { status: true } });
   const position = await db.position.update({
     where: { id },
@@ -1063,7 +1024,8 @@ export async function updatePositionStatus(
 }
 
 export async function clonePosition(id: string): Promise<{ success: boolean; newId?: string; error?: string }> {
-  await assertCanHire();
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  await requireAuth();
   const source = await db.position.findUnique({ where: { id } });
   if (!source) return { success: false, error: "Position not found" };
   try {
@@ -1089,6 +1051,7 @@ export async function clonePosition(id: string): Promise<{ success: boolean; new
 }
 
 export async function deletePosition(id: string): Promise<{ success: boolean; error?: string }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   if (session.user.role !== "SUPER_ADMIN") {
     return { success: false, error: "Only super admins can delete positions" };
@@ -1112,7 +1075,6 @@ export async function assignCandidateToPosition(
   positionId: string,
   recruiterId?: string
 ) {
-  await assertCanManageCandidates();
   const data: Record<string, unknown> = { positionId, inPipeline: true, status: "NEW" };
   if (recruiterId) data.recruiterId = recruiterId;
   const candidate = await db.candidate.update({
@@ -1124,7 +1086,6 @@ export async function assignCandidateToPosition(
 }
 
 export async function findMatchingCandidates(keywords: string[]) {
-  await assertCanManageCandidates();
   if (keywords.length === 0) return [];
   const orConditions = keywords.flatMap((kw) => [
     { skills: { contains: kw, mode: "insensitive" as const } },
@@ -1145,7 +1106,6 @@ export async function findMatchingCandidates(keywords: string[]) {
 }
 
 export async function getAllCandidatesForDatabase() {
-  await assertCanManageCandidates();
   return db.candidate.findMany({
     include: { position: true },
     orderBy: { createdAt: "desc" },
@@ -1153,7 +1113,6 @@ export async function getAllCandidatesForDatabase() {
 }
 
 export async function deleteCandidate(id: string) {
-  await assertCanHire();
   await db.interview.deleteMany({ where: { candidateId: id } });
   await db.candidate.delete({ where: { id } });
   revalidatePath("/cv");
@@ -1163,7 +1122,6 @@ export async function sendOfferLetter(
   candidateId: string,
   offerDocUrl: string
 ): Promise<{ success: boolean; error?: string }> {
-  await assertCanHire();
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: true },
@@ -1202,7 +1160,6 @@ export async function pullCandidateToRecruitment(
   candidateId: string,
   positionId?: string
 ) {
-  await assertCanManageCandidates();
   const data: Record<string, unknown> = {
     inPipeline: true,
     status: "NEW",

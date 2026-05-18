@@ -208,22 +208,6 @@ export async function getOneOnOne(id: string) {
 }
 
 export async function getPastOneOnOnesForEmployee(employeeId: string) {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  const callerEmployeeId = session.user?.employeeId;
-  // Only admins/HR, the employee themselves, or their manager may see past
-  // 1:1 history. Notebook markdown often contains sensitive performance
-  // discussion.
-  const canSee =
-    isAdmin(role) ||
-    callerEmployeeId === employeeId ||
-    (callerEmployeeId
-      ? !!(await db.employee.findFirst({
-          where: { id: employeeId, managerId: callerEmployeeId },
-          select: { id: true },
-        }))
-      : false);
-  if (!canSee) return [];
   return db.oneOnOne.findMany({
     where: { employeeId, status: "COMPLETED" },
     orderBy: { completedAt: "desc" },

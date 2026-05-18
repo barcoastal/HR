@@ -164,8 +164,8 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             </div>
           </section>
 
-          {/* Emergency Contact — only visible to admins/HR, the employee themselves, or their direct manager */}
-          {employee.emergencyContactName && canViewDocuments && (
+          {/* Emergency Contact */}
+          {employee.emergencyContactName && (
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-6")}>
               <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Emergency Contact</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">

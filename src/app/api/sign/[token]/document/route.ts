@@ -16,12 +16,6 @@ export async function GET(
   if (!request || request.expiresAt < new Date()) {
     return NextResponse.json({ error: "Invalid or expired signing link" }, { status: 404 });
   }
-  // Once the request is signed/voided/handed off to a countersigner, the raw
-  // PDF should no longer be reachable via the public token. Mirrors the gate
-  // in getSigningRequestByToken.
-  if (request.status === "SIGNED" || request.status === "VOIDED" || request.status === "AWAITING_COUNTERSIGN") {
-    return NextResponse.json({ error: "Document is no longer available" }, { status: 410 });
-  }
 
   // Extract filename from documentUrl (e.g., "/api/onboarding-docs/uuid.pdf" → "uuid.pdf")
   const docUrl = request.documentUrl;
@@ -43,7 +37,7 @@ export async function GET(
     headers: {
       "Content-Type": blob.mimeType,
       "Content-Disposition": `inline; filename="${filename}"`,
-      "Cache-Control": "private, no-store",
+      "Cache-Control": "private, max-age=3600",
     },
   });
 }

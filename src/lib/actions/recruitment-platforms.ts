@@ -1,18 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/auth-helpers";
-
-async function assertCanManagePlatforms() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
-    throw new Error("Not authorized to manage recruitment platforms");
-  }
-}
 
 export async function getRecruitmentPlatforms() {
-  await assertCanManagePlatforms();
   const now = new Date();
   const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
 
@@ -43,7 +33,6 @@ export async function createRecruitmentPlatform(data: {
   status?: "ACTIVE" | "PAUSED" | "DISCONNECTED";
   notes?: string;
 }) {
-  await assertCanManagePlatforms();
   const now = new Date();
   return db.recruitmentPlatform.create({
     data: {
@@ -75,7 +64,6 @@ export async function updateRecruitmentPlatform(
     notes?: string;
   }
 ) {
-  await assertCanManagePlatforms();
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1;
@@ -104,12 +92,10 @@ export async function updateRecruitmentPlatform(
 }
 
 export async function deleteRecruitmentPlatform(id: string) {
-  await assertCanManagePlatforms();
   return db.recruitmentPlatform.delete({ where: { id } });
 }
 
 export async function getPlatformSpendDashboard() {
-  await assertCanManagePlatforms();
   const [platforms, candidates] = await Promise.all([
     db.recruitmentPlatform.findMany({
       include: {
@@ -170,7 +156,6 @@ export async function getPlatformSpendDashboard() {
 }
 
 export async function getPlatformSpendVsHiresTrend() {
-  await assertCanManagePlatforms();
   const now = new Date();
   const months: { month: string; spend: number; hires: number }[] = [];
 

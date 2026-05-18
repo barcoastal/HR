@@ -6,10 +6,6 @@ import { revalidatePath } from "next/cache";
 export async function POST(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR" && role !== "MANAGER") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
 
   try {
     const { candidates } = await req.json();

@@ -26,11 +26,9 @@ export async function GET(request: Request) {
   const targetMonth = targetDate.getMonth();
   const targetDay = targetDate.getDate();
 
-  // Find employees with anniversary on the target date.
-  // archivedAt: null is already enforced by the Prisma extension in db.ts,
-  // but we list it explicitly here in case this query ever gets refactored.
+  // Find employees with anniversary on the target date
   const employees = await db.employee.findMany({
-    where: { status: "ACTIVE", archivedAt: null },
+    where: { status: "ACTIVE" },
     select: {
       id: true,
       firstName: true,

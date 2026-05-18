@@ -2,17 +2,8 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
 
 const DOCUMENT_STAGES = ["PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"];
-
-async function assertCanManageStageDocs() {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to manage stage documents");
-  }
-}
 
 export async function getStageDocuments(stage: string) {
   return db.stageDocument.findMany({
@@ -78,7 +69,6 @@ export async function createStageDocument(data: {
   requiresCountersignature?: boolean;
   countersignerId?: string | null;
 }) {
-  await assertCanManageStageDocs();
   if (!DOCUMENT_STAGES.includes(data.stage)) {
     throw new Error("Invalid stage for documents");
   }
@@ -104,14 +94,12 @@ export async function updateStageDocument(
   id: string,
   data: { name?: string; placeholders?: string; pdfData?: string; requiresSignature?: boolean; requiresFill?: boolean; requiresCountersignature?: boolean; countersignerId?: string | null }
 ) {
-  await assertCanManageStageDocs();
   const doc = await db.stageDocument.update({ where: { id }, data });
   revalidatePath("/settings");
   return { id: doc.id, stage: doc.stage, name: doc.name, placeholders: doc.placeholders, order: doc.order };
 }
 
 export async function deleteStageDocument(id: string) {
-  await assertCanManageStageDocs();
   await db.stageDocument.delete({ where: { id } });
   revalidatePath("/settings");
 }

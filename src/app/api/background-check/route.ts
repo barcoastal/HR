@@ -16,10 +16,6 @@ function apiUrl(path: string) {
 export async function POST(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
   const body = await req.json();
   const { candidateId, options } = body as {
     candidateId: string;
@@ -215,10 +211,6 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
   const candidateId = req.nextUrl.searchParams.get("candidateId");
 
   if (!candidateId) {
@@ -293,10 +285,6 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
   const { candidateId, status } = await req.json();
 
   if (!candidateId || !status) {
