@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
@@ -13,7 +13,7 @@ import { IndeedImport } from "@/components/cv/indeed-import";
 import { CsvImport } from "@/components/cv/csv-import";
 import { AddCandidateToPosition } from "@/components/cv/add-candidate-to-position";
 import { AIMatchDialog } from "@/components/cv/add-position-form";
-import { updatePositionStatus, postPositionToBreezy, deletePosition, clonePosition } from "@/lib/actions/candidates";
+import { updatePositionStatus, postPositionToBreezy, deletePosition, clonePosition, getAllCandidatesForDatabase } from "@/lib/actions/candidates";
 import { useSession } from "next-auth/react";
 import { batchDownloadResumes } from "@/lib/actions/resume-download";
 import { useRouter } from "next/navigation";
@@ -93,7 +93,7 @@ type PipelineStageConfig = {
 
 type Props = {
   pipelineCandidates: CandidateItem[];
-  allCandidates: CandidateItem[];
+  allCandidates?: CandidateItem[]; // Optional — Database tab lazy-fetches if missing
   positions: Position[];
   openPositions: PositionFull[];
   closedPositions: PositionFull[];
@@ -458,6 +458,57 @@ export function CVTabs({
   const [activeTab, setActiveTab] = useState("recruitment");
   const [showArchive, setShowArchive] = useState(false);
 
+  // Lazy-load Candidate Database — large query, not needed for the Recruitment
+  // tab which is the default landing view. Fetch on first activation.
+  const [databaseCandidates, setDatabaseCandidates] = useState<CandidateItem[] | null>(
+    allCandidates ?? null
+  );
+  const [databaseLoading, setDatabaseLoading] = useState(false);
+  useEffect(() => {
+    if (activeTab !== "database" || databaseCandidates !== null || databaseLoading) return;
+    setDatabaseLoading(true);
+    getAllCandidatesForDatabase()
+      .then((rows) => {
+        setDatabaseCandidates(
+          (rows as unknown as Record<string, unknown>[]).map((c) => ({
+            id: c.id as string,
+            firstName: c.firstName as string,
+            lastName: c.lastName as string,
+            email: c.email as string,
+            phone: (c.phone as string) ?? null,
+            linkedinUrl: (c.linkedinUrl as string) ?? null,
+            skills: (c.skills as string) ?? null,
+            experience: (c.experience as string) ?? null,
+            source: (c.source as string) ?? null,
+            notes: (c.notes as string) ?? null,
+            resumeText: null,
+            status: c.status as CandidateItem["status"],
+            positionId: (c.positionId as string) ?? null,
+            costOfHire: (c.costOfHire as number) ?? null,
+            hourlyRate: (c.hourlyRate as number) ?? null,
+            managerId: (c.managerId as string) ?? null,
+            recruiterId: (c.recruiterId as string) ?? null,
+            backgroundCheckStatus: (c.backgroundCheckStatus as string) ?? null,
+            backgroundCheckOptions: (c.backgroundCheckOptions as string) ?? null,
+            adverseActionLetterSentAt: (c.adverseActionLetterSentAt as Date) ?? null,
+            offerDocUrl: (c.offerDocUrl as string) ?? null,
+            offerSentAt: (c.offerSentAt as Date) ?? null,
+            offerSignedDocUrl: (c.offerSignedDocUrl as string) ?? null,
+            offerSignedAt: (c.offerSignedAt as Date) ?? null,
+            jobAppliedTo: (c.jobAppliedTo as string) ?? null,
+            inPipeline: c.inPipeline as boolean,
+            position: c.position ? { title: (c.position as { title: string }).title } : null,
+            resumeUrl: (c.resumeUrl as string) ?? null,
+            createdAt: c.createdAt as Date,
+            doNotCall: (c.doNotCall as boolean) ?? false,
+            doNotCallReason: (c.doNotCallReason as string) ?? null,
+            applicationCount: (c.applicationCount as number) ?? 1,
+          }))
+        );
+      })
+      .finally(() => setDatabaseLoading(false));
+  }, [activeTab, databaseCandidates, databaseLoading]);
+
   // Candidates without a position (unassigned)
   const unassignedCandidates = pipelineCandidates.filter(
     (c) => !c.positionId
@@ -503,7 +554,7 @@ export function CVTabs({
                       position={pos}
                       candidates={posCandidates}
                       allPositions={positions}
-                      allCandidates={allCandidates}
+                      allCandidates={allCandidates ?? pipelineCandidates}
                       employees={employees}
                       recruiters={recruiters}
                       departments={departments}
@@ -601,7 +652,7 @@ export function CVTabs({
                         position={pos}
                         candidates={posCandidates}
                         allPositions={positions}
-                        allCandidates={allCandidates}
+                        allCandidates={allCandidates ?? pipelineCandidates}
                         employees={employees}
                         recruiters={recruiters}
                         departments={departments}
@@ -631,10 +682,16 @@ export function CVTabs({
             <FixNamesButton />
             <DownloadResumesButton />
           </div>
-          <CandidateDatabase
-            candidates={allCandidates}
-            positions={positions}
-          />
+          {databaseLoading || databaseCandidates === null ? (
+            <div className="rounded-2xl border border-dashed border-[var(--color-border)] p-12 text-center text-[var(--color-on-surface-variant)]">
+              Loading candidates…
+            </div>
+          ) : (
+            <CandidateDatabase
+              candidates={databaseCandidates}
+              positions={positions}
+            />
+          )}
         </div>
       )}
     </div>

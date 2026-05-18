@@ -280,6 +280,8 @@ model Employee {
   @@index([managerId])
   @@index([buddyId])
   @@index([email])
+  @@index([status])
+  @@index([archivedAt])
 }
 
 model User {
@@ -716,6 +718,8 @@ model Candidate {
   @@index([recruiterId])
   @@index([inPipeline])
   @@index([doNotCall])
+  @@index([createdAt])
+  @@index([inPipeline, status])
 }
 
 // One row per application a candidate makes to a specific position.

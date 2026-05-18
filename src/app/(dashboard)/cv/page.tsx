@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
-import { getCandidates, getPositions, getAllCandidatesForDatabase } from "@/lib/actions/candidates";
+import { getCandidates, getPositions, getTotalCandidateCount } from "@/lib/actions/candidates";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { getSyncablePlatforms } from "@/lib/actions/platform-sync";
@@ -15,9 +15,9 @@ import { Icon } from "@/components/ui/icon";
 
 export default async function CVPage() {
   await requireManagerOrAdmin();
-  const [pipelineCandidates, allCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages] = await Promise.all([
+  const [pipelineCandidates, totalCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages] = await Promise.all([
     getCandidates({ inPipeline: true }),
-    getAllCandidatesForDatabase(),
+    getTotalCandidateCount(),
     getPositions(),
     getRecruitmentPlatforms(),
     getSyncablePlatforms(),
@@ -53,7 +53,7 @@ export default async function CVPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <StatCard title="Open Positions" value={openPositions.length} icon={<Icon name="work" size={20} />} color="blue" />
         <StatCard title="Active in Pipeline" value={activeCandidates} icon={<Icon name="target" size={20} />} color="emerald" />
-        <StatCard title="Total Candidates" value={allCandidates.length} icon={<Icon name="group" size={20} />} color="purple" />
+        <StatCard title="Total Candidates" value={totalCandidates} icon={<Icon name="group" size={20} />} color="purple" />
         <StatCard title="Archived Positions" value={closedPositions.length} icon={<Icon name="archive" size={20} />} color="amber" />
       </div>
 
@@ -89,40 +89,7 @@ export default async function CVPage() {
           resumeUrl: c.resumeUrl,
           createdAt: c.createdAt,
         }))}
-        allCandidates={allCandidates.map((c) => ({
-          id: c.id,
-          firstName: c.firstName,
-          lastName: c.lastName,
-          email: c.email,
-          phone: c.phone,
-          linkedinUrl: c.linkedinUrl,
-          skills: c.skills,
-          experience: c.experience,
-          source: c.source,
-          notes: c.notes,
-          resumeText: null,
-          status: c.status,
-          positionId: c.positionId,
-          costOfHire: c.costOfHire,
-          hourlyRate: c.hourlyRate,
-          managerId: c.managerId || null,
-          recruiterId: c.recruiterId || null,
-          backgroundCheckStatus: c.backgroundCheckStatus || null,
-          backgroundCheckOptions: c.backgroundCheckOptions || null,
-          adverseActionLetterSentAt: c.adverseActionLetterSentAt || null,
-          offerDocUrl: c.offerDocUrl || null,
-          offerSentAt: c.offerSentAt || null,
-          offerSignedDocUrl: c.offerSignedDocUrl || null,
-          offerSignedAt: c.offerSignedAt || null,
-          jobAppliedTo: c.jobAppliedTo,
-          inPipeline: c.inPipeline,
-          position: c.position ? { title: c.position.title } : null,
-          resumeUrl: c.resumeUrl,
-          createdAt: c.createdAt,
-          doNotCall: c.doNotCall,
-          doNotCallReason: c.doNotCallReason,
-          applicationCount: c.applicationCount,
-        }))}
+        // Database tab now lazy-fetches its own data when activated
         positions={positions.map((p) => ({ id: p.id, title: p.title }))}
         openPositions={openPositions.map((p) => ({
           id: p.id,

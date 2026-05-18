@@ -1115,6 +1115,11 @@ export async function getAllCandidatesForDatabase() {
   });
 }
 
+/** Lightweight count for stat cards — avoids loading rows. */
+export async function getTotalCandidateCount() {
+  return db.candidate.count();
+}
+
 export async function deleteCandidate(id: string) {
   await db.interview.deleteMany({ where: { candidateId: id } });
   await db.candidate.delete({ where: { id } });
