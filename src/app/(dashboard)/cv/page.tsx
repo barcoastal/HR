@@ -69,7 +69,7 @@ export default async function CVPage() {
           experience: c.experience,
           source: c.source,
           notes: c.notes,
-          resumeText: null,
+          resumeText: c.resumeText,
           status: c.status,
           positionId: c.positionId,
           costOfHire: c.costOfHire,
