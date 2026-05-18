@@ -112,7 +112,7 @@ export function PostCard({
   const myReaction = post.reactions.find((r) => r.employeeId === currentEmployeeId)?.type;
 
   async function handleReaction(type: ReactionType) {
-    await toggleReaction(post.id, type);
+    await toggleReaction(post.id, currentEmployeeId, type);
   }
 
   const canDelete = userRole === "SUPER_ADMIN" || userRole === "ADMIN";

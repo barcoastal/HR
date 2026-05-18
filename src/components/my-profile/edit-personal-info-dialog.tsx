@@ -38,7 +38,7 @@ export function EditPersonalInfoDialog({ data }: { data: PersonalInfo }) {
 
   async function handleSave() {
     setSaving(true);
-    await updateMyProfile({
+    await updateMyProfile(data.employeeId, {
       address: form.address || null,
       city: form.city || null,
       state: form.state || null,

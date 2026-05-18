@@ -88,12 +88,6 @@ export async function createEmployee(data: {
   hobbies?: string;
   status?: EmployeeStatus;
 }) {
-  const { requireAuth } = await import("@/lib/auth-helpers");
-  const session = await requireAuth();
-  const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
-    throw new Error("Not authorized to create employees");
-  }
   const status = data.status || "ACTIVE";
   const employee = await db.employee.create({
     data: {
@@ -274,30 +268,6 @@ export async function updateEmployee(
   id: string,
   data: Record<string, unknown>
 ) {
-  const { requireAuth } = await import("@/lib/auth-helpers");
-  const session = await requireAuth();
-  const role = session.user?.role;
-  const callerEmployeeId = session.user?.employeeId;
-  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
-  const isSelf = callerEmployeeId === id;
-  if (!isAdmin && !isSelf) {
-    throw new Error("Not authorized to edit this employee");
-  }
-  // Non-admins editing themselves can only touch self-serve profile fields,
-  // never jobTitle / departmentId / managerId / status / startDate / email.
-  if (!isAdmin) {
-    const ALLOWED_SELF_FIELDS = new Set([
-      "phone", "address", "city", "state", "zipCode", "country",
-      "pronouns", "tShirtSize", "bio", "hobbies", "dietaryRestrictions",
-      "emergencyContactName", "emergencyContactPhone", "emergencyContactRelation",
-      "profilePhoto", "birthday",
-    ]);
-    for (const key of Object.keys(data)) {
-      if (!ALLOWED_SELF_FIELDS.has(key)) {
-        throw new Error(`Not authorized to change ${key}`);
-      }
-    }
-  }
   const { startDate, birthday, ...rest } = data;
   const oldEmployee = data.email ? await db.employee.findUnique({ where: { id }, select: { email: true } }) : null;
   const employee = await db.employee.update({

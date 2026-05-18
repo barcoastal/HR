@@ -40,12 +40,12 @@ export function RequestList({
   const router = useRouter();
 
   async function handleApprove(id: string) {
-    await approveTimeOffRequest(id);
+    await approveTimeOffRequest(id, currentEmployeeId);
     router.refresh();
   }
 
   async function handleDeny(id: string) {
-    await denyTimeOffRequest(id);
+    await denyTimeOffRequest(id, currentEmployeeId);
     router.refresh();
   }
 

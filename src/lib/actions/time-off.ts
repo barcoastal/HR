@@ -2,45 +2,8 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
-
-type Role = "SUPER_ADMIN" | "ADMIN" | "HR" | "MANAGER" | "EMPLOYEE" | undefined;
-
-function isAdminRole(role: Role) {
-  return role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
-}
-
-async function assertAdmin() {
-  const session = await requireAuth();
-  if (!isAdminRole(session.user?.role)) {
-    throw new Error("Not authorized");
-  }
-  return session;
-}
-
-async function assertCanApprove(requestId: string) {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  const callerEmployeeId = session.user?.employeeId;
-  const request = await db.timeOffRequest.findUnique({
-    where: { id: requestId },
-    select: { employeeId: true, employee: { select: { managerId: true } } },
-  });
-  if (!request) throw new Error("Request not found");
-
-  // Employees can never approve their own requests
-  if (request.employeeId === callerEmployeeId) {
-    throw new Error("You cannot approve your own time-off request");
-  }
-  const isManager = !!callerEmployeeId && request.employee.managerId === callerEmployeeId;
-  if (!isAdminRole(role) && !isManager) {
-    throw new Error("Not authorized to approve this request");
-  }
-  return { session, callerEmployeeId: callerEmployeeId! };
-}
 
 export async function getTimeOffPolicies() {
-  await requireAuth();
   return db.timeOffPolicy.findMany({ orderBy: { name: "asc" } });
 }
 
@@ -51,7 +14,6 @@ export async function createTimeOffPolicy(data: {
   documentUrl?: string;
   documentName?: string;
 }) {
-  await assertAdmin();
   const policy = await db.timeOffPolicy.create({ data });
   revalidatePath("/settings");
   revalidatePath("/time-off");
@@ -62,7 +24,6 @@ export async function updateTimeOffPolicy(
   id: string,
   data: { documentUrl?: string | null; documentName?: string | null }
 ) {
-  await assertAdmin();
   const policy = await db.timeOffPolicy.update({ where: { id }, data });
   revalidatePath("/settings");
   revalidatePath("/time-off");
@@ -70,7 +31,6 @@ export async function updateTimeOffPolicy(
 }
 
 export async function deleteTimeOffPolicy(id: string) {
-  await assertAdmin();
   await db.timeOffPolicy.delete({ where: { id } });
   revalidatePath("/settings");
   revalidatePath("/time-off");
@@ -81,7 +41,6 @@ export async function assignPolicyToEmployee(
   policyId: string,
   year: number
 ) {
-  await assertAdmin();
   const balance = await db.timeOffBalance.upsert({
     where: {
       employeeId_policyId_year: { employeeId, policyId, year },
@@ -94,19 +53,6 @@ export async function assignPolicyToEmployee(
 }
 
 export async function getEmployeeBalances(employeeId: string, year: number) {
-  const session = await requireAuth();
-  const callerEmployeeId = session.user?.employeeId;
-  const isAdmin = isAdminRole(session.user?.role);
-  const isSelf = callerEmployeeId === employeeId;
-  // Managers can view balances of their direct reports
-  let isManager = false;
-  if (!isAdmin && !isSelf && callerEmployeeId) {
-    const target = await db.employee.findUnique({ where: { id: employeeId }, select: { managerId: true } });
-    isManager = target?.managerId === callerEmployeeId;
-  }
-  if (!isAdmin && !isSelf && !isManager) {
-    throw new Error("Not authorized to view these balances");
-  }
   return db.timeOffBalance.findMany({
     where: { employeeId, year },
     include: { policy: true },
@@ -114,19 +60,16 @@ export async function getEmployeeBalances(employeeId: string, year: number) {
 }
 
 export async function createTimeOffRequest(data: {
+  employeeId: string;
   policyId: string;
   startDate: string;
   endDate: string;
   daysCount: number;
   reason?: string;
 }) {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) throw new Error("No employee profile linked to this account");
-
   const request = await db.timeOffRequest.create({
     data: {
-      employeeId,
+      employeeId: data.employeeId,
       policyId: data.policyId,
       startDate: new Date(data.startDate),
       endDate: new Date(data.endDate),
@@ -138,11 +81,13 @@ export async function createTimeOffRequest(data: {
   return request;
 }
 
-export async function approveTimeOffRequest(requestId: string) {
-  const { callerEmployeeId } = await assertCanApprove(requestId);
+export async function approveTimeOffRequest(
+  requestId: string,
+  approverId: string
+) {
   const request = await db.timeOffRequest.update({
     where: { id: requestId },
-    data: { status: "APPROVED", approverId: callerEmployeeId },
+    data: { status: "APPROVED", approverId },
   });
 
   // Update balance
@@ -168,31 +113,23 @@ export async function approveTimeOffRequest(requestId: string) {
   return request;
 }
 
-export async function denyTimeOffRequest(requestId: string) {
-  const { callerEmployeeId } = await assertCanApprove(requestId);
+export async function denyTimeOffRequest(
+  requestId: string,
+  approverId: string
+) {
   const request = await db.timeOffRequest.update({
     where: { id: requestId },
-    data: { status: "DENIED", approverId: callerEmployeeId },
+    data: { status: "DENIED", approverId },
   });
   revalidatePath("/time-off");
   return request;
 }
 
 export async function cancelTimeOffRequest(requestId: string) {
-  const session = await requireAuth();
-  const callerEmployeeId = session.user?.employeeId;
-  const isAdmin = isAdminRole(session.user?.role);
-
   const request = await db.timeOffRequest.findUnique({
     where: { id: requestId },
   });
   if (!request) return null;
-
-  // Owner can cancel their own request; admins/HR can cancel anyone's.
-  const isOwner = callerEmployeeId === request.employeeId;
-  if (!isAdmin && !isOwner) {
-    throw new Error("Not authorized to cancel this request");
-  }
 
   // If it was approved, refund the balance
   if (request.status === "APPROVED") {
@@ -221,33 +158,9 @@ export async function getTimeOffRequests(filters?: {
   employeeId?: string;
   status?: string;
 }) {
-  const session = await requireAuth();
-  const role = session.user?.role;
-  const callerEmployeeId = session.user?.employeeId;
-  const isAdmin = isAdminRole(role);
-
   const where: Record<string, unknown> = {};
+  if (filters?.employeeId) where.employeeId = filters.employeeId;
   if (filters?.status) where.status = filters.status;
-
-  // Admins/HR see everyone; managers see themselves + direct reports; everyone
-  // else can only see their own requests.
-  if (!isAdmin) {
-    if (!callerEmployeeId) return [];
-    if (role === "MANAGER") {
-      const reports = await db.employee.findMany({
-        where: { managerId: callerEmployeeId },
-        select: { id: true },
-      });
-      const allowedIds = [callerEmployeeId, ...reports.map((r) => r.id)];
-      if (filters?.employeeId && !allowedIds.includes(filters.employeeId)) return [];
-      where.employeeId = filters?.employeeId ?? { in: allowedIds };
-    } else {
-      if (filters?.employeeId && filters.employeeId !== callerEmployeeId) return [];
-      where.employeeId = callerEmployeeId;
-    }
-  } else if (filters?.employeeId) {
-    where.employeeId = filters.employeeId;
-  }
 
   return db.timeOffRequest.findMany({
     where,
@@ -261,7 +174,6 @@ export async function getTimeOffRequests(filters?: {
 }
 
 export async function getWhosOutToday() {
-  await requireAuth();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
@@ -278,7 +190,6 @@ export async function getWhosOutToday() {
 }
 
 export async function getTeamCalendar(year: number, month: number) {
-  await requireAuth();
   const startDate = new Date(year, month, 1);
   const endDate = new Date(year, month + 1, 0, 23, 59, 59);
 
@@ -294,7 +205,6 @@ export async function getTeamCalendar(year: number, month: number) {
 }
 
 export async function getBurnoutAlerts() {
-  await assertAdmin();
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 

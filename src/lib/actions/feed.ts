@@ -3,21 +3,6 @@
 import { db } from "@/lib/db";
 import type { FeedPostType, ReactionType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
-
-/**
- * Resolve the caller's employee id from the session. Server actions must
- * never trust an `authorId` argument from the client — otherwise an employee
- * could impersonate the CEO posting on the feed.
- */
-async function getCallerEmployeeIdOrThrow(): Promise<string> {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) {
-    throw new Error("No employee profile linked to this account");
-  }
-  return employeeId;
-}
 
 export async function getFeedPosts() {
   return db.feedPost.findMany({
@@ -34,15 +19,15 @@ export async function getFeedPosts() {
 }
 
 export async function createFeedPost(data: {
+  authorId: string;
   content: string;
   type?: FeedPostType;
   attachments?: { url: string; type: "IMAGE" | "FILE"; name: string }[];
   emailTarget?: "all" | "none";
 }) {
-  const authorId = await getCallerEmployeeIdOrThrow();
   const post = await db.feedPost.create({
     data: {
-      authorId,
+      authorId: data.authorId,
       content: data.content,
       type: data.type || "GENERAL",
       notifyViaEmail: data.emailTarget !== "none",
@@ -65,7 +50,7 @@ export async function createFeedPost(data: {
   if (data.emailTarget !== "none") {
     try {
       const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
-      await sendPostNotificationEmail(post.id, authorId);
+      await sendPostNotificationEmail(post.id, data.authorId);
     } catch (err) {
       console.error("[feed] notification error:", err);
     }
@@ -75,7 +60,7 @@ export async function createFeedPost(data: {
   const inAppUsers = await db.user.findMany({
     where: {
       employee: { status: "ACTIVE" },
-      employeeId: { not: authorId },
+      employeeId: { not: data.authorId },
       notifyFeedPostInApp: true,
     },
     select: { employeeId: true },
@@ -97,8 +82,11 @@ export async function createFeedPost(data: {
   return post;
 }
 
-export async function createFeedComment(postId: string, content: string) {
-  const authorId = await getCallerEmployeeIdOrThrow();
+export async function createFeedComment(
+  postId: string,
+  authorId: string,
+  content: string
+) {
   const comment = await db.feedComment.create({
     data: { postId, authorId, content },
   });
@@ -154,11 +142,11 @@ export async function createFeedComment(postId: string, content: string) {
 }
 
 export async function createShoutoutPost(
+  authorId: string,
   mentionedEmployeeId: string,
   content: string,
   emailTarget?: "all" | "none"
 ) {
-  const authorId = await getCallerEmployeeIdOrThrow();
   const post = await db.feedPost.create({
     data: {
       authorId,
@@ -245,22 +233,21 @@ export async function createShoutoutPost(
 }
 
 export async function deleteFeedPost(postId: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   const role = session.user?.role;
-  const callerEmployeeId = session.user?.employeeId;
-  const post = await db.feedPost.findUnique({ where: { id: postId }, select: { authorId: true } });
-  if (!post) throw new Error("Post not found");
-  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN";
-  const isAuthor = callerEmployeeId === post.authorId;
-  if (!isAdmin && !isAuthor) {
-    throw new Error("Not authorized to delete this post");
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
+    throw new Error("Not authorized to delete posts");
   }
   await db.feedPost.delete({ where: { id: postId } });
   revalidatePath("/");
 }
 
-export async function toggleReaction(postId: string, type: ReactionType) {
-  const employeeId = await getCallerEmployeeIdOrThrow();
+export async function toggleReaction(
+  postId: string,
+  employeeId: string,
+  type: ReactionType
+) {
   const existing = await db.feedReaction.findUnique({
     where: { postId_employeeId: { postId, employeeId } },
   });

@@ -7,7 +7,7 @@ export async function PulseSurveyWrapper() {
   const employeeId = session?.user?.employeeId;
   if (!employeeId) return null;
 
-  const data = await getActivePulseSurvey();
+  const data = await getActivePulseSurvey(employeeId);
   if (!data || data.hasResponded) return null;
 
   return (

@@ -30,7 +30,7 @@ export function CommentSection({
   async function handleSubmit() {
     if (!content.trim() || !currentEmployeeId) return;
     setLoading(true);
-    await createFeedComment(postId, content.trim());
+    await createFeedComment(postId, currentEmployeeId, content.trim());
     setContent("");
     setLoading(false);
   }

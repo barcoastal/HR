@@ -2,19 +2,8 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
-
-type Role = "SUPER_ADMIN" | "ADMIN" | "HR" | "MANAGER" | "EMPLOYEE" | undefined;
-
-function isAdminRole(role: Role) {
-  return role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
-}
 
 export async function createPulseSurvey(question: string) {
-  const session = await requireAuth();
-  if (!isAdminRole(session.user?.role)) {
-    throw new Error("Not authorized to create pulse surveys");
-  }
   // Close any existing active surveys
   await db.pulseSurvey.updateMany({
     where: { status: "ACTIVE" },
@@ -29,10 +18,6 @@ export async function createPulseSurvey(question: string) {
 }
 
 export async function closePulseSurvey(surveyId: string) {
-  const session = await requireAuth();
-  if (!isAdminRole(session.user?.role)) {
-    throw new Error("Not authorized to close pulse surveys");
-  }
   const survey = await db.pulseSurvey.update({
     where: { id: surveyId },
     data: { status: "CLOSED", closedAt: new Date() },
@@ -41,9 +26,7 @@ export async function closePulseSurvey(surveyId: string) {
   return survey;
 }
 
-export async function getActivePulseSurvey() {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
+export async function getActivePulseSurvey(employeeId?: string) {
   const survey = await db.pulseSurvey.findFirst({
     where: { status: "ACTIVE" },
     include: {
@@ -60,13 +43,11 @@ export async function getActivePulseSurvey() {
   return { survey, hasResponded };
 }
 
-export async function submitPulseResponse(surveyId: string, mood: number) {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) throw new Error("No employee profile linked to this account");
-  // Block duplicate submissions per survey
-  const existing = await db.pulseResponse.findFirst({ where: { surveyId, employeeId } });
-  if (existing) return existing;
+export async function submitPulseResponse(
+  surveyId: string,
+  employeeId: string,
+  mood: number
+) {
   const response = await db.pulseResponse.create({
     data: { surveyId, employeeId, mood },
   });
@@ -75,10 +56,6 @@ export async function submitPulseResponse(surveyId: string, mood: number) {
 }
 
 export async function getPulseSurveyResults(surveyId: string) {
-  const session = await requireAuth();
-  if (!isAdminRole(session.user?.role)) {
-    throw new Error("Not authorized to view pulse survey results");
-  }
   const survey = await db.pulseSurvey.findUnique({
     where: { id: surveyId },
     include: {
@@ -108,10 +85,6 @@ export async function getPulseSurveyResults(surveyId: string) {
 }
 
 export async function getAllPulseSurveys() {
-  const session = await requireAuth();
-  if (!isAdminRole(session.user?.role)) {
-    throw new Error("Not authorized to view pulse surveys");
-  }
   return db.pulseSurvey.findMany({
     include: {
       _count: { select: { responses: true } },

@@ -119,9 +119,10 @@ export function PostComposer({
     if (!content.trim() && attachments.length === 0) return;
     setLoading(true);
     if (mode === "shoutout" && selectedEmployee) {
-      await createShoutoutPost(selectedEmployee, content.trim(), emailTarget);
+      await createShoutoutPost(employeeId, selectedEmployee, content.trim(), emailTarget);
     } else {
       await createFeedPost({
+        authorId: employeeId,
         content: content.trim(),
         attachments: attachments.map((a) => ({ url: a.url, type: a.type, name: a.name })),
         emailTarget,

@@ -2,24 +2,8 @@
 
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/auth-helpers";
 
-/**
- * Resolve the caller's own employee id. We never accept it from the client —
- * an attacker would just pass a peer's id. Admins are allowed to view/edit any
- * profile via the existing /people/[id] flow + updateEmployee server action.
- */
-async function getCallerEmployeeIdOrThrow(): Promise<string> {
-  const session = await requireAuth();
-  const employeeId = session.user?.employeeId;
-  if (!employeeId) {
-    throw new Error("No employee profile linked to this account");
-  }
-  return employeeId;
-}
-
-export async function getMyProfile() {
-  const employeeId = await getCallerEmployeeIdOrThrow();
+export async function getMyProfile(employeeId: string) {
   return db.employee.findUnique({
     where: { id: employeeId },
     include: {
@@ -32,23 +16,25 @@ export async function getMyProfile() {
   });
 }
 
-export async function updateMyProfile(data: {
-  phone?: string | null;
-  address?: string | null;
-  city?: string | null;
-  state?: string | null;
-  zipCode?: string | null;
-  country?: string | null;
-  pronouns?: string | null;
-  tShirtSize?: string | null;
-  emergencyContactName?: string | null;
-  emergencyContactPhone?: string | null;
-  emergencyContactRelation?: string | null;
-  bio?: string | null;
-  hobbies?: string | null;
-  dietaryRestrictions?: string | null;
-}) {
-  const employeeId = await getCallerEmployeeIdOrThrow();
+export async function updateMyProfile(
+  employeeId: string,
+  data: {
+    phone?: string | null;
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    zipCode?: string | null;
+    country?: string | null;
+    pronouns?: string | null;
+    tShirtSize?: string | null;
+    emergencyContactName?: string | null;
+    emergencyContactPhone?: string | null;
+    emergencyContactRelation?: string | null;
+    bio?: string | null;
+    hobbies?: string | null;
+    dietaryRestrictions?: string | null;
+  }
+) {
   const employee = await db.employee.update({
     where: { id: employeeId },
     data,
@@ -58,8 +44,7 @@ export async function updateMyProfile(data: {
   return employee;
 }
 
-export async function updateProfilePhoto(photoUrl: string) {
-  const employeeId = await getCallerEmployeeIdOrThrow();
+export async function updateProfilePhoto(employeeId: string, photoUrl: string) {
   await db.employee.update({
     where: { id: employeeId },
     data: { profilePhoto: photoUrl },
@@ -70,8 +55,7 @@ export async function updateProfilePhoto(photoUrl: string) {
   revalidatePath("/");
 }
 
-export async function getWelcomeData() {
-  const employeeId = await getCallerEmployeeIdOrThrow();
+export async function getWelcomeData(employeeId: string) {
   const employee = await db.employee.findUnique({
     where: { id: employeeId },
     include: {
