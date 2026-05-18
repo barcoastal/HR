@@ -26,9 +26,13 @@ export async function getCandidates(filters?: {
     ];
   }
 
+  // Pipeline cards never render resumeText content (only a "has resume" badge),
+  // and the full position object is over-fetched — title is the only field used.
+  // Dropping these turns a multi-MB response into something tiny.
   return db.candidate.findMany({
     where,
-    include: { position: true },
+    omit: { resumeText: true },
+    include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
 }
@@ -1100,8 +1104,13 @@ export async function findMatchingCandidates(keywords: string[]) {
 }
 
 export async function getAllCandidatesForDatabase() {
+  // Database tab renders thousands of rows; drop resumeText (5-10KB each — was
+  // the main cause of 11MB pages) and slim the position relation.
+  // Note: client-side search on resumeText is no longer possible; use
+  // advancedSearchCandidates for server-side full-text search if needed.
   return db.candidate.findMany({
-    include: { position: true },
+    omit: { resumeText: true },
+    include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
 }

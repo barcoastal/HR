@@ -157,7 +157,7 @@ export const authOptions: NextAuthOptions = {
         return "/login?error=signin-failed";
       }
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -165,8 +165,10 @@ export const authOptions: NextAuthOptions = {
         token.profilePhoto = user.profilePhoto;
       }
 
-      // Refresh profile photo from DB on each token refresh
-      if (token.employeeId) {
+      // Refresh profile photo from DB only on explicit session.update() (e.g.
+      // right after the user uploads a new photo). Doing this on every JWT
+      // decode adds a DB roundtrip to every server action / page load.
+      if (trigger === "update" && token.employeeId) {
         const emp = await db.employee.findUnique({
           where: { id: token.employeeId as string },
           select: { profilePhoto: true },
