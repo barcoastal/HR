@@ -164,6 +164,7 @@ export async function* syncCandidatesStreaming(
   let totalSkipped = 0;
   let totalEstimate = 0;
   const seenEmails = new Set<string>();
+  const needsResume: { id: string; url: string }[] = [];
 
   try {
     do {
@@ -182,10 +183,16 @@ export async function* syncCandidatesStreaming(
           const wasUpdated = await updateExistingCandidate(existing, mc, resolvedPositionId);
           if (wasUpdated) totalUpdated++;
           totalSkipped++;
+          if (mc.resumeUrl && !existing.resumeUrl?.startsWith("/api/resumes/")) {
+            const pdfPath = path.join(RESUMES_DIR, `${existing.id}.pdf`);
+            if (!existsSync(pdfPath)) {
+              needsResume.push({ id: existing.id, url: mc.resumeUrl });
+            }
+          }
           continue;
         }
 
-        await createCandidate({
+        const newCandidate = await createCandidate({
           firstName: mc.firstName, lastName: mc.lastName, email: mc.email,
           phone: mc.phone, skills: mc.skills, experience: mc.experience,
           source: mc.source, linkedinUrl: mc.linkedinUrl, notes: mc.notes,
@@ -194,6 +201,9 @@ export async function* syncCandidatesStreaming(
           inPipeline: false,
         });
         totalCreated++;
+        if (mc.resumeUrl && newCandidate?.id) {
+          needsResume.push({ id: newCandidate.id, url: mc.resumeUrl });
+        }
       }
 
       yield {
@@ -210,6 +220,39 @@ export async function* syncCandidatesStreaming(
       cursor = result.nextCursor;
     } while (cursor);
 
+    // Phase 2: download resume PDFs locally so the pipeline UI can serve them
+    // via /api/resumes/{id} regardless of which platform they came from.
+    if (!existsSync(RESUMES_DIR)) {
+      await mkdir(RESUMES_DIR, { recursive: true });
+    }
+    let resumesDownloaded = 0;
+    let resumesFailed = 0;
+    for (let i = 0; i < needsResume.length; i++) {
+      const { id, url } = needsResume[i];
+      const localPath = path.join(RESUMES_DIR, `${id}.pdf`);
+      if (existsSync(localPath)) {
+        await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
+        resumesDownloaded++;
+        continue;
+      }
+      const ok = await downloadResumePdf(url, id, platform.name, tokenResult.accessToken);
+      if (ok) {
+        await db.candidate.update({ where: { id }, data: { resumeUrl: `/api/resumes/${id}` } });
+        resumesDownloaded++;
+      } else {
+        resumesFailed++;
+      }
+      if ((i + 1) % 10 === 0 || i + 1 === needsResume.length) {
+        yield {
+          type: "progress",
+          detail: `Downloading resumes ${i + 1}/${needsResume.length}... (${resumesDownloaded} ok, ${resumesFailed} failed)`,
+          fetched: totalFetched, created: totalCreated, updated: totalUpdated, skipped: totalSkipped,
+          page, total: totalEstimate,
+          resumesDownloaded, resumesFailed,
+        };
+      }
+    }
+
     yield {
       type: "complete",
       fetched: totalFetched,
@@ -218,6 +261,8 @@ export async function* syncCandidatesStreaming(
       skipped: totalSkipped,
       page,
       total: totalEstimate,
+      resumesDownloaded,
+      resumesFailed,
     };
 
     await finalizeSyncLog(platformId, totalFetched, totalCreated, totalSkipped);
