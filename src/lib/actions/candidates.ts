@@ -56,6 +56,13 @@ export async function createCandidate(data: {
   jobAppliedTo?: string;
 }) {
   const { skills, inPipeline = true, ...rest } = data;
+  // Pre-check email so the UI can show a friendly duplicate message instead
+  // of a generic Prisma unique-constraint error or a Server Components render
+  // crash when the page refetches.
+  const existing = await db.candidate.findUnique({ where: { email: data.email }, select: { id: true } });
+  if (existing) {
+    throw new Error(`A candidate with email ${data.email} already exists.`);
+  }
   const candidate = await db.candidate.create({
     data: {
       ...rest,
