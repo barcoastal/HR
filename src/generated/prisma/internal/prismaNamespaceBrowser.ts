@@ -452,6 +452,7 @@ export type NotificationRuleScalarFieldEnum = (typeof NotificationRuleScalarFiel
 export const NotificationRecipientScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
+  group: 'group',
   createdAt: 'createdAt'
 } as const
 

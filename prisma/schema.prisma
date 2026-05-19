@@ -605,11 +605,13 @@ model NotificationRule {
 model NotificationRecipient {
   id         String   @id @default(uuid())
   employeeId String
+  group      String   @default("HR_TEAM") // HR_TEAM | MANAGEMENT (extendable)
   createdAt  DateTime @default(now())
 
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
-  @@unique([employeeId])
+  @@unique([employeeId, group])
+  @@index([group])
 }
 
 model Document {

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { getEnabledRecipients, getHrTeamEmployeeIds } from "./rules";
+import { getEnabledRecipients, getHrTeamEmployeeIds, getGroupEmployeeIds } from "./rules";
 
 type SendParams = {
   action: string;
@@ -86,6 +86,19 @@ async function resolveRecipients(
           });
           for (const hr of hrMembers) {
             resolved.push({ key, email: hr.email, employeeId: hr.id, firstName: hr.firstName });
+          }
+        }
+        break;
+      }
+      case "management": {
+        const mgmtIds = await getGroupEmployeeIds("MANAGEMENT");
+        if (mgmtIds.length > 0) {
+          const mgmt = await db.employee.findMany({
+            where: { id: { in: mgmtIds } },
+            select: { id: true, email: true, firstName: true },
+          });
+          for (const m of mgmt) {
+            resolved.push({ key, email: m.email, employeeId: m.id, firstName: m.firstName });
           }
         }
         break;

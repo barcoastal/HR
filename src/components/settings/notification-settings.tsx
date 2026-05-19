@@ -14,7 +14,7 @@ type Rule = {
 };
 
 type Employee = { id: string; firstName: string; lastName: string; email: string };
-type Recipient = { id: string; employeeId: string; employee: Employee };
+type Recipient = { id: string; employeeId: string; group: string; employee: Employee };
 
 const ACTION_LABELS: Record<string, string> = {
   STAGE_CHANGE: "Candidate Stage Change",
@@ -26,16 +26,18 @@ const ACTION_LABELS: Record<string, string> = {
   NEW_HIRE: "New Hire / Onboarding",
   TASK_ASSIGNED: "Task Assigned",
   ONBOARDING_COMPLETED: "Onboarding Completed",
+  EMPLOYEE_OFFBOARDING: "Employee Offboarding Started",
 };
 
 const ACTIONS = Object.keys(ACTION_LABELS);
-const EMAIL_RECIPIENTS = ["candidate", "recruiter", "manager", "hr_team"];
-const INAPP_RECIPIENTS = ["recruiter", "manager", "hr_team"];
+const EMAIL_RECIPIENTS = ["candidate", "recruiter", "manager", "hr_team", "management"];
+const INAPP_RECIPIENTS = ["recruiter", "manager", "hr_team", "management"];
 const RECIPIENT_LABELS: Record<string, string> = {
   candidate: "Candidate",
   recruiter: "Recruiter",
   manager: "Manager",
   hr_team: "HR Team",
+  management: "Management",
 };
 
 export function NotificationSettings({
@@ -54,8 +56,14 @@ export function NotificationSettings({
     }
     return map;
   });
-  const [hrTeamIds, setHrTeamIds] = useState<string[]>(initialRecipients.map((r) => r.employeeId));
-  const [search, setSearch] = useState("");
+  const [hrTeamIds, setHrTeamIds] = useState<string[]>(
+    initialRecipients.filter((r) => (r.group || "HR_TEAM") === "HR_TEAM").map((r) => r.employeeId)
+  );
+  const [managementIds, setManagementIds] = useState<string[]>(
+    initialRecipients.filter((r) => r.group === "MANAGEMENT").map((r) => r.employeeId)
+  );
+  const [hrSearch, setHrSearch] = useState("");
+  const [mgmtSearch, setMgmtSearch] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -79,16 +87,22 @@ export function NotificationSettings({
       const [action, channel, recipient] = key.split(":");
       return { action, channel, recipient, enabled };
     });
-    await saveNotificationRules(ruleList, hrTeamIds);
+    await saveNotificationRules(ruleList, hrTeamIds, managementIds);
     setSaving(false);
     setSaved(true);
   }
 
-  const filteredEmployees = allEmployees.filter(
+  const filteredHrEmployees = allEmployees.filter(
     (e) =>
       !hrTeamIds.includes(e.id) &&
-      (`${e.firstName} ${e.lastName}`.toLowerCase().includes(search.toLowerCase()) ||
-        e.email.toLowerCase().includes(search.toLowerCase()))
+      (`${e.firstName} ${e.lastName}`.toLowerCase().includes(hrSearch.toLowerCase()) ||
+        e.email.toLowerCase().includes(hrSearch.toLowerCase()))
+  );
+  const filteredMgmtEmployees = allEmployees.filter(
+    (e) =>
+      !managementIds.includes(e.id) &&
+      (`${e.firstName} ${e.lastName}`.toLowerCase().includes(mgmtSearch.toLowerCase()) ||
+        e.email.toLowerCase().includes(mgmtSearch.toLowerCase()))
   );
 
   const inputClass = cn(
@@ -110,9 +124,9 @@ export function NotificationSettings({
           <thead>
             <tr className="border-b border-[var(--color-border)]">
               <th className="text-left py-2 pr-4 font-medium text-[var(--color-text-primary)]">Action</th>
-              <th colSpan={4} className="text-center py-2 px-1 font-medium text-[var(--color-text-primary)]">Email</th>
+              <th colSpan={EMAIL_RECIPIENTS.length} className="text-center py-2 px-1 font-medium text-[var(--color-text-primary)]">Email</th>
               <th className="w-px bg-[var(--color-border)]" />
-              <th colSpan={3} className="text-center py-2 px-1 font-medium text-[var(--color-text-primary)]">In-App</th>
+              <th colSpan={INAPP_RECIPIENTS.length} className="text-center py-2 px-1 font-medium text-[var(--color-text-primary)]">In-App</th>
             </tr>
             <tr className="border-b border-[var(--color-border)]">
               <th />
@@ -160,48 +174,29 @@ export function NotificationSettings({
         </table>
       </div>
 
-      {/* HR Team Recipients */}
-      <div className="mt-6">
-        <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-2">
-          HR Team Recipients
-        </label>
-        <p className="text-xs text-[var(--color-text-muted)] mb-2">
-          These employees receive notifications for any action where &quot;HR Team&quot; is enabled.
-        </p>
-        <div className="flex flex-wrap gap-1.5 mb-2">
-          {hrTeamIds.map((id) => {
-            const emp = allEmployees.find((e) => e.id === id);
-            if (!emp) return null;
-            return (
-              <span key={id} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
-                {emp.firstName} {emp.lastName}
-                <button onClick={() => { setHrTeamIds((prev) => prev.filter((x) => x !== id)); setSaved(false); }} className="hover:text-red-500">
-                  <Icon name="close" size={12} />
-                </button>
-              </span>
-            );
-          })}
-        </div>
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className={inputClass}
-          placeholder="Search employees to add..."
-        />
-        {search && (
-          <div className="mt-1 max-h-32 overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-background)]">
-            {filteredEmployees.slice(0, 5).map((e) => (
-              <button
-                key={e.id}
-                onClick={() => { setHrTeamIds((prev) => [...prev, e.id]); setSearch(""); setSaved(false); }}
-                className="w-full text-left px-3 py-1.5 text-xs hover:bg-[var(--color-surface-hover)]"
-              >
-                {e.firstName} {e.lastName} <span className="text-[var(--color-text-muted)]">({e.email})</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <GroupEditor
+        title="HR Team Recipients"
+        description='These employees receive notifications for any action where "HR Team" is enabled.'
+        memberIds={hrTeamIds}
+        setMemberIds={(updater) => { setHrTeamIds(updater); setSaved(false); }}
+        search={hrSearch}
+        setSearch={setHrSearch}
+        suggestions={filteredHrEmployees}
+        allEmployees={allEmployees}
+        inputClass={inputClass}
+      />
+
+      <GroupEditor
+        title="Management Recipients"
+        description='These employees receive notifications for any action where "Management" is enabled (e.g. when someone starts offboarding).'
+        memberIds={managementIds}
+        setMemberIds={(updater) => { setManagementIds(updater); setSaved(false); }}
+        search={mgmtSearch}
+        setSearch={setMgmtSearch}
+        suggestions={filteredMgmtEmployees}
+        allEmployees={allEmployees}
+        inputClass={inputClass}
+      />
 
       <div className="flex justify-end mt-4">
         <button
@@ -216,6 +211,70 @@ export function NotificationSettings({
           {saving ? "Saving..." : saved ? "Saved!" : "Save"}
         </button>
       </div>
+    </div>
+  );
+}
+
+function GroupEditor({
+  title,
+  description,
+  memberIds,
+  setMemberIds,
+  search,
+  setSearch,
+  suggestions,
+  allEmployees,
+  inputClass,
+}: {
+  title: string;
+  description: string;
+  memberIds: string[];
+  setMemberIds: (updater: (prev: string[]) => string[]) => void;
+  search: string;
+  setSearch: (v: string) => void;
+  suggestions: Employee[];
+  allEmployees: Employee[];
+  inputClass: string;
+}) {
+  return (
+    <div className="mt-6">
+      <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-2">
+        {title}
+      </label>
+      <p className="text-xs text-[var(--color-text-muted)] mb-2">{description}</p>
+      <div className="flex flex-wrap gap-1.5 mb-2">
+        {memberIds.map((id) => {
+          const emp = allEmployees.find((e) => e.id === id);
+          if (!emp) return null;
+          return (
+            <span key={id} className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+              {emp.firstName} {emp.lastName}
+              <button onClick={() => setMemberIds((prev) => prev.filter((x) => x !== id))} className="hover:text-red-500">
+                <Icon name="close" size={12} />
+              </button>
+            </span>
+          );
+        })}
+      </div>
+      <input
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className={inputClass}
+        placeholder="Search employees to add..."
+      />
+      {search && (
+        <div className="mt-1 max-h-32 overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-background)]">
+          {suggestions.slice(0, 5).map((e) => (
+            <button
+              key={e.id}
+              onClick={() => { setMemberIds((prev) => [...prev, e.id]); setSearch(""); }}
+              className="w-full text-left px-3 py-1.5 text-xs hover:bg-[var(--color-surface-hover)]"
+            >
+              {e.firstName} {e.lastName} <span className="text-[var(--color-text-muted)]">({e.email})</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -450,6 +450,29 @@ export async function startOffboarding(employeeId: string, endDate: string) {
     await db.user.update({ where: { id: user.id }, data: { employeeId: null } });
   }
 
+  // Notify the configured Management (and any other enabled recipients) group
+  try {
+    const { sendNotifications } = await import("@/lib/notifications/send");
+    const fullName = `${employee.firstName} ${employee.lastName}`;
+    const dept = employee.departmentId
+      ? await db.department.findUnique({
+          where: { id: employee.departmentId },
+          select: { name: true },
+        })
+      : null;
+    const endDateStr = new Date(endDate).toLocaleDateString();
+    await sendNotifications({
+      action: "EMPLOYEE_OFFBOARDING",
+      employeeId,
+      message: `${fullName} has started offboarding (last day ${endDateStr})`,
+      link: `/people/${employeeId}`,
+      emailSubject: `Offboarding started: ${fullName}`,
+      emailBody: `<p><strong>${fullName}</strong>${dept?.name ? ` (${dept.name})` : ""} has been marked for offboarding.</p><p>Last day: <strong>${endDateStr}</strong></p>`,
+    });
+  } catch (err) {
+    console.error("[offboarding] Failed to send notifications:", err);
+  }
+
   revalidatePath("/people");
   revalidatePath("/offboarding");
   revalidatePath(`/people/${employeeId}`);

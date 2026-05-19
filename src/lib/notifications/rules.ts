@@ -22,9 +22,16 @@ export async function shouldNotify(
   return rule?.enabled ?? false;
 }
 
-export async function getHrTeamEmployeeIds(): Promise<string[]> {
+/** IDs of employees configured to receive notifications for a given group. */
+export async function getGroupEmployeeIds(group: string): Promise<string[]> {
   const recipients = await db.notificationRecipient.findMany({
+    where: { group },
     select: { employeeId: true },
   });
   return recipients.map((r) => r.employeeId);
+}
+
+// Back-compat alias for existing callers
+export async function getHrTeamEmployeeIds(): Promise<string[]> {
+  return getGroupEmployeeIds("HR_TEAM");
 }

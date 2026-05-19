@@ -107,11 +107,11 @@ export async function seedNotificationRules() {
         data: { enabled: hrEnabled },
       });
 
-      // Migrate extra employee IDs to NotificationRecipient table
+      // Migrate extra employee IDs to NotificationRecipient table (HR_TEAM group)
       for (const employeeId of extraIds) {
         await db.notificationRecipient.upsert({
-          where: { employeeId },
-          create: { employeeId },
+          where: { employeeId_group: { employeeId, group: "HR_TEAM" } },
+          create: { employeeId, group: "HR_TEAM" },
           update: {},
         });
       }

@@ -27,18 +27,21 @@ export type AggregateNotificationRecipient = {
 export type NotificationRecipientMinAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  group: string | null
   createdAt: Date | null
 }
 
 export type NotificationRecipientMaxAggregateOutputType = {
   id: string | null
   employeeId: string | null
+  group: string | null
   createdAt: Date | null
 }
 
 export type NotificationRecipientCountAggregateOutputType = {
   id: number
   employeeId: number
+  group: number
   createdAt: number
   _all: number
 }
@@ -47,18 +50,21 @@ export type NotificationRecipientCountAggregateOutputType = {
 export type NotificationRecipientMinAggregateInputType = {
   id?: true
   employeeId?: true
+  group?: true
   createdAt?: true
 }
 
 export type NotificationRecipientMaxAggregateInputType = {
   id?: true
   employeeId?: true
+  group?: true
   createdAt?: true
 }
 
 export type NotificationRecipientCountAggregateInputType = {
   id?: true
   employeeId?: true
+  group?: true
   createdAt?: true
   _all?: true
 }
@@ -138,6 +144,7 @@ export type NotificationRecipientGroupByArgs<ExtArgs extends runtime.Types.Exten
 export type NotificationRecipientGroupByOutputType = {
   id: string
   employeeId: string
+  group: string
   createdAt: Date
   _count: NotificationRecipientCountAggregateOutputType | null
   _min: NotificationRecipientMinAggregateOutputType | null
@@ -165,6 +172,7 @@ export type NotificationRecipientWhereInput = {
   NOT?: Prisma.NotificationRecipientWhereInput | Prisma.NotificationRecipientWhereInput[]
   id?: Prisma.StringFilter<"NotificationRecipient"> | string
   employeeId?: Prisma.StringFilter<"NotificationRecipient"> | string
+  group?: Prisma.StringFilter<"NotificationRecipient"> | string
   createdAt?: Prisma.DateTimeFilter<"NotificationRecipient"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
 }
@@ -172,23 +180,27 @@ export type NotificationRecipientWhereInput = {
 export type NotificationRecipientOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  group?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
 }
 
 export type NotificationRecipientWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  employeeId?: string
+  employeeId_group?: Prisma.NotificationRecipientEmployeeIdGroupCompoundUniqueInput
   AND?: Prisma.NotificationRecipientWhereInput | Prisma.NotificationRecipientWhereInput[]
   OR?: Prisma.NotificationRecipientWhereInput[]
   NOT?: Prisma.NotificationRecipientWhereInput | Prisma.NotificationRecipientWhereInput[]
+  employeeId?: Prisma.StringFilter<"NotificationRecipient"> | string
+  group?: Prisma.StringFilter<"NotificationRecipient"> | string
   createdAt?: Prisma.DateTimeFilter<"NotificationRecipient"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
-}, "id" | "employeeId">
+}, "id" | "employeeId_group">
 
 export type NotificationRecipientOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  group?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.NotificationRecipientCountOrderByAggregateInput
   _max?: Prisma.NotificationRecipientMaxOrderByAggregateInput
@@ -201,11 +213,13 @@ export type NotificationRecipientScalarWhereWithAggregatesInput = {
   NOT?: Prisma.NotificationRecipientScalarWhereWithAggregatesInput | Prisma.NotificationRecipientScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"NotificationRecipient"> | string
   employeeId?: Prisma.StringWithAggregatesFilter<"NotificationRecipient"> | string
+  group?: Prisma.StringWithAggregatesFilter<"NotificationRecipient"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"NotificationRecipient"> | Date | string
 }
 
 export type NotificationRecipientCreateInput = {
   id?: string
+  group?: string
   createdAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutNotificationRecipientsInput
 }
@@ -213,11 +227,13 @@ export type NotificationRecipientCreateInput = {
 export type NotificationRecipientUncheckedCreateInput = {
   id?: string
   employeeId: string
+  group?: string
   createdAt?: Date | string
 }
 
 export type NotificationRecipientUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutNotificationRecipientsNestedInput
 }
@@ -225,23 +241,27 @@ export type NotificationRecipientUpdateInput = {
 export type NotificationRecipientUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationRecipientCreateManyInput = {
   id?: string
   employeeId: string
+  group?: string
   createdAt?: Date | string
 }
 
 export type NotificationRecipientUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationRecipientUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -255,21 +275,29 @@ export type NotificationRecipientOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type NotificationRecipientEmployeeIdGroupCompoundUniqueInput = {
+  employeeId: string
+  group: string
+}
+
 export type NotificationRecipientCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  group?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type NotificationRecipientMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  group?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type NotificationRecipientMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  group?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -317,11 +345,13 @@ export type NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput =
 
 export type NotificationRecipientCreateWithoutEmployeeInput = {
   id?: string
+  group?: string
   createdAt?: Date | string
 }
 
 export type NotificationRecipientUncheckedCreateWithoutEmployeeInput = {
   id?: string
+  group?: string
   createdAt?: Date | string
 }
 
@@ -357,26 +387,31 @@ export type NotificationRecipientScalarWhereInput = {
   NOT?: Prisma.NotificationRecipientScalarWhereInput | Prisma.NotificationRecipientScalarWhereInput[]
   id?: Prisma.StringFilter<"NotificationRecipient"> | string
   employeeId?: Prisma.StringFilter<"NotificationRecipient"> | string
+  group?: Prisma.StringFilter<"NotificationRecipient"> | string
   createdAt?: Prisma.DateTimeFilter<"NotificationRecipient"> | Date | string
 }
 
 export type NotificationRecipientCreateManyEmployeeInput = {
   id?: string
+  group?: string
   createdAt?: Date | string
 }
 
 export type NotificationRecipientUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationRecipientUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NotificationRecipientUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  group?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -385,6 +420,7 @@ export type NotificationRecipientUncheckedUpdateManyWithoutEmployeeInput = {
 export type NotificationRecipientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  group?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notificationRecipient"]>
@@ -392,6 +428,7 @@ export type NotificationRecipientSelect<ExtArgs extends runtime.Types.Extensions
 export type NotificationRecipientSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  group?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notificationRecipient"]>
@@ -399,6 +436,7 @@ export type NotificationRecipientSelectCreateManyAndReturn<ExtArgs extends runti
 export type NotificationRecipientSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   employeeId?: boolean
+  group?: boolean
   createdAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notificationRecipient"]>
@@ -406,10 +444,11 @@ export type NotificationRecipientSelectUpdateManyAndReturn<ExtArgs extends runti
 export type NotificationRecipientSelectScalar = {
   id?: boolean
   employeeId?: boolean
+  group?: boolean
   createdAt?: boolean
 }
 
-export type NotificationRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "createdAt", ExtArgs["result"]["notificationRecipient"]>
+export type NotificationRecipientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "group" | "createdAt", ExtArgs["result"]["notificationRecipient"]>
 export type NotificationRecipientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
 }
@@ -428,6 +467,7 @@ export type $NotificationRecipientPayload<ExtArgs extends runtime.Types.Extensio
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     employeeId: string
+    group: string
     createdAt: Date
   }, ExtArgs["result"]["notificationRecipient"]>
   composites: {}
@@ -855,6 +895,7 @@ export interface Prisma__NotificationRecipientClient<T, Null = never, ExtArgs ex
 export interface NotificationRecipientFieldRefs {
   readonly id: Prisma.FieldRef<"NotificationRecipient", 'String'>
   readonly employeeId: Prisma.FieldRef<"NotificationRecipient", 'String'>
+  readonly group: Prisma.FieldRef<"NotificationRecipient", 'String'>
   readonly createdAt: Prisma.FieldRef<"NotificationRecipient", 'DateTime'>
 }
     

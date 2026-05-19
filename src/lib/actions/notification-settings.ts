@@ -17,7 +17,8 @@ export async function getNotificationRecipients() {
 
 export async function saveNotificationRules(
   rules: { action: string; channel: string; recipient: string; enabled: boolean }[],
-  hrTeamEmployeeIds: string[]
+  hrTeamEmployeeIds: string[],
+  managementEmployeeIds: string[] = []
 ) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
@@ -46,11 +47,19 @@ export async function saveNotificationRules(
     });
   }
 
-  // Sync HR team recipients
-  await db.notificationRecipient.deleteMany({});
+  // Sync HR Team recipients
+  await db.notificationRecipient.deleteMany({ where: { group: "HR_TEAM" } });
   if (hrTeamEmployeeIds.length > 0) {
     await db.notificationRecipient.createMany({
-      data: hrTeamEmployeeIds.map((employeeId) => ({ employeeId })),
+      data: hrTeamEmployeeIds.map((employeeId) => ({ employeeId, group: "HR_TEAM" })),
+    });
+  }
+
+  // Sync Management recipients
+  await db.notificationRecipient.deleteMany({ where: { group: "MANAGEMENT" } });
+  if (managementEmployeeIds.length > 0) {
+    await db.notificationRecipient.createMany({
+      data: managementEmployeeIds.map((employeeId) => ({ employeeId, group: "MANAGEMENT" })),
     });
   }
 
