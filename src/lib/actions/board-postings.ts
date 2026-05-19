@@ -142,8 +142,29 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
       }
       const existing = await db.positionBoardPosting.findUnique({
         where: { positionId_board: { positionId, board: "BREEZY" } },
-        select: { titleOverride: true },
+        select: { titleOverride: true, externalId: true, status: true },
       });
+
+      // If we already published this position to Breezy, don't create a new
+      // one — just (re)publish the existing Breezy posting. This prevents
+      // duplicates when the user clicks "Post to Breezy" more than once.
+      if (existing?.externalId) {
+        const { updateBreezyPositionState } = await import("@/lib/platform-sync/clients/breezy");
+        const r = await updateBreezyPositionState({
+          accessToken: signin.accessToken,
+          companyId: platform.accountIdentifier,
+          positionId: existing.externalId,
+          state: "published",
+        });
+        if (!r.success) {
+          await upsertPosting(positionId, "BREEZY", { status: "FAILED", lastError: r.error || "Failed" });
+          return { success: false, error: r.error };
+        }
+        await upsertPosting(positionId, "BREEZY", { status: "PUBLISHED", lastError: null });
+        revalidatePath("/cv");
+        return { success: true };
+      }
+
       const result = await postJobToBreezy({
         accessToken: signin.accessToken,
         companyId: platform.accountIdentifier,

@@ -947,6 +947,30 @@ export async function postPositionToBreezy(
   }
 
   const [breezyToken] = tokenResult.accessToken.split("::");
+
+  // Reuse existing Breezy posting if we already created one — otherwise every
+  // call would spawn a duplicate position on Breezy.
+  const existing = await db.positionBoardPosting.findUnique({
+    where: { positionId_board: { positionId, board: "BREEZY" } },
+    select: { externalId: true },
+  });
+  if (existing?.externalId) {
+    const { updateBreezyPositionState } = await import("@/lib/platform-sync/clients/breezy");
+    const r = await updateBreezyPositionState({
+      accessToken: breezyToken,
+      companyId: breezyPlatform.accountIdentifier,
+      positionId: existing.externalId,
+      state: "published",
+    });
+    if (!r.success) return { success: false, error: r.error };
+    await db.positionBoardPosting.update({
+      where: { positionId_board: { positionId, board: "BREEZY" } },
+      data: { status: "PUBLISHED", lastError: null, lastSyncAt: new Date() },
+    });
+    revalidatePath("/cv");
+    return { success: true };
+  }
+
   const { postJobToBreezy } = await import("@/lib/platform-sync/clients/breezy");
   const result = await postJobToBreezy({
     accessToken: breezyToken,
@@ -964,6 +988,26 @@ export async function postPositionToBreezy(
   if (!result.success) {
     return { success: false, error: result.error };
   }
+
+  // Record the new Breezy externalId so a future call republishes instead of
+  // creating yet another duplicate.
+  await db.positionBoardPosting.upsert({
+    where: { positionId_board: { positionId, board: "BREEZY" } },
+    create: {
+      positionId,
+      board: "BREEZY",
+      status: "PUBLISHED",
+      externalId: result.positionId ?? null,
+      lastError: null,
+      lastSyncAt: new Date(),
+    },
+    update: {
+      status: "PUBLISHED",
+      externalId: result.positionId ?? null,
+      lastError: null,
+      lastSyncAt: new Date(),
+    },
+  });
 
   revalidatePath("/cv");
   return { success: true };
