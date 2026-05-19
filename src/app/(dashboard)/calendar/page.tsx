@@ -9,7 +9,31 @@ export default async function CalendarPage() {
   const session = await requireAuth();
   const role = session.user?.role;
   const userId = session.user?.id;
-  const isManagerOrAbove = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR" || role === "MANAGER";
+  const callerEmployeeId = session.user?.employeeId;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isManagerOrAbove = isAdmin || role === "MANAGER";
+
+  // Anniversary reviews are personal — scope them to admin/HR (all), manager
+  // (their direct reports + themselves), or the employee (themselves only).
+  const reviewCycleWhere: Record<string, unknown> = {
+    isAnniversary: true,
+    status: { in: ["ACTIVE", "DRAFT"] },
+  };
+  if (!isAdmin) {
+    if (!callerEmployeeId) {
+      reviewCycleWhere.id = "__none__";
+    } else if (role === "MANAGER") {
+      const reports = await db.employee.findMany({
+        where: { managerId: callerEmployeeId },
+        select: { id: true },
+      });
+      reviewCycleWhere.employeeId = {
+        in: [callerEmployeeId, ...reports.map((r) => r.id)],
+      };
+    } else {
+      reviewCycleWhere.employeeId = callerEmployeeId;
+    }
+  }
 
   const [employees, interviews, feedEvents, reviewCycles, allActiveEmployees, departments] = await Promise.all([
     db.employee.findMany({
@@ -37,7 +61,7 @@ export default async function CalendarPage() {
       },
     }),
     db.reviewCycle.findMany({
-      where: { isAnniversary: true, status: { in: ["ACTIVE", "DRAFT"] } },
+      where: reviewCycleWhere,
       select: {
         id: true,
         name: true,
