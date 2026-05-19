@@ -189,7 +189,7 @@ function PositionPipeline({
     router.refresh();
   }
 
-  const existingForAdd = allCandidates.map((c) => ({
+  const existingForAdd = (allCandidates ?? []).map((c) => ({
     id: c.id,
     firstName: c.firstName,
     lastName: c.lastName,
