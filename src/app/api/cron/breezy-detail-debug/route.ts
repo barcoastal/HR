@@ -31,26 +31,52 @@ export async function GET(request: Request) {
   });
   const positions = posRes.ok ? ((await posRes.json()) as { _id: string; name: string }[]) : [];
 
-  for (const p of positions) {
+  type Cand = { _id: string; email_address?: string; resume?: { url?: string; pdf_url?: string } };
+  const samples: { position: string; candidateEmail?: string; resumeFromBreezy?: string; resumeInDb?: string | null; matchesLocalPattern?: boolean; testDownload?: { status: number; contentType: string | null; bytes: number } }[] = [];
+
+  outer: for (const p of positions) {
     const candsRes = await fetch(
       `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidates`,
       { headers: { Authorization: token } }
     );
-    const cands = candsRes.ok ? ((await candsRes.json()) as { _id: string }[]) : [];
-    if (cands.length === 0) continue;
+    const cands = candsRes.ok ? ((await candsRes.json()) as Cand[]) : [];
+    for (const c of cands.slice(0, 3)) {
+      const detailRes = await fetch(
+        `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidate/${c._id}`,
+        { headers: { Authorization: token } }
+      );
+      const detail = detailRes.ok ? ((await detailRes.json()) as Cand) : null;
+      const resumeUrl = detail?.resume?.pdf_url || detail?.resume?.url;
+      const dbCand = detail?.email_address
+        ? await db.candidate.findUnique({
+            where: { email: detail.email_address },
+            select: { id: true, resumeUrl: true },
+          })
+        : null;
 
-    const first = cands[0];
-    const detailRes = await fetch(
-      `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidate/${first._id}`,
-      { headers: { Authorization: token } }
-    );
-    const detail = detailRes.ok ? await detailRes.json() : { httpStatus: detailRes.status };
-    return NextResponse.json({
-      position: { id: p._id, name: p.name },
-      candidateId: first._id,
-      detail,
-    });
+      // Probe the resume URL once with auth to see if Breezy serves the PDF.
+      let testDownload: { status: number; contentType: string | null; bytes: number } | undefined;
+      if (resumeUrl) {
+        const r = await fetch(resumeUrl, { headers: { Authorization: token } });
+        const buf = await r.arrayBuffer();
+        testDownload = {
+          status: r.status,
+          contentType: r.headers.get("content-type"),
+          bytes: buf.byteLength,
+        };
+      }
+
+      samples.push({
+        position: p.name,
+        candidateEmail: detail?.email_address,
+        resumeFromBreezy: resumeUrl,
+        resumeInDb: dbCand?.resumeUrl ?? null,
+        matchesLocalPattern: dbCand?.resumeUrl?.startsWith("/api/resumes/") ?? false,
+        testDownload,
+      });
+      if (samples.length >= 5) break outer;
+    }
   }
 
-  return NextResponse.json({ note: "No candidates found across any positions" });
+  return NextResponse.json({ samples });
 }
