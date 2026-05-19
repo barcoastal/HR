@@ -70,34 +70,51 @@ export function AddCandidateToPosition({
   async function handleAssign(candidateId: string) {
     if (hasRecruiters && !selectedRecruiterId) return;
     setSaving(true);
-    await assignCandidateToPosition(candidateId, positionId, selectedRecruiterId || undefined);
-    setSaving(false);
-    setOpen(false);
-    startTransition(() => { router.refresh(); });
+    try {
+      await assignCandidateToPosition(candidateId, positionId, selectedRecruiterId || undefined);
+      setOpen(false);
+      startTransition(() => { router.refresh(); });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to add candidate");
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function handleCreateNew() {
     if (!newForm.firstName || !newForm.lastName || !newForm.email) return;
     if (hasRecruiters && !selectedRecruiterId) return;
     setSaving(true);
-    const skills = newForm.skills
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
-    await createCandidate({
-      firstName: newForm.firstName,
-      lastName: newForm.lastName,
-      email: newForm.email,
-      phone: newForm.phone || undefined,
-      skills,
-      positionId,
-      recruiterId: selectedRecruiterId || undefined,
-      inPipeline: true,
-    });
-    setSaving(false);
-    setOpen(false);
-    setNewForm({ firstName: "", lastName: "", email: "", phone: "", skills: "" });
-    startTransition(() => { router.refresh(); });
+    try {
+      const skills = newForm.skills
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      await createCandidate({
+        firstName: newForm.firstName,
+        lastName: newForm.lastName,
+        email: newForm.email,
+        phone: newForm.phone || undefined,
+        skills,
+        positionId,
+        recruiterId: selectedRecruiterId || undefined,
+        inPipeline: true,
+      });
+      setOpen(false);
+      setNewForm({ firstName: "", lastName: "", email: "", phone: "", skills: "" });
+      startTransition(() => { router.refresh(); });
+    } catch (err) {
+      // The most common cause is a unique-email collision — surface it instead
+      // of leaving the button stuck on "Adding...".
+      const msg = err instanceof Error ? err.message : "Failed to add candidate";
+      if (msg.toLowerCase().includes("unique") || msg.toLowerCase().includes("constraint")) {
+        alert(`A candidate with email "${newForm.email}" already exists.`);
+      } else {
+        alert(msg);
+      }
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputClass = cn(
