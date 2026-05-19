@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
@@ -11,6 +12,12 @@ export default async function PeoplePage() {
   const role = session.user?.role;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const isSuperAdmin = role === "SUPER_ADMIN";
+
+  // Employees may not browse the company directory — only their own profile.
+  // Managers and above can see the list (used for org/team navigation).
+  if (!isAdmin && role !== "MANAGER") {
+    redirect("/my-profile");
+  }
 
   const [allEmployees, departments] = await Promise.all([
     getEmployees({ status: undefined }),

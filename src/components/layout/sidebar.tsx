@@ -22,7 +22,7 @@ const isManagerOrAbove = (r: UserRole) => getRoleLevel(r) >= 2;
 const allNavLinks = [
   { href: "/", label: "Feed", icon: "newspaper", access: () => true },
   { href: "/alerts", label: "Alerts", icon: "warning", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
-  { href: "/people", label: "People", icon: "group", access: () => true },
+  { href: "/people", label: "People", icon: "group", access: (r: UserRole) => isManagerOrAbove(r) },
   { href: "/pre-onboarding", label: "Pre-Onboarding", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r) },

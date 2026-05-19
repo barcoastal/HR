@@ -37,19 +37,26 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
   const role = session.user?.role;
   const currentEmployeeId = session.user?.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isManagerRole = role === "MANAGER";
   const { id } = await params;
-  const [employee, hrNotes, documents, nextOneOnOne, pastOneOnOnes] = await Promise.all([
-    getEmployeeById(id),
+  const employee = await getEmployeeById(id);
+  if (!employee) notFound();
+
+  // Employees may only see their own profile. Managers may also see their
+  // direct reports. Admin/HR see everyone.
+  const isOwnProfile = currentEmployeeId === employee.id;
+  const isDirectReport = currentEmployeeId ? employee.managerId === currentEmployeeId : false;
+  if (!isAdmin && !isOwnProfile && !(isManagerRole && isDirectReport)) {
+    notFound();
+  }
+
+  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes] = await Promise.all([
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
     getPastOneOnOnesForEmployee(id),
   ]);
-  if (!employee) notFound();
 
-  // Check if viewing own profile or a direct report's profile
-  const isOwnProfile = currentEmployeeId === employee.id;
-  const isDirectReport = currentEmployeeId ? employee.managerId === currentEmployeeId : false;
   const canViewDocuments = isAdmin || isOwnProfile || isDirectReport;
   const canEdit = isAdmin || isOwnProfile;
 
