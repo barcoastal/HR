@@ -31,7 +31,7 @@ export async function GET(request: Request) {
   });
   const positions = posRes.ok ? ((await posRes.json()) as { _id: string; name: string }[]) : [];
 
-  type Cand = { _id: string; email_address?: string; resume?: { url?: string; pdf_url?: string } };
+  type Cand = { _id: string; email_address?: string; resume?: { url?: string; pdf_url?: string; file_name?: string } };
   const samples: { position: string; candidateEmail?: string; resumeFromBreezy?: string; resumeInDb?: string | null; matchesLocalPattern?: boolean; testDownload?: { status: number; contentType: string | null; bytes: number } }[] = [];
 
   outer: for (const p of positions) {
@@ -54,27 +54,51 @@ export async function GET(request: Request) {
           })
         : null;
 
-      // Probe the resume URL once with auth to see if Breezy serves the PDF.
-      let testDownload: { status: number; contentType: string | null; bytes: number } | undefined;
+      // Probe multiple auth shapes against the resume URL to find what works.
+      const probes: { name: string; init: RequestInit; url: string }[] = [];
       if (resumeUrl) {
-        const r = await fetch(resumeUrl, { headers: { Authorization: token } });
-        const buf = await r.arrayBuffer();
-        testDownload = {
-          status: r.status,
-          contentType: r.headers.get("content-type"),
-          bytes: buf.byteLength,
-        };
+        probes.push({ name: "raw-token", url: resumeUrl, init: { headers: { Authorization: token } } });
+        probes.push({ name: "bearer-token", url: resumeUrl, init: { headers: { Authorization: `Bearer ${token}` } } });
+        probes.push({ name: "no-auth", url: resumeUrl, init: {} });
+        probes.push({ name: "no-redirect", url: resumeUrl, init: { headers: { Authorization: token }, redirect: "manual" } });
+        const fileName = detail?.resume?.file_name;
+        if (fileName) {
+          probes.push({ name: "files-host", url: `https://files.breezy.hr/${fileName}`, init: {} });
+          probes.push({ name: "app-files", url: `https://app.breezy.hr/files/${fileName}`, init: {} });
+        }
       }
+      type Probe = { name: string; url: string; status: number; contentType: string | null; bytes: number; location: string | null; body?: string };
+      const probeResults: Probe[] = [];
+      for (const p of probes) {
+        try {
+          const r = await fetch(p.url, p.init);
+          const buf = await r.arrayBuffer();
+          probeResults.push({
+            name: p.name,
+            url: p.url,
+            status: r.status,
+            contentType: r.headers.get("content-type"),
+            bytes: buf.byteLength,
+            location: r.headers.get("location"),
+            body: buf.byteLength < 500 ? Buffer.from(buf).toString("utf-8") : undefined,
+          });
+        } catch (err) {
+          probeResults.push({ name: p.name, url: p.url, status: 0, contentType: null, bytes: 0, location: null, body: String(err) });
+        }
+      }
+      const testDownload = probeResults[0];
 
       samples.push({
         position: p.name,
         candidateEmail: detail?.email_address,
         resumeFromBreezy: resumeUrl,
+        resumeFileName: detail?.resume?.file_name,
         resumeInDb: dbCand?.resumeUrl ?? null,
         matchesLocalPattern: dbCand?.resumeUrl?.startsWith("/api/resumes/") ?? false,
         testDownload,
-      });
-      if (samples.length >= 5) break outer;
+        probes: probeResults,
+      } as unknown as typeof samples[number]);
+      if (samples.length >= 2) break outer;
     }
   }
 
