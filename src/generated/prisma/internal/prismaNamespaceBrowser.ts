@@ -70,6 +70,7 @@ export const ModelName = {
   EmergencyAlert: 'EmergencyAlert',
   Notification: 'Notification',
   NotificationRule: 'NotificationRule',
+  AuditLog: 'AuditLog',
   NotificationRecipient: 'NotificationRecipient',
   Document: 'Document',
   HRNote: 'HRNote',
@@ -447,6 +448,23 @@ export const NotificationRuleScalarFieldEnum = {
 } as const
 
 export type NotificationRuleScalarFieldEnum = (typeof NotificationRuleScalarFieldEnum)[keyof typeof NotificationRuleScalarFieldEnum]
+
+
+export const AuditLogScalarFieldEnum = {
+  id: 'id',
+  actorUserId: 'actorUserId',
+  actorEmployeeId: 'actorEmployeeId',
+  actorEmail: 'actorEmail',
+  actorRole: 'actorRole',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  details: 'details',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
 export const NotificationRecipientScalarFieldEnum = {

@@ -1061,6 +1061,14 @@ export async function updatePositionStatus(
     await closeAllBoardsForPosition(id);
   }
 
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "position.status.changed",
+    entityType: "position",
+    entityId: id,
+    details: { from: previous?.status, to: status, title: position.title },
+  });
+
   revalidatePath("/cv");
   return position;
 }

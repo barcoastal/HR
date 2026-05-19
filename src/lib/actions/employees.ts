@@ -98,6 +98,13 @@ export async function createEmployee(data: {
       status,
     },
   });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.created",
+    entityType: "employee",
+    entityId: employee.id,
+    details: { name: `${employee.firstName} ${employee.lastName}`, email: employee.email, status },
+  });
 
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -287,6 +294,14 @@ export async function updateEmployee(
     }
   }
 
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.updated",
+    entityType: "employee",
+    entityId: id,
+    details: { fields: Object.keys(data) },
+  });
+
   revalidatePath("/people");
   revalidatePath(`/people/${id}`);
   return employee;
@@ -326,6 +341,15 @@ export async function promoteEmployee(
     updateData.departmentId = newDepartmentId || null;
   }
   await db.employee.update({ where: { id: employeeId }, data: updateData });
+  {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "employee.promoted",
+      entityType: "employee",
+      entityId: employeeId,
+      details: { from: oldTitle, to: newJobTitle, departmentChanged: newDepartmentId !== undefined },
+    });
+  }
 
   // Get new department name
   let newDeptName = oldDeptName;
@@ -449,6 +473,14 @@ export async function startOffboarding(employeeId: string, endDate: string) {
   if (user && user.role === "EMPLOYEE") {
     await db.user.update({ where: { id: user.id }, data: { employeeId: null } });
   }
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.offboarding_started",
+    entityType: "employee",
+    entityId: employeeId,
+    details: { endDate, taskCount: allChecklistItems.length },
+  });
 
   // Notify the configured Management (and any other enabled recipients) group
   try {
@@ -839,12 +871,24 @@ export async function deleteEmployee(id: string, reason?: string) {
   await db.employee.updateMany({ where: { buddyId: id }, data: { buddyId: null } });
   await db.department.updateMany({ where: { headId: id }, data: { headId: null } });
 
+  const target = await db.employee.findUnique({ where: { id }, select: { firstName: true, lastName: true, email: true } });
   await db.employee.update({
     where: { id },
     data: {
       archivedAt: new Date(),
       archivedById: session.user?.employeeId ?? null,
       archivedReason: reason ?? null,
+    },
+  });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.archived",
+    entityType: "employee",
+    entityId: id,
+    details: {
+      name: target ? `${target.firstName} ${target.lastName}` : null,
+      email: target?.email ?? null,
+      reason: reason ?? null,
     },
   });
 
@@ -868,6 +912,8 @@ export async function restoreEmployee(id: string) {
     where: { id },
     data: { archivedAt: null, archivedById: null, archivedReason: null },
   });
+  const { audit } = await import("@/lib/audit");
+  await audit({ action: "employee.restored", entityType: "employee", entityId: id });
 
   revalidatePath("/people");
   revalidatePath("/people/archive");
@@ -909,7 +955,15 @@ export async function purgeEmployee(id: string) {
     // Ignore if any fail
   }
 
+  const purgedTarget = await db.employee.findUnique({ where: { id }, select: { firstName: true, lastName: true, email: true } });
   await db.employee.delete({ where: { id } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.purged",
+    entityType: "employee",
+    entityId: id,
+    details: purgedTarget ? { name: `${purgedTarget.firstName} ${purgedTarget.lastName}`, email: purgedTarget.email } : undefined,
+  });
 
   revalidatePath("/people");
   revalidatePath("/people/archive");

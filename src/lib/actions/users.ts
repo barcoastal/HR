@@ -66,6 +66,13 @@ export async function inviteUser(data: {
       employeeId,
     },
   });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "user.invited",
+    entityType: "user",
+    entityId: user.id,
+    details: { email: data.email, role: data.role, withPassword: !!data.password },
+  });
   revalidatePath("/settings");
 
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
@@ -88,8 +95,16 @@ export async function setUserPassword(userId: string, password: string) {
   if (!password || password.length < 8) {
     return { success: false, error: "Password must be at least 8 characters." };
   }
+  const target = await db.user.findUnique({ where: { id: userId }, select: { email: true } });
   const passwordHash = await bcrypt.hash(password, 10);
   await db.user.update({ where: { id: userId }, data: { passwordHash } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "user.password.set",
+    entityType: "user",
+    entityId: userId,
+    details: { email: target?.email },
+  });
   revalidatePath("/settings");
   return { success: true };
 }
@@ -101,8 +116,16 @@ export async function updateUserRole(id: string, role: UserRole) {
   if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
     throw new Error("Not authorized to change user roles");
   }
+  const before = await db.user.findUnique({ where: { id }, select: { role: true, email: true } });
 
   const user = await db.user.update({ where: { id }, data: { role } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "user.role.changed",
+    entityType: "user",
+    entityId: id,
+    details: { email: before?.email, from: before?.role, to: role },
+  });
   revalidatePath("/settings");
   return user;
 }
@@ -121,6 +144,14 @@ export async function deleteUser(id: string) {
     throw new Error("You cannot delete your own account");
   }
 
+  const target = await db.user.findUnique({ where: { id }, select: { email: true, role: true } });
   await db.user.delete({ where: { id } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "user.deleted",
+    entityType: "user",
+    entityId: id,
+    details: { email: target?.email, role: target?.role },
+  });
   revalidatePath("/settings");
 }

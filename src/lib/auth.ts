@@ -151,6 +151,26 @@ export const authOptions: NextAuthOptions = {
           ? `${dbUser.employee.firstName} ${dbUser.employee.lastName}`
           : dbUser.email;
 
+        // Audit the login (non-blocking; on a fresh row the helper will
+        // read session from the request which isn't set yet, so we write
+        // the row inline here).
+        try {
+          await db.auditLog.create({
+            data: {
+              actorUserId: dbUser.id,
+              actorEmployeeId: dbUser.employeeId,
+              actorEmail: dbUser.email,
+              actorRole: dbUser.role,
+              action: "auth.login",
+              entityType: "user",
+              entityId: dbUser.id,
+              details: { provider: account?.provider ?? "credentials" },
+            },
+          });
+        } catch (auditErr) {
+          console.error("[auth] login audit failed:", auditErr);
+        }
+
         return true;
       } catch (err) {
         console.error("[auth] signIn callback failed:", err);

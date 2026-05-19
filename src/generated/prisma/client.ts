@@ -135,6 +135,11 @@ export type Notification = Prisma.NotificationModel
  */
 export type NotificationRule = Prisma.NotificationRuleModel
 /**
+ * Model AuditLog
+ * Audit log — who did what, when, against which entity. Append-only.
+ */
+export type AuditLog = Prisma.AuditLogModel
+/**
  * Model NotificationRecipient
  * 
  */

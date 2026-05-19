@@ -602,6 +602,27 @@ model NotificationRule {
   @@index([action])
 }
 
+/// Audit log — who did what, when, against which entity. Append-only.
+model AuditLog {
+  id              String   @id @default(uuid())
+  actorUserId     String?
+  actorEmployeeId String?
+  actorEmail      String?
+  actorRole       String?
+  action          String   // e.g. "employee.archived", "user.role.changed", "position.published"
+  entityType      String?  // "employee" | "user" | "position" | "candidate" | "document" | ...
+  entityId        String?
+  details         Json?    // optional structured payload (before/after, reason, etc.)
+  ipAddress       String?
+  createdAt       DateTime @default(now())
+
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([actorUserId])
+  @@index([actorEmployeeId])
+  @@index([createdAt])
+}
+
 model NotificationRecipient {
   id         String   @id @default(uuid())
   employeeId String

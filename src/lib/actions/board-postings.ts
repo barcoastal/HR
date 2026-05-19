@@ -183,6 +183,13 @@ export async function postToBoard(positionId: string, board: BoardName): Promise
         return { success: false, error: result.error };
       }
       await upsertPosting(positionId, "BREEZY", { status: "PUBLISHED", externalId: result.positionId ?? null, lastError: null });
+      const { audit } = await import("@/lib/audit");
+      await audit({
+        action: "position.posted_to_breezy",
+        entityType: "position",
+        entityId: positionId,
+        details: { title: position.title, externalId: result.positionId ?? null },
+      });
       revalidatePath("/cv");
       return { success: true };
     } catch (err) {
