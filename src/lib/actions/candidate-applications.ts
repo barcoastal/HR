@@ -91,6 +91,10 @@ export async function updateApplicationStatus(
 }
 
 export async function markDoNotCall(candidateId: string, reason?: string) {
+  const before = await db.candidate.findUnique({
+    where: { id: candidateId },
+    select: { firstName: true, lastName: true, email: true, status: true },
+  });
   await db.candidate.update({
     where: { id: candidateId },
     data: {
@@ -100,6 +104,22 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
       status: "REJECTED",
     },
   });
+  if (before) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "candidate.status.changed",
+      entityType: "candidate",
+      entityId: candidateId,
+      details: {
+        name: `${before.firstName} ${before.lastName}`,
+        email: before.email,
+        from: before.status,
+        to: "REJECTED",
+        via: "mark_do_not_call",
+        reason: reason ?? null,
+      },
+    });
+  }
   revalidatePath("/cv");
 }
 

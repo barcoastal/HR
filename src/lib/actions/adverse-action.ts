@@ -29,6 +29,7 @@ export async function sendAdverseActionLetter(
       positionTitle: candidate.position?.title,
       reason,
     });
+    const previousStatus = candidate.status;
     await db.candidate.update({
       where: { id: candidateId },
       data: {
@@ -38,6 +39,20 @@ export async function sendAdverseActionLetter(
         doNotCall: true,
         doNotCallReason: candidate.doNotCallReason || "Background check failed",
         doNotCallAt: candidate.doNotCallAt || new Date(),
+      },
+    });
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "candidate.status.changed",
+      entityType: "candidate",
+      entityId: candidateId,
+      details: {
+        name: `${candidate.firstName} ${candidate.lastName}`,
+        email: candidate.email,
+        from: previousStatus,
+        to: "REJECTED",
+        via: "adverse_action_letter",
+        reason: reason ?? null,
       },
     });
     revalidatePath("/cv");
