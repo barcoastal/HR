@@ -302,6 +302,21 @@ export async function updateCandidateStatus(
 
   const updated = await db.candidate.update({ where: { id }, data });
 
+  if (previousStatus !== status) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "candidate.status.changed",
+      entityType: "candidate",
+      entityId: id,
+      details: {
+        name: `${candidate.firstName} ${candidate.lastName}`,
+        email: candidate.email,
+        from: previousStatus,
+        to: status,
+      },
+    });
+  }
+
   // Send stage-change notification via centralized rules engine (non-blocking)
   if (previousStatus !== status) {
     const { sendNotifications } = await import("@/lib/notifications/send");
@@ -526,6 +541,23 @@ export async function updateCandidate(
     data.recruiterId !== previousRecruiterId
   ) {
     await notifyRecruiterAssigned(id);
+  }
+
+  // Audit status changes from this path (kanban move + detail-dialog edits both
+  // route through here).
+  if (status && previousStatus && previousStatus !== status) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "candidate.status.changed",
+      entityType: "candidate",
+      entityId: id,
+      details: {
+        name: `${candidate.firstName} ${candidate.lastName}`,
+        email: candidate.email,
+        from: previousStatus,
+        to: status,
+      },
+    });
   }
 
   // Send stage-change notification via centralized rules engine
@@ -1228,8 +1260,21 @@ export async function getTotalCandidateCount() {
 }
 
 export async function deleteCandidate(id: string) {
+  const target = await db.candidate.findUnique({
+    where: { id },
+    select: { firstName: true, lastName: true, email: true, status: true },
+  });
   await db.interview.deleteMany({ where: { candidateId: id } });
   await db.candidate.delete({ where: { id } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "candidate.deleted",
+    entityType: "candidate",
+    entityId: id,
+    details: target
+      ? { name: `${target.firstName} ${target.lastName}`, email: target.email, status: target.status }
+      : undefined,
+  });
   revalidatePath("/cv");
 }
 
