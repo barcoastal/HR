@@ -421,7 +421,9 @@ type BreezyCandidate = {
   phone_number?: string;
   headline?: string;
   summary?: string;
-  source?: string;
+  // Breezy returns source as { id, name } on detail, but legacy responses
+  // may still return a plain string — accept both.
+  source?: string | { id?: string; name?: string } | null;
   tags?: string[];
   stage?: { name?: string };
   social_profiles?: { type: string; url: string }[];
@@ -429,6 +431,37 @@ type BreezyCandidate = {
   origin?: string;
   resume?: { url?: string; pdf_url?: string; file_name?: string } | null;
 };
+
+/**
+ * Normalize Breezy's source field into a friendly board name.
+ * Real-world values: "indeed-sponsored-jobs", "ziprecruiter", "linkedin",
+ * "careers", "referral", etc. `origin` is the candidate's lifecycle stage
+ * (e.g. "applied", "sourced") — NOT the source, so we ignore it.
+ */
+function resolveBreezySource(raw: BreezyCandidate["source"]): string {
+  const rawStr = typeof raw === "string"
+    ? raw
+    : (raw && (raw.name || raw.id)) || "";
+  const lower = rawStr.toLowerCase();
+  if (!lower) return "Breezy HR";
+  if (lower.includes("indeed")) return "Indeed";
+  if (lower.includes("linkedin")) return "LinkedIn";
+  if (lower.includes("ziprecruiter") || lower.includes("zip-recruiter")) return "ZipRecruiter";
+  if (lower.includes("glassdoor")) return "Glassdoor";
+  if (lower.includes("monster")) return "Monster";
+  if (lower.includes("careerbuilder")) return "CareerBuilder";
+  if (lower.includes("simplyhired")) return "SimplyHired";
+  if (lower.includes("dice")) return "Dice";
+  if (lower.includes("google")) return "Google for Jobs";
+  if (lower.includes("facebook")) return "Facebook";
+  if (lower.includes("careers") || lower.includes("career-page")) return "Careers Page";
+  if (lower.includes("referral")) return "Referral";
+  if (lower.includes("sourced")) return "Sourced";
+  // Fall back to title-cased version of whatever Breezy gave us.
+  return rawStr
+    .replace(/[-_]/g, " ")
+    .replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
 
 function mapBreezyCandidate(
   c: BreezyCandidate,
@@ -447,12 +480,7 @@ function mapBreezyCandidate(
     p.type === "linkedin" || p.url?.includes("linkedin.com")
   );
 
-  const source = c.origin || c.source || "Breezy HR";
-  const displaySource = source.toLowerCase().includes("indeed")
-    ? "Indeed"
-    : source.toLowerCase().includes("linkedin")
-      ? "LinkedIn"
-      : source;
+  const displaySource = resolveBreezySource(c.source);
 
   const notes = [
     `Via Breezy HR (${displaySource})`,

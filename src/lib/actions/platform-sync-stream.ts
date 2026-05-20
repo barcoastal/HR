@@ -9,14 +9,21 @@ import { existsSync } from "fs";
 import path from "path";
 
 async function updateExistingCandidate(
-  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null; positionId: string | null; inPipeline: boolean },
-  mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string },
+  existing: { id: string; resumeUrl: string | null; jobAppliedTo: string | null; experience: string | null; positionId: string | null; inPipeline: boolean; source: string | null },
+  mc: { resumeUrl?: string; jobAppliedTo?: string; experience?: string; source?: string },
   resolvedPositionId?: string | null
 ): Promise<boolean> {
   const updates: Record<string, unknown> = {};
   if (!existing.resumeUrl && mc.resumeUrl) updates.resumeUrl = mc.resumeUrl;
   if (!existing.jobAppliedTo && mc.jobAppliedTo) updates.jobAppliedTo = mc.jobAppliedTo;
   if (!existing.experience && mc.experience) updates.experience = mc.experience;
+  // Backfill / correct the source if the synced value differs and the
+  // existing one looks like a legacy / wrong value ("applied", null, or
+  // generic "Breezy HR").
+  if (mc.source && mc.source !== existing.source) {
+    const stale = !existing.source || existing.source === "applied" || existing.source === "Breezy HR" || existing.source === "sourced";
+    if (stale) updates.source = mc.source;
+  }
   if (!existing.positionId && resolvedPositionId) {
     updates.positionId = resolvedPositionId;
   }
