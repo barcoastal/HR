@@ -1,10 +1,10 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { updateCandidateStatus, hireCandidateAndStartOnboarding, deleteCandidate } from "@/lib/actions/candidates";
+import { updateCandidateStatus, deleteCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
 import { Icon } from "@/components/ui/icon";
 
@@ -60,6 +60,8 @@ type PipelineStageConfig = { id: string; label: string; color: string; bgColor: 
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
+const INITIAL_COLUMN_LIMIT = 20;
+
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 type Recruiter = { id: string; firstName: string; lastName: string };
 
@@ -74,148 +76,142 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     : DEFAULT_COLUMNS;
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
-  const [hiringId, setHiringId] = useState<string | null>(null);
+  const [movingId, setMovingId] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [expandedColumns, setExpandedColumns] = useState<Record<string, boolean>>({});
 
   async function moveCandidate(id: string, newStatus: CandidateStatus) {
     if (newStatus === "HIRED" || newStatus === "BACKGROUND_CHECK") {
-      // Open detail dialog so user can provide company email / configure options
       const c = candidates.find((c) => c.id === id);
       if (c) setSelectedCandidate(c);
       return;
     }
-    setHiringId(id);
+    setMovingId(id);
     try {
       await updateCandidateStatus(id, newStatus);
       router.refresh();
     } finally {
-      setHiringId(null);
+      setMovingId(null);
     }
   }
 
+  const filteredCandidates = useMemo(() => {
+    if (!search.trim()) return candidates;
+    const q = search.toLowerCase();
+    return candidates.filter((c) => {
+      const skills = parseSkills(c.skills).join(" ");
+      return (
+        c.firstName.toLowerCase().includes(q) ||
+        c.lastName.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        (c.phone ?? "").toLowerCase().includes(q) ||
+        (c.experience ?? "").toLowerCase().includes(q) ||
+        (c.notes ?? "").toLowerCase().includes(q) ||
+        (c.source ?? "").toLowerCase().includes(q) ||
+        skills.toLowerCase().includes(q)
+      );
+    });
+  }, [candidates, search]);
+
   return (
     <>
+      <div className="mb-3 relative">
+        <Icon
+          name="search"
+          size={14}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+        />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search this position — name, email, phone, skill, source…"
+          className="w-full pl-9 pr-9 py-2 rounded-lg text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={() => setSearch("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+            title="Clear search"
+          >
+            <Icon name="close" size={14} />
+          </button>
+        )}
+      </div>
+
       <div className="flex gap-4 overflow-x-auto pb-4">
         {columns.map((col) => {
-          const items = candidates.filter((c) => c.status === col.status);
+          const items = filteredCandidates.filter((c) => c.status === col.status);
+          const isExpanded = expandedColumns[col.status] ?? false;
+          const visibleItems = isExpanded ? items : items.slice(0, INITIAL_COLUMN_LIMIT);
+          const overflow = items.length - visibleItems.length;
           return (
             <div key={col.status} className="min-w-[260px] flex-1">
               <div className={cn("flex items-center gap-2 px-3 py-2 rounded-lg mb-3", col.bg)}>
                 <span className={cn("text-sm font-semibold", col.color)}>{col.label}</span>
                 <span className={cn("text-xs font-medium ml-auto", col.color)}>{items.length}</span>
               </div>
-              <div className="space-y-3">
-                {items.map((candidate) => {
+              <div className="space-y-2">
+                {visibleItems.map((candidate) => {
                   const initials = getInitials(candidate.firstName, candidate.lastName);
                   const colorIdx = candidate.firstName.charCodeAt(0) % avatarColors.length;
                   const nextStatus = columns[columns.findIndex((c) => c.status === col.status) + 1]?.status;
+                  const hasResume = !!(candidate.resumeUrl || candidate.resumeText);
                   return (
                     <div
                       key={candidate.id}
                       onClick={() => setSelectedCandidate(candidate)}
                       className={cn(
-                        "rounded-lg p-3 cursor-pointer",
+                        "group rounded-lg p-2.5 cursor-pointer",
                         "bg-[var(--color-surface)] border border-[var(--color-border)]",
-                        "hover:border-[var(--color-accent)]/30 transition-all"
+                        "hover:border-[var(--color-accent)]/30 hover:shadow-sm transition-all"
                       )}
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>
+                      <div className="flex items-center gap-2">
+                        <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white text-[10px] font-semibold shrink-0", avatarColors[colorIdx])}>
                           {initials}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
+                          <p className="text-sm font-medium text-[var(--color-text-primary)] truncate leading-tight">
                             {candidate.firstName} {candidate.lastName}
                           </p>
-                          {candidate.position && (
-                            <p className="text-xs text-[var(--color-text-muted)] truncate">{candidate.position.title}</p>
-                          )}
+                          <p className="text-[11px] text-[var(--color-text-muted)] truncate leading-tight">
+                            {candidate.email}
+                          </p>
                         </div>
-                      </div>
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {parseSkills(candidate.skills).slice(0, 3).map((skill) => (
-                          <span key={skill} className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
-                            {skill}
+                        {hasResume && candidate.resumeUrl && (
+                          <a
+                            href={
+                              candidate.resumeUrl.startsWith("/")
+                                ? candidate.resumeUrl
+                                : `/api/platforms/jobing/resume?url=${encodeURIComponent(candidate.resumeUrl)}`
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1 rounded text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 shrink-0"
+                            title="Resume PDF"
+                          >
+                            <Icon name="description" size={14} />
+                          </a>
+                        )}
+                        {hasResume && !candidate.resumeUrl && (
+                          <span className="p-1 text-purple-400 shrink-0" title="Has resume text">
+                            <Icon name="description" size={14} />
                           </span>
-                        ))}
-                        {parseSkills(candidate.skills).length > 3 && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] text-[var(--color-text-muted)]">
-                            +{parseSkills(candidate.skills).length - 3}
-                          </span>
                         )}
                       </div>
-                      <div className="space-y-1 mb-2 text-[10px] text-[var(--color-text-muted)]">
-                        <div className="flex items-center gap-1.5 truncate">
-                          <Icon name="mail" size={12} className="shrink-0" />
-                          <span className="truncate">{candidate.email}</span>
-                        </div>
-                        {candidate.phone && (
-                          <div className="flex items-center gap-1.5">
-                            <Icon name="phone" size={12} className="shrink-0" />
-                            <span>{candidate.phone}</span>
-                          </div>
-                        )}
-                        {candidate.experience && (
-                          <div className="flex items-center gap-1.5">
-                            <Icon name="work" size={12} className="shrink-0" />
-                            <span>{candidate.experience}</span>
-                          </div>
-                        )}
-                        {candidate.linkedinUrl && (
-                          <div className="flex items-center gap-1.5">
-                            <Icon name="link" size={12} className="shrink-0" />
-                            <a
-                              href={candidate.linkedinUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-[var(--color-accent)] hover:underline truncate"
-                            >
-                              LinkedIn
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                      {(candidate.resumeUrl || candidate.resumeText) && (
-                        <div className="flex items-center gap-1.5 mb-2">
-                          {candidate.resumeUrl && (
-                            <a
-                              href={
-                                candidate.resumeUrl.startsWith("/")
-                                  ? candidate.resumeUrl
-                                  : `/api/platforms/jobing/resume?url=${encodeURIComponent(candidate.resumeUrl)}`
-                              }
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className={cn(
-                                "inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium",
-                                "bg-[var(--color-accent)]/10 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/20 transition-colors"
-                              )}
-                            >
-                              <Icon name="download" />
-                              Resume PDF
-                            </a>
-                          )}
-                          {candidate.resumeText && !candidate.resumeUrl && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">
-                              <Icon name="description" />
-                              Resume
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      {candidate.notes && (
-                        <p className="text-[10px] text-[var(--color-text-muted)] mb-2 line-clamp-2 italic">
-                          {candidate.notes}
-                        </p>
-                      )}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+
+                      <div className="flex items-center justify-between mt-2 gap-2">
+                        <div className="flex items-center gap-1 min-w-0">
                           {candidate.source && (
-                            <span className="text-[10px] text-[var(--color-text-muted)]">
+                            <span className="text-[10px] text-[var(--color-text-muted)] truncate">
                               via {candidate.source}
                             </span>
                           )}
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
@@ -228,22 +224,43 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                           >
                             <Icon name="delete" size={12} />
                           </button>
+                          {nextStatus && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextStatus); }}
+                              disabled={movingId === candidate.id}
+                              className="text-[10px] font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 rounded px-1.5 py-0.5 disabled:opacity-50"
+                              title={`Move to ${columns.find((c) => c.status === nextStatus)?.label}`}
+                            >
+                              {movingId === candidate.id ? "…" : "→"}
+                            </button>
+                          )}
                         </div>
-                        {nextStatus && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextStatus); }}
-                            disabled={hiringId === candidate.id}
-                            className="text-[10px] font-medium text-[var(--color-accent)] hover:underline disabled:opacity-50 py-2 px-1 min-h-[44px]"
-                          >
-                            {hiringId === candidate.id ? "Hiring..." : `Move to ${columns.find((c) => c.status === nextStatus)?.label} →`}
-                          </button>
-                        )}
                       </div>
                     </div>
                   );
                 })}
                 {items.length === 0 && (
-                  <p className="text-center text-xs text-[var(--color-text-muted)] py-6">No candidates</p>
+                  <p className="text-center text-xs text-[var(--color-text-muted)] py-6">
+                    {search ? "No matches" : "No candidates"}
+                  </p>
+                )}
+                {overflow > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.status]: true }))}
+                    className="w-full mt-1 py-1.5 rounded-md text-xs font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/5 hover:bg-[var(--color-accent)]/10 transition-colors"
+                  >
+                    Show {overflow} more
+                  </button>
+                )}
+                {isExpanded && items.length > INITIAL_COLUMN_LIMIT && (
+                  <button
+                    type="button"
+                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.status]: false }))}
+                    className="w-full mt-1 py-1.5 rounded-md text-xs font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-background)] transition-colors"
+                  >
+                    Show fewer
+                  </button>
                 )}
               </div>
             </div>
