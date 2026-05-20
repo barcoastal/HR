@@ -10,10 +10,12 @@ const ACTION_TYPES = [
   "NEW_HIRE",
   "TASK_ASSIGNED",
   "ONBOARDING_COMPLETED",
+  "EMPLOYEE_OFFBOARDING",
+  "RECRUITER_ASSIGNED",
 ] as const;
 
 const CHANNELS = ["EMAIL", "IN_APP"] as const;
-const RECIPIENTS = ["candidate", "recruiter", "manager", "hr_team"] as const;
+const RECIPIENTS = ["candidate", "recruiter", "manager", "hr_team", "management"] as const;
 
 // Default enabled state per action×channel×recipient
 const DEFAULTS: Record<string, Record<string, string[]>> = {
@@ -53,29 +55,43 @@ const DEFAULTS: Record<string, Record<string, string[]>> = {
     EMAIL: ["recruiter", "manager", "hr_team"],
     IN_APP: ["recruiter", "manager", "hr_team"],
   },
+  EMPLOYEE_OFFBOARDING: {
+    EMAIL: ["management", "hr_team"],
+    IN_APP: ["management", "hr_team"],
+  },
+  RECRUITER_ASSIGNED: {
+    EMAIL: ["recruiter"],
+    IN_APP: ["recruiter"],
+  },
 };
 
 export async function seedNotificationRules() {
-  const existing = await db.notificationRule.count();
-  if (existing > 0) return; // Already seeded
+  const isFreshDb = (await db.notificationRule.count()) === 0;
 
-  const rules: { action: string; channel: string; recipient: string; enabled: boolean }[] = [];
-
+  // Always upsert so newly-added ACTION_TYPES (e.g. RECRUITER_ASSIGNED) get
+  // their default rows on existing deployments without resetting toggles
+  // admins have already changed.
   for (const action of ACTION_TYPES) {
     for (const channel of CHANNELS) {
-      // Skip candidate + IN_APP (candidates don't have accounts)
       const recipients = channel === "IN_APP"
         ? RECIPIENTS.filter((r) => r !== "candidate")
         : RECIPIENTS;
 
       for (const recipient of recipients) {
         const enabled = DEFAULTS[action]?.[channel]?.includes(recipient) ?? false;
-        rules.push({ action, channel, recipient, enabled });
+        await db.notificationRule.upsert({
+          where: {
+            action_channel_recipient: { action, channel, recipient },
+          },
+          create: { action, channel, recipient, enabled },
+          // Do NOT clobber an existing toggle; only insert defaults for new rows.
+          update: {},
+        });
       }
     }
   }
 
-  await db.notificationRule.createMany({ data: rules });
+  if (!isFreshDb) return;
 
   // Migrate existing CompanySettings recipients for STAGE_CHANGE
   try {

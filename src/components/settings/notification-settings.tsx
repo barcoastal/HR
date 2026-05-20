@@ -27,6 +27,7 @@ const ACTION_LABELS: Record<string, string> = {
   TASK_ASSIGNED: "Task Assigned",
   ONBOARDING_COMPLETED: "Onboarding Completed",
   EMPLOYEE_OFFBOARDING: "Employee Offboarding Started",
+  RECRUITER_ASSIGNED: "Recruiter Assigned to Candidate",
 };
 
 const ACTIONS = Object.keys(ACTION_LABELS);

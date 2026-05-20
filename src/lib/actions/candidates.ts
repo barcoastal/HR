@@ -70,8 +70,37 @@ export async function createCandidate(data: {
       inPipeline,
     },
   });
+
+  // Notify the recruiter if one was assigned at creation
+  if (data.recruiterId) {
+    await notifyRecruiterAssigned(candidate.id);
+  }
+
   revalidatePath("/cv");
   return candidate;
+}
+
+async function notifyRecruiterAssigned(candidateId: string) {
+  try {
+    const candidate = await db.candidate.findUnique({
+      where: { id: candidateId },
+      include: { position: { select: { title: true } } },
+    });
+    if (!candidate?.recruiterId) return;
+    const { sendNotifications } = await import("@/lib/notifications/send");
+    const fullName = `${candidate.firstName} ${candidate.lastName}`;
+    const positionTitle = candidate.position?.title || candidate.jobAppliedTo || "a position";
+    await sendNotifications({
+      action: "RECRUITER_ASSIGNED",
+      candidateId,
+      message: `You were assigned as recruiter for ${fullName}`,
+      link: "/cv",
+      emailSubject: `Assigned: ${fullName} (${positionTitle})`,
+      emailBody: `<p>You've been assigned as the recruiter for <strong>${fullName}</strong> on <strong>${positionTitle}</strong>.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in HR platform</a></p>`,
+    });
+  } catch (err) {
+    console.error("[recruiter-assigned] notification failed:", err);
+  }
 }
 
 const STAGE_LABELS: Record<string, string> = {
@@ -478,6 +507,7 @@ export async function updateCandidate(
 ) {
   const existing = await db.candidate.findUnique({ where: { id } });
   const previousStatus = existing?.status;
+  const previousRecruiterId = existing?.recruiterId ?? null;
 
   const { skills, status, ...rest } = data;
   const updateData: Record<string, unknown> = { ...rest };
@@ -488,6 +518,15 @@ export async function updateCandidate(
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
+
+  // Notify when recruiter changes to a non-null value
+  if (
+    data.recruiterId !== undefined &&
+    data.recruiterId &&
+    data.recruiterId !== previousRecruiterId
+  ) {
+    await notifyRecruiterAssigned(id);
+  }
 
   // Send stage-change notification via centralized rules engine
   if (status && previousStatus && previousStatus !== status) {
@@ -1132,12 +1171,21 @@ export async function assignCandidateToPosition(
   positionId: string,
   recruiterId?: string
 ) {
+  const previous = await db.candidate.findUnique({
+    where: { id: candidateId },
+    select: { recruiterId: true },
+  });
   const data: Record<string, unknown> = { positionId, inPipeline: true, status: "NEW" };
   if (recruiterId) data.recruiterId = recruiterId;
   const candidate = await db.candidate.update({
     where: { id: candidateId },
     data,
   });
+
+  if (recruiterId && recruiterId !== previous?.recruiterId) {
+    await notifyRecruiterAssigned(candidateId);
+  }
+
   revalidatePath("/cv");
   return candidate;
 }
