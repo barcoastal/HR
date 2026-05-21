@@ -906,16 +906,26 @@ export function CandidateDetailDialog({
                     >
                       {bgCheckLoading ? "Checking..." : "Refresh Status"}
                     </button>
-                    {candidate.backgroundCheckId && (bgCheckStatus === "PASSED" || bgCheckStatus === "FAILED" || bgCheckStatus === "PENDING") && (
-                      <a
-                        href={`/api/background-check/${candidate.backgroundCheckId}/pdf`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] inline-flex items-center gap-1"
+                    {candidate.backgroundCheckId ? (
+                      (bgCheckStatus === "PASSED" || bgCheckStatus === "FAILED" || bgCheckStatus === "PENDING") && (
+                        <a
+                          href={`/api/background-check/${candidate.backgroundCheckId}/pdf`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] inline-flex items-center gap-1"
+                        >
+                          <Icon name="description" size={12} />
+                          View Report
+                        </a>
+                      )
+                    ) : (bgCheckStatus === "PASSED" || bgCheckStatus === "FAILED") && (
+                      <span
+                        title="This candidate's status was set manually without ordering a check through CALATRAVA, so we don't have a report PDF on file. Run a fresh check from this dialog if you need one."
+                        className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] inline-flex items-center gap-1 cursor-help"
                       >
                         <Icon name="description" size={12} />
-                        View Report
-                      </a>
+                        No report on file
+                      </span>
                     )}
                     {(bgCheckStatus === "PENDING" || bgCheckStatus === "AWAITING_APPLICANT") && (
                       <>
