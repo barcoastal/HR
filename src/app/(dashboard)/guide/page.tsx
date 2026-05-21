@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth-helpers";
 import { GuidePrintButton } from "@/components/guide/guide-print-button";
 
@@ -18,7 +19,10 @@ function GuideImage({ src, alt, caption }: { src: string; alt: string; caption?:
 }
 
 export default async function GuidePage() {
-  await requireAuth();
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    redirect("/");
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-10 guide-root">

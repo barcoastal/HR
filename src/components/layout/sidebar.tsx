@@ -36,7 +36,7 @@ const allNavLinks = [
   { href: "/my-documents", label: "My Documents", icon: "folder", access: () => true },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r) },
   { href: "/audit-log", label: "Audit Log", icon: "history", access: (r: UserRole) => r === "SUPER_ADMIN" },
-  { href: "/guide", label: "Help & Guide", icon: "menu_book", access: () => true },
+  { href: "/guide", label: "Help & Guide", icon: "menu_book", access: (r: UserRole) => r === "SUPER_ADMIN" },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r) },
   { href: "/my-profile", label: "My Profile", icon: "account_circle", access: () => true },
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r) },
