@@ -595,7 +595,8 @@ export default async function GuidePage() {
             <li>The dialog shows a colored status pill: <em>Awaiting Applicant → Processing → Passed/Flagged</em>.</li>
             <li><strong>Refresh Status</strong> button polls backgroundchecks.com for updates.</li>
             <li><strong>View Report</strong> button (purple) — only appears when the report exists. Opens the full PDF in a new tab, streamed from backgroundchecks.com via our server (so the API key never reaches the browser).</li>
-            <li><strong>Mark Passed / Mark Failed</strong> — manual override when status is still Pending. Clicking Failed triggers the Adverse Action flow.</li>
+            <li><strong>Mark Passed / Mark Failed</strong> — manual override when status is still Pending. Clicking Failed shows the Adverse Action banner; sending the letter is still a separate explicit click.</li>
+            <li><strong>Completion notifications</strong> — the first time the check resolves to PASSED or FAILED, the system fires the <code>BACKGROUND_CHECK_COMPLETE</code> notification. By default the Recruiter and HR Team get an email + in-app; the candidate&apos;s Manager gets an in-app. Configurable in Settings → Notification Settings.</li>
           </ul>
 
           <h3>If flagged / failed</h3>
@@ -1076,6 +1077,7 @@ export default async function GuidePage() {
             <li><strong>Onboarding Completed</strong>.</li>
             <li><strong>Employee Offboarding Started</strong>.</li>
             <li><strong>Recruiter Assigned to Candidate</strong>.</li>
+            <li><strong>Background Check Complete</strong> — fires the first time a candidate&apos;s check finishes (PASSED or FAILED). Default recipients: Recruiter + HR Team (email), plus Manager (in-app).</li>
           </ul>
 
           <h3>The two groups (bottom)</h3>

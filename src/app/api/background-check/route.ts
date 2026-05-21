@@ -223,6 +223,9 @@ export async function GET(req: NextRequest) {
       backgroundCheckStatus: true,
       backgroundCheckId: true,
       backgroundCheckDate: true,
+      firstName: true,
+      lastName: true,
+      position: { select: { title: true } },
     },
   });
 
@@ -254,6 +257,12 @@ export async function GET(req: NextRequest) {
           // REJECTED + emailing the candidate is a manual decision — the UI
           // shows a banner with a "Send Adverse Action Letter" button when
           // status is FAILED.
+
+          // Fire an in-app + email notification the first time the check
+          // resolves to PASSED or FAILED so recruiters/HR see the result.
+          if (newStatus === "PASSED" || newStatus === "FAILED") {
+            await fireBgCheckCompleteNotification(candidateId, newStatus, candidate);
+          }
         }
 
         return NextResponse.json({
@@ -291,10 +300,23 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "status must be PASSED or FAILED" }, { status: 400 });
   }
 
+  const previousCheck = await db.candidate.findUnique({
+    where: { id: candidateId },
+    select: {
+      backgroundCheckStatus: true,
+      firstName: true,
+      lastName: true,
+      position: { select: { title: true } },
+    },
+  });
   await db.candidate.update({
     where: { id: candidateId },
     data: { backgroundCheckStatus: status },
   });
+
+  if (previousCheck && previousCheck.backgroundCheckStatus !== status && (status === "PASSED" || status === "FAILED")) {
+    await fireBgCheckCompleteNotification(candidateId, status, previousCheck);
+  }
 
   // No auto-send of the adverse-action letter here either. The UI shows a
   // dedicated "Send Adverse Action Letter" button next to the FAILED pill
@@ -303,6 +325,29 @@ export async function PATCH(req: NextRequest) {
   // "Mark Failed" or hit Refresh Status.
 
   return NextResponse.json({ success: true, status });
+}
+
+async function fireBgCheckCompleteNotification(
+  candidateId: string,
+  newStatus: "PASSED" | "FAILED",
+  candidate: { firstName: string; lastName: string; position: { title: string } | null }
+) {
+  try {
+    const { sendNotifications } = await import("@/lib/notifications/send");
+    const fullName = `${candidate.firstName} ${candidate.lastName}`;
+    const positionTitle = candidate.position?.title || "their position";
+    const resultLabel = newStatus === "PASSED" ? "Passed — Clear" : "Flagged for Review";
+    await sendNotifications({
+      action: "BACKGROUND_CHECK_COMPLETE",
+      candidateId,
+      message: `Background check complete for ${fullName}: ${resultLabel}`,
+      link: "/cv",
+      emailSubject: `Background check ${newStatus === "PASSED" ? "passed" : "flagged"}: ${fullName}`,
+      emailBody: `<p>The background check for <strong>${fullName}</strong>${candidate.position?.title ? ` (${positionTitle})` : ""} has completed.</p><p>Result: <strong>${resultLabel}</strong>.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in CALATRAVA</a></p>`,
+    });
+  } catch (err) {
+    console.error("[background-check] notification failed:", err);
+  }
 }
 
 // Map API status codes to our internal statuses

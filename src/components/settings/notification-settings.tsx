@@ -28,6 +28,7 @@ const ACTION_LABELS: Record<string, string> = {
   ONBOARDING_COMPLETED: "Onboarding Completed",
   EMPLOYEE_OFFBOARDING: "Employee Offboarding Started",
   RECRUITER_ASSIGNED: "Recruiter Assigned to Candidate",
+  BACKGROUND_CHECK_COMPLETE: "Background Check Complete (Passed/Failed)",
 };
 
 const ACTIONS = Object.keys(ACTION_LABELS);

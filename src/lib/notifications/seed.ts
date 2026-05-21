@@ -12,6 +12,7 @@ const ACTION_TYPES = [
   "ONBOARDING_COMPLETED",
   "EMPLOYEE_OFFBOARDING",
   "RECRUITER_ASSIGNED",
+  "BACKGROUND_CHECK_COMPLETE",
 ] as const;
 
 const CHANNELS = ["EMAIL", "IN_APP"] as const;
@@ -62,6 +63,10 @@ const DEFAULTS: Record<string, Record<string, string[]>> = {
   RECRUITER_ASSIGNED: {
     EMAIL: ["recruiter"],
     IN_APP: ["recruiter"],
+  },
+  BACKGROUND_CHECK_COMPLETE: {
+    EMAIL: ["recruiter", "hr_team"],
+    IN_APP: ["recruiter", "hr_team", "manager"],
   },
 };
 
