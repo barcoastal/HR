@@ -52,6 +52,7 @@ type CandidateForDialog = {
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
+  backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
   adverseActionLetterSentAt?: Date | null;
   offerDocUrl: string | null;
@@ -905,6 +906,17 @@ export function CandidateDetailDialog({
                     >
                       {bgCheckLoading ? "Checking..." : "Refresh Status"}
                     </button>
+                    {candidate.backgroundCheckId && (bgCheckStatus === "PASSED" || bgCheckStatus === "FAILED" || bgCheckStatus === "PENDING") && (
+                      <a
+                        href={`/api/background-check/${candidate.backgroundCheckId}/pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] inline-flex items-center gap-1"
+                      >
+                        <Icon name="description" size={12} />
+                        View Report
+                      </a>
+                    )}
                     {(bgCheckStatus === "PENDING" || bgCheckStatus === "AWAITING_APPLICANT") && (
                       <>
                         <button
