@@ -250,14 +250,10 @@ export async function GET(req: NextRequest) {
             where: { id: candidateId },
             data: { backgroundCheckStatus: newStatus },
           });
-          if (newStatus === "FAILED") {
-            try {
-              const { sendAdverseActionLetter } = await import("@/lib/actions/adverse-action");
-              await sendAdverseActionLetter(candidateId, "information revealed by your background report");
-            } catch (e) {
-              console.error("[background-check] adverse action send failed:", e);
-            }
-          }
+          // No auto-send of the adverse-action letter here. Flipping to
+          // REJECTED + emailing the candidate is a manual decision — the UI
+          // shows a banner with a "Send Adverse Action Letter" button when
+          // status is FAILED.
         }
 
         return NextResponse.json({
@@ -300,14 +296,11 @@ export async function PATCH(req: NextRequest) {
     data: { backgroundCheckStatus: status },
   });
 
-  if (status === "FAILED") {
-    try {
-      const { sendAdverseActionLetter } = await import("@/lib/actions/adverse-action");
-      await sendAdverseActionLetter(candidateId, "information revealed by your background report");
-    } catch (e) {
-      console.error("[background-check] adverse action send failed:", e);
-    }
-  }
+  // No auto-send of the adverse-action letter here either. The UI shows a
+  // dedicated "Send Adverse Action Letter" button next to the FAILED pill
+  // and the user has to click it explicitly. This avoids accidentally
+  // rejecting + emailing a candidate just because someone clicked
+  // "Mark Failed" or hit Refresh Status.
 
   return NextResponse.json({ success: true, status });
 }

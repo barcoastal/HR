@@ -599,16 +599,22 @@ export default async function GuidePage() {
           </ul>
 
           <h3>If flagged / failed</h3>
-          <p>When backgroundchecks.com flags the report:</p>
+          <p>When backgroundchecks.com flags the report (or you click <strong>Mark Failed</strong>):</p>
           <ol>
-            <li>The system auto-sends an <strong>Adverse Action Letter</strong> email to the candidate (template configurable in Settings → Email Templates).</li>
-            <li>Their candidate record is set to: <code>status = REJECTED</code>, <code>doNotCall = true</code>, <code>doNotCallReason = &quot;Background check failed&quot;</code>.</li>
-            <li>The audit log records this as <code>candidate.status.changed</code> with <code>via: adverse_action_letter</code>.</li>
-            <li>You can&apos;t accidentally double-send — the dialog shows &quot;already sent on date X&quot;.</li>
+            <li>The candidate&apos;s <code>backgroundCheckStatus</code> flips to <code>FAILED</code>. <strong>No email is sent and the candidate is NOT auto-rejected.</strong></li>
+            <li>The dialog now shows a red <strong>Adverse Action Letter</strong> banner with a <strong>Send</strong> button. The decision to email + reject is yours.</li>
+            <li>Click <strong>Send</strong> (optionally type a reason in the text box first):
+              <ul>
+                <li>The candidate gets the FCRA-compliant Adverse Action email (template in Settings → Email Templates).</li>
+                <li>The candidate record updates: <code>status = REJECTED</code>, <code>doNotCall = true</code>, <code>doNotCallReason = &quot;Background check failed&quot;</code>.</li>
+                <li>The audit log writes <code>candidate.status.changed</code> with <code>via: adverse_action_letter</code>.</li>
+              </ul>
+            </li>
+            <li>You can&apos;t accidentally double-send — the dialog shows &quot;already sent on date X&quot; after the first send.</li>
           </ol>
 
           <div className="callout-warn">
-            <strong>Important:</strong> Once Marked Failed / Adverse Action sent, the candidate is locked as Do Not Call. To reverse, an admin must use Unmark Do Not Call (and even then the audit log keeps the original event).
+            <strong>Important:</strong> Once you click Send, the candidate is locked as Do Not Call. To reverse, an admin must use Unmark Do Not Call (and even then the audit log keeps the original event). Refreshing status or marking the report Failed does <em>not</em> by itself send the letter or move the candidate to Rejected — only the explicit Send button does.
           </div>
         </section>
 
