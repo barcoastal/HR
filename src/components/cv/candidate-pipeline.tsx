@@ -28,6 +28,7 @@ type CandidateItem = {
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
+  backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;

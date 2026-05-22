@@ -77,6 +77,7 @@ export default async function CVPage() {
           managerId: c.managerId || null,
           recruiterId: c.recruiterId || null,
           backgroundCheckStatus: c.backgroundCheckStatus || null,
+          backgroundCheckId: c.backgroundCheckId || null,
           backgroundCheckOptions: c.backgroundCheckOptions || null,
           adverseActionLetterSentAt: c.adverseActionLetterSentAt || null,
           offerDocUrl: c.offerDocUrl || null,

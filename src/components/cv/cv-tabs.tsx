@@ -39,6 +39,7 @@ type CandidateItem = {
   managerId: string | null;
   recruiterId: string | null;
   backgroundCheckStatus: string | null;
+  backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
@@ -489,6 +490,7 @@ export function CVTabs({
             managerId: (c.managerId as string) ?? null,
             recruiterId: (c.recruiterId as string) ?? null,
             backgroundCheckStatus: (c.backgroundCheckStatus as string) ?? null,
+            backgroundCheckId: (c.backgroundCheckId as string) ?? null,
             backgroundCheckOptions: (c.backgroundCheckOptions as string) ?? null,
             adverseActionLetterSentAt: (c.adverseActionLetterSentAt as Date) ?? null,
             offerDocUrl: (c.offerDocUrl as string) ?? null,
