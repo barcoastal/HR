@@ -40,13 +40,14 @@ export async function GET(
     return NextResponse.json({ error: "Report not found" }, { status: 404 });
   }
 
-  // Try backgroundchecks.com's known report-PDF paths. Order matters; we
-  // accept any 200 with a PDF / octet-stream content-type.
+  // backgroundchecks.com's PDF endpoint lives at /report/{key}/pdf (singular).
+  // It responds with a 302 to a signed S3-style URL — fetch follows the
+  // redirect and returns the PDF binary.
   const candidates = [
+    `${BG_CHECK_BASE}/report/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
+    // Legacy fallbacks just in case some report_keys still use the old paths.
     `${BG_CHECK_BASE}/reports/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
     `${BG_CHECK_BASE}/reports/${reportKey}/report.pdf?api_token=${BG_CHECK_API_KEY}`,
-    `${BG_CHECK_BASE}/reports/${reportKey}/result.pdf?api_token=${BG_CHECK_API_KEY}`,
-    `${BG_CHECK_BASE}/reports/${reportKey}/document?api_token=${BG_CHECK_API_KEY}`,
   ];
 
   for (const url of candidates) {
