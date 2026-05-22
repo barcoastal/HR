@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
 import { requireApiAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 
@@ -7,9 +8,14 @@ const BG_CHECK_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
 
 /**
  * GET /api/background-check/{reportKey}/pdf
- * Streams the completed background-check report PDF from
- * backgroundchecks.com so an admin can review it inside our platform.
- * Gated to recruitment-capable roles.
+ *
+ * Streams the completed background-check report PDF so admins can review it
+ * inside the platform. On first successful fetch from backgroundchecks.com
+ * we cache the bytes into FileBlob and stamp the candidate's
+ * backgroundReportFilename so subsequent loads (and future expirations of
+ * the provider's signed URL) keep working.
+ *
+ * Gated to SUPER_ADMIN / ADMIN / HR.
  */
 export async function GET(
   _req: NextRequest,
@@ -22,32 +28,47 @@ export async function GET(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (!BG_CHECK_API_KEY) {
-    return NextResponse.json({ error: "Background check is not configured on the server" }, { status: 500 });
-  }
-
   const { reportKey } = await params;
   if (!/^[a-zA-Z0-9_-]+$/.test(reportKey)) {
     return NextResponse.json({ error: "Invalid report key" }, { status: 400 });
   }
 
-  // Confirm this report key belongs to a candidate in our DB before proxying.
   const owner = await db.candidate.findFirst({
     where: { backgroundCheckId: reportKey },
-    select: { id: true, firstName: true, lastName: true },
+    select: { id: true, firstName: true, lastName: true, backgroundReportFilename: true },
   });
   if (!owner) {
     return NextResponse.json({ error: "Report not found" }, { status: 404 });
   }
 
-  // backgroundchecks.com's PDF endpoint lives at /report/{key}/pdf (singular).
-  // It responds with a 302 to a signed S3-style URL — fetch follows the
-  // redirect and returns the PDF binary.
+  const safeName = `${owner.firstName}_${owner.lastName}`.replace(/[^a-zA-Z0-9_-]/g, "");
+
+  // Prefer the cached copy if we've already imported it.
+  if (owner.backgroundReportFilename) {
+    const blob = await db.fileBlob.findUnique({
+      where: { filename: owner.backgroundReportFilename },
+      select: { data: true, mimeType: true },
+    });
+    if (blob) {
+      return new NextResponse(blob.data, {
+        headers: {
+          "Content-Type": blob.mimeType,
+          "Content-Disposition": `inline; filename="background-check-${safeName}.pdf"`,
+          "Cache-Control": "private, no-store",
+        },
+      });
+    }
+  }
+
+  if (!BG_CHECK_API_KEY) {
+    return NextResponse.json({ error: "Background check is not configured on the server" }, { status: 500 });
+  }
+
+  // /report/{key}/pdf is the working endpoint — it returns a 302 to a signed
+  // S3-style URL. fetch with redirect:follow grabs the binary in one go.
   const candidates = [
     `${BG_CHECK_BASE}/report/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
-    // Legacy fallbacks just in case some report_keys still use the old paths.
     `${BG_CHECK_BASE}/reports/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
-    `${BG_CHECK_BASE}/reports/${reportKey}/report.pdf?api_token=${BG_CHECK_API_KEY}`,
   ];
 
   for (const url of candidates) {
@@ -63,7 +84,30 @@ export async function GET(
       const buffer = Buffer.from(await res.arrayBuffer());
       if (buffer.length < 100) continue;
 
-      const safeName = `${owner.firstName}_${owner.lastName}`.replace(/[^a-zA-Z0-9_-]/g, "");
+      // Cache the PDF as a FileBlob and link it on the candidate so the next
+      // load skips the live fetch entirely (and survives signed-URL expiry).
+      try {
+        const filename = `bg-report-${reportKey}-${randomUUID()}.pdf`;
+        await db.fileBlob.create({
+          data: {
+            filename,
+            mimeType: "application/pdf",
+            size: buffer.length,
+            data: buffer,
+          },
+        });
+        await db.candidate.update({
+          where: { id: owner.id },
+          data: {
+            backgroundReportFilename: filename,
+            backgroundReportImportedAt: new Date(),
+          },
+        });
+      } catch (cacheErr) {
+        console.error("[bg-check] failed to cache report PDF:", cacheErr);
+        // Still serve the live fetch even if caching failed.
+      }
+
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/pdf",
@@ -72,14 +116,14 @@ export async function GET(
         },
       });
     } catch {
-      // Try the next path
+      // try the next URL
     }
   }
 
   return NextResponse.json(
     {
       error: "Could not fetch report PDF from backgroundchecks.com",
-      details: "None of the known PDF endpoints returned a PDF. The report may not be complete yet, or backgroundchecks.com may use a different path on your account — try opening the report from the backgroundchecks.com dashboard.",
+      details: "The report may not be complete yet, or your API token doesn't have access to this report. Try opening it directly on backgroundchecks.com.",
     },
     { status: 502 }
   );

@@ -716,6 +716,8 @@ model Candidate {
   backgroundCheckId       String?           // External ID from backgroundchecks.com
   backgroundCheckDate     DateTime?
   backgroundCheckOptions  String?           // JSON: which checks were requested
+  backgroundReportFilename String?          // FileBlob filename of the cached PDF (set when imported)
+  backgroundReportImportedAt DateTime?
   adverseActionLetterSentAt DateTime?       // when the "we will not hire you" letter was sent
   offerDocUrl             String?           // URL to uploaded offer PDF
   offerSentAt             DateTime?         // When offer was emailed to candidate
