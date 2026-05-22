@@ -23,15 +23,20 @@ export async function GET(request: Request) {
   if (!reportKey) return NextResponse.json({ error: "pass ?reportKey=..." }, { status: 400 });
 
   const paths = [
+    // /api/reports/{key}/...
     `/reports/${reportKey}/pdf`,
-    `/reports/${reportKey}/report.pdf`,
-    `/reports/${reportKey}/result.pdf`,
-    `/reports/${reportKey}/document`,
-    `/reports/${reportKey}/download`,
-    `/reports/${reportKey}/file`,
-    `/reports/${reportKey}/print`,
-    `/reports/${reportKey}/render`,
-    `/reports/${reportKey}`, // base resource
+    `/reports/${reportKey}/status`,
+    `/reports/${reportKey}/view`,
+    // candidate / order patterns
+    `/orders/${reportKey}`,
+    `/orders/${reportKey}/report`,
+    `/orders/${reportKey}/pdf`,
+    `/applicants/${reportKey}/report`,
+    // ID-keyed reports
+    `/report/${reportKey}`,
+    `/report/${reportKey}/pdf`,
+    // search by reportKey
+    `/reports?report_key=${reportKey}`,
   ];
 
   type Result = { path: string; status: number; contentType: string | null; bytes: number; bodyPreview?: string; location?: string | null };
