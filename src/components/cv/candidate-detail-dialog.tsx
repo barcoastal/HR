@@ -964,13 +964,41 @@ export function CandidateDetailDialog({
                         </a>
                       )
                     ) : (bgCheckStatus === "PASSED" || bgCheckStatus === "FAILED") && (
-                      <span
-                        title="This candidate's status was set manually without ordering a check through CALATRAVA, so we don't have a report PDF on file. Run a fresh check from this dialog if you need one."
-                        className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] inline-flex items-center gap-1 cursor-help"
+                      <button
+                        onClick={async () => {
+                          setBgCheckLoading(true);
+                          try {
+                            const res = await fetch("/api/background-check/link", {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ candidateId: candidate.id }),
+                            });
+                            const data = await res.json();
+                            if (!res.ok) {
+                              alert(`${data.error || "Could not pull report"}${data.details ? `\n\n${data.details}` : ""}`);
+                              return;
+                            }
+                            // Trigger PDF cache by hitting the report PDF route once,
+                            // then refresh so the View Report button shows up.
+                            if (data.linkedReportKey) {
+                              try {
+                                await fetch(`/api/background-check/${data.linkedReportKey}/pdf`, { method: "GET" });
+                              } catch {
+                                // PDF cache is best-effort here.
+                              }
+                            }
+                            router.refresh();
+                          } finally {
+                            setBgCheckLoading(false);
+                          }
+                        }}
+                        disabled={bgCheckLoading}
+                        title="Search backgroundchecks.com for this candidate's report by email and link it to this profile"
+                        className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] inline-flex items-center gap-1 disabled:opacity-50"
                       >
-                        <Icon name="description" size={12} />
-                        No report on file
-                      </span>
+                        <Icon name="cloud_download" size={12} />
+                        {bgCheckLoading ? "Pulling…" : "Pull Report"}
+                      </button>
                     )}
                     {(bgCheckStatus === "PENDING" || bgCheckStatus === "AWAITING_APPLICANT") && (
                       <>
