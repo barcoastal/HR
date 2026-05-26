@@ -35,6 +35,7 @@ const allNavLinks = [
   { href: "/sign-queue", label: "Sign Queue", icon: "verified", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
   { href: "/my-documents", label: "My Documents", icon: "folder", access: () => true },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r) },
+  { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec },
   { href: "/audit-log", label: "Audit Log", icon: "history", access: (r: UserRole) => r === "SUPER_ADMIN" },
   { href: "/guide", label: "Help & Guide", icon: "menu_book", access: (r: UserRole) => r === "SUPER_ADMIN" },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r) },
@@ -42,13 +43,13 @@ const allNavLinks = [
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r) },
 ];
 
-export function Sidebar({ logoUrl, companyName }: { logoUrl?: string | null; companyName?: string }) {
+export function Sidebar({ logoUrl, companyName, isRecruiter = false }: { logoUrl?: string | null; companyName?: string; isRecruiter?: boolean }) {
   const pathname = usePathname();
 
   const { data: session } = useSession();
 
   const role = (session?.user?.role || "EMPLOYEE") as UserRole;
-  const navLinks = allNavLinks.filter((l) => l.access(role));
+  const navLinks = allNavLinks.filter((l) => l.access(role, isRecruiter));
 
   const userInitials = session?.user?.name
     ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")

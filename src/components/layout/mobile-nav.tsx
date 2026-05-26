@@ -40,16 +40,17 @@ const allDrawerLinks = [
   { href: "/clubs", label: "Clubs", icon: "groups", access: () => true, section: "Social" },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true, section: "Social" },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r), section: "Admin" },
+  { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec, section: "Workflow" },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r), section: "Admin" },
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r), section: "Admin" },
 ] as const;
 
-export function MobileNav() {
+export function MobileNav({ isRecruiter = false }: { isRecruiter?: boolean }) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { data: session } = useSession();
   const role = (session?.user?.role || "EMPLOYEE") as UserRole;
-  const drawerLinks = allDrawerLinks.filter((l) => l.access(role));
+  const drawerLinks = allDrawerLinks.filter((l) => l.access(role, isRecruiter));
 
   // Group links by section
   const sections: DrawerSection[] = [];

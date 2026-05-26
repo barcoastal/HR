@@ -10,12 +10,14 @@ export async function getCandidates(filters?: {
   positionId?: string;
   search?: string;
   inPipeline?: boolean;
+  recruiterId?: string;
 }) {
   const where: Record<string, unknown> = {};
 
   if (filters?.status) where.status = filters.status;
   if (filters?.positionId) where.positionId = filters.positionId;
   if (filters?.inPipeline !== undefined) where.inPipeline = filters.inPipeline;
+  if (filters?.recruiterId) where.recruiterId = filters.recruiterId;
   if (filters?.search) {
     where.OR = [
       { firstName: { contains: filters.search, mode: "insensitive" } },
@@ -87,17 +89,39 @@ async function notifyRecruiterAssigned(candidateId: string) {
       include: { position: { select: { title: true } } },
     });
     if (!candidate?.recruiterId) return;
-    const { sendNotifications } = await import("@/lib/notifications/send");
+    const recruiter = await db.employee.findUnique({
+      where: { id: candidate.recruiterId },
+      select: { id: true, email: true, firstName: true },
+    });
+    if (!recruiter) return;
     const fullName = `${candidate.firstName} ${candidate.lastName}`;
     const positionTitle = candidate.position?.title || candidate.jobAppliedTo || "a position";
-    await sendNotifications({
-      action: "RECRUITER_ASSIGNED",
-      candidateId,
-      message: `You were assigned as recruiter for ${fullName}`,
-      link: "/cv",
-      emailSubject: `Assigned: ${fullName} (${positionTitle})`,
-      emailBody: `<p>You've been assigned as the recruiter for <strong>${fullName}</strong> on <strong>${positionTitle}</strong>.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in HR platform</a></p>`,
+    const baseUrl = process.env.NEXTAUTH_URL || "";
+
+    // Direct in-app notification — bypasses NotificationRule toggles so the
+    // recruiter always sees the assignment even if global rules are off.
+    await db.notification.create({
+      data: {
+        recipientId: recruiter.id,
+        type: "RECRUITER_ASSIGNED",
+        message: `You were assigned as recruiter for ${fullName}`,
+        link: "/my-candidates",
+      },
     });
+
+    // Direct email — same reasoning. Failure here doesn't roll back the assignment.
+    if (recruiter.email) {
+      try {
+        const { sendEmail } = await import("@/lib/email");
+        await sendEmail(
+          recruiter.email,
+          `Assigned: ${fullName} (${positionTitle})`,
+          `<p>Hi ${recruiter.firstName},</p><p>You've been assigned as the recruiter for <strong>${fullName}</strong> on <strong>${positionTitle}</strong>.</p><p><a href="${baseUrl}/my-candidates">Open My Candidates</a></p>`
+        );
+      } catch (emailErr) {
+        console.error("[recruiter-assigned] email failed:", emailErr);
+      }
+    }
   } catch (err) {
     console.error("[recruiter-assigned] notification failed:", err);
   }

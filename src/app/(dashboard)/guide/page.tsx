@@ -492,7 +492,9 @@ export default async function GuidePage() {
           <p>Position row → <strong>Add Candidate</strong>.</p>
 
           <h3>Required: Assign Recruiter</h3>
-          <p>The recruiter dropdown is required when any recruiter is configured. The assigned recruiter receives an email + in-app notification (action <code>RECRUITER_ASSIGNED</code>).</p>
+          <p>The recruiter dropdown is required when any recruiter is configured. The assigned recruiter receives an email + in-app notification (action <code>RECRUITER_ASSIGNED</code>). The notification is direct — it bypasses the global Notification Rule toggles so the recruiter always sees the assignment.</p>
+          <p>Recruiters see all their assigned applicants under <strong>My Candidates</strong> in the sidebar. The link is only visible to employees configured as recruiters in <code>Settings → Recruiters</code>.</p>
+          <p>On the <strong>Recruitment</strong> tab itself, a <strong>Recruiter</strong> filter is available above Open Positions to narrow the list to one recruiter's portfolio (or to surface candidates with no recruiter assigned).</p>
 
           <h3>Tab: From Database</h3>
           <p>Search by name/email. Any existing candidate not already on this position is selectable. Click <strong>Add</strong> next to a row to assign them.</p>

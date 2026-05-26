@@ -458,6 +458,7 @@ export function CVTabs({
 
   const [activeTab, setActiveTab] = useState("recruitment");
   const [showArchive, setShowArchive] = useState(false);
+  const [recruiterFilter, setRecruiterFilter] = useState<string>("ALL");
 
   // Lazy-load Candidate Database — large query, not needed for the Recruitment
   // tab which is the default landing view. Fetch on first activation.
@@ -542,15 +543,48 @@ export function CVTabs({
           {/* Open Positions with Pipelines */}
           {openPositions.length > 0 && (
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">
-                Open Positions
-              </h2>
+              <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+                <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
+                  Open Positions
+                </h2>
+                {recruiters && recruiters.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs text-[var(--color-text-muted)]">Recruiter:</label>
+                    <select
+                      value={recruiterFilter}
+                      onChange={(e) => setRecruiterFilter(e.target.value)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-lg text-xs",
+                        "bg-[var(--color-surface)] border border-[var(--color-border)]",
+                        "text-[var(--color-text-primary)]",
+                        "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
+                      )}
+                    >
+                      <option value="ALL">All recruiters</option>
+                      <option value="UNASSIGNED">Unassigned</option>
+                      {recruiters.map((r) => (
+                        <option key={r.id} value={r.id}>
+                          {r.firstName} {r.lastName}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
               <div className="space-y-4">
-                {openPositions.map((pos) => {
-                  const posCandidates = pipelineCandidates.filter(
-                    (c) => c.positionId === pos.id
-                  );
-                  return (
+                {openPositions
+                  .map((pos) => {
+                    const all = pipelineCandidates.filter((c) => c.positionId === pos.id);
+                    const posCandidates =
+                      recruiterFilter === "ALL"
+                        ? all
+                        : recruiterFilter === "UNASSIGNED"
+                        ? all.filter((c) => !c.recruiterId)
+                        : all.filter((c) => c.recruiterId === recruiterFilter);
+                    return { pos, all, posCandidates };
+                  })
+                  .filter(({ posCandidates }) => recruiterFilter === "ALL" || posCandidates.length > 0)
+                  .map(({ pos, posCandidates }) => (
                     <PositionPipeline
                       key={pos.id}
                       position={pos}
@@ -562,8 +596,7 @@ export function CVTabs({
                       departments={departments}
                       isArchived={false}
                     />
-                  );
-                })}
+                  ))}
               </div>
             </div>
           )}
