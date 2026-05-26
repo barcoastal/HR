@@ -169,36 +169,58 @@ export async function sendEmergencyAlert(title: string, message: string) {
     );
   }
 
-  const emailResults = await sendInBatches(validRecipients, async (emp) => {
-    if (!resend) {
+  // Emergency alerts use BCC chunking so everyone gets the email at the same
+  // moment — one Resend API call per chunk instead of one per recipient. This
+  // sidesteps the per-second rate limit entirely. Resend caps recipients at 50
+  // per email, so we send in chunks of 49 (leaving one slot for the To
+  // address, which we set to the sender so BCC-only sends aren't flagged as
+  // spam).
+  let emailSucceeded = 0;
+  let emailFailed = 0;
+  if (!resend) {
+    for (const emp of validRecipients) {
       failedRecipients.push({
         name: `${emp.firstName} ${emp.lastName}`,
         email: emp.email,
         reason: "RESEND_API_KEY not configured",
       });
-      return false;
     }
-    try {
-      const { error } = await resend.emails.send({
-        from,
-        to: emp.email,
-        subject: `[Do Not Reply] [EMERGENCY] ${title}`,
-        html: emailHtml,
-      });
-      if (error) {
-        const reason = error.message || (error as { name?: string }).name || "Resend rejected the send";
-        console.error(`[emergency] Resend rejected ${emp.email}: ${reason}`, error);
-        failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
-        return false;
+    emailFailed = validRecipients.length;
+  } else {
+    const CHUNK = 49;
+    const senderAddress = branding.senderEmail.trim();
+    for (let i = 0; i < validRecipients.length; i += CHUNK) {
+      const chunk = validRecipients.slice(i, i + CHUNK);
+      const bccList = chunk.map((e) => e.email);
+      try {
+        const { error } = await resend.emails.send({
+          from,
+          to: senderAddress,
+          bcc: bccList,
+          subject: `[Do Not Reply] [EMERGENCY] ${title}`,
+          html: emailHtml,
+        });
+        if (error) {
+          const reason = error.message || (error as { name?: string }).name || "Resend rejected the send";
+          console.error(`[emergency] Chunk ${i / CHUNK + 1} rejected:`, error);
+          for (const emp of chunk) {
+            failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
+          }
+          emailFailed += chunk.length;
+        } else {
+          emailSucceeded += chunk.length;
+        }
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : "Network error";
+        console.error(`[emergency] Chunk ${i / CHUNK + 1} threw:`, err);
+        for (const emp of chunk) {
+          failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
+        }
+        emailFailed += chunk.length;
       }
-      return true;
-    } catch (err) {
-      const reason = err instanceof Error ? err.message : "Network error";
-      console.error(`[emergency] Failed to send to ${emp.email}:`, err);
-      failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
-      return false;
     }
-  });
+  }
+  const emailResults = { succeeded: emailSucceeded, failed: emailFailed };
 
   const withPhone = employees.filter((e) => e.phone);
   const smsBody = `[EMERGENCY] ${title}: ${message}`;
