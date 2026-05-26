@@ -6,10 +6,8 @@ import { revalidatePath } from "next/cache";
 import { sendEmailWithAttachments } from "@/lib/email";
 import { buildIcsInvite } from "@/lib/ics";
 import {
-  createOneOnOneEvent,
   updateOneOnOneEvent,
   cancelOneOnOneEvent,
-  isCalendarConnected,
 } from "@/lib/google-calendar";
 import { createOneOnOneEventForUser } from "@/lib/google-calendar-sync";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
@@ -102,7 +100,7 @@ export async function scheduleNewHireOneOnOnes(employeeId: string) {
         type: t.type,
       },
     });
-    await autoCreateGoogleEvent(created.id);
+    await autoCreateGoogleEvent(created.id, { sendIcsFallback: true });
   }
 }
 
@@ -134,18 +132,17 @@ export async function ensureAnnualCoverage() {
         type: "ANNUAL",
       },
     });
-    await autoCreateGoogleEvent(created.id);
+    await autoCreateGoogleEvent(created.id, { sendIcsFallback: true });
   }
 }
 
 /**
- * Retroactively create Google Calendar events (with Meet link) for any
- * SCHEDULED 1:1 that is missing one. Covers meetings created before Google
- * Calendar was connected, before auto-create shipped, or where the API call
- * failed. Capped per call so a single page load doesn't burn the API quota.
+ * Retroactively try to land a Google Calendar event for any SCHEDULED 1:1
+ * that doesn't have one yet. Only the manager-calendar path runs here — we
+ * skip the ICS email fallback so existing employees aren't re-emailed for
+ * meetings already on their list. Capped per call to stay light.
  */
 export async function backfillGoogleEvents(limit = 25) {
-  if (!(await isCalendarConnected())) return;
   const missing = await db.oneOnOne.findMany({
     where: {
       status: "SCHEDULED",
@@ -305,7 +302,7 @@ export async function createOneOnOne(input: {
     },
   });
 
-  await autoCreateGoogleEvent(created.id);
+  await autoCreateGoogleEvent(created.id, { sendIcsFallback: true });
 
   revalidatePath("/one-on-ones");
   revalidatePath(`/people/${employee.id}`);
@@ -430,7 +427,7 @@ export async function markComplete(meetingId: string) {
             type: "ANNUAL",
           },
         });
-        await autoCreateGoogleEvent(created.id);
+        await autoCreateGoogleEvent(created.id, { sendIcsFallback: true });
       }
     }
   }
@@ -451,7 +448,7 @@ const TYPE_LABEL: Record<OneOnOneType, string> = {
  * Fail-soft: any error is logged but does not throw — the OneOnOne still
  * exists in the DB and the event can be created later via sendInvite().
  */
-async function autoCreateGoogleEvent(oneOnOneId: string) {
+async function autoCreateGoogleEvent(oneOnOneId: string, options?: { sendIcsFallback?: boolean }) {
   const m = await db.oneOnOne.findUnique({
     where: { id: oneOnOneId },
     include: {
@@ -463,7 +460,9 @@ async function autoCreateGoogleEvent(oneOnOneId: string) {
   const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
   const description = "1:1 Performance Review";
 
-  // Prefer the manager's own Google Calendar so they're the organizer.
+  // Preferred: create the event on the manager's own Google Calendar so they
+  // appear as the organizer (and a Meet link is generated). Requires the
+  // manager to have connected their own calendar via /one-on-ones.
   const managerUserId = await getManagerCalendarUserId(m.managerId);
   if (managerUserId) {
     try {
@@ -481,29 +480,60 @@ async function autoCreateGoogleEvent(oneOnOneId: string) {
       });
       return;
     } catch (err) {
-      console.error("[one-on-one] manager-calendar create failed, trying shared:", err);
-      // fall through to shared connection
+      console.error("[one-on-one] manager-calendar create failed:", err);
+      // fall through
     }
   }
 
-  // Fallback: shared platform-wide Google Calendar (whoever connected it).
-  if (!(await isCalendarConnected())) return;
+  // Default: email-based ICS invite from the platform address (organizer is
+  // the manager in the ICS payload). Opt-in via sendIcsFallback because the
+  // backfill path shouldn't email everyone again for old meetings.
+  if (options?.sendIcsFallback) {
+    await sendIcsInvite(m, summary, description);
+  }
+}
+
+async function sendIcsInvite(
+  m: {
+    id: string;
+    scheduledAt: Date;
+    meetingLink: string | null;
+    employee: { firstName: string; lastName: string; email: string };
+    manager: { firstName: string; lastName: string; email: string };
+  },
+  summary: string,
+  description: string,
+) {
   try {
-    const { eventId, meetLink } = await createOneOnOneEvent({
+    const ics = buildIcsInvite({
+      uid: `${m.id}@calatrava.hr`,
+      start: m.scheduledAt,
+      durationMinutes: DEFAULT_DURATION_MIN,
       summary,
       description,
-      startTime: m.scheduledAt,
-      durationMinutes: DEFAULT_DURATION_MIN,
-      managerEmail: m.manager.email,
-      employeeEmail: m.employee.email,
-      oneOnOneId: m.id,
+      location: m.meetingLink || undefined,
+      organizerEmail: m.manager.email,
+      organizerName: `${m.manager.firstName} ${m.manager.lastName}`,
+      attendees: [
+        { email: m.employee.email, name: `${m.employee.firstName} ${m.employee.lastName}` },
+        { email: m.manager.email, name: `${m.manager.firstName} ${m.manager.lastName}` },
+      ],
     });
-    await db.oneOnOne.update({
-      where: { id: m.id },
-      data: { googleEventId: eventId || null, meetingLink: meetLink || null },
-    });
+    const html = `<p>You have a 1:1 review scheduled.</p>
+<p><strong>${summary}</strong><br>
+${m.scheduledAt.toLocaleString()}</p>
+${m.meetingLink ? `<p>Join: <a href="${m.meetingLink}">${m.meetingLink}</a></p>` : ""}
+<p style="color:#666;font-size:12px">Add this to your calendar with the attached invite.</p>`;
+    await Promise.all([
+      sendEmailWithAttachments(m.employee.email, summary, html, [
+        { filename: "invite.ics", content: ics },
+      ]),
+      sendEmailWithAttachments(m.manager.email, summary, html, [
+        { filename: "invite.ics", content: ics },
+      ]),
+    ]);
   } catch (err) {
-    console.error("[one-on-one] auto-create Google event failed:", err);
+    console.error("[one-on-one] ICS invite send failed:", err);
   }
 }
 
@@ -522,10 +552,9 @@ export async function sendInvite(meetingId: string) {
   const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
   const description = "1:1 Performance Review";
 
-  // Preferred path: create a real Google Calendar event with Meet so the
-  // meeting auto-lands on both calendars and the join link is ready.
-  // Prefer the manager's own connected Google Calendar so they're the
-  // organizer, not whoever connected the shared integration.
+  // Preferred path: when the manager has connected their own Google Calendar,
+  // create a real Google event on their calendar (Meet link included, they
+  // show up as the organizer).
   const managerUserId = await getManagerCalendarUserId(m.managerId);
   if (managerUserId) {
     try {
@@ -544,65 +573,15 @@ export async function sendInvite(meetingId: string) {
       revalidatePath(`/one-on-ones/${m.id}`);
       return { success: true, meetLink };
     } catch (err) {
-      console.error("[one-on-one] manager-calendar invite failed, trying shared:", err);
-      // fall through to shared / ics
-    }
-  }
-  if (await isCalendarConnected()) {
-    try {
-      const { eventId, meetLink } = await createOneOnOneEvent({
-        summary,
-        description,
-        startTime: m.scheduledAt,
-        durationMinutes: DEFAULT_DURATION_MIN,
-        managerEmail: m.manager.email,
-        employeeEmail: m.employee.email,
-        oneOnOneId: m.id,
-      });
-      await db.oneOnOne.update({
-        where: { id: m.id },
-        data: {
-          googleEventId: eventId || null,
-          meetingLink: meetLink || m.meetingLink,
-        },
-      });
-      revalidatePath(`/one-on-ones/${m.id}`);
-      return { success: true, meetLink };
-    } catch (err) {
-      console.error("[one-on-one] Google Calendar invite failed, falling back to .ics:", err);
-      // fall through to ICS path
+      console.error("[one-on-one] manager-calendar invite failed, falling back to ICS email:", err);
+      // fall through to .ics email
     }
   }
 
-  // Fallback: Resend email with .ics attachment.
-  const ics = buildIcsInvite({
-    uid: `${m.id}@calatrava.hr`,
-    start: m.scheduledAt,
-    durationMinutes: DEFAULT_DURATION_MIN,
-    summary,
-    description,
-    location: m.meetingLink || undefined,
-    organizerEmail: m.manager.email,
-    organizerName: `${m.manager.firstName} ${m.manager.lastName}`,
-    attendees: [
-      { email: m.employee.email, name: `${m.employee.firstName} ${m.employee.lastName}` },
-      { email: m.manager.email, name: `${m.manager.firstName} ${m.manager.lastName}` },
-    ],
-  });
-
-  const html = `<p>You have a 1:1 review scheduled.</p>
-<p><strong>${summary}</strong><br>
-${m.scheduledAt.toLocaleString()}</p>
-${m.meetingLink ? `<p>Join: <a href="${m.meetingLink}">${m.meetingLink}</a></p>` : ""}`;
-
-  await Promise.all([
-    sendEmailWithAttachments(m.employee.email, summary, html, [
-      { filename: "invite.ics", content: ics },
-    ]),
-    sendEmailWithAttachments(m.manager.email, summary, html, [
-      { filename: "invite.ics", content: ics },
-    ]),
-  ]);
-
+  // Default: email-based ICS invite from the platform address. The ICS lists
+  // the manager as the organizer so the calendar entries on both sides land
+  // correctly. The actual email comes from noreply@... so nobody specific
+  // shows up as the sender.
+  await sendIcsInvite(m, summary, description);
   return { success: true };
 }
