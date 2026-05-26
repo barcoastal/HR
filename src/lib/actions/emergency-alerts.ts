@@ -137,7 +137,7 @@ export async function sendEmergencyAlert(title: string, message: string) {
       const { error } = await resend.emails.send({
         from,
         to: emp.email,
-        subject: `[EMERGENCY] ${title}`,
+        subject: `[Do Not Reply] [EMERGENCY] ${title}`,
         html: emailHtml,
       });
       return !error;
@@ -207,7 +207,7 @@ export async function sendTestEmergencyAlert(
   const { error } = await resend.emails.send({
     from,
     to: testEmail,
-    subject: `[TEST] [EMERGENCY] ${title}`,
+    subject: `[Do Not Reply] [TEST] [EMERGENCY] ${title}`,
     html: emailHtml,
   });
 

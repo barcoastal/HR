@@ -67,9 +67,18 @@ function wrapHtml(content: string, companyName: string, logoUrl: string | null):
     ${content}
   </div>
   <div style="padding:16px 24px;border-top:1px solid #e5e7eb;text-align:center">
+    <p style="margin:0 0 4px;font-size:12px;color:#9ca3af">This is an automated message — please do not reply to this email.</p>
     <p style="margin:0;font-size:12px;color:#9ca3af">${companyName} &middot; Sent via Coastal HR</p>
   </div>
 </div>`;
+}
+
+const NO_REPLY_PREFIX = "[Do Not Reply]";
+
+function withNoReplySubject(subject: string): string {
+  const trimmed = subject.trim();
+  if (/^\[?\s*(do not reply|no[\s-]?reply)\b/i.test(trimmed)) return trimmed;
+  return `${NO_REPLY_PREFIX} ${trimmed}`;
 }
 
 export async function sendEmail(to: string, subject: string, html: string) {
@@ -81,21 +90,22 @@ export async function sendEmail(to: string, subject: string, html: string) {
   const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  const finalSubject = withNoReplySubject(subject);
   console.log(`[email] Sending from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject,
+      subject: finalSubject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
     });
     if (error) {
-      console.error(`[email] Resend error for ${to}: "${subject}"`, error);
+      console.error(`[email] Resend error for ${to}: "${finalSubject}"`, error);
     } else {
-      console.log(`[email] Sent to ${to}: "${subject}"`, data);
+      console.log(`[email] Sent to ${to}: "${finalSubject}"`, data);
     }
   } catch (error) {
-    console.error(`[email] Failed to send to ${to}: "${subject}"`, error);
+    console.error(`[email] Failed to send to ${to}: "${finalSubject}"`, error);
   }
 }
 
@@ -113,22 +123,23 @@ export async function sendEmailWithAttachments(
   const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  const finalSubject = withNoReplySubject(subject);
   console.log(`[email] Sending with ${attachments.length} attachment(s) from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject,
+      subject: finalSubject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
       attachments,
     });
     if (error) {
-      console.error(`[email] Resend error for ${to}: "${subject}"`, error);
+      console.error(`[email] Resend error for ${to}: "${finalSubject}"`, error);
     } else {
-      console.log(`[email] Sent to ${to}: "${subject}"`, data);
+      console.log(`[email] Sent to ${to}: "${finalSubject}"`, data);
     }
   } catch (error) {
-    console.error(`[email] Failed to send to ${to}: "${subject}"`, error);
+    console.error(`[email] Failed to send to ${to}: "${finalSubject}"`, error);
   }
 }
 
@@ -168,7 +179,7 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject: `[TEST] ${interpolatedSubject}`,
+      subject: withNoReplySubject(`[TEST] ${interpolatedSubject}`),
       html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
     });
     if (error) {
