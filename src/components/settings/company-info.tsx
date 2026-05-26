@@ -10,7 +10,6 @@ type CompanySettingsData = {
   companyName: string;
   domain: string;
   industry: string;
-  companySize: string;
   logoUrl: string | null;
   faviconUrl: string | null;
   senderEmail: string;
@@ -149,13 +148,13 @@ function ImageUpload({
   );
 }
 
-export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
+export function CompanyInfo({ settings, activeEmployeeCount }: { settings: CompanySettingsData; activeEmployeeCount: number }) {
   const [info, setInfo] = useState(settings);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
-  function update(field: keyof Pick<CompanySettingsData, "companyName" | "domain" | "industry" | "companySize" | "senderEmail" | "senderName">) {
+  function update(field: keyof Pick<CompanySettingsData, "companyName" | "domain" | "industry" | "senderEmail" | "senderName">) {
     return (value: string) => {
       setInfo((prev) => ({ ...prev, [field]: value }));
       setSaved(false);
@@ -168,7 +167,6 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
       companyName: info.companyName,
       domain: info.domain,
       industry: info.industry,
-      companySize: info.companySize,
       logoUrl: info.logoUrl,
       faviconUrl: info.faviconUrl,
       senderEmail: info.senderEmail,
@@ -191,7 +189,20 @@ export function CompanyInfo({ settings }: { settings: CompanySettingsData }) {
         <InputField label="Company Name" placeholder="Your company name" value={info.companyName} onChange={update("companyName")} />
         <InputField label="Domain" placeholder="yourdomain.com" value={info.domain} onChange={update("domain")} />
         <InputField label="Industry" placeholder="Technology, Healthcare, etc." value={info.industry} onChange={update("industry")} />
-        <InputField label="Company Size" placeholder="Number of employees" value={info.companySize} onChange={update("companySize")} />
+        <div>
+          <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">Company Size</label>
+          <div
+            className={cn(
+              "w-full px-3 py-2 rounded-lg text-sm flex items-center justify-between gap-2",
+              "bg-[var(--color-background)] border border-[var(--color-border)]",
+              "text-[var(--color-text-primary)]"
+            )}
+            title="Pulled live from active employees"
+          >
+            <span className="font-semibold">{activeEmployeeCount}</span>
+            <span className="text-xs text-[var(--color-text-muted)]">active {activeEmployeeCount === 1 ? "employee" : "employees"}</span>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">

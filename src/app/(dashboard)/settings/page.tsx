@@ -38,6 +38,7 @@ import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 import { DepartmentReviewTemplates } from "@/components/settings/department-review-templates";
 import { getDepartmentReviewTemplates } from "@/lib/actions/reviews";
+import { db } from "@/lib/db";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -68,6 +69,8 @@ export default async function SettingsPage() {
     getEligibleCountersigners(),
   ]);
 
+  const activeEmployeeCount = await db.employee.count({ where: { status: "ACTIVE" } });
+
   let gustoMapping = null;
   if (gustoConnection) {
     try {
@@ -97,16 +100,18 @@ export default async function SettingsPage() {
       <PageHeader title="Settings" description="Manage your company settings, users, and templates" />
 
       <div className="space-y-8">
-        <CompanyInfo settings={{
-          companyName: companySettings.companyName,
-          domain: companySettings.domain,
-          industry: companySettings.industry,
-          companySize: companySettings.companySize,
-          logoUrl: companySettings.logoUrl,
-          faviconUrl: companySettings.faviconUrl,
-          senderEmail: companySettings.senderEmail,
-          senderName: companySettings.senderName,
-        }} />
+        <CompanyInfo
+          settings={{
+            companyName: companySettings.companyName,
+            domain: companySettings.domain,
+            industry: companySettings.industry,
+            logoUrl: companySettings.logoUrl,
+            faviconUrl: companySettings.faviconUrl,
+            senderEmail: companySettings.senderEmail,
+            senderName: companySettings.senderName,
+          }}
+          activeEmployeeCount={activeEmployeeCount}
+        />
 
         <SettingsUserManagement users={userList} />
 
