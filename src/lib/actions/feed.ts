@@ -1,11 +1,32 @@
 "use server";
 
 import { db } from "@/lib/db";
-import type { FeedPostType, ReactionType } from "@/generated/prisma/client";
+import type { FeedPostType, PollVisibility, ReactionType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
+import { requireAuth } from "@/lib/auth-helpers";
 
-export async function getFeedPosts() {
-  return db.feedPost.findMany({
+export type PollOptionView = {
+  id: string;
+  label: string;
+  order: number;
+  voteCount: number | null; // null when totals are hidden from this viewer
+  voters: { id: string; firstName: string; lastName: string; profilePhoto: string | null }[] | null;
+};
+
+export type PollView = {
+  id: string;
+  question: string;
+  visibility: PollVisibility;
+  allowMultiple: boolean;
+  closesAt: Date | null;
+  totalVotes: number | null;
+  myOptionIds: string[];
+  resultsHidden: boolean; // true => non-admin viewing ADMIN_ANONYMOUS poll, show "hidden" UI
+  options: PollOptionView[];
+};
+
+export async function getFeedPosts(currentEmployeeId?: string, role?: string) {
+  const posts = await db.feedPost.findMany({
     include: {
       author: true,
       mentionedEmployee: true,
@@ -13,8 +34,71 @@ export async function getFeedPosts() {
       comments: { include: { author: true }, orderBy: { createdAt: "asc" } },
       attachments: { orderBy: { createdAt: "asc" } },
       _count: { select: { comments: true, reactions: true } },
+      poll: {
+        include: {
+          options: {
+            orderBy: { order: "asc" },
+            include: {
+              votes: {
+                include: {
+                  employee: { select: { id: true, firstName: true, lastName: true, profilePhoto: true } },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
+  });
+
+  const isSuperAdmin = role === "SUPER_ADMIN";
+
+  return posts.map((post) => {
+    if (!post.poll) return post;
+
+    const poll = post.poll;
+    const showResults =
+      poll.visibility === "OPEN" ||
+      poll.visibility === "PUBLIC_ANONYMOUS" ||
+      (poll.visibility === "ADMIN_ANONYMOUS" && isSuperAdmin);
+    const showVoters =
+      poll.visibility === "OPEN" ||
+      (poll.visibility === "ADMIN_ANONYMOUS" && isSuperAdmin);
+
+    const totalVotesAll = poll.options.reduce((sum, o) => sum + o.votes.length, 0);
+    const myOptionIds = currentEmployeeId
+      ? poll.options
+          .filter((o) => o.votes.some((v) => v.employeeId === currentEmployeeId))
+          .map((o) => o.id)
+      : [];
+
+    const pollView: PollView = {
+      id: poll.id,
+      question: poll.question,
+      visibility: poll.visibility,
+      allowMultiple: poll.allowMultiple,
+      closesAt: poll.closesAt,
+      totalVotes: showResults ? totalVotesAll : null,
+      myOptionIds,
+      resultsHidden: !showResults,
+      options: poll.options.map((o) => ({
+        id: o.id,
+        label: o.label,
+        order: o.order,
+        voteCount: showResults ? o.votes.length : null,
+        voters: showVoters
+          ? o.votes.map((v) => ({
+              id: v.employee.id,
+              firstName: v.employee.firstName,
+              lastName: v.employee.lastName,
+              profilePhoto: v.employee.profilePhoto,
+            }))
+          : null,
+      })),
+    };
+
+    return { ...post, pollView };
   });
 }
 
@@ -230,6 +314,102 @@ export async function createShoutoutPost(
 
   revalidatePath("/");
   return post;
+}
+
+export async function createPollPost(data: {
+  authorId: string;
+  question: string;
+  options: string[];
+  visibility: PollVisibility;
+  allowMultiple: boolean;
+  closesAt?: Date | null;
+  emailTarget?: "all" | "none";
+}) {
+  const cleanOptions = data.options.map((o) => o.trim()).filter(Boolean);
+  if (!data.question.trim()) throw new Error("Poll question is required");
+  if (cleanOptions.length < 2) throw new Error("Add at least two options");
+  if (cleanOptions.length > 10) throw new Error("Maximum 10 options");
+
+  const post = await db.feedPost.create({
+    data: {
+      authorId: data.authorId,
+      content: data.question.trim(),
+      type: "POLL",
+      notifyViaEmail: data.emailTarget !== "none",
+      emailTargetType: data.emailTarget || "all",
+      poll: {
+        create: {
+          question: data.question.trim(),
+          visibility: data.visibility,
+          allowMultiple: data.allowMultiple,
+          closesAt: data.closesAt ?? null,
+          options: {
+            create: cleanOptions.map((label, i) => ({ label, order: i })),
+          },
+        },
+      },
+    },
+  });
+
+  if (data.emailTarget !== "none") {
+    try {
+      const { sendPostNotificationEmail } = await import("@/lib/actions/feed-events");
+      await sendPostNotificationEmail(post.id, data.authorId);
+    } catch (err) {
+      console.error("[feed] poll notification error:", err);
+    }
+  }
+
+  const inAppUsers = await db.user.findMany({
+    where: {
+      employee: { status: "ACTIVE" },
+      employeeId: { not: data.authorId },
+      notifyFeedPostInApp: true,
+    },
+    select: { employeeId: true },
+  });
+  if (inAppUsers.length > 0) {
+    await db.notification.createMany({
+      data: inAppUsers
+        .filter((u) => u.employeeId)
+        .map((u) => ({
+          recipientId: u.employeeId!,
+          type: "FEED_POST",
+          message: "New poll in feed",
+          link: "/feed",
+        })),
+    });
+  }
+
+  revalidatePath("/");
+  return post;
+}
+
+export async function submitPollVote(pollId: string, optionIds: string[]) {
+  const session = await requireAuth();
+  const employeeId = session.user.employeeId;
+  if (!employeeId) throw new Error("Link an employee profile to vote");
+
+  const poll = await db.feedPoll.findUnique({
+    where: { id: pollId },
+    select: { id: true, allowMultiple: true, closesAt: true, options: { select: { id: true } } },
+  });
+  if (!poll) throw new Error("Poll not found");
+  if (poll.closesAt && poll.closesAt.getTime() < Date.now()) throw new Error("Poll has closed");
+
+  const validIds = new Set(poll.options.map((o) => o.id));
+  const cleanIds = Array.from(new Set(optionIds.filter((id) => validIds.has(id))));
+  if (cleanIds.length === 0) throw new Error("Pick at least one option");
+  if (!poll.allowMultiple && cleanIds.length > 1) throw new Error("This poll only allows one choice");
+
+  await db.$transaction([
+    db.feedPollVote.deleteMany({ where: { pollId, employeeId } }),
+    db.feedPollVote.createMany({
+      data: cleanIds.map((optionId) => ({ pollId, optionId, employeeId })),
+    }),
+  ]);
+
+  revalidatePath("/");
 }
 
 export async function deleteFeedPost(postId: string) {

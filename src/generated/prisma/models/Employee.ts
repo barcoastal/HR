@@ -454,6 +454,7 @@ export type EmployeeWhereInput = {
   feedPosts?: Prisma.FeedPostListRelationFilter
   feedComments?: Prisma.FeedCommentListRelationFilter
   feedReactions?: Prisma.FeedReactionListRelationFilter
+  feedPollVotes?: Prisma.FeedPollVoteListRelationFilter
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
@@ -537,6 +538,7 @@ export type EmployeeOrderByWithRelationInput = {
   feedPosts?: Prisma.FeedPostOrderByRelationAggregateInput
   feedComments?: Prisma.FeedCommentOrderByRelationAggregateInput
   feedReactions?: Prisma.FeedReactionOrderByRelationAggregateInput
+  feedPollVotes?: Prisma.FeedPollVoteOrderByRelationAggregateInput
   employeeTasks?: Prisma.EmployeeTaskOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   documents?: Prisma.DocumentOrderByRelationAggregateInput
@@ -623,6 +625,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   feedPosts?: Prisma.FeedPostListRelationFilter
   feedComments?: Prisma.FeedCommentListRelationFilter
   feedReactions?: Prisma.FeedReactionListRelationFilter
+  feedPollVotes?: Prisma.FeedPollVoteListRelationFilter
   employeeTasks?: Prisma.EmployeeTaskListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   documents?: Prisma.DocumentListRelationFilter
@@ -788,6 +791,7 @@ export type EmployeeCreateInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -867,6 +871,7 @@ export type EmployeeUncheckedCreateInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -946,6 +951,7 @@ export type EmployeeUpdateInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -1025,6 +1031,7 @@ export type EmployeeUncheckedUpdateInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -1670,6 +1677,20 @@ export type EmployeeUpdateOneWithoutMentionedInPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutMentionedInPostsInput, Prisma.EmployeeUpdateWithoutMentionedInPostsInput>, Prisma.EmployeeUncheckedUpdateWithoutMentionedInPostsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutFeedPollVotesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedCreateWithoutFeedPollVotesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutFeedPollVotesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutFeedPollVotesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedCreateWithoutFeedPollVotesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutFeedPollVotesInput
+  upsert?: Prisma.EmployeeUpsertWithoutFeedPollVotesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutFeedPollVotesInput, Prisma.EmployeeUpdateWithoutFeedPollVotesInput>, Prisma.EmployeeUncheckedUpdateWithoutFeedPollVotesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutFeedCommentsInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutFeedCommentsInput, Prisma.EmployeeUncheckedCreateWithoutFeedCommentsInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutFeedCommentsInput
@@ -2107,6 +2128,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -2185,6 +2207,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2268,6 +2291,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -2346,6 +2370,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2445,6 +2470,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -2523,6 +2549,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -2660,6 +2687,7 @@ export type EmployeeCreateWithoutTeamInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -2738,6 +2766,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -2842,6 +2871,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -2920,6 +2950,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3003,6 +3034,7 @@ export type EmployeeCreateWithoutManagerInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -3081,6 +3113,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3169,6 +3202,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -3247,6 +3281,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3330,6 +3365,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -3408,6 +3444,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -3507,6 +3544,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -3585,6 +3623,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3690,6 +3729,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -3768,6 +3808,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -3862,6 +3903,7 @@ export type EmployeeCreateWithoutUserInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -3940,6 +3982,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4034,6 +4077,7 @@ export type EmployeeUpdateWithoutUserInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -4112,6 +4156,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4191,6 +4236,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -4269,6 +4315,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4363,6 +4410,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -4441,6 +4489,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -4519,6 +4568,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
@@ -4597,6 +4647,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
@@ -4680,6 +4731,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -4758,6 +4810,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -4852,6 +4905,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
@@ -4930,6 +4984,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -5019,6 +5074,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -5097,6 +5153,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5174,6 +5231,7 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -5252,6 +5310,7 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5346,6 +5405,7 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -5424,6 +5484,7 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -5502,6 +5563,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -5580,6 +5642,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5663,6 +5726,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -5741,6 +5805,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -5835,6 +5900,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -5913,6 +5979,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6002,6 +6069,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -6080,6 +6148,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6158,6 +6227,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -6236,6 +6306,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6320,6 +6391,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -6398,6 +6470,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6491,6 +6564,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -6569,6 +6643,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6659,6 +6734,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -6737,6 +6813,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -6746,6 +6823,338 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutFeedPollVotesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutFeedPollVotesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedCreateWithoutFeedPollVotesInput>
+}
+
+export type EmployeeUpsertWithoutFeedPollVotesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedUpdateWithoutFeedPollVotesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedCreateWithoutFeedPollVotesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutFeedPollVotesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutFeedPollVotesInput, Prisma.EmployeeUncheckedUpdateWithoutFeedPollVotesInput>
+}
+
+export type EmployeeUpdateWithoutFeedPollVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
@@ -6814,6 +7223,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -6892,6 +7302,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -6986,6 +7397,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -7064,6 +7476,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7142,6 +7555,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -7220,6 +7634,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7314,6 +7729,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -7392,6 +7808,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7471,6 +7888,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -7549,6 +7967,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -7643,6 +8062,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -7721,6 +8141,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -7799,6 +8220,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
@@ -7877,6 +8299,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
@@ -7971,6 +8394,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
@@ -8049,6 +8473,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -8127,6 +8552,7 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -8205,6 +8631,7 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8299,6 +8726,7 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -8377,6 +8805,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -8455,6 +8884,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
@@ -8533,6 +8963,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
@@ -8627,6 +9058,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
@@ -8705,6 +9137,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -8783,6 +9216,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -8861,6 +9295,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -8944,6 +9379,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -9022,6 +9458,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9116,6 +9553,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -9194,6 +9632,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9283,6 +9722,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -9361,6 +9801,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9439,6 +9880,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -9517,6 +9959,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9611,6 +10054,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -9689,6 +10133,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -9767,6 +10212,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -9845,6 +10291,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -9928,6 +10375,7 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -10006,6 +10454,7 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10100,6 +10549,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -10178,6 +10628,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10267,6 +10718,7 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -10345,6 +10797,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10423,6 +10876,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -10501,6 +10955,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10595,6 +11050,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -10673,6 +11129,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -10751,6 +11208,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -10829,6 +11287,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -10912,6 +11371,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -10990,6 +11450,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11084,6 +11545,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -11162,6 +11624,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11251,6 +11714,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -11329,6 +11793,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11407,6 +11872,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -11485,6 +11951,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11579,6 +12046,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -11657,6 +12125,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -11735,6 +12204,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -11813,6 +12283,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -11907,6 +12378,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -11985,6 +12457,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12063,6 +12536,7 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -12141,6 +12615,7 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12235,6 +12710,7 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -12313,6 +12789,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12391,6 +12868,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -12469,6 +12947,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12563,6 +13042,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -12641,6 +13121,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -12719,6 +13200,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -12797,6 +13279,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -12891,6 +13374,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -12969,6 +13453,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -13047,6 +13532,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -13125,6 +13611,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -13219,6 +13706,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -13297,6 +13785,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -13375,6 +13864,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -13453,6 +13943,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -13547,6 +14038,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -13625,6 +14117,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -13703,6 +14196,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -13781,6 +14275,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -13875,6 +14370,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -13953,6 +14449,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -14031,6 +14528,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -14109,6 +14607,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -14203,6 +14702,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -14281,6 +14781,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -14359,6 +14860,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -14437,6 +14939,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -14531,6 +15034,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -14609,6 +15113,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -14687,6 +15192,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -14765,6 +15271,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -14859,6 +15366,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -14937,6 +15445,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -15014,6 +15523,7 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -15092,6 +15602,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -15175,6 +15686,7 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
@@ -15253,6 +15765,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
   feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
   feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
@@ -15347,6 +15860,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -15425,6 +15939,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -15514,6 +16029,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -15592,6 +16108,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -15709,6 +16226,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -15787,6 +16305,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -15943,6 +16462,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -16021,6 +16541,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -16216,6 +16737,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -16294,6 +16816,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -16411,6 +16934,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
@@ -16489,6 +17013,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
   feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
   feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
   employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
@@ -16574,6 +17099,7 @@ export type EmployeeCountOutputType = {
   feedPosts: number
   feedComments: number
   feedReactions: number
+  feedPollVotes: number
   employeeTasks: number
   notifications: number
   documents: number
@@ -16615,6 +17141,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   feedPosts?: boolean | EmployeeCountOutputTypeCountFeedPostsArgs
   feedComments?: boolean | EmployeeCountOutputTypeCountFeedCommentsArgs
   feedReactions?: boolean | EmployeeCountOutputTypeCountFeedReactionsArgs
+  feedPollVotes?: boolean | EmployeeCountOutputTypeCountFeedPollVotesArgs
   employeeTasks?: boolean | EmployeeCountOutputTypeCountEmployeeTasksArgs
   notifications?: boolean | EmployeeCountOutputTypeCountNotificationsArgs
   documents?: boolean | EmployeeCountOutputTypeCountDocumentsArgs
@@ -16729,6 +17256,13 @@ export type EmployeeCountOutputTypeCountFeedCommentsArgs<ExtArgs extends runtime
  */
 export type EmployeeCountOutputTypeCountFeedReactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.FeedReactionWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountFeedPollVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FeedPollVoteWhereInput
 }
 
 /**
@@ -16975,6 +17509,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   feedPosts?: boolean | Prisma.Employee$feedPostsArgs<ExtArgs>
   feedComments?: boolean | Prisma.Employee$feedCommentsArgs<ExtArgs>
   feedReactions?: boolean | Prisma.Employee$feedReactionsArgs<ExtArgs>
+  feedPollVotes?: boolean | Prisma.Employee$feedPollVotesArgs<ExtArgs>
   employeeTasks?: boolean | Prisma.Employee$employeeTasksArgs<ExtArgs>
   notifications?: boolean | Prisma.Employee$notificationsArgs<ExtArgs>
   documents?: boolean | Prisma.Employee$documentsArgs<ExtArgs>
@@ -17151,6 +17686,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   feedPosts?: boolean | Prisma.Employee$feedPostsArgs<ExtArgs>
   feedComments?: boolean | Prisma.Employee$feedCommentsArgs<ExtArgs>
   feedReactions?: boolean | Prisma.Employee$feedReactionsArgs<ExtArgs>
+  feedPollVotes?: boolean | Prisma.Employee$feedPollVotesArgs<ExtArgs>
   employeeTasks?: boolean | Prisma.Employee$employeeTasksArgs<ExtArgs>
   notifications?: boolean | Prisma.Employee$notificationsArgs<ExtArgs>
   documents?: boolean | Prisma.Employee$documentsArgs<ExtArgs>
@@ -17212,6 +17748,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     feedPosts: Prisma.$FeedPostPayload<ExtArgs>[]
     feedComments: Prisma.$FeedCommentPayload<ExtArgs>[]
     feedReactions: Prisma.$FeedReactionPayload<ExtArgs>[]
+    feedPollVotes: Prisma.$FeedPollVotePayload<ExtArgs>[]
     employeeTasks: Prisma.$EmployeeTaskPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     documents: Prisma.$DocumentPayload<ExtArgs>[]
@@ -17688,6 +18225,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   feedPosts<T extends Prisma.Employee$feedPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedComments<T extends Prisma.Employee$feedCommentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedCommentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedCommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   feedReactions<T extends Prisma.Employee$feedReactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedReactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedReactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  feedPollVotes<T extends Prisma.Employee$feedPollVotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$feedPollVotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPollVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employeeTasks<T extends Prisma.Employee$employeeTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$employeeTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Employee$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documents<T extends Prisma.Employee$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18533,6 +19071,30 @@ export type Employee$feedReactionsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.FeedReactionScalarFieldEnum | Prisma.FeedReactionScalarFieldEnum[]
+}
+
+/**
+ * Employee.feedPollVotes
+ */
+export type Employee$feedPollVotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FeedPollVote
+   */
+  select?: Prisma.FeedPollVoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FeedPollVote
+   */
+  omit?: Prisma.FeedPollVoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FeedPollVoteInclude<ExtArgs> | null
+  where?: Prisma.FeedPollVoteWhereInput
+  orderBy?: Prisma.FeedPollVoteOrderByWithRelationInput | Prisma.FeedPollVoteOrderByWithRelationInput[]
+  cursor?: Prisma.FeedPollVoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FeedPollVoteScalarFieldEnum | Prisma.FeedPollVoteScalarFieldEnum[]
 }
 
 /**

@@ -102,10 +102,20 @@ export const FeedPostType = {
   SHOUTOUT: 'SHOUTOUT',
   EMERGENCY: 'EMERGENCY',
   EVENT: 'EVENT',
-  PROMOTION: 'PROMOTION'
+  PROMOTION: 'PROMOTION',
+  POLL: 'POLL'
 } as const
 
 export type FeedPostType = (typeof FeedPostType)[keyof typeof FeedPostType]
+
+
+export const PollVisibility = {
+  OPEN: 'OPEN',
+  PUBLIC_ANONYMOUS: 'PUBLIC_ANONYMOUS',
+  ADMIN_ANONYMOUS: 'ADMIN_ANONYMOUS'
+} as const
+
+export type PollVisibility = (typeof PollVisibility)[keyof typeof PollVisibility]
 
 
 export const TimeOffRequestStatus = {

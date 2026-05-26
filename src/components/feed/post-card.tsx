@@ -8,6 +8,8 @@ import type { ReactionType } from "@/generated/prisma/client";
 import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { EventCard } from "@/components/feed/event-card";
+import { PollWidget } from "@/components/feed/poll-widget";
+import type { PollView } from "@/lib/actions/feed";
 
 type PostWithRelations = {
   id: string;
@@ -23,6 +25,7 @@ type PostWithRelations = {
   reactions: { id: string; type: string; employeeId: string }[];
   comments: { id: string; content: string; createdAt: Date; author: { id: string; firstName: string; lastName: string } }[];
   attachments?: { id: string; url: string; type: string; name: string }[];
+  pollView?: PollView | null;
   _count: { comments: number; reactions: number };
 };
 
@@ -316,8 +319,14 @@ export function PostCard({
             </div>
           )}
         </div>
-        <p className="text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line">{post.content}</p>
-        <AttachmentGallery attachments={post.attachments} />
+        {post.type === "POLL" && post.pollView ? (
+          <PollWidget poll={post.pollView} />
+        ) : (
+          <>
+            <p className="text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line">{post.content}</p>
+            <AttachmentGallery attachments={post.attachments} />
+          </>
+        )}
         <div className="pt-3 mt-3 border-t border-[var(--color-border)]">
           {reactionsBar}
           {commentsSection}

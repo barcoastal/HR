@@ -6,6 +6,7 @@ import { createFeedPost, createShoutoutPost } from "@/lib/actions/feed";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { CreateEventDialog } from "@/components/feed/create-event-dialog";
+import { CreatePollDialog } from "@/components/feed/create-poll-dialog";
 
 type EmployeeOption = { id: string; firstName: string; lastName: string };
 type Attachment = { url: string; type: "IMAGE" | "FILE"; name: string; preview?: string };
@@ -36,6 +37,7 @@ export function PostComposer({
   const [gifs, setGifs] = useState<{ id: string; url: string; preview: string; title: string }[]>([]);
   const [loadingGifs, setLoadingGifs] = useState(false);
   const [showEventDialog, setShowEventDialog] = useState(false);
+  const [showPollDialog, setShowPollDialog] = useState(false);
   const [emailTarget, setEmailTarget] = useState<"all" | "none">("all");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -361,6 +363,16 @@ export function PostComposer({
             <Icon name="event" size={16} />
             Event
           </button>
+          <button
+            onClick={() => setShowPollDialog(true)}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors",
+              "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
+            )}
+          >
+            <Icon name="ballot" size={16} />
+            Poll
+          </button>
         </div>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs text-[var(--color-text-muted)] cursor-pointer">
@@ -387,6 +399,13 @@ export function PostComposer({
         <CreateEventDialog
           employeeId={employeeId}
           onClose={() => setShowEventDialog(false)}
+        />
+      )}
+
+      {showPollDialog && (
+        <CreatePollDialog
+          employeeId={employeeId}
+          onClose={() => setShowPollDialog(false)}
         />
       )}
     </div>

@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/ui/page-header";
 export default async function FeedPage() {
   const session = await requireAuth();
   const [posts, employees] = await Promise.all([
-    getFeedPosts(),
+    getFeedPosts(session.user.employeeId || undefined, session.user.role),
     getEmployees(),
   ]);
   const userInitials = session.user.name

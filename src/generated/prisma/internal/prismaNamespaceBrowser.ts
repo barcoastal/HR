@@ -63,6 +63,9 @@ export const ModelName = {
   DepartmentReviewTemplate: 'DepartmentReviewTemplate',
   Review: 'Review',
   FeedPost: 'FeedPost',
+  FeedPoll: 'FeedPoll',
+  FeedPollOption: 'FeedPollOption',
+  FeedPollVote: 'FeedPollVote',
   EventAttendance: 'EventAttendance',
   FeedComment: 'FeedComment',
   FeedReaction: 'FeedReaction',
@@ -359,6 +362,40 @@ export const FeedPostScalarFieldEnum = {
 } as const
 
 export type FeedPostScalarFieldEnum = (typeof FeedPostScalarFieldEnum)[keyof typeof FeedPostScalarFieldEnum]
+
+
+export const FeedPollScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  question: 'question',
+  visibility: 'visibility',
+  allowMultiple: 'allowMultiple',
+  closesAt: 'closesAt',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedPollScalarFieldEnum = (typeof FeedPollScalarFieldEnum)[keyof typeof FeedPollScalarFieldEnum]
+
+
+export const FeedPollOptionScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  label: 'label',
+  order: 'order'
+} as const
+
+export type FeedPollOptionScalarFieldEnum = (typeof FeedPollOptionScalarFieldEnum)[keyof typeof FeedPollOptionScalarFieldEnum]
+
+
+export const FeedPollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  optionId: 'optionId',
+  employeeId: 'employeeId',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedPollVoteScalarFieldEnum = (typeof FeedPollVoteScalarFieldEnum)[keyof typeof FeedPollVoteScalarFieldEnum]
 
 
 export const EventAttendanceScalarFieldEnum = {

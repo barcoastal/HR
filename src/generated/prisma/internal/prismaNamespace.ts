@@ -396,6 +396,9 @@ export const ModelName = {
   DepartmentReviewTemplate: 'DepartmentReviewTemplate',
   Review: 'Review',
   FeedPost: 'FeedPost',
+  FeedPoll: 'FeedPoll',
+  FeedPollOption: 'FeedPollOption',
+  FeedPollVote: 'FeedPollVote',
   EventAttendance: 'EventAttendance',
   FeedComment: 'FeedComment',
   FeedReaction: 'FeedReaction',
@@ -460,7 +463,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1349,6 +1352,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FeedPostCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FeedPostCountAggregateOutputType> | number
+        }
+      }
+    }
+    FeedPoll: {
+      payload: Prisma.$FeedPollPayload<ExtArgs>
+      fields: Prisma.FeedPollFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FeedPollFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FeedPollFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        findFirst: {
+          args: Prisma.FeedPollFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FeedPollFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        findMany: {
+          args: Prisma.FeedPollFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>[]
+        }
+        create: {
+          args: Prisma.FeedPollCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        createMany: {
+          args: Prisma.FeedPollCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FeedPollCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>[]
+        }
+        delete: {
+          args: Prisma.FeedPollDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        update: {
+          args: Prisma.FeedPollUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        deleteMany: {
+          args: Prisma.FeedPollDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FeedPollUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FeedPollUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>[]
+        }
+        upsert: {
+          args: Prisma.FeedPollUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollPayload>
+        }
+        aggregate: {
+          args: Prisma.FeedPollAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFeedPoll>
+        }
+        groupBy: {
+          args: Prisma.FeedPollGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FeedPollCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollCountAggregateOutputType> | number
+        }
+      }
+    }
+    FeedPollOption: {
+      payload: Prisma.$FeedPollOptionPayload<ExtArgs>
+      fields: Prisma.FeedPollOptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FeedPollOptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FeedPollOptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        findFirst: {
+          args: Prisma.FeedPollOptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FeedPollOptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        findMany: {
+          args: Prisma.FeedPollOptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>[]
+        }
+        create: {
+          args: Prisma.FeedPollOptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        createMany: {
+          args: Prisma.FeedPollOptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FeedPollOptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>[]
+        }
+        delete: {
+          args: Prisma.FeedPollOptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        update: {
+          args: Prisma.FeedPollOptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.FeedPollOptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FeedPollOptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FeedPollOptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.FeedPollOptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollOptionPayload>
+        }
+        aggregate: {
+          args: Prisma.FeedPollOptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFeedPollOption>
+        }
+        groupBy: {
+          args: Prisma.FeedPollOptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollOptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FeedPollOptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollOptionCountAggregateOutputType> | number
+        }
+      }
+    }
+    FeedPollVote: {
+      payload: Prisma.$FeedPollVotePayload<ExtArgs>
+      fields: Prisma.FeedPollVoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FeedPollVoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FeedPollVoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        findFirst: {
+          args: Prisma.FeedPollVoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FeedPollVoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        findMany: {
+          args: Prisma.FeedPollVoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>[]
+        }
+        create: {
+          args: Prisma.FeedPollVoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        createMany: {
+          args: Prisma.FeedPollVoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FeedPollVoteCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>[]
+        }
+        delete: {
+          args: Prisma.FeedPollVoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        update: {
+          args: Prisma.FeedPollVoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        deleteMany: {
+          args: Prisma.FeedPollVoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FeedPollVoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FeedPollVoteUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>[]
+        }
+        upsert: {
+          args: Prisma.FeedPollVoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FeedPollVotePayload>
+        }
+        aggregate: {
+          args: Prisma.FeedPollVoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFeedPollVote>
+        }
+        groupBy: {
+          args: Prisma.FeedPollVoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollVoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FeedPollVoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FeedPollVoteCountAggregateOutputType> | number
         }
       }
     }
@@ -5248,6 +5473,40 @@ export const FeedPostScalarFieldEnum = {
 export type FeedPostScalarFieldEnum = (typeof FeedPostScalarFieldEnum)[keyof typeof FeedPostScalarFieldEnum]
 
 
+export const FeedPollScalarFieldEnum = {
+  id: 'id',
+  postId: 'postId',
+  question: 'question',
+  visibility: 'visibility',
+  allowMultiple: 'allowMultiple',
+  closesAt: 'closesAt',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedPollScalarFieldEnum = (typeof FeedPollScalarFieldEnum)[keyof typeof FeedPollScalarFieldEnum]
+
+
+export const FeedPollOptionScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  label: 'label',
+  order: 'order'
+} as const
+
+export type FeedPollOptionScalarFieldEnum = (typeof FeedPollOptionScalarFieldEnum)[keyof typeof FeedPollOptionScalarFieldEnum]
+
+
+export const FeedPollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  optionId: 'optionId',
+  employeeId: 'employeeId',
+  createdAt: 'createdAt'
+} as const
+
+export type FeedPollVoteScalarFieldEnum = (typeof FeedPollVoteScalarFieldEnum)[keyof typeof FeedPollVoteScalarFieldEnum]
+
+
 export const EventAttendanceScalarFieldEnum = {
   id: 'id',
   feedPostId: 'feedPostId',
@@ -6181,6 +6440,20 @@ export type ListEnumFeedPostTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'PollVisibility'
+ */
+export type EnumPollVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollVisibility'>
+    
+
+
+/**
+ * Reference to a field of type 'PollVisibility[]'
+ */
+export type ListEnumPollVisibilityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PollVisibility[]'>
+    
+
+
+/**
  * Reference to a field of type 'AttendanceStatus'
  */
 export type EnumAttendanceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceStatus'>
@@ -6566,6 +6839,9 @@ export type GlobalOmitConfig = {
   departmentReviewTemplate?: Prisma.DepartmentReviewTemplateOmit
   review?: Prisma.ReviewOmit
   feedPost?: Prisma.FeedPostOmit
+  feedPoll?: Prisma.FeedPollOmit
+  feedPollOption?: Prisma.FeedPollOptionOmit
+  feedPollVote?: Prisma.FeedPollVoteOmit
   eventAttendance?: Prisma.EventAttendanceOmit
   feedComment?: Prisma.FeedCommentOmit
   feedReaction?: Prisma.FeedReactionOmit

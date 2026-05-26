@@ -261,6 +261,7 @@ export type FeedPostWhereInput = {
   attachments?: Prisma.PostAttachmentListRelationFilter
   emergencyAlert?: Prisma.XOR<Prisma.EmergencyAlertNullableScalarRelationFilter, Prisma.EmergencyAlertWhereInput> | null
   attendees?: Prisma.EventAttendanceListRelationFilter
+  poll?: Prisma.XOR<Prisma.FeedPollNullableScalarRelationFilter, Prisma.FeedPollWhereInput> | null
 }
 
 export type FeedPostOrderByWithRelationInput = {
@@ -285,6 +286,7 @@ export type FeedPostOrderByWithRelationInput = {
   attachments?: Prisma.PostAttachmentOrderByRelationAggregateInput
   emergencyAlert?: Prisma.EmergencyAlertOrderByWithRelationInput
   attendees?: Prisma.EventAttendanceOrderByRelationAggregateInput
+  poll?: Prisma.FeedPollOrderByWithRelationInput
 }
 
 export type FeedPostWhereUniqueInput = Prisma.AtLeast<{
@@ -312,6 +314,7 @@ export type FeedPostWhereUniqueInput = Prisma.AtLeast<{
   attachments?: Prisma.PostAttachmentListRelationFilter
   emergencyAlert?: Prisma.XOR<Prisma.EmergencyAlertNullableScalarRelationFilter, Prisma.EmergencyAlertWhereInput> | null
   attendees?: Prisma.EventAttendanceListRelationFilter
+  poll?: Prisma.XOR<Prisma.FeedPollNullableScalarRelationFilter, Prisma.FeedPollWhereInput> | null
 }, "id">
 
 export type FeedPostOrderByWithAggregationInput = {
@@ -374,6 +377,7 @@ export type FeedPostCreateInput = {
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateInput = {
@@ -396,6 +400,7 @@ export type FeedPostUncheckedCreateInput = {
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUpdateInput = {
@@ -418,6 +423,7 @@ export type FeedPostUpdateInput = {
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateInput = {
@@ -440,6 +446,7 @@ export type FeedPostUncheckedUpdateInput = {
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateManyInput = {
@@ -645,6 +652,20 @@ export type EnumFeedPostTypeFieldUpdateOperationsInput = {
   set?: $Enums.FeedPostType
 }
 
+export type FeedPostCreateNestedOneWithoutPollInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutPollInput, Prisma.FeedPostUncheckedCreateWithoutPollInput>
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutPollInput
+  connect?: Prisma.FeedPostWhereUniqueInput
+}
+
+export type FeedPostUpdateOneRequiredWithoutPollNestedInput = {
+  create?: Prisma.XOR<Prisma.FeedPostCreateWithoutPollInput, Prisma.FeedPostUncheckedCreateWithoutPollInput>
+  connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutPollInput
+  upsert?: Prisma.FeedPostUpsertWithoutPollInput
+  connect?: Prisma.FeedPostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FeedPostUpdateToOneWithWhereWithoutPollInput, Prisma.FeedPostUpdateWithoutPollInput>, Prisma.FeedPostUncheckedUpdateWithoutPollInput>
+}
+
 export type FeedPostCreateNestedOneWithoutAttendeesInput = {
   create?: Prisma.XOR<Prisma.FeedPostCreateWithoutAttendeesInput, Prisma.FeedPostUncheckedCreateWithoutAttendeesInput>
   connectOrCreate?: Prisma.FeedPostCreateOrConnectWithoutAttendeesInput
@@ -734,6 +755,7 @@ export type FeedPostCreateWithoutAuthorInput = {
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutAuthorInput = {
@@ -755,6 +777,7 @@ export type FeedPostUncheckedCreateWithoutAuthorInput = {
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutAuthorInput = {
@@ -786,6 +809,7 @@ export type FeedPostCreateWithoutMentionedEmployeeInput = {
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutMentionedEmployeeInput = {
@@ -807,6 +831,7 @@ export type FeedPostUncheckedCreateWithoutMentionedEmployeeInput = {
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutMentionedEmployeeInput = {
@@ -871,6 +896,110 @@ export type FeedPostUpdateManyWithWhereWithoutMentionedEmployeeInput = {
   data: Prisma.XOR<Prisma.FeedPostUpdateManyMutationInput, Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput>
 }
 
+export type FeedPostCreateWithoutPollInput = {
+  id?: string
+  content: string
+  type?: $Enums.FeedPostType
+  pinned?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventDate?: Date | string | null
+  eventEndDate?: Date | string | null
+  eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
+  author: Prisma.EmployeeCreateNestedOneWithoutFeedPostsInput
+  mentionedEmployee?: Prisma.EmployeeCreateNestedOneWithoutMentionedInPostsInput
+  comments?: Prisma.FeedCommentCreateNestedManyWithoutPostInput
+  reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
+  attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
+  emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
+  attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+}
+
+export type FeedPostUncheckedCreateWithoutPollInput = {
+  id?: string
+  authorId: string
+  content: string
+  type?: $Enums.FeedPostType
+  pinned?: boolean
+  mentionedEmployeeId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  eventDate?: Date | string | null
+  eventEndDate?: Date | string | null
+  eventLocation?: string | null
+  notifyViaEmail?: boolean
+  emailTargetType?: string
+  emailTargetIds?: string | null
+  comments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutPostInput
+  reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
+  attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
+  emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
+  attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+}
+
+export type FeedPostCreateOrConnectWithoutPollInput = {
+  where: Prisma.FeedPostWhereUniqueInput
+  create: Prisma.XOR<Prisma.FeedPostCreateWithoutPollInput, Prisma.FeedPostUncheckedCreateWithoutPollInput>
+}
+
+export type FeedPostUpsertWithoutPollInput = {
+  update: Prisma.XOR<Prisma.FeedPostUpdateWithoutPollInput, Prisma.FeedPostUncheckedUpdateWithoutPollInput>
+  create: Prisma.XOR<Prisma.FeedPostCreateWithoutPollInput, Prisma.FeedPostUncheckedCreateWithoutPollInput>
+  where?: Prisma.FeedPostWhereInput
+}
+
+export type FeedPostUpdateToOneWithWhereWithoutPollInput = {
+  where?: Prisma.FeedPostWhereInput
+  data: Prisma.XOR<Prisma.FeedPostUpdateWithoutPollInput, Prisma.FeedPostUncheckedUpdateWithoutPollInput>
+}
+
+export type FeedPostUpdateWithoutPollInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  author?: Prisma.EmployeeUpdateOneRequiredWithoutFeedPostsNestedInput
+  mentionedEmployee?: Prisma.EmployeeUpdateOneWithoutMentionedInPostsNestedInput
+  comments?: Prisma.FeedCommentUpdateManyWithoutPostNestedInput
+  reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
+  attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
+  emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
+  attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+}
+
+export type FeedPostUncheckedUpdateWithoutPollInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFeedPostTypeFieldUpdateOperationsInput | $Enums.FeedPostType
+  pinned?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mentionedEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventEndDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notifyViaEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailTargetType?: Prisma.StringFieldUpdateOperationsInput | string
+  emailTargetIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comments?: Prisma.FeedCommentUncheckedUpdateManyWithoutPostNestedInput
+  reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
+  attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
+  emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
+  attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+}
+
 export type FeedPostCreateWithoutAttendeesInput = {
   id?: string
   content: string
@@ -890,6 +1019,7 @@ export type FeedPostCreateWithoutAttendeesInput = {
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutAttendeesInput = {
@@ -911,6 +1041,7 @@ export type FeedPostUncheckedCreateWithoutAttendeesInput = {
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutAttendeesInput = {
@@ -948,6 +1079,7 @@ export type FeedPostUpdateWithoutAttendeesInput = {
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutAttendeesInput = {
@@ -969,6 +1101,7 @@ export type FeedPostUncheckedUpdateWithoutAttendeesInput = {
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateWithoutCommentsInput = {
@@ -990,6 +1123,7 @@ export type FeedPostCreateWithoutCommentsInput = {
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutCommentsInput = {
@@ -1011,6 +1145,7 @@ export type FeedPostUncheckedCreateWithoutCommentsInput = {
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutCommentsInput = {
@@ -1048,6 +1183,7 @@ export type FeedPostUpdateWithoutCommentsInput = {
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutCommentsInput = {
@@ -1069,6 +1205,7 @@ export type FeedPostUncheckedUpdateWithoutCommentsInput = {
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateWithoutReactionsInput = {
@@ -1090,6 +1227,7 @@ export type FeedPostCreateWithoutReactionsInput = {
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutReactionsInput = {
@@ -1111,6 +1249,7 @@ export type FeedPostUncheckedCreateWithoutReactionsInput = {
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutReactionsInput = {
@@ -1148,6 +1287,7 @@ export type FeedPostUpdateWithoutReactionsInput = {
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutReactionsInput = {
@@ -1169,6 +1309,7 @@ export type FeedPostUncheckedUpdateWithoutReactionsInput = {
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateWithoutAttachmentsInput = {
@@ -1190,6 +1331,7 @@ export type FeedPostCreateWithoutAttachmentsInput = {
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutAttachmentsInput = {
@@ -1211,6 +1353,7 @@ export type FeedPostUncheckedCreateWithoutAttachmentsInput = {
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedCreateNestedOneWithoutFeedPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutAttachmentsInput = {
@@ -1248,6 +1391,7 @@ export type FeedPostUpdateWithoutAttachmentsInput = {
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
@@ -1269,6 +1413,7 @@ export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateWithoutEmergencyAlertInput = {
@@ -1290,6 +1435,7 @@ export type FeedPostCreateWithoutEmergencyAlertInput = {
   reactions?: Prisma.FeedReactionCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentCreateNestedManyWithoutPostInput
   attendees?: Prisma.EventAttendanceCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostUncheckedCreateWithoutEmergencyAlertInput = {
@@ -1311,6 +1457,7 @@ export type FeedPostUncheckedCreateWithoutEmergencyAlertInput = {
   reactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutPostInput
   attachments?: Prisma.PostAttachmentUncheckedCreateNestedManyWithoutPostInput
   attendees?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutFeedPostInput
+  poll?: Prisma.FeedPollUncheckedCreateNestedOneWithoutPostInput
 }
 
 export type FeedPostCreateOrConnectWithoutEmergencyAlertInput = {
@@ -1348,6 +1495,7 @@ export type FeedPostUpdateWithoutEmergencyAlertInput = {
   reactions?: Prisma.FeedReactionUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutEmergencyAlertInput = {
@@ -1369,6 +1517,7 @@ export type FeedPostUncheckedUpdateWithoutEmergencyAlertInput = {
   reactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutPostNestedInput
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostCreateManyAuthorInput = {
@@ -1422,6 +1571,7 @@ export type FeedPostUpdateWithoutAuthorInput = {
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutAuthorInput = {
@@ -1443,6 +1593,7 @@ export type FeedPostUncheckedUpdateWithoutAuthorInput = {
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateManyWithoutAuthorInput = {
@@ -1480,6 +1631,7 @@ export type FeedPostUpdateWithoutMentionedEmployeeInput = {
   attachments?: Prisma.PostAttachmentUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateWithoutMentionedEmployeeInput = {
@@ -1501,6 +1653,7 @@ export type FeedPostUncheckedUpdateWithoutMentionedEmployeeInput = {
   attachments?: Prisma.PostAttachmentUncheckedUpdateManyWithoutPostNestedInput
   emergencyAlert?: Prisma.EmergencyAlertUncheckedUpdateOneWithoutFeedPostNestedInput
   attendees?: Prisma.EventAttendanceUncheckedUpdateManyWithoutFeedPostNestedInput
+  poll?: Prisma.FeedPollUncheckedUpdateOneWithoutPostNestedInput
 }
 
 export type FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput = {
@@ -1599,6 +1752,7 @@ export type FeedPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   attachments?: boolean | Prisma.FeedPost$attachmentsArgs<ExtArgs>
   emergencyAlert?: boolean | Prisma.FeedPost$emergencyAlertArgs<ExtArgs>
   attendees?: boolean | Prisma.FeedPost$attendeesArgs<ExtArgs>
+  poll?: boolean | Prisma.FeedPost$pollArgs<ExtArgs>
   _count?: boolean | Prisma.FeedPostCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["feedPost"]>
 
@@ -1666,6 +1820,7 @@ export type FeedPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   attachments?: boolean | Prisma.FeedPost$attachmentsArgs<ExtArgs>
   emergencyAlert?: boolean | Prisma.FeedPost$emergencyAlertArgs<ExtArgs>
   attendees?: boolean | Prisma.FeedPost$attendeesArgs<ExtArgs>
+  poll?: boolean | Prisma.FeedPost$pollArgs<ExtArgs>
   _count?: boolean | Prisma.FeedPostCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FeedPostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1687,6 +1842,7 @@ export type $FeedPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     attachments: Prisma.$PostAttachmentPayload<ExtArgs>[]
     emergencyAlert: Prisma.$EmergencyAlertPayload<ExtArgs> | null
     attendees: Prisma.$EventAttendancePayload<ExtArgs>[]
+    poll: Prisma.$FeedPollPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2104,6 +2260,7 @@ export interface Prisma__FeedPostClient<T, Null = never, ExtArgs extends runtime
   attachments<T extends Prisma.FeedPost$attachmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emergencyAlert<T extends Prisma.FeedPost$emergencyAlertArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$emergencyAlertArgs<ExtArgs>>): Prisma.Prisma__EmergencyAlertClient<runtime.Types.Result.GetResult<Prisma.$EmergencyAlertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   attendees<T extends Prisma.FeedPost$attendeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$attendeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  poll<T extends Prisma.FeedPost$pollArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FeedPost$pollArgs<ExtArgs>>): Prisma.Prisma__FeedPollClient<runtime.Types.Result.GetResult<Prisma.$FeedPollPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2674,6 +2831,25 @@ export type FeedPost$attendeesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.EventAttendanceScalarFieldEnum | Prisma.EventAttendanceScalarFieldEnum[]
+}
+
+/**
+ * FeedPost.poll
+ */
+export type FeedPost$pollArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FeedPoll
+   */
+  select?: Prisma.FeedPollSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FeedPoll
+   */
+  omit?: Prisma.FeedPollOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FeedPollInclude<ExtArgs> | null
+  where?: Prisma.FeedPollWhereInput
 }
 
 /**

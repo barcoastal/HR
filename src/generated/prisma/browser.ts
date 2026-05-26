@@ -78,6 +78,21 @@ export type Review = Prisma.ReviewModel
  */
 export type FeedPost = Prisma.FeedPostModel
 /**
+ * Model FeedPoll
+ * 
+ */
+export type FeedPoll = Prisma.FeedPollModel
+/**
+ * Model FeedPollOption
+ * 
+ */
+export type FeedPollOption = Prisma.FeedPollOptionModel
+/**
+ * Model FeedPollVote
+ * 
+ */
+export type FeedPollVote = Prisma.FeedPollVoteModel
+/**
  * Model EventAttendance
  * 
  */
