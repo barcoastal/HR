@@ -346,6 +346,51 @@ export function CandidateDetailDialog({
     }
   }, [candidate]);
 
+  // Auto-poll background-check status while the dialog is open and the check
+  // is still resolving. Hits the GET endpoint which queries
+  // backgroundchecks.com, persists any change, and fires the
+  // BACKGROUND_CHECK_COMPLETE notification. Stops once we see PASSED/FAILED.
+  useEffect(() => {
+    if (!open || !candidate) return;
+    if (candidate.status !== "BACKGROUND_CHECK") return;
+    if (!candidate.backgroundCheckId) return;
+    // Skip polling when the persisted status is already resolved.
+    const persisted = candidate.backgroundCheckStatus;
+    if (persisted === "PASSED" || persisted === "FAILED") return;
+
+    let cancelled = false;
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    const candidateId = candidate.id;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/background-check?candidateId=${candidateId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.status) {
+          setBgCheckStatus((prev) => {
+            if (prev === data.status) return prev;
+            if (data.status === "PASSED" || data.status === "FAILED") {
+              router.refresh();
+              if (intervalId) clearInterval(intervalId);
+            }
+            return data.status;
+          });
+        }
+      } catch {
+        // Network blip — next tick will retry.
+      }
+    };
+
+    poll();
+    intervalId = setInterval(poll, 20_000);
+    return () => {
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [open, candidate, router]);
+
   function update(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
   }
