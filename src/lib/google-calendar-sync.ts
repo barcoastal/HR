@@ -157,6 +157,61 @@ export async function fetchGoogleCalendarEvents(
   return data.items ?? [];
 }
 
+/**
+ * Create a 1:1 calendar event on the manager's *own* primary calendar — that
+ * way the manager is the organizer (instead of whoever connected the platform-
+ * wide Google Calendar in Settings). Includes the employee as an attendee and
+ * a Google Meet link. Returns null if the manager hasn't connected their own
+ * calendar — callers should fall back to the shared connection.
+ */
+export async function createOneOnOneEventForUser(
+  userId: string,
+  params: {
+    summary: string;
+    description?: string;
+    startTime: Date;
+    durationMinutes: number;
+    employeeEmail: string;
+    oneOnOneId: string;
+  },
+): Promise<{ eventId: string; meetLink: string | null }> {
+  const { accessToken } = await ensureValidToken(userId);
+  const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
+
+  const body = {
+    summary: params.summary,
+    description: params.description,
+    start: { dateTime: params.startTime.toISOString() },
+    end: { dateTime: endTime.toISOString() },
+    attendees: [{ email: params.employeeEmail }],
+    conferenceData: {
+      createRequest: {
+        requestId: `one-on-one-${params.oneOnOneId}-${Date.now()}`,
+        conferenceSolutionKey: { type: "hangoutsMeet" },
+      },
+    },
+    reminders: { useDefault: true },
+  };
+
+  const res = await fetch(
+    "https://www.googleapis.com/calendar/v3/calendars/primary/events?conferenceDataVersion=1&sendUpdates=all",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    },
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Google Calendar API error ${res.status}: ${text}`);
+  }
+  const data = (await res.json()) as { id?: string; hangoutLink?: string };
+  return { eventId: data.id ?? "", meetLink: data.hangoutLink ?? null };
+}
+
 export async function pushEventToGoogleCalendar(
   userId: string,
   event: {

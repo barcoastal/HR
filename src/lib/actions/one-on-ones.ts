@@ -11,7 +11,25 @@ import {
   cancelOneOnOneEvent,
   isCalendarConnected,
 } from "@/lib/google-calendar";
+import { createOneOnOneEventForUser } from "@/lib/google-calendar-sync";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
+
+/**
+ * Look up the manager's User and, if they have their own Google Calendar
+ * connected, return a userId so we can create the event on their calendar
+ * (and they become the organizer). Returns null when the manager hasn't
+ * personally connected — callers fall back to the platform-wide connection.
+ */
+async function getManagerCalendarUserId(managerEmployeeId: string): Promise<string | null> {
+  const user = await db.user.findUnique({
+    where: { employeeId: managerEmployeeId },
+    select: { id: true, googleCalendarSyncEnabled: true, googleCalendarAccessToken: true, googleCalendarRefreshToken: true },
+  });
+  if (!user) return null;
+  if (!user.googleCalendarSyncEnabled) return null;
+  if (!user.googleCalendarAccessToken || !user.googleCalendarRefreshToken) return null;
+  return user.id;
+}
 
 const DEFAULT_TIME = { hour: 10, minute: 0 };
 const DEFAULT_DURATION_MIN = 30;
@@ -434,7 +452,6 @@ const TYPE_LABEL: Record<OneOnOneType, string> = {
  * exists in the DB and the event can be created later via sendInvite().
  */
 async function autoCreateGoogleEvent(oneOnOneId: string) {
-  if (!(await isCalendarConnected())) return;
   const m = await db.oneOnOne.findUnique({
     where: { id: oneOnOneId },
     include: {
@@ -443,11 +460,38 @@ async function autoCreateGoogleEvent(oneOnOneId: string) {
     },
   });
   if (!m || m.googleEventId) return;
+  const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
+  const description = "1:1 Performance Review";
+
+  // Prefer the manager's own Google Calendar so they're the organizer.
+  const managerUserId = await getManagerCalendarUserId(m.managerId);
+  if (managerUserId) {
+    try {
+      const { eventId, meetLink } = await createOneOnOneEventForUser(managerUserId, {
+        summary,
+        description,
+        startTime: m.scheduledAt,
+        durationMinutes: DEFAULT_DURATION_MIN,
+        employeeEmail: m.employee.email,
+        oneOnOneId: m.id,
+      });
+      await db.oneOnOne.update({
+        where: { id: m.id },
+        data: { googleEventId: eventId || null, meetingLink: meetLink || null },
+      });
+      return;
+    } catch (err) {
+      console.error("[one-on-one] manager-calendar create failed, trying shared:", err);
+      // fall through to shared connection
+    }
+  }
+
+  // Fallback: shared platform-wide Google Calendar (whoever connected it).
+  if (!(await isCalendarConnected())) return;
   try {
-    const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
     const { eventId, meetLink } = await createOneOnOneEvent({
       summary,
-      description: "1:1 Performance Review",
+      description,
       startTime: m.scheduledAt,
       durationMinutes: DEFAULT_DURATION_MIN,
       managerEmail: m.manager.email,
@@ -456,10 +500,7 @@ async function autoCreateGoogleEvent(oneOnOneId: string) {
     });
     await db.oneOnOne.update({
       where: { id: m.id },
-      data: {
-        googleEventId: eventId || null,
-        meetingLink: meetLink || null,
-      },
+      data: { googleEventId: eventId || null, meetingLink: meetLink || null },
     });
   } catch (err) {
     console.error("[one-on-one] auto-create Google event failed:", err);
@@ -483,6 +524,30 @@ export async function sendInvite(meetingId: string) {
 
   // Preferred path: create a real Google Calendar event with Meet so the
   // meeting auto-lands on both calendars and the join link is ready.
+  // Prefer the manager's own connected Google Calendar so they're the
+  // organizer, not whoever connected the shared integration.
+  const managerUserId = await getManagerCalendarUserId(m.managerId);
+  if (managerUserId) {
+    try {
+      const { eventId, meetLink } = await createOneOnOneEventForUser(managerUserId, {
+        summary,
+        description,
+        startTime: m.scheduledAt,
+        durationMinutes: DEFAULT_DURATION_MIN,
+        employeeEmail: m.employee.email,
+        oneOnOneId: m.id,
+      });
+      await db.oneOnOne.update({
+        where: { id: m.id },
+        data: { googleEventId: eventId || null, meetingLink: meetLink || m.meetingLink },
+      });
+      revalidatePath(`/one-on-ones/${m.id}`);
+      return { success: true, meetLink };
+    } catch (err) {
+      console.error("[one-on-one] manager-calendar invite failed, trying shared:", err);
+      // fall through to shared / ics
+    }
+  }
   if (await isCalendarConnected()) {
     try {
       const { eventId, meetLink } = await createOneOnOneEvent({
