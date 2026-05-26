@@ -618,6 +618,9 @@ model EmergencyAlert {
   emailsFailed Int      @default(0)
   smsFailed    Int      @default(0)
   status       String   @default("SENDING")
+  // JSON arrays of { name, email, reason } so HR can see who didn't get the alert.
+  failedRecipients   String?
+  skippedRecipients  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

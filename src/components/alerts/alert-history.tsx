@@ -1,5 +1,10 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import { useState } from "react";
+
+type RecipientLog = { name: string; email: string; reason: string };
 
 type Alert = {
   id: string;
@@ -9,10 +14,22 @@ type Alert = {
   smsSent: number;
   emailsFailed: number;
   smsFailed: number;
+  failedRecipients?: string | null;
+  skippedRecipients?: string | null;
   createdAt: Date;
   sentBy: { firstName: string; lastName: string };
   feedPost: { content: string };
 };
+
+function parseRecipients(json: string | null | undefined): RecipientLog[] {
+  if (!json) return [];
+  try {
+    const arr = JSON.parse(json);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
 
 export function AlertHistory({ alerts }: { alerts: Alert[] }) {
   if (alerts.length === 0) {
@@ -33,8 +50,20 @@ export function AlertHistory({ alerts }: { alerts: Alert[] }) {
   return (
     <div className="space-y-4">
       {alerts.map((alert) => (
+        <AlertRow key={alert.id} alert={alert} />
+      ))}
+    </div>
+  );
+}
+
+function AlertRow({ alert }: { alert: Alert }) {
+  const [expanded, setExpanded] = useState(false);
+  const failed = parseRecipients(alert.failedRecipients);
+  const skipped = parseRecipients(alert.skippedRecipients);
+  const hasIssues = failed.length > 0 || skipped.length > 0;
+
+  return (
         <div
-          key={alert.id}
           className="glass rounded-[var(--radius-xl)] p-5 border-l-4 border-l-red-500"
         >
           <div className="flex items-start justify-between gap-4">
@@ -93,8 +122,42 @@ export function AlertHistory({ alerts }: { alerts: Alert[] }) {
               </div>
             </div>
           </div>
+
+          {hasIssues && (
+            <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
+              <button
+                onClick={() => setExpanded((v) => !v)}
+                className="flex items-center gap-2 text-xs font-medium text-amber-600 hover:underline"
+              >
+                <Icon name={expanded ? "expand_less" : "expand_more"} size={14} />
+                {failed.length + skipped.length} recipient{failed.length + skipped.length === 1 ? "" : "s"} didn't get the alert
+                {failed.length > 0 && <span className="text-red-500">· {failed.length} failed</span>}
+                {skipped.length > 0 && <span className="text-amber-500">· {skipped.length} skipped</span>}
+              </button>
+              {expanded && (
+                <div className="mt-2 space-y-1.5">
+                  {failed.map((r, i) => (
+                    <div key={`f-${i}`} className="flex items-start justify-between gap-3 text-xs rounded-md bg-red-500/5 border border-red-500/10 px-2 py-1.5">
+                      <div className="min-w-0">
+                        <p className="font-medium text-[var(--color-on-surface)] truncate">{r.name}</p>
+                        <p className="text-[10px] text-[var(--color-text-muted)] truncate">{r.email}</p>
+                      </div>
+                      <p className="text-[10px] text-red-500 text-right shrink-0 max-w-[60%]">{r.reason}</p>
+                    </div>
+                  ))}
+                  {skipped.map((r, i) => (
+                    <div key={`s-${i}`} className="flex items-start justify-between gap-3 text-xs rounded-md bg-amber-500/5 border border-amber-500/10 px-2 py-1.5">
+                      <div className="min-w-0">
+                        <p className="font-medium text-[var(--color-on-surface)] truncate">{r.name}</p>
+                        <p className="text-[10px] text-[var(--color-text-muted)] truncate">{r.email || "—"}</p>
+                      </div>
+                      <p className="text-[10px] text-amber-600 text-right shrink-0 max-w-[60%]">{r.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      ))}
-    </div>
   );
 }

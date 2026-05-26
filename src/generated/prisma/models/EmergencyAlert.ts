@@ -50,6 +50,8 @@ export type EmergencyAlertMinAggregateOutputType = {
   emailsFailed: number | null
   smsFailed: number | null
   status: string | null
+  failedRecipients: string | null
+  skippedRecipients: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +66,8 @@ export type EmergencyAlertMaxAggregateOutputType = {
   emailsFailed: number | null
   smsFailed: number | null
   status: string | null
+  failedRecipients: string | null
+  skippedRecipients: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -78,6 +82,8 @@ export type EmergencyAlertCountAggregateOutputType = {
   emailsFailed: number
   smsFailed: number
   status: number
+  failedRecipients: number
+  skippedRecipients: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -108,6 +114,8 @@ export type EmergencyAlertMinAggregateInputType = {
   emailsFailed?: true
   smsFailed?: true
   status?: true
+  failedRecipients?: true
+  skippedRecipients?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -122,6 +130,8 @@ export type EmergencyAlertMaxAggregateInputType = {
   emailsFailed?: true
   smsFailed?: true
   status?: true
+  failedRecipients?: true
+  skippedRecipients?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -136,6 +146,8 @@ export type EmergencyAlertCountAggregateInputType = {
   emailsFailed?: true
   smsFailed?: true
   status?: true
+  failedRecipients?: true
+  skippedRecipients?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -237,6 +249,8 @@ export type EmergencyAlertGroupByOutputType = {
   emailsFailed: number
   smsFailed: number
   status: string
+  failedRecipients: string | null
+  skippedRecipients: string | null
   createdAt: Date
   updatedAt: Date
   _count: EmergencyAlertCountAggregateOutputType | null
@@ -274,6 +288,8 @@ export type EmergencyAlertWhereInput = {
   emailsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   smsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   status?: Prisma.StringFilter<"EmergencyAlert"> | string
+  failedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
+  skippedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
   feedPost?: Prisma.XOR<Prisma.FeedPostScalarRelationFilter, Prisma.FeedPostWhereInput>
@@ -290,6 +306,8 @@ export type EmergencyAlertOrderByWithRelationInput = {
   emailsFailed?: Prisma.SortOrder
   smsFailed?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedRecipients?: Prisma.SortOrderInput | Prisma.SortOrder
+  skippedRecipients?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   feedPost?: Prisma.FeedPostOrderByWithRelationInput
@@ -309,6 +327,8 @@ export type EmergencyAlertWhereUniqueInput = Prisma.AtLeast<{
   emailsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   smsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   status?: Prisma.StringFilter<"EmergencyAlert"> | string
+  failedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
+  skippedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
   feedPost?: Prisma.XOR<Prisma.FeedPostScalarRelationFilter, Prisma.FeedPostWhereInput>
@@ -325,6 +345,8 @@ export type EmergencyAlertOrderByWithAggregationInput = {
   emailsFailed?: Prisma.SortOrder
   smsFailed?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedRecipients?: Prisma.SortOrderInput | Prisma.SortOrder
+  skippedRecipients?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmergencyAlertCountOrderByAggregateInput
@@ -347,6 +369,8 @@ export type EmergencyAlertScalarWhereWithAggregatesInput = {
   emailsFailed?: Prisma.IntWithAggregatesFilter<"EmergencyAlert"> | number
   smsFailed?: Prisma.IntWithAggregatesFilter<"EmergencyAlert"> | number
   status?: Prisma.StringWithAggregatesFilter<"EmergencyAlert"> | string
+  failedRecipients?: Prisma.StringNullableWithAggregatesFilter<"EmergencyAlert"> | string | null
+  skippedRecipients?: Prisma.StringNullableWithAggregatesFilter<"EmergencyAlert"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"EmergencyAlert"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"EmergencyAlert"> | Date | string
 }
@@ -359,6 +383,8 @@ export type EmergencyAlertCreateInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   feedPost: Prisma.FeedPostCreateNestedOneWithoutEmergencyAlertInput
@@ -375,6 +401,8 @@ export type EmergencyAlertUncheckedCreateInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -387,6 +415,8 @@ export type EmergencyAlertUpdateInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedPost?: Prisma.FeedPostUpdateOneRequiredWithoutEmergencyAlertNestedInput
@@ -403,6 +433,8 @@ export type EmergencyAlertUncheckedUpdateInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -417,6 +449,8 @@ export type EmergencyAlertCreateManyInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -429,6 +463,8 @@ export type EmergencyAlertUpdateManyMutationInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,6 +479,8 @@ export type EmergencyAlertUncheckedUpdateManyInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -472,6 +510,8 @@ export type EmergencyAlertCountOrderByAggregateInput = {
   emailsFailed?: Prisma.SortOrder
   smsFailed?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedRecipients?: Prisma.SortOrder
+  skippedRecipients?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -493,6 +533,8 @@ export type EmergencyAlertMaxOrderByAggregateInput = {
   emailsFailed?: Prisma.SortOrder
   smsFailed?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedRecipients?: Prisma.SortOrder
+  skippedRecipients?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -507,6 +549,8 @@ export type EmergencyAlertMinOrderByAggregateInput = {
   emailsFailed?: Prisma.SortOrder
   smsFailed?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  failedRecipients?: Prisma.SortOrder
+  skippedRecipients?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -600,6 +644,8 @@ export type EmergencyAlertCreateWithoutSentByInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   feedPost: Prisma.FeedPostCreateNestedOneWithoutEmergencyAlertInput
@@ -614,6 +660,8 @@ export type EmergencyAlertUncheckedCreateWithoutSentByInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -657,6 +705,8 @@ export type EmergencyAlertScalarWhereInput = {
   emailsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   smsFailed?: Prisma.IntFilter<"EmergencyAlert"> | number
   status?: Prisma.StringFilter<"EmergencyAlert"> | string
+  failedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
+  skippedRecipients?: Prisma.StringNullableFilter<"EmergencyAlert"> | string | null
   createdAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"EmergencyAlert"> | Date | string
 }
@@ -669,6 +719,8 @@ export type EmergencyAlertCreateWithoutFeedPostInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sentBy: Prisma.EmployeeCreateNestedOneWithoutEmergencyAlertsInput
@@ -683,6 +735,8 @@ export type EmergencyAlertUncheckedCreateWithoutFeedPostInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -711,6 +765,8 @@ export type EmergencyAlertUpdateWithoutFeedPostInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sentBy?: Prisma.EmployeeUpdateOneRequiredWithoutEmergencyAlertsNestedInput
@@ -725,6 +781,8 @@ export type EmergencyAlertUncheckedUpdateWithoutFeedPostInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -738,6 +796,8 @@ export type EmergencyAlertCreateManySentByInput = {
   emailsFailed?: number
   smsFailed?: number
   status?: string
+  failedRecipients?: string | null
+  skippedRecipients?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -750,6 +810,8 @@ export type EmergencyAlertUpdateWithoutSentByInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   feedPost?: Prisma.FeedPostUpdateOneRequiredWithoutEmergencyAlertNestedInput
@@ -764,6 +826,8 @@ export type EmergencyAlertUncheckedUpdateWithoutSentByInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -777,6 +841,8 @@ export type EmergencyAlertUncheckedUpdateManyWithoutSentByInput = {
   emailsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   smsFailed?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skippedRecipients?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -793,6 +859,8 @@ export type EmergencyAlertSelect<ExtArgs extends runtime.Types.Extensions.Intern
   emailsFailed?: boolean
   smsFailed?: boolean
   status?: boolean
+  failedRecipients?: boolean
+  skippedRecipients?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   feedPost?: boolean | Prisma.FeedPostDefaultArgs<ExtArgs>
@@ -809,6 +877,8 @@ export type EmergencyAlertSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   emailsFailed?: boolean
   smsFailed?: boolean
   status?: boolean
+  failedRecipients?: boolean
+  skippedRecipients?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   feedPost?: boolean | Prisma.FeedPostDefaultArgs<ExtArgs>
@@ -825,6 +895,8 @@ export type EmergencyAlertSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   emailsFailed?: boolean
   smsFailed?: boolean
   status?: boolean
+  failedRecipients?: boolean
+  skippedRecipients?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   feedPost?: boolean | Prisma.FeedPostDefaultArgs<ExtArgs>
@@ -841,11 +913,13 @@ export type EmergencyAlertSelectScalar = {
   emailsFailed?: boolean
   smsFailed?: boolean
   status?: boolean
+  failedRecipients?: boolean
+  skippedRecipients?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmergencyAlertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "feedPostId" | "title" | "sentById" | "emailsSent" | "smsSent" | "emailsFailed" | "smsFailed" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["emergencyAlert"]>
+export type EmergencyAlertOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "feedPostId" | "title" | "sentById" | "emailsSent" | "smsSent" | "emailsFailed" | "smsFailed" | "status" | "failedRecipients" | "skippedRecipients" | "createdAt" | "updatedAt", ExtArgs["result"]["emergencyAlert"]>
 export type EmergencyAlertInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   feedPost?: boolean | Prisma.FeedPostDefaultArgs<ExtArgs>
   sentBy?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -875,6 +949,8 @@ export type $EmergencyAlertPayload<ExtArgs extends runtime.Types.Extensions.Inte
     emailsFailed: number
     smsFailed: number
     status: string
+    failedRecipients: string | null
+    skippedRecipients: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["emergencyAlert"]>
@@ -1311,6 +1387,8 @@ export interface EmergencyAlertFieldRefs {
   readonly emailsFailed: Prisma.FieldRef<"EmergencyAlert", 'Int'>
   readonly smsFailed: Prisma.FieldRef<"EmergencyAlert", 'Int'>
   readonly status: Prisma.FieldRef<"EmergencyAlert", 'String'>
+  readonly failedRecipients: Prisma.FieldRef<"EmergencyAlert", 'String'>
+  readonly skippedRecipients: Prisma.FieldRef<"EmergencyAlert", 'String'>
   readonly createdAt: Prisma.FieldRef<"EmergencyAlert", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"EmergencyAlert", 'DateTime'>
 }

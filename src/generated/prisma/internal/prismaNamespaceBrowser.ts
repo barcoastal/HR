@@ -454,6 +454,8 @@ export const EmergencyAlertScalarFieldEnum = {
   emailsFailed: 'emailsFailed',
   smsFailed: 'smsFailed',
   status: 'status',
+  failedRecipients: 'failedRecipients',
+  skippedRecipients: 'skippedRecipients',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

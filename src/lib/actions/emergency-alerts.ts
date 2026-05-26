@@ -66,7 +66,8 @@ function buildEmergencyEmailHtml(
 async function sendInBatches<T>(
   items: T[],
   fn: (item: T) => Promise<boolean>,
-  batchSize = 10
+  batchSize = 8,
+  delayBetweenBatchesMs = 1100,
 ): Promise<{ succeeded: number; failed: number }> {
   let succeeded = 0;
   let failed = 0;
@@ -78,9 +79,18 @@ async function sendInBatches<T>(
       if (r.status === "fulfilled" && r.value) succeeded++;
       else failed++;
     }
+    // Respect Resend's per-second rate limit. Skip the sleep after the last batch.
+    if (i + batchSize < items.length) {
+      await new Promise((resolve) => setTimeout(resolve, delayBetweenBatchesMs));
+    }
   }
 
   return { succeeded, failed };
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function isValidEmail(email: string | null | undefined): email is string {
+  return !!email && EMAIL_RE.test(email.trim());
 }
 
 export async function sendEmergencyAlert(title: string, message: string) {
@@ -98,7 +108,7 @@ export async function sendEmergencyAlert(title: string, message: string) {
 
   const employees = await db.employee.findMany({
     where: { status: "ACTIVE" },
-    select: { email: true, phone: true },
+    select: { firstName: true, lastName: true, email: true, phone: true },
   });
 
   const post = await db.feedPost.create({
@@ -131,8 +141,43 @@ export async function sendEmergencyAlert(title: string, message: string) {
     ? `${senderName} <${branding.senderEmail}>`
     : branding.senderEmail;
 
-  const emailResults = await sendInBatches(employees, async (emp) => {
-    if (!resend) return false;
+  type RecipientLog = { name: string; email: string; reason: string };
+  const skippedRecipients: RecipientLog[] = [];
+  const failedRecipients: RecipientLog[] = [];
+
+  // Partition employees by whether they have a usable email address. Anything
+  // we can't send to is logged as "skipped" with the reason — never counted
+  // as a silent send failure.
+  const validRecipients: typeof employees = [];
+  for (const emp of employees) {
+    const name = `${emp.firstName} ${emp.lastName}`;
+    if (!emp.email || emp.email.trim().length === 0) {
+      skippedRecipients.push({ name, email: "", reason: "No email on file" });
+      continue;
+    }
+    if (!isValidEmail(emp.email)) {
+      skippedRecipients.push({ name, email: emp.email, reason: "Invalid email format" });
+      continue;
+    }
+    validRecipients.push(emp);
+  }
+
+  if (skippedRecipients.length > 0) {
+    console.warn(
+      `[emergency] Skipped ${skippedRecipients.length} active employees without a valid email:`,
+      skippedRecipients,
+    );
+  }
+
+  const emailResults = await sendInBatches(validRecipients, async (emp) => {
+    if (!resend) {
+      failedRecipients.push({
+        name: `${emp.firstName} ${emp.lastName}`,
+        email: emp.email,
+        reason: "RESEND_API_KEY not configured",
+      });
+      return false;
+    }
     try {
       const { error } = await resend.emails.send({
         from,
@@ -140,8 +185,17 @@ export async function sendEmergencyAlert(title: string, message: string) {
         subject: `[Do Not Reply] [EMERGENCY] ${title}`,
         html: emailHtml,
       });
-      return !error;
-    } catch {
+      if (error) {
+        const reason = error.message || (error as { name?: string }).name || "Resend rejected the send";
+        console.error(`[emergency] Resend rejected ${emp.email}: ${reason}`, error);
+        failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
+        return false;
+      }
+      return true;
+    } catch (err) {
+      const reason = err instanceof Error ? err.message : "Network error";
+      console.error(`[emergency] Failed to send to ${emp.email}:`, err);
+      failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
       return false;
     }
   });
@@ -153,8 +207,8 @@ export async function sendEmergencyAlert(title: string, message: string) {
     return sendSMS(emp.phone!, smsBody);
   });
 
-  const allSucceeded =
-    emailResults.failed === 0 && smsResults.failed === 0;
+  const totalEmailIssues = emailResults.failed + skippedRecipients.length;
+  const allSucceeded = totalEmailIssues === 0 && smsResults.failed === 0;
 
   await db.emergencyAlert.update({
     where: { id: alert.id },
@@ -163,6 +217,8 @@ export async function sendEmergencyAlert(title: string, message: string) {
       emailsFailed: emailResults.failed,
       smsSent: smsResults.succeeded,
       smsFailed: smsResults.failed,
+      failedRecipients: failedRecipients.length > 0 ? JSON.stringify(failedRecipients) : null,
+      skippedRecipients: skippedRecipients.length > 0 ? JSON.stringify(skippedRecipients) : null,
       status: allSucceeded ? "SENT" : "PARTIALLY_FAILED",
     },
   });
@@ -232,4 +288,40 @@ export async function getEmergencyAlerts() {
     },
     orderBy: { createdAt: "desc" },
   });
+}
+
+/**
+ * Audit active employees and return anyone who would silently fall off an
+ * emergency alert (no email on file or invalid format). Called from the
+ * Alerts page so HR can fix bad rows BEFORE sending a real blast.
+ */
+export async function getEmergencyAlertHealth() {
+  const session = await requireAdmin();
+  const role = session.user?.role;
+  if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
+    throw new Error("Unauthorized");
+  }
+
+  const employees = await db.employee.findMany({
+    where: { status: "ACTIVE" },
+    select: { id: true, firstName: true, lastName: true, email: true },
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+  });
+
+  const missing: { id: string; name: string; email: string }[] = [];
+  const invalid: { id: string; name: string; email: string }[] = [];
+  for (const e of employees) {
+    const name = `${e.firstName} ${e.lastName}`;
+    if (!e.email || e.email.trim().length === 0) {
+      missing.push({ id: e.id, name, email: "" });
+    } else if (!isValidEmail(e.email)) {
+      invalid.push({ id: e.id, name, email: e.email });
+    }
+  }
+  return {
+    totalActive: employees.length,
+    reachable: employees.length - missing.length - invalid.length,
+    missing,
+    invalid,
+  };
 }

@@ -1,7 +1,8 @@
 import { requireAdmin } from "@/lib/auth-helpers";
-import { getEmergencyAlerts } from "@/lib/actions/emergency-alerts";
+import { getEmergencyAlerts, getEmergencyAlertHealth } from "@/lib/actions/emergency-alerts";
 import { AlertComposer } from "@/components/alerts/alert-composer";
 import { AlertHistory } from "@/components/alerts/alert-history";
+import { AlertHealth } from "@/components/alerts/alert-health";
 import { PageHeader } from "@/components/ui/page-header";
 import { redirect } from "next/navigation";
 
@@ -14,7 +15,10 @@ export default async function AlertsPage() {
     redirect("/");
   }
 
-  const alerts = await getEmergencyAlerts();
+  const [alerts, health] = await Promise.all([
+    getEmergencyAlerts(),
+    getEmergencyAlertHealth(),
+  ]);
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -24,6 +28,8 @@ export default async function AlertsPage() {
       />
 
       <div className="space-y-8">
+        <AlertHealth health={health} />
+
         <AlertComposer />
 
         <div>
