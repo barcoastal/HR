@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { ensureValidToken } from "@/lib/actions/platform-sync";
 
 // Allow-list of external hosts we'll proxy a resume from. Anything outside
 // this list returns 400 (we don't want to be an open proxy).
@@ -49,10 +51,32 @@ export async function GET(request: NextRequest) {
 
   try {
     const isJobing = parsed.hostname.endsWith("jobing.com");
-    const headers: HeadersInit = {};
+    const isBreezy = parsed.hostname.endsWith("breezy.hr");
+    const headers: Record<string, string> = {};
     if (isJobing) {
       const apiKey = process.env.NOLIG_API_KEY || "";
       if (apiKey) headers["Authorization"] = `Bearer token=${apiKey}`;
+    }
+    if (isBreezy) {
+      // Breezy resume URLs (api.breezy.hr/v3/.../resume) require a fresh
+      // access token. ensureValidToken re-signs in if needed and returns a
+      // composite "<token>::<companyId>" — we only need the token part for
+      // the Authorization header (no Bearer prefix).
+      try {
+        const platform = await db.recruitmentPlatform.findFirst({
+          where: { name: "Breezy HR" },
+          select: { id: true },
+        });
+        if (platform) {
+          const tokenResult = await ensureValidToken(platform.id);
+          if (tokenResult.valid && tokenResult.accessToken) {
+            const token = tokenResult.accessToken.split("::")[0];
+            if (token) headers["Authorization"] = token;
+          }
+        }
+      } catch (err) {
+        console.error("[resume] failed to fetch Breezy token:", err);
+      }
     }
 
     let res = await fetch(url, { headers });
