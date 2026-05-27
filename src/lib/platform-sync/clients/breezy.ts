@@ -92,6 +92,37 @@ export class BreezyHRClient implements PlatformClient {
   }
 }
 
+/**
+ * Wrap fetch with Breezy-specific rate-limit handling. Breezy's published
+ * limit is ~5 req/sec; in practice they throw 429 on bursts during sync. We
+ * sleep on 429 (honoring Retry-After when present) and retry a few times,
+ * and add a small base spacer so back-to-back requests don't burst.
+ */
+const BREEZY_BASE_DELAY_MS = 250;
+const BREEZY_MAX_RETRIES = 6;
+
+async function sleep(ms: number) {
+  await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function breezyFetch(url: string, init: RequestInit): Promise<Response> {
+  await sleep(BREEZY_BASE_DELAY_MS);
+  for (let attempt = 0; attempt < BREEZY_MAX_RETRIES; attempt++) {
+    const res = await fetch(url, init);
+    if (res.status !== 429) return res;
+    const retryAfterHeader = res.headers.get("retry-after");
+    const retryAfterSec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : NaN;
+    // Exponential backoff with jitter, floor of 2s, capped at 30s.
+    const backoffMs = !isNaN(retryAfterSec) && retryAfterSec > 0
+      ? retryAfterSec * 1000
+      : Math.min(2_000 * Math.pow(1.5, attempt) + Math.random() * 500, 30_000);
+    console.warn(`[breezy] 429 on ${url} — waiting ${Math.round(backoffMs)}ms (attempt ${attempt + 1}/${BREEZY_MAX_RETRIES})`);
+    await sleep(backoffMs);
+  }
+  // Final retry — return whatever Breezy gives us, callers handle the error.
+  return fetch(url, init);
+}
+
 async function getCandidateDetail(
   accessToken: string,
   companyId: string,
@@ -99,7 +130,7 @@ async function getCandidateDetail(
   candidateId: string
 ): Promise<BreezyCandidate | null> {
   try {
-    const res = await fetch(
+    const res = await breezyFetch(
       `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidate/${candidateId}`,
       { headers: { Authorization: accessToken } }
     );
@@ -137,7 +168,7 @@ export async function breezySignIn(
 export async function getBreezyCompanies(
   accessToken: string
 ): Promise<{ id: string; name: string }[]> {
-  const res = await fetch(`${BREEZY_BASE_URL}/companies`, {
+  const res = await breezyFetch(`${BREEZY_BASE_URL}/companies`, {
     headers: { Authorization: accessToken },
   });
 
@@ -155,7 +186,7 @@ async function listPositions(
 ): Promise<BreezyPosition[]> {
   // No state filter — pull all positions so candidates from draft/archived
   // postings still surface.
-  const res = await fetch(
+  const res = await breezyFetch(
     `${BREEZY_BASE_URL}/company/${companyId}/positions`,
     { headers: { Authorization: accessToken } }
   );
@@ -171,7 +202,7 @@ async function listCandidates(
   companyId: string,
   positionId: string
 ): Promise<BreezyCandidate[]> {
-  const res = await fetch(
+  const res = await breezyFetch(
     `${BREEZY_BASE_URL}/company/${companyId}/position/${positionId}/candidates`,
     { headers: { Authorization: accessToken } }
   );
