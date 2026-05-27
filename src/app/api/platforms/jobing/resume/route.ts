@@ -55,10 +55,25 @@ export async function GET(request: NextRequest) {
       if (apiKey) headers["Authorization"] = `Bearer token=${apiKey}`;
     }
 
-    const res = await fetch(url, { headers });
+    let res = await fetch(url, { headers });
+    // Some hosts reject pre-signed URLs when extra headers are present (S3
+    // signatures are sensitive to header set). If we attached Authorization
+    // for a jobing host and still got a 400/403, retry once without any
+    // headers — the URL might already be a public signed S3 link.
+    if (!res.ok && (res.status === 400 || res.status === 403) && Object.keys(headers).length > 0) {
+      console.warn(`[resume] retry without auth for ${parsed.hostname} (first attempt: ${res.status})`);
+      res = await fetch(url);
+    }
     if (!res.ok) {
+      const bodyPreview = await res.text().catch(() => "");
+      console.error(`[resume] upstream ${res.status} for ${url}: ${bodyPreview.slice(0, 200)}`);
       return NextResponse.json(
-        { error: `Upstream returned ${res.status}. Try opening the resume on the source platform.` },
+        {
+          error: `Upstream returned ${res.status}. Try opening the resume on the source platform.`,
+          source: url,
+          host: parsed.hostname,
+          upstreamPreview: bodyPreview.slice(0, 200) || null,
+        },
         { status: 502 },
       );
     }
