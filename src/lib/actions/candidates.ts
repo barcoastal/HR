@@ -58,13 +58,74 @@ export async function createCandidate(data: {
   jobAppliedTo?: string;
 }) {
   const { skills, inPipeline = true, ...rest } = data;
+
   // Pre-check email so the UI can show a friendly duplicate message instead
   // of a generic Prisma unique-constraint error or a Server Components render
   // crash when the page refetches.
-  const existing = await db.candidate.findUnique({ where: { email: data.email }, select: { id: true } });
-  if (existing) {
+  const existingByEmail = await db.candidate.findUnique({ where: { email: data.email }, select: { id: true } });
+  if (existingByEmail) {
     throw new Error(`A candidate with email ${data.email} already exists.`);
   }
+
+  // Phone-based soft merge: if a candidate already exists with the same
+  // normalized phone (last 10 digits) AND the same name, treat this as the
+  // same person re-applying rather than creating a separate row. We bump
+  // applicationCount, record a new application, and backfill any missing
+  // fields on the existing row. Different person same phone (family, etc.)
+  // is rare and recoverable via the duplicates UI.
+  const normPhone = (data.phone || "").replace(/\D/g, "").slice(-10);
+  if (normPhone.length === 10) {
+    const sameNamePhone = await db.candidate.findFirst({
+      where: {
+        firstName: { equals: data.firstName, mode: "insensitive" },
+        lastName: { equals: data.lastName, mode: "insensitive" },
+        phone: { contains: normPhone },
+      },
+      select: { id: true, resumeUrl: true, resumeText: true, linkedinUrl: true, skills: true, experience: true, notes: true, source: true, positionId: true, jobAppliedTo: true },
+    });
+    if (sameNamePhone) {
+      // Backfill missing fields.
+      const fill: Record<string, unknown> = {};
+      if (!sameNamePhone.resumeUrl && data.resumeUrl) fill.resumeUrl = data.resumeUrl;
+      if (!sameNamePhone.resumeText && data.resumeText) fill.resumeText = data.resumeText;
+      if (!sameNamePhone.linkedinUrl && data.linkedinUrl) fill.linkedinUrl = data.linkedinUrl;
+      if (!sameNamePhone.experience && data.experience) fill.experience = data.experience;
+      if (!sameNamePhone.notes && data.notes) fill.notes = data.notes;
+      if (!sameNamePhone.source && data.source) fill.source = data.source;
+      if (!sameNamePhone.positionId && data.positionId) fill.positionId = data.positionId;
+      if (!sameNamePhone.jobAppliedTo && data.jobAppliedTo) fill.jobAppliedTo = data.jobAppliedTo;
+      if (skills.length > 0) {
+        try {
+          const existingSkills: string[] = sameNamePhone.skills ? JSON.parse(sameNamePhone.skills) : [];
+          const merged = Array.from(new Set([...existingSkills, ...skills]));
+          if (merged.length > existingSkills.length) fill.skills = JSON.stringify(merged);
+        } catch {
+          fill.skills = JSON.stringify(skills);
+        }
+      }
+      if (inPipeline) fill.inPipeline = true;
+      if (Object.keys(fill).length > 0) {
+        await db.candidate.update({ where: { id: sameNamePhone.id }, data: fill });
+      }
+
+      // Record the application against the existing candidate.
+      const { recordApplication } = await import("./candidate-applications");
+      const positionName = data.jobAppliedTo
+        || (data.positionId ? (await db.position.findUnique({ where: { id: data.positionId }, select: { title: true } }))?.title || "Unknown" : "Unknown");
+      await recordApplication({
+        candidateId: sameNamePhone.id,
+        positionId: data.positionId ?? null,
+        positionName,
+        source: data.source ?? null,
+        resumeUrl: data.resumeUrl ?? null,
+      });
+
+      revalidatePath("/cv");
+      const reused = await db.candidate.findUnique({ where: { id: sameNamePhone.id } });
+      return reused!;
+    }
+  }
+
   const candidate = await db.candidate.create({
     data: {
       ...rest,
@@ -478,12 +539,73 @@ export async function bulkImportCandidates(
     return true;
   });
 
+  // Phone-based soft merge: anyone whose normalized phone + name matches an
+  // existing candidate gets skipped (we record an application on the existing
+  // row instead of creating a new one). Same logic as createCandidate.
+  const candidatesByPhoneName = new Map<string, typeof uniqueToCreate[number]>();
+  const phoneKey = (firstName: string, lastName: string, phone: string) =>
+    `${firstName.toLowerCase().trim()}|${lastName.toLowerCase().trim()}|${phone}`;
+  const withValidPhone = uniqueToCreate.filter((c) => (c.phone || "").replace(/\D/g, "").length >= 10);
+  if (withValidPhone.length > 0) {
+    const phoneCandidates = await db.candidate.findMany({
+      where: {
+        OR: withValidPhone.map((c) => ({
+          firstName: { equals: c.firstName, mode: "insensitive" as const },
+          lastName: { equals: c.lastName, mode: "insensitive" as const },
+          phone: { contains: (c.phone || "").replace(/\D/g, "").slice(-10) },
+        })),
+      },
+      select: { id: true, firstName: true, lastName: true, phone: true },
+    });
+    for (const existing of phoneCandidates) {
+      const normP = (existing.phone || "").replace(/\D/g, "").slice(-10);
+      candidatesByPhoneName.set(
+        phoneKey(existing.firstName, existing.lastName, normP),
+        existing as unknown as typeof uniqueToCreate[number],
+      );
+    }
+  }
+
+  // Partition into rows to insert vs rows to fold onto an existing candidate.
+  const insertable: typeof uniqueToCreate = [];
+  const reapplications: { existingId: string; row: typeof uniqueToCreate[number] }[] = [];
+  for (const c of uniqueToCreate) {
+    const normP = (c.phone || "").replace(/\D/g, "").slice(-10);
+    if (normP.length === 10) {
+      const match = candidatesByPhoneName.get(phoneKey(c.firstName, c.lastName, normP));
+      if (match) {
+        reapplications.push({ existingId: (match as unknown as { id: string }).id, row: c });
+        continue;
+      }
+    }
+    insertable.push(c);
+  }
+
+  // Record applications + bump applicationCount on the existing rows.
+  if (reapplications.length > 0) {
+    const { recordApplication } = await import("./candidate-applications");
+    for (const ra of reapplications) {
+      try {
+        await recordApplication({
+          candidateId: ra.existingId,
+          positionId: null,
+          positionName: "Bulk upload",
+          source: ra.row.source ?? null,
+          resumeUrl: null,
+        });
+        skipped.push(`${ra.row.email} (merged into existing by phone)`);
+      } catch (err) {
+        errors.push(`Phone-merge for ${ra.row.email} failed: ${err instanceof Error ? err.message : "unknown"}`);
+      }
+    }
+  }
+
   // Batch create in chunks of 500
   let created = 0;
   const CHUNK_SIZE = 500;
 
-  for (let i = 0; i < uniqueToCreate.length; i += CHUNK_SIZE) {
-    const chunk = uniqueToCreate.slice(i, i + CHUNK_SIZE);
+  for (let i = 0; i < insertable.length; i += CHUNK_SIZE) {
+    const chunk = insertable.slice(i, i + CHUNK_SIZE);
     try {
       const result = await db.candidate.createMany({
         data: chunk.map((c) => ({
