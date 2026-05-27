@@ -93,33 +93,82 @@ export async function updateApplicationStatus(
 export async function markDoNotCall(candidateId: string, reason?: string) {
   const before = await db.candidate.findUnique({
     where: { id: candidateId },
-    select: { firstName: true, lastName: true, email: true, status: true },
+    select: { firstName: true, lastName: true, email: true, phone: true, status: true },
   });
+  if (!before) return;
+
+  const now = new Date();
   await db.candidate.update({
     where: { id: candidateId },
     data: {
       doNotCall: true,
       doNotCallReason: reason || null,
-      doNotCallAt: new Date(),
+      doNotCallAt: now,
       status: "REJECTED",
     },
   });
-  if (before) {
-    const { audit } = await import("@/lib/audit");
-    await audit({
-      action: "candidate.status.changed",
-      entityType: "candidate",
-      entityId: candidateId,
-      details: {
-        name: `${before.firstName} ${before.lastName}`,
-        email: before.email,
-        from: before.status,
-        to: "REJECTED",
-        via: "mark_do_not_call",
-        reason: reason ?? null,
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "candidate.status.changed",
+    entityType: "candidate",
+    entityId: candidateId,
+    details: {
+      name: `${before.firstName} ${before.lastName}`,
+      email: before.email,
+      from: before.status,
+      to: "REJECTED",
+      via: "mark_do_not_call",
+      reason: reason ?? null,
+    },
+  });
+
+  // Propagate the Do Not Call flag to any other candidate with the same
+  // normalized phone AND name. Different rows can exist when a candidate
+  // applied from multiple platforms with different emails — once we know
+  // *this* person shouldn't be contacted, the dupes shouldn't either.
+  const normPhone = (before.phone || "").replace(/\D/g, "").slice(-10);
+  if (normPhone.length === 10) {
+    const sameNameSamePhone = await db.candidate.findMany({
+      where: {
+        id: { not: candidateId },
+        firstName: { equals: before.firstName, mode: "insensitive" },
+        lastName: { equals: before.lastName, mode: "insensitive" },
+        phone: { contains: normPhone },
+        doNotCall: false,
       },
+      select: { id: true, firstName: true, lastName: true, email: true, status: true },
     });
+
+    if (sameNameSamePhone.length > 0) {
+      await db.candidate.updateMany({
+        where: { id: { in: sameNameSamePhone.map((d) => d.id) } },
+        data: {
+          doNotCall: true,
+          doNotCallReason: reason || `Auto-propagated from duplicate ${before.firstName} ${before.lastName}`,
+          doNotCallAt: now,
+          status: "REJECTED",
+        },
+      });
+      for (const d of sameNameSamePhone) {
+        await audit({
+          action: "candidate.status.changed",
+          entityType: "candidate",
+          entityId: d.id,
+          details: {
+            name: `${d.firstName} ${d.lastName}`,
+            email: d.email,
+            from: d.status,
+            to: "REJECTED",
+            via: "mark_do_not_call_propagated",
+            sourceCandidateId: candidateId,
+            reason: reason ?? null,
+          },
+        });
+      }
+    }
   }
+
   revalidatePath("/cv");
 }
 
