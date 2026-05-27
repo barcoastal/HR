@@ -173,10 +173,16 @@ export async function* syncCandidatesStreaming(
   const seenEmails = new Set<string>();
   const needsResume: { id: string; url: string }[] = [];
 
+  // Pre-load every candidate email we already have so the platform client
+  // can skip per-candidate detail fetches for known rows. Critical for
+  // Breezy where each detail fetch counts against the hourly rate limit.
+  const existingRows = await db.candidate.findMany({ select: { email: true } });
+  const knownEmails = new Set<string>(existingRows.map((r) => r.email.toLowerCase().trim()));
+
   try {
     do {
       page++;
-      const result = await client.fetchCandidatesPaginated(tokenResult.accessToken, cursor);
+      const result = await client.fetchCandidatesPaginated(tokenResult.accessToken, cursor, { knownEmails });
       if (page === 1) totalEstimate = result.totalEstimate;
 
       for (const mc of result.candidates) {

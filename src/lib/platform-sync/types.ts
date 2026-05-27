@@ -41,6 +41,7 @@ export interface PlatformClient {
   fetchCandidates(accessToken?: string): Promise<MockCandidate[]>;
   fetchCandidatesPaginated?(
     accessToken: string,
-    cursor?: string | null
+    cursor?: string | null,
+    opts?: { knownEmails?: Set<string> }
   ): Promise<CandidatePage>;
 }

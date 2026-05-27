@@ -52,14 +52,15 @@ export class BreezyHRClient implements PlatformClient {
 
   async fetchCandidatesPaginated(
     accessToken: string,
-    cursor?: string | null
+    cursor?: string | null,
+    opts?: { knownEmails?: Set<string> }
   ): Promise<CandidatePage> {
     const [token, companyId] = parseAccessToken(accessToken);
     if (!token || !companyId) {
       throw new Error("Invalid token format. Expected TOKEN::COMPANY_ID");
     }
 
-    // cursor format: "positionIndex:candidatePage" or null for start
+    // cursor format: "positionIndex" — one position per page
     const positions = await listPositions(token, companyId);
     if (positions.length === 0) {
       return { candidates: [], nextCursor: null, totalEstimate: 0 };
@@ -77,8 +78,18 @@ export class BreezyHRClient implements PlatformClient {
     const pos = positions[posIdx];
     const candidates = await listCandidates(token, companyId, pos._id);
     const mapped: MockCandidate[] = [];
+    const knownEmails = opts?.knownEmails;
     for (const summary of candidates) {
-      const detail = await getCandidateDetail(token, companyId, pos._id, summary._id);
+      // Skip the detail fetch for candidates we already have in the DB.
+      // Detail is needed for resume URL + a few extras that aren't in the
+      // listing payload; for known candidates the summary is enough and we
+      // save one API call (which is the difference between staying inside
+      // Breezy's rate limit and getting 429'd halfway through a sync).
+      const email = (summary.email_address || "").toLowerCase().trim();
+      const isKnown = email && knownEmails?.has(email);
+      const detail = isKnown
+        ? null
+        : await getCandidateDetail(token, companyId, pos._id, summary._id);
       const m = mapBreezyCandidate(detail || summary, pos.name, companyId, pos._id);
       if (m) mapped.push(m);
     }
