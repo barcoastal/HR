@@ -38,6 +38,14 @@ export default async function CVPage() {
         description="Manage candidates, positions, and hiring pipeline"
         action={
           <div className="flex items-center gap-2">
+            <a
+              href="/cv/duplicates"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)] transition-colors"
+              title="Find candidates that look like duplicates (phone, name, gmail-dot variants)"
+            >
+              <Icon name="content_copy" size={16} />
+              Duplicates
+            </a>
             <AddPositionForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
             <AddCandidateForm
               positions={positions.map((p) => ({ id: p.id, title: p.title }))}
