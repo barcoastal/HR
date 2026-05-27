@@ -287,8 +287,19 @@ export async function ensureValidToken(
     return { valid: true, accessToken: compositeToken };
   }
 
-  // Breezy HR: re-authenticate using stored credentials
+  // Breezy HR: reuse the cached access token until it's near expiry.
+  // Breezy tokens are valid for ~1 hour. Re-signing in every call burns
+  // /signin requests against Breezy's per-hour quota, which is what was
+  // making downstream syncs and resume fetches 429.
   if (platform.name === "Breezy HR" && platform.refreshToken && platform.accountIdentifier) {
+    const bufferMs = 5 * 60 * 1000;
+    const cachedValid =
+      platform.apiKey &&
+      platform.tokenExpiresAt &&
+      platform.tokenExpiresAt.getTime() > Date.now() + bufferMs;
+    if (cachedValid && platform.apiKey) {
+      return { valid: true, accessToken: platform.apiKey };
+    }
     try {
       const decoded = Buffer.from(platform.refreshToken, "base64").toString("utf-8");
       const [email, password] = decoded.split("::");
@@ -297,9 +308,14 @@ export async function ensureValidToken(
         const result = await breezySignIn(email, password);
         if (result.accessToken) {
           const compositeToken = `${result.accessToken}::${platform.accountIdentifier}`;
+          // Breezy tokens live ~1 hour. Stamp expiry so future calls can
+          // skip the /signin round-trip until it's actually needed.
           await db.recruitmentPlatform.update({
             where: { id: platformId },
-            data: { apiKey: compositeToken },
+            data: {
+              apiKey: compositeToken,
+              tokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000),
+            },
           });
           return { valid: true, accessToken: compositeToken };
         }
