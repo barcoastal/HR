@@ -56,42 +56,60 @@ export async function GET(request: NextRequest) {
   try {
     const isJobing = parsed.hostname.endsWith("jobing.com");
     const isBreezy = parsed.hostname.endsWith("breezy.hr");
-    const headers: Record<string, string> = {};
+
+    async function getBreezyHeaders(forceRefresh = false): Promise<Record<string, string>> {
+      const platform = await db.recruitmentPlatform.findFirst({
+        where: { name: "Breezy HR" },
+        select: { id: true },
+      });
+      if (!platform) return {};
+      if (forceRefresh) {
+        // Invalidate the cached token so ensureValidToken re-signs in.
+        await db.recruitmentPlatform.update({
+          where: { id: platform.id },
+          data: { tokenExpiresAt: new Date(0) },
+        });
+      }
+      const tokenResult = await ensureValidToken(platform.id);
+      if (!tokenResult.valid || !tokenResult.accessToken) return {};
+      const token = tokenResult.accessToken.split("::")[0];
+      return token ? { Authorization: token } : {};
+    }
+
+    let headers: Record<string, string> = {};
     if (isJobing) {
       const apiKey = process.env.NOLIG_API_KEY || "";
       if (apiKey) headers["Authorization"] = `Bearer token=${apiKey}`;
     }
     if (isBreezy) {
-      // Breezy resume URLs (api.breezy.hr/v3/.../resume) require a fresh
-      // access token. ensureValidToken re-signs in if needed and returns a
-      // composite "<token>::<companyId>" — we only need the token part for
-      // the Authorization header (no Bearer prefix).
-      try {
-        const platform = await db.recruitmentPlatform.findFirst({
-          where: { name: "Breezy HR" },
-          select: { id: true },
-        });
-        if (platform) {
-          const tokenResult = await ensureValidToken(platform.id);
-          if (tokenResult.valid && tokenResult.accessToken) {
-            const token = tokenResult.accessToken.split("::")[0];
-            if (token) headers["Authorization"] = token;
-          }
-        }
-      } catch (err) {
-        console.error("[resume] failed to fetch Breezy token:", err);
+      headers = await getBreezyHeaders();
+      if (!headers["Authorization"]) {
+        return NextResponse.json(
+          { error: "Breezy is not connected on the server. Reconnect via Settings → Integrations." },
+          { status: 502 },
+        );
       }
     }
 
     let res = await fetch(url, { headers });
-    // Some hosts reject pre-signed URLs when extra headers are present (S3
-    // signatures are sensitive to header set). If we attached Authorization
-    // for a jobing host and still got a 400/403, retry once without any
-    // headers — the URL might already be a public signed S3 link.
-    if (!res.ok && (res.status === 400 || res.status === 403) && Object.keys(headers).length > 0) {
-      console.warn(`[resume] retry without auth for ${parsed.hostname} (first attempt: ${res.status})`);
+
+    // Breezy returns 401/403/400 missingAccessToken when the cached access
+    // token is stale. Force a fresh sign-in and retry once before giving up.
+    if (isBreezy && !res.ok && (res.status === 400 || res.status === 401 || res.status === 403)) {
+      console.warn(`[resume] Breezy ${res.status} on first attempt — forcing token refresh and retrying`);
+      const freshHeaders = await getBreezyHeaders(true);
+      if (freshHeaders["Authorization"]) {
+        res = await fetch(url, { headers: freshHeaders });
+      }
+    }
+
+    // For Jobing, signed S3 URLs sometimes reject when Authorization is
+    // attached. Retry once without auth.
+    if (isJobing && !res.ok && (res.status === 400 || res.status === 403)) {
+      console.warn(`[resume] retry without auth for jobing (first attempt: ${res.status})`);
       res = await fetch(url);
     }
+
     if (!res.ok) {
       const bodyPreview = await res.text().catch(() => "");
       console.error(`[resume] upstream ${res.status} for ${url}: ${bodyPreview.slice(0, 200)}`);
