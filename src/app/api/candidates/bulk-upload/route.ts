@@ -100,13 +100,29 @@ export async function POST(request: NextRequest) {
 
   await mkdir(RESUMES_DIR, { recursive: true });
 
+  // Helper — persist the PDF to FileBlob (source of truth across Railway
+  // redeploys) AND mirror to disk for local dev.
+  async function persistResume(candidateId: string, pdf: Buffer) {
+    const filename = `resume-${candidateId}.pdf`;
+    const bytes = new Uint8Array(pdf);
+    await db.fileBlob.upsert({
+      where: { filename },
+      update: { data: bytes, size: bytes.length, mimeType: "application/pdf" },
+      create: { filename, data: bytes, size: bytes.length, mimeType: "application/pdf" },
+    });
+    try {
+      await writeFile(path.join(RESUMES_DIR, `${candidateId}.pdf`), pdf);
+    } catch {
+      // disk mirror is best-effort
+    }
+  }
+
   // Dedupe by email
   const existing = await db.candidate.findUnique({ where: { email: rawEmail } });
 
   if (existing) {
-    // Save the new resume PDF — overwrite the old file to keep the latest
-    const pdfPath = path.join(RESUMES_DIR, `${existing.id}.pdf`);
-    await writeFile(pdfPath, buffer);
+    // Save the new resume PDF — overwrite the old blob/file to keep the latest
+    await persistResume(existing.id, buffer);
 
     // Record the application against this position
     const { recordApplication } = await import("@/lib/actions/candidate-applications");
@@ -144,8 +160,7 @@ export async function POST(request: NextRequest) {
 
   // New candidate
   const newId = randomUUID();
-  const pdfPath = path.join(RESUMES_DIR, `${newId}.pdf`);
-  await writeFile(pdfPath, buffer);
+  await persistResume(newId, buffer);
 
   const created = await db.candidate.create({
     data: {

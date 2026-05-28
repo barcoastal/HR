@@ -57,6 +57,34 @@ export async function GET(request: NextRequest) {
     const isJobing = parsed.hostname.endsWith("jobing.com");
     const isBreezy = parsed.hostname.endsWith("breezy.hr");
 
+    // Short-circuit: if we already have a FileBlob for the candidate whose
+    // resumeUrl matches this URL, serve it from there instead of hitting the
+    // ATS. Also rewrite the candidate's resumeUrl so future renders skip the
+    // proxy entirely.
+    const owner = await db.candidate.findFirst({
+      where: { resumeUrl: url },
+      select: { id: true },
+    });
+    if (owner) {
+      const blob = await db.fileBlob.findUnique({
+        where: { filename: `resume-${owner.id}.pdf` },
+        select: { data: true },
+      });
+      if (blob) {
+        await db.candidate.update({
+          where: { id: owner.id },
+          data: { resumeUrl: `/api/resumes/${owner.id}` },
+        });
+        return new NextResponse(new Uint8Array(blob.data), {
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `inline; filename="${owner.id}.pdf"`,
+            "Cache-Control": "private, no-store",
+          },
+        });
+      }
+    }
+
     async function getBreezyHeaders(forceRefresh = false): Promise<Record<string, string>> {
       const platform = await db.recruitmentPlatform.findFirst({
         where: { name: "Breezy HR" },
