@@ -3,6 +3,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ensureValidToken } from "@/lib/actions/platform-sync";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+
+const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 
 // Allow-list of external hosts we'll proxy a resume from. Anything outside
 // this list returns 400 (we don't want to be an open proxy).
@@ -104,6 +108,35 @@ export async function GET(request: NextRequest) {
 
     const contentType = res.headers.get("content-type") || "application/octet-stream";
     const body = await res.arrayBuffer();
+
+    // Cache the resume locally so future views never need to hit the ATS
+    // again. Look up the candidate whose resumeUrl matches the URL we just
+    // proxied, persist the PDF to data/resumes/<id>.pdf, and rewrite the
+    // candidate row to point at the local /api/resumes/<id> path. This is
+    // the same layout the sync uses, so /api/resumes/<id> serves the file
+    // straight from disk.
+    if (
+      (contentType.includes("pdf") || contentType.includes("octet-stream")) &&
+      body.byteLength >= 100
+    ) {
+      try {
+        const owner = await db.candidate.findFirst({
+          where: { resumeUrl: url },
+          select: { id: true },
+        });
+        if (owner) {
+          await mkdir(RESUMES_DIR, { recursive: true });
+          await writeFile(path.join(RESUMES_DIR, `${owner.id}.pdf`), Buffer.from(body));
+          await db.candidate.update({
+            where: { id: owner.id },
+            data: { resumeUrl: `/api/resumes/${owner.id}` },
+          });
+        }
+      } catch (cacheErr) {
+        console.error("[resume] failed to cache locally:", cacheErr);
+        // Still serve the live response — caching is a best-effort step.
+      }
+    }
 
     return new NextResponse(body, {
       headers: {
