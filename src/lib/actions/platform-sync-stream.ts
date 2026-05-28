@@ -341,7 +341,25 @@ async function downloadResumePdf(
     if (!ct.includes("pdf") && !ct.includes("octet-stream")) return false;
     const buffer = Buffer.from(await res.arrayBuffer());
     if (buffer.length < 100) return false;
-    await writeFile(path.join(RESUMES_DIR, `${candidateId}.pdf`), buffer);
+    // Persist to FileBlob (Postgres) so Railway redeploys don't wipe it,
+    // and mirror to local disk for fast dev access.
+    const filename = `resume-${candidateId}.pdf`;
+    const bytes = new Uint8Array(buffer);
+    try {
+      await db.fileBlob.upsert({
+        where: { filename },
+        update: { data: bytes, size: bytes.length, mimeType: "application/pdf" },
+        create: { filename, data: bytes, size: bytes.length, mimeType: "application/pdf" },
+      });
+    } catch (blobErr) {
+      console.error(`[sync] FileBlob upsert failed for resume ${candidateId}:`, blobErr);
+      return false;
+    }
+    try {
+      await writeFile(path.join(RESUMES_DIR, `${candidateId}.pdf`), buffer);
+    } catch {
+      // disk write is best-effort; FileBlob is the source of truth
+    }
     return true;
   } catch {
     return false;

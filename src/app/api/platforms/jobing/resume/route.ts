@@ -127,12 +127,10 @@ export async function GET(request: NextRequest) {
     const contentType = res.headers.get("content-type") || "application/octet-stream";
     const body = await res.arrayBuffer();
 
-    // Cache the resume locally so future views never need to hit the ATS
-    // again. Look up the candidate whose resumeUrl matches the URL we just
-    // proxied, persist the PDF to data/resumes/<id>.pdf, and rewrite the
-    // candidate row to point at the local /api/resumes/<id> path. This is
-    // the same layout the sync uses, so /api/resumes/<id> serves the file
-    // straight from disk.
+    // Cache the resume so future views never need to hit the ATS again.
+    // Primary store: FileBlob (Postgres) so the file survives Railway
+    // redeploys. Mirror to local disk so /api/resumes/<id> stays fast in
+    // local dev too. Then point the candidate row at /api/resumes/<id>.
     if (
       (contentType.includes("pdf") || contentType.includes("octet-stream")) &&
       body.byteLength >= 100
@@ -143,15 +141,27 @@ export async function GET(request: NextRequest) {
           select: { id: true },
         });
         if (owner) {
-          await mkdir(RESUMES_DIR, { recursive: true });
-          await writeFile(path.join(RESUMES_DIR, `${owner.id}.pdf`), Buffer.from(body));
+          const buf = Buffer.from(body);
+          const bytes = new Uint8Array(buf);
+          const filename = `resume-${owner.id}.pdf`;
+          await db.fileBlob.upsert({
+            where: { filename },
+            update: { data: bytes, size: bytes.length, mimeType: "application/pdf" },
+            create: { filename, data: bytes, size: bytes.length, mimeType: "application/pdf" },
+          });
+          try {
+            await mkdir(RESUMES_DIR, { recursive: true });
+            await writeFile(path.join(RESUMES_DIR, `${owner.id}.pdf`), buf);
+          } catch {
+            // disk write is best-effort; FileBlob is the source of truth
+          }
           await db.candidate.update({
             where: { id: owner.id },
             data: { resumeUrl: `/api/resumes/${owner.id}` },
           });
         }
       } catch (cacheErr) {
-        console.error("[resume] failed to cache locally:", cacheErr);
+        console.error("[resume] failed to cache:", cacheErr);
         // Still serve the live response — caching is a best-effort step.
       }
     }
