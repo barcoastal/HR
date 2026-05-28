@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.coastaldebt.calatrava.breezy-scrape</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/sh</string>
+        <string>-lc</string>
+        <string>cd "$HOME/hr-platform" &amp;&amp; "$HOME/.nvm/versions/node/v20.20.0/bin/node" scripts/scrape-breezy-resumes.mjs</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>BREEZY_EMAIL</key>
+        <string>REPLACE_WITH_YOUR_BREEZY_EMAIL</string>
+        <key>BREEZY_PASSWORD</key>
+        <string>REPLACE_WITH_YOUR_BREEZY_PASSWORD</string>
+        <key>CRON_SECRET</key>
+        <string>REPLACE_WITH_YOUR_CRON_SECRET</string>
+        <key>APP_URL</key>
+        <string>https://hr.coastaldebt-tools.com</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <!-- Run every 5 minutes (300 seconds). Skip the run if the previous one is still going. -->
+    <key>StartInterval</key>
+    <integer>300</integer>
+
+    <!-- Run once immediately when loaded so we don't wait 5 min for the first run. -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Log destinations — tail these to confirm runs. -->
+    <key>StandardOutPath</key>
+    <string>/tmp/calatrava-breezy-scrape.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/calatrava-breezy-scrape.err</string>
+
+    <!-- Don't try to relaunch on crash; just wait for the next StartInterval. -->
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
