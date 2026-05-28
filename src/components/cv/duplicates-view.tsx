@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { cn, getInitials, timeAgo } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
-import { mergeCandidates } from "@/lib/actions/candidate-duplicates";
+import { mergeAllDuplicates, mergeCandidates } from "@/lib/actions/candidate-duplicates";
 import type { DuplicateGroup } from "@/lib/actions/candidate-duplicates";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
@@ -23,12 +23,62 @@ const MATCH_ICON: Record<DuplicateGroup["matchType"], string> = {
 export function DuplicatesView({ groups }: { groups: DuplicateGroup[] }) {
   return (
     <div className="space-y-4">
-      <p className="text-xs text-[var(--color-text-muted)]">
-        Found <strong className="text-[var(--color-text-primary)]">{groups.length}</strong> possible duplicate group{groups.length === 1 ? "" : "s"}. Pick the primary record (the one to keep) and merge the rest into it.
-      </p>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Found <strong className="text-[var(--color-text-primary)]">{groups.length}</strong> possible duplicate group{groups.length === 1 ? "" : "s"}. Pick the primary manually or merge them all at once.
+        </p>
+        <MergeAllButton groups={groups} />
+      </div>
       {groups.map((g) => (
         <GroupCard key={g.id} group={g} />
       ))}
+    </div>
+  );
+}
+
+function MergeAllButton({ groups }: { groups: DuplicateGroup[] }) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [result, setResult] = useState<{ groupsMerged: number; candidatesMerged: number; errors: { groupId: string; error: string }[] } | null>(null);
+
+  const totalCandidates = groups.reduce((sum, g) => sum + Math.max(0, g.candidates.length - 1), 0);
+
+  function handleMergeAll() {
+    if (groups.length === 0) return;
+    if (!confirm(
+      `Merge all ${groups.length} duplicate groups?\n\n` +
+      `~${totalCandidates} candidate row${totalCandidates === 1 ? "" : "s"} will be folded into their primary records. ` +
+      `For each group the primary is auto-picked (most applications → earliest record → local resume on file). ` +
+      `Every duplicate's applications, interviews, and signed docs are preserved on the primary.\n\nCannot be undone.`
+    )) return;
+    setResult(null);
+    startTransition(async () => {
+      const r = await mergeAllDuplicates();
+      setResult(r);
+      router.refresh();
+    });
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      {result && (
+        <span className="text-xs text-[var(--color-text-muted)]">
+          Merged {result.groupsMerged} group{result.groupsMerged === 1 ? "" : "s"} · {result.candidatesMerged} candidate{result.candidatesMerged === 1 ? "" : "s"} folded in
+          {result.errors.length > 0 && <span className="text-red-500"> · {result.errors.length} failed</span>}
+        </span>
+      )}
+      <button
+        onClick={handleMergeAll}
+        disabled={pending || groups.length === 0}
+        className={cn(
+          "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium",
+          "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",
+          "disabled:opacity-50 disabled:cursor-not-allowed"
+        )}
+      >
+        <Icon name="merge" size={14} />
+        {pending ? "Merging all…" : `Merge all ${groups.length} groups`}
+      </button>
     </div>
   );
 }

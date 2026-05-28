@@ -35,6 +35,7 @@ type CandidateItem = {
   offerSignedDocUrl: string | null;
   offerSignedAt: Date | null;
   position: { title: string } | null;
+  applicationCount?: number | null;
 };
 
 type Position = { id: string; title: string };
@@ -174,9 +175,19 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                           {initials}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[var(--color-text-primary)] truncate leading-tight">
-                            {candidate.firstName} {candidate.lastName}
-                          </p>
+                          <div className="flex items-center gap-1.5">
+                            <p className="text-sm font-medium text-[var(--color-text-primary)] truncate leading-tight">
+                              {candidate.firstName} {candidate.lastName}
+                            </p>
+                            {candidate.applicationCount && candidate.applicationCount > 1 && (
+                              <span
+                                title={`Applied ${candidate.applicationCount} times — open the candidate to see each position`}
+                                className="shrink-0 inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-[var(--color-accent)]/15 text-[var(--color-accent)]"
+                              >
+                                ×{candidate.applicationCount}
+                              </span>
+                            )}
+                          </div>
                           <p className="text-[11px] text-[var(--color-text-muted)] truncate leading-tight">
                             {candidate.email}
                           </p>

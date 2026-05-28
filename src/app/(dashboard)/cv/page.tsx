@@ -97,6 +97,7 @@ export default async function CVPage() {
           position: c.position ? { title: c.position.title } : null,
           resumeUrl: c.resumeUrl,
           createdAt: c.createdAt,
+          applicationCount: c.applicationCount,
         }))}
         // Database tab now lazy-fetches its own data when activated
         positions={positions.map((p) => ({ id: p.id, title: p.title }))}

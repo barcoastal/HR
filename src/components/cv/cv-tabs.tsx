@@ -50,6 +50,7 @@ type CandidateItem = {
   position: { title: string } | null;
   resumeUrl: string | null;
   createdAt: Date;
+  applicationCount?: number | null;
 };
 
 type PositionFull = {
@@ -398,6 +399,7 @@ function PositionPipeline({
                 offerSignedDocUrl: c.offerSignedDocUrl || null,
                 offerSignedAt: c.offerSignedAt || null,
                 position: c.position,
+                applicationCount: c.applicationCount ?? null,
               }))}
               positions={allPositions}
               employees={employees}
@@ -650,6 +652,7 @@ export function CVTabs({
                       offerSignedDocUrl: c.offerSignedDocUrl || null,
                       offerSignedAt: c.offerSignedAt || null,
                       position: c.position,
+                      applicationCount: c.applicationCount ?? null,
                     }))}
                     positions={positions}
                     employees={employees}

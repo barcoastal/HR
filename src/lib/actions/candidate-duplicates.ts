@@ -284,3 +284,49 @@ export async function mergeCandidates(primaryId: string, duplicateIds: string[])
   revalidatePath("/cv/duplicates");
   return { success: true, mergedCount: duplicateIds.length };
 }
+
+/**
+ * Auto-merge every duplicate group: for each group, pick the best primary
+ * (most applications → earliest createdAt → has a local resume URL) and
+ * merge the rest into it. Returns aggregate counts.
+ */
+export async function mergeAllDuplicates() {
+  await requireRecruitmentAccess();
+  const groups = await findDuplicateCandidates();
+
+  let groupsMerged = 0;
+  let candidatesMerged = 0;
+  const errors: { groupId: string; error: string }[] = [];
+
+  for (const g of groups) {
+    if (g.candidates.length < 2) continue;
+    // Pick primary: highest applicationCount, then earliest createdAt, then a
+    // local resume URL beats a remote one (more valuable record to preserve).
+    const sorted = [...g.candidates].sort((a, b) => {
+      if (b.applicationCount !== a.applicationCount) return b.applicationCount - a.applicationCount;
+      const aTime = new Date(a.createdAt).getTime();
+      const bTime = new Date(b.createdAt).getTime();
+      if (aTime !== bTime) return aTime - bTime;
+      const aLocal = a.resumeUrl?.startsWith("/api/") ? 1 : 0;
+      const bLocal = b.resumeUrl?.startsWith("/api/") ? 1 : 0;
+      return bLocal - aLocal;
+    });
+    const primary = sorted[0];
+    const duplicates = sorted.slice(1).map((c) => c.id);
+    try {
+      const res = await mergeCandidates(primary.id, duplicates);
+      if (res.success) {
+        groupsMerged += 1;
+        candidatesMerged += duplicates.length;
+      } else {
+        errors.push({ groupId: g.id, error: res.error || "unknown" });
+      }
+    } catch (err) {
+      errors.push({ groupId: g.id, error: err instanceof Error ? err.message : "unknown" });
+    }
+  }
+
+  revalidatePath("/cv");
+  revalidatePath("/cv/duplicates");
+  return { groupsMerged, candidatesMerged, errors };
+}

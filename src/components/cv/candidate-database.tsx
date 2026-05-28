@@ -30,7 +30,7 @@ type CandidateItem = {
   createdAt: Date;
   doNotCall?: boolean;
   doNotCallReason?: string | null;
-  applicationCount?: number;
+  applicationCount?: number | null;
 };
 
 type Position = { id: string; title: string };

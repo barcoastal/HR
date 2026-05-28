@@ -63,7 +63,7 @@ type CandidateForDialog = {
   position: { title: string } | null;
   doNotCall?: boolean;
   doNotCallReason?: string | null;
-  applicationCount?: number;
+  applicationCount?: number | null;
 };
 
 type ApplicationForDisplay = {
