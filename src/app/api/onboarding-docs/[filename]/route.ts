@@ -15,21 +15,28 @@ export async function GET(
     return NextResponse.json({ error: "Invalid filename" }, { status: 400 });
   }
 
-  // If this blob is referenced by an employee Document row, enforce that
-  // row's visibility / ownership. Files used outside the Document table
-  // (resumes, templates, fill packets) keep their existing auth-only access.
+  // Run the visibility check + blob fetch in parallel. Document.url now has
+  // an index so the visibility lookup is O(log n) instead of a table scan.
+  // Files NOT referenced by a Document row (resumes, templates, fill
+  // packets) only require an authenticated session.
   const role = session.user?.role;
   const requesterEmployeeId = session.user?.employeeId ?? null;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
 
-  const docRow = await db.document.findFirst({
-    where: { url: `/api/onboarding-docs/${filename}` },
-    select: {
-      visibility: true,
-      employeeId: true,
-      employee: { select: { managerId: true } },
-    },
-  });
+  const [docRow, blob] = await Promise.all([
+    db.document.findFirst({
+      where: { url: `/api/onboarding-docs/${filename}` },
+      select: {
+        visibility: true,
+        employeeId: true,
+        employee: { select: { managerId: true } },
+      },
+    }),
+    db.fileBlob.findUnique({
+      where: { filename },
+      select: { data: true, mimeType: true },
+    }),
+  ]);
 
   if (docRow) {
     if (docRow.visibility === "HR_ONLY" && !isAdmin) {
@@ -44,11 +51,6 @@ export async function GET(
       }
     }
   }
-
-  const blob = await db.fileBlob.findUnique({
-    where: { filename },
-    select: { data: true, mimeType: true },
-  });
 
   if (!blob) {
     return NextResponse.json({ error: "File not found" }, { status: 404 });

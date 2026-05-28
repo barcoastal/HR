@@ -699,6 +699,7 @@ model Document {
   employee   Employee           @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
   @@index([employeeId])
+  @@index([url])
 }
 
 model HRNote {
