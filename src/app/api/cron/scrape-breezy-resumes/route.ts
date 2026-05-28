@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import chromium from "@sparticuz/chromium";
-import { chromium as playwrightChromium } from "playwright-core";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 800; // Railway can run up to ~15 min per request
@@ -72,14 +70,37 @@ export async function GET(request: Request) {
     return NextResponse.json({ status: "nothing-to-do", scanned: rows.length });
   }
 
-  // Launch Chromium via @sparticuz/chromium — lean enough to run inside the
-  // standard Railway Node container.
-  const executablePath = await chromium.executablePath();
-  const browser = await playwrightChromium.launch({
-    executablePath,
-    headless: true,
-    args: chromium.args,
-  });
+  // Lazy-import Chromium so a broken native binary doesn't 500 the whole
+  // module at load time — we want the real error in the response body.
+  let executablePath: string;
+  let chromiumArgs: string[];
+  let playwrightChromium: typeof import("playwright-core").chromium;
+  try {
+    const sparticuz = (await import("@sparticuz/chromium")).default;
+    const pw = await import("playwright-core");
+    executablePath = await sparticuz.executablePath();
+    chromiumArgs = sparticuz.args;
+    playwrightChromium = pw.chromium;
+  } catch (err) {
+    return NextResponse.json(
+      { error: `Chromium load failed: ${err instanceof Error ? err.message : String(err)}` },
+      { status: 500 },
+    );
+  }
+
+  let browser: Awaited<ReturnType<typeof playwrightChromium.launch>>;
+  try {
+    browser = await playwrightChromium.launch({
+      executablePath,
+      headless: true,
+      args: chromiumArgs,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: `Chromium launch failed: ${err instanceof Error ? err.message : String(err)}` },
+      { status: 500 },
+    );
+  }
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
