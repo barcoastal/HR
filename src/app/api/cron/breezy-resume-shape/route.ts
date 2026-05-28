@@ -28,29 +28,62 @@ export async function GET(request: Request) {
   });
   const positions = posRes.ok ? ((await posRes.json()) as { _id: string }[]) : [];
 
-  type C = { _id: string; resume?: unknown; [k: string]: unknown };
-  const dump: { positionId: string; candidates: { _id: string; rawResumeField: unknown; keys: string[] }[] }[] = [];
-  for (const p of positions.slice(0, 1)) {
-    const candsRes = await fetch(
-      `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidates`,
-      { headers: { Authorization: token } }
-    );
-    const cands = candsRes.ok ? ((await candsRes.json()) as C[]) : [];
-    const dumped: { _id: string; rawResumeField: unknown; keys: string[] }[] = [];
-    for (const c of cands.slice(0, 2)) {
-      const detailRes = await fetch(
-        `${BREEZY_BASE_URL}/company/${companyId}/position/${p._id}/candidate/${c._id}`,
-        { headers: { Authorization: token } }
-      );
-      const detail = detailRes.ok ? ((await detailRes.json()) as C) : null;
-      dumped.push({
-        _id: c._id,
-        rawResumeField: detail?.resume ?? null,
-        keys: detail ? Object.keys(detail) : [],
-      });
-    }
-    dump.push({ positionId: p._id, candidates: dumped });
+  type C = { _id: string; resume?: { url?: string; file_name?: string; _id?: string }; [k: string]: unknown };
+  const candsRes = await fetch(
+    `${BREEZY_BASE_URL}/company/${companyId}/position/${positions[0]._id}/candidates`,
+    { headers: { Authorization: token } }
+  );
+  const cands = candsRes.ok ? ((await candsRes.json()) as C[]) : [];
+  const first = cands[0];
+  if (!first) return NextResponse.json({ error: "No candidates" }, { status: 404 });
+  const detailRes = await fetch(
+    `${BREEZY_BASE_URL}/company/${companyId}/position/${positions[0]._id}/candidate/${first._id}`,
+    { headers: { Authorization: token } }
+  );
+  const detail = detailRes.ok ? ((await detailRes.json()) as C) : null;
+  const r = detail?.resume;
+  if (!r) return NextResponse.json({ error: "No resume on first candidate" });
+
+  const resumeId = r._id;
+  const fileName = r.file_name; // contains "?key=<uuid>"
+  const keyMatch = (fileName ?? "").match(/[?&]key=([^&]+)/);
+  const key = keyMatch ? keyMatch[1] : null;
+  const fileBase = (fileName ?? "").split("?")[0];
+
+  const probes: { name: string; url: string; init: RequestInit }[] = [];
+  if (resumeId) {
+    probes.push({ name: "/v3/resume/{id}", url: `${BREEZY_BASE_URL}/resume/${resumeId}`, init: { headers: { Authorization: token } } });
+    probes.push({ name: "/v3/files/{id}", url: `${BREEZY_BASE_URL}/files/${resumeId}`, init: { headers: { Authorization: token } } });
+    probes.push({ name: "/v3/company/{co}/file/{id}", url: `${BREEZY_BASE_URL}/company/${companyId}/file/${resumeId}`, init: { headers: { Authorization: token } } });
+  }
+  if (key && fileBase) {
+    probes.push({ name: "files.breezy.hr/?key=", url: `https://files.breezy.hr/${fileBase}?key=${key}`, init: {} });
+    probes.push({ name: "app.breezy.hr/serve?key=", url: `https://app.breezy.hr/serve/${fileBase}?key=${key}`, init: {} });
+    probes.push({ name: "candidates-cdn?key=", url: `https://breezy-uploads.s3.amazonaws.com/${fileBase}?key=${key}`, init: {} });
+    probes.push({ name: "/v3/.../resume?key=", url: `${BREEZY_BASE_URL}/company/${companyId}/position/${positions[0]._id}/candidate/${first._id}/resume?key=${key}`, init: { headers: { Authorization: token } } });
+    probes.push({ name: "/v3/.../resume?key= (no auth)", url: `${BREEZY_BASE_URL}/company/${companyId}/position/${positions[0]._id}/candidate/${first._id}/resume?key=${key}`, init: {} });
+    probes.push({ name: "/v3/.../resume (follow redirect)", url: `${BREEZY_BASE_URL}/company/${companyId}/position/${positions[0]._id}/candidate/${first._id}/resume`, init: { headers: { Authorization: token }, redirect: "follow" } });
   }
 
-  return NextResponse.json(dump);
+  type Result = { name: string; url: string; status: number; contentType: string | null; bytes: number; location: string | null; body?: string };
+  const out: Result[] = [];
+  for (const p of probes) {
+    try {
+      const res = await fetch(p.url, { ...p.init, redirect: (p.init as { redirect?: RequestRedirect }).redirect ?? "manual" });
+      const buf = await res.arrayBuffer();
+      out.push({
+        name: p.name,
+        url: p.url,
+        status: res.status,
+        contentType: res.headers.get("content-type"),
+        bytes: buf.byteLength,
+        location: res.headers.get("location"),
+        body: buf.byteLength < 400 ? Buffer.from(buf).toString("utf-8") : undefined,
+      });
+    } catch (err) {
+      out.push({ name: p.name, url: p.url, status: 0, contentType: null, bytes: 0, location: null, body: String(err) });
+    }
+  }
+
+  return NextResponse.json({ rawResume: r, probes: out });
 }
