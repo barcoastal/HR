@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { updateCandidate, hireCandidateAndStartOnboarding, sendOfferLetter } from "@/lib/actions/candidates";
 import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
 import { getCandidateApplications, markDoNotCall, unmarkDoNotCall } from "@/lib/actions/candidate-applications";
@@ -45,6 +45,7 @@ type CandidateForDialog = {
   source: string | null;
   notes: string | null;
   resumeText: string | null;
+  resumeUrl: string | null;
   status: CandidateStatus;
   positionId: string | null;
   costOfHire: number | null;
@@ -270,6 +271,37 @@ export function CandidateDetailDialog({
   const [dncBusy, setDncBusy] = useState(false);
   const [localDoNotCall, setLocalDoNotCall] = useState<boolean>(!!candidate?.doNotCall);
   const [localDncReason, setLocalDncReason] = useState<string | null>(candidate?.doNotCallReason || null);
+  const [resumeUploading, setResumeUploading] = useState(false);
+  const [resumeUploadError, setResumeUploadError] = useState<string | null>(null);
+  const [localResumeUrl, setLocalResumeUrl] = useState<string | null>(candidate?.resumeUrl || null);
+  const resumeFileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleResumeUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !candidate) return;
+    setResumeUploadError(null);
+    setResumeUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch(`/api/candidates/${candidate.id}/resume`, {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setResumeUploadError(data.error || `Upload failed (${res.status})`);
+        return;
+      }
+      setLocalResumeUrl(data.resumeUrl);
+      router.refresh();
+    } catch (err) {
+      setResumeUploadError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setResumeUploading(false);
+      if (resumeFileInputRef.current) resumeFileInputRef.current.value = "";
+    }
+  }
 
   const loadInterviews = useCallback(async (candidateId: string) => {
     const [data, connected] = await Promise.all([
@@ -288,6 +320,8 @@ export function CandidateDetailDialog({
       }).catch(() => setApplications([]));
       setLocalDoNotCall(!!candidate.doNotCall);
       setLocalDncReason(candidate.doNotCallReason || null);
+      setLocalResumeUrl(candidate.resumeUrl || null);
+      setResumeUploadError(null);
     }
   }, [candidate, open, loadInterviews]);
 
@@ -1201,6 +1235,67 @@ export function CandidateDetailDialog({
                 </div>
               </div>
             )}
+
+            {/* Resume — view / upload */}
+            <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-3">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Icon name="description" size={16} className="text-[var(--color-accent)]" />
+                  <span className="text-xs font-medium text-[var(--color-text-primary)]">Resume</span>
+                  {localResumeUrl ? (
+                    localResumeUrl.startsWith("/") ? (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600">On file</span>
+                    ) : (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600">Source link only</span>
+                    )
+                  ) : (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500">None</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {localResumeUrl && (
+                    <a
+                      href={localResumeUrl.startsWith("/") ? localResumeUrl : `/api/platforms/jobing/resume?url=${encodeURIComponent(localResumeUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10"
+                    >
+                      <Icon name="open_in_new" size={12} />
+                      View
+                    </a>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => resumeFileInputRef.current?.click()}
+                    disabled={resumeUploading}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded text-[11px] font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+                  >
+                    <Icon name="upload_file" size={12} />
+                    {resumeUploading ? "Uploading…" : localResumeUrl ? "Replace" : "Upload"}
+                  </button>
+                  <input
+                    ref={resumeFileInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={handleResumeUpload}
+                  />
+                </div>
+              </div>
+              {resumeUploadError && (
+                <p className="mt-2 text-[11px] text-red-500">{resumeUploadError}</p>
+              )}
+              {!localResumeUrl && (
+                <p className="mt-2 text-[11px] text-[var(--color-text-muted)]">
+                  No resume on file. Drag a PDF here or click Upload — it gets stored in our database and becomes viewable instantly.
+                </p>
+              )}
+              {localResumeUrl && !localResumeUrl.startsWith("/") && (
+                <p className="mt-2 text-[11px] text-[var(--color-text-muted)]">
+                  This candidate&apos;s resume is hosted on the source platform and the download is currently blocked. Upload a copy from your computer to attach it permanently.
+                </p>
+              )}
+            </div>
 
             {/* Notes - prominent */}
             <div>
