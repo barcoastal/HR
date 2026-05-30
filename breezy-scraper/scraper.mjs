@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * Long-running Railway worker: every INTERVAL_SEC seconds, fetch the list
- * of candidates whose Breezy resumes our /v3 API can't download (403),
- * sign in to app.breezy.hr with the integration credentials, pull each
- * candidate's PDF via the SPA-side API where resume.pdf_url IS populated,
- * and upload to the main app via the attach-resume cron endpoint.
+ * Long-running Railway worker that pulls Breezy resumes our /v3 API can't
+ * fetch (403'd) and uploads them to the main app.
+ *
+ * Critical design choice: we log in ONCE at startup and reuse the same
+ * Chromium context for every 5-min tick. Re-logging in every tick burned
+ * through Breezy's WAF tolerance and started getting CAPTCHA-blocked.
  *
  * Required env (set on the Railway service):
  *   BREEZY_EMAIL, BREEZY_PASSWORD
@@ -14,6 +15,7 @@
  * Optional env:
  *   INTERVAL_SEC=300       — seconds between runs (default 5 min)
  *   LIMIT_PER_RUN=50       — max candidates processed per run
+ *   SESSION_TTL_HOURS=12   — force a re-login after this many hours
  */
 
 import { chromium } from "playwright";
@@ -26,6 +28,7 @@ const {
 } = process.env;
 const INTERVAL_SEC = parseInt(process.env.INTERVAL_SEC || "300", 10);
 const LIMIT_PER_RUN = parseInt(process.env.LIMIT_PER_RUN || "50", 10);
+const SESSION_TTL_MS = parseInt(process.env.SESSION_TTL_HOURS || "12", 10) * 60 * 60 * 1000;
 
 if (!BREEZY_EMAIL || !BREEZY_PASSWORD || !CRON_SECRET || !APP_URL) {
   console.error("Missing required env: BREEZY_EMAIL, BREEZY_PASSWORD, CRON_SECRET, APP_URL");
@@ -52,15 +55,7 @@ async function uploadResume(candidateId, buffer) {
   return data;
 }
 
-async function runOnce() {
-  const { total, candidates } = await fetchPending();
-  if (total === 0) {
-    log("nothing to do");
-    return { uploaded: 0, failed: 0 };
-  }
-  const work = candidates.slice(0, LIMIT_PER_RUN);
-  log(`processing ${work.length} of ${total} pending`);
-
+async function newBrowserContext() {
   const browser = await chromium.launch({
     headless: true,
     args: ["--disable-blink-features=AutomationControlled", "--no-sandbox"],
@@ -76,23 +71,101 @@ async function runOnce() {
   await ctx.addInitScript(() => {
     Object.defineProperty(navigator, "webdriver", { get: () => undefined });
   });
+  return { browser, ctx };
+}
+
+async function loginPage(ctx) {
   const page = await ctx.newPage();
+  // domcontentloaded is enough — networkidle is unreliable on SPA pages
+  // with long-polling listeners and was the source of the WAF timeouts.
+  await page.goto("https://app.breezy.hr/signin", {
+    waitUntil: "domcontentloaded",
+    timeout: 30000,
+  });
+  await page.waitForSelector('input[name="email_address"]', { timeout: 15000 });
+  await page.fill('input[name="email_address"]', BREEZY_EMAIL);
+  await page.fill('input[name="password"]', BREEZY_PASSWORD);
+  // Submit + wait for navigation off /signin.
+  await Promise.all([
+    page.waitForURL((u) => !u.toString().includes("/signin"), { timeout: 30000 }),
+    page.click('input[type="submit"], button[type="submit"]'),
+  ]);
+  await page.waitForTimeout(2000);
+  return page;
+}
 
+async function isSessionValid(page) {
   try {
-    await page.goto("https://app.breezy.hr/signin", { waitUntil: "networkidle", timeout: 30000 });
-    await page.waitForSelector('input[name="email_address"]', { timeout: 15000 });
-    await page.fill('input[name="email_address"]', BREEZY_EMAIL);
-    await page.fill('input[name="password"]', BREEZY_PASSWORD);
-    await page.click('input[type="submit"], button[type="submit"]');
-    await page.waitForURL((u) => !u.toString().includes("/signin"), { timeout: 30000 });
-    await page.waitForTimeout(2000);
-  } catch (err) {
-    await browser.close();
-    throw new Error(`login: ${err instanceof Error ? err.message : String(err)}`);
+    const ok = await page.evaluate(async () => {
+      const r = await fetch("https://app.breezy.hr/api/me", { credentials: "include" });
+      return r.ok;
+    });
+    return !!ok;
+  } catch {
+    return false;
   }
+}
 
-  let uploaded = 0;
-  let failed = 0;
+async function processCandidate(page, c) {
+  const result = await page.evaluate(
+    async ({ cid, pid, cnd }) => {
+      const dr = await fetch(
+        `https://app.breezy.hr/api/company/${cid}/position/${pid}/candidate/${cnd}`,
+        { credentials: "include" },
+      );
+      if (!dr.ok) return { err: `detail ${dr.status}`, authFailed: dr.status === 401 || dr.status === 403 };
+      const detail = await dr.json();
+      const url = detail?.resume?.pdf_url || detail?.resume?.url;
+      if (!url) return { err: "no resume.pdf_url" };
+      const pr = await fetch(url, { credentials: "include" });
+      if (!pr.ok) return { err: `pdf fetch ${pr.status}`, authFailed: pr.status === 401 || pr.status === 403 };
+      const buf = await pr.arrayBuffer();
+      const head = Array.from(new Uint8Array(buf.slice(0, 4)));
+      const isPdf = head[0] === 0x25 && head[1] === 0x50 && head[2] === 0x44 && head[3] === 0x46;
+      return { bytes: Array.from(new Uint8Array(buf)), isPdf };
+    },
+    { cid: c.breezyCompanyId, pid: c.breezyPositionId, cnd: c.breezyCandidateId },
+  );
+  return result;
+}
+
+// Module-level session state — re-used across ticks. Re-created when the
+// session expires or a fatal browser error occurs.
+let browser = null;
+let ctx = null;
+let page = null;
+let loggedInAt = 0;
+
+async function ensureSession() {
+  const sessionExpired = loggedInAt && Date.now() - loggedInAt > SESSION_TTL_MS;
+  if (browser && page && !sessionExpired && (await isSessionValid(page))) {
+    return;
+  }
+  if (browser) {
+    try { await browser.close(); } catch { /* ignore */ }
+    browser = null; ctx = null; page = null;
+  }
+  log("signing in to Breezy…");
+  const created = await newBrowserContext();
+  browser = created.browser;
+  ctx = created.ctx;
+  page = await loginPage(ctx);
+  loggedInAt = Date.now();
+  log("signed in.");
+}
+
+async function runOnce() {
+  const { total, candidates } = await fetchPending();
+  if (total === 0) {
+    log("nothing to do");
+    return { uploaded: 0, failed: 0 };
+  }
+  const work = candidates.slice(0, LIMIT_PER_RUN);
+  log(`processing ${work.length} of ${total} pending`);
+
+  await ensureSession();
+
+  let uploaded = 0, failed = 0;
   for (const c of work) {
     if (!c.breezyCompanyId || !c.breezyPositionId || !c.breezyCandidateId) {
       log(`SKIP ${c.name} — could not parse Breezy IDs from resumeUrl`);
@@ -100,26 +173,14 @@ async function runOnce() {
       continue;
     }
     try {
-      const result = await page.evaluate(
-        async ({ cid, pid, cnd }) => {
-          const dr = await fetch(
-            `https://app.breezy.hr/api/company/${cid}/position/${pid}/candidate/${cnd}`,
-            { credentials: "include" },
-          );
-          if (!dr.ok) return { err: `detail ${dr.status}` };
-          const detail = await dr.json();
-          const url = detail?.resume?.pdf_url || detail?.resume?.url;
-          if (!url) return { err: "no resume.pdf_url" };
-          const pr = await fetch(url, { credentials: "include" });
-          if (!pr.ok) return { err: `pdf fetch ${pr.status}` };
-          const buf = await pr.arrayBuffer();
-          const head = Array.from(new Uint8Array(buf.slice(0, 4)));
-          const isPdf =
-            head[0] === 0x25 && head[1] === 0x50 && head[2] === 0x44 && head[3] === 0x46;
-          return { bytes: Array.from(new Uint8Array(buf)), isPdf };
-        },
-        { cid: c.breezyCompanyId, pid: c.breezyPositionId, cnd: c.breezyCandidateId },
-      );
+      let result = await processCandidate(page, c);
+      // If auth slipped between the session check and this fetch, recover once.
+      if (result.authFailed) {
+        log("session lost mid-run, re-signing in…");
+        loggedInAt = 0;
+        await ensureSession();
+        result = await processCandidate(page, c);
+      }
       if (result.err) {
         log(`FAIL ${c.name} — ${result.err}`);
         failed += 1;
@@ -137,19 +198,22 @@ async function runOnce() {
       failed += 1;
     }
   }
-
-  await browser.close();
   log(`run done — ${uploaded} uploaded, ${failed} failed`);
   return { uploaded, failed };
 }
 
 async function main() {
-  log(`worker starting — every ${INTERVAL_SEC}s, limit ${LIMIT_PER_RUN}/run`);
+  log(`worker starting — every ${INTERVAL_SEC}s, limit ${LIMIT_PER_RUN}/run, session ttl ${SESSION_TTL_MS / 3600000}h`);
   for (;;) {
     try {
       await runOnce();
     } catch (err) {
       log(`run failed — ${err instanceof Error ? err.message : String(err)}`);
+      // Force a fresh session next time around.
+      if (browser) {
+        try { await browser.close(); } catch { /* ignore */ }
+        browser = null; ctx = null; page = null; loggedInAt = 0;
+      }
     }
     await new Promise((r) => setTimeout(r, INTERVAL_SEC * 1000));
   }
