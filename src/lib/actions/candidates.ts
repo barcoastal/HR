@@ -778,6 +778,21 @@ export async function hireCandidateAndStartOnboarding(
   // If skipEmail (pre-onboarding), set status to PRE_ONBOARDING directly
   const initialStatus = skipEmail ? "PRE_ONBOARDING" : "ONBOARDING";
 
+  // Block the hire if an Employee already exists with this email — Prisma's
+  // unique constraint would throw a generic P2002 that Next.js then hides in
+  // production. Surface a clear message instead.
+  const existingEmployee = await db.employee.findUnique({
+    where: { email: employeeEmail },
+    select: { id: true, firstName: true, lastName: true, status: true },
+  });
+  if (existingEmployee) {
+    throw new Error(
+      `An employee already exists with email ${employeeEmail} ` +
+      `(${existingEmployee.firstName} ${existingEmployee.lastName}, status ${existingEmployee.status}). ` +
+      `Use a different company email, or archive the existing employee record first.`
+    );
+  }
+
   const employee = await db.employee.create({
     data: {
       firstName: candidate.firstName,

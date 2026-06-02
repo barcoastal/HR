@@ -104,12 +104,13 @@ export interface CandidateCustomField {
 // here even though they remain valid CandidateStatus enum values.
 const DEFAULT_STAGES: PipelineStage[] = [
   { id: "new", label: "New", color: "text-blue-400", bgColor: "bg-blue-500", enumValue: "NEW", visible: true, order: 0 },
-  { id: "screening", label: "Screening", color: "text-amber-400", bgColor: "bg-amber-500", enumValue: "SCREENING", visible: true, order: 1 },
-  { id: "interview", label: "Interview", color: "text-purple-400", bgColor: "bg-purple-500", enumValue: "INTERVIEW", visible: true, order: 2 },
-  { id: "offer", label: "Offer", color: "text-emerald-400", bgColor: "bg-emerald-500", enumValue: "OFFER", visible: true, order: 3 },
-  { id: "bg_check", label: "BG Check", color: "text-orange-400", bgColor: "bg-orange-500", enumValue: "BACKGROUND_CHECK", visible: true, order: 4 },
-  { id: "hired", label: "Hired", color: "text-green-400", bgColor: "bg-green-500", enumValue: "HIRED", visible: true, order: 5 },
-  { id: "rejected", label: "Rejected", color: "text-red-400", bgColor: "bg-red-500", enumValue: "REJECTED", visible: true, order: 6 },
+  { id: "contacted", label: "Contacted", color: "text-cyan-400", bgColor: "bg-cyan-500", enumValue: "CONTACTED", visible: true, order: 1 },
+  { id: "screening", label: "Screening", color: "text-amber-400", bgColor: "bg-amber-500", enumValue: "SCREENING", visible: true, order: 2 },
+  { id: "interview", label: "Interview", color: "text-purple-400", bgColor: "bg-purple-500", enumValue: "INTERVIEW", visible: true, order: 3 },
+  { id: "offer", label: "Offer", color: "text-emerald-400", bgColor: "bg-emerald-500", enumValue: "OFFER", visible: true, order: 4 },
+  { id: "bg_check", label: "BG Check", color: "text-orange-400", bgColor: "bg-orange-500", enumValue: "BACKGROUND_CHECK", visible: true, order: 5 },
+  { id: "hired", label: "Hired", color: "text-green-400", bgColor: "bg-green-500", enumValue: "HIRED", visible: true, order: 6 },
+  { id: "rejected", label: "Rejected", color: "text-red-400", bgColor: "bg-red-500", enumValue: "REJECTED", visible: true, order: 7 },
 ];
 
 export async function getPipelineStages(): Promise<PipelineStage[]> {

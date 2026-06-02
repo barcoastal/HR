@@ -24,7 +24,7 @@ const COLORS = [
   { label: "Indigo", text: "text-indigo-400", bg: "bg-indigo-500" },
 ];
 
-const ENUM_VALUES = ["NEW", "SCREENING", "INTERVIEW", "OFFER", "BACKGROUND_CHECK", "HIRED", "REJECTED"];
+const ENUM_VALUES = ["NEW", "CONTACTED", "SCREENING", "INTERVIEW", "OFFER", "BACKGROUND_CHECK", "HIRED", "REJECTED"];
 
 export function PipelineSettings({
   initialStages,

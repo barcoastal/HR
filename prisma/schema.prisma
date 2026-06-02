@@ -125,6 +125,7 @@ enum DocumentVisibility {
 
 enum CandidateStatus {
   NEW
+  CONTACTED
   SCREENING
   INTERVIEW
   OFFER

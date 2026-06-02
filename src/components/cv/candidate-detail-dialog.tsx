@@ -182,6 +182,7 @@ function parseSkills(skills: string | null): string {
 
 const DEFAULT_STATUSES: { value: CandidateStatus; label: string; color: string }[] = [
   { value: "NEW", label: "New", color: "bg-blue-500" },
+  { value: "CONTACTED", label: "Contacted", color: "bg-cyan-500" },
   { value: "SCREENING", label: "Screening", color: "bg-amber-500" },
   { value: "INTERVIEW", label: "Interview", color: "bg-purple-500" },
   { value: "OFFER", label: "Offer", color: "bg-emerald-500" },

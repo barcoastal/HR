@@ -51,6 +51,7 @@ function parseSkills(skills: string | null): string[] {
 // they just don't render as columns here.
 const DEFAULT_COLUMNS: { status: CandidateStatus; label: string; color: string; bg: string }[] = [
   { status: "NEW", label: "New", color: "text-blue-400", bg: "bg-blue-500/10" },
+  { status: "CONTACTED", label: "Contacted", color: "text-cyan-400", bg: "bg-cyan-500/10" },
   { status: "SCREENING", label: "Screening", color: "text-amber-400", bg: "bg-amber-500/10" },
   { status: "INTERVIEW", label: "Interview", color: "text-purple-400", bg: "bg-purple-500/10" },
   { status: "OFFER", label: "Offer", color: "text-emerald-400", bg: "bg-emerald-500/10" },

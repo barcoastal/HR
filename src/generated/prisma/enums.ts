@@ -174,6 +174,7 @@ export type DocumentVisibility = (typeof DocumentVisibility)[keyof typeof Docume
 
 export const CandidateStatus = {
   NEW: 'NEW',
+  CONTACTED: 'CONTACTED',
   SCREENING: 'SCREENING',
   INTERVIEW: 'INTERVIEW',
   OFFER: 'OFFER',
