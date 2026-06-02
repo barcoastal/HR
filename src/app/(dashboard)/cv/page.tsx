@@ -29,7 +29,10 @@ export default async function CVPage() {
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
   const closedPositions = positions.filter((p) => p.status === "FILLED" || p.status === "CLOSED");
-  const activeCandidates = pipelineCandidates.filter((c) => !["HIRED", "REJECTED"].includes(c.status)).length;
+  // Active = still in recruitment. Hired/Rejected are terminal, and
+  // pre-onboarding/onboarding/offboarding belong to the onboarding section,
+  // not recruitment.
+  const activeCandidates = pipelineCandidates.filter((c) => !["HIRED", "REJECTED", "PRE_ONBOARDING", "ONBOARDING", "OFFBOARDING"].includes(c.status)).length;
 
   return (
     <div className="max-w-full mx-auto py-8 px-4">

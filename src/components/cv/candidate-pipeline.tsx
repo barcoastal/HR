@@ -45,16 +45,17 @@ function parseSkills(skills: string | null): string[] {
   try { return JSON.parse(skills); } catch { return skills.split(",").map((s) => s.trim()).filter(Boolean); }
 }
 
+// Pre-Onboarding, Onboarding, and Offboarding intentionally aren't in the
+// recruitment pipeline — they live in their own dedicated sections of the app.
+// The enum values still exist on Candidate.status for backward compatibility;
+// they just don't render as columns here.
 const DEFAULT_COLUMNS: { status: CandidateStatus; label: string; color: string; bg: string }[] = [
   { status: "NEW", label: "New", color: "text-blue-400", bg: "bg-blue-500/10" },
   { status: "SCREENING", label: "Screening", color: "text-amber-400", bg: "bg-amber-500/10" },
   { status: "INTERVIEW", label: "Interview", color: "text-purple-400", bg: "bg-purple-500/10" },
   { status: "OFFER", label: "Offer", color: "text-emerald-400", bg: "bg-emerald-500/10" },
   { status: "BACKGROUND_CHECK", label: "BG Check", color: "text-orange-400", bg: "bg-orange-500/10" },
-  { status: "PRE_ONBOARDING", label: "Pre-Onboarding", color: "text-teal-400", bg: "bg-teal-500/10" },
-  { status: "ONBOARDING", label: "Onboarding", color: "text-cyan-400", bg: "bg-cyan-500/10" },
   { status: "HIRED", label: "Hired", color: "text-green-400", bg: "bg-green-500/10" },
-  { status: "OFFBOARDING", label: "Offboarding", color: "text-slate-400", bg: "bg-slate-500/10" },
   { status: "REJECTED", label: "Rejected", color: "text-red-400", bg: "bg-red-500/10" },
 ];
 
@@ -67,14 +68,24 @@ const INITIAL_COLUMN_LIMIT = 20;
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 type Recruiter = { id: string; firstName: string; lastName: string };
 
+// Stages owned by the onboarding/offboarding sections — never render them
+// as recruitment columns even if they're saved on the settings page.
+const RECRUITMENT_EXCLUDED: ReadonlySet<string> = new Set([
+  "PRE_ONBOARDING",
+  "ONBOARDING",
+  "OFFBOARDING",
+]);
+
 export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[] }) {
   const columns = pipelineStages && pipelineStages.length > 0
-    ? pipelineStages.filter(s => s.visible).map(s => ({
-        status: s.enumValue as CandidateStatus,
-        label: s.label,
-        color: s.color,
-        bg: s.bgColor.replace("bg-", "bg-") + "/10",
-      }))
+    ? pipelineStages
+        .filter(s => s.visible && !RECRUITMENT_EXCLUDED.has(s.enumValue))
+        .map(s => ({
+          status: s.enumValue as CandidateStatus,
+          label: s.label,
+          color: s.color,
+          bg: s.bgColor.replace("bg-", "bg-") + "/10",
+        }))
     : DEFAULT_COLUMNS;
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
