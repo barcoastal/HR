@@ -219,6 +219,7 @@ export function CandidateDetailDialog({
   const [saving, setSaving] = useState(false);
   const [hiring, setHiring] = useState(false);
   const [hireResult, setHireResult] = useState<{ employeeId: string; name: string; taskCount: number } | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -431,6 +432,7 @@ export function CandidateDetailDialog({
 
   async function handleSave() {
     if (!candidate) return;
+    setSaveError(null);
 
     if (form.status === "HIRED" && candidate.status !== "HIRED") {
       setHiring(true);
@@ -464,6 +466,10 @@ export function CandidateDetailDialog({
           name: `${form.firstName} ${form.lastName}`,
           taskCount: result.taskCount,
         });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error("[hire] failed:", err);
+        setSaveError(`Could not hire: ${msg}`);
       } finally {
         setHiring(false);
       }
@@ -514,26 +520,33 @@ export function CandidateDetailDialog({
       return;
     }
 
-    await updateCandidate(candidate.id, {
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone || undefined,
-      linkedinUrl: form.linkedinUrl || undefined,
-      skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
-      experience: form.experience || undefined,
-      source: form.source || undefined,
-      notes: form.notes || undefined,
-      positionId: form.positionId || undefined,
-      costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
-      hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : undefined,
-      managerId: form.managerId || undefined,
-      recruiterId: form.recruiterId || undefined,
-      status: form.status,
-    });
-    setSaving(false);
-    router.refresh();
-    onClose();
+    try {
+      await updateCandidate(candidate.id, {
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone || undefined,
+        linkedinUrl: form.linkedinUrl || undefined,
+        skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
+        experience: form.experience || undefined,
+        source: form.source || undefined,
+        notes: form.notes || undefined,
+        positionId: form.positionId || undefined,
+        costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+        hourlyRate: form.hourlyRate ? parseFloat(form.hourlyRate) : undefined,
+        managerId: form.managerId || undefined,
+        recruiterId: form.recruiterId || undefined,
+        status: form.status,
+      });
+      setSaving(false);
+      router.refresh();
+      onClose();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[save] failed:", err);
+      setSaveError(`Could not save: ${msg}`);
+      setSaving(false);
+    }
   }
 
   function handleClose() {
@@ -1385,6 +1398,12 @@ export function CandidateDetailDialog({
               <input value={form.costOfHire} onChange={(e) => update("costOfHire", e.target.value)} type="number" className={inputClass} />
             </div>
           </div>
+
+          {saveError && (
+            <div className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-500">
+              {saveError}
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-4">
             <button onClick={handleClose} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">
