@@ -462,14 +462,18 @@ export function CandidateDetailDialog({
           managerId: form.managerId || undefined,
           skipEmail: isPreOnboarding,
         });
-        setHireResult({
-          employeeId: result.employee.id,
-          name: `${form.firstName} ${form.lastName}`,
-          taskCount: result.taskCount,
-        });
+        if (!result.success) {
+          setSaveError(`Could not hire: ${result.error}`);
+        } else {
+          setHireResult({
+            employeeId: result.employeeId,
+            name: `${form.firstName} ${form.lastName}`,
+            taskCount: result.taskCount,
+          });
+        }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        console.error("[hire] failed:", err);
+        console.error("[hire] unexpected:", err);
         setSaveError(`Could not hire: ${msg}`);
       } finally {
         setHiring(false);

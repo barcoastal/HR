@@ -742,10 +742,29 @@ export async function updateCandidateNotes(id: string, notes: string) {
   return candidate;
 }
 
+type HireResult =
+  | { success: true; employeeId: string; taskCount: number }
+  | { success: false; error: string };
+
 export async function hireCandidateAndStartOnboarding(
   candidateId: string,
   options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
-) {
+): Promise<HireResult> {
+  try {
+    return await hireInner(candidateId, options);
+  } catch (err) {
+    // Server Action thrown errors are masked by Next.js in production. Return
+    // a plain JSON error so the client dialog can show the real message.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[hire] failed:", err);
+    return { success: false, error: message };
+  }
+}
+
+async function hireInner(
+  candidateId: string,
+  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
+): Promise<HireResult> {
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: { include: { department: true } } },
@@ -879,7 +898,7 @@ export async function hireCandidateAndStartOnboarding(
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
     revalidatePath("/people");
-    return { employee, taskCount: preOnboardingTasks.length };
+    return { success: true, employeeId: employee.id, taskCount: preOnboardingTasks.length };
   }
 
   // Check for pre-onboarding tasks first
@@ -934,7 +953,7 @@ export async function hireCandidateAndStartOnboarding(
     revalidatePath("/cv");
     revalidatePath("/onboarding");
     revalidatePath("/people");
-    return { employee, taskCount: preOnboardingTasks.length };
+    return { success: true, employeeId: employee.id, taskCount: preOnboardingTasks.length };
   }
 
   const resolvedTasks = await resolveOnboardingTasks(deptId, jobTitleStr);
@@ -1019,7 +1038,7 @@ export async function hireCandidateAndStartOnboarding(
   revalidatePath("/org");
   revalidatePath("/onboarding");
 
-  return { employee, taskCount: resolvedTasks.length };
+  return { success: true, employeeId: employee.id, taskCount: resolvedTasks.length };
 }
 
 export async function getPositions() {
