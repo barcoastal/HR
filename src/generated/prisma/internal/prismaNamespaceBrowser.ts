@@ -113,6 +113,7 @@ export const ModelName = {
   PinnedMessage: 'PinnedMessage',
   SavedMessage: 'SavedMessage',
   FileBlob: 'FileBlob',
+  WorkerHeartbeat: 'WorkerHeartbeat',
   OneOnOne: 'OneOnOne',
   GustoConnection: 'GustoConnection'
 } as const
@@ -1073,6 +1074,17 @@ export const FileBlobScalarFieldEnum = {
 } as const
 
 export type FileBlobScalarFieldEnum = (typeof FileBlobScalarFieldEnum)[keyof typeof FileBlobScalarFieldEnum]
+
+
+export const WorkerHeartbeatScalarFieldEnum = {
+  name: 'name',
+  lastTickAt: 'lastTickAt',
+  lastUploaded: 'lastUploaded',
+  lastFailed: 'lastFailed',
+  pendingCount: 'pendingCount'
+} as const
+
+export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
 
 
 export const OneOnOneScalarFieldEnum = {

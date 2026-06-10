@@ -55,6 +55,19 @@ async function uploadResume(candidateId, buffer) {
   return data;
 }
 
+async function postHeartbeat({ uploaded, failed, pending }) {
+  try {
+    await fetch(`${APP_URL}/api/cron/worker-heartbeat?secret=${CRON_SECRET}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: "breezy-scraper", uploaded, failed, pending }),
+    });
+  } catch (err) {
+    // Heartbeat failures are non-fatal — the loop keeps running.
+    log(`heartbeat post failed — ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 async function newBrowserContext() {
   const browser = await chromium.launch({
     headless: true,
@@ -161,6 +174,7 @@ async function runOnce() {
   const { total, candidates } = await fetchPending();
   if (total === 0) {
     log("nothing to do");
+    await postHeartbeat({ uploaded: 0, failed: 0, pending: 0 });
     return { uploaded: 0, failed: 0 };
   }
   const work = candidates.slice(0, LIMIT_PER_RUN);
@@ -202,6 +216,7 @@ async function runOnce() {
     }
   }
   log(`run done — ${uploaded} uploaded, ${failed} failed`);
+  await postHeartbeat({ uploaded, failed, pending: Math.max(0, total - uploaded) });
   return { uploaded, failed };
 }
 

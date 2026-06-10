@@ -1396,6 +1396,16 @@ model FileBlob {
   createdAt DateTime @default(now())
 }
 
+// Heartbeat from background workers (e.g. breezy-scraper). The watchdog
+// reads lastTickAt and alerts/restarts when it goes stale.
+model WorkerHeartbeat {
+  name           String   @id  // e.g. "breezy-scraper"
+  lastTickAt     DateTime @default(now())
+  lastUploaded   Int      @default(0)
+  lastFailed     Int      @default(0)
+  pendingCount   Int      @default(0)
+}
+
 model OneOnOne {
   id               String         @id @default(uuid())
   employeeId       String

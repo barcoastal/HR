@@ -328,6 +328,11 @@ export type SavedMessage = Prisma.SavedMessageModel
  */
 export type FileBlob = Prisma.FileBlobModel
 /**
+ * Model WorkerHeartbeat
+ * 
+ */
+export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
+/**
  * Model OneOnOne
  * 
  */
