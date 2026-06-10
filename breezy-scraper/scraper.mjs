@@ -95,9 +95,12 @@ async function loginPage(ctx) {
 }
 
 async function isSessionValid(page) {
+  // Use an endpoint we know returns 200 with a valid session: /api/companies.
+  // The previous /api/me check was always 404'ing, which made the session
+  // check return false on every tick and forced a fresh login each time.
   try {
     const ok = await page.evaluate(async () => {
-      const r = await fetch("https://app.breezy.hr/api/me", { credentials: "include" });
+      const r = await fetch("https://app.breezy.hr/api/companies", { credentials: "include" });
       return r.ok;
     });
     return !!ok;
@@ -202,9 +205,20 @@ async function runOnce() {
   return { uploaded, failed };
 }
 
+// Last-resort handlers so a stray async error never kills the process —
+// the previous worker silently died after a week of ticking and the only
+// way back was a manual Railway restart.
+process.on("unhandledRejection", (err) => {
+  log(`unhandledRejection — ${err instanceof Error ? err.message : String(err)}`);
+});
+process.on("uncaughtException", (err) => {
+  log(`uncaughtException — ${err.message}`);
+});
+
 async function main() {
   log(`worker starting — every ${INTERVAL_SEC}s, limit ${LIMIT_PER_RUN}/run, session ttl ${SESSION_TTL_MS / 3600000}h`);
   for (;;) {
+    const tickStart = Date.now();
     try {
       await runOnce();
     } catch (err) {
@@ -215,6 +229,8 @@ async function main() {
         browser = null; ctx = null; page = null; loggedInAt = 0;
       }
     }
+    // Heartbeat — proves the loop is still alive even when nothing happened.
+    log(`heartbeat — next tick in ${INTERVAL_SEC}s (last tick ${Math.round((Date.now() - tickStart) / 1000)}s)`);
     await new Promise((r) => setTimeout(r, INTERVAL_SEC * 1000));
   }
 }
