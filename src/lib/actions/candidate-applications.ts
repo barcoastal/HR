@@ -129,21 +129,20 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
   // *this* person shouldn't be contacted, the dupes shouldn't either.
   const normPhone = (before.phone || "").replace(/\D/g, "").slice(-10);
   if (normPhone.length === 10) {
-    // Pull every row with the same name + a phone, then filter digit-only
-    // in JS — Postgres `contains` misses formatted phones like
-    // "(561)892-4474" because the literal "5618924474" substring isn't
-    // present.
-    const sameNameRows = await db.candidate.findMany({
+    // Match by digit-only phone alone — Indeed often returns scrambled
+    // names on the same candidate, so a name+phone match misses real
+    // duplicates. Last-4 digits filter narrows the candidate set at the
+    // DB level; we compare digit-only in JS.
+    const last4 = normPhone.slice(-4);
+    const phoneRows = await db.candidate.findMany({
       where: {
         id: { not: candidateId },
-        firstName: { equals: before.firstName, mode: "insensitive" },
-        lastName: { equals: before.lastName, mode: "insensitive" },
-        phone: { not: null },
+        phone: { contains: last4 },
         doNotCall: false,
       },
       select: { id: true, firstName: true, lastName: true, email: true, status: true, phone: true },
     });
-    const sameNameSamePhone = sameNameRows.filter(
+    const sameNameSamePhone = phoneRows.filter(
       (r) => (r.phone || "").replace(/\D/g, "").slice(-10) === normPhone,
     );
 

@@ -75,18 +75,18 @@ export async function createCandidate(data: {
   // is rare and recoverable via the duplicates UI.
   const normPhone = (data.phone || "").replace(/\D/g, "").slice(-10);
   if (normPhone.length === 10) {
-    // Match by name first, then compare digit-only phones in JS — Postgres
-    // `contains` doesn't catch "+1 561 892 4474" or "(561)892-4474" since
-    // those formatted strings don't contain the literal 10-digit substring.
-    const sameNameRows = await db.candidate.findMany({
-      where: {
-        firstName: { equals: data.firstName, mode: "insensitive" },
-        lastName: { equals: data.lastName, mode: "insensitive" },
-        phone: { not: null },
-      },
-      select: { id: true, phone: true, resumeUrl: true, resumeText: true, linkedinUrl: true, skills: true, experience: true, notes: true, source: true, positionId: true, jobAppliedTo: true },
+    // Match by phone ALONE (digit-only) — not by name. Indeed often sends
+    // scrambled / anonymized names on the same candidate ("Mau Ricestevena"
+    // one day, "Maurice Stevens" another), so requiring a name match
+    // missed obvious phone duplicates and let dupes pile up every sync.
+    // Use the last-4 digits as a cheap Postgres-side filter (those 4 digits
+    // always survive formatting), then compare digit-only in JS.
+    const last4 = normPhone.slice(-4);
+    const candidatesWithPhone = await db.candidate.findMany({
+      where: { phone: { contains: last4 } },
+      select: { id: true, firstName: true, lastName: true, phone: true, resumeUrl: true, resumeText: true, linkedinUrl: true, skills: true, experience: true, notes: true, source: true, positionId: true, jobAppliedTo: true },
     });
-    const sameNamePhone = sameNameRows.find(
+    const sameNamePhone = candidatesWithPhone.find(
       (r) => (r.phone || "").replace(/\D/g, "").slice(-10) === normPhone,
     );
     if (sameNamePhone) {
@@ -545,35 +545,25 @@ export async function bulkImportCandidates(
     return true;
   });
 
-  // Phone-based soft merge: anyone whose normalized phone + name matches an
-  // existing candidate gets skipped (we record an application on the existing
-  // row instead of creating a new one). Same logic as createCandidate.
-  const candidatesByPhoneName = new Map<string, typeof uniqueToCreate[number]>();
-  const phoneKey = (firstName: string, lastName: string, phone: string) =>
-    `${firstName.toLowerCase().trim()}|${lastName.toLowerCase().trim()}|${phone}`;
+  // Phone-based soft merge — matches by digit-only phone alone (not name)
+  // because Indeed sometimes anonymizes names on the same candidate. Cheap
+  // Postgres filter on last-4 digits, then digit-only compare in JS.
+  const candidatesByPhone = new Map<string, { id: string }>();
   const withValidPhone = uniqueToCreate.filter((c) => (c.phone || "").replace(/\D/g, "").length >= 10);
   if (withValidPhone.length > 0) {
-    // Match by name only at the DB level — phone `contains` can't catch
-    // formatted phones like "(561)892-4474" or "+1 561 892 4474" because
-    // they don't contain the literal 10-digit substring. We pull every row
-    // with a matching name and compare digit-only phones in JS.
+    const last4Set = Array.from(new Set(
+      withValidPhone.map((c) => (c.phone || "").replace(/\D/g, "").slice(-4))
+    ));
     const phoneCandidates = await db.candidate.findMany({
       where: {
-        OR: withValidPhone.map((c) => ({
-          firstName: { equals: c.firstName, mode: "insensitive" as const },
-          lastName: { equals: c.lastName, mode: "insensitive" as const },
-          phone: { not: null },
-        })),
+        OR: last4Set.map((last4) => ({ phone: { contains: last4 } })),
       },
-      select: { id: true, firstName: true, lastName: true, phone: true },
+      select: { id: true, phone: true },
     });
     for (const existing of phoneCandidates) {
       const normP = (existing.phone || "").replace(/\D/g, "").slice(-10);
       if (normP.length !== 10) continue;
-      candidatesByPhoneName.set(
-        phoneKey(existing.firstName, existing.lastName, normP),
-        existing as unknown as typeof uniqueToCreate[number],
-      );
+      candidatesByPhone.set(normP, existing);
     }
   }
 
@@ -583,9 +573,9 @@ export async function bulkImportCandidates(
   for (const c of uniqueToCreate) {
     const normP = (c.phone || "").replace(/\D/g, "").slice(-10);
     if (normP.length === 10) {
-      const match = candidatesByPhoneName.get(phoneKey(c.firstName, c.lastName, normP));
+      const match = candidatesByPhone.get(normP);
       if (match) {
-        reapplications.push({ existingId: (match as unknown as { id: string }).id, row: c });
+        reapplications.push({ existingId: match.id, row: c });
         continue;
       }
     }
