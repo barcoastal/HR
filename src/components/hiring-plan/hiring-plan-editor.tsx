@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
-import { saveHiringPlan, type HiringBox, type HiringPlanData, type HiringSlot } from "@/lib/actions/hiring-plan";
+import { saveHiringPlan, snapshotCurrentOrg, type HiringBox, type HiringPlanData, type HiringSlot } from "@/lib/actions/hiring-plan";
 
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 
@@ -157,6 +157,29 @@ export function HiringPlanEditor({
           )}
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={async () => {
+              if (
+                boxes.length > 0 &&
+                !confirm("Replace the current plan with a fresh snapshot of every Team + employee + open Position from the system?")
+              ) return;
+              startTransition(async () => {
+                try {
+                  const snap = await snapshotCurrentOrg();
+                  setBoxes(snap.boxes);
+                  setDirty(true);
+                } catch (err) {
+                  alert(err instanceof Error ? err.message : "Could not snapshot org");
+                }
+              });
+            }}
+            disabled={pending}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-primary)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] disabled:opacity-50"
+            title="Pre-populate columns from current Teams + active Employees + open Positions"
+          >
+            <Icon name="sync" size={14} />
+            Snapshot current org
+          </button>
           <button
             onClick={addBox}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-[var(--color-text-primary)] bg-[var(--color-surface)] border border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]"
