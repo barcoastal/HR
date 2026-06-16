@@ -114,6 +114,7 @@ export const ModelName = {
   SavedMessage: 'SavedMessage',
   FileBlob: 'FileBlob',
   WorkerHeartbeat: 'WorkerHeartbeat',
+  HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
   GustoConnection: 'GustoConnection'
 } as const
@@ -1087,6 +1088,15 @@ export const WorkerHeartbeatScalarFieldEnum = {
 export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
 
 
+export const HiringPlanScalarFieldEnum = {
+  id: 'id',
+  data: 'data',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HiringPlanScalarFieldEnum = (typeof HiringPlanScalarFieldEnum)[keyof typeof HiringPlanScalarFieldEnum]
+
+
 export const OneOnOneScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -1136,6 +1146,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

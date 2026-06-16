@@ -447,6 +447,7 @@ export const ModelName = {
   SavedMessage: 'SavedMessage',
   FileBlob: 'FileBlob',
   WorkerHeartbeat: 'WorkerHeartbeat',
+  HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
   GustoConnection: 'GustoConnection'
 } as const
@@ -464,7 +465,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5130,6 +5131,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HiringPlan: {
+      payload: Prisma.$HiringPlanPayload<ExtArgs>
+      fields: Prisma.HiringPlanFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HiringPlanFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HiringPlanFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        findFirst: {
+          args: Prisma.HiringPlanFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HiringPlanFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        findMany: {
+          args: Prisma.HiringPlanFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>[]
+        }
+        create: {
+          args: Prisma.HiringPlanCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        createMany: {
+          args: Prisma.HiringPlanCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HiringPlanCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>[]
+        }
+        delete: {
+          args: Prisma.HiringPlanDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        update: {
+          args: Prisma.HiringPlanUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        deleteMany: {
+          args: Prisma.HiringPlanDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HiringPlanUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HiringPlanUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>[]
+        }
+        upsert: {
+          args: Prisma.HiringPlanUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HiringPlanPayload>
+        }
+        aggregate: {
+          args: Prisma.HiringPlanAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHiringPlan>
+        }
+        groupBy: {
+          args: Prisma.HiringPlanGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HiringPlanGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HiringPlanCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HiringPlanCountAggregateOutputType> | number
+        }
+      }
+    }
     OneOnOne: {
       payload: Prisma.$OneOnOnePayload<ExtArgs>
       fields: Prisma.OneOnOneFieldRefs
@@ -6270,6 +6345,15 @@ export const WorkerHeartbeatScalarFieldEnum = {
 export type WorkerHeartbeatScalarFieldEnum = (typeof WorkerHeartbeatScalarFieldEnum)[keyof typeof WorkerHeartbeatScalarFieldEnum]
 
 
+export const HiringPlanScalarFieldEnum = {
+  id: 'id',
+  data: 'data',
+  updatedAt: 'updatedAt'
+} as const
+
+export type HiringPlanScalarFieldEnum = (typeof HiringPlanScalarFieldEnum)[keyof typeof HiringPlanScalarFieldEnum]
+
+
 export const OneOnOneScalarFieldEnum = {
   id: 'id',
   employeeId: 'employeeId',
@@ -6319,6 +6403,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -6978,6 +7069,7 @@ export type GlobalOmitConfig = {
   savedMessage?: Prisma.SavedMessageOmit
   fileBlob?: Prisma.FileBlobOmit
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
+  hiringPlan?: Prisma.HiringPlanOmit
   oneOnOne?: Prisma.OneOnOneOmit
   gustoConnection?: Prisma.GustoConnectionOmit
 }

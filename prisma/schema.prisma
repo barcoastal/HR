@@ -1406,6 +1406,15 @@ model WorkerHeartbeat {
   pendingCount   Int      @default(0)
 }
 
+// Free-form hiring/staffing plan. JSON-shaped so we can iterate on the
+// editor UI without schema migrations. Currently a singleton (one plan
+// per workspace).
+model HiringPlan {
+  id        String   @id @default("singleton")
+  data      Json     // { boxes: [{ id, title, color, slots: [{ id, label, employeeId?: string }] }] }
+  updatedAt DateTime @updatedAt
+}
+
 model OneOnOne {
   id               String         @id @default(uuid())
   employeeId       String

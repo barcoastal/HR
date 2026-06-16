@@ -333,6 +333,11 @@ export type FileBlob = Prisma.FileBlobModel
  */
 export type WorkerHeartbeat = Prisma.WorkerHeartbeatModel
 /**
+ * Model HiringPlan
+ * 
+ */
+export type HiringPlan = Prisma.HiringPlanModel
+/**
  * Model OneOnOne
  * 
  */
