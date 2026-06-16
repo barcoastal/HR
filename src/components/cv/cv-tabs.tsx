@@ -6,6 +6,7 @@ import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
 import { CandidateDatabase } from "@/components/cv/candidate-database";
+import { DncList } from "@/components/cv/dnc-list";
 import { BulkResumeUpload } from "@/components/cv/bulk-resume-upload";
 import { BoardPostingsPanel } from "@/components/cv/board-postings-panel";
 import { EditPositionDialog } from "@/components/cv/edit-position-dialog";
@@ -51,6 +52,8 @@ type CandidateItem = {
   resumeUrl: string | null;
   createdAt: Date;
   applicationCount?: number | null;
+  doNotCall?: boolean;
+  doNotCallReason?: string | null;
 };
 
 type PositionFull = {
@@ -456,6 +459,7 @@ export function CVTabs({
   const tabs = [
     { id: "recruitment", label: "Recruitment" },
     { id: "database", label: "Candidate Database" },
+    { id: "dnc", label: "DNC List" },
   ];
 
   const [activeTab, setActiveTab] = useState("recruitment");
@@ -469,7 +473,12 @@ export function CVTabs({
   );
   const [databaseLoading, setDatabaseLoading] = useState(false);
   useEffect(() => {
-    if (activeTab !== "database" || databaseCandidates !== null || databaseLoading) return;
+    // Both Candidate Database and DNC List share the same backing query.
+    if (
+      (activeTab !== "database" && activeTab !== "dnc") ||
+      databaseCandidates !== null ||
+      databaseLoading
+    ) return;
     setDatabaseLoading(true);
     getAllCandidatesForDatabase()
       .then((rows) => {
@@ -728,6 +737,30 @@ export function CVTabs({
             <CandidateDatabase
               candidates={databaseCandidates}
               positions={positions}
+            />
+          )}
+        </div>
+      )}
+
+      {activeTab === "dnc" && (
+        <div>
+          {databaseLoading || databaseCandidates === null ? (
+            <div className="rounded-2xl border border-dashed border-[var(--color-border)] p-12 text-center text-[var(--color-on-surface-variant)]">
+              Loading…
+            </div>
+          ) : (
+            <DncList
+              candidates={databaseCandidates.map((c) => ({
+                id: c.id,
+                firstName: c.firstName,
+                lastName: c.lastName,
+                email: c.email,
+                phone: c.phone,
+                source: c.source,
+                doNotCall: c.doNotCall,
+                doNotCallReason: c.doNotCallReason,
+                createdAt: c.createdAt,
+              }))}
             />
           )}
         </div>
