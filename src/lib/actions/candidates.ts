@@ -75,14 +75,20 @@ export async function createCandidate(data: {
   // is rare and recoverable via the duplicates UI.
   const normPhone = (data.phone || "").replace(/\D/g, "").slice(-10);
   if (normPhone.length === 10) {
-    const sameNamePhone = await db.candidate.findFirst({
+    // Match by name first, then compare digit-only phones in JS — Postgres
+    // `contains` doesn't catch "+1 561 892 4474" or "(561)892-4474" since
+    // those formatted strings don't contain the literal 10-digit substring.
+    const sameNameRows = await db.candidate.findMany({
       where: {
         firstName: { equals: data.firstName, mode: "insensitive" },
         lastName: { equals: data.lastName, mode: "insensitive" },
-        phone: { contains: normPhone },
+        phone: { not: null },
       },
-      select: { id: true, resumeUrl: true, resumeText: true, linkedinUrl: true, skills: true, experience: true, notes: true, source: true, positionId: true, jobAppliedTo: true },
+      select: { id: true, phone: true, resumeUrl: true, resumeText: true, linkedinUrl: true, skills: true, experience: true, notes: true, source: true, positionId: true, jobAppliedTo: true },
     });
+    const sameNamePhone = sameNameRows.find(
+      (r) => (r.phone || "").replace(/\D/g, "").slice(-10) === normPhone,
+    );
     if (sameNamePhone) {
       // Backfill missing fields.
       const fill: Record<string, unknown> = {};
@@ -547,18 +553,23 @@ export async function bulkImportCandidates(
     `${firstName.toLowerCase().trim()}|${lastName.toLowerCase().trim()}|${phone}`;
   const withValidPhone = uniqueToCreate.filter((c) => (c.phone || "").replace(/\D/g, "").length >= 10);
   if (withValidPhone.length > 0) {
+    // Match by name only at the DB level — phone `contains` can't catch
+    // formatted phones like "(561)892-4474" or "+1 561 892 4474" because
+    // they don't contain the literal 10-digit substring. We pull every row
+    // with a matching name and compare digit-only phones in JS.
     const phoneCandidates = await db.candidate.findMany({
       where: {
         OR: withValidPhone.map((c) => ({
           firstName: { equals: c.firstName, mode: "insensitive" as const },
           lastName: { equals: c.lastName, mode: "insensitive" as const },
-          phone: { contains: (c.phone || "").replace(/\D/g, "").slice(-10) },
+          phone: { not: null },
         })),
       },
       select: { id: true, firstName: true, lastName: true, phone: true },
     });
     for (const existing of phoneCandidates) {
       const normP = (existing.phone || "").replace(/\D/g, "").slice(-10);
+      if (normP.length !== 10) continue;
       candidatesByPhoneName.set(
         phoneKey(existing.firstName, existing.lastName, normP),
         existing as unknown as typeof uniqueToCreate[number],
