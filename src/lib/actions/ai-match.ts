@@ -2,6 +2,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { db } from "@/lib/db";
+import { getRecruiterScope } from "@/lib/auth-helpers";
 
 const anthropic = new Anthropic();
 
@@ -23,6 +24,10 @@ export async function aiMatchCandidates(positionId: string): Promise<AIMatch[]> 
   const position = await db.position.findUnique({ where: { id: positionId } });
   if (!position) throw new Error("Position not found");
 
+  // Recruiters: only mine.
+  const scope = await getRecruiterScope();
+  const scopeWhere = scope ? { recruiterId: scope } : {};
+
   // Extract keywords from title + requirements
   const text = `${position.title} ${position.requirements || ""}`;
   const keywords = text
@@ -41,6 +46,7 @@ export async function aiMatchCandidates(positionId: string): Promise<AIMatch[]> 
     ]);
     candidates = await db.candidate.findMany({
       where: {
+        ...scopeWhere,
         status: { notIn: ["HIRED", "REJECTED"] },
         OR: orConditions,
       },
@@ -53,6 +59,7 @@ export async function aiMatchCandidates(positionId: string): Promise<AIMatch[]> 
   if (!candidates || candidates.length < 30) {
     candidates = await db.candidate.findMany({
       where: {
+        ...scopeWhere,
         status: { notIn: ["HIRED", "REJECTED"] },
       },
       orderBy: { createdAt: "desc" },
@@ -146,6 +153,10 @@ export async function aiSearchCandidates(
   const trimmed = query.trim();
   if (!trimmed) return [];
 
+  // Recruiters: only mine.
+  const scope = await getRecruiterScope();
+  const scopeWhere = scope ? { recruiterId: scope } : {};
+
   // Keyword pre-filter to narrow the search space
   const keywords = trimmed
     .split(/[\s,;/()]+/)
@@ -166,6 +177,7 @@ export async function aiSearchCandidates(
     ]);
     candidates = await db.candidate.findMany({
       where: {
+        ...scopeWhere,
         doNotCall: false,
         status: { notIn: ["HIRED", "REJECTED"] },
         OR: orConditions,
@@ -178,6 +190,7 @@ export async function aiSearchCandidates(
   if (!candidates || candidates.length < 20) {
     candidates = await db.candidate.findMany({
       where: {
+        ...scopeWhere,
         doNotCall: false,
         status: { notIn: ["HIRED", "REJECTED"] },
       },
