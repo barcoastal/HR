@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAuth, assertCandidateAccess } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { CandidateStatus } from "@/generated/prisma/client";
 
@@ -57,6 +57,7 @@ export async function recordApplication(params: {
 }
 
 export async function getCandidateApplications(candidateId: string) {
+  await assertCandidateAccess(candidateId);
   return db.candidateApplication.findMany({
     where: { candidateId },
     orderBy: { appliedAt: "desc" },
@@ -72,6 +73,7 @@ export async function updateApplicationStatus(
   const session = await requireAuth();
   const application = await db.candidateApplication.findUnique({ where: { id: applicationId } });
   if (!application) throw new Error("Application not found");
+  await assertCandidateAccess(application.candidateId);
 
   const history = Array.isArray(application.stageHistory) ? (application.stageHistory as unknown[]) : [];
   history.push({
@@ -91,6 +93,7 @@ export async function updateApplicationStatus(
 }
 
 export async function markDoNotCall(candidateId: string, reason?: string) {
+  await assertCandidateAccess(candidateId);
   const before = await db.candidate.findUnique({
     where: { id: candidateId },
     select: { firstName: true, lastName: true, email: true, phone: true, status: true },
@@ -179,6 +182,7 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
 }
 
 export async function unmarkDoNotCall(candidateId: string) {
+  await assertCandidateAccess(candidateId);
   await db.candidate.update({
     where: { id: candidateId },
     data: { doNotCall: false, doNotCallReason: null, doNotCallAt: null },

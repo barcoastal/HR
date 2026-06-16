@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-import { requireApiAuth } from "@/lib/auth-helpers";
+import { requireApiAuth, canAccessCandidate } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
@@ -80,6 +80,11 @@ export async function GET(
 
   if (!/^[a-zA-Z0-9-]+$/.test(candidateId)) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  }
+
+  // Scoped recruiters: only their own candidates' resumes.
+  if (!(await canAccessCandidate(candidateId))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   // 1. FileBlob (persistent — survives Railway redeploys).

@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
-import { getRecruiterScope } from "@/lib/auth-helpers";
+import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -390,6 +390,7 @@ export async function updateCandidateStatus(
   id: string,
   status: CandidateStatus
 ) {
+  await assertCandidateAccess(id);
   const candidate = await db.candidate.findUnique({ where: { id } });
   if (!candidate) throw new Error("Candidate not found");
 
@@ -677,6 +678,7 @@ export async function updateCandidate(
     status?: CandidateStatus;
   }
 ) {
+  await assertCandidateAccess(id);
   const existing = await db.candidate.findUnique({ where: { id } });
   const previousStatus = existing?.status;
   const previousRecruiterId = existing?.recruiterId ?? null;
@@ -745,6 +747,7 @@ export async function updateCandidate(
 }
 
 export async function updateCandidateNotes(id: string, notes: string) {
+  await assertCandidateAccess(id);
   const candidate = await db.candidate.update({
     where: { id },
     data: { notes },
@@ -776,6 +779,7 @@ async function hireInner(
   candidateId: string,
   options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
 ): Promise<HireResult> {
+  await assertCandidateAccess(candidateId);
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: { include: { department: true } } },
@@ -1394,6 +1398,7 @@ export async function assignCandidateToPosition(
   positionId: string,
   recruiterId?: string
 ) {
+  await assertCandidateAccess(candidateId);
   const previous = await db.candidate.findUnique({
     where: { id: candidateId },
     select: { recruiterId: true },
@@ -1454,6 +1459,7 @@ export async function getTotalCandidateCount() {
 }
 
 export async function deleteCandidate(id: string) {
+  await assertCandidateAccess(id);
   const target = await db.candidate.findUnique({
     where: { id },
     select: { firstName: true, lastName: true, email: true, status: true },
@@ -1476,6 +1482,11 @@ export async function sendOfferLetter(
   candidateId: string,
   offerDocUrl: string
 ): Promise<{ success: boolean; error?: string }> {
+  try {
+    await assertCandidateAccess(candidateId);
+  } catch {
+    return { success: false, error: "Forbidden" };
+  }
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },
     include: { position: true },
@@ -1514,6 +1525,7 @@ export async function pullCandidateToRecruitment(
   candidateId: string,
   positionId?: string
 ) {
+  await assertCandidateAccess(candidateId);
   const data: Record<string, unknown> = {
     inPipeline: true,
     status: "NEW",

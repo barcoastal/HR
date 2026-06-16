@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
-import { requireApiAuth } from "@/lib/auth-helpers";
+import { requireApiAuth, canAccessCandidate } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
@@ -34,6 +34,11 @@ export async function POST(
   const candidate = await db.candidate.findUnique({ where: { id }, select: { id: true } });
   if (!candidate) {
     return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+  }
+
+  // Scoped recruiters: can only attach resumes to their own candidates.
+  if (!(await canAccessCandidate(id))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const formData = await request.formData();
