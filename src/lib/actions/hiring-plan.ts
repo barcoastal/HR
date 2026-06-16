@@ -27,7 +27,8 @@ const DEFAULT_PLAN: HiringPlanData = { boxes: [] };
 
 async function gate() {
   const session = await requireAuth();
-  if (session.user?.role !== "SUPER_ADMIN") {
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
     throw new Error("Forbidden");
   }
   return session;

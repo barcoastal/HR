@@ -9,7 +9,8 @@ export const dynamic = "force-dynamic";
 
 export default async function HiringPlanPage() {
   const session = await requireAuth();
-  if (session.user?.role !== "SUPER_ADMIN") {
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN") {
     redirect("/");
   }
 
