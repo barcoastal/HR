@@ -26,6 +26,12 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   const errorParam = searchParams.get("error");
+  // callbackUrl present without an explicit error usually means the
+  // session expired mid-action — the layout's requireAuth redirected
+  // us here. Surface that explicitly so users know why they were
+  // bounced instead of just seeing the login page randomly.
+  const isLikelyExpiredSession =
+    !errorParam && callbackUrl !== "/" && typeof window !== "undefined";
   const errorMessage =
     errorParam === "domain"
       ? "Only @coastaldebt.com accounts can sign in."
@@ -39,7 +45,9 @@ function LoginForm() {
               ? "Sign-in failed. Please try again or contact your admin."
               : errorParam === "Configuration" || errorParam === "AccessDenied" || errorParam === "Verification"
                 ? "Sign-in failed. Please try again or contact your admin."
-                : null;
+                : isLikelyExpiredSession
+                  ? "Your session expired. Please log back in to continue."
+                  : null;
 
   async function handleCredentialLogin(e: React.FormEvent) {
     e.preventDefault();

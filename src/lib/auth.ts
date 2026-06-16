@@ -61,7 +61,14 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+    // 30-day rolling window. The JWT re-signs (sliding window) on any
+    // activity within updateAge so an active user never gets logged out
+    // mid-save by a silently-expired token.
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60,   // refresh once per day of activity
+  },
   pages: { signIn: "/login", error: "/login" },
   callbacks: {
     async signIn({ user, account, profile }) {
