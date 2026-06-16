@@ -12,12 +12,10 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 const MATCH_TINT: Record<DuplicateGroup["matchType"], string> = {
   phone: "bg-blue-500/10 text-blue-500",
   email_normalized: "bg-purple-500/10 text-purple-500",
-  name: "bg-amber-500/10 text-amber-500",
 };
 const MATCH_ICON: Record<DuplicateGroup["matchType"], string> = {
   phone: "call",
   email_normalized: "mail",
-  name: "person",
 };
 
 export function DuplicatesView({ groups }: { groups: DuplicateGroup[] }) {

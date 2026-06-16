@@ -23,7 +23,7 @@ export type DuplicateCandidateLite = {
 
 export type DuplicateGroup = {
   id: string;
-  matchType: "phone" | "name" | "email_normalized";
+  matchType: "phone" | "email_normalized";
   matchLabel: string;
   key: string;
   candidates: DuplicateCandidateLite[];
@@ -33,10 +33,6 @@ function normalizePhone(raw: string | null | undefined): string {
   if (!raw) return "";
   const digits = raw.replace(/\D/g, "");
   return digits.length >= 10 ? digits.slice(-10) : "";
-}
-
-function normalizeName(first: string, last: string): string {
-  return `${first.toLowerCase().trim()} ${last.toLowerCase().trim()}`.replace(/\s+/g, " ");
 }
 
 function normalizeEmail(email: string | null | undefined): string {
@@ -98,8 +94,10 @@ export async function findDuplicateCandidates(): Promise<DuplicateGroup[]> {
     hasResumeText: !!c.resumeText,
   }));
 
+  // Only group by phone and normalized email — name alone is too noisy
+  // (common names like "Maria Garcia" produce false-positive groups that,
+  // when merged, collapse two genuinely different people into one record).
   const byPhone = new Map<string, DuplicateCandidateLite[]>();
-  const byName = new Map<string, DuplicateCandidateLite[]>();
   const byNormEmail = new Map<string, DuplicateCandidateLite[]>();
 
   for (const c of lite) {
@@ -108,12 +106,6 @@ export async function findDuplicateCandidates(): Promise<DuplicateGroup[]> {
       const arr = byPhone.get(ph) ?? [];
       arr.push(c);
       byPhone.set(ph, arr);
-    }
-    const nm = normalizeName(c.firstName, c.lastName);
-    if (nm.trim().length >= 3) {
-      const arr = byName.get(nm) ?? [];
-      arr.push(c);
-      byName.set(nm, arr);
     }
     const ne = normalizeEmail(c.email);
     if (ne) {
@@ -153,15 +145,11 @@ export async function findDuplicateCandidates(): Promise<DuplicateGroup[]> {
   for (const [k, arr] of byPhone) {
     if (arr.length > 1) pushGroup("phone", `Same phone: ${formatPhone(k)}`, k, arr);
   }
-  for (const [k, arr] of byName) {
-    if (arr.length > 1) pushGroup("name", `Same name: ${k.replace(/\b\w/g, (c) => c.toUpperCase())}`, k, arr);
-  }
 
-  // Sort groups: most-candidates first, then phone > email > name.
+  // Sort groups: most-candidates first, then phone > email.
   const typeOrder: Record<DuplicateGroup["matchType"], number> = {
     phone: 0,
     email_normalized: 1,
-    name: 2,
   };
   groups.sort((a, b) => {
     if (b.candidates.length !== a.candidates.length) return b.candidates.length - a.candidates.length;
