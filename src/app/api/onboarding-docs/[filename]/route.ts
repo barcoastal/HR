@@ -56,11 +56,19 @@ export async function GET(
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 
+  // Force application/pdf for .pdf files so the browser previews them inline
+  // — some FileBlob rows have application/octet-stream which triggers Chrome
+  // to download instead of render in iframes. Strip the filename from the
+  // Content-Disposition for the same reason (filename= acts as a download
+  // hint in some Chrome configurations).
+  const isPdf = filename.toLowerCase().endsWith(".pdf");
+  const contentType = isPdf ? "application/pdf" : blob.mimeType;
   return new NextResponse(blob.data, {
     headers: {
-      "Content-Type": blob.mimeType,
-      "Content-Disposition": `inline; filename="${filename}"`,
+      "Content-Type": contentType,
+      "Content-Disposition": "inline",
       "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

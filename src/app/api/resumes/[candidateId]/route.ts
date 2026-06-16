@@ -38,12 +38,17 @@ async function tryFetchFromJobing(candidateId: string): Promise<Buffer | null> {
   }
 }
 
-function pdfResponse(buffer: Buffer, candidateId: string): NextResponse {
+function pdfResponse(buffer: Buffer, _candidateId: string): NextResponse {
   return new NextResponse(new Uint8Array(buffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${candidateId}.pdf"`,
-      "Cache-Control": "public, max-age=86400",
+      // No filename param — Chrome treats "inline; filename=..." as a
+      // download hint in some configurations and force-downloads the PDF
+      // instead of rendering it inline in the iframe.
+      "Content-Disposition": "inline",
+      // Resumes are private candidate documents — don't let CDNs cache them.
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
     },
   });
 }

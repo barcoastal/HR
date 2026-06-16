@@ -78,8 +78,9 @@ export async function GET(request: NextRequest) {
         return new NextResponse(new Uint8Array(blob.data), {
           headers: {
             "Content-Type": "application/pdf",
-            "Content-Disposition": `inline; filename="${owner.id}.pdf"`,
+            "Content-Disposition": "inline",
             "Cache-Control": "private, no-store",
+            "X-Content-Type-Options": "nosniff",
           },
         });
       }
@@ -196,9 +197,14 @@ export async function GET(request: NextRequest) {
 
     return new NextResponse(body, {
       headers: {
-        "Content-Type": contentType,
-        // Inline disposition so PDFs render in iframes / new tabs.
-        "Content-Disposition": "inline; filename=resume.pdf",
+        // Always advertise as PDF — some ATS responses come back as
+        // octet-stream which makes Chrome download instead of preview.
+        "Content-Type": contentType.includes("pdf") ? contentType : "application/pdf",
+        // Inline with no filename — filename= is interpreted as a
+        // download hint by Chrome in some configurations.
+        "Content-Disposition": "inline",
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "private, no-store",
       },
     });
   } catch (err) {

@@ -41,7 +41,8 @@ export async function GET(
     return NextResponse.json({ error: "Report not found" }, { status: 404 });
   }
 
-  const safeName = `${owner.firstName}_${owner.lastName}`.replace(/[^a-zA-Z0-9_-]/g, "");
+  // safeName previously used in Content-Disposition filename — now stripped
+  // for inline-preview reliability across Chrome configurations.
 
   // Prefer the cached copy if we've already imported it.
   if (owner.backgroundReportFilename) {
@@ -52,9 +53,10 @@ export async function GET(
     if (blob) {
       return new NextResponse(blob.data, {
         headers: {
-          "Content-Type": blob.mimeType,
-          "Content-Disposition": `inline; filename="background-check-${safeName}.pdf"`,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": "inline",
           "Cache-Control": "private, no-store",
+          "X-Content-Type-Options": "nosniff",
         },
       });
     }
@@ -111,8 +113,9 @@ export async function GET(
       return new NextResponse(buffer, {
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": `inline; filename="background-check-${safeName}.pdf"`,
+          "Content-Disposition": "inline",
           "Cache-Control": "private, no-store",
+          "X-Content-Type-Options": "nosniff",
         },
       });
     } catch {
