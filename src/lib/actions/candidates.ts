@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
+import { getRecruiterScope } from "@/lib/auth-helpers";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -18,6 +19,11 @@ export async function getCandidates(filters?: {
   if (filters?.positionId) where.positionId = filters.positionId;
   if (filters?.inPipeline !== undefined) where.inPipeline = filters.inPipeline;
   if (filters?.recruiterId) where.recruiterId = filters.recruiterId;
+
+  // Recruiters only see candidates assigned to them. Admins/SUPER_ADMIN/HR
+  // see everything. Overrides whatever caller passed in.
+  const scope = await getRecruiterScope();
+  if (scope) where.recruiterId = scope;
   if (filters?.search) {
     where.OR = [
       { firstName: { contains: filters.search, mode: "insensitive" } },
@@ -494,6 +500,10 @@ export async function advancedSearchCandidates(params: {
   if (params.dateTo) {
     andConditions.push({ createdAt: { lte: new Date(params.dateTo) } });
   }
+
+  // Recruiters: restrict to their assigned candidates.
+  const scope = await getRecruiterScope();
+  if (scope) andConditions.push({ recruiterId: scope });
 
   if (andConditions.length > 0) {
     where.AND = andConditions;
@@ -1428,7 +1438,9 @@ export async function getAllCandidatesForDatabase() {
   // the main cause of 11MB pages) and slim the position relation.
   // Note: client-side search on resumeText is no longer possible; use
   // advancedSearchCandidates for server-side full-text search if needed.
+  const scope = await getRecruiterScope();
   return db.candidate.findMany({
+    where: scope ? { recruiterId: scope } : undefined,
     omit: { resumeText: true },
     include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
@@ -1437,7 +1449,8 @@ export async function getAllCandidatesForDatabase() {
 
 /** Lightweight count for stat cards — avoids loading rows. */
 export async function getTotalCandidateCount() {
-  return db.candidate.count();
+  const scope = await getRecruiterScope();
+  return db.candidate.count({ where: scope ? { recruiterId: scope } : undefined });
 }
 
 export async function deleteCandidate(id: string) {

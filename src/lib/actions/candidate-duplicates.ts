@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { requireAuth } from "@/lib/auth-helpers";
+import { requireAuth, getRecruiterScope } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 
 export type DuplicateCandidateLite = {
@@ -56,8 +56,10 @@ async function requireRecruitmentAccess() {
 
 export async function findDuplicateCandidates(): Promise<DuplicateGroup[]> {
   await requireRecruitmentAccess();
+  const scope = await getRecruiterScope();
 
   const candidates = await db.candidate.findMany({
+    where: scope ? { recruiterId: scope } : undefined,
     select: {
       id: true,
       firstName: true,
