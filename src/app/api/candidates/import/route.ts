@@ -43,13 +43,28 @@ export async function POST(req: NextRequest) {
       return true;
     });
 
+    // DNC block: filter out rows whose phone or email matches a Do-Not-Call
+    // candidate before we even queue them for batch insert.
+    const { findDoNotCallMatch } = await import("@/lib/actions/candidate-applications");
+    const dncFiltered: any[] = [];
+    const dncSkipped: string[] = [];
+    for (const c of uniqueToCreate) {
+      const hit = await findDoNotCallMatch(c.phone, c.email);
+      if (hit) {
+        dncSkipped.push(`${c.email} (DNC: ${hit.firstName} ${hit.lastName})`);
+      } else {
+        dncFiltered.push(c);
+      }
+    }
+    skipped.push(...dncSkipped);
+
     // Batch create in chunks of 500
     let created = 0;
     const errors: string[] = [];
     const CHUNK_SIZE = 500;
 
-    for (let i = 0; i < uniqueToCreate.length; i += CHUNK_SIZE) {
-      const chunk = uniqueToCreate.slice(i, i + CHUNK_SIZE);
+    for (let i = 0; i < dncFiltered.length; i += CHUNK_SIZE) {
+      const chunk = dncFiltered.slice(i, i + CHUNK_SIZE);
       try {
         const result = await db.candidate.createMany({
           data: chunk.map((c: any) => {

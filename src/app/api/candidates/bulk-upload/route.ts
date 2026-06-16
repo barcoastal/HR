@@ -117,6 +117,18 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // DNC block — phone or email match → skip and report back.
+  const { findDoNotCallMatch } = await import("@/lib/actions/candidate-applications");
+  const dnc = await findDoNotCallMatch(parsed.phone, rawEmail);
+  if (dnc) {
+    return NextResponse.json({
+      status: "skipped",
+      reason: `On Do Not Call list (${dnc.firstName} ${dnc.lastName})`,
+      filename: file.name,
+      email: rawEmail,
+    });
+  }
+
   // Dedupe by email
   const existing = await db.candidate.findUnique({ where: { email: rawEmail } });
 

@@ -65,6 +65,16 @@ export async function createCandidate(data: {
 }) {
   const { skills, inPipeline = true, ...rest } = data;
 
+  // DNC block: any prior candidate flagged Do-Not-Call (by phone or email)
+  // can't be re-added. Stops Indeed/sync from resurrecting rejects.
+  const { findDoNotCallMatch } = await import("./candidate-applications");
+  const dncHit = await findDoNotCallMatch(data.phone, data.email);
+  if (dncHit) {
+    throw new Error(
+      `${dncHit.firstName} ${dncHit.lastName} is on the Do Not Call list and cannot be re-added.`,
+    );
+  }
+
   // Pre-check email so the UI can show a friendly duplicate message instead
   // of a generic Prisma unique-constraint error or a Server Components render
   // crash when the page refetches.
@@ -556,11 +566,24 @@ export async function bulkImportCandidates(
     return true;
   });
 
+  // DNC block: drop any row whose phone or email matches a Do-Not-Call
+  // candidate before we do anything else. Tracks them in `skipped`.
+  const { findDoNotCallMatch } = await import("./candidate-applications");
+  const dncFilter: typeof uniqueToCreate = [];
+  for (const c of uniqueToCreate) {
+    const hit = await findDoNotCallMatch(c.phone, c.email);
+    if (hit) {
+      skipped.push(`${c.email} (Do Not Call — ${hit.firstName} ${hit.lastName})`);
+    } else {
+      dncFilter.push(c);
+    }
+  }
+
   // Phone-based soft merge — matches by digit-only phone alone (not name)
   // because Indeed sometimes anonymizes names on the same candidate. Cheap
   // Postgres filter on last-4 digits, then digit-only compare in JS.
   const candidatesByPhone = new Map<string, { id: string }>();
-  const withValidPhone = uniqueToCreate.filter((c) => (c.phone || "").replace(/\D/g, "").length >= 10);
+  const withValidPhone = dncFilter.filter((c) => (c.phone || "").replace(/\D/g, "").length >= 10);
   if (withValidPhone.length > 0) {
     const last4Set = Array.from(new Set(
       withValidPhone.map((c) => (c.phone || "").replace(/\D/g, "").slice(-4))
@@ -581,7 +604,7 @@ export async function bulkImportCandidates(
   // Partition into rows to insert vs rows to fold onto an existing candidate.
   const insertable: typeof uniqueToCreate = [];
   const reapplications: { existingId: string; row: typeof uniqueToCreate[number] }[] = [];
-  for (const c of uniqueToCreate) {
+  for (const c of dncFilter) {
     const normP = (c.phone || "").replace(/\D/g, "").slice(-10);
     if (normP.length === 10) {
       const match = candidatesByPhone.get(normP);

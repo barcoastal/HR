@@ -35,6 +35,13 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Do Not Call: silently swallow re-applications from blocked phones/emails.
+    const { findDoNotCallMatch } = await import("@/lib/actions/candidate-applications");
+    const dnc = await findDoNotCallMatch(applicant.phoneNumber, applicant.email);
+    if (dnc) {
+      return NextResponse.json({ success: true, candidateId: null, status: "dnc" });
+    }
+
     // Check if candidate already exists
     const existing = await db.candidate.findUnique({
       where: { email: applicant.email },

@@ -6,6 +6,56 @@ import { revalidatePath } from "next/cache";
 import type { CandidateStatus } from "@/generated/prisma/client";
 
 /**
+ * Returns the DNC-flagged candidate that matches the given phone or email,
+ * or null if there isn't one. Phone uses last-10-digit normalization with a
+ * cheap last-4-digit Postgres prefilter; email is matched exact + gmail-dot
+ * normalized.
+ *
+ * Used by every candidate-creation path (manual add, CSV import, careers/
+ * indeed webhooks, Breezy sync) to block re-applications from people who
+ * have been Do-Not-Call'd.
+ */
+export async function findDoNotCallMatch(
+  phone: string | null | undefined,
+  email: string | null | undefined,
+): Promise<{ id: string; firstName: string; lastName: string; email: string; phone: string | null } | null> {
+  const normPhone = (phone || "").replace(/\D/g, "").slice(-10);
+
+  // Email side: exact + gmail-dot normalized.
+  const normEmail = (email || "").trim().toLowerCase();
+  let dottedVariants: string[] = [];
+  if (normEmail) {
+    const [local, domain] = normEmail.split("@");
+    if (domain) {
+      const cleaned = local.replace(/\./g, "").split("+")[0];
+      dottedVariants = [normEmail, `${cleaned}@${domain}`];
+    }
+  }
+
+  if (normPhone.length === 10) {
+    const last4 = normPhone.slice(-4);
+    const candidates = await db.candidate.findMany({
+      where: { doNotCall: true, phone: { contains: last4 } },
+      select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+    });
+    const hit = candidates.find(
+      (c) => (c.phone || "").replace(/\D/g, "").slice(-10) === normPhone,
+    );
+    if (hit) return hit;
+  }
+
+  if (dottedVariants.length > 0) {
+    const byEmail = await db.candidate.findFirst({
+      where: { doNotCall: true, email: { in: dottedVariants } },
+      select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+    });
+    if (byEmail) return byEmail;
+  }
+
+  return null;
+}
+
+/**
  * Record an application for a candidate against a position. If the same
  * candidate/position combo already exists, bumps the appliedAt and increments
  * the candidate's applicationCount. Otherwise creates a new application row.

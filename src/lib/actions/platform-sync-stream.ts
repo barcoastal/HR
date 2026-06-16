@@ -190,6 +190,12 @@ export async function* syncCandidatesStreaming(
         if (seenEmails.has(mc.email)) { totalSkipped++; continue; }
         seenEmails.add(mc.email);
 
+        // DNC block: drop re-applications from blocked phones/emails before
+        // we touch the candidate table.
+        const { findDoNotCallMatch } = await import("./candidate-applications");
+        const dnc = await findDoNotCallMatch(mc.phone, mc.email);
+        if (dnc) { totalSkipped++; continue; }
+
         const resolvedPositionId = await resolveLocalPositionId(mc);
         const existing = await db.candidate.findUnique({ where: { email: mc.email } });
         if (existing) {

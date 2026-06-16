@@ -27,6 +27,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Position not available" }, { status: 404 });
     }
 
+    // Do Not Call: silently reject (don't reveal that they are on the list).
+    const { findDoNotCallMatch } = await import("@/lib/actions/candidate-applications");
+    const dnc = await findDoNotCallMatch(phone, email);
+    if (dnc) {
+      // Return a successful-looking 200 so the public form doesn't tell a
+      // rejected applicant that we're blocking them. Nothing is persisted.
+      return NextResponse.json({ success: true, candidateId: null });
+    }
+
     // Check for duplicate application
     const existing = await db.candidate.findFirst({
       where: { email, positionId },
