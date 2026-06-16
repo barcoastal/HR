@@ -13,7 +13,7 @@ import type {
   RecruiterManagerData,
   RecruiterSummary,
   CandidateRow,
-} from "@/lib/actions/recruiter-manager";
+} from "@/lib/actions/recruiter-manager-types";
 
 export function RecruiterManagerView({ data }: { data: RecruiterManagerData }) {
   const [expanded, setExpanded] = useState<string | null>(null);

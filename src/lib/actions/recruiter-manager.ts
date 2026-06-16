@@ -4,6 +4,11 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { CandidateStatus } from "@/generated/prisma/client";
+import type {
+  RecruiterSummary,
+  CandidateRow,
+  RecruiterManagerData,
+} from "@/lib/actions/recruiter-manager-types";
 
 async function requireSuperAdmin() {
   const session = await requireAuth();
@@ -12,43 +17,6 @@ async function requireSuperAdmin() {
   }
   return session;
 }
-
-export type RecruiterSummary = {
-  id: string;
-  name: string;
-  jobTitle: string | null;
-  status: string;
-  hasLoginAccount: boolean;
-  loginEmail: string | null;
-  totals: {
-    assigned: number;
-    activePipeline: number;
-    hired: number;
-    rejected: number;
-    interviewsThisWeek: number;
-    appsThisWeek: number;
-    hiredThisMonth: number;
-  };
-  lastActivityAt: Date | null;
-};
-
-export type CandidateRow = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  status: string;
-  positionTitle: string | null;
-  recruiterId: string | null;
-  createdAt: Date;
-  inPipeline: boolean;
-};
-
-export type RecruiterManagerData = {
-  recruiters: RecruiterSummary[];
-  unassignedCount: number;
-  totalCandidates: number;
-};
 
 export async function getRecruiterManagerData(): Promise<RecruiterManagerData> {
   await requireSuperAdmin();
