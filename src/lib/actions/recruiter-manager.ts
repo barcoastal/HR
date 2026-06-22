@@ -90,10 +90,18 @@ export async function getRecruiterManagerData(): Promise<RecruiterManagerData> {
   const unassignedCount = await db.candidate.count({ where: { recruiterId: null } });
   const totalCandidates = await db.candidate.count();
 
-  // Sort: most active pipeline first.
-  summaries.sort((a, b) => b.totals.activePipeline - a.totals.activePipeline);
+  // Drop recruiters who have been offboarded and no longer own any candidates.
+  // We keep an offboarded recruiter visible while they still hold candidates so
+  // an admin can reassign them via "Move all"; once their queue is empty they
+  // disappear from the list automatically.
+  const visible = summaries.filter(
+    (r) => r.status !== "OFFBOARDED" || r.totals.assigned > 0
+  );
 
-  return { recruiters: summaries, unassignedCount, totalCandidates };
+  // Sort: most active pipeline first.
+  visible.sort((a, b) => b.totals.activePipeline - a.totals.activePipeline);
+
+  return { recruiters: visible, unassignedCount, totalCandidates };
 }
 
 export async function getRecruiterCandidates(recruiterId: string | null): Promise<CandidateRow[]> {

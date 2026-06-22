@@ -282,6 +282,11 @@ function RecruiterCardHeader({
           <div className="flex items-center gap-2">
             <span className="font-semibold text-[var(--color-text-primary)]">{r.name}</span>
             {r.jobTitle && <span className="text-xs text-[var(--color-text-muted)]">{r.jobTitle}</span>}
+            {r.status === "OFFBOARDED" && (
+              <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-rose-500/10 text-rose-500">
+                offboarded · reassign candidates
+              </span>
+            )}
             {!r.hasLoginAccount && (
               <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-amber-500/10 text-amber-500">
                 no login
