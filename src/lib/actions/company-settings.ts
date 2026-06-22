@@ -42,7 +42,10 @@ export async function getRecruiters() {
   const ids: string[] = JSON.parse(settings.recruiterIds || "[]");
   if (ids.length === 0) return [];
   return db.employee.findMany({
-    where: { id: { in: ids } },
+    // Exclude offboarded employees. A stale id may linger in recruiterIds after
+    // someone is offboarded, but they must not appear in settings or be offered
+    // as a recruiter to assign candidates to.
+    where: { id: { in: ids }, status: { not: "OFFBOARDED" } },
     select: { id: true, firstName: true, lastName: true, email: true, jobTitle: true },
   });
 }
