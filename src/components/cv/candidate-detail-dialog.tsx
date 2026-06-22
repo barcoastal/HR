@@ -243,7 +243,7 @@ export function CandidateDetailDialog({
   const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
   const [bgCheckLoading, setBgCheckLoading] = useState(false);
   const [bgCheckOptions, setBgCheckOptions] = useState({
-    report_sku: "HIRE1",
+    report_sku: "HIRE3",
     drug_test: "N",
     drug_sku: "drug",
     mvr: "N",

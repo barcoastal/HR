@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 
   const drugTest = options?.drug_test || "N";
   const payload: Record<string, unknown> = {
-    report_sku: options?.report_sku || "HIRE1",
+    report_sku: options?.report_sku || "HIRE3",
     order_quantity: 1,
     applicant_emails: [candidate.email],
     drug_test: drugTest,
