@@ -10,7 +10,9 @@ type SignaturePlacement = {
   yPct: number;
   widthPct: number;
   heightPct: number;
-  kind: "signature" | "signatureDate";
+  kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText";
+  fieldId?: string;
+  label?: string;
 };
 
 type SigningData = {
@@ -29,6 +31,17 @@ type SignaturePosition = {
 
 export function SigningPage({ token, data, testMode }: { token: string; data: SigningData; testMode?: boolean }) {
   const hasPrePlaced = (data.signaturePlacements?.length ?? 0) > 0;
+  const allPlacements = data.signaturePlacements ?? [];
+  const initialsPlacements = allPlacements.filter((p) => p.kind === "initials");
+  // De-duplicate free-text fields by fieldId — one input per distinct field, even
+  // if the same field is placed in multiple spots.
+  const freeTextFields = Array.from(
+    new Map(
+      allPlacements
+        .filter((p) => p.kind === "freeText" && p.fieldId)
+        .map((p) => [p.fieldId as string, p.label || "Text"] as const)
+    ).entries()
+  ).map(([fieldId, label]) => ({ fieldId, label }));
   const [step, setStep] = useState<"review" | "place" | "sign" | "confirm" | "done">("review");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -39,6 +52,11 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
   const isDrawing = useRef(false);
   const [hasDrawn, setHasDrawn] = useState(false);
   const [signedAt] = useState(() => new Date());
+  // Initials pad (drawn once, stamped at every initials spot) + free-text values
+  const initialsCanvasRef = useRef<HTMLCanvasElement>(null);
+  const isDrawingInitials = useRef(false);
+  const [hasInitials, setHasInitials] = useState(false);
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
 
   const startDraw = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -87,9 +105,61 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
     }
   };
 
+  // --- Initials pad (same drawing mechanics, separate canvas) ---
+  const startDrawInitials = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = initialsCanvasRef.current;
+    if (!canvas) return;
+    isDrawingInitials.current = true;
+    setHasInitials(true);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#1a1a2e";
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    ctx.beginPath();
+    ctx.moveTo((clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY);
+  }, []);
+
+  const drawInitials = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isDrawingInitials.current) return;
+    const canvas = initialsCanvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (!canvas || !ctx) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+    const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+    ctx.lineTo((clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY);
+    ctx.stroke();
+  }, []);
+
+  const endDrawInitials = useCallback(() => {
+    isDrawingInitials.current = false;
+  }, []);
+
+  const clearInitials = () => {
+    const canvas = initialsCanvasRef.current;
+    const ctx = canvas?.getContext("2d");
+    if (canvas && ctx) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setHasInitials(false);
+    }
+  };
+
+  const allTextFilled = freeTextFields.every((f) => (fieldValues[f.fieldId] ?? "").trim().length > 0);
+  const initialsOk = initialsPlacements.length === 0 || hasInitials;
+  const extraFieldsOk = allTextFilled && initialsOk;
+
   const handleSubmit = async () => {
     const canvas = canvasRef.current;
-    if (!canvas || !agreed || !hasDrawn || !typedName.trim()) return;
+    if (!canvas || !agreed || !hasDrawn || !typedName.trim() || !extraFieldsOk) return;
     setSubmitting(true);
     setError(null);
 
@@ -103,6 +173,11 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
 
     try {
       const signatureBase64 = canvas.toDataURL("image/png");
+      const initialsBase64 = initialsPlacements.length > 0 && initialsCanvasRef.current
+        ? initialsCanvasRef.current.toDataURL("image/png")
+        : undefined;
+      const trimmedValues: Record<string, string> = {};
+      for (const f of freeTextFields) trimmedValues[f.fieldId] = (fieldValues[f.fieldId] ?? "").trim();
       const res = await fetch(`/api/sign/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -110,6 +185,8 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
           signatureBase64,
           signaturePosition: sigPosition || undefined,
           typedName: typedName.trim(),
+          initialsBase64,
+          fieldValues: freeTextFields.length > 0 ? trimmedValues : undefined,
         }),
       });
       const result = await res.json();
@@ -375,6 +452,79 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
               </div>
             </div>
 
+            {/* Initials pad — drawn once, applied to every initials spot */}
+            {initialsPlacements.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div className="px-5 py-3 bg-gray-50 border-b">
+                  <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <Icon name="history_edu" size={16} className="text-indigo-600" />
+                    Your Initials
+                  </h2>
+                </div>
+                <div className="p-5">
+                  <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                    Draw your initials — they&apos;ll be placed at {initialsPlacements.length} spot{initialsPlacements.length > 1 ? "s" : ""} on the document
+                  </label>
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-white hover:border-indigo-400 transition-colors max-w-[260px]">
+                    <canvas
+                      ref={initialsCanvasRef}
+                      width={300}
+                      height={150}
+                      className="w-full cursor-crosshair touch-none"
+                      style={{ height: "110px" }}
+                      onMouseDown={startDrawInitials}
+                      onMouseMove={drawInitials}
+                      onMouseUp={endDrawInitials}
+                      onMouseLeave={endDrawInitials}
+                      onTouchStart={startDrawInitials}
+                      onTouchMove={drawInitials}
+                      onTouchEnd={endDrawInitials}
+                    />
+                    {!hasInitials && (
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <p className="text-sm text-gray-300 italic">Initials</p>
+                      </div>
+                    )}
+                  </div>
+                  {hasInitials && (
+                    <button
+                      onClick={clearInitials}
+                      className="mt-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors flex items-center gap-1"
+                    >
+                      <Icon name="undo" size={12} />
+                      Clear & redo
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Free-text fields the recipient fills in */}
+            {freeTextFields.length > 0 && (
+              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <div className="px-5 py-3 bg-gray-50 border-b">
+                  <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <Icon name="text_fields" size={16} className="text-green-600" />
+                    Fill in the following
+                  </h2>
+                </div>
+                <div className="p-5 space-y-4">
+                  {freeTextFields.map((f) => (
+                    <div key={f.fieldId}>
+                      <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{f.label}</label>
+                      <input
+                        type="text"
+                        value={fieldValues[f.fieldId] ?? ""}
+                        onChange={(e) => setFieldValues((prev) => ({ ...prev, [f.fieldId]: e.target.value }))}
+                        placeholder={`Enter ${f.label.toLowerCase()}`}
+                        className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Agreement + Submit */}
             <div className="bg-white rounded-xl shadow-sm border p-5 space-y-4">
               <label className="flex items-start gap-3 cursor-pointer group">
@@ -398,10 +548,10 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
 
               <button
                 onClick={handleSubmit}
-                disabled={!agreed || submitting || !hasDrawn || !typedName.trim()}
+                disabled={!agreed || submitting || !hasDrawn || !typedName.trim() || !extraFieldsOk}
                 className={cn(
                   "w-full py-3.5 rounded-xl font-semibold text-base transition-all flex items-center justify-center gap-2.5 shadow-sm",
-                  agreed && hasDrawn && typedName.trim() && !submitting
+                  agreed && hasDrawn && typedName.trim() && extraFieldsOk && !submitting
                     ? "bg-[#4C3ACF] text-white hover:bg-[#3d2ea6] active:scale-[0.99]"
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 )}

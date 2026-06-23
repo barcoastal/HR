@@ -23,18 +23,34 @@ export const COUNTERSIGNATURE_PLACEHOLDERS = [
   { key: "{{countersignatureDate}}", description: "Date countersigned" },
 ];
 
+// Other recipient-filled fields (shown when doc action is Sign or Fill). Like
+// the signature, these are NOT stamped at send time — they are collected from
+// the recipient at signing and stamped into the final PDF then.
+export const RECIPIENT_FIELD_PLACEHOLDERS = [
+  { key: "{{initials}}", description: "Recipient initials (entered once, placed everywhere)" },
+  { key: "{{freeText}}", description: "Free-text box the recipient fills in" },
+];
+
 const SIG_KINDS = new Set([
   "{{signature}}",
   "{{signatureDate}}",
   "{{countersignature}}",
   "{{countersignatureDate}}",
+  "{{initials}}",
+  "{{freeText}}",
 ]);
 
 export function isSignaturePlaceholder(placeholder: string): boolean {
   return SIG_KINDS.has(placeholder);
 }
 
-export type PlacementKind = "signature" | "signatureDate" | "countersignature" | "countersignatureDate";
+export type PlacementKind =
+  | "signature"
+  | "signatureDate"
+  | "countersignature"
+  | "countersignatureDate"
+  | "initials"
+  | "freeText";
 
 export type SignaturePlacement = {
   page: number;        // 1-indexed
@@ -43,6 +59,8 @@ export type SignaturePlacement = {
   widthPct: number;    // 0..1
   heightPct: number;   // 0..1
   kind: PlacementKind;
+  fieldId?: string;    // stable id for free-text fields, maps to the recipient's typed value
+  label?: string;      // shown to the recipient above a free-text input
 };
 
 function placeholderToKind(placeholder: string): PlacementKind | null {
@@ -51,6 +69,8 @@ function placeholderToKind(placeholder: string): PlacementKind | null {
     case "{{signatureDate}}": return "signatureDate";
     case "{{countersignature}}": return "countersignature";
     case "{{countersignatureDate}}": return "countersignatureDate";
+    case "{{initials}}": return "initials";
+    case "{{freeText}}": return "freeText";
     default: return null;
   }
 }
@@ -136,6 +156,7 @@ type PlaceholderPosition = {
   y: number;
   placeholder: string;
   fontSize: number;
+  label?: string; // for {{freeText}} fields: what the recipient should enter
 };
 
 export async function fillPdfPlaceholders(
@@ -168,9 +189,19 @@ export async function fillPdfPlaceholders(
     // Signature placeholders are NOT stamped as text — they are deferred to signing time.
     const kind = placeholderToKind(pos.placeholder);
     if (kind) {
-      const isSigLike = kind === "signature" || kind === "countersignature";
-      const widthPct = isSigLike ? DEFAULT_SIG_WIDTH_PCT : DEFAULT_DATE_WIDTH_PCT;
-      const heightPct = isSigLike ? DEFAULT_SIG_HEIGHT_PCT : DEFAULT_DATE_HEIGHT_PCT;
+      let widthPct: number;
+      let heightPct: number;
+      switch (kind) {
+        case "signature":
+        case "countersignature":
+          widthPct = DEFAULT_SIG_WIDTH_PCT; heightPct = DEFAULT_SIG_HEIGHT_PCT; break;
+        case "initials":
+          widthPct = 0.1; heightPct = 0.06; break;
+        case "freeText":
+          widthPct = 0.24; heightPct = 0.05; break;
+        default: // signatureDate, countersignatureDate
+          widthPct = DEFAULT_DATE_WIDTH_PCT; heightPct = DEFAULT_DATE_HEIGHT_PCT;
+      }
       const centerX = pos.x / 100;
       const centerY = pos.y / 100;
       signaturePlacements.push({
@@ -180,6 +211,7 @@ export async function fillPdfPlaceholders(
         widthPct,
         heightPct,
         kind,
+        ...(kind === "freeText" ? { fieldId: pos.id, label: pos.label?.trim() || "Text" } : {}),
       });
       continue;
     }

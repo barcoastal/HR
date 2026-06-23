@@ -24,7 +24,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
     || (signingRequest.employee ? `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}` : "Signer");
 
   const placements = Array.isArray(signingRequest.signaturePlacements)
-    ? (signingRequest.signaturePlacements as unknown as Array<{ page: number; xPct: number; yPct: number; widthPct: number; heightPct: number; kind: "signature" | "signatureDate" }>)
+    ? (signingRequest.signaturePlacements as unknown as Array<{ page: number; xPct: number; yPct: number; widthPct: number; heightPct: number; kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText"; fieldId?: string; label?: string }>)
     : [];
 
   return (

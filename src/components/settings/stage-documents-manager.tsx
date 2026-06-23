@@ -7,7 +7,7 @@ import {
   updateStageDocument,
   deleteStageDocument,
 } from "@/lib/actions/stage-documents";
-import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS, COUNTERSIGNATURE_PLACEHOLDERS } from "@/lib/stage-document-utils";
+import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS, COUNTERSIGNATURE_PLACEHOLDERS, RECIPIENT_FIELD_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ type PlaceholderPosition = {
   y: number; // percentage of page height
   placeholder: string; // e.g. "{{firstName}}"
   fontSize: number;
+  label?: string; // for {{freeText}} fields: what the recipient should enter
 };
 
 type StageDoc = {
@@ -200,6 +201,7 @@ function PdfDocumentEditor({
   const [countersignerId, setCountersignerId] = useState<string>(existing?.countersignerId ?? "");
   const [saving, setSaving] = useState(false);
   const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
+  const [freeTextLabel, setFreeTextLabel] = useState<string>("");
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageRendering, setPageRendering] = useState(false);
@@ -314,6 +316,7 @@ function PdfDocumentEditor({
       y,
       placeholder: activePlaceholder,
       fontSize: 12,
+      ...(activePlaceholder === "{{freeText}}" ? { label: freeTextLabel.trim() || "Text" } : {}),
     };
     setPlaceholders((prev) => [...prev, newPlaceholder]);
   }
@@ -565,6 +568,25 @@ function PdfDocumentEditor({
                   </button>
                 );
               })}
+              {(requiresSignature || requiresFill) && RECIPIENT_FIELD_PLACEHOLDERS.map((p) => {
+                const isInitials = p.key === "{{initials}}";
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setActivePlaceholder(p.key)}
+                    title={p.description}
+                    className={cn(
+                      "px-2 py-1 rounded text-xs font-mono transition-colors flex items-center gap-1",
+                      activePlaceholder === p.key
+                        ? isInitials ? "bg-indigo-600 text-white" : "bg-green-600 text-white"
+                        : isInitials ? "bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20" : "bg-green-500/10 text-green-600 hover:bg-green-500/20"
+                    )}
+                  >
+                    <Icon name={isInitials ? "history_edu" : "text_fields"} size={10} />
+                    {p.key}
+                  </button>
+                );
+              })}
               {requiresCountersignature && COUNTERSIGNATURE_PLACEHOLDERS.map((p) => {
                 const isSig = p.key === "{{countersignature}}";
                 return (
@@ -585,6 +607,18 @@ function PdfDocumentEditor({
                 );
               })}
             </div>
+            {activePlaceholder === "{{freeText}}" && (
+              <div className="mt-2 flex items-center gap-2">
+                <label className="text-[11px] font-medium text-green-700 whitespace-nowrap">Field label:</label>
+                <input
+                  value={freeTextLabel}
+                  onChange={(e) => setFreeTextLabel(e.target.value)}
+                  placeholder="e.g. Emergency contact, Employee ID"
+                  className="flex-1 px-2 py-1 rounded border border-green-300 bg-white text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-green-500"
+                />
+                <span className="text-[10px] text-[var(--color-text-muted)] whitespace-nowrap">applied to the next box you place</span>
+              </div>
+            )}
             {(requiresSignature || requiresFill) && (
               <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
                 Place at least one <span className="font-mono text-purple-500">{"{{signature}}"}</span> field — this is where the recipient&apos;s signature will appear.
@@ -627,25 +661,32 @@ function PdfDocumentEditor({
             />
             {/* Placeholder markers */}
             {currentPagePlaceholders.map((p) => {
-              const SIG_MAP: Record<string, { color: "purple" | "teal" | "amber" | "orange"; widthPct: number; heightPct: number; label: string }> = {
+              const SIG_MAP: Record<string, { color: "purple" | "teal" | "amber" | "orange" | "indigo" | "green"; widthPct: number; heightPct: number; label: string }> = {
                 "{{signature}}": { color: "purple", widthPct: 26, heightPct: 8, label: "✍ signature" },
                 "{{signatureDate}}": { color: "teal", widthPct: 18, heightPct: 4, label: "📅 date" },
                 "{{countersignature}}": { color: "amber", widthPct: 26, heightPct: 8, label: "✍ countersign" },
                 "{{countersignatureDate}}": { color: "orange", widthPct: 18, heightPct: 4, label: "📅 countersign date" },
+                "{{initials}}": { color: "indigo", widthPct: 10, heightPct: 6, label: "🖋 initials" },
+                "{{freeText}}": { color: "green", widthPct: 24, heightPct: 5, label: "✎ text" },
               };
               const sigMeta = SIG_MAP[p.placeholder];
               if (sigMeta) {
+                const markerLabel = p.placeholder === "{{freeText}}" ? `✎ ${p.label || "Text"}` : sigMeta.label;
                 const colorClass = {
                   purple: "border-purple-500 bg-purple-500/10",
                   teal: "border-teal-500 bg-teal-500/10",
                   amber: "border-amber-500 bg-amber-500/10",
                   orange: "border-orange-500 bg-orange-500/10",
+                  indigo: "border-indigo-500 bg-indigo-500/10",
+                  green: "border-green-500 bg-green-500/10",
                 }[sigMeta.color];
                 const textClass = {
                   purple: "text-purple-700",
                   teal: "text-teal-700",
                   amber: "text-amber-700",
                   orange: "text-orange-700",
+                  indigo: "text-indigo-700",
+                  green: "text-green-700",
                 }[sigMeta.color];
                 return (
                   <div
@@ -658,9 +699,9 @@ function PdfDocumentEditor({
                       height: `${sigMeta.heightPct}%`,
                     }}
                   >
-                    <div className={cn("w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm", colorClass)}>
-                      <span className={cn("text-[10px] font-mono font-bold whitespace-nowrap", textClass)}>
-                        {sigMeta.label}
+                    <div className={cn("w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm overflow-hidden", colorClass)}>
+                      <span className={cn("text-[10px] font-mono font-bold whitespace-nowrap px-1 truncate", textClass)}>
+                        {markerLabel}
                       </span>
                     </div>
                     <button

@@ -169,7 +169,9 @@ export async function submitSignature(
   token: string,
   signatureBase64: string,
   signaturePosition?: { xPercent: number; yPercent: number; page: number },
-  typedName?: string
+  typedName?: string,
+  initialsBase64?: string,
+  fieldValues?: Record<string, string>
 ): Promise<{ success: boolean; error?: string }> {
   const request = await db.signingRequest.findUnique({
     where: { token },
@@ -219,16 +221,29 @@ export async function submitSignature(
       yPct: number;
       widthPct: number;
       heightPct: number;
-      kind: "signature" | "signatureDate";
+      kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText";
+      fieldId?: string;
+      label?: string;
     };
     const placements = Array.isArray(request.signaturePlacements)
       ? (request.signaturePlacements as unknown as StoredPlacement[])
       : [];
 
+    // Initials image — embedded lazily, reused for every initials box.
+    let initialsImage: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
+    if (initialsBase64) {
+      try {
+        const initBytes = Buffer.from(initialsBase64.replace(/^data:image\/png;base64,/, ""), "base64");
+        initialsImage = await pdfDoc.embedPng(initBytes);
+      } catch (e) {
+        console.error("[signing] Failed to embed initials image:", e);
+      }
+    }
+
     if (placements.length > 0) {
-      // Primary signer only stamps signature/signatureDate placements.
-      // Countersignature placements are stamped later when the countersigner signs.
-      const primaryKinds = new Set(["signature", "signatureDate"]);
+      // Primary signer stamps their own fields (signature, date, initials, free
+      // text). Countersignature placements are stamped later by the countersigner.
+      const primaryKinds = new Set(["signature", "signatureDate", "initials", "freeText"]);
       for (const p of placements) {
         if (!primaryKinds.has(p.kind)) continue;
         const pageIndex = Math.max(0, Math.min(pages.length - 1, p.page - 1));
@@ -257,6 +272,31 @@ export async function submitSignature(
             size: 8,
             color: rgb(0.15, 0.15, 0.2),
           });
+        } else if (p.kind === "initials") {
+          if (initialsImage) {
+            const ratio = initialsImage.width / initialsImage.height;
+            let drawW = boxWidth;
+            let drawH = drawW / ratio;
+            if (drawH > boxHeight) {
+              drawH = boxHeight;
+              drawW = drawH * ratio;
+            }
+            const drawX = boxX + (boxWidth - drawW) / 2;
+            const drawY = boxY + (boxHeight - drawH) / 2;
+            target.drawImage(initialsImage, { x: drawX, y: drawY, width: drawW, height: drawH });
+          }
+        } else if (p.kind === "freeText") {
+          const value = (p.fieldId && fieldValues?.[p.fieldId]) || "";
+          if (value) {
+            const fontSize = Math.min(11, boxHeight * 0.7);
+            target.drawText(value, {
+              x: boxX + 2,
+              y: boxY + (boxHeight - fontSize) / 2 + 1,
+              size: fontSize,
+              color: rgb(0.1, 0.1, 0.15),
+              maxWidth: Math.max(1, boxWidth - 4),
+            });
+          }
         } else {
           const dateText = signDate;
           const fontSize = Math.min(12, boxHeight * 0.7);
