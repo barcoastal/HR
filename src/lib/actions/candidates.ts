@@ -257,6 +257,10 @@ async function sendStageDocumentsEmail(
       startDate,
     };
     const pdfDocs = docs.filter((d) => d.pdfData);
+    const missingPdf = docs.filter((d) => !d.pdfData);
+    if (missingPdf.length > 0) {
+      console.warn(`[stage-docs] ${missingPdf.length} doc(s) for stage ${status} have NO uploaded PDF and will be skipped: ${missingPdf.map((d) => d.name).join(", ")}`);
+    }
     console.log(`[stage-docs] ${pdfDocs.length} docs have PDF data`);
     if (pdfDocs.length === 0) return;
 
@@ -277,6 +281,7 @@ async function sendStageDocumentsEmail(
 
     // Handle docs that require signing — upload filled PDF to FileBlob, create signing request
     for (const doc of signingDocs) {
+     try {
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for signing, ${positions.length} placeholders`);
       const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
@@ -303,10 +308,14 @@ async function sendStageDocumentsEmail(
         countersignerId: doc.requiresCountersignature ? doc.countersignerId : null,
       });
       console.log(`[stage-docs] Created signing request for "${doc.name}" with ${signaturePlacements.length} signature placements`);
+     } catch (e) {
+       console.error(`[stage-docs] FAILED signing doc "${doc.name}", skipping and continuing with the rest:`, e);
+     }
     }
 
     // Handle docs that require filling — upload filled PDF (with placeholders pre-filled), create fill request
     for (const doc of fillDocs) {
+     try {
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for fill form, ${positions.length} placeholders`);
       const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
@@ -346,12 +355,16 @@ async function sendStageDocumentsEmail(
         fillUrl: `${baseUrl}/fill/${token}`,
       });
       console.log(`[stage-docs] Created fill request for "${doc.name}"`);
+     } catch (e) {
+       console.error(`[stage-docs] FAILED fill doc "${doc.name}", skipping and continuing with the rest:`, e);
+     }
     }
 
     // Handle attachment-only docs
     if (attachmentDocs.length > 0) {
       const attachments = [];
       for (const doc of attachmentDocs) {
+       try {
         const positions = JSON.parse(doc.placeholders || "[]");
         console.log(`[stage-docs] Filling "${doc.name}" as attachment, ${positions.length} placeholders, hourlyRate=${candidateInfo.hourlyRate}`);
         const { pdf: filledPdf } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
@@ -378,16 +391,21 @@ async function sendStageDocumentsEmail(
           });
           console.log(`[stage-docs] Created Document record "${doc.name}" for employee ${employeeId}`);
         }
+       } catch (e) {
+         console.error(`[stage-docs] FAILED attachment doc "${doc.name}", skipping and continuing with the rest:`, e);
+       }
       }
       console.log(`[stage-docs] Sending ${attachments.length} attachments to ${candidate.email}`);
-      await sendEmailWithAttachments(
-        candidate.email,
-        `Documents: ${STAGE_LABELS[status] || status}`,
-        `<p>Hi ${candidate.firstName},</p>
-        <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
-        <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
-        attachments
-      );
+      if (attachments.length > 0) {
+        await sendEmailWithAttachments(
+          candidate.email,
+          `Documents: ${STAGE_LABELS[status] || status}`,
+          `<p>Hi ${candidate.firstName},</p>
+          <p>Please find your ${STAGE_LABELS[status] || status} documents attached.</p>
+          <p>${attachments.length} document${attachments.length > 1 ? "s" : ""} attached.</p>`,
+          attachments
+        );
+      }
     }
 
     console.log(`[stage-docs] All docs processed for ${candidate.email} (${attachmentDocs.length} attached, ${signingDocs.length} signing)`);
@@ -930,8 +948,9 @@ async function hireInner(
       emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-    // Send stage documents for PRE_ONBOARDING
+    // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
     await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+    await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
@@ -985,8 +1004,9 @@ async function hireInner(
       emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-    // Send stage documents for PRE_ONBOARDING
+    // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
     await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+    await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/onboarding");
@@ -1070,6 +1090,10 @@ async function hireInner(
     emailSubject: `New Hire: ${candidate.firstName} ${candidate.lastName}`,
     emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
   }).catch((err) => console.error("[candidates] New hire notification error:", err));
+
+  // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
+  await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+  await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
   revalidatePath("/cv");
   revalidatePath("/people");
