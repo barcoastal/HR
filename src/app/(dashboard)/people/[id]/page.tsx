@@ -9,6 +9,7 @@ import { DeleteEmployeeButton } from "@/components/people/delete-employee-button
 import { ReactivateEmployeeButton } from "@/components/people/reactivate-employee-button";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
+import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
 import { getHRNotes } from "@/lib/actions/hr-notes";
 import { getEmployeeDocuments } from "@/lib/actions/employee-documents";
 import { getNextOneOnOneForEmployee, getPastOneOnOnesForEmployee } from "@/lib/actions/one-on-ones";
@@ -221,6 +222,16 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
               }))}
               isAdmin={isAdmin}
             />
+          )}
+
+          {isAdmin && (
+            <div className="flex justify-end">
+              <ResendStageDocsButton
+                employeeId={employee.id}
+                employeeName={`${employee.firstName} ${employee.lastName}`}
+                stage="PRE_ONBOARDING"
+              />
+            </div>
           )}
 
           {isAdmin && (

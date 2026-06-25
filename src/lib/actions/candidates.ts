@@ -229,7 +229,8 @@ async function sendStageDocumentsEmail(
   status: string,
   candidate: { id: string; firstName: string; lastName: string; email: string; phone: string | null; hourlyRate: number | null; positionId: string | null },
   employeeId?: string,
-  startDate?: string | Date | null
+  startDate?: string | Date | null,
+  options?: { positionTitle?: string; onlyDocIds?: string[] }
 ) {
   if (!DOC_STAGES.includes(status) || !candidate.email) return;
 
@@ -238,13 +239,19 @@ async function sendStageDocumentsEmail(
     const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
     const { sendEmailWithAttachments } = await import("@/lib/email");
     const { getCompanySettings } = await import("@/lib/actions/company-settings");
-    const [docs, settings] = await Promise.all([
+    const [allDocs, settings] = await Promise.all([
       getStageDocuments(status),
       getCompanySettings(),
     ]);
+    // Manual resend can target a specific subset of the stage's documents.
+    const docs = options?.onlyDocIds
+      ? allDocs.filter((d) => options.onlyDocIds!.includes(d.id))
+      : allDocs;
     console.log(`[stage-docs] Found ${docs.length} docs for stage ${status}, candidate ${candidate.email}`);
 
-    const position = candidate.positionId
+    const position = options?.positionTitle
+      ? { title: options.positionTitle }
+      : candidate.positionId
       ? await db.position.findUnique({ where: { id: candidate.positionId }, select: { title: true } })
       : null;
     const candidateInfo = {
@@ -412,6 +419,58 @@ async function sendStageDocumentsEmail(
   } catch (err) {
     console.error(`[stage-docs] Failed to send docs for ${status} to ${candidate.email}:`, err);
   }
+}
+
+/**
+ * Manually (re)send selected stage documents to an existing employee, for when
+ * someone did not receive theirs. Placeholder data is built from the employee
+ * record; hourly rate and exact position live on the original candidate, so
+ * those placeholders fall back ({{position}} uses the employee's job title).
+ */
+export async function resendStageDocuments(
+  employeeId: string,
+  stage: string,
+  docIds: string[]
+): Promise<{ success: boolean; sent?: number; error?: string }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    return { success: false, error: "Not authorized" };
+  }
+  if (!docIds || docIds.length === 0) return { success: false, error: "No documents selected" };
+
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) return { success: false, error: "Employee not found" };
+  if (!employee.email) return { success: false, error: "Employee has no email on file" };
+
+  const candidateObj = {
+    id: employee.id,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    email: employee.email,
+    phone: employee.phone,
+    hourlyRate: null,
+    positionId: null,
+  };
+
+  await sendStageDocumentsEmail(stage, candidateObj, employee.id, employee.startDate, {
+    positionTitle: employee.jobTitle,
+    onlyDocIds: docIds,
+  });
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "stage_docs.manual_resend",
+    entityType: "employee",
+    entityId: employeeId,
+    details: { stage, docIds, count: docIds.length, by: session.user?.email },
+  });
+
+  revalidatePath("/pre-onboarding");
+  revalidatePath("/onboarding");
+  revalidatePath(`/people/${employeeId}`);
+  return { success: true, sent: docIds.length };
 }
 
 export async function updateCandidateStatus(

@@ -13,6 +13,7 @@ import {
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
 
 type TaskItem = {
   id: string;
@@ -308,6 +309,17 @@ export function OnboardingTimeline({
           <Icon name="expand_more" size={16} className={cn("text-[var(--color-text-muted)] transition-transform", expanded && "rotate-180")} />
         </div>
       </button>
+
+      {/* Manual resend of pre-onboarding documents */}
+      {type === "PRE_ONBOARDING" && (
+        <div className="px-5 pb-2 -mt-1 flex justify-end">
+          <ResendStageDocsButton
+            employeeId={employee.id}
+            employeeName={`${employee.firstName} ${employee.lastName}`}
+            stage="PRE_ONBOARDING"
+          />
+        </div>
+      )}
 
       {/* Super Admin Delete */}
       {isSuperAdmin && (
