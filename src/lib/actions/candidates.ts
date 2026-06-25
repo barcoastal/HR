@@ -948,9 +948,8 @@ async function hireInner(
       emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-    // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
+    // Send stage documents for PRE_ONBOARDING
     await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
-    await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
@@ -1004,9 +1003,8 @@ async function hireInner(
       emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-    // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
+    // Send stage documents for PRE_ONBOARDING
     await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
-    await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
     revalidatePath("/cv");
     revalidatePath("/onboarding");
@@ -1091,9 +1089,8 @@ async function hireInner(
     emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
   }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-  // Send stage documents for both PRE_ONBOARDING and ONBOARDING at hire
+  // Send PRE_ONBOARDING stage documents (this branch previously sent none)
   await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
-  await sendStageDocumentsEmail("ONBOARDING", candidate, employee.id, startDate);
 
   revalidatePath("/cv");
   revalidatePath("/people");
