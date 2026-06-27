@@ -22,6 +22,9 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [pageImages, setPageImages] = useState<string[]>([]);
   const [isStaticPdf, setIsStaticPdf] = useState(false);
+  // Tool used when tapping a form-less ("static") PDF: drop text or a checkbox.
+  const [staticTool, setStaticTool] = useState<"text" | "checkbox">("text");
+  const staticToolRef = useRef<"text" | "checkbox">("text");
   const pdfContainerRef = useRef<HTMLDivElement>(null);
 
   // Load and render PDF with form support
@@ -172,6 +175,25 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
 
               const layer = pageDiv.querySelector("[data-annot-layer]") as HTMLDivElement;
               if (!layer) return;
+
+              // Checkbox tool: drop a tickable box (right-click to remove)
+              if (staticToolRef.current === "checkbox") {
+                const cb = document.createElement("input");
+                cb.type = "checkbox";
+                cb.checked = true;
+                cb.dataset.fieldName = `checkbox_${Date.now()}`;
+                cb.dataset.page = pageDiv.dataset.pageIndex || "0";
+                cb.title = "Click to toggle, right-click to remove";
+                cb.style.cssText = `
+                  position:absolute;
+                  left:${leftPct}%;top:${topPct}%;
+                  width:16px;height:16px;margin:0;
+                  cursor:pointer;accent-color:#0d9488;
+                `;
+                cb.addEventListener("contextmenu", (ev) => { ev.preventDefault(); cb.remove(); });
+                layer.appendChild(cb);
+                return;
+              }
 
               const input = document.createElement("input");
               input.type = "text";
@@ -406,13 +428,39 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
         {/* Fill */}
         {step === "fill" && (
           <>
-            <div className="bg-teal-50 border-b border-teal-100 px-4 py-3 flex items-center gap-3">
+            <div className="bg-teal-50 border-b border-teal-100 px-4 py-3 flex items-center gap-3 flex-wrap">
               <Icon name="edit_document" size={16} className="text-teal-600 shrink-0" />
               <p className="text-sm text-teal-700">
                 {isStaticPdf
-                  ? "Tap anywhere on the document to add text."
-                  : "Tap any field and type to fill it in."}
+                  ? staticTool === "checkbox"
+                    ? "Tap a box on the document to place a checkmark. Right-click a checkbox to remove it."
+                    : "Tap anywhere on the document to add text."
+                  : "Tap any field and type to fill it in. Tick any checkboxes as needed."}
               </p>
+              {isStaticPdf && (
+                <div className="ml-auto flex items-center gap-1 bg-white rounded-lg border border-teal-200 p-0.5">
+                  <button
+                    type="button"
+                    onClick={() => { staticToolRef.current = "text"; setStaticTool("text"); }}
+                    className={cn(
+                      "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1",
+                      staticTool === "text" ? "bg-teal-600 text-white" : "text-teal-700 hover:bg-teal-50"
+                    )}
+                  >
+                    <Icon name="text_fields" size={14} /> Text
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { staticToolRef.current = "checkbox"; setStaticTool("checkbox"); }}
+                    className={cn(
+                      "px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1",
+                      staticTool === "checkbox" ? "bg-teal-600 text-white" : "text-teal-700 hover:bg-teal-50"
+                    )}
+                  >
+                    <Icon name="check_box" size={14} /> Checkbox
+                  </button>
+                </div>
+              )}
             </div>
             <div ref={pdfContainerRef} className="p-3 space-y-2" />
             <div className="sticky bottom-0 bg-white border-t p-3 shadow-lg">
