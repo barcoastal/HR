@@ -790,6 +790,18 @@ export async function updateCandidate(
     updateData.status = status;
     if (status === "HIRED") updateData.hiredAt = new Date();
   }
+
+  // Position change: keep the denormalized jobAppliedTo text in sync so
+  // text-based filters and displays follow the new position.
+  const positionChanged =
+    data.positionId !== undefined && data.positionId !== (existing?.positionId ?? null);
+  let newPositionTitle: string | null = null;
+  if (positionChanged && data.positionId) {
+    newPositionTitle =
+      (await db.position.findUnique({ where: { id: data.positionId }, select: { title: true } }))
+        ?.title ?? null;
+    if (newPositionTitle) updateData.jobAppliedTo = newPositionTitle;
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
 
@@ -815,6 +827,21 @@ export async function updateCandidate(
         email: candidate.email,
         from: previousStatus,
         to: status,
+      },
+    });
+  }
+
+  if (positionChanged) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "candidate.position.changed",
+      entityType: "candidate",
+      entityId: id,
+      details: {
+        name: `${candidate.firstName} ${candidate.lastName}`,
+        email: candidate.email,
+        from: existing?.jobAppliedTo ?? null,
+        to: newPositionTitle,
       },
     });
   }

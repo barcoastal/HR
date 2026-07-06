@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, getInitials } from "@/lib/utils";
-import { updateCandidateStatus, deleteCandidate } from "@/lib/actions/candidates";
+import { updateCandidateStatus, updateCandidate, deleteCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { useMemo, useState } from "react";
@@ -93,6 +93,18 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
   const [movingId, setMovingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [expandedColumns, setExpandedColumns] = useState<Record<string, boolean>>({});
+  const [positionMenuId, setPositionMenuId] = useState<string | null>(null);
+
+  async function changePosition(id: string, positionId: string) {
+    setMovingId(id);
+    setPositionMenuId(null);
+    try {
+      await updateCandidate(id, { positionId });
+      router.refresh();
+    } finally {
+      setMovingId(null);
+    }
+  }
 
   async function moveCandidate(id: string, newStatus: CandidateStatus) {
     if (newStatus === "HIRED" || newStatus === "BACKGROUND_CHECK") {
@@ -235,7 +247,49 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className={cn(
+                          "flex items-center gap-1 transition-opacity",
+                          positionMenuId === candidate.id ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                        )}>
+                          {positions.filter((p) => p.id !== candidate.positionId).length > 0 && (
+                            <div className="relative">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setPositionMenuId(positionMenuId === candidate.id ? null : candidate.id);
+                                }}
+                                disabled={movingId === candidate.id}
+                                className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors disabled:opacity-50"
+                                title="Change position"
+                              >
+                                <Icon name="swap_horiz" size={12} />
+                              </button>
+                              {positionMenuId === candidate.id && (
+                                <div
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="absolute right-0 top-full mt-1 z-20 w-52 max-h-64 overflow-y-auto rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] shadow-lg py-1"
+                                >
+                                  <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                                    Move to position
+                                  </p>
+                                  {positions
+                                    .filter((p) => p.id !== candidate.positionId)
+                                    .map((p) => (
+                                      <button
+                                        key={p.id}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          changePosition(candidate.id, p.id);
+                                        }}
+                                        className="block w-full text-left px-3 py-1.5 text-xs text-[var(--color-text-primary)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                                      >
+                                        {p.title}
+                                      </button>
+                                    ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
