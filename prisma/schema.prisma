@@ -268,6 +268,7 @@ model Employee {
   signingRequests    SigningRequest[]
   countersignRequests SigningRequest[] @relation("SigningRequestCountersigner")
   countersignStageDocs StageDocument[] @relation("StageDocumentCountersigner")
+  countersignPositionDocs PositionDocument[] @relation("PositionDocumentCountersigner")
   managedCandidates  Candidate[]       @relation("CandidateManager")
   hrNotes            HRNote[]
   authoredHRNotes    HRNote[]          @relation("HRNoteAuthor")
@@ -840,6 +841,7 @@ model Position {
   interviews    Interview[]
   applications  CandidateApplication[]
   boardPostings PositionBoardPosting[]
+  documents     PositionDocument[]
   createdAt     DateTime       @default(now())
 
   department    Department?    @relation(fields: [departmentId], references: [id])
@@ -1138,6 +1140,27 @@ model StageDocument {
   countersigner     Employee? @relation("StageDocumentCountersigner", fields: [countersignerId], references: [id], onDelete: SetNull)
 
   @@index([stage])
+  @@index([countersignerId])
+}
+
+model PositionDocument {
+  id           String   @id @default(uuid())
+  positionId   String
+  name         String
+  pdfData      String?  // base64-encoded PDF file
+  placeholders      String   @default("[]") // JSON: [{page, x, y, width, placeholder, fontSize}]
+  requiresSignature Boolean  @default(false)
+  requiresFill      Boolean  @default(false)
+  requiresCountersignature Boolean @default(false)
+  countersignerId   String?
+  order             Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  position          Position  @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  countersigner     Employee? @relation("PositionDocumentCountersigner", fields: [countersignerId], references: [id], onDelete: SetNull)
+
+  @@index([positionId])
   @@index([countersignerId])
 }
 

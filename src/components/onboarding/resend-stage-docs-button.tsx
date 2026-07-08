@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import { getAllStageDocuments } from "@/lib/actions/stage-documents";
+import { getPositionDocumentsForEmployee } from "@/lib/actions/position-documents";
 import { resendStageDocuments } from "@/lib/actions/candidates";
 
 type DocItem = {
@@ -12,6 +13,7 @@ type DocItem = {
   hasPdf: boolean;
   requiresSignature: boolean;
   requiresFill: boolean;
+  isPositionDoc?: boolean;
 };
 
 const STAGE_LABEL: Record<string, string> = {
@@ -46,16 +48,29 @@ export function ResendStageDocsButton({
     setError(null);
     setLoading(true);
     try {
-      const all = await getAllStageDocuments();
-      const list = all
-        .filter((d) => d.stage === stage)
-        .map((d) => ({
+      const [all, positionDocs] = await Promise.all([
+        getAllStageDocuments(),
+        stage === "PRE_ONBOARDING" ? getPositionDocumentsForEmployee(employeeId) : Promise.resolve([]),
+      ]);
+      const list: DocItem[] = [
+        ...all
+          .filter((d) => d.stage === stage)
+          .map((d) => ({
+            id: d.id,
+            name: d.name,
+            hasPdf: d.hasPdf,
+            requiresSignature: d.requiresSignature,
+            requiresFill: d.requiresFill,
+          })),
+        ...positionDocs.map((d) => ({
           id: d.id,
           name: d.name,
           hasPdf: d.hasPdf,
           requiresSignature: d.requiresSignature,
           requiresFill: d.requiresFill,
-        }));
+          isPositionDoc: true,
+        })),
+      ];
       setDocs(list);
       setSelected(new Set(list.filter((d) => d.hasPdf).map((d) => d.id)));
     } catch {
@@ -179,6 +194,9 @@ export function ResendStageDocsButton({
                           <span className="block text-[11px] text-amber-500">No PDF uploaded, cannot send</span>
                         )}
                       </span>
+                      {d.isPositionDoc && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-500">position</span>
+                      )}
                       {d.requiresSignature && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-500">sign</span>
                       )}

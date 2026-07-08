@@ -239,15 +239,40 @@ async function sendStageDocumentsEmail(
     const { fillPdfPlaceholders } = await import("@/lib/stage-document-utils");
     const { sendEmailWithAttachments } = await import("@/lib/email");
     const { getCompanySettings } = await import("@/lib/actions/company-settings");
-    const [allDocs, settings] = await Promise.all([
+    const [stageDocs, settings] = await Promise.all([
       getStageDocuments(status),
       getCompanySettings(),
     ]);
-    // Manual resend can target a specific subset of the stage's documents.
+
+    // Position-specific documents (e.g. compensation plans) go out at pre-onboarding,
+    // only to hires for that position. Stage documents stay global for everyone.
+    let positionDocs: { id: string; name: string; pdfData: string | null; placeholders: string; requiresSignature: boolean; requiresFill: boolean; requiresCountersignature: boolean; countersignerId: string | null }[] = [];
+    if (status === "PRE_ONBOARDING") {
+      try {
+        const { getPositionDocuments } = await import("@/lib/actions/position-documents");
+        let posId = candidate.positionId;
+        if (!posId) {
+          // Manual resend passes an employee record with no positionId — resolve
+          // the position through the candidate record sharing the same email.
+          const cand = await db.candidate.findFirst({
+            where: { email: candidate.email, positionId: { not: null } },
+            orderBy: { createdAt: "desc" },
+            select: { positionId: true },
+          });
+          posId = cand?.positionId ?? null;
+        }
+        if (posId) positionDocs = await getPositionDocuments(posId);
+      } catch (posErr) {
+        console.error(`[stage-docs] Failed to load position documents for ${candidate.email}:`, posErr);
+      }
+    }
+
+    const allDocs = [...stageDocs, ...positionDocs];
+    // Manual resend can target a specific subset of the documents.
     const docs = options?.onlyDocIds
       ? allDocs.filter((d) => options.onlyDocIds!.includes(d.id))
       : allDocs;
-    console.log(`[stage-docs] Found ${docs.length} docs for stage ${status}, candidate ${candidate.email}`);
+    console.log(`[stage-docs] Found ${docs.length} docs for stage ${status} (${stageDocs.length} stage + ${positionDocs.length} position), candidate ${candidate.email}`);
 
     const position = options?.positionTitle
       ? { title: options.positionTitle }

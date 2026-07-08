@@ -7,6 +7,10 @@ import {
   updateStageDocument,
   deleteStageDocument,
 } from "@/lib/actions/stage-documents";
+import {
+  createPositionDocument,
+  updatePositionDocument,
+} from "@/lib/actions/position-documents";
 import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS, COUNTERSIGNATURE_PLACEHOLDERS, RECIPIENT_FIELD_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
@@ -34,7 +38,19 @@ type StageDoc = {
   hasPdf: boolean;
 };
 
-type Countersigner = { id: string; firstName: string; lastName: string; jobTitle: string };
+// Minimal shape the editor needs — satisfied by both stage and position docs
+export type EditableDoc = {
+  id: string;
+  name: string;
+  placeholders: string; // JSON
+  requiresSignature: boolean;
+  requiresFill: boolean;
+  requiresCountersignature: boolean;
+  countersignerId: string | null;
+  hasPdf: boolean;
+};
+
+export type Countersigner = { id: string; firstName: string; lastName: string; jobTitle: string };
 
 const STAGES = [
   { value: "PRE_ONBOARDING", label: "Pre-Onboarding" },
@@ -172,16 +188,20 @@ export function StageDocumentsManager({ documents, countersigners }: { documents
 }
 
 // ─── PDF Document Editor ───
+// Saves to stage documents when `stage` is set, or to position documents when
+// `positionId` is set. Exactly one of the two must be provided.
 
-function PdfDocumentEditor({
+export function PdfDocumentEditor({
   stage,
+  positionId,
   existing,
   countersigners,
   onDone,
   onCancel,
 }: {
-  stage: string;
-  existing: StageDoc | null;
+  stage?: string;
+  positionId?: string;
+  existing: EditableDoc | null;
   countersigners: Countersigner[];
   onDone: () => void;
   onCancel: () => void;
@@ -189,7 +209,9 @@ function PdfDocumentEditor({
   const [name, setName] = useState(existing?.name || "");
   const [pdfBase64, setPdfBase64] = useState<string | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(
-    existing?.hasPdf ? `/api/stage-documents/${existing.id}` : null
+    existing?.hasPdf
+      ? `${positionId ? "/api/position-documents" : "/api/stage-documents"}/${existing.id}`
+      : null
   );
   const needsUpload = existing && !existing.hasPdf && !pdfBase64;
   const [placeholders, setPlaceholders] = useState<PlaceholderPosition[]>(
@@ -359,10 +381,10 @@ function PdfDocumentEditor({
           countersignerId: requiresCountersignature ? countersignerId : null,
         };
         if (pdfBase64) updateData.pdfData = pdfBase64;
-        await updateStageDocument(existing.id, updateData);
+        if (positionId) await updatePositionDocument(existing.id, updateData);
+        else await updateStageDocument(existing.id, updateData);
       } else {
-        await createStageDocument({
-          stage,
+        const createData = {
           name: name.trim(),
           pdfData: pdfBase64!,
           placeholders: placeholdersJson,
@@ -370,7 +392,9 @@ function PdfDocumentEditor({
           requiresFill,
           requiresCountersignature,
           countersignerId: requiresCountersignature ? countersignerId : null,
-        });
+        };
+        if (positionId) await createPositionDocument({ positionId, ...createData });
+        else await createStageDocument({ stage: stage!, ...createData });
       }
       onDone();
     } finally {

@@ -34,6 +34,9 @@ import { NotificationSettings } from "@/components/settings/notification-setting
 import { getNotificationRules, getNotificationRecipients } from "@/lib/actions/notification-settings";
 import { seedNotificationRules } from "@/lib/notifications/seed";
 import { StageDocumentsManager } from "@/components/settings/stage-documents-manager";
+import { PositionDocumentsManager } from "@/components/settings/position-documents-manager";
+import { getAllPositionDocuments } from "@/lib/actions/position-documents";
+import { getPositions } from "@/lib/actions/candidates";
 import { GustoConnection } from "@/components/settings/gusto-connection";
 import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 import { DepartmentReviewTemplates } from "@/components/settings/department-review-templates";
@@ -45,7 +48,7 @@ const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-ros
 export default async function SettingsPage() {
   const session = await requireAdmin();
   await seedNotificationRules();
-  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients, countersigners] = await Promise.all([
+  const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients, countersigners, positionDocuments, positions] = await Promise.all([
     getUsers(),
     getDepartments(),
     getEmployees(),
@@ -67,6 +70,8 @@ export default async function SettingsPage() {
     getNotificationRules(),
     getNotificationRecipients(),
     getEligibleCountersigners(),
+    getAllPositionDocuments(),
+    getPositions(),
   ]);
 
   const activeEmployeeCount = await db.employee.count({ where: { status: "ACTIVE" } });
@@ -157,6 +162,27 @@ export default async function SettingsPage() {
             countersignerId: d.countersignerId,
             order: d.order,
             hasPdf: d.hasPdf,
+          }))}
+          countersigners={countersigners}
+        />
+
+        <PositionDocumentsManager
+          documents={positionDocuments.map((d) => ({
+            id: d.id,
+            positionId: d.positionId,
+            name: d.name,
+            placeholders: d.placeholders,
+            requiresSignature: d.requiresSignature,
+            requiresFill: d.requiresFill,
+            requiresCountersignature: d.requiresCountersignature,
+            countersignerId: d.countersignerId,
+            order: d.order,
+            hasPdf: d.hasPdf,
+          }))}
+          positions={positions.map((p) => ({
+            id: p.id,
+            title: p.title,
+            departmentName: p.department?.name ?? null,
           }))}
           countersigners={countersigners}
         />
