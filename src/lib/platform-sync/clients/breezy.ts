@@ -282,11 +282,17 @@ export function buildBreezyLocation(raw?: string) {
   let city = HQ_LOCATION.city;
   let state = HQ_LOCATION.state;
   let country = HQ_LOCATION.country;
+  let zip: string | undefined;
 
   if (trimmed && !isRemote) {
     const parts = trimmed.split(",").map((p) => p.trim()).filter(Boolean);
     city = parts[0] || HQ_LOCATION.city;
-    state = (parts[1] || HQ_LOCATION.state).toUpperCase();
+    // Real position data contains "FL 33309"-style state tokens — Breezy's
+    // validator only accepts the bare 2-letter code, so split the zip out.
+    const stateToken = (parts[1] || HQ_LOCATION.state).toUpperCase();
+    const stateMatch = stateToken.match(/^([A-Z]{2})(?:\s+(\d{5}(?:-\d{4})?))?$/);
+    state = stateMatch ? stateMatch[1] : stateToken;
+    zip = stateMatch?.[2];
     country = (parts[2] || HQ_LOCATION.country).toUpperCase();
   }
 
@@ -298,10 +304,9 @@ export function buildBreezyLocation(raw?: string) {
     city,
     state,
     is_remote: isRemote,
+    ...(isHq ? { zip: zip || HQ_LOCATION.zip } : zip ? { zip } : {}),
     // Street-level address gives Breezy's Indeed feed a complete location.
-    ...(isHq
-      ? { zip: HQ_LOCATION.zip, streetAddress: { location: HQ_LOCATION.street, custom: "" } }
-      : {}),
+    ...(isHq ? { streetAddress: { location: HQ_LOCATION.street, custom: "" } } : {}),
   };
 }
 
