@@ -48,14 +48,45 @@ export async function GET(request: Request) {
     const { postJobToBreezy, updateBreezyPositionState } = await import(
       "@/lib/platform-sync/clients/breezy"
     );
-    const created = await postJobToBreezy({
-      accessToken: token,
-      companyId,
-      title: "ZZZ Location Format Test (auto-removed)",
-      description: "Internal address-format test. Safe to delete.",
-      location: url.searchParams.get("loc") || undefined,
-      publishState: "draft",
-    });
+
+    // ?rawloc=<urlencoded JSON> posts that exact location object directly,
+    // bypassing buildBreezyLocation, so we can probe formats without a deploy.
+    const rawloc = url.searchParams.get("rawloc");
+    let created: { success: boolean; positionId?: string; error?: string };
+    if (rawloc) {
+      let parsedLoc: unknown;
+      try {
+        parsedLoc = JSON.parse(rawloc);
+      } catch {
+        return NextResponse.json({ error: "rawloc is not valid JSON" }, { status: 400 });
+      }
+      const res = await fetch(`${BREEZY_BASE_URL}/company/${companyId}/positions`, {
+        method: "POST",
+        headers: { Authorization: token, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "ZZZ Location Format Test (auto-removed)",
+          description: "Internal address-format test. Safe to delete.",
+          type: "fullTime",
+          location: parsedLoc,
+        }),
+      });
+      if (!res.ok) {
+        const err = (await res.json().catch(() => ({}))) as { error?: { message?: string }; message?: string };
+        created = { success: false, error: err?.error?.message || err?.message || `Failed (${res.status})` };
+      } else {
+        const result = (await res.json()) as { _id: string };
+        created = { success: true, positionId: result._id };
+      }
+    } else {
+      created = await postJobToBreezy({
+        accessToken: token,
+        companyId,
+        title: "ZZZ Location Format Test (auto-removed)",
+        description: "Internal address-format test. Safe to delete.",
+        location: url.searchParams.get("loc") || undefined,
+        publishState: "draft",
+      });
+    }
     if (!created.positionId) return NextResponse.json({ created });
 
     const readback = await fetch(
