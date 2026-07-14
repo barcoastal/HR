@@ -253,65 +253,55 @@ const HQ_LOCATION = {
   city: "Fort Lauderdale",
   state: "FL",
   country: "US",
-};
-
-const US_STATE_NAMES: Record<string, string> = {
-  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
-  CO: "Colorado", CT: "Connecticut", DE: "Delaware", FL: "Florida", GA: "Georgia",
-  HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana", IA: "Iowa",
-  KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
-  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri",
-  MT: "Montana", NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey",
-  NM: "New Mexico", NY: "New York", NC: "North Carolina", ND: "North Dakota", OH: "Ohio",
-  OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
-  SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah", VT: "Vermont",
-  VA: "Virginia", WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
-  DC: "District of Columbia",
-};
-
-const COUNTRY_NAMES: Record<string, string> = {
-  US: "United States",
-  CA: "Canada",
-  GB: "United Kingdom",
-  MX: "Mexico",
+  zip: "33309",
+  street: "6700 N Andrews Ave ste 500, Fort Lauderdale, FL 33309, USA",
 };
 
 /**
- * Build a Breezy location object. Indeed requires country+city+state on every
- * job, so we always emit those fields, defaulting to the Coastal Debt HQ.
+ * Build a Breezy location object. Indeed requires a real address on every
+ * job, so we always emit country+city+state, defaulting to the Coastal Debt
+ * HQ.
  *
- * IMPORTANT: Breezy's Position model requires `country` and `state` to be
- * objects ({ id, name }), NOT plain strings. Sending strings makes Breezy
- * silently drop the location, the position ends up with no address, and
- * Indeed refuses to syndicate it.
+ * IMPORTANT (verified against the live API 2026-07-14): the create-position
+ * endpoint validates `country` and `state` as plain 2-letter STRING codes
+ * ("US", "FL") and rejects the { id, name } object form its read API
+ * returns. Breezy normalizes the strings into objects server-side.
  *
  * Accepted user input (`location` string from the post-job form):
- *   - "" / undefined / "Remote" / "Anywhere" → HQ city, is_remote: true
+ *   - "" / undefined → HQ address, on-site (NOT remote — an empty field used
+ *     to mark the job remote, which strips the address Indeed needs)
+ *   - "Remote" / "Anywhere" → HQ address, is_remote: true
  *   - "Fort Lauderdale, FL" → city: "Fort Lauderdale", state: "FL"
  *   - "Miami, FL, US" → city: "Miami", state: "FL", country: "US"
  *   - any single token → treated as a city, state defaults to FL
  */
 export function buildBreezyLocation(raw?: string) {
   const trimmed = (raw || "").trim();
-  const isRemote = !trimmed || /remote|anywhere|worldwide/i.test(trimmed);
+  const isRemote = /remote|anywhere|worldwide/i.test(trimmed);
 
   let city = HQ_LOCATION.city;
   let state = HQ_LOCATION.state;
   let country = HQ_LOCATION.country;
 
-  if (!isRemote) {
+  if (trimmed && !isRemote) {
     const parts = trimmed.split(",").map((p) => p.trim()).filter(Boolean);
     city = parts[0] || HQ_LOCATION.city;
     state = (parts[1] || HQ_LOCATION.state).toUpperCase();
     country = (parts[2] || HQ_LOCATION.country).toUpperCase();
   }
 
+  const isHq = city === HQ_LOCATION.city && state === HQ_LOCATION.state;
+
   return {
     name: `${city}, ${state}`,
-    country: { id: country, name: COUNTRY_NAMES[country] || country },
+    country,
     city,
-    state: { id: state, name: US_STATE_NAMES[state] || state },
+    state,
     is_remote: isRemote,
+    // Street-level address gives Breezy's Indeed feed a complete location.
+    ...(isHq
+      ? { zip: HQ_LOCATION.zip, streetAddress: { location: HQ_LOCATION.street, custom: "" } }
+      : {}),
   };
 }
 

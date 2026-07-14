@@ -35,7 +35,7 @@ export async function GET(request: Request) {
       }[])
     : [];
 
-  const hrPositions = await db.position.findMany({ select: { id: true, title: true, status: true } });
+  const hrPositions = await db.position.findMany({ select: { id: true, title: true, status: true, location: true } });
   const links = await db.positionBoardPosting.findMany({
     where: { board: "BREEZY" },
     select: { positionId: true, externalId: true, status: true, titleOverride: true, lastError: true },
@@ -131,6 +131,7 @@ export async function GET(request: Request) {
         state: p.state,
         location: p.location ?? null,
       })),
+      hrPositions,
       breezyLinks: links,
     });
   }
