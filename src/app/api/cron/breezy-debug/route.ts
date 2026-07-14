@@ -38,8 +38,57 @@ export async function GET(request: Request) {
   const hrPositions = await db.position.findMany({ select: { id: true, title: true, status: true } });
   const links = await db.positionBoardPosting.findMany({
     where: { board: "BREEZY" },
-    select: { positionId: true, externalId: true, status: true, titleOverride: true },
+    select: { positionId: true, externalId: true, status: true, titleOverride: true, lastError: true },
   });
+
+  // ?testpost=1 — verify the create path: post a throwaway DRAFT position
+  // (drafts never syndicate to job boards), read back what Breezy stored for
+  // its location, then delete it (fall back to archiving).
+  if (url.searchParams.get("testpost") === "1") {
+    const { postJobToBreezy, updateBreezyPositionState } = await import(
+      "@/lib/platform-sync/clients/breezy"
+    );
+    const created = await postJobToBreezy({
+      accessToken: token,
+      companyId,
+      title: "ZZZ Location Format Test (auto-removed)",
+      description: "Internal address-format test. Safe to delete.",
+      location: url.searchParams.get("loc") || undefined,
+      publishState: "draft",
+    });
+    if (!created.positionId) return NextResponse.json({ created });
+
+    const readback = await fetch(
+      `${BREEZY_BASE_URL}/company/${companyId}/position/${created.positionId}`,
+      { headers: { Authorization: token } }
+    );
+    const stored = readback.ok
+      ? ((await readback.json()) as { location?: unknown })
+      : null;
+
+    let cleanup = "";
+    const del = await fetch(
+      `${BREEZY_BASE_URL}/company/${companyId}/position/${created.positionId}`,
+      { method: "DELETE", headers: { Authorization: token } }
+    );
+    if (del.ok) {
+      cleanup = "deleted";
+    } else {
+      const arch = await updateBreezyPositionState({
+        accessToken: token,
+        companyId,
+        positionId: created.positionId,
+        state: "archived",
+      });
+      cleanup = arch.success ? "archived" : `cleanup failed: ${arch.error}`;
+    }
+
+    return NextResponse.json({
+      created,
+      storedLocation: stored?.location ?? null,
+      cleanup,
+    });
+  }
 
   // ?view=positions — light snapshot of what Breezy actually stored per
   // position (location included) without the expensive candidate loop.
