@@ -27,7 +27,12 @@ export async function GET(request: Request) {
     headers: { Authorization: token },
   });
   const breezyPositions = posRes.ok
-    ? ((await posRes.json()) as { _id: string; name: string; state: string }[])
+    ? ((await posRes.json()) as {
+        _id: string;
+        name: string;
+        state: string;
+        location?: { name?: string; city?: string; country?: unknown; state?: unknown; is_remote?: boolean };
+      }[])
     : [];
 
   const hrPositions = await db.position.findMany({ select: { id: true, title: true, status: true } });
@@ -35,6 +40,62 @@ export async function GET(request: Request) {
     where: { board: "BREEZY" },
     select: { positionId: true, externalId: true, status: true, titleOverride: true },
   });
+
+  // ?view=positions — light snapshot of what Breezy actually stored per
+  // position (location included) without the expensive candidate loop.
+  if (url.searchParams.get("view") === "positions") {
+    return NextResponse.json({
+      breezyPositions: breezyPositions.map((p) => ({
+        id: p._id,
+        name: p.name,
+        state: p.state,
+        location: p.location ?? null,
+      })),
+      breezyLinks: links,
+    });
+  }
+
+  // ?fix=locations — repair positions Breezy stored with no/malformed address
+  // (created before country/state were sent as {id,name} objects). Uses the
+  // linked HR position's location string when available, HQ default otherwise.
+  if (url.searchParams.get("fix") === "locations") {
+    const { buildBreezyLocation, updateBreezyPosition } = await import(
+      "@/lib/platform-sync/clients/breezy"
+    );
+    const hrLocationByExternalId = new Map<string, string | undefined>();
+    for (const link of links) {
+      if (!link.externalId) continue;
+      const hrPos = await db.position.findUnique({
+        where: { id: link.positionId },
+        select: { location: true },
+      });
+      hrLocationByExternalId.set(link.externalId, hrPos?.location ?? undefined);
+    }
+
+    const results: { id: string; name: string; before: unknown; sent: unknown; success: boolean; error?: string }[] = [];
+    for (const p of breezyPositions) {
+      const loc = p.location;
+      const hasValidAddress =
+        loc && typeof loc.country === "object" && loc.country !== null && !!loc.city;
+      if (hasValidAddress) continue;
+      const newLocation = buildBreezyLocation(hrLocationByExternalId.get(p._id));
+      const r = await updateBreezyPosition({
+        accessToken: token,
+        companyId,
+        positionId: p._id,
+        fields: { name: p.name, location: newLocation },
+      });
+      results.push({
+        id: p._id,
+        name: p.name,
+        before: loc ?? null,
+        sent: newLocation,
+        success: r.success,
+        error: r.error,
+      });
+    }
+    return NextResponse.json({ fixed: results });
+  }
 
   // Live fetch from Breezy (per-position candidates) so we can see the actual
   // emails + originating position the next sync would process.

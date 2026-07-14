@@ -250,15 +250,40 @@ function mapBreezyType(raw?: string): string {
 }
 
 const HQ_LOCATION = {
-  name: "Fort Lauderdale, FL",
-  country: "US",
   city: "Fort Lauderdale",
   state: "FL",
+  country: "US",
+};
+
+const US_STATE_NAMES: Record<string, string> = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
+  CO: "Colorado", CT: "Connecticut", DE: "Delaware", FL: "Florida", GA: "Georgia",
+  HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana", IA: "Iowa",
+  KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine", MD: "Maryland",
+  MA: "Massachusetts", MI: "Michigan", MN: "Minnesota", MS: "Mississippi", MO: "Missouri",
+  MT: "Montana", NE: "Nebraska", NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey",
+  NM: "New Mexico", NY: "New York", NC: "North Carolina", ND: "North Dakota", OH: "Ohio",
+  OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
+  SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah", VT: "Vermont",
+  VA: "Virginia", WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
+  DC: "District of Columbia",
+};
+
+const COUNTRY_NAMES: Record<string, string> = {
+  US: "United States",
+  CA: "Canada",
+  GB: "United Kingdom",
+  MX: "Mexico",
 };
 
 /**
  * Build a Breezy location object. Indeed requires country+city+state on every
  * job, so we always emit those fields, defaulting to the Coastal Debt HQ.
+ *
+ * IMPORTANT: Breezy's Position model requires `country` and `state` to be
+ * objects ({ id, name }), NOT plain strings. Sending strings makes Breezy
+ * silently drop the location, the position ends up with no address, and
+ * Indeed refuses to syndicate it.
  *
  * Accepted user input (`location` string from the post-job form):
  *   - "" / undefined / "Remote" / "Anywhere" → HQ city, is_remote: true
@@ -266,29 +291,27 @@ const HQ_LOCATION = {
  *   - "Miami, FL, US" → city: "Miami", state: "FL", country: "US"
  *   - any single token → treated as a city, state defaults to FL
  */
-function buildBreezyLocation(raw?: string) {
+export function buildBreezyLocation(raw?: string) {
   const trimmed = (raw || "").trim();
   const isRemote = !trimmed || /remote|anywhere|worldwide/i.test(trimmed);
 
-  if (isRemote) {
-    return {
-      ...HQ_LOCATION,
-      name: trimmed || "Remote",
-      is_remote: true,
-    };
+  let city = HQ_LOCATION.city;
+  let state = HQ_LOCATION.state;
+  let country = HQ_LOCATION.country;
+
+  if (!isRemote) {
+    const parts = trimmed.split(",").map((p) => p.trim()).filter(Boolean);
+    city = parts[0] || HQ_LOCATION.city;
+    state = (parts[1] || HQ_LOCATION.state).toUpperCase();
+    country = (parts[2] || HQ_LOCATION.country).toUpperCase();
   }
 
-  const parts = trimmed.split(",").map((p) => p.trim()).filter(Boolean);
-  const city = parts[0] || HQ_LOCATION.city;
-  const state = (parts[1] || HQ_LOCATION.state).toUpperCase();
-  const country = (parts[2] || HQ_LOCATION.country).toUpperCase();
-
   return {
-    name: parts.length >= 2 ? `${city}, ${state}` : `${city}, ${HQ_LOCATION.state}`,
-    country,
+    name: `${city}, ${state}`,
+    country: { id: country, name: COUNTRY_NAMES[country] || country },
     city,
-    state,
-    is_remote: false,
+    state: { id: state, name: US_STATE_NAMES[state] || state },
+    is_remote: isRemote,
   };
 }
 
@@ -376,6 +399,39 @@ export async function postJobToBreezy(data: {
       success: false,
       error: err instanceof Error ? err.message : "Failed to post job",
     };
+  }
+}
+
+/**
+ * Update fields on an existing Breezy position (PUT). Used to repair
+ * positions created before the location-format fix, which Breezy stored
+ * with no address.
+ */
+export async function updateBreezyPosition(data: {
+  accessToken: string;
+  companyId: string;
+  positionId: string;
+  fields: Record<string, unknown>;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch(
+      `${BREEZY_BASE_URL}/company/${data.companyId}/position/${data.positionId}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: data.accessToken,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data.fields),
+      }
+    );
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err?.error?.message || `Failed (${res.status})` };
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : "Failed to update" };
   }
 }
 
