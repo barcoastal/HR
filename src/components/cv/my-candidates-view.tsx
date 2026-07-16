@@ -4,6 +4,7 @@ import { cn, getInitials, timeAgo } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import type { CandidateStatus } from "@/generated/prisma/client";
+import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
 
 type CandidateRow = {
   id: string;
@@ -69,10 +70,14 @@ export function MyCandidatesView({
   const visibleStages = pipelineStages.filter((s) => s.visible).sort((a, b) => a.order - b.order);
 
   // Candidate → stage: explicit stageId wins when that stage exists; otherwise
-  // the first visible stage mapping the candidate's status. Stages are keyed
-  // by id, not enumValue — several custom stages can share one base status.
+  // the legacy stage for the candidate's status (original stage id, immune to
+  // enum remapping in settings); otherwise the first visible stage mapping the
+  // status. Stages are keyed by id, not enumValue — several custom stages can
+  // share one base status.
   function stageKeyFor(c: CandidateRow): string | null {
     if (c.stageId && visibleStages.some((s) => s.id === c.stageId)) return c.stageId;
+    const legacyId = LEGACY_STAGE_ID_BY_STATUS[c.status];
+    if (legacyId && visibleStages.some((s) => s.id === legacyId)) return legacyId;
     return visibleStages.find((s) => s.enumValue === c.status)?.id ?? null;
   }
 

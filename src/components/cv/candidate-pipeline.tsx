@@ -7,6 +7,7 @@ import type { CandidateStatus } from "@/generated/prisma/client";
 import { useMemo, useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
 import { Icon } from "@/components/ui/icon";
+import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
 
 type CandidateItem = {
   id: string;
@@ -78,6 +79,7 @@ const RECRUITMENT_EXCLUDED: ReadonlySet<string> = new Set([
   "OFFBOARDING",
 ]);
 
+
 export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[] }) {
   // Columns are keyed by stage id (not status) — several custom stages can
   // share one base status and still render as separate columns.
@@ -96,9 +98,13 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     : DEFAULT_COLUMNS.map(c => ({ key: c.status as string, stageId: null as string | null, ...c }));
 
   // Candidate → column: an explicit stageId wins when that column exists;
-  // otherwise fall back to the first column mapping the candidate's status.
+  // otherwise the legacy column for the candidate's status (by original stage
+  // id, immune to enum remapping in settings); otherwise the first column
+  // mapping that status.
   const columnKeyFor = (c: { status: CandidateStatus; stageId?: string | null }): string | null => {
     if (c.stageId && columns.some(col => col.stageId === c.stageId)) return c.stageId;
+    const legacyId = LEGACY_STAGE_ID_BY_STATUS[c.status];
+    if (legacyId && columns.some(col => col.stageId === legacyId)) return legacyId;
     return columns.find(col => col.status === c.status)?.key ?? null;
   };
   const router = useRouter();

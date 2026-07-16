@@ -3,7 +3,8 @@ export type EmailTemplateType =
   | "SIGNING_REQUEST"
   | "TASK_ASSIGNMENT"
   | "SIGNING_CONFIRMATION"
-  | "ONBOARDING";
+  | "ONBOARDING"
+  | "INTERVIEW_SCHEDULED";
 
 export const EMAIL_TEMPLATE_DEFAULTS: Record<
   EmailTemplateType,
@@ -53,5 +54,33 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
     subject: "{{subject}}",
     body: `<div style="white-space:pre-wrap">{{body}}</div>
 {{#documentUrl}}<p style="margin-top:16px"><a href="{{documentUrl}}" style="color:#4f46e5;text-decoration:underline">Download: {{documentName}}</a></p>{{/documentUrl}}`,
+  },
+  INTERVIEW_SCHEDULED: {
+    description:
+      "Sent to the candidate whenever an interview is scheduled (any type). meetLinkHtml renders the Join button only when a Google Meet link exists; notesHtml renders the notes line only when notes were entered.",
+    variables: [
+      "companyName",
+      "logoUrl",
+      "firstName",
+      "interviewType",
+      "positionTitle",
+      "date",
+      "time",
+      "duration",
+      "meetLink",
+      "meetLinkHtml",
+      "notesHtml",
+    ],
+    subject: "Interview Scheduled: {{interviewType}} — {{positionTitle}}",
+    body: `<p>Hi {{firstName}},</p>
+<p>Your <strong>{{interviewType}}</strong> for the <strong>{{positionTitle}}</strong> position at {{companyName}} has been scheduled.</p>
+<div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
+  <p style="margin:0"><strong>Date:</strong> {{date}}</p>
+  <p style="margin:4px 0 0"><strong>Time:</strong> {{time}}</p>
+  <p style="margin:4px 0 0"><strong>Duration:</strong> {{duration}} minutes</p>
+</div>
+{{meetLinkHtml}}
+{{notesHtml}}
+<p style="margin-top:16px">We look forward to speaking with you!</p>`,
   },
 };

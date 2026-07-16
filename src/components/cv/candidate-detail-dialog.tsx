@@ -12,6 +12,7 @@ import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generate
 import Link from "next/link";
 import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
 import { Icon } from "@/components/ui/icon";
+import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
 
 type InterviewForDisplay = {
   id: string;
@@ -708,9 +709,14 @@ export function CandidateDetailDialog({
               <div className="flex flex-wrap gap-1.5">
                 {statuses.map((s, idx) => {
                   // Selected option: exact stage match when the candidate has
-                  // one, else the first option carrying the current status.
+                  // one; else the legacy stage for the current status (immune
+                  // to enum remapping); else the first option with the status.
+                  const legacyId = LEGACY_STAGE_ID_BY_STATUS[form.status];
+                  const legacyExists = statuses.some((o) => o.stageId === legacyId);
                   const selected = form.stageId
                     ? s.stageId === form.stageId
+                    : legacyExists
+                    ? s.stageId === legacyId
                     : form.status === s.value &&
                       statuses.findIndex((o) => o.value === s.value) === idx;
                   return (

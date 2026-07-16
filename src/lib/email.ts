@@ -7,7 +7,9 @@ const resend = process.env.RESEND_API_KEY
 async function getTemplate(type: string): Promise<{ subject: string; body: string } | null> {
   try {
     const { getEmailTemplate } = await import("@/lib/actions/email-templates");
-    return await getEmailTemplate(type as "WELCOME" | "SIGNING_REQUEST" | "TASK_ASSIGNMENT" | "SIGNING_CONFIRMATION" | "ONBOARDING");
+    const { EMAIL_TEMPLATE_DEFAULTS } = await import("@/lib/email-template-defaults");
+    if (!(type in EMAIL_TEMPLATE_DEFAULTS)) return null;
+    return await getEmailTemplate(type as keyof typeof EMAIL_TEMPLATE_DEFAULTS);
   } catch {
     return null;
   }
@@ -166,6 +168,14 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
     body: "Welcome to the team! We're excited to have you.",
     documentUrl: `${baseUrl}/docs/sample.pdf`,
     subject: "Welcome to " + branding.companyName,
+    interviewType: "Video Interview",
+    positionTitle: "Sales Representative",
+    date: "Monday, July 20, 2026",
+    time: "2:00 PM",
+    duration: "45",
+    meetLink: "https://meet.google.com/abc-defg-hij",
+    meetLinkHtml: `<p style="margin-top:16px"><a href="https://meet.google.com/abc-defg-hij" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`,
+    notesHtml: `<p style="margin-top:12px;color:#666"><em>Notes: Please have your portfolio ready.</em></p>`,
   };
 
   const interpolatedSubject = interpolate(subject, sampleVars);
@@ -275,6 +285,69 @@ export async function sendWelcomeEmail({
         <a href="${loginUrl}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Sign In</a>
       </p>
       <p style="color:#666;font-size:14px">If you have any questions, reach out to your HR administrator.</p>
+    `);
+  }
+}
+
+export async function sendInterviewScheduledEmail({
+  to, firstName, interviewType, positionTitle, scheduledAt, duration, meetLink, notes,
+}: {
+  to: string; firstName: string; interviewType: string; positionTitle: string;
+  scheduledAt: Date; duration: number; meetLink?: string | null; notes?: string | null;
+}) {
+  const [branding, template] = await Promise.all([
+    getCompanyBranding(),
+    getTemplate("INTERVIEW_SCHEDULED"),
+  ]);
+
+  const date = scheduledAt.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  const time = scheduledAt.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  // Optional pieces are passed as ready HTML (or "") — the interpolate()
+  // conditional stripper removes {{#var}} blocks even when the var is set,
+  // so templates can't rely on conditionals.
+  const meetLinkHtml = meetLink
+    ? `<p style="margin-top:16px"><a href="${meetLink}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
+    : "";
+  const notesHtml = notes
+    ? `<p style="margin-top:12px;color:#666"><em>Notes: ${notes}</em></p>`
+    : "";
+
+  const vars: Record<string, string> = {
+    firstName,
+    interviewType,
+    positionTitle,
+    date,
+    time,
+    duration: String(duration),
+    meetLink: meetLink || "",
+    meetLinkHtml,
+    notesHtml,
+    companyName: branding.companyName,
+    logoUrl: branding.logoUrl || "",
+  };
+
+  if (template) {
+    await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
+  } else {
+    await sendEmail(to, `Interview Scheduled: ${interviewType}`, `
+      <p>Hi ${firstName},</p>
+      <p>Your <strong>${interviewType}</strong> for the <strong>${positionTitle}</strong> position has been scheduled.</p>
+      <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
+        <p style="margin:0"><strong>Date:</strong> ${date}</p>
+        <p style="margin:4px 0 0"><strong>Time:</strong> ${time}</p>
+        <p style="margin:4px 0 0"><strong>Duration:</strong> ${duration} minutes</p>
+      </div>
+      ${meetLinkHtml}
+      ${notesHtml}
+      <p style="margin-top:16px">We look forward to speaking with you!</p>
     `);
   }
 }
