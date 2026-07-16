@@ -47,6 +47,7 @@ type CandidateForDialog = {
   resumeText: string | null;
   resumeUrl: string | null;
   status: CandidateStatus;
+  stageId?: string | null;
   positionId: string | null;
   costOfHire: number | null;
   hourlyRate: number | null;
@@ -210,13 +211,19 @@ export function CandidateDetailDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  // Options carry the custom stage id — multiple stages can share one base
+  // status, so status alone can't identify the selected option.
   const statuses = pipelineStages && pipelineStages.length > 0
-    ? pipelineStages.filter(s => s.visible).map(s => ({
-        value: s.enumValue as CandidateStatus,
-        label: s.label,
-        color: s.bgColor,
-      }))
-    : DEFAULT_STATUSES;
+    ? [...pipelineStages]
+        .filter(s => s.visible)
+        .sort((a, b) => a.order - b.order)
+        .map(s => ({
+          value: s.enumValue as CandidateStatus,
+          stageId: s.id as string | null,
+          label: s.label,
+          color: s.bgColor,
+        }))
+    : DEFAULT_STATUSES.map(s => ({ ...s, stageId: null as string | null }));
   const [saving, setSaving] = useState(false);
   const [hiring, setHiring] = useState(false);
   const [hireResult, setHireResult] = useState<{ employeeId: string; name: string; taskCount: number } | null>(null);
@@ -237,6 +244,7 @@ export function CandidateDetailDialog({
     managerId: "",
     recruiterId: "",
     status: "NEW" as CandidateStatus,
+    stageId: "" as string,
     companyEmail: "",
     startDate: "",
   });
@@ -369,6 +377,7 @@ export function CandidateDetailDialog({
         managerId: candidate.managerId || "",
         recruiterId: candidate.recruiterId || "",
         status: candidate.status,
+        stageId: candidate.stageId || "",
         companyEmail: "",
         startDate: new Date().toISOString().split("T")[0],
       });
@@ -518,6 +527,7 @@ export function CandidateDetailDialog({
         managerId: form.managerId || undefined,
         recruiterId: form.recruiterId || undefined,
         status: form.status,
+        stageId: form.stageId || null,
       });
       setSaving(false);
       router.refresh();
@@ -542,6 +552,7 @@ export function CandidateDetailDialog({
         managerId: form.managerId || undefined,
         recruiterId: form.recruiterId || undefined,
         status: form.status,
+        stageId: form.stageId || null,
       });
       setSaving(false);
       router.refresh();
@@ -695,20 +706,30 @@ export function CandidateDetailDialog({
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Status</label>
               <div className="flex flex-wrap gap-1.5">
-                {statuses.map((s) => (
-                  <button
-                    key={s.value}
-                    onClick={() => update("status", s.value)}
-                    className={cn(
-                      "px-2.5 py-1 rounded-full text-xs font-medium transition-all",
-                      form.status === s.value
-                        ? `${s.color} text-white`
-                        : "bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-                    )}
-                  >
-                    {s.label}
-                  </button>
-                ))}
+                {statuses.map((s, idx) => {
+                  // Selected option: exact stage match when the candidate has
+                  // one, else the first option carrying the current status.
+                  const selected = form.stageId
+                    ? s.stageId === form.stageId
+                    : form.status === s.value &&
+                      statuses.findIndex((o) => o.value === s.value) === idx;
+                  return (
+                    <button
+                      key={s.stageId ?? s.value}
+                      onClick={() =>
+                        setForm((f) => ({ ...f, status: s.value, stageId: s.stageId ?? "" }))
+                      }
+                      className={cn(
+                        "px-2.5 py-1 rounded-full text-xs font-medium transition-all",
+                        selected
+                          ? `${s.color} text-white`
+                          : "bg-[var(--color-surface-hover)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                      )}
+                    >
+                      {s.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 

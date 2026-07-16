@@ -50,6 +50,7 @@ export type CandidateMinAggregateOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus | null
+  stageId: string | null
   inPipeline: boolean | null
   source: string | null
   notes: string | null
@@ -92,6 +93,7 @@ export type CandidateMaxAggregateOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus | null
+  stageId: string | null
   inPipeline: boolean | null
   source: string | null
   notes: string | null
@@ -134,6 +136,7 @@ export type CandidateCountAggregateOutputType = {
   skills: number
   experience: number
   status: number
+  stageId: number
   inPipeline: number
   source: number
   notes: number
@@ -190,6 +193,7 @@ export type CandidateMinAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  stageId?: true
   inPipeline?: true
   source?: true
   notes?: true
@@ -232,6 +236,7 @@ export type CandidateMaxAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  stageId?: true
   inPipeline?: true
   source?: true
   notes?: true
@@ -274,6 +279,7 @@ export type CandidateCountAggregateInputType = {
   skills?: true
   experience?: true
   status?: true
+  stageId?: true
   inPipeline?: true
   source?: true
   notes?: true
@@ -403,6 +409,7 @@ export type CandidateGroupByOutputType = {
   skills: string | null
   experience: string | null
   status: $Enums.CandidateStatus
+  stageId: string | null
   inPipeline: boolean
   source: string | null
   notes: string | null
@@ -468,6 +475,7 @@ export type CandidateWhereInput = {
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  stageId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -515,6 +523,7 @@ export type CandidateOrderByWithRelationInput = {
   skills?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  stageId?: Prisma.SortOrderInput | Prisma.SortOrder
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -565,6 +574,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  stageId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -612,6 +622,7 @@ export type CandidateOrderByWithAggregationInput = {
   skills?: Prisma.SortOrderInput | Prisma.SortOrder
   experience?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
+  stageId?: Prisma.SortOrderInput | Prisma.SortOrder
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -662,6 +673,7 @@ export type CandidateScalarWhereWithAggregatesInput = {
   skills?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusWithAggregatesFilter<"Candidate"> | $Enums.CandidateStatus
+  stageId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   inPipeline?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
@@ -704,6 +716,7 @@ export type CandidateCreateInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -749,6 +762,7 @@ export type CandidateUncheckedCreateInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -794,6 +808,7 @@ export type CandidateUpdateInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -839,6 +854,7 @@ export type CandidateUncheckedUpdateInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -884,6 +900,7 @@ export type CandidateCreateManyInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -926,6 +943,7 @@ export type CandidateUpdateManyMutationInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -966,6 +984,7 @@ export type CandidateUncheckedUpdateManyInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1018,6 +1037,7 @@ export type CandidateCountOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  stageId?: Prisma.SortOrder
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -1066,6 +1086,7 @@ export type CandidateMaxOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  stageId?: Prisma.SortOrder
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -1108,6 +1129,7 @@ export type CandidateMinOrderByAggregateInput = {
   skills?: Prisma.SortOrder
   experience?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  stageId?: Prisma.SortOrder
   inPipeline?: Prisma.SortOrder
   source?: Prisma.SortOrder
   notes?: Prisma.SortOrder
@@ -1306,6 +1328,7 @@ export type CandidateCreateWithoutManagerInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1350,6 +1373,7 @@ export type CandidateUncheckedCreateWithoutManagerInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1423,6 +1447,7 @@ export type CandidateScalarWhereInput = {
   skills?: Prisma.StringNullableFilter<"Candidate"> | string | null
   experience?: Prisma.StringNullableFilter<"Candidate"> | string | null
   status?: Prisma.EnumCandidateStatusFilter<"Candidate"> | $Enums.CandidateStatus
+  stageId?: Prisma.StringNullableFilter<"Candidate"> | string | null
   inPipeline?: Prisma.BoolFilter<"Candidate"> | boolean
   source?: Prisma.StringNullableFilter<"Candidate"> | string | null
   notes?: Prisma.StringNullableFilter<"Candidate"> | string | null
@@ -1465,6 +1490,7 @@ export type CandidateCreateWithoutApplicationsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1509,6 +1535,7 @@ export type CandidateUncheckedCreateWithoutApplicationsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1569,6 +1596,7 @@ export type CandidateUpdateWithoutApplicationsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1613,6 +1641,7 @@ export type CandidateUncheckedUpdateWithoutApplicationsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1657,6 +1686,7 @@ export type CandidateCreateWithoutPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1701,6 +1731,7 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1771,6 +1802,7 @@ export type CandidateCreateWithoutInterviewsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1815,6 +1847,7 @@ export type CandidateUncheckedCreateWithoutInterviewsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -1875,6 +1908,7 @@ export type CandidateUpdateWithoutInterviewsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1919,6 +1953,7 @@ export type CandidateUncheckedUpdateWithoutInterviewsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1963,6 +1998,7 @@ export type CandidateCreateWithoutSigningRequestsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -2007,6 +2043,7 @@ export type CandidateUncheckedCreateWithoutSigningRequestsInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -2067,6 +2104,7 @@ export type CandidateUpdateWithoutSigningRequestsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2111,6 +2149,7 @@ export type CandidateUncheckedUpdateWithoutSigningRequestsInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2155,6 +2194,7 @@ export type CandidateCreateManyManagerInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -2196,6 +2236,7 @@ export type CandidateUpdateWithoutManagerInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2240,6 +2281,7 @@ export type CandidateUncheckedUpdateWithoutManagerInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2284,6 +2326,7 @@ export type CandidateUncheckedUpdateManyWithoutManagerInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2325,6 +2368,7 @@ export type CandidateCreateManyPositionInput = {
   skills?: string | null
   experience?: string | null
   status?: $Enums.CandidateStatus
+  stageId?: string | null
   inPipeline?: boolean
   source?: string | null
   notes?: string | null
@@ -2366,6 +2410,7 @@ export type CandidateUpdateWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2410,6 +2455,7 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2454,6 +2500,7 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2544,6 +2591,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   skills?: boolean
   experience?: boolean
   status?: boolean
+  stageId?: boolean
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
@@ -2592,6 +2640,7 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   skills?: boolean
   experience?: boolean
   status?: boolean
+  stageId?: boolean
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
@@ -2636,6 +2685,7 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   skills?: boolean
   experience?: boolean
   status?: boolean
+  stageId?: boolean
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
@@ -2680,6 +2730,7 @@ export type CandidateSelectScalar = {
   skills?: boolean
   experience?: boolean
   status?: boolean
+  stageId?: boolean
   inPipeline?: boolean
   source?: boolean
   notes?: boolean
@@ -2710,7 +2761,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "stageId" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
   manager?: boolean | Prisma.Candidate$managerArgs<ExtArgs>
@@ -2749,6 +2800,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     skills: string | null
     experience: string | null
     status: $Enums.CandidateStatus
+    stageId: string | null
     inPipeline: boolean
     source: string | null
     notes: string | null
@@ -3216,6 +3268,7 @@ export interface CandidateFieldRefs {
   readonly skills: Prisma.FieldRef<"Candidate", 'String'>
   readonly experience: Prisma.FieldRef<"Candidate", 'String'>
   readonly status: Prisma.FieldRef<"Candidate", 'CandidateStatus'>
+  readonly stageId: Prisma.FieldRef<"Candidate", 'String'>
   readonly inPipeline: Prisma.FieldRef<"Candidate", 'Boolean'>
   readonly source: Prisma.FieldRef<"Candidate", 'String'>
   readonly notes: Prisma.FieldRef<"Candidate", 'String'>

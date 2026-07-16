@@ -242,6 +242,7 @@ export type PositionWhereInput = {
   interviews?: Prisma.InterviewListRelationFilter
   applications?: Prisma.CandidateApplicationListRelationFilter
   boardPostings?: Prisma.PositionBoardPostingListRelationFilter
+  documents?: Prisma.PositionDocumentListRelationFilter
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
 }
 
@@ -262,6 +263,7 @@ export type PositionOrderByWithRelationInput = {
   interviews?: Prisma.InterviewOrderByRelationAggregateInput
   applications?: Prisma.CandidateApplicationOrderByRelationAggregateInput
   boardPostings?: Prisma.PositionBoardPostingOrderByRelationAggregateInput
+  documents?: Prisma.PositionDocumentOrderByRelationAggregateInput
   department?: Prisma.DepartmentOrderByWithRelationInput
 }
 
@@ -285,6 +287,7 @@ export type PositionWhereUniqueInput = Prisma.AtLeast<{
   interviews?: Prisma.InterviewListRelationFilter
   applications?: Prisma.CandidateApplicationListRelationFilter
   boardPostings?: Prisma.PositionBoardPostingListRelationFilter
+  documents?: Prisma.PositionDocumentListRelationFilter
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
 }, "id">
 
@@ -340,6 +343,7 @@ export type PositionCreateInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -360,6 +364,7 @@ export type PositionUncheckedCreateInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionUpdateInput = {
@@ -378,6 +383,7 @@ export type PositionUpdateInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -398,6 +404,7 @@ export type PositionUncheckedUpdateInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateManyInput = {
@@ -617,6 +624,20 @@ export type PositionUpdateOneWithoutInterviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutInterviewsInput, Prisma.PositionUpdateWithoutInterviewsInput>, Prisma.PositionUncheckedUpdateWithoutInterviewsInput>
 }
 
+export type PositionCreateNestedOneWithoutDocumentsInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutDocumentsInput, Prisma.PositionUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutDocumentsInput
+  connect?: Prisma.PositionWhereUniqueInput
+}
+
+export type PositionUpdateOneRequiredWithoutDocumentsNestedInput = {
+  create?: Prisma.XOR<Prisma.PositionCreateWithoutDocumentsInput, Prisma.PositionUncheckedCreateWithoutDocumentsInput>
+  connectOrCreate?: Prisma.PositionCreateOrConnectWithoutDocumentsInput
+  upsert?: Prisma.PositionUpsertWithoutDocumentsInput
+  connect?: Prisma.PositionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.PositionUpdateToOneWithWhereWithoutDocumentsInput, Prisma.PositionUpdateWithoutDocumentsInput>, Prisma.PositionUncheckedUpdateWithoutDocumentsInput>
+}
+
 export type PositionCreateWithoutDepartmentInput = {
   id?: string
   title: string
@@ -633,6 +654,7 @@ export type PositionCreateWithoutDepartmentInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
 }
 
 export type PositionUncheckedCreateWithoutDepartmentInput = {
@@ -651,6 +673,7 @@ export type PositionUncheckedCreateWithoutDepartmentInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutDepartmentInput = {
@@ -712,6 +735,7 @@ export type PositionCreateWithoutCandidatesInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -731,6 +755,7 @@ export type PositionUncheckedCreateWithoutCandidatesInput = {
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutCandidatesInput = {
@@ -764,6 +789,7 @@ export type PositionUpdateWithoutCandidatesInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -783,6 +809,7 @@ export type PositionUncheckedUpdateWithoutCandidatesInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateWithoutApplicationsInput = {
@@ -800,6 +827,7 @@ export type PositionCreateWithoutApplicationsInput = {
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -819,6 +847,7 @@ export type PositionUncheckedCreateWithoutApplicationsInput = {
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutApplicationsInput = {
@@ -852,6 +881,7 @@ export type PositionUpdateWithoutApplicationsInput = {
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -871,6 +901,7 @@ export type PositionUncheckedUpdateWithoutApplicationsInput = {
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateWithoutBoardPostingsInput = {
@@ -888,6 +919,7 @@ export type PositionCreateWithoutBoardPostingsInput = {
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -907,6 +939,7 @@ export type PositionUncheckedCreateWithoutBoardPostingsInput = {
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutBoardPostingsInput = {
@@ -940,6 +973,7 @@ export type PositionUpdateWithoutBoardPostingsInput = {
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -959,6 +993,7 @@ export type PositionUncheckedUpdateWithoutBoardPostingsInput = {
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionCreateWithoutInterviewsInput = {
@@ -976,6 +1011,7 @@ export type PositionCreateWithoutInterviewsInput = {
   candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentCreateNestedManyWithoutPositionInput
   department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
 }
 
@@ -995,6 +1031,7 @@ export type PositionUncheckedCreateWithoutInterviewsInput = {
   candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+  documents?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutPositionInput
 }
 
 export type PositionCreateOrConnectWithoutInterviewsInput = {
@@ -1028,6 +1065,7 @@ export type PositionUpdateWithoutInterviewsInput = {
   candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
 }
 
@@ -1045,6 +1083,99 @@ export type PositionUncheckedUpdateWithoutInterviewsInput = {
   jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
+  applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
+  boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
+}
+
+export type PositionCreateWithoutDocumentsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  requirements?: string | null
+  salary?: string | null
+  location?: string | null
+  type?: string | null
+  status?: $Enums.PositionStatus
+  published?: boolean
+  jobingJobId?: string | null
+  createdAt?: Date | string
+  candidates?: Prisma.CandidateCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutPositionInput
+  applications?: Prisma.CandidateApplicationCreateNestedManyWithoutPositionInput
+  boardPostings?: Prisma.PositionBoardPostingCreateNestedManyWithoutPositionInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutPositionsInput
+}
+
+export type PositionUncheckedCreateWithoutDocumentsInput = {
+  id?: string
+  title: string
+  departmentId?: string | null
+  description?: string | null
+  requirements?: string | null
+  salary?: string | null
+  location?: string | null
+  type?: string | null
+  status?: $Enums.PositionStatus
+  published?: boolean
+  jobingJobId?: string | null
+  createdAt?: Date | string
+  candidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutPositionInput
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutPositionInput
+  applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutPositionInput
+  boardPostings?: Prisma.PositionBoardPostingUncheckedCreateNestedManyWithoutPositionInput
+}
+
+export type PositionCreateOrConnectWithoutDocumentsInput = {
+  where: Prisma.PositionWhereUniqueInput
+  create: Prisma.XOR<Prisma.PositionCreateWithoutDocumentsInput, Prisma.PositionUncheckedCreateWithoutDocumentsInput>
+}
+
+export type PositionUpsertWithoutDocumentsInput = {
+  update: Prisma.XOR<Prisma.PositionUpdateWithoutDocumentsInput, Prisma.PositionUncheckedUpdateWithoutDocumentsInput>
+  create: Prisma.XOR<Prisma.PositionCreateWithoutDocumentsInput, Prisma.PositionUncheckedCreateWithoutDocumentsInput>
+  where?: Prisma.PositionWhereInput
+}
+
+export type PositionUpdateToOneWithWhereWithoutDocumentsInput = {
+  where?: Prisma.PositionWhereInput
+  data: Prisma.XOR<Prisma.PositionUpdateWithoutDocumentsInput, Prisma.PositionUncheckedUpdateWithoutDocumentsInput>
+}
+
+export type PositionUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  candidates?: Prisma.CandidateUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
+  applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
+  boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutPositionsNestedInput
+}
+
+export type PositionUncheckedUpdateWithoutDocumentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requirements?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumPositionStatusFieldUpdateOperationsInput | $Enums.PositionStatus
+  published?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  jobingJobId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  candidates?: Prisma.CandidateUncheckedUpdateManyWithoutPositionNestedInput
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
 }
@@ -1079,6 +1210,7 @@ export type PositionUpdateWithoutDepartmentInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionUncheckedUpdateWithoutDepartmentInput = {
@@ -1097,6 +1229,7 @@ export type PositionUncheckedUpdateWithoutDepartmentInput = {
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutPositionNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutPositionNestedInput
   boardPostings?: Prisma.PositionBoardPostingUncheckedUpdateManyWithoutPositionNestedInput
+  documents?: Prisma.PositionDocumentUncheckedUpdateManyWithoutPositionNestedInput
 }
 
 export type PositionUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1123,6 +1256,7 @@ export type PositionCountOutputType = {
   interviews: number
   applications: number
   boardPostings: number
+  documents: number
 }
 
 export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1130,6 +1264,7 @@ export type PositionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   interviews?: boolean | PositionCountOutputTypeCountInterviewsArgs
   applications?: boolean | PositionCountOutputTypeCountApplicationsArgs
   boardPostings?: boolean | PositionCountOutputTypeCountBoardPostingsArgs
+  documents?: boolean | PositionCountOutputTypeCountDocumentsArgs
 }
 
 /**
@@ -1170,6 +1305,13 @@ export type PositionCountOutputTypeCountBoardPostingsArgs<ExtArgs extends runtim
   where?: Prisma.PositionBoardPostingWhereInput
 }
 
+/**
+ * PositionCountOutputType without action
+ */
+export type PositionCountOutputTypeCountDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PositionDocumentWhereInput
+}
+
 
 export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1188,6 +1330,7 @@ export type PositionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   interviews?: boolean | Prisma.Position$interviewsArgs<ExtArgs>
   applications?: boolean | Prisma.Position$applicationsArgs<ExtArgs>
   boardPostings?: boolean | Prisma.Position$boardPostingsArgs<ExtArgs>
+  documents?: boolean | Prisma.Position$documentsArgs<ExtArgs>
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["position"]>
@@ -1245,6 +1388,7 @@ export type PositionInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   interviews?: boolean | Prisma.Position$interviewsArgs<ExtArgs>
   applications?: boolean | Prisma.Position$applicationsArgs<ExtArgs>
   boardPostings?: boolean | Prisma.Position$boardPostingsArgs<ExtArgs>
+  documents?: boolean | Prisma.Position$documentsArgs<ExtArgs>
   department?: boolean | Prisma.Position$departmentArgs<ExtArgs>
   _count?: boolean | Prisma.PositionCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1262,6 +1406,7 @@ export type $PositionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     interviews: Prisma.$InterviewPayload<ExtArgs>[]
     applications: Prisma.$CandidateApplicationPayload<ExtArgs>[]
     boardPostings: Prisma.$PositionBoardPostingPayload<ExtArgs>[]
+    documents: Prisma.$PositionDocumentPayload<ExtArgs>[]
     department: Prisma.$DepartmentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1675,6 +1820,7 @@ export interface Prisma__PositionClient<T, Null = never, ExtArgs extends runtime
   interviews<T extends Prisma.Position$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   applications<T extends Prisma.Position$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   boardPostings<T extends Prisma.Position$boardPostingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$boardPostingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionBoardPostingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documents<T extends Prisma.Position$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   department<T extends Prisma.Position$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Position$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2206,6 +2352,30 @@ export type Position$boardPostingsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.PositionBoardPostingScalarFieldEnum | Prisma.PositionBoardPostingScalarFieldEnum[]
+}
+
+/**
+ * Position.documents
+ */
+export type Position$documentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PositionDocument
+   */
+  select?: Prisma.PositionDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PositionDocument
+   */
+  omit?: Prisma.PositionDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionDocumentInclude<ExtArgs> | null
+  where?: Prisma.PositionDocumentWhereInput
+  orderBy?: Prisma.PositionDocumentOrderByWithRelationInput | Prisma.PositionDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.PositionDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PositionDocumentScalarFieldEnum | Prisma.PositionDocumentScalarFieldEnum[]
 }
 
 /**

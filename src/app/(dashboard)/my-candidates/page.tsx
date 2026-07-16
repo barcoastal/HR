@@ -77,6 +77,7 @@ export default async function MyCandidatesPage() {
             createdAt: c.createdAt,
             backgroundCheckStatus: c.backgroundCheckStatus || null,
             position: c.position ? { title: c.position.title } : null,
+            stageId: c.stageId ?? null,
           }))}
           pipelineStages={pipelineStages}
         />

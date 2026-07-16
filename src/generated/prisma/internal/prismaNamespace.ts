@@ -430,6 +430,7 @@ export const ModelName = {
   PulseResponse: 'PulseResponse',
   CompanySettings: 'CompanySettings',
   StageDocument: 'StageDocument',
+  PositionDocument: 'PositionDocument',
   EmailTemplate: 'EmailTemplate',
   RolePermission: 'RolePermission',
   OAuthState: 'OAuthState',
@@ -465,7 +466,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3873,6 +3874,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PositionDocument: {
+      payload: Prisma.$PositionDocumentPayload<ExtArgs>
+      fields: Prisma.PositionDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PositionDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PositionDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.PositionDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PositionDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.PositionDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.PositionDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.PositionDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PositionDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.PositionDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        update: {
+          args: Prisma.PositionDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.PositionDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PositionDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PositionDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.PositionDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PositionDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.PositionDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePositionDocument>
+        }
+        groupBy: {
+          args: Prisma.PositionDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PositionDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PositionDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PositionDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
     EmailTemplate: {
       payload: Prisma.$EmailTemplatePayload<ExtArgs>
       fields: Prisma.EmailTemplateFieldRefs
@@ -5821,6 +5896,7 @@ export const CandidateScalarFieldEnum = {
   skills: 'skills',
   experience: 'experience',
   status: 'status',
+  stageId: 'stageId',
   inPipeline: 'inPipeline',
   source: 'source',
   notes: 'notes',
@@ -6132,6 +6208,24 @@ export const StageDocumentScalarFieldEnum = {
 } as const
 
 export type StageDocumentScalarFieldEnum = (typeof StageDocumentScalarFieldEnum)[keyof typeof StageDocumentScalarFieldEnum]
+
+
+export const PositionDocumentScalarFieldEnum = {
+  id: 'id',
+  positionId: 'positionId',
+  name: 'name',
+  pdfData: 'pdfData',
+  placeholders: 'placeholders',
+  requiresSignature: 'requiresSignature',
+  requiresFill: 'requiresFill',
+  requiresCountersignature: 'requiresCountersignature',
+  countersignerId: 'countersignerId',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PositionDocumentScalarFieldEnum = (typeof PositionDocumentScalarFieldEnum)[keyof typeof PositionDocumentScalarFieldEnum]
 
 
 export const EmailTemplateScalarFieldEnum = {
@@ -7052,6 +7146,7 @@ export type GlobalOmitConfig = {
   pulseResponse?: Prisma.PulseResponseOmit
   companySettings?: Prisma.CompanySettingsOmit
   stageDocument?: Prisma.StageDocumentOmit
+  positionDocument?: Prisma.PositionDocumentOmit
   emailTemplate?: Prisma.EmailTemplateOmit
   rolePermission?: Prisma.RolePermissionOmit
   oAuthState?: Prisma.OAuthStateOmit

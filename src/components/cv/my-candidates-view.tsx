@@ -13,6 +13,7 @@ type CandidateRow = {
   phone: string | null;
   linkedinUrl: string | null;
   status: CandidateStatus;
+  stageId?: string | null;
   source: string | null;
   skills: string | null;
   resumeUrl: string | null;
@@ -22,6 +23,7 @@ type CandidateRow = {
 };
 
 type PipelineStage = {
+  id: string;
   enumValue: string;
   label: string;
   color: string;
@@ -66,10 +68,18 @@ export function MyCandidatesView({
 
   const visibleStages = pipelineStages.filter((s) => s.visible).sort((a, b) => a.order - b.order);
 
+  // Candidate → stage: explicit stageId wins when that stage exists; otherwise
+  // the first visible stage mapping the candidate's status. Stages are keyed
+  // by id, not enumValue — several custom stages can share one base status.
+  function stageKeyFor(c: CandidateRow): string | null {
+    if (c.stageId && visibleStages.some((s) => s.id === c.stageId)) return c.stageId;
+    return visibleStages.find((s) => s.enumValue === c.status)?.id ?? null;
+  }
+
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return candidates.filter((c) => {
-      if (statusFilter !== "ALL" && c.status !== statusFilter) return false;
+      if (statusFilter !== "ALL" && stageKeyFor(c) !== statusFilter) return false;
       if (!q) return true;
       const skills = parseSkills(c.skills).join(" ");
       return (
@@ -87,17 +97,24 @@ export function MyCandidatesView({
   const grouped = useMemo(() => {
     const groups: Record<string, CandidateRow[]> = {};
     for (const c of filtered) {
-      groups[c.status] = groups[c.status] || [];
-      groups[c.status].push(c);
+      const key = stageKeyFor(c);
+      if (!key) continue;
+      groups[key] = groups[key] || [];
+      groups[key].push(c);
     }
     return groups;
-  }, [filtered]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtered, pipelineStages]);
 
   const stageCounts = useMemo(() => {
     const counts: Record<string, number> = { ALL: candidates.length };
-    for (const c of candidates) counts[c.status] = (counts[c.status] || 0) + 1;
+    for (const c of candidates) {
+      const key = stageKeyFor(c);
+      if (key) counts[key] = (counts[key] || 0) + 1;
+    }
     return counts;
-  }, [candidates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [candidates, pipelineStages]);
 
   return (
     <div>
@@ -136,16 +153,16 @@ export function MyCandidatesView({
         </button>
         {visibleStages.map((s) => (
           <button
-            key={s.enumValue}
-            onClick={() => setStatusFilter(s.enumValue)}
+            key={s.id}
+            onClick={() => setStatusFilter(s.id)}
             className={cn(
               "px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-colors",
-              statusFilter === s.enumValue
+              statusFilter === s.id
                 ? STATUS_TINT[s.enumValue] || "bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                 : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
             )}
           >
-            {s.label} <span className="opacity-70">· {stageCounts[s.enumValue] || 0}</span>
+            {s.label} <span className="opacity-70">· {stageCounts[s.id] || 0}</span>
           </button>
         ))}
       </div>
@@ -157,14 +174,14 @@ export function MyCandidatesView({
       ) : statusFilter === "ALL" ? (
         <div className="space-y-6">
           {visibleStages
-            .filter((s) => (grouped[s.enumValue] || []).length > 0)
+            .filter((s) => (grouped[s.id] || []).length > 0)
             .map((s) => (
-              <div key={s.enumValue}>
+              <div key={s.id}>
                 <div className="flex items-center gap-2 mb-2">
                   <span className={cn("text-sm font-semibold", s.color || "text-[var(--color-text-primary)]")}>{s.label}</span>
-                  <span className="text-xs text-[var(--color-text-muted)]">· {(grouped[s.enumValue] || []).length}</span>
+                  <span className="text-xs text-[var(--color-text-muted)]">· {(grouped[s.id] || []).length}</span>
                 </div>
-                <CandidateList rows={grouped[s.enumValue] || []} />
+                <CandidateList rows={grouped[s.id] || []} />
               </div>
             ))}
         </div>

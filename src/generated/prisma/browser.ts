@@ -248,6 +248,11 @@ export type CompanySettings = Prisma.CompanySettingsModel
  */
 export type StageDocument = Prisma.StageDocumentModel
 /**
+ * Model PositionDocument
+ * 
+ */
+export type PositionDocument = Prisma.PositionDocumentModel
+/**
  * Model EmailTemplate
  * 
  */

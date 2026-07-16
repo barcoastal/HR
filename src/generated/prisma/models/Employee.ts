@@ -469,6 +469,7 @@ export type EmployeeWhereInput = {
   signingRequests?: Prisma.SigningRequestListRelationFilter
   countersignRequests?: Prisma.SigningRequestListRelationFilter
   countersignStageDocs?: Prisma.StageDocumentListRelationFilter
+  countersignPositionDocs?: Prisma.PositionDocumentListRelationFilter
   managedCandidates?: Prisma.CandidateListRelationFilter
   hrNotes?: Prisma.HRNoteListRelationFilter
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
@@ -553,6 +554,7 @@ export type EmployeeOrderByWithRelationInput = {
   signingRequests?: Prisma.SigningRequestOrderByRelationAggregateInput
   countersignRequests?: Prisma.SigningRequestOrderByRelationAggregateInput
   countersignStageDocs?: Prisma.StageDocumentOrderByRelationAggregateInput
+  countersignPositionDocs?: Prisma.PositionDocumentOrderByRelationAggregateInput
   managedCandidates?: Prisma.CandidateOrderByRelationAggregateInput
   hrNotes?: Prisma.HRNoteOrderByRelationAggregateInput
   authoredHRNotes?: Prisma.HRNoteOrderByRelationAggregateInput
@@ -640,6 +642,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   signingRequests?: Prisma.SigningRequestListRelationFilter
   countersignRequests?: Prisma.SigningRequestListRelationFilter
   countersignStageDocs?: Prisma.StageDocumentListRelationFilter
+  countersignPositionDocs?: Prisma.PositionDocumentListRelationFilter
   managedCandidates?: Prisma.CandidateListRelationFilter
   hrNotes?: Prisma.HRNoteListRelationFilter
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
@@ -806,6 +809,7 @@ export type EmployeeCreateInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -886,6 +890,7 @@ export type EmployeeUncheckedCreateInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -966,6 +971,7 @@ export type EmployeeUpdateInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -1046,6 +1052,7 @@ export type EmployeeUncheckedUpdateInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -1939,6 +1946,22 @@ export type EmployeeUpdateOneWithoutCountersignStageDocsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutCountersignStageDocsInput, Prisma.EmployeeUpdateWithoutCountersignStageDocsInput>, Prisma.EmployeeUncheckedUpdateWithoutCountersignStageDocsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutCountersignPositionDocsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedCreateWithoutCountersignPositionDocsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCountersignPositionDocsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutCountersignPositionDocsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedCreateWithoutCountersignPositionDocsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutCountersignPositionDocsInput
+  upsert?: Prisma.EmployeeUpsertWithoutCountersignPositionDocsInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutCountersignPositionDocsInput, Prisma.EmployeeUpdateWithoutCountersignPositionDocsInput>, Prisma.EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput>
+}
+
 export type EmployeeCreateNestedOneWithoutChatMembersInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMembersInput, Prisma.EmployeeUncheckedCreateWithoutChatMembersInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatMembersInput
@@ -2143,6 +2166,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -2222,6 +2246,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -2306,6 +2331,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -2385,6 +2411,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -2485,6 +2512,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -2564,6 +2592,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -2702,6 +2731,7 @@ export type EmployeeCreateWithoutTeamInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -2781,6 +2811,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -2886,6 +2917,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -2965,6 +2997,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -3049,6 +3082,7 @@ export type EmployeeCreateWithoutManagerInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -3128,6 +3162,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -3217,6 +3252,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -3296,6 +3332,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -3380,6 +3417,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -3459,6 +3497,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -3559,6 +3598,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -3638,6 +3678,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -3744,6 +3785,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -3823,6 +3865,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -3918,6 +3961,7 @@ export type EmployeeCreateWithoutUserInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -3997,6 +4041,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -4092,6 +4137,7 @@ export type EmployeeUpdateWithoutUserInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -4171,6 +4217,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -4250,6 +4297,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -4329,6 +4377,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -4424,6 +4473,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -4503,6 +4553,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -4582,6 +4633,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -4661,6 +4713,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -4745,6 +4798,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -4824,6 +4878,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -4919,6 +4974,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -4998,6 +5054,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -5088,6 +5145,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -5167,6 +5225,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -5246,6 +5305,7 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -5325,6 +5385,7 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -5420,6 +5481,7 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -5499,6 +5561,7 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -5578,6 +5641,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -5657,6 +5721,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -5741,6 +5806,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -5820,6 +5886,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -5915,6 +5982,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -5994,6 +6062,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -6084,6 +6153,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -6163,6 +6233,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -6242,6 +6313,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -6321,6 +6393,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -6405,6 +6478,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -6484,6 +6558,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -6579,6 +6654,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -6658,6 +6734,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -6748,6 +6825,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -6827,6 +6905,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -6906,6 +6985,7 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -6985,6 +7065,7 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -7080,6 +7161,7 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -7159,6 +7241,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -7238,6 +7321,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -7317,6 +7401,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -7412,6 +7497,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -7491,6 +7577,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -7570,6 +7657,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -7649,6 +7737,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -7744,6 +7833,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -7823,6 +7913,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -7903,6 +7994,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -7982,6 +8074,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -8077,6 +8170,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -8156,6 +8250,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -8234,6 +8329,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -8313,6 +8409,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -8408,6 +8505,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -8487,6 +8585,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -8567,6 +8666,7 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -8646,6 +8746,7 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -8741,6 +8842,7 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -8820,6 +8922,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -8898,6 +9001,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -8977,6 +9081,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -9072,6 +9177,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -9151,6 +9257,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -9231,6 +9338,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
@@ -9310,6 +9418,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
@@ -9394,6 +9503,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
@@ -9473,6 +9583,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
@@ -9568,6 +9679,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
@@ -9647,6 +9759,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
@@ -9737,6 +9850,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
@@ -9816,6 +9930,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
@@ -9895,6 +10010,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
@@ -9974,6 +10090,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
@@ -10069,6 +10186,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
@@ -10148,6 +10266,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
@@ -10226,6 +10345,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -10305,6 +10425,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -10389,6 +10510,7 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -10468,6 +10590,7 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -10563,6 +10686,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -10642,6 +10766,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -10732,6 +10857,7 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -10811,6 +10937,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -10890,6 +11017,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -10969,6 +11097,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -11064,6 +11193,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -11143,6 +11273,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -11222,6 +11353,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -11301,6 +11433,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -11385,6 +11518,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -11464,6 +11598,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -11559,6 +11694,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -11638,6 +11774,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -11728,6 +11865,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -11807,6 +11945,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -11886,6 +12025,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -11965,6 +12105,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -12060,6 +12201,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -12139,6 +12281,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -12218,6 +12361,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -12297,6 +12441,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -12392,6 +12537,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -12471,6 +12617,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -12550,6 +12697,7 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -12629,6 +12777,7 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -12724,6 +12873,7 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -12803,6 +12953,343 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutCountersignPositionDocsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutCountersignPositionDocsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedCreateWithoutCountersignPositionDocsInput>
+}
+
+export type EmployeeUpsertWithoutCountersignPositionDocsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedCreateWithoutCountersignPositionDocsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutCountersignPositionDocsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutCountersignPositionDocsInput, Prisma.EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput>
+}
+
+export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -12883,6 +13370,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -12962,6 +13450,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -13057,6 +13546,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -13136,6 +13626,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -13215,6 +13706,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -13294,6 +13786,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -13389,6 +13882,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -13468,6 +13962,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -13547,6 +14042,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -13626,6 +14122,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -13721,6 +14218,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -13800,6 +14298,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -13879,6 +14378,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -13958,6 +14458,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -14053,6 +14554,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -14132,6 +14634,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -14211,6 +14714,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -14290,6 +14794,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -14385,6 +14890,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -14464,6 +14970,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -14543,6 +15050,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -14622,6 +15130,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -14717,6 +15226,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -14796,6 +15306,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -14875,6 +15386,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -14954,6 +15466,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -15049,6 +15562,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -15128,6 +15642,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -15207,6 +15722,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -15286,6 +15802,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -15381,6 +15898,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -15460,6 +15978,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -15538,6 +16057,7 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -15617,6 +16137,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -15701,6 +16222,7 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
@@ -15780,6 +16302,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
   countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
   managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
@@ -15875,6 +16398,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -15954,6 +16478,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16044,6 +16569,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -16123,6 +16649,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16241,6 +16768,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -16320,6 +16848,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16477,6 +17006,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -16556,6 +17086,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16752,6 +17283,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -16831,6 +17363,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16949,6 +17482,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
@@ -17028,6 +17562,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -17114,6 +17649,7 @@ export type EmployeeCountOutputType = {
   signingRequests: number
   countersignRequests: number
   countersignStageDocs: number
+  countersignPositionDocs: number
   managedCandidates: number
   hrNotes: number
   authoredHRNotes: number
@@ -17156,6 +17692,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   signingRequests?: boolean | EmployeeCountOutputTypeCountSigningRequestsArgs
   countersignRequests?: boolean | EmployeeCountOutputTypeCountCountersignRequestsArgs
   countersignStageDocs?: boolean | EmployeeCountOutputTypeCountCountersignStageDocsArgs
+  countersignPositionDocs?: boolean | EmployeeCountOutputTypeCountCountersignPositionDocsArgs
   managedCandidates?: boolean | EmployeeCountOutputTypeCountManagedCandidatesArgs
   hrNotes?: boolean | EmployeeCountOutputTypeCountHrNotesArgs
   authoredHRNotes?: boolean | EmployeeCountOutputTypeCountAuthoredHRNotesArgs
@@ -17366,6 +17903,13 @@ export type EmployeeCountOutputTypeCountCountersignStageDocsArgs<ExtArgs extends
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountCountersignPositionDocsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PositionDocumentWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountManagedCandidatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CandidateWhereInput
 }
@@ -17524,6 +18068,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   signingRequests?: boolean | Prisma.Employee$signingRequestsArgs<ExtArgs>
   countersignRequests?: boolean | Prisma.Employee$countersignRequestsArgs<ExtArgs>
   countersignStageDocs?: boolean | Prisma.Employee$countersignStageDocsArgs<ExtArgs>
+  countersignPositionDocs?: boolean | Prisma.Employee$countersignPositionDocsArgs<ExtArgs>
   managedCandidates?: boolean | Prisma.Employee$managedCandidatesArgs<ExtArgs>
   hrNotes?: boolean | Prisma.Employee$hrNotesArgs<ExtArgs>
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
@@ -17701,6 +18246,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   signingRequests?: boolean | Prisma.Employee$signingRequestsArgs<ExtArgs>
   countersignRequests?: boolean | Prisma.Employee$countersignRequestsArgs<ExtArgs>
   countersignStageDocs?: boolean | Prisma.Employee$countersignStageDocsArgs<ExtArgs>
+  countersignPositionDocs?: boolean | Prisma.Employee$countersignPositionDocsArgs<ExtArgs>
   managedCandidates?: boolean | Prisma.Employee$managedCandidatesArgs<ExtArgs>
   hrNotes?: boolean | Prisma.Employee$hrNotesArgs<ExtArgs>
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
@@ -17763,6 +18309,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     signingRequests: Prisma.$SigningRequestPayload<ExtArgs>[]
     countersignRequests: Prisma.$SigningRequestPayload<ExtArgs>[]
     countersignStageDocs: Prisma.$StageDocumentPayload<ExtArgs>[]
+    countersignPositionDocs: Prisma.$PositionDocumentPayload<ExtArgs>[]
     managedCandidates: Prisma.$CandidatePayload<ExtArgs>[]
     hrNotes: Prisma.$HRNotePayload<ExtArgs>[]
     authoredHRNotes: Prisma.$HRNotePayload<ExtArgs>[]
@@ -18240,6 +18787,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   signingRequests<T extends Prisma.Employee$signingRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$signingRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SigningRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   countersignRequests<T extends Prisma.Employee$countersignRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$countersignRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SigningRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   countersignStageDocs<T extends Prisma.Employee$countersignStageDocsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$countersignStageDocsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StageDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  countersignPositionDocs<T extends Prisma.Employee$countersignPositionDocsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$countersignPositionDocsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   managedCandidates<T extends Prisma.Employee$managedCandidatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$managedCandidatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   hrNotes<T extends Prisma.Employee$hrNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$hrNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HRNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   authoredHRNotes<T extends Prisma.Employee$authoredHRNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$authoredHRNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HRNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -19431,6 +19979,30 @@ export type Employee$countersignStageDocsArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.StageDocumentScalarFieldEnum | Prisma.StageDocumentScalarFieldEnum[]
+}
+
+/**
+ * Employee.countersignPositionDocs
+ */
+export type Employee$countersignPositionDocsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PositionDocument
+   */
+  select?: Prisma.PositionDocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PositionDocument
+   */
+  omit?: Prisma.PositionDocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PositionDocumentInclude<ExtArgs> | null
+  where?: Prisma.PositionDocumentWhereInput
+  orderBy?: Prisma.PositionDocumentOrderByWithRelationInput | Prisma.PositionDocumentOrderByWithRelationInput[]
+  cursor?: Prisma.PositionDocumentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PositionDocumentScalarFieldEnum | Prisma.PositionDocumentScalarFieldEnum[]
 }
 
 /**

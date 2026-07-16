@@ -500,19 +500,39 @@ export async function resendStageDocuments(
 
 export async function updateCandidateStatus(
   id: string,
-  status: CandidateStatus
+  status: CandidateStatus,
+  /** Custom pipeline stage id (CompanySettings.pipelineStages). Pass the
+   * target stage's id when moving on the board so stages that share a base
+   * status stay distinguishable; omit/null clears it and the column falls
+   * back to `status`. */
+  stageId?: string | null
 ) {
   await assertCandidateAccess(id);
   const candidate = await db.candidate.findUnique({ where: { id } });
   if (!candidate) throw new Error("Candidate not found");
 
   const previousStatus = candidate.status;
-  const data: Record<string, unknown> = { status };
+  const previousStageId = candidate.stageId;
+  const data: Record<string, unknown> = { status, stageId: stageId ?? null };
   if (status === "HIRED") data.hiredAt = new Date();
 
   const updated = await db.candidate.update({ where: { id }, data });
 
-  if (previousStatus !== status) {
+  // A move between two custom stages that share a base status changes only
+  // stageId, so treat that as a stage change too.
+  const stageChanged =
+    previousStatus !== status || (previousStageId ?? null) !== (stageId ?? null);
+
+  // Prefer the custom stage's label from settings when we know the stage.
+  let customStageLabel: string | undefined;
+  if (stageId) {
+    try {
+      const { getPipelineStages } = await import("./company-settings");
+      customStageLabel = (await getPipelineStages()).find((s) => s.id === stageId)?.label;
+    } catch {}
+  }
+
+  if (stageChanged) {
     const { audit } = await import("@/lib/audit");
     await audit({
       action: "candidate.status.changed",
@@ -522,15 +542,15 @@ export async function updateCandidateStatus(
         name: `${candidate.firstName} ${candidate.lastName}`,
         email: candidate.email,
         from: previousStatus,
-        to: status,
+        to: customStageLabel || status,
       },
     });
   }
 
   // Send stage-change notification via centralized rules engine (non-blocking)
-  if (previousStatus !== status) {
+  if (stageChanged) {
     const { sendNotifications } = await import("@/lib/notifications/send");
-    const stageLabel = STAGE_LABELS[status] || status;
+    const stageLabel = customStageLabel || STAGE_LABELS[status] || status;
     const candidateName = `${candidate.firstName} ${candidate.lastName}`;
     const rateInfo = candidate.hourlyRate
       ? `<p>Hourly rate: <strong>$${candidate.hourlyRate.toFixed(2)}/hr</strong></p>`
@@ -545,8 +565,12 @@ export async function updateCandidateStatus(
       emailBody: `<p><strong>${candidateName}</strong> has been moved to <strong>${stageLabel}</strong>.</p>${rateInfo}`,
     }).catch((err) => console.error("[candidates] Notification error:", err));
 
-    // Send stage PDF documents for onboarding/offboarding stages
-    await sendStageDocumentsEmail(status, candidate);
+    // Send stage PDF documents for onboarding/offboarding stages. Only on a
+    // real base-status change — a move between custom stages sharing the same
+    // status must not resend the same documents.
+    if (previousStatus !== status) {
+      await sendStageDocumentsEmail(status, candidate);
+    }
   }
 
   revalidatePath("/cv");
@@ -801,6 +825,9 @@ export async function updateCandidate(
     managerId?: string;
     recruiterId?: string;
     status?: CandidateStatus;
+    /** Custom pipeline stage id; null clears it. Only applied when status is
+     * also being set (stage moves always carry their base status). */
+    stageId?: string | null;
   }
 ) {
   await assertCandidateAccess(id);
@@ -808,11 +835,12 @@ export async function updateCandidate(
   const previousStatus = existing?.status;
   const previousRecruiterId = existing?.recruiterId ?? null;
 
-  const { skills, status, ...rest } = data;
+  const { skills, status, stageId, ...rest } = data;
   const updateData: Record<string, unknown> = { ...rest };
   if (skills !== undefined) updateData.skills = JSON.stringify(skills);
   if (status !== undefined) {
     updateData.status = status;
+    updateData.stageId = stageId ?? null;
     if (status === "HIRED") updateData.hiredAt = new Date();
   }
 

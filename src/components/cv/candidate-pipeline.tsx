@@ -36,6 +36,7 @@ type CandidateItem = {
   offerSignedAt: Date | null;
   position: { title: string } | null;
   applicationCount?: number | null;
+  stageId?: string | null;
 };
 
 type Position = { id: string; title: string };
@@ -78,16 +79,28 @@ const RECRUITMENT_EXCLUDED: ReadonlySet<string> = new Set([
 ]);
 
 export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[] }) {
+  // Columns are keyed by stage id (not status) — several custom stages can
+  // share one base status and still render as separate columns.
   const columns = pipelineStages && pipelineStages.length > 0
-    ? pipelineStages
+    ? [...pipelineStages]
         .filter(s => s.visible && !RECRUITMENT_EXCLUDED.has(s.enumValue))
+        .sort((a, b) => a.order - b.order)
         .map(s => ({
+          key: s.id,
+          stageId: s.id as string | null,
           status: s.enumValue as CandidateStatus,
           label: s.label,
           color: s.color,
           bg: s.bgColor.replace("bg-", "bg-") + "/10",
         }))
-    : DEFAULT_COLUMNS;
+    : DEFAULT_COLUMNS.map(c => ({ key: c.status as string, stageId: null as string | null, ...c }));
+
+  // Candidate → column: an explicit stageId wins when that column exists;
+  // otherwise fall back to the first column mapping the candidate's status.
+  const columnKeyFor = (c: { status: CandidateStatus; stageId?: string | null }): string | null => {
+    if (c.stageId && columns.some(col => col.stageId === c.stageId)) return c.stageId;
+    return columns.find(col => col.status === c.status)?.key ?? null;
+  };
   const router = useRouter();
   const [selectedCandidate, setSelectedCandidate] = useState<CandidateItem | null>(null);
   const [movingId, setMovingId] = useState<string | null>(null);
@@ -106,7 +119,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     }
   }
 
-  async function moveCandidate(id: string, newStatus: CandidateStatus) {
+  async function moveCandidate(id: string, newStatus: CandidateStatus, stageId?: string | null) {
     if (newStatus === "HIRED" || newStatus === "BACKGROUND_CHECK") {
       const c = candidates.find((c) => c.id === id);
       if (c) setSelectedCandidate(c);
@@ -114,7 +127,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     }
     setMovingId(id);
     try {
-      await updateCandidateStatus(id, newStatus);
+      await updateCandidateStatus(id, newStatus, stageId);
       router.refresh();
     } finally {
       setMovingId(null);
@@ -167,13 +180,14 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {columns.map((col) => {
-          const items = filteredCandidates.filter((c) => c.status === col.status);
-          const isExpanded = expandedColumns[col.status] ?? false;
+        {columns.map((col, colIdx) => {
+          const items = filteredCandidates.filter((c) => columnKeyFor(c) === col.key);
+          const isExpanded = expandedColumns[col.key] ?? false;
           const visibleItems = isExpanded ? items : items.slice(0, INITIAL_COLUMN_LIMIT);
           const overflow = items.length - visibleItems.length;
+          const nextCol = columns[colIdx + 1];
           return (
-            <div key={col.status} className="min-w-[260px] flex-1">
+            <div key={col.key} className="min-w-[260px] flex-1">
               <div className={cn("flex items-center gap-2 px-3 py-2 rounded-lg mb-3", col.bg)}>
                 <span className={cn("text-sm font-semibold", col.color)}>{col.label}</span>
                 <span className={cn("text-xs font-medium ml-auto", col.color)}>{items.length}</span>
@@ -182,7 +196,6 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                 {visibleItems.map((candidate) => {
                   const initials = getInitials(candidate.firstName, candidate.lastName);
                   const colorIdx = candidate.firstName.charCodeAt(0) % avatarColors.length;
-                  const nextStatus = columns[columns.findIndex((c) => c.status === col.status) + 1]?.status;
                   const hasResume = !!(candidate.resumeUrl || candidate.resumeText);
                   return (
                     <div
@@ -302,12 +315,12 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                           >
                             <Icon name="delete" size={12} />
                           </button>
-                          {nextStatus && (
+                          {nextCol && (
                             <button
-                              onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextStatus); }}
+                              onClick={(e) => { e.stopPropagation(); moveCandidate(candidate.id, nextCol.status, nextCol.stageId); }}
                               disabled={movingId === candidate.id}
                               className="text-[10px] font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 rounded px-1.5 py-0.5 disabled:opacity-50"
-                              title={`Move to ${columns.find((c) => c.status === nextStatus)?.label}`}
+                              title={`Move to ${nextCol.label}`}
                             >
                               {movingId === candidate.id ? "…" : "→"}
                             </button>
@@ -325,7 +338,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                 {overflow > 0 && (
                   <button
                     type="button"
-                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.status]: true }))}
+                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.key]: true }))}
                     className="w-full mt-1 py-1.5 rounded-md text-xs font-medium text-[var(--color-accent)] bg-[var(--color-accent)]/5 hover:bg-[var(--color-accent)]/10 transition-colors"
                   >
                     Show {overflow} more
@@ -334,7 +347,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                 {isExpanded && items.length > INITIAL_COLUMN_LIMIT && (
                   <button
                     type="button"
-                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.status]: false }))}
+                    onClick={() => setExpandedColumns((p) => ({ ...p, [col.key]: false }))}
                     className="w-full mt-1 py-1.5 rounded-md text-xs font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-background)] transition-colors"
                   >
                     Show fewer

@@ -756,6 +756,10 @@ model Candidate {
   skills        String?
   experience    String?
   status        CandidateStatus @default(NEW)
+  // Custom pipeline stage id from CompanySettings.pipelineStages. Lets several
+  // custom stages share one base CandidateStatus while candidates still sit in
+  // distinct columns. Null = derive column from status.
+  stageId       String?
   inPipeline    Boolean         @default(false)
   source        String?
   notes         String?

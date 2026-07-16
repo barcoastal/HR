@@ -97,6 +97,7 @@ export const ModelName = {
   PulseResponse: 'PulseResponse',
   CompanySettings: 'CompanySettings',
   StageDocument: 'StageDocument',
+  PositionDocument: 'PositionDocument',
   EmailTemplate: 'EmailTemplate',
   RolePermission: 'RolePermission',
   OAuthState: 'OAuthState',
@@ -564,6 +565,7 @@ export const CandidateScalarFieldEnum = {
   skills: 'skills',
   experience: 'experience',
   status: 'status',
+  stageId: 'stageId',
   inPipeline: 'inPipeline',
   source: 'source',
   notes: 'notes',
@@ -875,6 +877,24 @@ export const StageDocumentScalarFieldEnum = {
 } as const
 
 export type StageDocumentScalarFieldEnum = (typeof StageDocumentScalarFieldEnum)[keyof typeof StageDocumentScalarFieldEnum]
+
+
+export const PositionDocumentScalarFieldEnum = {
+  id: 'id',
+  positionId: 'positionId',
+  name: 'name',
+  pdfData: 'pdfData',
+  placeholders: 'placeholders',
+  requiresSignature: 'requiresSignature',
+  requiresFill: 'requiresFill',
+  requiresCountersignature: 'requiresCountersignature',
+  countersignerId: 'countersignerId',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PositionDocumentScalarFieldEnum = (typeof PositionDocumentScalarFieldEnum)[keyof typeof PositionDocumentScalarFieldEnum]
 
 
 export const EmailTemplateScalarFieldEnum = {

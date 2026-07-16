@@ -54,6 +54,7 @@ type CandidateItem = {
   applicationCount?: number | null;
   doNotCall?: boolean;
   doNotCallReason?: string | null;
+  stageId?: string | null;
 };
 
 type PositionFull = {
@@ -118,6 +119,7 @@ function PositionPipeline({
   recruiters,
   isArchived,
   departments = [],
+  pipelineStages,
 }: {
   position: PositionFull;
   candidates: CandidateItem[];
@@ -127,6 +129,7 @@ function PositionPipeline({
   recruiters?: Recruiter[];
   isArchived: boolean;
   departments?: { id: string; name: string }[];
+  pipelineStages?: PipelineStageConfig[];
 }) {
   const [expanded, setExpanded] = useState(!isArchived);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
@@ -403,10 +406,12 @@ function PositionPipeline({
                 offerSignedAt: c.offerSignedAt || null,
                 position: c.position,
                 applicationCount: c.applicationCount ?? null,
+                stageId: c.stageId ?? null,
               }))}
               positions={allPositions}
               employees={employees}
               recruiters={recruiters}
+              pipelineStages={pipelineStages}
             />
           ) : (
             <p className="text-center text-sm text-[var(--color-text-muted)] py-8">
@@ -455,6 +460,7 @@ export function CVTabs({
   syncablePlatforms,
   employees,
   recruiters,
+  pipelineStages,
 }: Props) {
   const tabs = [
     { id: "recruitment", label: "Recruitment" },
@@ -606,6 +612,7 @@ export function CVTabs({
                       recruiters={recruiters}
                       departments={departments}
                       isArchived={false}
+                      pipelineStages={pipelineStages}
                     />
                   ))}
               </div>
@@ -662,10 +669,12 @@ export function CVTabs({
                       offerSignedAt: c.offerSignedAt || null,
                       position: c.position,
                       applicationCount: c.applicationCount ?? null,
+                      stageId: c.stageId ?? null,
                     }))}
                     positions={positions}
                     employees={employees}
                     recruiters={recruiters}
+                    pipelineStages={pipelineStages}
                   />
                 </div>
               </div>
@@ -704,6 +713,7 @@ export function CVTabs({
                         recruiters={recruiters}
                         departments={departments}
                         isArchived={true}
+                        pipelineStages={pipelineStages}
                       />
                     );
                   })}
