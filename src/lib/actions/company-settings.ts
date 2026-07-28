@@ -21,6 +21,7 @@ const DEFAULTS = {
   candidateCustomFields: "[]",
   stageNotifyRecipients: '["candidate"]',
   stageNotifyEmployeeIds: '[]',
+  sandboxMode: false,
   updatedAt: new Date(),
 };
 
@@ -70,6 +71,7 @@ export async function updateCompanySettings(data: {
   senderEmail?: string;
   senderName?: string;
   recruiterIds?: string;
+  sandboxMode?: boolean;
 }) {
   const settings = await db.companySettings.upsert({
     where: { id: SINGLETON_ID },
@@ -79,6 +81,17 @@ export async function updateCompanySettings(data: {
   revalidatePath("/settings");
   revalidatePath("/", "layout");
   return settings;
+}
+
+export async function setSandboxMode(enabled: boolean) {
+  await db.companySettings.upsert({
+    where: { id: SINGLETON_ID },
+    update: { sandboxMode: enabled },
+    create: { id: SINGLETON_ID, sandboxMode: enabled },
+  });
+  revalidatePath("/settings");
+  revalidatePath("/", "layout");
+  return { success: true, sandboxMode: enabled };
 }
 
 // ─── Pipeline Configuration ───

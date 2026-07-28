@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
+import { isSandboxMode, logSandbox, sandboxEventId, sandboxMeetLink } from "@/lib/sandbox";
 
 export async function createCompanyEvent(data: {
   title: string;
@@ -57,6 +58,19 @@ export async function createCompanyEvent(data: {
   if (attendees.length === 0) return { success: false, error: "No active employees matched" };
 
   const end = new Date(start.getTime() + duration * 60 * 1000);
+
+  if (await isSandboxMode()) {
+    const eventId = sandboxEventId("company");
+    const meetLink = data.withMeetLink ? sandboxMeetLink("company") : null;
+    logSandbox("calendar", `Would create company event "${title}" for ${attendees.length} attendee(s)`, {
+      eventId,
+      meetLink,
+      start: start.toISOString(),
+      emails: attendees.map((a) => a.email),
+    });
+    revalidatePath("/calendar");
+    return { success: true, eventId, meetLink, attendeeCount: attendees.length };
+  }
 
   try {
     const { getCalendarClient } = await import("@/lib/google-calendar");

@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { IS_SANDBOX } from "@/lib/sandbox";
+import { isSandboxMode, logSandbox } from "@/lib/sandbox";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -85,10 +85,6 @@ function withNoReplySubject(subject: string): string {
 }
 
 export async function sendEmail(to: string, subject: string, html: string) {
-  if (IS_SANDBOX) {
-    console.log(`[sandbox] email suppressed — to: ${to}, subject: "${subject}"`);
-    return;
-  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
     return;
@@ -98,6 +94,10 @@ export async function sendEmail(to: string, subject: string, html: string) {
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
   const finalSubject = withNoReplySubject(subject);
+  if (await isSandboxMode()) {
+    logSandbox("email", `Would send to ${to}: "${finalSubject}"`, { from, htmlLength: html.length });
+    return;
+  }
   console.log(`[email] Sending from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
@@ -122,10 +122,6 @@ export async function sendEmailWithAttachments(
   html: string,
   attachments: { filename: string; content: Buffer }[]
 ) {
-  if (IS_SANDBOX) {
-    console.log(`[sandbox] email w/ attachments suppressed — to: ${to}, subject: "${subject}"`);
-    return;
-  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
     return;
@@ -135,6 +131,14 @@ export async function sendEmailWithAttachments(
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
   const finalSubject = withNoReplySubject(subject);
+  if (await isSandboxMode()) {
+    logSandbox(
+      "email",
+      `Would send to ${to} with ${attachments.length} attachment(s): "${finalSubject}"`,
+      { from, filenames: attachments.map((a) => a.filename) }
+    );
+    return;
+  }
   console.log(`[email] Sending with ${attachments.length} attachment(s) from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
@@ -155,9 +159,6 @@ export async function sendEmailWithAttachments(
 }
 
 export async function sendTestEmail(to: string, type: string, subject: string, body: string) {
-  if (IS_SANDBOX) {
-    return { success: false, error: "Sandbox mode: outbound email is disabled in this environment" };
-  }
   if (!resend) {
     return { success: false, error: "RESEND_API_KEY not configured" };
   }
@@ -196,12 +197,17 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
   const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
+  const testSubject = withNoReplySubject(`[TEST] ${interpolatedSubject}`);
+  if (await isSandboxMode()) {
+    logSandbox("email", `Would send TEST to ${to}: "${testSubject}"`, { from });
+    return { success: true };
+  }
   console.log(`[email] Test email from: "${from}" to: ${to}`);
   try {
     const { data, error } = await resend.emails.send({
       from,
       to,
-      subject: withNoReplySubject(`[TEST] ${interpolatedSubject}`),
+      subject: testSubject,
       html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
     });
     if (error) {
@@ -472,10 +478,6 @@ export async function sendFeedPostNotification(
   subject: string,
   bodyHtml: string
 ) {
-  if (IS_SANDBOX) {
-    console.log(`[sandbox] feed notification suppressed — ${recipients.length} recipients`);
-    return;
-  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping feed notification`);
     return;
@@ -486,6 +488,11 @@ export async function sendFeedPostNotification(
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
   const html = wrapHtml(bodyHtml, branding.companyName, branding.logoUrl);
+
+  if (await isSandboxMode()) {
+    logSandbox("email", `Would send feed notification to ${recipients.length} recipient(s): "${subject}"`);
+    return;
+  }
 
   // Chunk into batches of 100 (Resend batch limit)
   const BATCH_SIZE = 100;

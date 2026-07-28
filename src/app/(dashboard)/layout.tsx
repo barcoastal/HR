@@ -1,10 +1,11 @@
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { TopBar } from "@/components/layout/top-bar";
+import { SandboxBanner } from "@/components/layout/sandbox-banner";
 import { PulseSurveyWrapper } from "@/components/pulse/pulse-survey-wrapper";
 import { getCompanySettings } from "@/lib/actions/company-settings";
 import { getSession } from "@/lib/auth-helpers";
-import { IS_SANDBOX } from "@/lib/sandbox";
+import { isSandboxMode } from "@/lib/sandbox";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -31,15 +32,13 @@ export default async function DashboardLayout({
     }
   }
 
+  const sandbox = await isSandboxMode();
+
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden">
       <Sidebar logoUrl={settings.logoUrl} companyName={settings.companyName} isRecruiter={isRecruiter} />
       <div className="flex-1 md:ml-64 min-w-0 max-w-full">
-        {IS_SANDBOX && (
-          <div className="bg-amber-500 text-black text-center text-xs font-semibold py-1.5 px-4">
-            SANDBOX ENVIRONMENT — test freely. No emails, job postings, calendar invites, or background checks leave this system. Data can be reset at any time.
-          </div>
-        )}
+        {sandbox && <SandboxBanner />}
         <TopBar />
         <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-hidden">{children}</main>
       </div>

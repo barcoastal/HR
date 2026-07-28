@@ -39,6 +39,7 @@ export type CompanySettingsMinAggregateOutputType = {
   candidateCustomFields: string | null
   stageNotifyRecipients: string | null
   stageNotifyEmployeeIds: string | null
+  sandboxMode: boolean | null
   updatedAt: Date | null
 }
 
@@ -57,6 +58,7 @@ export type CompanySettingsMaxAggregateOutputType = {
   candidateCustomFields: string | null
   stageNotifyRecipients: string | null
   stageNotifyEmployeeIds: string | null
+  sandboxMode: boolean | null
   updatedAt: Date | null
 }
 
@@ -75,6 +77,7 @@ export type CompanySettingsCountAggregateOutputType = {
   candidateCustomFields: number
   stageNotifyRecipients: number
   stageNotifyEmployeeIds: number
+  sandboxMode: number
   updatedAt: number
   _all: number
 }
@@ -95,6 +98,7 @@ export type CompanySettingsMinAggregateInputType = {
   candidateCustomFields?: true
   stageNotifyRecipients?: true
   stageNotifyEmployeeIds?: true
+  sandboxMode?: true
   updatedAt?: true
 }
 
@@ -113,6 +117,7 @@ export type CompanySettingsMaxAggregateInputType = {
   candidateCustomFields?: true
   stageNotifyRecipients?: true
   stageNotifyEmployeeIds?: true
+  sandboxMode?: true
   updatedAt?: true
 }
 
@@ -131,6 +136,7 @@ export type CompanySettingsCountAggregateInputType = {
   candidateCustomFields?: true
   stageNotifyRecipients?: true
   stageNotifyEmployeeIds?: true
+  sandboxMode?: true
   updatedAt?: true
   _all?: true
 }
@@ -222,6 +228,7 @@ export type CompanySettingsGroupByOutputType = {
   candidateCustomFields: string
   stageNotifyRecipients: string
   stageNotifyEmployeeIds: string
+  sandboxMode: boolean
   updatedAt: Date
   _count: CompanySettingsCountAggregateOutputType | null
   _min: CompanySettingsMinAggregateOutputType | null
@@ -261,6 +268,7 @@ export type CompanySettingsWhereInput = {
   candidateCustomFields?: Prisma.StringFilter<"CompanySettings"> | string
   stageNotifyRecipients?: Prisma.StringFilter<"CompanySettings"> | string
   stageNotifyEmployeeIds?: Prisma.StringFilter<"CompanySettings"> | string
+  sandboxMode?: Prisma.BoolFilter<"CompanySettings"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }
 
@@ -279,6 +287,7 @@ export type CompanySettingsOrderByWithRelationInput = {
   candidateCustomFields?: Prisma.SortOrder
   stageNotifyRecipients?: Prisma.SortOrder
   stageNotifyEmployeeIds?: Prisma.SortOrder
+  sandboxMode?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -300,6 +309,7 @@ export type CompanySettingsWhereUniqueInput = Prisma.AtLeast<{
   candidateCustomFields?: Prisma.StringFilter<"CompanySettings"> | string
   stageNotifyRecipients?: Prisma.StringFilter<"CompanySettings"> | string
   stageNotifyEmployeeIds?: Prisma.StringFilter<"CompanySettings"> | string
+  sandboxMode?: Prisma.BoolFilter<"CompanySettings"> | boolean
   updatedAt?: Prisma.DateTimeFilter<"CompanySettings"> | Date | string
 }, "id">
 
@@ -318,6 +328,7 @@ export type CompanySettingsOrderByWithAggregationInput = {
   candidateCustomFields?: Prisma.SortOrder
   stageNotifyRecipients?: Prisma.SortOrder
   stageNotifyEmployeeIds?: Prisma.SortOrder
+  sandboxMode?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CompanySettingsCountOrderByAggregateInput
   _max?: Prisma.CompanySettingsMaxOrderByAggregateInput
@@ -342,6 +353,7 @@ export type CompanySettingsScalarWhereWithAggregatesInput = {
   candidateCustomFields?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   stageNotifyRecipients?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
   stageNotifyEmployeeIds?: Prisma.StringWithAggregatesFilter<"CompanySettings"> | string
+  sandboxMode?: Prisma.BoolWithAggregatesFilter<"CompanySettings"> | boolean
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CompanySettings"> | Date | string
 }
 
@@ -360,6 +372,7 @@ export type CompanySettingsCreateInput = {
   candidateCustomFields?: string
   stageNotifyRecipients?: string
   stageNotifyEmployeeIds?: string
+  sandboxMode?: boolean
   updatedAt?: Date | string
 }
 
@@ -378,6 +391,7 @@ export type CompanySettingsUncheckedCreateInput = {
   candidateCustomFields?: string
   stageNotifyRecipients?: string
   stageNotifyEmployeeIds?: string
+  sandboxMode?: boolean
   updatedAt?: Date | string
 }
 
@@ -396,6 +410,7 @@ export type CompanySettingsUpdateInput = {
   candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyRecipients?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyEmployeeIds?: Prisma.StringFieldUpdateOperationsInput | string
+  sandboxMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -414,6 +429,7 @@ export type CompanySettingsUncheckedUpdateInput = {
   candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyRecipients?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyEmployeeIds?: Prisma.StringFieldUpdateOperationsInput | string
+  sandboxMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -432,6 +448,7 @@ export type CompanySettingsCreateManyInput = {
   candidateCustomFields?: string
   stageNotifyRecipients?: string
   stageNotifyEmployeeIds?: string
+  sandboxMode?: boolean
   updatedAt?: Date | string
 }
 
@@ -450,6 +467,7 @@ export type CompanySettingsUpdateManyMutationInput = {
   candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyRecipients?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyEmployeeIds?: Prisma.StringFieldUpdateOperationsInput | string
+  sandboxMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -468,6 +486,7 @@ export type CompanySettingsUncheckedUpdateManyInput = {
   candidateCustomFields?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyRecipients?: Prisma.StringFieldUpdateOperationsInput | string
   stageNotifyEmployeeIds?: Prisma.StringFieldUpdateOperationsInput | string
+  sandboxMode?: Prisma.BoolFieldUpdateOperationsInput | boolean
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -486,6 +505,7 @@ export type CompanySettingsCountOrderByAggregateInput = {
   candidateCustomFields?: Prisma.SortOrder
   stageNotifyRecipients?: Prisma.SortOrder
   stageNotifyEmployeeIds?: Prisma.SortOrder
+  sandboxMode?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -504,6 +524,7 @@ export type CompanySettingsMaxOrderByAggregateInput = {
   candidateCustomFields?: Prisma.SortOrder
   stageNotifyRecipients?: Prisma.SortOrder
   stageNotifyEmployeeIds?: Prisma.SortOrder
+  sandboxMode?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -522,6 +543,7 @@ export type CompanySettingsMinOrderByAggregateInput = {
   candidateCustomFields?: Prisma.SortOrder
   stageNotifyRecipients?: Prisma.SortOrder
   stageNotifyEmployeeIds?: Prisma.SortOrder
+  sandboxMode?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -542,6 +564,7 @@ export type CompanySettingsSelect<ExtArgs extends runtime.Types.Extensions.Inter
   candidateCustomFields?: boolean
   stageNotifyRecipients?: boolean
   stageNotifyEmployeeIds?: boolean
+  sandboxMode?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -560,6 +583,7 @@ export type CompanySettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   candidateCustomFields?: boolean
   stageNotifyRecipients?: boolean
   stageNotifyEmployeeIds?: boolean
+  sandboxMode?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -578,6 +602,7 @@ export type CompanySettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   candidateCustomFields?: boolean
   stageNotifyRecipients?: boolean
   stageNotifyEmployeeIds?: boolean
+  sandboxMode?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["companySettings"]>
 
@@ -596,10 +621,11 @@ export type CompanySettingsSelectScalar = {
   candidateCustomFields?: boolean
   stageNotifyRecipients?: boolean
   stageNotifyEmployeeIds?: boolean
+  sandboxMode?: boolean
   updatedAt?: boolean
 }
 
-export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "recruiterIds" | "pipelineStages" | "candidateCustomFields" | "stageNotifyRecipients" | "stageNotifyEmployeeIds" | "updatedAt", ExtArgs["result"]["companySettings"]>
+export type CompanySettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "companyName" | "domain" | "industry" | "companySize" | "logoUrl" | "faviconUrl" | "senderEmail" | "senderName" | "recruiterIds" | "pipelineStages" | "candidateCustomFields" | "stageNotifyRecipients" | "stageNotifyEmployeeIds" | "sandboxMode" | "updatedAt", ExtArgs["result"]["companySettings"]>
 
 export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CompanySettings"
@@ -619,6 +645,7 @@ export type $CompanySettingsPayload<ExtArgs extends runtime.Types.Extensions.Int
     candidateCustomFields: string
     stageNotifyRecipients: string
     stageNotifyEmployeeIds: string
+    sandboxMode: boolean
     updatedAt: Date
   }, ExtArgs["result"]["companySettings"]>
   composites: {}
@@ -1057,6 +1084,7 @@ export interface CompanySettingsFieldRefs {
   readonly candidateCustomFields: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly stageNotifyRecipients: Prisma.FieldRef<"CompanySettings", 'String'>
   readonly stageNotifyEmployeeIds: Prisma.FieldRef<"CompanySettings", 'String'>
+  readonly sandboxMode: Prisma.FieldRef<"CompanySettings", 'Boolean'>
   readonly updatedAt: Prisma.FieldRef<"CompanySettings", 'DateTime'>
 }
     
