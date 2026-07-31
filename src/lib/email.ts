@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { IS_SANDBOX } from "@/lib/sandbox";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -84,6 +85,10 @@ function withNoReplySubject(subject: string): string {
 }
 
 export async function sendEmail(to: string, subject: string, html: string) {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] email suppressed — to: ${to}, subject: "${subject}"`);
+    return;
+  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
     return;
@@ -117,6 +122,10 @@ export async function sendEmailWithAttachments(
   html: string,
   attachments: { filename: string; content: Buffer }[]
 ) {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] email w/ attachments suppressed — to: ${to}, subject: "${subject}"`);
+    return;
+  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
     return;
@@ -146,6 +155,9 @@ export async function sendEmailWithAttachments(
 }
 
 export async function sendTestEmail(to: string, type: string, subject: string, body: string) {
+  if (IS_SANDBOX) {
+    return { success: false, error: "Sandbox mode: outbound email is disabled in this environment" };
+  }
   if (!resend) {
     return { success: false, error: "RESEND_API_KEY not configured" };
   }
@@ -460,6 +472,10 @@ export async function sendFeedPostNotification(
   subject: string,
   bodyHtml: string
 ) {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] feed notification suppressed — ${recipients.length} recipients`);
+    return;
+  }
   if (!resend) {
     console.warn(`[email] RESEND_API_KEY not set — skipping feed notification`);
     return;

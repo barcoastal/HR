@@ -323,6 +323,10 @@ export async function postJobToBreezy(data: {
   /** Initial state. Defaults to "draft" so positions don't go live accidentally. */
   publishState?: "draft" | "published";
 }): Promise<{ success: boolean; positionId?: string; error?: string }> {
+  if (process.env.SANDBOX_MODE === "1") {
+    console.log(`[sandbox] Breezy posting simulated for "${data.title}"`);
+    return { success: true, positionId: `sandbox-${Date.now()}` };
+  }
   const body: Record<string, unknown> = {
     name: data.title,
     description: [
@@ -436,6 +440,10 @@ export async function updateBreezyPositionState(data: {
   positionId: string;
   state: "published" | "draft" | "archived" | "closed";
 }): Promise<{ success: boolean; error?: string }> {
+  if (process.env.SANDBOX_MODE === "1") {
+    console.log(`[sandbox] Breezy state change simulated: ${data.positionId} → ${data.state}`);
+    return { success: true };
+  }
   try {
     const res = await fetch(
       `${BREEZY_BASE_URL}/company/${data.companyId}/position/${data.positionId}/state`,

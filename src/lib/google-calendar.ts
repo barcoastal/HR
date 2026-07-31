@@ -1,5 +1,6 @@
 import { google } from "googleapis";
 import { db } from "@/lib/db";
+import { IS_SANDBOX } from "@/lib/sandbox";
 
 function getOAuth2Client() {
   const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID;
@@ -22,6 +23,9 @@ async function getTokens() {
 }
 
 export async function isCalendarConnected(): Promise<boolean> {
+  // Sandbox pretends the calendar is connected so scheduling flows are
+  // testable end-to-end; events are simulated in createInterviewEvent.
+  if (IS_SANDBOX) return true;
   const tokens = await getTokens();
   return tokens !== null;
 }
@@ -62,6 +66,10 @@ export async function createInterviewEvent(params: {
   durationMinutes: number;
   candidateEmail: string;
 }): Promise<{ eventId: string; meetLink: string | null }> {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] calendar event simulated: ${params.summary}`);
+    return { eventId: `sandbox-${Date.now()}`, meetLink: "https://meet.google.com/sandbox-demo-link" };
+  }
   const calendar = await getCalendarClient();
 
   const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
@@ -92,6 +100,7 @@ export async function createInterviewEvent(params: {
 }
 
 export async function cancelInterviewEvent(googleEventId: string): Promise<void> {
+  if (IS_SANDBOX) return;
   const calendar = await getCalendarClient();
   await calendar.events.delete({
     calendarId: "primary",
@@ -109,6 +118,10 @@ export async function createOneOnOneEvent(params: {
   employeeEmail: string;
   oneOnOneId: string;
 }): Promise<{ eventId: string; meetLink: string | null }> {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] 1:1 calendar event simulated: ${params.summary}`);
+    return { eventId: `sandbox-${Date.now()}`, meetLink: "https://meet.google.com/sandbox-demo-link" };
+  }
   const calendar = await getCalendarClient();
   const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
 
@@ -146,6 +159,7 @@ export async function updateOneOnOneEvent(params: {
   startTime: Date;
   durationMinutes: number;
 }): Promise<void> {
+  if (IS_SANDBOX) return;
   const calendar = await getCalendarClient();
   const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
   await calendar.events.patch({
@@ -160,6 +174,7 @@ export async function updateOneOnOneEvent(params: {
 }
 
 export async function cancelOneOnOneEvent(googleEventId: string): Promise<void> {
+  if (IS_SANDBOX) return;
   const calendar = await getCalendarClient();
   await calendar.events.delete({
     calendarId: "primary",

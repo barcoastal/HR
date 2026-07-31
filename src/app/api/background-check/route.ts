@@ -39,6 +39,27 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "candidateId is required" }, { status: 400 });
   }
 
+  // Sandbox: simulate a submitted order so the hiring flow stays testable
+  // without hitting backgroundchecks.com or emailing the candidate.
+  if (process.env.SANDBOX_MODE === "1") {
+    const sbxCandidate = await db.candidate.findUnique({ where: { id: candidateId } });
+    if (!sbxCandidate) {
+      return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
+    }
+    await db.candidate.update({
+      where: { id: candidateId },
+      data: {
+        status: "BACKGROUND_CHECK",
+        backgroundCheckStatus: "PENDING",
+        backgroundCheckId: `SBX-${candidateId.slice(0, 8)}`,
+        backgroundCheckDate: new Date(),
+        backgroundCheckOptions: JSON.stringify(options || {}),
+      },
+    });
+    console.log(`[sandbox] background check simulated for candidate ${candidateId}`);
+    return NextResponse.json({ success: true, sandbox: true, orderId: `SBX-${candidateId.slice(0, 8)}` });
+  }
+
   if (!BG_CHECK_API_KEY) {
     console.error("[background-check] BACKGROUND_CHECK_API_KEY is not set on the server");
     return NextResponse.json(
