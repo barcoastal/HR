@@ -8,10 +8,26 @@ export function generateState(): string {
 }
 
 export function getBaseUrl(): string {
-  if (process.env.NEXTAUTH_URL) return process.env.NEXTAUTH_URL;
+  if (process.env.NEXTAUTH_URL) return process.env.NEXTAUTH_URL.replace(/\/+$/, "");
   if (process.env.RAILWAY_PUBLIC_DOMAIN)
     return `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
   return "http://localhost:3000";
+}
+
+/**
+ * Public base URL for an incoming request. `new URL(request.url).host` inside
+ * Railway is the container bind address (0.0.0.0:8080), which breaks browser
+ * redirects and made Google reject the OAuth redirect_uri as insecure — so
+ * prefer the forwarded headers and fall back to NEXTAUTH_URL.
+ */
+export function getRequestBaseUrl(request: Request): string {
+  const host =
+    request.headers.get("x-forwarded-host") ?? request.headers.get("host");
+  if (!host || /^(0\.0\.0\.0|127\.|localhost)/.test(host)) return getBaseUrl();
+  const proto = (request.headers.get("x-forwarded-proto") ?? "https")
+    .split(",")[0]
+    .trim();
+  return `${proto}://${host}`;
 }
 
 export function getCallbackUrl(providerId: string): string {
@@ -21,7 +37,10 @@ export function getCallbackUrl(providerId: string): string {
 export async function createOAuthState(
   providerId: string,
   userId: string,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
+  /** Must exactly match the redirect_uri sent to the provider's authorize
+   * endpoint — the token exchange replays it. */
+  redirectUri?: string
 ): Promise<string> {
   const state = generateState();
   const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -31,7 +50,7 @@ export async function createOAuthState(
       state,
       provider: providerId,
       userId,
-      redirectUri: getCallbackUrl(providerId),
+      redirectUri: redirectUri ?? getCallbackUrl(providerId),
       expiresAt,
       ...(metadata ? { metadata: metadata as any } : {}),
     } as any,

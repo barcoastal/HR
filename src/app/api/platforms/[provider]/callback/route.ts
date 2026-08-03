@@ -4,6 +4,7 @@ import { getOAuthProvider } from "@/lib/oauth/config";
 import {
   validateAndConsumeState,
   exchangeCodeForTokens,
+  getRequestBaseUrl,
 } from "@/lib/oauth/utils";
 
 export async function GET(
@@ -12,8 +13,9 @@ export async function GET(
 ) {
   const { provider: providerId } = await params;
   const url = new URL(request.url);
-  const proto = request.headers.get("x-forwarded-proto") ?? url.protocol.replace(":", "");
-  const baseUrl = `${proto}://${url.host}`;
+  // Public base URL — request.url's host is the container bind address on
+  // Railway (0.0.0.0:8080), so it must come from forwarded headers.
+  const baseUrl = getRequestBaseUrl(request);
   const settingsUrl = new URL("/settings", baseUrl);
 
   // 1. Handle error from provider (user denied, etc.)

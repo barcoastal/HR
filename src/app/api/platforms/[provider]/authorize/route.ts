@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getOAuthProvider, getOAuthCredentials } from "@/lib/oauth/config";
-import { createOAuthState } from "@/lib/oauth/utils";
+import { createOAuthState, getRequestBaseUrl } from "@/lib/oauth/utils";
 import { db } from "@/lib/db";
 import { SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
 
@@ -11,11 +11,9 @@ export async function GET(
   { params }: { params: Promise<{ provider: string }> }
 ) {
   const { provider: providerId } = await params;
-  // Derive base URL from the actual request so it works on any domain
-  const requestUrl = new URL(_request.url);
-  // Railway/proxies terminate SSL, so check x-forwarded-proto for the real protocol
-  const proto = _request.headers.get("x-forwarded-proto") ?? requestUrl.protocol.replace(":", "");
-  const baseUrl = `${proto}://${requestUrl.host}`;
+  // Public base URL — request.url's host is the container bind address on
+  // Railway (0.0.0.0:8080), so it must come from forwarded headers.
+  const baseUrl = getRequestBaseUrl(_request);
 
   // 1. Verify session
   const session = await getServerSession(authOptions);
@@ -71,14 +69,15 @@ export async function GET(
     return NextResponse.redirect(url);
   }
 
-  // 4. Real OAuth — create state token in DB
+  // 4. Real OAuth — create state token in DB. The stored redirectUri must be
+  // the exact value we send to the provider — the token exchange replays it.
   const url = new URL(_request.url);
   const mode = url.searchParams.get("mode");
   const metadata = mode ? { mode } : undefined;
-  const state = await createOAuthState(providerId, userId, metadata);
+  const redirectUri = `${baseUrl}/api/platforms/${providerId}/callback`;
+  const state = await createOAuthState(providerId, userId, metadata, redirectUri);
 
   // 5. Build authorization URL and redirect to provider
-  const redirectUri = `${baseUrl}/api/platforms/${providerId}/callback`;
   const authUrl = new URL(provider.authorizationUrl);
   authUrl.searchParams.set("response_type", "code");
   authUrl.searchParams.set("client_id", creds.clientId);
