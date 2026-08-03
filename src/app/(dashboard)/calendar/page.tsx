@@ -1,6 +1,8 @@
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
+import { CalendarGoogleEvents } from "@/components/calendar/calendar-google-events";
+import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-connect";
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
 import { CreateEventDialog } from "@/components/calendar/create-event-dialog";
@@ -35,7 +37,7 @@ export default async function CalendarPage() {
     }
   }
 
-  const [employees, interviews, feedEvents, reviewCycles, allActiveEmployees, departments] = await Promise.all([
+  const [employees, interviews, feedEvents, reviewCycles, allActiveEmployees, departments, viewer] = await Promise.all([
     db.employee.findMany({
       where: { status: "ACTIVE" },
       select: {
@@ -76,7 +78,12 @@ export default async function CalendarPage() {
     isManagerOrAbove
       ? db.department.findMany({ select: { id: true, name: true, _count: { select: { employees: true } } }, orderBy: { name: "asc" } })
       : Promise.resolve([]),
+    userId
+      ? db.user.findUnique({ where: { id: userId }, select: { googleCalendarSyncEnabled: true } })
+      : Promise.resolve(null),
   ]);
+
+  const myCalendarConnected = !!viewer?.googleCalendarSyncEnabled;
 
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -173,16 +180,23 @@ export default async function CalendarPage() {
 
   return (
     <div className="px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
-        {isManagerOrAbove && (
-          <CreateEventDialog
-            departments={departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
-            employees={allActiveEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email, departmentId: e.departmentId }))}
-          />
-        )}
+        <div className="flex items-center gap-3">
+          {userId && <GoogleCalendarConnect connected={myCalendarConnected} userId={userId} />}
+          {isManagerOrAbove && (
+            <CreateEventDialog
+              departments={departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
+              employees={allActiveEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email, departmentId: e.departmentId }))}
+            />
+          )}
+        </div>
       </div>
-      <CalendarView events={events} />
+      {myCalendarConnected && userId ? (
+        <CalendarGoogleEvents events={events} userId={userId} />
+      ) : (
+        <CalendarView events={events} />
+      )}
     </div>
   );
 }
