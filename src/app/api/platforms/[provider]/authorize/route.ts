@@ -91,10 +91,14 @@ export async function GET(
     authUrl.searchParams.set("prompt", "select_employer");
   }
 
-  // Google requires access_type=offline to get a refresh token, and prompt=consent to force re-consent
+  // Google requires access_type=offline to get a refresh token, and
+  // prompt=consent to force re-consent. select_account forces the account
+  // chooser — without it Google silently reuses the last-used account, which
+  // errors out when that account is outside the Workspace (e.g. a personal
+  // Gmail when the OAuth app is Internal).
   if (providerId === "google_calendar") {
     authUrl.searchParams.set("access_type", "offline");
-    authUrl.searchParams.set("prompt", "consent");
+    authUrl.searchParams.set("prompt", "consent select_account");
   }
 
   return NextResponse.redirect(authUrl.toString());
