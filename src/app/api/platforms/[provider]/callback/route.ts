@@ -94,8 +94,10 @@ export async function GET(
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Google Calendar connection failed";
-      settingsUrl.searchParams.set("oauth_error", message);
-      return NextResponse.redirect(settingsUrl);
+      // Send the user back where they started, with the error visible.
+      const calendarUrl = new URL("/calendar", baseUrl);
+      calendarUrl.searchParams.set("oauth_error", message);
+      return NextResponse.redirect(calendarUrl);
     }
   }
 

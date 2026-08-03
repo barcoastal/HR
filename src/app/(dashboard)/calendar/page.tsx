@@ -7,7 +7,12 @@ import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
 import { CreateEventDialog } from "@/components/calendar/create-event-dialog";
 
-export default async function CalendarPage() {
+export default async function CalendarPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ oauth_error?: string; oauth_success?: string }>;
+}) {
+  const params = (await searchParams) ?? {};
   const session = await requireAuth();
   const role = session.user?.role;
   const userId = session.user?.id;
@@ -180,6 +185,16 @@ export default async function CalendarPage() {
 
   return (
     <div className="px-8 py-8">
+      {params.oauth_error && (
+        <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 text-sm">
+          Google Calendar connection failed: {params.oauth_error}
+        </div>
+      )}
+      {params.oauth_success && (
+        <div className="mb-4 px-4 py-3 rounded-lg bg-emerald-500/10 text-emerald-600 text-sm">
+          {params.oauth_success} connected successfully.
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
         <div className="flex items-center gap-3">
