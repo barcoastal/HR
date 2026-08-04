@@ -284,19 +284,27 @@ export async function createOneOnOne(input: {
     select: { id: true, managerId: true, status: true },
   });
   if (!employee) return { success: false, error: "Employee not found" };
-  if (!employee.managerId) {
-    return { success: false, error: "Employee has no assigned manager" };
-  }
 
   // Managers can only schedule for their own direct reports.
   if (!isAdmin(role) && employee.managerId !== myEmployeeId) {
     return { success: false, error: "You can only schedule 1:1s for your direct reports" };
   }
 
+  // The INITIATOR runs the meeting: they become the meeting's manager, so the
+  // calendar event is created on their calendar with them as the organizer
+  // and only the two participants are invited. Previously the org-chart
+  // manager was always used, so an admin scheduling a review put the event on
+  // a third person's calendar.
+  const meetingManagerId =
+    myEmployeeId && myEmployeeId !== employee.id ? myEmployeeId : employee.managerId;
+  if (!meetingManagerId) {
+    return { success: false, error: "Employee has no assigned manager" };
+  }
+
   const created = await db.oneOnOne.create({
     data: {
       employeeId: employee.id,
-      managerId: employee.managerId,
+      managerId: meetingManagerId,
       scheduledAt: input.scheduledAt,
       type: input.type,
     },

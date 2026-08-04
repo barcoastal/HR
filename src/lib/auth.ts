@@ -203,35 +203,34 @@ export const authOptions: NextAuthOptions = {
         token.profilePhoto = emp?.profilePhoto || null;
       }
 
-      // Persist Google OAuth tokens to RecruitmentPlatform for calendar access.
+      // Persist Google OAuth tokens to the USER's own calendar connection.
+      // This used to upsert the shared "Google Calendar" platform record, so
+      // whoever logged in last silently became the owner of the company
+      // calendar — and the organizer of every event created on it. Now each
+      // login (re)connects that user's personal calendar; the shared platform
+      // connection is only set intentionally from Settings.
       // Fail-soft: never block sign-in if the token write fails.
-      if (account?.provider === "google") {
+      if (account?.provider === "google" && account.access_token && token.id) {
         try {
-          await db.recruitmentPlatform.upsert({
-            where: { name: "Google Calendar" },
-            update: {
-              apiKey: account.access_token,
-              refreshToken: account.refresh_token ?? undefined,
-              tokenExpiresAt: account.expires_at
+          const { encrypt } = await import("@/lib/encryption");
+          await db.user.update({
+            where: { id: token.id as string },
+            data: {
+              googleCalendarAccessToken: encrypt(account.access_token),
+              ...(account.refresh_token
+                ? { googleCalendarRefreshToken: encrypt(account.refresh_token) }
+                : {}),
+              googleCalendarTokenExpiresAt: account.expires_at
                 ? new Date(account.expires_at * 1000)
                 : null,
-              oauthProvider: "google_calendar",
-              status: "ACTIVE",
-            },
-            create: {
-              name: "Google Calendar",
-              type: "PREMIUM",
-              apiKey: account.access_token,
-              refreshToken: account.refresh_token,
-              tokenExpiresAt: account.expires_at
-                ? new Date(account.expires_at * 1000)
-                : null,
-              oauthProvider: "google_calendar",
-              status: "ACTIVE",
+              // Only enable sync when a refresh token is available (login
+              // uses prompt=consent, so Google sends one every time) or one
+              // is already stored — otherwise the first refresh would fail.
+              ...(account.refresh_token ? { googleCalendarSyncEnabled: true } : {}),
             },
           });
         } catch (err) {
-          console.error("[auth] Failed to persist Google Calendar tokens:", err);
+          console.error("[auth] Failed to persist personal calendar tokens:", err);
         }
       }
 
