@@ -26,7 +26,14 @@ type UserItem = {
   colorIdx: number;
 };
 
-export function SettingsUserManagement({ users }: { users: UserItem[] }) {
+export function SettingsUserManagement({
+  users,
+  currentUserRole,
+}: {
+  users: UserItem[];
+  currentUserRole: UserRole;
+}) {
+  const canChangeRoles = currentUserRole === "SUPER_ADMIN";
   const [inviteOpen, setInviteOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<UserRole>("EMPLOYEE");
@@ -84,6 +91,7 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
   }
 
   async function handleRoleChange(id: string, newRole: UserRole) {
+    if (!canChangeRoles) return;
     await updateUserRole(id, newRole);
     router.refresh();
   }
@@ -125,17 +133,23 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
                   </td>
                   <td className="px-3 py-3 text-sm text-[var(--color-text-muted)]">{user.email}</td>
                   <td className="px-3 py-3">
-                    <select
-                      value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
-                      className={cn("px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer", roleColors[user.role])}
-                    >
-                      <option value="SUPER_ADMIN">Super Admin</option>
-                      <option value="ADMIN">Admin</option>
-                      <option value="HR">HR</option>
-                      <option value="MANAGER">Manager</option>
-                      <option value="EMPLOYEE">Employee</option>
-                    </select>
+                    {canChangeRoles ? (
+                      <select
+                        value={user.role}
+                        onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
+                        className={cn("px-2 py-0.5 rounded-full text-xs font-medium border-0 cursor-pointer", roleColors[user.role])}
+                      >
+                        <option value="SUPER_ADMIN">Super Admin</option>
+                        <option value="ADMIN">Admin</option>
+                        <option value="HR">HR</option>
+                        <option value="MANAGER">Manager</option>
+                        <option value="EMPLOYEE">Employee</option>
+                      </select>
+                    ) : (
+                      <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium", roleColors[user.role])}>
+                        {user.role.replace("_", " ")}
+                      </span>
+                    )}
                   </td>
                   <td className="px-3 py-3">
                     <div className="flex items-center justify-end gap-1">
@@ -236,7 +250,9 @@ export function SettingsUserManagement({ users }: { users: UserItem[] }) {
           <div>
             <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-1.5">Role</label>
             <select value={role} onChange={(e) => setRole(e.target.value as UserRole)} className={cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)]")}>
+              {canChangeRoles && <option value="SUPER_ADMIN">Super Admin</option>}
               <option value="ADMIN">Admin</option>
+              <option value="HR">HR</option>
               <option value="MANAGER">Manager</option>
               <option value="EMPLOYEE">Employee</option>
             </select>

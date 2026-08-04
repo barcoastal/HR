@@ -25,6 +25,10 @@ export async function inviteUser(data: {
   if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
     throw new Error("Not authorized to invite users");
   }
+  // Only Super Admins may assign the Super Admin role.
+  if (data.role === "SUPER_ADMIN" && callerRole !== "SUPER_ADMIN") {
+    throw new Error("Only Super Admins can invite Super Admins");
+  }
 
   const hash = data.password ? await bcrypt.hash(data.password, 10) : null;
 
@@ -113,8 +117,10 @@ export async function updateUserRole(id: string, role: UserRole) {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   const callerRole = session.user?.role;
-  if (callerRole !== "SUPER_ADMIN" && callerRole !== "ADMIN") {
-    throw new Error("Not authorized to change user roles");
+  // Role changes are Super Admin only — Admins must not be able to promote
+  // themselves (or anyone else) to Super Admin.
+  if (callerRole !== "SUPER_ADMIN") {
+    throw new Error("Only Super Admins can change user roles");
   }
   const before = await db.user.findUnique({ where: { id }, select: { role: true, email: true } });
 

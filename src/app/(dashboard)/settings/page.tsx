@@ -42,6 +42,7 @@ import { getGustoConnection, getEmployeeMapping } from "@/lib/actions/gusto";
 import { DepartmentReviewTemplates } from "@/components/settings/department-review-templates";
 import { getDepartmentReviewTemplates } from "@/lib/actions/reviews";
 import { db } from "@/lib/db";
+import type { UserRole } from "@/generated/prisma/client";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
@@ -118,7 +119,10 @@ export default async function SettingsPage() {
           activeEmployeeCount={activeEmployeeCount}
         />
 
-        <SettingsUserManagement users={userList} />
+        <SettingsUserManagement
+          users={userList}
+          currentUserRole={(session.user?.role || "EMPLOYEE") as UserRole}
+        />
 
         <PermissionsManager permissions={rolePermissions} />
 
