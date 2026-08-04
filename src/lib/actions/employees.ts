@@ -1195,3 +1195,54 @@ export async function bulkApproveAndInviteEmployees(employeeIds: string[]) {
   revalidatePath("/org");
   return { approved, errors };
 }
+
+/**
+ * Permanently delete PENDING employees (bulk-import mistakes, etc.).
+ * Only PENDING rows are removed — never ACTIVE / ONBOARDING / OFFBOARDED.
+ */
+export async function deletePendingEmployees(employeeIds: string[]) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    throw new Error("Not authorized to delete pending employees");
+  }
+
+  const ids = Array.from(new Set(employeeIds.filter(Boolean)));
+  if (ids.length === 0) return { deleted: 0, errors: [] as string[] };
+
+  const pending = await db.employee.findMany({
+    where: { id: { in: ids }, status: "PENDING" },
+    select: { id: true, firstName: true, lastName: true, email: true },
+  });
+
+  const errors: string[] = [];
+  if (pending.length < ids.length) {
+    errors.push("Some selected employees were skipped because they are no longer pending.");
+  }
+
+  let deleted = 0;
+  const { audit } = await import("@/lib/audit");
+
+  for (const emp of pending) {
+    try {
+      await db.user.deleteMany({ where: { employeeId: emp.id } });
+      await db.employeeTask.deleteMany({ where: { employeeId: emp.id } });
+      await db.employee.delete({ where: { id: emp.id } });
+      await audit({
+        action: "employee.pending_deleted",
+        entityType: "employee",
+        entityId: emp.id,
+        details: { name: `${emp.firstName} ${emp.lastName}`, email: emp.email },
+      });
+      deleted++;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      errors.push(`${emp.firstName} ${emp.lastName}: ${message}`);
+    }
+  }
+
+  revalidatePath("/people");
+  revalidatePath("/org");
+  return { deleted, errors };
+}
