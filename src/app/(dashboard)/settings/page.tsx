@@ -9,7 +9,6 @@ import { getTimeOffPolicies } from "@/lib/actions/time-off";
 import { getAllPulseSurveys } from "@/lib/actions/pulse";
 import { SettingsUserManagement } from "@/components/settings/user-management";
 import { CompanyInfo } from "@/components/settings/company-info";
-import { SandboxSettings } from "@/components/settings/sandbox-settings";
 import { DepartmentManager } from "@/components/settings/department-manager";
 import { JobTitleManager } from "@/components/settings/job-title-manager";
 import { OffboardingSetup } from "@/components/settings/offboarding-setup";
@@ -117,11 +116,6 @@ export default async function SettingsPage() {
             senderName: companySettings.senderName,
           }}
           activeEmployeeCount={activeEmployeeCount}
-        />
-
-        <SandboxSettings
-          initialEnabled={Boolean(companySettings.sandboxMode)}
-          envForced={["true", "1", "yes"].includes((process.env.SANDBOX_MODE || "").trim().toLowerCase())}
         />
 
         <SettingsUserManagement users={userList} />

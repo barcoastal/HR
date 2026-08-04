@@ -1,13 +1,6 @@
 import { db } from "@/lib/db";
 import { encrypt, decrypt } from "@/lib/encryption";
 import { getOAuthProvider, getOAuthCredentials } from "@/lib/oauth/config";
-import {
-  isSandboxMode,
-  isSandboxEventId,
-  logSandbox,
-  sandboxEventId,
-  sandboxMeetLink,
-} from "@/lib/sandbox";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -123,12 +116,6 @@ async function googleFetch<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  const method = (options?.method || "GET").toUpperCase();
-  if (await isSandboxMode() && method !== "GET" && method !== "HEAD") {
-    logSandbox("calendar", `Would ${method} Google Calendar ${path}`);
-    return { id: sandboxEventId("sync") } as T;
-  }
-
   const { accessToken } = await ensureValidToken(userId);
   const res = await fetch(`https://www.googleapis.com/calendar/v3${path}`, {
     ...options,
@@ -188,17 +175,6 @@ export async function createOneOnOneEventForUser(
     oneOnOneId: string;
   },
 ): Promise<{ eventId: string; meetLink: string | null }> {
-  if (await isSandboxMode()) {
-    const eventId = sandboxEventId("one-on-one");
-    const meetLink = sandboxMeetLink("one-on-one");
-    logSandbox("calendar", `Would create per-user 1:1 for ${params.employeeEmail}: "${params.summary}"`, {
-      eventId,
-      meetLink,
-      userId,
-    });
-    return { eventId, meetLink };
-  }
-
   const { accessToken } = await ensureValidToken(userId);
   const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
 
@@ -267,10 +243,6 @@ export async function deleteEventFromGoogleCalendar(
   userId: string,
   googleEventId: string
 ): Promise<void> {
-  if (await isSandboxMode() || isSandboxEventId(googleEventId)) {
-    logSandbox("calendar", `Would delete Google Calendar event ${googleEventId}`, { userId });
-    return;
-  }
   const { accessToken } = await ensureValidToken(userId);
   await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/primary/events/${googleEventId}`,

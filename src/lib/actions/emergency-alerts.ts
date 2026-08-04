@@ -5,7 +5,6 @@ import { requireAdmin } from "@/lib/auth-helpers";
 import { sendSMS } from "@/lib/sms";
 import { Resend } from "resend";
 import { revalidatePath } from "next/cache";
-import { isSandboxMode, logSandbox } from "@/lib/sandbox";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -187,9 +186,6 @@ export async function sendEmergencyAlert(title: string, message: string) {
       });
     }
     emailFailed = validRecipients.length;
-  } else if (await isSandboxMode()) {
-    logSandbox("email", `Would send emergency alert to ${validRecipients.length} recipient(s): "${title}"`);
-    emailSucceeded = validRecipients.length;
   } else {
     const CHUNK = 49;
     const senderAddress = branding.senderEmail.trim();
@@ -285,11 +281,6 @@ export async function sendTestEmergencyAlert(
   const from = senderName
     ? `${senderName} <${branding.senderEmail}>`
     : branding.senderEmail;
-
-  if (await isSandboxMode()) {
-    logSandbox("email", `Would send TEST emergency to ${testEmail}: "${title}"`);
-    return { success: true };
-  }
 
   const { error } = await resend.emails.send({
     from,

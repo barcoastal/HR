@@ -1,27 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/auth-helpers";
 import { getCalendarClient, isCalendarConnected } from "@/lib/google-calendar";
-import { isSandboxMode, logSandbox, sandboxEventId, sandboxMeetLink } from "@/lib/sandbox";
 
 export async function POST(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const { title } = await req.json().catch(() => ({ title: "" }));
-    const summary = title || "Quick Meeting";
-
-    if (await isSandboxMode()) {
-      const meetLink = sandboxMeetLink("chat");
-      const eventId = sandboxEventId("chat");
-      logSandbox("calendar", `Would create chat Meet: "${summary}"`, { meetLink, eventId });
-      return NextResponse.json({ meetLink, eventId, summary });
-    }
-
     const connected = await isCalendarConnected();
     if (!connected) {
       return NextResponse.json({ error: "Google Calendar not connected. Sign in via Settings." }, { status: 400 });
     }
+
+    const { title } = await req.json().catch(() => ({ title: "" }));
+    const summary = title || "Quick Meeting";
 
     const calendar = await getCalendarClient();
     const now = new Date();

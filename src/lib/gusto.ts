@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { encrypt, decrypt } from "@/lib/encryption";
-import { isSandboxMode, logSandbox } from "@/lib/sandbox";
 
 // ── Token refresh mutex ─────────────────────────────────────
 
@@ -69,14 +68,6 @@ async function refreshToken(connectionId: string, refreshTokenPlain: string): Pr
 const API_BASE = () => process.env.GUSTO_API_URL || "https://api.gusto-demo.com";
 
 async function gustoFetch<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const method = (options.method || "GET").toUpperCase();
-  if (await isSandboxMode() && method !== "GET" && method !== "HEAD") {
-    logSandbox("gusto", `Would ${method} ${path}`, {
-      bodyPreview: typeof options.body === "string" ? options.body.slice(0, 200) : undefined,
-    });
-    return {} as T;
-  }
-
   const { accessToken, companyId } = await ensureValidToken();
   const url = `${API_BASE()}/v1${path.replace("{companyId}", companyId)}`;
 
@@ -247,11 +238,6 @@ export async function createWebhookSubscription(accessToken: string, companyId: 
   const baseUrl = API_BASE();
   const webhookUrl = `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/gusto/webhooks`;
 
-  if (await isSandboxMode()) {
-    logSandbox("gusto", `Would create webhook subscription for company ${companyId}`, { webhookUrl });
-    return { uuid: `sandbox-webhook-${Date.now()}`, subscription_secret: "sandbox-secret" };
-  }
-
   try {
     const res = await fetch(`${baseUrl}/v1/companies/${companyId}/webhooks`, {
       method: "POST",
@@ -270,10 +256,6 @@ export async function createWebhookSubscription(accessToken: string, companyId: 
 }
 
 export async function deleteWebhookSubscription(accessToken: string, companyId: string, subscriptionId: string): Promise<void> {
-  if (await isSandboxMode() || subscriptionId.startsWith("sandbox-")) {
-    logSandbox("gusto", `Would delete webhook subscription ${subscriptionId}`);
-    return;
-  }
   const baseUrl = API_BASE();
   await fetch(`${baseUrl}/v1/companies/${companyId}/webhooks/${subscriptionId}`, {
     method: "DELETE",

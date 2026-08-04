@@ -1129,7 +1129,6 @@ model CompanySettings {
   candidateCustomFields String @default("[]")
   stageNotifyRecipients String @default("[\"candidate\"]") // JSON array: "candidate", "recruiter", "manager"
   stageNotifyEmployeeIds String @default("[]") // JSON array of employee IDs to always notify
-  sandboxMode   Boolean @default(false) // dry-run emails/SMS/calendar/Gusto writes for safe testing
   updatedAt     DateTime @updatedAt
 }
 

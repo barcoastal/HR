@@ -1,5 +1,4 @@
 import twilio from "twilio";
-import { isSandboxMode, logSandbox } from "@/lib/sandbox";
 
 const client =
   process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
@@ -13,11 +12,6 @@ const FROM_NUMBER = process.env.TWILIO_PHONE_NUMBER || "";
  * Never throws — failures are logged and returned as false.
  */
 export async function sendSMS(to: string, body: string): Promise<boolean> {
-  if (await isSandboxMode()) {
-    logSandbox("sms", `Would send to ${to}`, { bodyPreview: body.slice(0, 120) });
-    return true;
-  }
-
   if (!client || !FROM_NUMBER) {
     console.warn(`[sms] Twilio not configured — skipping SMS to ${to}`);
     return false;
