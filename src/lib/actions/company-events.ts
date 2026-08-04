@@ -78,7 +78,49 @@ export async function createCompanyEvent(data: {
       },
     });
 
+    // Store the event in-app too (audience-scoped), so invitees see it on
+    // the app calendar and the feed — and nobody else does.
+    const authorEmployeeId = session.user.employeeId;
+    if (authorEmployeeId) {
+      const audienceType = data.includeEveryone
+        ? "all"
+        : data.departmentIds?.length
+        ? "departments"
+        : "employees";
+      await db.feedPost.create({
+        data: {
+          authorId: authorEmployeeId,
+          content: title,
+          type: "EVENT",
+          eventDate: start,
+          eventEndDate: end,
+          eventLocation: data.location || null,
+          audienceType,
+          audienceDeptIds: audienceType === "departments" ? JSON.stringify(data.departmentIds) : null,
+          audienceEmployeeIds: audienceType === "employees" ? JSON.stringify(data.employeeIds) : null,
+          notifyViaEmail: false,
+          emailTargetType: "none",
+        },
+      });
+
+      // In-app notification for invitees (Google already emails the invite)
+      const inviteeIds = attendees
+        .map((a) => a.id)
+        .filter((id) => id !== authorEmployeeId);
+      if (inviteeIds.length > 0) {
+        await db.notification.createMany({
+          data: inviteeIds.map((recipientId) => ({
+            recipientId,
+            type: "FEED_EVENT",
+            message: `You're invited: ${title}`,
+            link: "/calendar",
+          })),
+        });
+      }
+    }
+
     revalidatePath("/calendar");
+    revalidatePath("/");
     return {
       success: true,
       eventId: res.data.id ?? "",

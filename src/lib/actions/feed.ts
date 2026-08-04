@@ -26,7 +26,15 @@ export type PollView = {
 };
 
 export async function getFeedPosts(currentEmployeeId?: string, role?: string) {
-  const posts = await db.feedPost.findMany({
+  // Viewer's department, for audience-scoped posts (targeted events).
+  const viewerDept = currentEmployeeId
+    ? await db.employee.findUnique({
+        where: { id: currentEmployeeId },
+        select: { departmentId: true },
+      })
+    : null;
+
+  const allPosts = await db.feedPost.findMany({
     include: {
       author: true,
       mentionedEmployee: true,
@@ -51,6 +59,17 @@ export async function getFeedPosts(currentEmployeeId?: string, role?: string) {
     },
     orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
   });
+
+  // Audience scoping: targeted posts are only visible to their audience
+  // (admin-tier roles and the author always see them).
+  const { canSeeAudiencePost } = await import("@/lib/event-audience");
+  const posts = allPosts.filter((p) =>
+    canSeeAudiencePost(p, {
+      employeeId: currentEmployeeId,
+      departmentId: viewerDept?.departmentId,
+      role,
+    })
+  );
 
   const isSuperAdmin = role === "SUPER_ADMIN";
 

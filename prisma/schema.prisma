@@ -489,6 +489,12 @@ model FeedPost {
   eventEndDate  DateTime?
   eventLocation String?
 
+  // Who can SEE this post (events especially) in the feed and calendar.
+  // "all" | "departments" | "employees" — ids stored as JSON string arrays.
+  audienceType        String  @default("all")
+  audienceDeptIds     String?
+  audienceEmployeeIds String?
+
   notifyViaEmail   Boolean  @default(true)
   emailTargetType  String   @default("all")
   emailTargetIds   String?

@@ -65,6 +65,10 @@ export default async function CalendarPage({
         eventDate: true,
         eventEndDate: true,
         eventLocation: true,
+        audienceType: true,
+        audienceDeptIds: true,
+        audienceEmployeeIds: true,
+        authorId: true,
       },
     }),
     db.reviewCycle.findMany({
@@ -90,11 +94,21 @@ export default async function CalendarPage({
 
   const myCalendarConnected = !!viewer?.googleCalendarSyncEnabled;
 
+  const viewerDept = callerEmployeeId
+    ? await db.employee.findUnique({
+        where: { id: callerEmployeeId },
+        select: { departmentId: true },
+      })
+    : null;
+
   const now = new Date();
   const currentYear = now.getFullYear();
   const events: CalendarEvent[] = [];
 
   for (const emp of employees) {
+    // Personal dates are only company-visible to managers and above —
+    // regular employees see just their own birthday/anniversary.
+    if (!isManagerOrAbove && emp.id !== callerEmployeeId) continue;
     const name = `${emp.firstName} ${emp.lastName}`;
     const department = emp.department?.name || undefined;
 
@@ -169,8 +183,18 @@ export default async function CalendarPage({
     }
   }
 
-  // Feed events
+  // Feed events — only ones this viewer is in the audience of
+  const { canSeeAudiencePost } = await import("@/lib/event-audience");
   for (const fe of feedEvents) {
+    if (
+      !canSeeAudiencePost(fe, {
+        employeeId: callerEmployeeId,
+        departmentId: viewerDept?.departmentId,
+        role,
+      })
+    ) {
+      continue;
+    }
     if (fe.eventDate) {
       events.push({
         id: `feed-event-${fe.id}`,

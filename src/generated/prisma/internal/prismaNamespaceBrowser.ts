@@ -359,6 +359,9 @@ export const FeedPostScalarFieldEnum = {
   eventDate: 'eventDate',
   eventEndDate: 'eventEndDate',
   eventLocation: 'eventLocation',
+  audienceType: 'audienceType',
+  audienceDeptIds: 'audienceDeptIds',
+  audienceEmployeeIds: 'audienceEmployeeIds',
   notifyViaEmail: 'notifyViaEmail',
   emailTargetType: 'emailTargetType',
   emailTargetIds: 'emailTargetIds'

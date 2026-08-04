@@ -10,11 +10,18 @@ export async function createFeedEvent(data: {
   eventEndDate: string;
   eventLocation?: string;
   emailTarget?: "all" | "none";
+  /** Who can see the event. Defaults to the whole company. */
+  audience?: {
+    type: "all" | "departments" | "employees";
+    departmentIds?: string[];
+    employeeIds?: string[];
+  };
 }) {
   if (!data.eventDate || !data.eventEndDate) {
     throw new Error("Event start and end dates are required");
   }
 
+  const audienceType = data.audience?.type ?? "all";
   const post = await db.feedPost.create({
     data: {
       authorId: data.authorId,
@@ -23,6 +30,11 @@ export async function createFeedEvent(data: {
       eventDate: new Date(data.eventDate),
       eventEndDate: new Date(data.eventEndDate),
       eventLocation: data.eventLocation || null,
+      audienceType,
+      audienceDeptIds:
+        audienceType === "departments" ? JSON.stringify(data.audience?.departmentIds ?? []) : null,
+      audienceEmployeeIds:
+        audienceType === "employees" ? JSON.stringify(data.audience?.employeeIds ?? []) : null,
       notifyViaEmail: data.emailTarget !== "none",
       emailTargetType: data.emailTarget || "all",
     },
@@ -37,25 +49,33 @@ export async function createFeedEvent(data: {
     }
   }
 
-  // Create in-app notifications for users who opted in
+  // Create in-app notifications for users who opted in — audience only
   const inAppUsers = await db.user.findMany({
     where: {
       employee: { status: "ACTIVE" },
       employeeId: { not: data.authorId },
       notifyFeedEventInApp: true,
     },
-    select: { employeeId: true },
+    select: { employeeId: true, role: true, employee: { select: { departmentId: true } } },
   });
-  if (inAppUsers.length > 0) {
+  const { canSeeAudiencePost } = await import("@/lib/event-audience");
+  const audienceUsers = inAppUsers.filter(
+    (u) =>
+      u.employeeId &&
+      canSeeAudiencePost(post, {
+        employeeId: u.employeeId,
+        departmentId: u.employee?.departmentId,
+        role: u.role,
+      })
+  );
+  if (audienceUsers.length > 0) {
     await db.notification.createMany({
-      data: inAppUsers
-        .filter((u) => u.employeeId)
-        .map((u) => ({
-          recipientId: u.employeeId!,
-          type: "FEED_EVENT",
-          message: `New event: ${data.content}`,
-          link: "/feed",
-        })),
+      data: audienceUsers.map((u) => ({
+        recipientId: u.employeeId!,
+        type: "FEED_EVENT",
+        message: `New event: ${data.content}`,
+        link: "/feed",
+      })),
     });
   }
 
@@ -216,9 +236,10 @@ export async function sendPostNotificationEmail(
 
   const authorName = `${post.author.firstName} ${post.author.lastName}`;
 
-  // Get all users with active employee profiles who opted into feed emails
+  // Get all users with active employee profiles who opted into feed emails,
+  // limited to the post's audience for targeted posts.
   const isEvent = post.type === "EVENT";
-  const users = await db.user.findMany({
+  const allUsers = await db.user.findMany({
     where: {
       emailNotificationsEnabled: true,
       ...(isEvent
@@ -228,8 +249,16 @@ export async function sendPostNotificationEmail(
         status: "ACTIVE",
       },
     },
-    select: { email: true },
+    select: { email: true, employeeId: true, role: true, employee: { select: { departmentId: true } } },
   });
+  const { canSeeAudiencePost } = await import("@/lib/event-audience");
+  const users = allUsers.filter((u) =>
+    canSeeAudiencePost(post, {
+      employeeId: u.employeeId,
+      departmentId: u.employee?.departmentId,
+      role: u.role,
+    })
+  );
 
   console.log(`[feed-notify] Found ${users.length} recipients (excluding author ${authorEmployeeId})`);
 
