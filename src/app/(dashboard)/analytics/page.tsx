@@ -34,6 +34,7 @@ import { SpendVsHiresChart } from "@/components/analytics/recruitment-cost-chart
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { AIAnalyticsBar } from "@/components/analytics/ai-analytics-bar";
+import { AnalyticsTabs } from "@/components/analytics/analytics-tabs";
 import { Icon } from "@/components/ui/icon";
 
 export default async function AnalyticsPage() {
@@ -82,6 +83,7 @@ export default async function AnalyticsPage() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-4">
       <PageHeader title="Analytics" description="Comprehensive HR metrics and recruitment analytics" />
+      <AnalyticsTabs />
 
       {/* Headcount Overview */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
