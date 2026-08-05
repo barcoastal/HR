@@ -16,6 +16,7 @@ import { getNextOneOnOneForEmployee, getPastOneOnOnesForEmployee } from "@/lib/a
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
+import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -51,12 +52,15 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     notFound();
   }
 
-  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes] = await Promise.all([
+  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap] = await Promise.all([
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
     getPastOneOnOnesForEmployee(id),
+    getCurrentOutOfOfficeFor([id]),
   ]);
+
+  const currentOoo = oooMap[id];
 
   const canViewDocuments = isAdmin || isOwnProfile || isDirectReport;
   const canEdit = isAdmin || isOwnProfile;
@@ -94,6 +98,21 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 <span className={cn("inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium w-fit", statusColor)}>{employee.status}</span>
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{employee.jobTitle} · {employee.department?.name || "No department"}</p>
+              {currentOoo && (
+                <div
+                  className={cn(
+                    "mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold w-fit",
+                    currentOoo.type === "WORKING_REMOTELY"
+                      ? "bg-cyan-500/15 text-cyan-700"
+                      : "bg-amber-500/15 text-amber-700"
+                  )}
+                >
+                  <Icon name={currentOoo.type === "WORKING_REMOTELY" ? "home_work" : "beach_access"} size={14} />
+                  {currentOoo.type === "WORKING_REMOTELY" ? "Working remotely until " : "Out of office until "}
+                  {formatDate(currentOoo.endDate)}
+                  {currentOoo.note ? ` · ${currentOoo.note}` : ""}
+                </div>
+              )}
             </div>
             {canEdit && (
               <div className="flex items-center gap-2 shrink-0">

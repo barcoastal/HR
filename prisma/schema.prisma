@@ -261,6 +261,7 @@ model Employee {
   clubMemberships    ClubMember[]
   pulseResponses     PulseResponse[]
   timeOffRequests    TimeOffRequest[]  @relation("TimeOffEmployee")
+  outOfOffice        OutOfOffice[]     @relation("OutOfOfficeEmployee")
   timeOffBalances    TimeOffBalance[]
   approvedRequests   TimeOffRequest[]  @relation("TimeOffApprover")
   mentionedInPosts   FeedPost[]        @relation("FeedPostMention")
@@ -988,6 +989,36 @@ model SigningRequest {
 // ---------------------
 // Time Off
 // ---------------------
+
+enum OutOfOfficeType {
+  OUT_OF_OFFICE
+  WORKING_REMOTELY
+}
+
+// A lightweight, self-service "I'll be out" notice. Separate from
+// TimeOffRequest: no approval, no balance deduction. Visibility reuses the
+// feed/event audience fields so the same audience rules apply.
+model OutOfOffice {
+  id         String          @id @default(uuid())
+  employeeId String
+  startDate  DateTime
+  endDate    DateTime
+  type       OutOfOfficeType @default(OUT_OF_OFFICE)
+  note       String?
+
+  audienceType        String  @default("all")
+  audienceDeptIds     String?
+  audienceEmployeeIds String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  employee   Employee @relation("OutOfOfficeEmployee", fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([startDate])
+  @@index([endDate])
+}
 
 model TimeOffPolicy {
   id          String   @id @default(uuid())
