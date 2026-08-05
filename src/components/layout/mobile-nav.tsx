@@ -37,7 +37,6 @@ const allDrawerLinks = [
   { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
   { href: "/org", label: "Organization", icon: "business", access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },
   { href: "/time-off", label: "Time Off", icon: "beach_access", access: () => true, section: "Workflow" },
-  { href: "/clubs", label: "Clubs", icon: "groups", access: () => true, section: "Social" },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true, section: "Social" },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r), section: "Admin" },
   { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec, section: "Workflow" },

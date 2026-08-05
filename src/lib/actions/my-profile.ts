@@ -11,7 +11,6 @@ export async function getMyProfile(employeeId: string) {
       team: true,
       manager: true,
       buddy: true,
-      clubMemberships: { include: { club: true } },
     },
   });
 }
