@@ -72,7 +72,14 @@ export function OneOnOnesView({
   const [tab, setTab] = useState<"upcoming" | "completed">("upcoming");
   const [showNew, setShowNew] = useState(false);
 
-  const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
+  // Soonest-upcoming meetings first; overdue (past-dated, never completed) sink below them.
+  const nowIso = new Date().toISOString();
+  const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => {
+    const aOverdue = a.scheduledAt < nowIso;
+    const bOverdue = b.scheduledAt < nowIso;
+    if (aOverdue !== bOverdue) return aOverdue ? 1 : -1;
+    return aOverdue ? b.scheduledAt.localeCompare(a.scheduledAt) : a.scheduledAt.localeCompare(b.scheduledAt);
+  });
   const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt));
 
   const list = tab === "upcoming" ? upcoming : completed;
