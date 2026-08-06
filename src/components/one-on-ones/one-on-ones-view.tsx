@@ -73,7 +73,7 @@ export function OneOnOnesView({
   const [showNew, setShowNew] = useState(false);
 
   const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
-  const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
+  const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt));
 
   const list = tab === "upcoming" ? upcoming : completed;
   const canCreate =

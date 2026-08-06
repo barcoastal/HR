@@ -207,7 +207,7 @@ export async function getOneOnOne(id: string) {
   // Past notebook entries for context
   const history = await db.oneOnOne.findMany({
     where: { employeeId: m.employeeId, id: { not: m.id }, status: "COMPLETED" },
-    orderBy: { completedAt: "desc" },
+    orderBy: { scheduledAt: "desc" },
     take: 10,
     select: {
       id: true,
@@ -225,7 +225,7 @@ export async function getOneOnOne(id: string) {
 export async function getPastOneOnOnesForEmployee(employeeId: string) {
   return db.oneOnOne.findMany({
     where: { employeeId, status: "COMPLETED" },
-    orderBy: { completedAt: "desc" },
+    orderBy: { scheduledAt: "desc" },
     include: {
       manager: { select: { id: true, firstName: true, lastName: true } },
     },
