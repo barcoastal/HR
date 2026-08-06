@@ -25,7 +25,13 @@ type MyEntry = {
 };
 
 function fmt(d: Date | string) {
-  return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const dt = new Date(d);
+  const date = dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  // Whole-day boundaries (00:00 start / 23:59 end) don't show a time.
+  const isAllDayBoundary =
+    (dt.getHours() === 0 && dt.getMinutes() === 0) || (dt.getHours() === 23 && dt.getMinutes() === 59);
+  if (isAllDayBoundary) return date;
+  return `${date}, ${dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
 }
 
 function audienceLabel(t: string) {
@@ -59,6 +65,9 @@ export function OutOfOfficeDialog({
 
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
+  const [allDay, setAllDay] = useState(true);
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("17:00");
   const [type, setType] = useState<"OUT_OF_OFFICE" | "WORKING_REMOTELY">("OUT_OF_OFFICE");
   const [note, setNote] = useState("");
   const [mode, setMode] = useState<"everyone" | "departments" | "people">("everyone");
@@ -125,6 +134,8 @@ export function OutOfOfficeDialog({
     const res = await createOutOfOffice({
       startDate,
       endDate,
+      startTime: allDay ? undefined : startTime,
+      endTime: allDay ? undefined : endTime,
       type,
       note,
       audience: {
@@ -224,6 +235,39 @@ export function OutOfOfficeDialog({
               />
             </div>
           </div>
+
+          <label className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={allDay}
+              onChange={(e) => setAllDay(e.target.checked)}
+              className="h-3.5 w-3.5 rounded border-gray-300 accent-[var(--color-accent)]"
+            />
+            All day
+          </label>
+
+          {!allDay && (
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Leaving at</label>
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className={input}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Back at</label>
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                  className={input}
+                />
+              </div>
+            </div>
+          )}
 
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Type</label>

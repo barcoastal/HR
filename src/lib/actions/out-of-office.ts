@@ -51,10 +51,24 @@ export type OutOfOfficeAudience = {
 export type CreateOutOfOfficeInput = {
   startDate: string;
   endDate: string;
+  /** "HH:MM" — omit both for a whole-day entry. */
+  startTime?: string;
+  endTime?: string;
   type?: "OUT_OF_OFFICE" | "WORKING_REMOTELY";
   note?: string;
   audience?: OutOfOfficeAudience;
 };
+
+/** Parse an optional "HH:MM" time-of-day. Returns null when absent/invalid. */
+function parseTime(value: string | undefined): { hour: number; minute: number } | null {
+  if (!value) return null;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!m) return null;
+  const hour = Number(m[1]);
+  const minute = Number(m[2]);
+  if (hour > 23 || minute > 59) return null;
+  return { hour, minute };
+}
 
 /**
  * Parse a "YYYY-MM-DD" input value as a LOCAL calendar date.
@@ -113,8 +127,17 @@ export async function createOutOfOffice(input: CreateOutOfOfficeInput) {
   if (!start || !end) {
     return { success: false, error: "Please pick valid dates." };
   }
-  if (end < start) {
-    return { success: false, error: "The end date can't be before the start date." };
+
+  // Optional times: whole-day entries span 00:00 → 23:59:59; timed entries
+  // use the picked times on the start/end dates.
+  const startTime = parseTime(input.startTime);
+  const endTime = parseTime(input.endTime);
+  const startAt = new Date(start.getFullYear(), start.getMonth(), start.getDate(), startTime?.hour ?? 0, startTime?.minute ?? 0);
+  const endAt = endTime
+    ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), endTime.hour, endTime.minute)
+    : new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59);
+  if (endAt <= startAt) {
+    return { success: false, error: "The end of the entry must be after its start." };
   }
 
   const audienceType = input.audience?.type ?? "all";
@@ -122,9 +145,8 @@ export async function createOutOfOffice(input: CreateOutOfOfficeInput) {
   await db.outOfOffice.create({
     data: {
       employeeId,
-      // Store as whole days: start at 00:00, end at 23:59:59 local.
-      startDate: new Date(start.getFullYear(), start.getMonth(), start.getDate()),
-      endDate: new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59),
+      startDate: startAt,
+      endDate: endAt,
       type: input.type ?? "OUT_OF_OFFICE",
       note: input.note?.trim() || null,
       audienceType,

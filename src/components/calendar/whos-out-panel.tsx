@@ -28,6 +28,15 @@ function dayLabel(d: Date) {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+function timeLabel(d: Date) {
+  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+}
+
+/** Whole-day entries start at 00:00 and end at 23:59 — anything else is timed. */
+function isWholeDayBoundary(d: Date) {
+  return (d.getHours() === 0 && d.getMinutes() === 0) || (d.getHours() === 23 && d.getMinutes() === 59);
+}
+
 /** Whole-day difference, ignoring time of day. */
 function daysFromToday(d: Date, today: Date) {
   const a = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -43,12 +52,20 @@ function Row({ entry, today }: { entry: Entry; today: Date }) {
   const startsIn = daysFromToday(entry.startDate, today);
   const backOn = new Date(entry.endDate.getTime() + 1);
 
+  const startTimed = !isWholeDayBoundary(entry.startDate);
+  const endTimed = !isWholeDayBoundary(entry.endDate);
+  const sameDay = entry.startDate.toDateString() === entry.endDate.toDateString();
+
   const when =
     startsIn <= 0
-      ? `back ${dayLabel(backOn)}`
-      : startsIn === 1
-        ? `tomorrow – ${dayLabel(entry.endDate)}`
-        : `${dayLabel(entry.startDate)} – ${dayLabel(entry.endDate)}`;
+      ? endTimed
+        ? `back ${dayLabel(entry.endDate)}, ${timeLabel(entry.endDate)}`
+        : `back ${dayLabel(backOn)}`
+      : sameDay && startTimed && endTimed
+        ? `${dayLabel(entry.startDate)}, ${timeLabel(entry.startDate)} – ${timeLabel(entry.endDate)}`
+        : startsIn === 1
+          ? `tomorrow – ${dayLabel(entry.endDate)}`
+          : `${dayLabel(entry.startDate)} – ${dayLabel(entry.endDate)}`;
 
   return (
     <div className="flex items-center gap-3 py-2">
