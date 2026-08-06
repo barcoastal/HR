@@ -1,46 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireApiAuth } from "@/lib/auth-helpers";
-
-// Auth: query param ?api_token=XXX
-// Base: https://app.backgroundchecks.com/api
-const BG_CHECK_BASE = "https://app.backgroundchecks.com/api";
-const BG_CHECK_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
-
-function apiUrl(path: string) {
-  const sep = path.includes("?") ? "&" : "?";
-  return `${BG_CHECK_BASE}${path}${sep}api_token=${BG_CHECK_API_KEY}`;
-}
+import {
+  buildProductList,
+  createInvitationOrder,
+  fireBgCheckCompleteNotification,
+  getOrder,
+  isContinentalConfigured,
+  listInvitations,
+  mapOrderStatus,
+  ContinentalError,
+  type BgCheckOptions,
+} from "@/lib/continental";
 
 // POST /api/background-check  — initiate a background check order
 export async function POST(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const body = await req.json();
-  const { candidateId, options } = body as {
-    candidateId: string;
-    options?: {
-      report_sku?: "HIRE1" | "HIRE2" | "HIRE3";
-      drug_test?: "Y" | "N";
-      drug_sku?: "drug" | "drug9" | "drug10";
-      mvr?: "Y" | "N";
-      employment?: "Y" | "N";
-      education?: "Y" | "N";
-      blj?: "Y" | "N";
-      federal_criminal?: "Y" | "N";
-      bankruptcy?: "Y" | "N";
-      civil_judgment?: "Y" | "N";
-      tax_lien?: "Y" | "N";
-      credit_report?: "Y" | "N";
-    };
-  };
+  const { candidateId, options } = body as { candidateId: string; options?: BgCheckOptions };
 
   if (!candidateId) {
     return NextResponse.json({ error: "candidateId is required" }, { status: 400 });
   }
 
   // Sandbox: simulate a submitted order so the hiring flow stays testable
-  // without hitting backgroundchecks.com or emailing the candidate.
+  // without hitting Continental or emailing the candidate.
   if (process.env.SANDBOX_MODE === "1") {
     const sbxCandidate = await db.candidate.findUnique({ where: { id: candidateId } });
     if (!sbxCandidate) {
@@ -60,10 +45,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true, sandbox: true, orderId: `SBX-${candidateId.slice(0, 8)}` });
   }
 
-  if (!BG_CHECK_API_KEY) {
-    console.error("[background-check] BACKGROUND_CHECK_API_KEY is not set on the server");
+  if (!isContinentalConfigured()) {
+    console.error("[background-check] CONTINENTAL_API_USER / CONTINENTAL_API_PASSWORD not set on the server");
     return NextResponse.json(
-      { error: "Background check is not configured on the server (missing API key)" },
+      { error: "Background check is not configured on the server (missing Continental credentials)" },
       { status: 500 }
     );
   }
@@ -84,125 +69,27 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const drugTest = options?.drug_test || "N";
-  const payload: Record<string, unknown> = {
-    report_sku: options?.report_sku || "HIRE3",
-    order_quantity: 1,
-    applicant_emails: [candidate.email],
-    drug_test: drugTest,
-    mvr: options?.mvr || "N",
-    employment: options?.employment || "Y",
-    education: options?.education || "Y",
-    blj: options?.blj || "Y",
-    federal_criminal: options?.federal_criminal || "Y",
-    bankruptcy: options?.bankruptcy || "N",
-    civil_judgment: options?.civil_judgment || "N",
-    tax_lien: options?.tax_lien || "N",
-    credit_report: options?.credit_report || "N",
-    terms_agree: "Y",
-  };
-  // drug_sku is only valid when drug_test is requested
-  if (drugTest === "Y") {
-    payload.drug_sku = options?.drug_sku || "drug";
-  }
+  console.log(`[background-check] submitting Continental invitation order for ${candidate.email} (${candidateId})`);
 
-  console.log(`[background-check] submitting order for ${candidate.email} (${candidateId})`);
-
-  let response: Response;
+  let orderId: string;
   try {
-    response = await fetch(apiUrl("/orders/new"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload),
-      redirect: "manual",
-    });
+    ({ orderId } = await createInvitationOrder({
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      email: candidate.email,
+      products: buildProductList(options),
+    }));
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.error("[background-check] fetch to backgroundchecks.com failed:", msg);
-    return NextResponse.json(
-      { error: "Could not reach backgroundchecks.com", details: msg },
-      { status: 502 }
-    );
-  }
-
-  // backgroundchecks.com responds to an invalid/expired api_token by redirecting
-  // to /login (302) instead of returning 401. Catch that explicitly.
-  if (response.status >= 300 && response.status < 400) {
-    const location = response.headers.get("location") || "";
-    console.error(
-      `[background-check] backgroundchecks.com redirected ${response.status} → ${location}`
-    );
-    if (location.includes("/login")) {
+    if (error instanceof ContinentalError) {
+      console.error(`[background-check] Continental order failed (${error.httpStatus}): ${error.message} ${error.details || ""}`);
       return NextResponse.json(
-        {
-          error: "Background check API token was rejected",
-          details:
-            "backgroundchecks.com redirected the request to its login page. The BACKGROUND_CHECK_API_KEY on the server is likely expired or invalid. Regenerate it at app.backgroundchecks.com and update Railway.",
-        },
+        { error: `Continental Screening rejected the order`, details: error.message },
         { status: 502 }
       );
     }
-    return NextResponse.json(
-      { error: `Unexpected redirect from backgroundchecks.com`, details: location },
-      { status: 502 }
-    );
-  }
-
-  if (!response.ok) {
-    const errorText = await response.text().catch(() => "");
-    console.error(
-      `[background-check] backgroundchecks.com returned ${response.status}: ${errorText}`
-    );
-    return NextResponse.json(
-      {
-        error: `Background check API returned ${response.status}`,
-        details: errorText || response.statusText,
-      },
-      { status: 502 }
-    );
-  }
-
-  const rawBody = await response.text();
-  const contentType = response.headers.get("content-type") || "";
-  if (!contentType.includes("json")) {
-    console.error(
-      `[background-check] expected JSON but got ${contentType}: ${rawBody.slice(0, 500)}`
-    );
-    return NextResponse.json(
-      {
-        error: "Background check API returned non-JSON response",
-        details: `Content-Type: ${contentType}. First 300 chars: ${rawBody.slice(0, 300)}`,
-      },
-      { status: 502 }
-    );
-  }
-
-  let data: { applicants?: Array<{ report_key?: string; applicant_invite_url?: string }> };
-  try {
-    data = JSON.parse(rawBody);
-  } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);
-    console.error(
-      `[background-check] invalid JSON from backgroundchecks.com: ${msg}. Body: ${rawBody.slice(0, 500)}`
-    );
-    return NextResponse.json(
-      { error: "Invalid response from backgroundchecks.com", details: msg },
-      { status: 502 }
-    );
-  }
-
-  const reportKey = data.applicants?.[0]?.report_key || null;
-  const inviteUrl = data.applicants?.[0]?.applicant_invite_url || null;
-
-  if (!reportKey) {
-    console.error(
-      "[background-check] backgroundchecks.com response missing report_key:",
-      JSON.stringify(data)
-    );
-    return NextResponse.json(
-      { error: "Background check service did not return an order ID", details: data },
-      { status: 502 }
-    );
+    console.error("[background-check] fetch to Continental failed:", msg);
+    return NextResponse.json({ error: "Could not reach Continental Screening", details: msg }, { status: 502 });
   }
 
   await db.candidate.update({
@@ -210,20 +97,18 @@ export async function POST(req: NextRequest) {
     data: {
       status: "BACKGROUND_CHECK",
       backgroundCheckStatus: "AWAITING_APPLICANT",
-      backgroundCheckId: reportKey,
+      backgroundCheckId: orderId,
       backgroundCheckDate: new Date(),
       backgroundCheckOptions: JSON.stringify(options || {}),
     },
   });
 
-  console.log(
-    `[background-check] order created for ${candidate.email}: report_key=${reportKey}`
-  );
+  console.log(`[background-check] Continental order created for ${candidate.email}: orderID=${orderId}`);
 
   return NextResponse.json({
     success: true,
-    reportKey,
-    inviteUrl,
+    reportKey: orderId,
+    inviteUrl: null,
     status: "AWAITING_APPLICANT",
   });
 }
@@ -254,47 +139,51 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
   }
 
-  // If we have a report_key, poll the actual status from backgroundchecks.com
-  if (candidate.backgroundCheckId && BG_CHECK_API_KEY) {
+  // Poll the live status from Continental. Orders are numeric; skip sandbox
+  // ids and legacy backgroundchecks.com report keys.
+  if (
+    candidate.backgroundCheckId &&
+    /^\d+$/.test(candidate.backgroundCheckId) &&
+    isContinentalConfigured()
+  ) {
     try {
-      // GET /reports/{report_key}/status
-      const response = await fetch(
-        apiUrl(`/reports/${candidate.backgroundCheckId}/status`),
-        { method: "GET", headers: { Accept: "application/json" }, redirect: "manual" }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        // status: "A" = Awaiting Applicant, "P" = Pending, "C" = Complete
-        // flagged_for_end_user_review: boolean
-        const newStatus = mapApiStatus(data.status, data.flagged_for_end_user_review);
-
-        if (newStatus !== candidate.backgroundCheckStatus) {
-          await db.candidate.update({
-            where: { id: candidateId },
-            data: { backgroundCheckStatus: newStatus },
-          });
-          // No auto-send of the adverse-action letter here. Flipping to
-          // REJECTED + emailing the candidate is a manual decision — the UI
-          // shows a banner with a "Send Adverse Action Letter" button when
-          // status is FAILED.
-
-          // Fire an in-app + email notification the first time the check
-          // resolves to PASSED or FAILED so recruiters/HR see the result.
-          if (newStatus === "PASSED" || newStatus === "FAILED") {
-            await fireBgCheckCompleteNotification(candidateId, newStatus, candidate);
-          }
+      const order = await getOrder(candidate.backgroundCheckId);
+      let invitation = null;
+      if ((order.OrderStatus || "").toLowerCase() !== "closed") {
+        try {
+          const invitations = await listInvitations();
+          invitation = invitations.find((i) => String(i.OrderID) === candidate.backgroundCheckId) || null;
+        } catch {
+          // invitation lookup is best-effort
         }
-
-        return NextResponse.json({
-          status: newStatus,
-          apiStatus: data.status,
-          flagged: data.flagged_for_end_user_review || false,
-          reports: data.reports || null,
-          checkId: candidate.backgroundCheckId,
-          date: candidate.backgroundCheckDate,
-        });
       }
+      const newStatus = mapOrderStatus(order, invitation);
+
+      if (newStatus !== candidate.backgroundCheckStatus) {
+        await db.candidate.update({
+          where: { id: candidateId },
+          data: { backgroundCheckStatus: newStatus },
+        });
+        // No auto-send of the adverse-action letter here. Flipping to
+        // REJECTED + emailing the candidate is a manual decision — the UI
+        // shows a banner with a "Send Adverse Action Letter" button when
+        // status is FAILED.
+
+        // Fire an in-app + email notification the first time the check
+        // resolves to PASSED or FAILED so recruiters/HR see the result.
+        if (newStatus === "PASSED" || newStatus === "FAILED") {
+          await fireBgCheckCompleteNotification(candidateId, newStatus, candidate);
+        }
+      }
+
+      return NextResponse.json({
+        status: newStatus,
+        apiStatus: order.OrderStatus || null,
+        flagged: newStatus === "FAILED",
+        reports: order.Searches || null,
+        checkId: candidate.backgroundCheckId,
+        date: candidate.backgroundCheckDate,
+      });
     } catch {
       // API unreachable — return cached status
     }
@@ -346,42 +235,4 @@ export async function PATCH(req: NextRequest) {
   // "Mark Failed" or hit Refresh Status.
 
   return NextResponse.json({ success: true, status });
-}
-
-async function fireBgCheckCompleteNotification(
-  candidateId: string,
-  newStatus: "PASSED" | "FAILED",
-  candidate: { firstName: string; lastName: string; position: { title: string } | null }
-) {
-  try {
-    const { sendNotifications } = await import("@/lib/notifications/send");
-    const fullName = `${candidate.firstName} ${candidate.lastName}`;
-    const positionTitle = candidate.position?.title || "their position";
-    const resultLabel = newStatus === "PASSED" ? "Passed — Clear" : "Flagged for Review";
-    await sendNotifications({
-      action: "BACKGROUND_CHECK_COMPLETE",
-      candidateId,
-      message: `Background check complete for ${fullName}: ${resultLabel}`,
-      link: "/cv",
-      emailSubject: `Background check ${newStatus === "PASSED" ? "passed" : "flagged"}: ${fullName}`,
-      emailBody: `<p>The background check for <strong>${fullName}</strong>${candidate.position?.title ? ` (${positionTitle})` : ""} has completed.</p><p>Result: <strong>${resultLabel}</strong>.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in CALATRAVA</a></p>`,
-    });
-  } catch (err) {
-    console.error("[background-check] notification failed:", err);
-  }
-}
-
-// Map API status codes to our internal statuses
-// A = Awaiting Applicant, P = Pending (processing), C = Complete
-function mapApiStatus(apiStatus: string, flagged?: boolean): string {
-  switch (apiStatus) {
-    case "A":
-      return "AWAITING_APPLICANT";
-    case "P":
-      return "PENDING";
-    case "C":
-      return flagged ? "FAILED" : "PASSED";
-    default:
-      return "PENDING";
-  }
 }

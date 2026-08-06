@@ -252,18 +252,12 @@ export function CandidateDetailDialog({
   const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
   const [bgCheckLoading, setBgCheckLoading] = useState(false);
   const [bgCheckOptions, setBgCheckOptions] = useState({
-    report_sku: "HIRE3",
     drug_test: "N",
     drug_sku: "drug",
     mvr: "N",
     employment: "N",
     education: "N",
     blj: "N",
-    federal_criminal: "N",
-    bankruptcy: "N",
-    civil_judgment: "N",
-    tax_lien: "N",
-    credit_report: "N",
   });
   const router = useRouter();
 
@@ -394,7 +388,7 @@ export function CandidateDetailDialog({
 
   // Auto-poll background-check status while the dialog is open and the check
   // is still resolving. Hits the GET endpoint which queries
-  // backgroundchecks.com, persists any change, and fires the
+  // Continental Screening, persists any change, and fires the
   // BACKGROUND_CHECK_COMPLETE notification. Stops once we see PASSED/FAILED.
   useEffect(() => {
     if (!open || !candidate) return;
@@ -932,42 +926,18 @@ export function CandidateDetailDialog({
             {form.status === "BACKGROUND_CHECK" && candidate.status !== "BACKGROUND_CHECK" && (
               <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-3">
                 <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check Options</p>
-                <div>
-                  <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Report Package</label>
-                  <select value={bgCheckOptions.report_sku} onChange={(e) => setBgCheckOptions((o) => ({ ...o, report_sku: e.target.value }))} className={inputClass}>
-                    <option value="HIRE1">HIRE1 — Basic</option>
-                    <option value="HIRE2">HIRE2 — Standard</option>
-                    <option value="HIRE3">HIRE3 — Comprehensive</option>
-                  </select>
+                <div className="rounded-md bg-orange-500/10 px-2.5 py-2">
+                  <p className="text-[11px] font-medium text-orange-300">Standard Criminal Package (always included)</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)]">Nationwide, county &amp; federal criminal + SSN trace / address history</p>
                 </div>
-                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Criminal & Verification</p>
+                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Additional Searches</p>
                 <div className="grid grid-cols-2 gap-2">
                   {([
-                    { key: "federal_criminal", label: "Federal Criminal" },
                     { key: "employment", label: "Employment Verification" },
                     { key: "education", label: "Education Verification" },
                     { key: "mvr", label: "Motor Vehicle Record" },
-                    { key: "blj", label: "County Criminal" },
+                    { key: "blj", label: "Bankruptcies, Liens & Judgments" },
                     { key: "drug_test", label: "Drug Test" },
-                  ] as const).map(({ key, label }) => (
-                    <label key={key} className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={bgCheckOptions[key] === "Y"}
-                        onChange={(e) => setBgCheckOptions((o) => ({ ...o, [key]: e.target.checked ? "Y" : "N" }))}
-                        className="rounded border-[var(--color-border)] accent-[var(--color-accent)]"
-                      />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-                <p className="text-[10px] font-medium text-[var(--color-text-muted)] uppercase tracking-wider mt-2">Financial Background</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {([
-                    { key: "bankruptcy", label: "Bankruptcy Records" },
-                    { key: "civil_judgment", label: "Civil Judgments" },
-                    { key: "tax_lien", label: "Tax Liens" },
-                    { key: "credit_report", label: "Credit Report" },
                   ] as const).map(({ key, label }) => (
                     <label key={key} className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer">
                       <input
@@ -984,14 +954,14 @@ export function CandidateDetailDialog({
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Drug Test Panel</label>
                     <select value={bgCheckOptions.drug_sku} onChange={(e) => setBgCheckOptions((o) => ({ ...o, drug_sku: e.target.value }))} className={inputClass}>
-                      <option value="drug">Standard Panel</option>
+                      <option value="drug">5-Panel (Standard)</option>
                       <option value="drug9">9-Panel</option>
                       <option value="drug10">10-Panel</option>
                     </select>
                   </div>
                 )}
                 <p className="text-[10px] text-[var(--color-text-muted)]">
-                  An email will be sent to {form.email || "the candidate"} via backgroundchecks.com
+                  An email will be sent to {form.email || "the candidate"} via Continental Screening
                 </p>
               </div>
             )}
@@ -1072,7 +1042,7 @@ export function CandidateDetailDialog({
                           }
                         }}
                         disabled={bgCheckLoading}
-                        title="Search backgroundchecks.com for this candidate's report by email and link it to this profile"
+                        title="Search Continental Screening for this candidate's order by email and link it to this profile"
                         className="px-2 py-1 rounded text-xs font-medium bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] inline-flex items-center gap-1 disabled:opacity-50"
                       >
                         <Icon name="cloud_download" size={12} />
@@ -1118,7 +1088,7 @@ export function CandidateDetailDialog({
                   </div>
                 </div>
                 <p className="text-[10px] text-[var(--color-text-muted)]">
-                  via backgroundchecks.com
+                  via Continental Screening
                   {bgCheckStatus === "AWAITING_APPLICANT" && " — candidate needs to complete their form"}
                   {bgCheckStatus === "PASSED" && " — ready to hire"}
                   {bgCheckStatus === "FAILED" && " — review required before proceeding"}
@@ -1140,7 +1110,7 @@ export function CandidateDetailDialog({
                     ].filter(Boolean);
                     const standardChecks = [
                       opts.federal_criminal === "Y" && "Federal Criminal",
-                      opts.blj === "Y" && "County Criminal",
+                      opts.blj === "Y" && "Bankruptcies/Liens/Judgments",
                       opts.employment === "Y" && "Employment",
                       opts.education === "Y" && "Education",
                       opts.mvr === "Y" && "MVR",

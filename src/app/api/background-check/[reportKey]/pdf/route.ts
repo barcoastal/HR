@@ -3,17 +3,21 @@ import { randomUUID } from "crypto";
 import { requireApiAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 
-const BG_CHECK_BASE = "https://app.backgroundchecks.com/api";
-const BG_CHECK_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
+// Legacy backgroundchecks.com access — kept only so reports ordered on the
+// old provider can still be pulled while their API key remains valid.
+const LEGACY_BASE = "https://app.backgroundchecks.com/api";
+const LEGACY_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
 
 /**
  * GET /api/background-check/{reportKey}/pdf
  *
  * Streams the completed background-check report PDF so admins can review it
- * inside the platform. On first successful fetch from backgroundchecks.com
- * we cache the bytes into FileBlob and stamp the candidate's
- * backgroundReportFilename so subsequent loads (and future expirations of
- * the provider's signed URL) keep working.
+ * inside the platform.
+ *
+ * Continental Screening delivers the PDF via our postback route, which caches
+ * it as a FileBlob stamped on the candidate — so Continental reports are
+ * served straight from that cache. Legacy backgroundchecks.com reports fall
+ * back to a live fetch (and get cached the same way on first success).
  *
  * Gated to SUPER_ADMIN / ADMIN / HR.
  */
@@ -41,9 +45,6 @@ export async function GET(
     return NextResponse.json({ error: "Report not found" }, { status: 404 });
   }
 
-  // safeName previously used in Content-Disposition filename — now stripped
-  // for inline-preview reliability across Chrome configurations.
-
   // Prefer the cached copy if we've already imported it.
   if (owner.backgroundReportFilename) {
     const blob = await db.fileBlob.findUnique({
@@ -62,15 +63,28 @@ export async function GET(
     }
   }
 
-  if (!BG_CHECK_API_KEY) {
+  // Continental orders are numeric. Their PDF only arrives via postback, so
+  // nothing cached means the report isn't ready (or the postback was missed).
+  if (/^\d+$/.test(reportKey)) {
+    return NextResponse.json(
+      {
+        error: "Report PDF not available yet",
+        details:
+          "Continental Screening delivers the report automatically when the check completes. If the check is already complete and this persists, the postback may have been missed — contact Continental or engineering.",
+      },
+      { status: 404 }
+    );
+  }
+
+  if (!LEGACY_API_KEY) {
     return NextResponse.json({ error: "Background check is not configured on the server" }, { status: 500 });
   }
 
-  // /report/{key}/pdf is the working endpoint — it returns a 302 to a signed
-  // S3-style URL. fetch with redirect:follow grabs the binary in one go.
+  // Legacy: /report/{key}/pdf returns a 302 to a signed S3-style URL. fetch
+  // with redirect:follow grabs the binary in one go.
   const candidates = [
-    `${BG_CHECK_BASE}/report/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
-    `${BG_CHECK_BASE}/reports/${reportKey}/pdf?api_token=${BG_CHECK_API_KEY}`,
+    `${LEGACY_BASE}/report/${reportKey}/pdf?api_token=${LEGACY_API_KEY}`,
+    `${LEGACY_BASE}/reports/${reportKey}/pdf?api_token=${LEGACY_API_KEY}`,
   ];
 
   for (const url of candidates) {
@@ -125,8 +139,8 @@ export async function GET(
 
   return NextResponse.json(
     {
-      error: "Could not fetch report PDF from backgroundchecks.com",
-      details: "The report may not be complete yet, or your API token doesn't have access to this report. Try opening it directly on backgroundchecks.com.",
+      error: "Could not fetch report PDF",
+      details: "The report may not be complete yet, or the legacy API token no longer has access to this report.",
     },
     { status: 502 }
   );
