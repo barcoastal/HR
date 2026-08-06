@@ -212,6 +212,91 @@ export async function createOneOnOneEventForUser(
   return { eventId: data.id ?? "", meetLink: data.hangoutLink ?? null };
 }
 
+/**
+ * Create an invite-style event (attendees, optional Meet link) on the
+ * creator's *own* primary calendar so the invite comes from them instead of
+ * whoever connected the platform-wide Google Calendar in Settings. Throws if
+ * the user hasn't connected their calendar — callers fall back to the shared
+ * connection.
+ */
+export async function createInviteEventForUser(
+  userId: string,
+  params: {
+    summary: string;
+    description?: string;
+    location?: string;
+    startTime: Date;
+    durationMinutes: number;
+    attendees: { email: string; displayName?: string }[];
+    withMeetLink?: boolean;
+  }
+): Promise<{ eventId: string; meetLink: string | null }> {
+  const { accessToken } = await ensureValidToken(userId);
+  const endTime = new Date(params.startTime.getTime() + params.durationMinutes * 60 * 1000);
+
+  const body: Record<string, unknown> = {
+    summary: params.summary,
+    description: params.description,
+    location: params.location,
+    start: { dateTime: params.startTime.toISOString() },
+    end: { dateTime: endTime.toISOString() },
+    attendees: params.attendees,
+    reminders: { useDefault: true },
+  };
+  if (params.withMeetLink) {
+    body.conferenceData = {
+      createRequest: {
+        requestId: `company-event-${Date.now()}`,
+        conferenceSolutionKey: { type: "hangoutsMeet" },
+      },
+    };
+  }
+
+  const qs = params.withMeetLink
+    ? "conferenceDataVersion=1&sendUpdates=all"
+    : "sendUpdates=all";
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events?${qs}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Google Calendar API error ${res.status}: ${text}`);
+  }
+  const data = (await res.json()) as { id?: string; hangoutLink?: string };
+  return { eventId: data.id ?? "", meetLink: data.hangoutLink ?? null };
+}
+
+export async function patchEventAttendeesForUser(
+  userId: string,
+  eventId: string,
+  attendees: { email: string; displayName?: string }[]
+): Promise<void> {
+  const { accessToken } = await ensureValidToken(userId);
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?sendUpdates=all`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ attendees }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Google Calendar API error ${res.status}: ${text}`);
+  }
+}
+
 export async function pushEventToGoogleCalendar(
   userId: string,
   event: {

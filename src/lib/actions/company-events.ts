@@ -59,24 +59,54 @@ export async function createCompanyEvent(data: {
   const end = new Date(start.getTime() + duration * 60 * 1000);
 
   try {
-    const { getCalendarClient } = await import("@/lib/google-calendar");
-    const calendar = await getCalendarClient();
-    const res = await calendar.events.insert({
-      calendarId: "primary",
-      sendUpdates: "all",
-      conferenceDataVersion: data.withMeetLink ? 1 : undefined,
-      requestBody: {
-        summary: title,
-        description: data.description || undefined,
-        location: data.location || undefined,
-        start: { dateTime: start.toISOString() },
-        end: { dateTime: end.toISOString() },
-        attendees: attendees.map((a) => ({ email: a.email, displayName: `${a.firstName} ${a.lastName}` })),
-        conferenceData: data.withMeetLink
-          ? { createRequest: { requestId: `company-event-${Date.now()}`, conferenceSolutionKey: { type: "hangoutsMeet" } } }
-          : undefined,
-      },
+    const googleAttendees = attendees.map((a) => ({ email: a.email, displayName: `${a.firstName} ${a.lastName}` }));
+
+    // Prefer creating the invite from the creator's own Google account so the
+    // invite comes from them — not from whoever connected the shared company
+    // calendar in Settings. Fall back to the shared connection.
+    let inserted: { eventId: string; meetLink: string | null } | null = null;
+    const creator = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { googleCalendarSyncEnabled: true },
     });
+    if (creator?.googleCalendarSyncEnabled) {
+      try {
+        const sync = await import("@/lib/google-calendar-sync");
+        inserted = await sync.createInviteEventForUser(session.user.id, {
+          summary: title,
+          description: data.description || undefined,
+          location: data.location || undefined,
+          startTime: start,
+          durationMinutes: duration,
+          attendees: googleAttendees,
+          withMeetLink: data.withMeetLink,
+        });
+      } catch (err) {
+        console.error("[createCompanyEvent] creator-calendar insert failed, falling back to shared calendar:", err);
+      }
+    }
+
+    if (!inserted) {
+      const { getCalendarClient } = await import("@/lib/google-calendar");
+      const calendar = await getCalendarClient();
+      const res = await calendar.events.insert({
+        calendarId: "primary",
+        sendUpdates: "all",
+        conferenceDataVersion: data.withMeetLink ? 1 : undefined,
+        requestBody: {
+          summary: title,
+          description: data.description || undefined,
+          location: data.location || undefined,
+          start: { dateTime: start.toISOString() },
+          end: { dateTime: end.toISOString() },
+          attendees: googleAttendees,
+          conferenceData: data.withMeetLink
+            ? { createRequest: { requestId: `company-event-${Date.now()}`, conferenceSolutionKey: { type: "hangoutsMeet" } } }
+            : undefined,
+        },
+      });
+      inserted = { eventId: res.data.id ?? "", meetLink: res.data.hangoutLink ?? null };
+    }
 
     // Store the event in-app too (audience-scoped), so invitees see it on
     // the app calendar and the feed — and nobody else does.
@@ -123,8 +153,8 @@ export async function createCompanyEvent(data: {
     revalidatePath("/");
     return {
       success: true,
-      eventId: res.data.id ?? "",
-      meetLink: res.data.hangoutLink ?? null,
+      eventId: inserted.eventId,
+      meetLink: inserted.meetLink,
       attendeeCount: attendees.length,
     };
   } catch (err) {
