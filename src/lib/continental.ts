@@ -105,12 +105,19 @@ export function buildProductList(options: BgCheckOptions | null | undefined): { 
 
 // ── Orders ─────────────────────────────────────────────────
 
+/**
+ * Place an invitation order. Continental does NOT return an order ID here —
+ * the order only comes into existence after the applicant completes the
+ * invitation form. The response carries `payload.result.invitationID`; the
+ * eventual OrderID appears on the invitation record (GET /invitations) once
+ * the applicant signs.
+ */
 export async function createInvitationOrder(params: {
   firstName: string;
   lastName: string;
   email: string;
   products: { SearchCode: string }[];
-}): Promise<{ orderId: string; raw: unknown }> {
+}): Promise<{ invitationId: string; raw: unknown }> {
   const payload: Record<string, unknown> = {
     applicantinfo: { firstname: params.firstName, lastname: params.lastName },
     invitation: 1,
@@ -127,16 +134,15 @@ export async function createInvitationOrder(params: {
     payload.postbackurl = `${postbackBase}/api/background-check/postback?secret=${postbackSecret}`;
   }
 
-  const data = await continentalFetch<{ payload?: { orderID?: number | string; OrderID?: number | string } }>(
-    "/orders",
-    { method: "POST", body: JSON.stringify(payload) }
-  );
-  const orderId = data.payload?.orderID ?? data.payload?.OrderID;
-  if (orderId === undefined || orderId === null || orderId === "") {
-    console.error("[continental] order response missing orderID:", JSON.stringify(data).slice(0, 800));
-    throw new ContinentalError("Continental did not return an order ID", 502);
+  const data = await continentalFetch<{
+    payload?: { result?: { invitationID?: number | string; status?: string; statusCode?: number } };
+  }>("/orders", { method: "POST", body: JSON.stringify(payload) });
+  const invitationId = data.payload?.result?.invitationID;
+  if (invitationId === undefined || invitationId === null || invitationId === "") {
+    console.error("[continental] order response missing invitationID:", JSON.stringify(data).slice(0, 800));
+    throw new ContinentalError("Continental did not return an invitation ID", 502);
   }
-  return { orderId: String(orderId), raw: data };
+  return { invitationId: String(invitationId), raw: data };
 }
 
 export type ContinentalSearch = {
@@ -175,6 +181,26 @@ export async function listInvitations(): Promise<ContinentalInvitation[]> {
   return Array.isArray(data.payload) ? data.payload : [];
 }
 
+/**
+ * Unsigned invitations carry the epoch as SignDate ("1969-12-31 18:00:00"),
+ * not null — treat anything before 2000 as unsigned.
+ */
+export function isInvitationSigned(invitation: ContinentalInvitation): boolean {
+  if (!invitation.SignDate) return false;
+  const t = new Date(invitation.SignDate.replace(" ", "T")).getTime();
+  return Number.isFinite(t) && t > Date.UTC(2000, 0, 1);
+}
+
+/** Ids we store before Continental assigns a real OrderID. */
+export function isInvitationKey(key: string | null | undefined): boolean {
+  return typeof key === "string" && key.startsWith("INV-");
+}
+
+export async function findInvitationById(invitationId: string): Promise<ContinentalInvitation | null> {
+  const invitations = await listInvitations();
+  return invitations.find((i) => String(i.ID) === invitationId) || null;
+}
+
 // ── Status mapping ─────────────────────────────────────────
 
 export function hasRecords(search: ContinentalSearch): boolean {
@@ -198,7 +224,7 @@ export function mapOrderStatus(
     const flagged = (order.Searches || []).some(hasRecords);
     return flagged ? "FAILED" : "PASSED";
   }
-  if (invitation && !invitation.SignDate) return "AWAITING_APPLICANT";
+  if (invitation && !isInvitationSigned(invitation)) return "AWAITING_APPLICANT";
   return "PENDING";
 }
 

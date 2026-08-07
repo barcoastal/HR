@@ -4,9 +4,11 @@ import { requireApiAuth } from "@/lib/auth-helpers";
 import {
   buildProductList,
   createInvitationOrder,
+  findInvitationById,
   fireBgCheckCompleteNotification,
   getOrder,
   isContinentalConfigured,
+  isInvitationKey,
   listInvitations,
   mapOrderStatus,
   ContinentalError,
@@ -71,9 +73,9 @@ export async function POST(req: NextRequest) {
 
   console.log(`[background-check] submitting Continental invitation order for ${candidate.email} (${candidateId})`);
 
-  let orderId: string;
+  let invitationId: string;
   try {
-    ({ orderId } = await createInvitationOrder({
+    ({ invitationId } = await createInvitationOrder({
       firstName: candidate.firstName,
       lastName: candidate.lastName,
       email: candidate.email,
@@ -92,22 +94,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Could not reach Continental Screening", details: msg }, { status: 502 });
   }
 
+  // No OrderID exists yet — Continental only assigns one after the applicant
+  // completes the invitation. Store the invitation id (INV- prefixed) and let
+  // the status poll / postback swap in the real OrderID once it appears.
+  const reportKey = `INV-${invitationId}`;
   await db.candidate.update({
     where: { id: candidateId },
     data: {
       status: "BACKGROUND_CHECK",
       backgroundCheckStatus: "AWAITING_APPLICANT",
-      backgroundCheckId: orderId,
+      backgroundCheckId: reportKey,
       backgroundCheckDate: new Date(),
       backgroundCheckOptions: JSON.stringify(options || {}),
     },
   });
 
-  console.log(`[background-check] Continental order created for ${candidate.email}: orderID=${orderId}`);
+  console.log(`[background-check] Continental invitation sent for ${candidate.email}: invitationID=${invitationId}`);
 
   return NextResponse.json({
     success: true,
-    reportKey: orderId,
+    reportKey,
     inviteUrl: null,
     status: "AWAITING_APPLICANT",
   });
@@ -139,20 +145,42 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Candidate not found" }, { status: 404 });
   }
 
+  // An INV- key means the applicant hasn't completed the invitation yet and
+  // no Continental order exists. Check whether the invitation has picked up
+  // its OrderID; if so, swap the real OrderID in and fall through to polling.
+  let checkId = candidate.backgroundCheckId;
+  if (checkId && isInvitationKey(checkId) && isContinentalConfigured()) {
+    try {
+      const invitation = await findInvitationById(checkId.slice(4));
+      if (invitation?.OrderID) {
+        checkId = String(invitation.OrderID);
+        await db.candidate.update({
+          where: { id: candidateId },
+          data: { backgroundCheckId: checkId },
+        });
+      } else {
+        return NextResponse.json({
+          status: "AWAITING_APPLICANT",
+          checkId,
+          date: candidate.backgroundCheckDate,
+        });
+      }
+    } catch {
+      // Continental unreachable — fall through to the cached status below.
+      checkId = candidate.backgroundCheckId;
+    }
+  }
+
   // Poll the live status from Continental. Orders are numeric; skip sandbox
   // ids and legacy backgroundchecks.com report keys.
-  if (
-    candidate.backgroundCheckId &&
-    /^\d+$/.test(candidate.backgroundCheckId) &&
-    isContinentalConfigured()
-  ) {
+  if (checkId && /^\d+$/.test(checkId) && isContinentalConfigured()) {
     try {
-      const order = await getOrder(candidate.backgroundCheckId);
+      const order = await getOrder(checkId);
       let invitation = null;
       if ((order.OrderStatus || "").toLowerCase() !== "closed") {
         try {
           const invitations = await listInvitations();
-          invitation = invitations.find((i) => String(i.OrderID) === candidate.backgroundCheckId) || null;
+          invitation = invitations.find((i) => String(i.OrderID) === checkId) || null;
         } catch {
           // invitation lookup is best-effort
         }
@@ -181,7 +209,7 @@ export async function GET(req: NextRequest) {
         apiStatus: order.OrderStatus || null,
         flagged: newStatus === "FAILED",
         reports: order.Searches || null,
-        checkId: candidate.backgroundCheckId,
+        checkId,
         date: candidate.backgroundCheckDate,
       });
     } catch {

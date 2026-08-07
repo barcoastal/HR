@@ -5,6 +5,7 @@ import {
   getOrder,
   hasRecords,
   isContinentalConfigured,
+  listInvitations,
   mapOrderStatus,
   storeReportPdf,
   type ContinentalSearch,
@@ -54,17 +55,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No OrderID in postback payload" }, { status: 400 });
   }
 
-  const candidate = await db.candidate.findFirst({
+  const candidateSelect = {
+    id: true,
+    firstName: true,
+    lastName: true,
+    backgroundCheckStatus: true,
+    backgroundReportFilename: true,
+    position: { select: { title: true } },
+  } as const;
+
+  let candidate = await db.candidate.findFirst({
     where: { backgroundCheckId: orderId },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      backgroundCheckStatus: true,
-      backgroundReportFilename: true,
-      position: { select: { title: true } },
-    },
+    select: candidateSelect,
   });
+
+  // Invitation orders are stored as INV-<invitationID> until the applicant
+  // signs — if this is the first we hear of the OrderID, resolve it through
+  // the invitations list and upgrade the stored key.
+  if (!candidate && isContinentalConfigured()) {
+    try {
+      const invitations = await listInvitations();
+      const invitation = invitations.find((i) => String(i.OrderID ?? "") === orderId);
+      if (invitation?.ID) {
+        candidate = await db.candidate.findFirst({
+          where: { backgroundCheckId: `INV-${invitation.ID}` },
+          select: candidateSelect,
+        });
+        if (candidate) {
+          await db.candidate.update({
+            where: { id: candidate.id },
+            data: { backgroundCheckId: orderId },
+          });
+          console.log(`[bg-postback] linked invitation INV-${invitation.ID} → order ${orderId}`);
+        }
+      }
+    } catch (err) {
+      console.error(`[bg-postback] invitation lookup failed for order ${orderId}:`, err);
+    }
+  }
+
   if (!candidate) {
     console.error(`[bg-postback] no candidate linked to Continental order ${orderId}`);
     return NextResponse.json({ error: "Unknown order" }, { status: 404 });
