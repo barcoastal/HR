@@ -41,7 +41,9 @@ async function continentalFetch<T>(path: string, init?: RequestInit): Promise<T>
     ...init,
     headers: {
       Authorization: "Basic " + Buffer.from(`${API_USER}:${API_PASSWORD}`).toString("base64"),
-      Accept: "application/json",
+      // Continental's Apache uses MultiViews negotiation; "Accept: application/json"
+      // has no matching variant and 406s. Responses are JSON regardless.
+      Accept: "*/*",
       ...(init?.body ? { "Content-Type": "application/json" } : {}),
       ...init?.headers,
     },

@@ -110,6 +110,7 @@ export default async function GuidePage() {
               <li>Performance reviews (anniversary)</li>
               <li>Time off</li>
               <li>Your Voice (pulse)</li>
+              <li>Clubs</li>
               <li>Settings — every panel</li>
               <li>Company Information</li>
               <li>User Management</li>
@@ -154,7 +155,7 @@ export default async function GuidePage() {
               <tr><td><span className="role-pill">ADMIN</span></td><td>Same as Super Admin minus the items above. Manages people, recruitment, onboarding, settings, integrations.</td></tr>
               <tr><td><span className="role-pill">HR</span></td><td>People, recruitment, onboarding/offboarding, documents, reviews, most of settings, notifications.</td></tr>
               <tr><td><span className="role-pill">MANAGER</span></td><td>Own profile, direct reports&apos; profiles, recruitment pipeline, 1:1s, reviews of direct reports, the company directory.</td></tr>
-              <tr><td><span className="role-pill">EMPLOYEE</span></td><td>Own profile, own documents, feed, calendar, time off, 1:1s with their manager. Cannot browse colleagues.</td></tr>
+              <tr><td><span className="role-pill">EMPLOYEE</span></td><td>Own profile, own documents, feed, clubs, calendar, time off, 1:1s with their manager. Cannot browse colleagues.</td></tr>
             </tbody>
           </table>
         </section>
@@ -373,6 +374,7 @@ export default async function GuidePage() {
             <li><strong>Header</strong> — your photo, name, pronouns, job title + department. Click your avatar to upload a new photo (PNG/JPG, &lt; 5 MB).</li>
             <li><strong>My Documents widget</strong> — your 5 most recent. <em>View all →</em> jumps to /my-documents.</li>
             <li><strong>Reports To</strong> — your direct manager.</li>
+            <li><strong>My Clubs</strong> — clubs you&apos;ve joined.</li>
             <li><strong>About</strong> — bio, hobbies, dietary restrictions. Click Edit.</li>
             <li><strong>Personal Info</strong> — pronouns, address, T-shirt size. Click Edit. You cannot change job title, department, manager, or status from here — only HR can.</li>
             <li><strong>Emergency Contact</strong> — Click Edit. Visible only to you, your manager, and admin/HR.</li>
@@ -895,6 +897,19 @@ export default async function GuidePage() {
             <li>Responses are aggregated server-side; individual responses are never shown to anyone.</li>
             <li>Once submitted, you don&apos;t see the popup again until the next survey.</li>
             <li>Results: Settings → Pulse Surveys → click any past survey → average score + distribution histogram.</li>
+          </ul>
+        </section>
+
+        {/* ============================================================ */}
+        <section>
+          <h2>32. Clubs</h2>
+          <p>Sidebar → <strong>Clubs</strong>. Lightweight social groups.</p>
+          <ul>
+            <li>Anyone can create a club: name, description, icon.</li>
+            <li>Members join by clicking <strong>Join</strong>.</li>
+            <li>Each club has its own mini-feed for posts &amp; comments.</li>
+            <li>Club memberships appear on your profile.</li>
+            <li>Examples: Soccer Club, Book Club, FIFA World Cup 2026 (per the live data).</li>
           </ul>
         </section>
 

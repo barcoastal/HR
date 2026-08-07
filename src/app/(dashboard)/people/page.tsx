@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
-import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
 import { BulkEmployeeImport } from "@/components/people/bulk-employee-import";
@@ -34,8 +33,6 @@ export default async function PeoplePage() {
     name: d.name,
     memberCount: employees.filter((e) => e.department?.name === d.name).length,
   }));
-
-  const outOfOffice = await getCurrentOutOfOfficeFor(employees.map((e) => e.id));
 
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12">
@@ -86,7 +83,6 @@ export default async function PeoplePage() {
             department: e.department ? { name: e.department.name } : null,
           }))}
           departments={departmentsWithCounts}
-          outOfOffice={outOfOffice}
         />
       )}
     </div>

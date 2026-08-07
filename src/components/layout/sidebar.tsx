@@ -29,6 +29,7 @@ const allNavLinks = [
   { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r) },
   { href: "/one-on-ones", label: "1:1 Reviews", icon: "forum", access: () => true },
   { href: "/calendar", label: "Calendar", icon: "calendar_month", access: () => true },
+  { href: "/clubs", label: "Clubs", icon: "groups", access: () => true },
   { href: "/voice", label: "Your Voice", icon: "campaign", access: () => true },
   { href: "/documents", label: "Documents", icon: "draw", access: () => true },
   { href: "/sign-queue", label: "Sign Queue", icon: "verified", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },

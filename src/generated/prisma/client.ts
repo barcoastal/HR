@@ -220,11 +220,6 @@ export type Interview = Prisma.InterviewModel
  */
 export type SigningRequest = Prisma.SigningRequestModel
 /**
- * Model OutOfOffice
- * 
- */
-export type OutOfOffice = Prisma.OutOfOfficeModel
-/**
  * Model TimeOffPolicy
  * 
  */

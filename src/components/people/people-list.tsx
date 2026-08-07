@@ -25,25 +25,6 @@ type Employee = {
   department: { name: string } | null;
 };
 
-export type OutOfOfficeInfo = { type: string; note: string | null; endDate: Date | string };
-
-function OutOfOfficeBadge({ info }: { info: OutOfOfficeInfo }) {
-  const remote = info.type === "WORKING_REMOTELY";
-  const back = new Date(info.endDate).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  return (
-    <span
-      title={info.note || undefined}
-      className={cn(
-        "mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold",
-        remote ? "bg-cyan-500/15 text-cyan-700" : "bg-amber-500/15 text-amber-700"
-      )}
-    >
-      <Icon name={remote ? "home_work" : "beach_access"} size={12} />
-      {remote ? `Remote until ${back}` : `Out until ${back}`}
-    </span>
-  );
-}
-
 const avatarColors = [
   "bg-indigo-500",
   "bg-emerald-500",
@@ -76,12 +57,9 @@ const PAGE_SIZE = 12;
 export function PeopleList({
   employees,
   departments,
-  outOfOffice = {},
 }: {
   employees: Employee[];
   departments: { name: string; memberCount: number }[];
-  /** employeeId -> current OOO entry, already audience-filtered for this viewer. */
-  outOfOffice?: Record<string, OutOfOfficeInfo>;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDept, setSelectedDept] = useState("All");
@@ -448,9 +426,6 @@ export function PeopleList({
                       {featuredEmployee.department && (
                         <p className="text-sm text-[var(--color-on-surface-variant)] mb-4">{featuredEmployee.department.name}</p>
                       )}
-                      {outOfOffice[featuredEmployee.id] && (
-                        <OutOfOfficeBadge info={outOfOffice[featuredEmployee.id]} />
-                      )}
                       <div className="flex items-center gap-2 mt-2">
                         <button
                           onClick={(e) => e.preventDefault()}
@@ -512,7 +487,6 @@ export function PeopleList({
                       </p>
                       <p className="text-sm text-[var(--color-on-surface-variant)] truncate mb-3">{employee.jobTitle}</p>
                       <StatusLabel status={employee.status} />
-                      {outOfOffice[employee.id] && <OutOfOfficeBadge info={outOfOffice[employee.id]} />}
                     </div>
                     <div className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] group-hover:border-[var(--color-primary)]/40 group-hover:text-[var(--color-primary)] transition-colors">
                       View Profile

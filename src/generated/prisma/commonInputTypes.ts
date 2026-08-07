@@ -647,23 +647,6 @@ export type EnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
 }
 
-export type EnumOutOfOfficeTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutOfOfficeType | Prisma.EnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel> | $Enums.OutOfOfficeType
-}
-
-export type EnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutOfOfficeType | Prisma.EnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel> | $Enums.OutOfOfficeType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
-}
-
 export type EnumTimeOffRequestStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.TimeOffRequestStatus | Prisma.EnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.TimeOffRequestStatus[] | Prisma.ListEnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
@@ -1446,23 +1429,6 @@ export type NestedEnumInterviewStatusWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumInterviewStatusFilter<$PrismaModel>
-}
-
-export type NestedEnumOutOfOfficeTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutOfOfficeType | Prisma.EnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel> | $Enums.OutOfOfficeType
-}
-
-export type NestedEnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.OutOfOfficeType | Prisma.EnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.OutOfOfficeType[] | Prisma.ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel> | $Enums.OutOfOfficeType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumTimeOffRequestStatusFilter<$PrismaModel = never> = {

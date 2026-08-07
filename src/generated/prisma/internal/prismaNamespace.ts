@@ -420,7 +420,6 @@ export const ModelName = {
   PlatformSyncLog: 'PlatformSyncLog',
   Interview: 'Interview',
   SigningRequest: 'SigningRequest',
-  OutOfOffice: 'OutOfOffice',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -467,7 +466,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3132,80 +3131,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SigningRequestCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SigningRequestCountAggregateOutputType> | number
-        }
-      }
-    }
-    OutOfOffice: {
-      payload: Prisma.$OutOfOfficePayload<ExtArgs>
-      fields: Prisma.OutOfOfficeFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.OutOfOfficeFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.OutOfOfficeFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        findFirst: {
-          args: Prisma.OutOfOfficeFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.OutOfOfficeFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        findMany: {
-          args: Prisma.OutOfOfficeFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>[]
-        }
-        create: {
-          args: Prisma.OutOfOfficeCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        createMany: {
-          args: Prisma.OutOfOfficeCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.OutOfOfficeCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>[]
-        }
-        delete: {
-          args: Prisma.OutOfOfficeDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        update: {
-          args: Prisma.OutOfOfficeUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        deleteMany: {
-          args: Prisma.OutOfOfficeDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.OutOfOfficeUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.OutOfOfficeUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>[]
-        }
-        upsert: {
-          args: Prisma.OutOfOfficeUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$OutOfOfficePayload>
-        }
-        aggregate: {
-          args: Prisma.OutOfOfficeAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateOutOfOffice>
-        }
-        groupBy: {
-          args: Prisma.OutOfOfficeGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.OutOfOfficeGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.OutOfOfficeCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.OutOfOfficeCountAggregateOutputType> | number
         }
       }
     }
@@ -6152,23 +6077,6 @@ export const SigningRequestScalarFieldEnum = {
 export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]
 
 
-export const OutOfOfficeScalarFieldEnum = {
-  id: 'id',
-  employeeId: 'employeeId',
-  startDate: 'startDate',
-  endDate: 'endDate',
-  type: 'type',
-  note: 'note',
-  audienceType: 'audienceType',
-  audienceDeptIds: 'audienceDeptIds',
-  audienceEmployeeIds: 'audienceEmployeeIds',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type OutOfOfficeScalarFieldEnum = (typeof OutOfOfficeScalarFieldEnum)[keyof typeof OutOfOfficeScalarFieldEnum]
-
-
 export const TimeOffPolicyScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -6990,20 +6898,6 @@ export type ListEnumInterviewStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
- * Reference to a field of type 'OutOfOfficeType'
- */
-export type EnumOutOfOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutOfOfficeType'>
-    
-
-
-/**
- * Reference to a field of type 'OutOfOfficeType[]'
- */
-export type ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutOfOfficeType[]'>
-    
-
-
-/**
  * Reference to a field of type 'TimeOffRequestStatus'
  */
 export type EnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus'>
@@ -7245,7 +7139,6 @@ export type GlobalOmitConfig = {
   platformSyncLog?: Prisma.PlatformSyncLogOmit
   interview?: Prisma.InterviewOmit
   signingRequest?: Prisma.SigningRequestOmit
-  outOfOffice?: Prisma.OutOfOfficeOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit

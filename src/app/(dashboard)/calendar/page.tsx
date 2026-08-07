@@ -6,9 +6,6 @@ import { GoogleCalendarConnect } from "@/components/calendar/google-calendar-con
 import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
 import { CreateEventDialog } from "@/components/calendar/create-event-dialog";
-import { OutOfOfficeDialog } from "@/components/time-off/out-of-office-dialog";
-import { WhosOutPanel } from "@/components/calendar/whos-out-panel";
-import { getVisibleOutOfOffice, getMyOutOfOffice } from "@/lib/actions/out-of-office";
 
 export default async function CalendarPage({
   searchParams,
@@ -107,20 +104,6 @@ export default async function CalendarPage({
   const now = new Date();
   const currentYear = now.getFullYear();
   const events: CalendarEvent[] = [];
-
-  // Out-of-office notices the viewer is in the audience of. Fetched for a wide
-  // window so paging back/forward a few months still shows them.
-  const oooFrom = new Date(currentYear - 1, 0, 1);
-  const oooTo = new Date(currentYear + 1, 11, 31);
-  const [outOfOffice, myOutOfOffice, allDepartments, companySize] = await Promise.all([
-    getVisibleOutOfOffice(oooFrom, oooTo),
-    getMyOutOfOffice(),
-    db.department.findMany({
-      select: { id: true, name: true, _count: { select: { employees: true } } },
-      orderBy: { name: "asc" },
-    }),
-    db.employee.count({ where: { status: "ACTIVE" } }),
-  ]);
 
   for (const emp of employees) {
     // Personal dates are only company-visible to managers and above —
@@ -224,25 +207,6 @@ export default async function CalendarPage({
     }
   }
 
-  // The calendar places each event on a single day, so a multi-day absence is
-  // expanded into one chip per day it covers.
-  for (const ooo of outOfOffice) {
-    const oooName = `${ooo.employee.firstName} ${ooo.employee.lastName}`;
-    const cursor = new Date(ooo.startDate.getFullYear(), ooo.startDate.getMonth(), ooo.startDate.getDate());
-    const last = new Date(ooo.endDate.getFullYear(), ooo.endDate.getMonth(), ooo.endDate.getDate());
-    let dayIndex = 0;
-    while (cursor <= last && dayIndex < 366) {
-      events.push({
-        id: `ooo-${ooo.id}-${dayIndex}`,
-        name: ooo.note ? `${oooName} — ${ooo.note}` : oooName,
-        date: new Date(cursor).toISOString(),
-        type: ooo.type === "WORKING_REMOTELY" ? "working-remotely" : "out-of-office",
-      });
-      cursor.setDate(cursor.getDate() + 1);
-      dayIndex++;
-    }
-  }
-
   return (
     <div className="px-8 py-8">
       {params.oauth_error && (
@@ -259,33 +223,6 @@ export default async function CalendarPage({
         <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
         <div className="flex items-center gap-3">
           {userId && <GoogleCalendarConnect connected={myCalendarConnected} userId={userId} />}
-          {callerEmployeeId && (
-            <OutOfOfficeDialog
-              companySize={companySize}
-              departments={allDepartments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
-              employees={
-                isManagerOrAbove
-                  ? allActiveEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email, departmentId: e.departmentId }))
-                  : []
-              }
-              myDepartment={
-                viewerDept?.departmentId
-                  ? {
-                      id: viewerDept.departmentId,
-                      name: allDepartments.find((d) => d.id === viewerDept.departmentId)?.name ?? "My department",
-                    }
-                  : null
-              }
-              myEntries={myOutOfOffice.map((e) => ({
-                id: e.id,
-                startDate: e.startDate,
-                endDate: e.endDate,
-                type: e.type,
-                note: e.note,
-                audienceType: e.audienceType,
-              }))}
-            />
-          )}
           {isManagerOrAbove && (
             <CreateEventDialog
               departments={departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
@@ -293,9 +230,6 @@ export default async function CalendarPage({
             />
           )}
         </div>
-      </div>
-      <div className="mb-6">
-        <WhosOutPanel entries={outOfOffice} />
       </div>
       {myCalendarConnected && userId ? (
         <CalendarGoogleEvents events={events} userId={userId} />

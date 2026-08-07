@@ -247,14 +247,6 @@ export const PlatformStatus = {
 export type PlatformStatus = (typeof PlatformStatus)[keyof typeof PlatformStatus]
 
 
-export const OutOfOfficeType = {
-  OUT_OF_OFFICE: 'OUT_OF_OFFICE',
-  WORKING_REMOTELY: 'WORKING_REMOTELY'
-} as const
-
-export type OutOfOfficeType = (typeof OutOfOfficeType)[keyof typeof OutOfOfficeType]
-
-
 export const ChatRole = {
   OWNER: 'OWNER',
   ADMIN: 'ADMIN',

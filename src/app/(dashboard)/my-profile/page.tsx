@@ -230,6 +230,19 @@ export default async function MyProfilePage() {
             </section>
           )}
 
+          {profile.clubMemberships.length > 0 && (
+            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
+              <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">My Clubs</h3>
+              <div className="space-y-2">
+                {profile.clubMemberships.map((m) => (
+                  <div key={m.id} className="flex items-center gap-2">
+                    <span className="text-lg">{m.club.emoji}</span>
+                    <span className="text-sm text-[var(--color-text-primary)]">{m.club.name}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
