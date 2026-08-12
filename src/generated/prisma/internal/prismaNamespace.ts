@@ -421,6 +421,10 @@ export const ModelName = {
   Interview: 'Interview',
   SigningRequest: 'SigningRequest',
   OutOfOffice: 'OutOfOffice',
+  TrainingGroup: 'TrainingGroup',
+  TrainingGroupMember: 'TrainingGroupMember',
+  TrainingClass: 'TrainingClass',
+  TrainingSession: 'TrainingSession',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -467,7 +471,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3209,6 +3213,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TrainingGroup: {
+      payload: Prisma.$TrainingGroupPayload<ExtArgs>
+      fields: Prisma.TrainingGroupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TrainingGroupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TrainingGroupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        findFirst: {
+          args: Prisma.TrainingGroupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TrainingGroupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        findMany: {
+          args: Prisma.TrainingGroupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>[]
+        }
+        create: {
+          args: Prisma.TrainingGroupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        createMany: {
+          args: Prisma.TrainingGroupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TrainingGroupCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>[]
+        }
+        delete: {
+          args: Prisma.TrainingGroupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        update: {
+          args: Prisma.TrainingGroupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        deleteMany: {
+          args: Prisma.TrainingGroupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TrainingGroupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TrainingGroupUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>[]
+        }
+        upsert: {
+          args: Prisma.TrainingGroupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupPayload>
+        }
+        aggregate: {
+          args: Prisma.TrainingGroupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrainingGroup>
+        }
+        groupBy: {
+          args: Prisma.TrainingGroupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingGroupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TrainingGroupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingGroupCountAggregateOutputType> | number
+        }
+      }
+    }
+    TrainingGroupMember: {
+      payload: Prisma.$TrainingGroupMemberPayload<ExtArgs>
+      fields: Prisma.TrainingGroupMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TrainingGroupMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TrainingGroupMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.TrainingGroupMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TrainingGroupMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        findMany: {
+          args: Prisma.TrainingGroupMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>[]
+        }
+        create: {
+          args: Prisma.TrainingGroupMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        createMany: {
+          args: Prisma.TrainingGroupMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TrainingGroupMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.TrainingGroupMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        update: {
+          args: Prisma.TrainingGroupMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.TrainingGroupMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TrainingGroupMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TrainingGroupMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.TrainingGroupMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingGroupMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.TrainingGroupMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrainingGroupMember>
+        }
+        groupBy: {
+          args: Prisma.TrainingGroupMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingGroupMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TrainingGroupMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingGroupMemberCountAggregateOutputType> | number
+        }
+      }
+    }
+    TrainingClass: {
+      payload: Prisma.$TrainingClassPayload<ExtArgs>
+      fields: Prisma.TrainingClassFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TrainingClassFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TrainingClassFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        findFirst: {
+          args: Prisma.TrainingClassFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TrainingClassFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        findMany: {
+          args: Prisma.TrainingClassFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>[]
+        }
+        create: {
+          args: Prisma.TrainingClassCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        createMany: {
+          args: Prisma.TrainingClassCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TrainingClassCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>[]
+        }
+        delete: {
+          args: Prisma.TrainingClassDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        update: {
+          args: Prisma.TrainingClassUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        deleteMany: {
+          args: Prisma.TrainingClassDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TrainingClassUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TrainingClassUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>[]
+        }
+        upsert: {
+          args: Prisma.TrainingClassUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingClassPayload>
+        }
+        aggregate: {
+          args: Prisma.TrainingClassAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrainingClass>
+        }
+        groupBy: {
+          args: Prisma.TrainingClassGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingClassGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TrainingClassCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingClassCountAggregateOutputType> | number
+        }
+      }
+    }
+    TrainingSession: {
+      payload: Prisma.$TrainingSessionPayload<ExtArgs>
+      fields: Prisma.TrainingSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TrainingSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TrainingSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.TrainingSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TrainingSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        findMany: {
+          args: Prisma.TrainingSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>[]
+        }
+        create: {
+          args: Prisma.TrainingSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        createMany: {
+          args: Prisma.TrainingSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TrainingSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.TrainingSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        update: {
+          args: Prisma.TrainingSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.TrainingSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TrainingSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TrainingSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.TrainingSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TrainingSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.TrainingSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTrainingSession>
+        }
+        groupBy: {
+          args: Prisma.TrainingSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TrainingSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TrainingSessionCountAggregateOutputType> | number
+        }
+      }
+    }
     TimeOffPolicy: {
       payload: Prisma.$TimeOffPolicyPayload<ExtArgs>
       fields: Prisma.TimeOffPolicyFieldRefs
@@ -5767,6 +6067,11 @@ export const FeedPostScalarFieldEnum = {
   eventDate: 'eventDate',
   eventEndDate: 'eventEndDate',
   eventLocation: 'eventLocation',
+  eventDescription: 'eventDescription',
+  eventMeetLink: 'eventMeetLink',
+  eventOrganizerUserId: 'eventOrganizerUserId',
+  googleCalendarEventId: 'googleCalendarEventId',
+  eventCancelledAt: 'eventCancelledAt',
   audienceType: 'audienceType',
   audienceDeptIds: 'audienceDeptIds',
   audienceEmployeeIds: 'audienceEmployeeIds',
@@ -6169,6 +6474,71 @@ export const OutOfOfficeScalarFieldEnum = {
 } as const
 
 export type OutOfOfficeScalarFieldEnum = (typeof OutOfOfficeScalarFieldEnum)[keyof typeof OutOfOfficeScalarFieldEnum]
+
+
+export const TrainingGroupScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingGroupScalarFieldEnum = (typeof TrainingGroupScalarFieldEnum)[keyof typeof TrainingGroupScalarFieldEnum]
+
+
+export const TrainingGroupMemberScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  employeeId: 'employeeId',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type TrainingGroupMemberScalarFieldEnum = (typeof TrainingGroupMemberScalarFieldEnum)[keyof typeof TrainingGroupMemberScalarFieldEnum]
+
+
+export const TrainingClassScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  agenda: 'agenda',
+  location: 'location',
+  organizerId: 'organizerId',
+  createdById: 'createdById',
+  organizerUserId: 'organizerUserId',
+  groupId: 'groupId',
+  attendeeEmployeeIds: 'attendeeEmployeeIds',
+  viewerEmployeeIds: 'viewerEmployeeIds',
+  visibleToManagers: 'visibleToManagers',
+  rangeStart: 'rangeStart',
+  rangeEnd: 'rangeEnd',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  weekdays: 'weekdays',
+  timeZone: 'timeZone',
+  withMeetLink: 'withMeetLink',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingClassScalarFieldEnum = (typeof TrainingClassScalarFieldEnum)[keyof typeof TrainingClassScalarFieldEnum]
+
+
+export const TrainingSessionScalarFieldEnum = {
+  id: 'id',
+  trainingClassId: 'trainingClassId',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  googleCalendarEventId: 'googleCalendarEventId',
+  meetLink: 'meetLink',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingSessionScalarFieldEnum = (typeof TrainingSessionScalarFieldEnum)[keyof typeof TrainingSessionScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {
@@ -7006,6 +7376,48 @@ export type ListEnumOutOfOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'TrainingGroupRole'
+ */
+export type EnumTrainingGroupRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingGroupRole'>
+    
+
+
+/**
+ * Reference to a field of type 'TrainingGroupRole[]'
+ */
+export type ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingGroupRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TrainingClassStatus'
+ */
+export type EnumTrainingClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingClassStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TrainingClassStatus[]'
+ */
+export type ListEnumTrainingClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingClassStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'TrainingSessionStatus'
+ */
+export type EnumTrainingSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingSessionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TrainingSessionStatus[]'
+ */
+export type ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TrainingSessionStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'TimeOffRequestStatus'
  */
 export type EnumTimeOffRequestStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TimeOffRequestStatus'>
@@ -7248,6 +7660,10 @@ export type GlobalOmitConfig = {
   interview?: Prisma.InterviewOmit
   signingRequest?: Prisma.SigningRequestOmit
   outOfOffice?: Prisma.OutOfOfficeOmit
+  trainingGroup?: Prisma.TrainingGroupOmit
+  trainingGroupMember?: Prisma.TrainingGroupMemberOmit
+  trainingClass?: Prisma.TrainingClassOmit
+  trainingSession?: Prisma.TrainingSessionOmit
   timeOffPolicy?: Prisma.TimeOffPolicyOmit
   timeOffBalance?: Prisma.TimeOffBalanceOmit
   timeOffRequest?: Prisma.TimeOffRequestOmit

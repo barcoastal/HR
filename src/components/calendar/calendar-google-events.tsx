@@ -33,6 +33,20 @@ export function CalendarGoogleEvents({
             type: "google-calendar" as const,
             endDate: ge.end.dateTime || ge.end.date || undefined,
             location: ge.location || undefined,
+            description: ge.description || undefined,
+            meetLink: ge.hangoutLink || null,
+            htmlLink: ge.htmlLink || null,
+            organizer: ge.organizer?.displayName || ge.organizer?.email,
+            attendees: ge.attendees
+              ?.filter((attendee) => !attendee.self)
+              .map((attendee) => attendee.displayName || attendee.email)
+              .filter((name): name is string => !!name),
+            allDay: !ge.start.dateTime,
+            sourceId: ge.id,
+            sourceKind: "google" as const,
+            time: ge.start.dateTime
+              ? new Date(ge.start.dateTime).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+              : undefined,
           }))
         );
       })

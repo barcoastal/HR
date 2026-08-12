@@ -1,390 +1,221 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
-import { FAB } from "@/components/ui/fab";
+import { Dialog } from "@/components/ui/dialog";
+import { CalendarEventDetails } from "@/components/calendar/calendar-event-details";
 
 export type CalendarEvent = {
   id: string;
   name: string;
-  date: string; // ISO string
-  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review" | "out-of-office" | "working-remotely";
+  date: string;
+  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review" | "one-on-one" | "training" | "out-of-office" | "working-remotely";
   department?: string;
   years?: number;
   meetLink?: string | null;
+  htmlLink?: string | null;
   time?: string;
   endDate?: string;
   location?: string;
+  description?: string;
+  organizer?: string;
+  attendees?: string[];
+  audience?: string;
+  allDay?: boolean;
+  canManage?: boolean;
+  sourceId?: string;
+  sourceKind?: "company" | "training" | "one-on-one" | "review" | "out-of-office" | "google";
+  groupName?: string;
 };
 
-type Props = {
-  events: CalendarEvent[];
-};
-
-type DayCellProps = {
-  key: string;
-  day: number;
-  isCurrentMonth: boolean;
-  isToday: boolean;
-  events: CalendarEvent[];
-};
-
-function getDaysInMonth(year: number, month: number) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-function getFirstDayOfMonth(year: number, month: number) {
-  return new Date(year, month, 1).getDay();
-}
+type Props = { events: CalendarEvent[] };
 
 const chipStyles: Record<string, string> = {
-  birthday: "bg-[var(--color-tertiary-container)]/10 text-[var(--color-tertiary)]",
+  birthday: "bg-[var(--color-tertiary-container)]/15 text-[var(--color-tertiary)]",
   anniversary: "bg-[var(--color-tertiary-fixed)] text-[var(--color-on-tertiary-fixed-variant)]",
   interview: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
   benefits: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
-  "feed-event": "bg-blue-500/10 text-blue-600",
-  "google-calendar": "bg-emerald-500/10 text-emerald-600",
-  "performance-review": "bg-purple-500/10 text-purple-600",
-  "out-of-office": "bg-amber-500/15 text-amber-700",
-  "working-remotely": "bg-cyan-500/15 text-cyan-700",
+  "feed-event": "bg-blue-500/10 text-blue-700",
+  "google-calendar": "bg-emerald-500/10 text-emerald-700",
+  "performance-review": "bg-purple-500/10 text-purple-700",
+  "one-on-one": "bg-fuchsia-500/10 text-fuchsia-700",
+  training: "bg-indigo-500/10 text-indigo-700",
+  "out-of-office": "bg-amber-500/15 text-amber-800",
+  "working-remotely": "bg-cyan-500/15 text-cyan-800",
 };
 
 const holidayStyle = "bg-[var(--color-error-container)]/20 text-[var(--color-on-error-container)]";
 
-function getChipStyle(type: CalendarEvent["type"]): string {
-  if (type.startsWith("holiday-")) return holidayStyle;
-  return chipStyles[type] ?? "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]";
+function getChipStyle(type: CalendarEvent["type"]) {
+  return type.startsWith("holiday-")
+    ? holidayStyle
+    : chipStyles[type] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]";
 }
 
-function chipIconForType(type: CalendarEvent["type"]): string {
+export function calendarEventTypeLabel(type: CalendarEvent["type"]) {
   if (type === "birthday") return "Birthday";
   if (type === "anniversary") return "Anniversary";
-  if (type === "benefits") return "Benefits Eligible";
+  if (type === "benefits") return "Benefits eligible";
   if (type === "interview") return "Interview";
-  if (type.startsWith("holiday-")) {
-    const sub = type.replace("holiday-", "");
-    return sub.charAt(0).toUpperCase() + sub.slice(1) + " Holiday";
-  }
-  if (type === "feed-event") return "Event";
+  if (type === "feed-event") return "Company event";
   if (type === "google-calendar") return "Google Calendar";
-  if (type === "performance-review") return "Review Due";
-  if (type === "out-of-office") return "Out of Office";
-  if (type === "working-remotely") return "Working Remotely";
-  return type;
+  if (type === "performance-review") return "Review due";
+  if (type === "one-on-one") return "1:1 meeting";
+  if (type === "training") return "Training";
+  if (type === "out-of-office") return "Out of office";
+  if (type === "working-remotely") return "Working remotely";
+  if (type.startsWith("holiday-")) return "Holiday";
+  return "Event";
 }
 
-function EventChip({ event, isToday, index }: { event: CalendarEvent; isToday: boolean; index: number }) {
-  const baseClass = cn(
-    "text-[10px] font-bold px-2 py-0.5 rounded-full truncate max-w-full",
-    isToday
-      ? index === 0
-        ? "bg-[var(--color-primary)] text-white"
-        : "bg-white/50 text-[var(--color-primary)]"
-      : getChipStyle(event.type)
-  );
-
+function EventChip({ event, isToday, index, onClick }: {
+  event: CalendarEvent;
+  isToday: boolean;
+  index: number;
+  onClick: () => void;
+}) {
   const label = event.time ? `${event.time} ${event.name}` : event.name;
-
-  if (event.type === "interview" && event.meetLink) {
-    return (
-      <a
-        href={event.meetLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={cn(baseClass, "cursor-pointer hover:opacity-80 transition-opacity")}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {label}
-      </a>
-    );
-  }
-
-  return <span className={baseClass}>{label}</span>;
-}
-
-function DayCell({ day, isCurrentMonth, isToday, events }: Omit<DayCellProps, "key">) {
-  const maxChips = 2;
-  const visibleEvents = events.slice(0, maxChips);
-  const overflow = events.length - maxChips;
-
   return (
-    <div
+    <button
+      type="button"
+      onClick={onClick}
+      title={`${calendarEventTypeLabel(event.type)}: ${event.name}`}
       className={cn(
-        "min-h-[120px] rounded-2xl p-4 flex flex-col gap-2",
-        !isCurrentMonth && "opacity-40",
-        isToday
-          ? "bg-[var(--color-primary-fixed)] border-2 border-[var(--color-primary)]/20"
-          : "bg-[var(--color-surface-container-lowest)]"
+        "block w-full truncate rounded-full px-2 py-1 text-left text-[10px] font-bold transition-opacity hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40",
+        isToday && index === 0 ? "bg-[var(--color-primary)] text-white" : getChipStyle(event.type)
       )}
     >
-      <div className="flex justify-between items-start">
-        <span
-          className={cn(
-            "text-sm font-bold",
-            isToday ? "font-black text-[var(--color-primary)]" : "text-[var(--color-on-surface)]"
-          )}
-        >
-          {day}
-        </span>
-        {isToday && (
-          <span className="bg-[var(--color-primary)] text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold uppercase">
-            Today
-          </span>
-        )}
+      {label}
+    </button>
+  );
+}
+
+function DayCell({ day, isCurrentMonth, isToday, events, onEvent, onMore }: {
+  day: number;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  events: CalendarEvent[];
+  onEvent: (event: CalendarEvent) => void;
+  onMore: () => void;
+}) {
+  const visibleEvents = events.slice(0, 2);
+  const overflow = events.length - visibleEvents.length;
+  return (
+    <div className={cn(
+      "flex min-h-[104px] flex-col gap-1.5 rounded-2xl p-2.5 md:min-h-[120px] md:p-3",
+      !isCurrentMonth && "opacity-40",
+      isToday
+        ? "border-2 border-[var(--color-primary)]/20 bg-[var(--color-primary-fixed)]"
+        : "bg-[var(--color-surface-container-lowest)]"
+    )}>
+      <div className="flex items-start justify-between">
+        <span className={cn("text-sm font-bold", isToday ? "font-black text-[var(--color-primary)]" : "text-[var(--color-on-surface)]")}>{day}</span>
+        {isToday && <span className="hidden rounded-full bg-[var(--color-primary)] px-1.5 py-0.5 text-[8px] font-bold uppercase text-white md:inline">Today</span>}
       </div>
-      {visibleEvents.map((evt, i) => (
-        <EventChip key={evt.id} event={evt} isToday={isToday} index={i} />
-      ))}
+      {visibleEvents.map((event, index) => <EventChip key={event.id} event={event} isToday={isToday} index={index} onClick={() => onEvent(event)} />)}
       {overflow > 0 && (
-        <span className="text-[10px] font-bold text-[var(--color-on-surface-variant)]">
+        <button type="button" onClick={onMore} className="w-fit rounded px-1 text-[10px] font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] hover:text-[var(--color-primary)]">
           +{overflow} more
-        </span>
+        </button>
       )}
     </div>
   );
 }
 
+function monthData(year: number, month: number) {
+  return {
+    days: new Date(year, month + 1, 0).getDate(),
+    firstOffset: (new Date(year, month, 1).getDay() + 6) % 7,
+  };
+}
+
 export function CalendarView({ events }: Props) {
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [agenda, setAgenda] = useState<{ label: string; events: CalendarEvent[] } | null>(null);
+  const data = monthData(currentYear, currentMonth);
 
-  const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-
-  const monthNameOnly = new Date(currentYear, currentMonth).toLocaleDateString("en-US", {
-    month: "long",
-  });
-
-  // Map events by day-of-month for the current view
   const eventsByDay = useMemo(() => {
     const map: Record<number, CalendarEvent[]> = {};
     for (const event of events) {
-      const d = new Date(event.date);
-      if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
-        const day = d.getDate();
-        if (!map[day]) map[day] = [];
-        map[day].push(event);
-      }
+      const date = new Date(event.date);
+      if (date.getMonth() !== currentMonth || date.getFullYear() !== currentYear) continue;
+      (map[date.getDate()] ||= []).push(event);
     }
+    for (const values of Object.values(map)) values.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     return map;
   }, [events, currentMonth, currentYear]);
 
-  function goToPrevMonth() {
-    if (currentMonth === 0) {
-      setCurrentMonth(11);
-      setCurrentYear(currentYear - 1);
-    } else {
-      setCurrentMonth(currentMonth - 1);
-    }
+  function changeMonth(direction: -1 | 1) {
+    const next = new Date(currentYear, currentMonth + direction, 1);
+    setCurrentMonth(next.getMonth());
+    setCurrentYear(next.getFullYear());
   }
 
-  function goToNextMonth() {
-    if (currentMonth === 11) {
-      setCurrentMonth(0);
-      setCurrentYear(currentYear + 1);
-    } else {
-      setCurrentMonth(currentMonth + 1);
-    }
-  }
-
-  function goToToday() {
-    setCurrentMonth(today.getMonth());
-    setCurrentYear(today.getFullYear());
-  }
-
-  const isTodayCheck = (day: number) =>
-    day === today.getDate() &&
-    currentMonth === today.getMonth() &&
-    currentYear === today.getFullYear();
-
-  // Monday start: adjust first day offset
-  // getDay() returns 0=Sun, 1=Mon ... 6=Sat
-  // We want Mon=0, so: (getDay() + 6) % 7
-  const adjustedFirstDay = (getFirstDayOfMonth(currentYear, currentMonth) + 6) % 7;
-
-  // Days from previous month to fill padding
-  const prevMonthDays = getDaysInMonth(
-    currentMonth === 0 ? currentYear - 1 : currentYear,
-    currentMonth === 0 ? 11 : currentMonth - 1
-  );
-
-  // Build the calendar cells
-  type Cell = {
-    key: string;
-    day: number;
-    isCurrentMonth: boolean;
-    isToday: boolean;
-    events: CalendarEvent[];
-  };
-
+  type Cell = { key: string; day: number; current: boolean; today: boolean; events: CalendarEvent[] };
   const cells: Cell[] = [];
-
-  // Padding cells from previous month
-  for (let i = adjustedFirstDay - 1; i >= 0; i--) {
-    const day = prevMonthDays - i;
-    cells.push({
-      key: `prev-${day}`,
-      day,
-      isCurrentMonth: false,
-      isToday: false,
-      events: [],
-    });
-  }
-
-  // Current month cells
-  for (let d = 1; d <= daysInMonth; d++) {
-    cells.push({
-      key: `cur-${d}`,
-      day: d,
-      isCurrentMonth: true,
-      isToday: isTodayCheck(d),
-      events: eventsByDay[d] || [],
-    });
-  }
-
-  // Padding cells from next month to fill last row
+  const previous = new Date(currentYear, currentMonth, 0).getDate();
+  for (let index = data.firstOffset - 1; index >= 0; index--) cells.push({ key: `prev-${index}`, day: previous - index, current: false, today: false, events: [] });
+  for (let day = 1; day <= data.days; day++) cells.push({
+    key: `day-${day}`,
+    day,
+    current: true,
+    today: day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear(),
+    events: eventsByDay[day] || [],
+  });
   let nextDay = 1;
-  while (cells.length % 7 !== 0) {
-    cells.push({
-      key: `next-${nextDay}`,
-      day: nextDay,
-      isCurrentMonth: false,
-      isToday: false,
-      events: [],
-    });
-    nextDay++;
-  }
+  while (cells.length % 7) cells.push({ key: `next-${nextDay}`, day: nextDay++, current: false, today: false, events: [] });
 
-  // Current week milestone count subtitle
-  const weekStart = new Date(today);
-  const dayOfWeek = (today.getDay() + 6) % 7; // Monday = 0
-  weekStart.setDate(today.getDate() - dayOfWeek);
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekStart.getDate() + 6);
-
-  const weekMilestoneCount = events.filter((e) => {
-    const d = new Date(e.date);
-    return d >= weekStart && d <= weekEnd;
+  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
+  const weekEnd = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 7);
+  const weekCount = events.filter((event) => {
+    const date = new Date(event.date);
+    return date >= weekStart && date < weekEnd;
   }).length;
+  const upcoming = useMemo(() => {
+    const start = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    return [...events].filter((event) => new Date(event.date).getTime() >= start).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 4);
+  }, [events, today]);
 
-  // Upcoming events from today
-  const upcomingEvents = useMemo(() => {
-    const todayMs = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-    return events
-      .filter((e) => new Date(e.date).getTime() >= todayMs)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .slice(0, 3);
-  }, [events]);
+  function openAgenda(day: number, dayEvents: CalendarEvent[]) {
+    const label = new Date(currentYear, currentMonth, day).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    setAgenda({ label, events: dayEvents });
+  }
 
   return (
     <div>
-      {/* Editorial header with month navigation */}
-      <div className="flex justify-between items-end mb-8">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={goToPrevMonth}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] transition-colors"
-          >
-            <Icon name="chevron_left" size={20} />
-          </button>
-          <div>
-            <h2 className="text-4xl font-black tracking-tight text-[var(--color-on-surface)]">
-              {monthNameOnly} {currentYear}
-            </h2>
-            {weekMilestoneCount > 0 && (
-              <p className="text-sm text-[var(--color-on-surface-variant)] mt-0.5">
-                {weekMilestoneCount} milestone{weekMilestoneCount !== 1 ? "s" : ""} this week
-              </p>
-            )}
+      <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+        <div className="flex items-center gap-2 md:gap-4">
+          <button type="button" aria-label="Previous month" onClick={() => changeMonth(-1)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"><Icon name="chevron_left" size={20} /></button>
+          <div className="min-w-0">
+            <h2 className="text-2xl font-black tracking-tight text-[var(--color-on-surface)] md:text-4xl">{new Date(currentYear, currentMonth).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</h2>
+            <p className="mt-0.5 text-sm text-[var(--color-on-surface-variant)]">{weekCount} calendar item{weekCount === 1 ? "" : "s"} this week</p>
           </div>
-          <button
-            onClick={goToNextMonth}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] transition-colors"
-          >
-            <Icon name="chevron_right" size={20} />
-          </button>
-          <button
-            onClick={goToToday}
-            className="ml-2 px-3 py-1 bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)] rounded-lg text-sm font-bold hover:opacity-90 transition-opacity"
-          >
-            Today
-          </button>
+          <button type="button" aria-label="Next month" onClick={() => changeMonth(1)} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--color-surface-container-low)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)]"><Icon name="chevron_right" size={20} /></button>
+          <button type="button" onClick={() => { setCurrentMonth(today.getMonth()); setCurrentYear(today.getFullYear()); }} className="rounded-lg bg-[var(--color-primary-fixed)] px-3 py-1.5 text-sm font-bold text-[var(--color-on-primary-fixed-variant)]">Today</button>
         </div>
-        <div className="flex items-center bg-[var(--color-surface-container-low)] p-1 rounded-xl">
-          <button className="px-4 py-2 rounded-lg bg-[var(--color-surface-container-lowest)] text-[var(--color-primary)] font-bold shadow-sm">
-            Month
-          </button>
-          <button className="px-4 py-2 rounded-lg text-[var(--color-on-surface-variant)] font-semibold opacity-50 cursor-not-allowed">
-            Week
-          </button>
-          <button className="px-4 py-2 rounded-lg text-[var(--color-on-surface-variant)] font-semibold opacity-50 cursor-not-allowed">
-            Day
-          </button>
+        <span className="text-xs text-[var(--color-text-muted)]">Click any calendar item to see its details</span>
+      </div>
+
+      <div className="overflow-x-auto rounded-[var(--radius-xl)] bg-[var(--color-surface-container-low)] p-3 md:p-4">
+        <div className="min-w-[760px]">
+          <div className="mb-3 grid grid-cols-7">{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => <div key={day} className="py-2 text-center text-[10px] font-black uppercase tracking-widest text-[var(--color-outline)]">{day}</div>)}</div>
+          <div className="grid grid-cols-7 gap-2 md:gap-3">{cells.map((cell) => <DayCell key={cell.key} day={cell.day} isCurrentMonth={cell.current} isToday={cell.today} events={cell.events} onEvent={setSelectedEvent} onMore={() => openAgenda(cell.day, cell.events)} />)}</div>
         </div>
       </div>
 
-      {/* Calendar grid */}
-      <div className="bg-[var(--color-surface-container-low)] rounded-[var(--radius-xl)] p-4 mt-8">
-        {/* Day headers — Monday start */}
-        <div className="grid grid-cols-7 mb-4">
-          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-            <div
-              key={d}
-              className="text-center text-[10px] font-black uppercase tracking-widest text-[var(--color-outline)] py-2"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-7 gap-3">
-          {cells.map((cell) => (
-            <DayCell
-              key={cell.key}
-              day={cell.day}
-              isCurrentMonth={cell.isCurrentMonth}
-              isToday={cell.isToday}
-              events={cell.events}
-            />
-          ))}
-        </div>
-      </div>
+      <section className="mt-8 rounded-[var(--radius-xl)] bg-[var(--color-surface-container-lowest)] p-5 md:p-6">
+        <div className="mb-4 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]"><Icon name="upcoming" size={20} /></span><div><h3 className="font-bold text-[var(--color-on-surface)]">Coming up</h3><p className="text-xs text-[var(--color-text-muted)]">Your next calendar items</p></div></div>
+        {upcoming.length === 0 ? <p className="text-sm text-[var(--color-on-surface-variant)]">No upcoming events</p> : <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{upcoming.map((event) => <button type="button" key={event.id} onClick={() => setSelectedEvent(event)} className="flex items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]"><span className="text-[8px] font-bold uppercase">{new Date(event.date).toLocaleString("en-US", { month: "short" })}</span><span className="text-lg font-black leading-none">{new Date(event.date).getDate()}</span></span><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-on-surface)]">{event.name}</span><span className="block text-xs text-[var(--color-on-surface-variant)]">{calendarEventTypeLabel(event.type)}</span></span></button>)}</div>}
+      </section>
 
-      {/* Contextual Insights section */}
-      <div className="grid grid-cols-3 gap-6 mt-8">
-        {/* Upcoming Highlights panel */}
-        <div className="glass rounded-[var(--radius-xl)] p-6 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center text-[var(--color-primary)]">
-              <Icon name="auto_awesome" size={20} />
-            </div>
-            <h3 className="font-bold text-lg text-[var(--color-on-surface)]">Upcoming Highlights</h3>
-          </div>
-          {upcomingEvents.length === 0 ? (
-            <p className="text-sm text-[var(--color-on-surface-variant)]">No upcoming events</p>
-          ) : (
-            upcomingEvents.map((evt) => (
-              <div key={evt.id} className="flex items-center gap-4">
-                <div className="w-12 h-14 rounded-xl bg-[var(--color-primary-fixed)] flex flex-col items-center justify-center overflow-hidden shrink-0">
-                  <div className="w-full bg-[var(--color-primary)] text-white text-[8px] font-bold text-center py-0.5">
-                    {new Date(evt.date).toLocaleString("default", { month: "short" }).toUpperCase()}
-                  </div>
-                  <span className="text-lg font-black text-[var(--color-on-primary-fixed-variant)]">
-                    {new Date(evt.date).getDate()}
-                  </span>
-                </div>
-                <div className="min-w-0">
-                  <p className="font-bold text-sm text-[var(--color-on-surface)] truncate">{evt.name}</p>
-                  <p className="text-xs text-[var(--color-on-surface-variant)]">{chipIconForType(evt.type)}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-      </div>
-
-      <FAB icon="event" variant="solid" />
+      <Dialog open={!!agenda} onClose={() => setAgenda(null)} title={agenda?.label || "Day agenda"}>
+        <div className="space-y-2">{agenda?.events.map((event) => <button type="button" key={event.id} onClick={() => { setAgenda(null); setSelectedEvent(event); }} className="flex w-full items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className={cn("h-3 w-3 shrink-0 rounded-full", getChipStyle(event.type))} /><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-text-primary)]">{event.name}</span><span className="block text-xs text-[var(--color-text-muted)]">{event.time || calendarEventTypeLabel(event.type)}</span></span><Icon name="chevron_right" size={18} className="ml-auto text-[var(--color-text-muted)]" /></button>)}</div>
+      </Dialog>
+      <CalendarEventDetails event={selectedEvent} open={!!selectedEvent} onClose={() => setSelectedEvent(null)} />
     </div>
   );
 }

@@ -479,6 +479,10 @@ export type EmployeeWhereInput = {
   pulseResponses?: Prisma.PulseResponseListRelationFilter
   timeOffRequests?: Prisma.TimeOffRequestListRelationFilter
   outOfOffice?: Prisma.OutOfOfficeListRelationFilter
+  trainingGroupsCreated?: Prisma.TrainingGroupListRelationFilter
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberListRelationFilter
+  trainingClassesOrganized?: Prisma.TrainingClassListRelationFilter
+  trainingClassesCreated?: Prisma.TrainingClassListRelationFilter
   timeOffBalances?: Prisma.TimeOffBalanceListRelationFilter
   approvedRequests?: Prisma.TimeOffRequestListRelationFilter
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
@@ -567,6 +571,10 @@ export type EmployeeOrderByWithRelationInput = {
   pulseResponses?: Prisma.PulseResponseOrderByRelationAggregateInput
   timeOffRequests?: Prisma.TimeOffRequestOrderByRelationAggregateInput
   outOfOffice?: Prisma.OutOfOfficeOrderByRelationAggregateInput
+  trainingGroupsCreated?: Prisma.TrainingGroupOrderByRelationAggregateInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberOrderByRelationAggregateInput
+  trainingClassesOrganized?: Prisma.TrainingClassOrderByRelationAggregateInput
+  trainingClassesCreated?: Prisma.TrainingClassOrderByRelationAggregateInput
   timeOffBalances?: Prisma.TimeOffBalanceOrderByRelationAggregateInput
   approvedRequests?: Prisma.TimeOffRequestOrderByRelationAggregateInput
   mentionedInPosts?: Prisma.FeedPostOrderByRelationAggregateInput
@@ -658,6 +666,10 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   pulseResponses?: Prisma.PulseResponseListRelationFilter
   timeOffRequests?: Prisma.TimeOffRequestListRelationFilter
   outOfOffice?: Prisma.OutOfOfficeListRelationFilter
+  trainingGroupsCreated?: Prisma.TrainingGroupListRelationFilter
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberListRelationFilter
+  trainingClassesOrganized?: Prisma.TrainingClassListRelationFilter
+  trainingClassesCreated?: Prisma.TrainingClassListRelationFilter
   timeOffBalances?: Prisma.TimeOffBalanceListRelationFilter
   approvedRequests?: Prisma.TimeOffRequestListRelationFilter
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
@@ -832,6 +844,10 @@ export type EmployeeCreateInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -916,6 +932,10 @@ export type EmployeeUncheckedCreateInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -1000,6 +1020,10 @@ export type EmployeeUpdateInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -1084,6 +1108,10 @@ export type EmployeeUncheckedUpdateInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -1923,6 +1951,62 @@ export type EmployeeUpdateOneRequiredWithoutOutOfOfficeNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOutOfOfficeInput, Prisma.EmployeeUpdateWithoutOutOfOfficeInput>, Prisma.EmployeeUncheckedUpdateWithoutOutOfOfficeInput>
 }
 
+export type EmployeeCreateNestedOneWithoutTrainingGroupsCreatedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingGroupsCreatedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutTrainingGroupsCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingGroupsCreatedInput
+  upsert?: Prisma.EmployeeUpsertWithoutTrainingGroupsCreatedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUpdateWithoutTrainingGroupsCreatedInput>, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput>
+}
+
+export type EmployeeCreateNestedOneWithoutTrainingGroupMembershipsInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingGroupMembershipsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutTrainingGroupMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingGroupMembershipsInput
+  upsert?: Prisma.EmployeeUpsertWithoutTrainingGroupMembershipsInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUpdateWithoutTrainingGroupMembershipsInput>, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput>
+}
+
+export type EmployeeCreateNestedOneWithoutTrainingClassesOrganizedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingClassesOrganizedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeCreateNestedOneWithoutTrainingClassesCreatedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingClassesCreatedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutTrainingClassesOrganizedNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingClassesOrganizedInput
+  upsert?: Prisma.EmployeeUpsertWithoutTrainingClassesOrganizedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUpdateWithoutTrainingClassesOrganizedInput>, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput>
+}
+
+export type EmployeeUpdateOneRequiredWithoutTrainingClassesCreatedNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTrainingClassesCreatedInput
+  upsert?: Prisma.EmployeeUpsertWithoutTrainingClassesCreatedInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutTrainingClassesCreatedInput, Prisma.EmployeeUpdateWithoutTrainingClassesCreatedInput>, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput>
+}
+
 export type EmployeeCreateNestedOneWithoutTimeOffBalancesInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTimeOffBalancesInput, Prisma.EmployeeUncheckedCreateWithoutTimeOffBalancesInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTimeOffBalancesInput
@@ -2227,6 +2311,10 @@ export type EmployeeCreateWithoutHeadOfInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2310,6 +2398,10 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -2398,6 +2490,10 @@ export type EmployeeCreateWithoutDepartmentInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2481,6 +2577,10 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -2585,6 +2685,10 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -2668,6 +2772,10 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -2812,6 +2920,10 @@ export type EmployeeCreateWithoutTeamInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2895,6 +3007,10 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3004,6 +3120,10 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3087,6 +3207,10 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3175,6 +3299,10 @@ export type EmployeeCreateWithoutManagerInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3258,6 +3386,10 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3351,6 +3483,10 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3434,6 +3570,10 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3522,6 +3662,10 @@ export type EmployeeCreateWithoutBuddyInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3605,6 +3749,10 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3709,6 +3857,10 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3792,6 +3944,10 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3902,6 +4058,10 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3985,6 +4145,10 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4084,6 +4248,10 @@ export type EmployeeCreateWithoutUserInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4167,6 +4335,10 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4266,6 +4438,10 @@ export type EmployeeUpdateWithoutUserInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4349,6 +4525,10 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4432,6 +4612,10 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4515,6 +4699,10 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4614,6 +4802,10 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4697,6 +4889,10 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4780,6 +4976,10 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4863,6 +5063,10 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4952,6 +5156,10 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5035,6 +5243,10 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5133,6 +5345,10 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5216,6 +5432,10 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5311,6 +5531,10 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5394,6 +5618,10 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5476,6 +5704,10 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5559,6 +5791,10 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5658,6 +5894,10 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5741,6 +5981,10 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5824,6 +6068,10 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5907,6 +6155,10 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5995,6 +6247,10 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -6078,6 +6334,10 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -6177,6 +6437,10 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6260,6 +6524,10 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6354,6 +6622,10 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6437,6 +6709,10 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6520,6 +6796,10 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -6603,6 +6883,10 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -6692,6 +6976,10 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -6775,6 +7063,10 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -6873,6 +7165,10 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6956,6 +7252,10 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7051,6 +7351,10 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -7134,6 +7438,10 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -7216,6 +7524,10 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7299,6 +7611,10 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -7398,6 +7714,10 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7481,6 +7801,10 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7564,6 +7888,10 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7647,6 +7975,10 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -7746,6 +8078,10 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7829,6 +8165,10 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7912,6 +8252,10 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7995,6 +8339,10 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8094,6 +8442,10 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8177,6 +8529,10 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8261,6 +8617,10 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -8344,6 +8704,10 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8443,6 +8807,10 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8526,6 +8894,10 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8608,6 +8980,10 @@ export type EmployeeCreateWithoutNotificationsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -8691,6 +9067,10 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8790,6 +9170,10 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8873,6 +9257,10 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8957,6 +9345,10 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9040,6 +9432,10 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9139,6 +9535,10 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9222,6 +9622,10 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9304,6 +9708,10 @@ export type EmployeeCreateWithoutDocumentsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9387,6 +9795,10 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9486,6 +9898,10 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9569,6 +9985,10 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9653,6 +10073,10 @@ export type EmployeeCreateWithoutHrNotesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9736,6 +10160,10 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9824,6 +10252,10 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9907,6 +10339,10 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10006,6 +10442,10 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10089,6 +10529,10 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10183,6 +10627,10 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10266,6 +10714,10 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10349,6 +10801,10 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10432,6 +10888,10 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10531,6 +10991,10 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10614,6 +11078,10 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10697,6 +11165,10 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10780,6 +11252,10 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10868,6 +11344,10 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10951,6 +11431,10 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -11050,6 +11534,10 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11133,6 +11621,10 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11227,6 +11719,10 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11310,6 +11806,10 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11392,6 +11892,10 @@ export type EmployeeCreateWithoutOutOfOfficeInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -11475,6 +11979,10 @@ export type EmployeeUncheckedCreateWithoutOutOfOfficeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -11574,6 +12082,10 @@ export type EmployeeUpdateWithoutOutOfOfficeInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11657,6 +12169,1466 @@ export type EmployeeUncheckedUpdateWithoutOutOfOfficeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutTrainingGroupsCreatedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutTrainingGroupsCreatedInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput>
+}
+
+export type EmployeeUpsertWithoutTrainingGroupsCreatedInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTrainingGroupsCreatedInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingGroupsCreatedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput>
+}
+
+export type EmployeeUpdateWithoutTrainingGroupsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutTrainingGroupMembershipsInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutTrainingGroupMembershipsInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput>
+}
+
+export type EmployeeUpsertWithoutTrainingGroupMembershipsInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTrainingGroupMembershipsInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingGroupMembershipsInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput>
+}
+
+export type EmployeeUpdateWithoutTrainingGroupMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutTrainingClassesOrganizedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutTrainingClassesOrganizedInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput>
+}
+
+export type EmployeeCreateWithoutTrainingClassesCreatedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutTrainingClassesCreatedInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput>
+}
+
+export type EmployeeUpsertWithoutTrainingClassesOrganizedInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTrainingClassesOrganizedInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingClassesOrganizedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput>
+}
+
+export type EmployeeUpdateWithoutTrainingClassesOrganizedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUpsertWithoutTrainingClassesCreatedInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutTrainingClassesCreatedInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutTrainingClassesCreatedInput, Prisma.EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput>
+}
+
+export type EmployeeUpdateWithoutTrainingClassesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11741,6 +13713,10 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -11824,6 +13800,10 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -11923,6 +13903,10 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -12006,6 +13990,10 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -12088,6 +14076,10 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -12171,6 +14163,10 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -12260,6 +14256,10 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -12343,6 +14343,10 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -12441,6 +14445,10 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12524,6 +14532,10 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12619,6 +14631,10 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -12702,6 +14718,10 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -12784,6 +14804,10 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -12867,6 +14891,10 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -12966,6 +14994,10 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13049,6 +15081,10 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13132,6 +15168,10 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13215,6 +15255,10 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -13314,6 +15358,10 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13397,6 +15445,10 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13481,6 +15533,10 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13564,6 +15620,10 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -13663,6 +15723,10 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13746,6 +15810,10 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13829,6 +15897,10 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13912,6 +15984,10 @@ export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14011,6 +16087,10 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14094,6 +16174,10 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14177,6 +16261,10 @@ export type EmployeeCreateWithoutChatMembersInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14260,6 +16348,10 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14359,6 +16451,10 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14442,6 +16538,10 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14525,6 +16625,10 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14608,6 +16712,10 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14707,6 +16815,10 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14790,6 +16902,10 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14873,6 +16989,10 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14956,6 +17076,10 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15055,6 +17179,10 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15138,6 +17266,10 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15221,6 +17353,10 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -15304,6 +17440,10 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15403,6 +17543,10 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15486,6 +17630,10 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15569,6 +17717,10 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -15652,6 +17804,10 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15751,6 +17907,10 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15834,6 +17994,10 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15917,6 +18081,10 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -16000,6 +18168,10 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -16099,6 +18271,10 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16182,6 +18358,10 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16265,6 +18445,10 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -16348,6 +18532,10 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -16447,6 +18635,10 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16530,6 +18722,10 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16613,6 +18809,10 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -16696,6 +18896,10 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -16795,6 +18999,10 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16878,6 +19086,10 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16960,6 +19172,10 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -17043,6 +19259,10 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -17131,6 +19351,10 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -17214,6 +19438,10 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -17313,6 +19541,10 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17396,6 +19628,10 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17490,6 +19726,10 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17573,6 +19813,10 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17697,6 +19941,10 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17780,6 +20028,10 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17945,6 +20197,10 @@ export type EmployeeUpdateWithoutTeamInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18028,6 +20284,10 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18234,6 +20494,10 @@ export type EmployeeUpdateWithoutManagerInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18317,6 +20581,10 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18441,6 +20709,10 @@ export type EmployeeUpdateWithoutBuddyInput = {
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18524,6 +20796,10 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -18614,6 +20890,10 @@ export type EmployeeCountOutputType = {
   pulseResponses: number
   timeOffRequests: number
   outOfOffice: number
+  trainingGroupsCreated: number
+  trainingGroupMemberships: number
+  trainingClassesOrganized: number
+  trainingClassesCreated: number
   timeOffBalances: number
   approvedRequests: number
   mentionedInPosts: number
@@ -18658,6 +20938,10 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   pulseResponses?: boolean | EmployeeCountOutputTypeCountPulseResponsesArgs
   timeOffRequests?: boolean | EmployeeCountOutputTypeCountTimeOffRequestsArgs
   outOfOffice?: boolean | EmployeeCountOutputTypeCountOutOfOfficeArgs
+  trainingGroupsCreated?: boolean | EmployeeCountOutputTypeCountTrainingGroupsCreatedArgs
+  trainingGroupMemberships?: boolean | EmployeeCountOutputTypeCountTrainingGroupMembershipsArgs
+  trainingClassesOrganized?: boolean | EmployeeCountOutputTypeCountTrainingClassesOrganizedArgs
+  trainingClassesCreated?: boolean | EmployeeCountOutputTypeCountTrainingClassesCreatedArgs
   timeOffBalances?: boolean | EmployeeCountOutputTypeCountTimeOffBalancesArgs
   approvedRequests?: boolean | EmployeeCountOutputTypeCountApprovedRequestsArgs
   mentionedInPosts?: boolean | EmployeeCountOutputTypeCountMentionedInPostsArgs
@@ -18829,6 +21113,34 @@ export type EmployeeCountOutputTypeCountTimeOffRequestsArgs<ExtArgs extends runt
  */
 export type EmployeeCountOutputTypeCountOutOfOfficeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.OutOfOfficeWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountTrainingGroupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrainingGroupWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountTrainingGroupMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrainingGroupMemberWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountTrainingClassesOrganizedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrainingClassWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
+export type EmployeeCountOutputTypeCountTrainingClassesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.TrainingClassWhereInput
 }
 
 /**
@@ -19044,6 +21356,10 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   pulseResponses?: boolean | Prisma.Employee$pulseResponsesArgs<ExtArgs>
   timeOffRequests?: boolean | Prisma.Employee$timeOffRequestsArgs<ExtArgs>
   outOfOffice?: boolean | Prisma.Employee$outOfOfficeArgs<ExtArgs>
+  trainingGroupsCreated?: boolean | Prisma.Employee$trainingGroupsCreatedArgs<ExtArgs>
+  trainingGroupMemberships?: boolean | Prisma.Employee$trainingGroupMembershipsArgs<ExtArgs>
+  trainingClassesOrganized?: boolean | Prisma.Employee$trainingClassesOrganizedArgs<ExtArgs>
+  trainingClassesCreated?: boolean | Prisma.Employee$trainingClassesCreatedArgs<ExtArgs>
   timeOffBalances?: boolean | Prisma.Employee$timeOffBalancesArgs<ExtArgs>
   approvedRequests?: boolean | Prisma.Employee$approvedRequestsArgs<ExtArgs>
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
@@ -19229,6 +21545,10 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   pulseResponses?: boolean | Prisma.Employee$pulseResponsesArgs<ExtArgs>
   timeOffRequests?: boolean | Prisma.Employee$timeOffRequestsArgs<ExtArgs>
   outOfOffice?: boolean | Prisma.Employee$outOfOfficeArgs<ExtArgs>
+  trainingGroupsCreated?: boolean | Prisma.Employee$trainingGroupsCreatedArgs<ExtArgs>
+  trainingGroupMemberships?: boolean | Prisma.Employee$trainingGroupMembershipsArgs<ExtArgs>
+  trainingClassesOrganized?: boolean | Prisma.Employee$trainingClassesOrganizedArgs<ExtArgs>
+  trainingClassesCreated?: boolean | Prisma.Employee$trainingClassesCreatedArgs<ExtArgs>
   timeOffBalances?: boolean | Prisma.Employee$timeOffBalancesArgs<ExtArgs>
   approvedRequests?: boolean | Prisma.Employee$approvedRequestsArgs<ExtArgs>
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
@@ -19293,6 +21613,10 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     pulseResponses: Prisma.$PulseResponsePayload<ExtArgs>[]
     timeOffRequests: Prisma.$TimeOffRequestPayload<ExtArgs>[]
     outOfOffice: Prisma.$OutOfOfficePayload<ExtArgs>[]
+    trainingGroupsCreated: Prisma.$TrainingGroupPayload<ExtArgs>[]
+    trainingGroupMemberships: Prisma.$TrainingGroupMemberPayload<ExtArgs>[]
+    trainingClassesOrganized: Prisma.$TrainingClassPayload<ExtArgs>[]
+    trainingClassesCreated: Prisma.$TrainingClassPayload<ExtArgs>[]
     timeOffBalances: Prisma.$TimeOffBalancePayload<ExtArgs>[]
     approvedRequests: Prisma.$TimeOffRequestPayload<ExtArgs>[]
     mentionedInPosts: Prisma.$FeedPostPayload<ExtArgs>[]
@@ -19774,6 +22098,10 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   pulseResponses<T extends Prisma.Employee$pulseResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$pulseResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PulseResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   timeOffRequests<T extends Prisma.Employee$timeOffRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$timeOffRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   outOfOffice<T extends Prisma.Employee$outOfOfficeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$outOfOfficeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutOfOfficePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trainingGroupsCreated<T extends Prisma.Employee$trainingGroupsCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$trainingGroupsCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trainingGroupMemberships<T extends Prisma.Employee$trainingGroupMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$trainingGroupMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingGroupMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trainingClassesOrganized<T extends Prisma.Employee$trainingClassesOrganizedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$trainingClassesOrganizedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  trainingClassesCreated<T extends Prisma.Employee$trainingClassesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$trainingClassesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TrainingClassPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   timeOffBalances<T extends Prisma.Employee$timeOffBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$timeOffBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedRequests<T extends Prisma.Employee$approvedRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$approvedRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mentionedInPosts<T extends Prisma.Employee$mentionedInPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$mentionedInPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -20831,6 +23159,102 @@ export type Employee$outOfOfficeArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.OutOfOfficeScalarFieldEnum | Prisma.OutOfOfficeScalarFieldEnum[]
+}
+
+/**
+ * Employee.trainingGroupsCreated
+ */
+export type Employee$trainingGroupsCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrainingGroup
+   */
+  select?: Prisma.TrainingGroupSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrainingGroup
+   */
+  omit?: Prisma.TrainingGroupOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrainingGroupInclude<ExtArgs> | null
+  where?: Prisma.TrainingGroupWhereInput
+  orderBy?: Prisma.TrainingGroupOrderByWithRelationInput | Prisma.TrainingGroupOrderByWithRelationInput[]
+  cursor?: Prisma.TrainingGroupWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrainingGroupScalarFieldEnum | Prisma.TrainingGroupScalarFieldEnum[]
+}
+
+/**
+ * Employee.trainingGroupMemberships
+ */
+export type Employee$trainingGroupMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrainingGroupMember
+   */
+  select?: Prisma.TrainingGroupMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrainingGroupMember
+   */
+  omit?: Prisma.TrainingGroupMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrainingGroupMemberInclude<ExtArgs> | null
+  where?: Prisma.TrainingGroupMemberWhereInput
+  orderBy?: Prisma.TrainingGroupMemberOrderByWithRelationInput | Prisma.TrainingGroupMemberOrderByWithRelationInput[]
+  cursor?: Prisma.TrainingGroupMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrainingGroupMemberScalarFieldEnum | Prisma.TrainingGroupMemberScalarFieldEnum[]
+}
+
+/**
+ * Employee.trainingClassesOrganized
+ */
+export type Employee$trainingClassesOrganizedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrainingClass
+   */
+  select?: Prisma.TrainingClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrainingClass
+   */
+  omit?: Prisma.TrainingClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrainingClassInclude<ExtArgs> | null
+  where?: Prisma.TrainingClassWhereInput
+  orderBy?: Prisma.TrainingClassOrderByWithRelationInput | Prisma.TrainingClassOrderByWithRelationInput[]
+  cursor?: Prisma.TrainingClassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrainingClassScalarFieldEnum | Prisma.TrainingClassScalarFieldEnum[]
+}
+
+/**
+ * Employee.trainingClassesCreated
+ */
+export type Employee$trainingClassesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TrainingClass
+   */
+  select?: Prisma.TrainingClassSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TrainingClass
+   */
+  omit?: Prisma.TrainingClassOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TrainingClassInclude<ExtArgs> | null
+  where?: Prisma.TrainingClassWhereInput
+  orderBy?: Prisma.TrainingClassOrderByWithRelationInput | Prisma.TrainingClassOrderByWithRelationInput[]
+  cursor?: Prisma.TrainingClassWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.TrainingClassScalarFieldEnum | Prisma.TrainingClassScalarFieldEnum[]
 }
 
 /**

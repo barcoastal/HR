@@ -36,9 +36,24 @@ function fmt(d: Date | string) {
 }
 
 function audienceLabel(t: string) {
+  if (t === "managers") return "All managers";
   if (t === "departments") return "Specific departments";
   if (t === "employees") return "Specific people";
   return "Everyone";
+}
+
+const ABSENCE_TYPES = [
+  { value: "OUT_OF_OFFICE", label: "Out of office" },
+  { value: "VACATION", label: "Vacation / PTO" },
+  { value: "SICK", label: "Sick day" },
+  { value: "MEDICAL_APPOINTMENT", label: "Doctor appointment" },
+  { value: "WORKING_REMOTELY", label: "Working remotely" },
+] as const;
+
+type AbsenceType = (typeof ABSENCE_TYPES)[number]["value"];
+
+function absenceTypeLabel(type: string) {
+  return ABSENCE_TYPES.find((option) => option.value === type)?.label || "Out of office";
 }
 
 export function OutOfOfficeDialog({
@@ -59,19 +74,18 @@ export function OutOfOfficeDialog({
   const [open, setOpen] = useState(false);
   const today = () => new Date().toISOString().slice(0, 10);
 
-  // Regular employees can't browse the company directory, so they get
-  // "Everyone" / "My department" instead of a picker that would leak the roster.
+  // The employee directory powers explicit sharing with selected coworkers.
   const canTargetIndividuals = employees.length > 0;
   const canPickDepartments = departments.length > 0;
 
   const [startDate, setStartDate] = useState(today);
   const [endDate, setEndDate] = useState(today);
-  const [allDay, setAllDay] = useState(true);
+  const [durationMode, setDurationMode] = useState<"all" | "morning" | "afternoon" | "custom">("all");
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
-  const [type, setType] = useState<"OUT_OF_OFFICE" | "WORKING_REMOTELY">("OUT_OF_OFFICE");
+  const [type, setType] = useState<AbsenceType>("OUT_OF_OFFICE");
   const [note, setNote] = useState("");
-  const [mode, setMode] = useState<"everyone" | "departments" | "people">("everyone");
+  const [mode, setMode] = useState<"everyone" | "managers" | "departments" | "people">("managers");
   const [deptIds, setDeptIds] = useState<Set<string>>(new Set());
   const [empIds, setEmpIds] = useState<Set<string>>(new Set());
   const [peopleSearch, setPeopleSearch] = useState("");
@@ -88,12 +102,12 @@ export function OutOfOfficeDialog({
   function reset() {
     setStartDate(today());
     setEndDate(today());
-    setAllDay(true);
+    setDurationMode("all");
     setStartTime("09:00");
     setEndTime("17:00");
     setType("OUT_OF_OFFICE");
     setNote("");
-    setMode("everyone");
+    setMode("managers");
     setDeptIds(new Set());
     setEmpIds(new Set());
     setPeopleSearch("");
@@ -135,15 +149,29 @@ export function OutOfOfficeDialog({
   async function submit() {
     setSaving(true);
     setError(null);
+    const selectedTimes =
+      durationMode === "all"
+        ? { startTime: undefined, endTime: undefined }
+        : durationMode === "morning"
+          ? { startTime: "09:00", endTime: "13:00" }
+          : durationMode === "afternoon"
+            ? { startTime: "13:00", endTime: "17:00" }
+            : { startTime, endTime };
     const res = await createOutOfOffice({
       startDate,
       endDate,
-      startTime: allDay ? undefined : startTime,
-      endTime: allDay ? undefined : endTime,
+      ...selectedTimes,
       type,
       note,
       audience: {
-        type: mode === "people" ? "employees" : mode === "departments" ? "departments" : "all",
+        type:
+          mode === "people"
+            ? "employees"
+            : mode === "departments"
+              ? "departments"
+              : mode === "everyone"
+                ? "all"
+                : mode,
         departmentIds: Array.from(deptIds),
         employeeIds: Array.from(empIds),
       },
@@ -197,7 +225,7 @@ export function OutOfOfficeDialog({
                     className="text-[var(--color-accent)]"
                   />
                   <span className="text-[var(--color-text-primary)]">
-                    {fmt(e.startDate)} – {fmt(e.endDate)}
+                    {absenceTypeLabel(e.type)}: {fmt(e.startDate)} to {fmt(e.endDate)}
                   </span>
                   {e.note && <span className="text-[var(--color-text-muted)] truncate">{e.note}</span>}
                   <span className="ml-auto text-[10px] text-[var(--color-text-muted)]">
@@ -240,17 +268,33 @@ export function OutOfOfficeDialog({
             </div>
           </div>
 
-          <label className="flex items-center gap-2 text-xs text-[var(--color-text-primary)] cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={allDay}
-              onChange={(e) => setAllDay(e.target.checked)}
-              className="h-3.5 w-3.5 rounded border-gray-300 accent-[var(--color-accent)]"
-            />
-            All day
-          </label>
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Duration</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] p-1">
+              {([
+                { value: "all", label: "All day" },
+                { value: "morning", label: "Morning" },
+                { value: "afternoon", label: "Afternoon" },
+                { value: "custom", label: "Custom" },
+              ] as const).map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => setDurationMode(option.value)}
+                  className={cn(
+                    "rounded-md px-2 py-1.5 text-xs font-medium transition-colors",
+                    durationMode === option.value
+                      ? "bg-[var(--color-accent)] text-white"
+                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {!allDay && (
+          {durationMode === "custom" && (
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Leaving at</label>
@@ -275,28 +319,11 @@ export function OutOfOfficeDialog({
 
           <div>
             <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Type</label>
-            <div className="flex items-center gap-1 p-0.5 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)]">
-              {(
-                [
-                  { v: "OUT_OF_OFFICE", l: "Out of office" },
-                  { v: "WORKING_REMOTELY", l: "Working remotely" },
-                ] as const
-              ).map((opt) => (
-                <button
-                  key={opt.v}
-                  type="button"
-                  onClick={() => setType(opt.v)}
-                  className={cn(
-                    "flex-1 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors",
-                    type === opt.v
-                      ? "bg-[var(--color-accent)] text-white"
-                      : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-                  )}
-                >
-                  {opt.l}
-                </button>
+            <select value={type} onChange={(e) => setType(e.target.value as AbsenceType)} className={input}>
+              {ABSENCE_TYPES.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
               ))}
-            </div>
+            </select>
           </div>
 
           <div>
@@ -319,11 +346,12 @@ export function OutOfOfficeDialog({
               {(
                 [
                   { v: "everyone", l: `Everyone (${companySize})` },
+                  { v: "managers", l: "All managers" },
                   ...(canPickDepartments
                     ? [{ v: "departments" as const, l: myDepartment && !canTargetIndividuals ? "My department" : "By department" }]
                     : []),
                   ...(canTargetIndividuals ? [{ v: "people" as const, l: "Pick people" }] : []),
-                ] as { v: "everyone" | "departments" | "people"; l: string }[]
+                ] as { v: "everyone" | "managers" | "departments" | "people"; l: string }[]
               ).map((opt) => (
                 <button
                   key={opt.v}
@@ -399,9 +427,11 @@ export function OutOfOfficeDialog({
             )}
 
             <p className="mt-2 text-[11px] text-[var(--color-text-muted)]">
-              {mode === "everyone"
-                ? "Everyone in the company will see this on the calendar."
-                : `${viewerCount} ${viewerCount === 1 ? "person" : "people"} will see this, plus HR and admins.`}
+              Your direct manager and HR can always see this. {mode === "everyone"
+                ? "Everyone in the company will also see it."
+                : mode === "managers"
+                  ? "All managers will also see it."
+                  : `${viewerCount} ${viewerCount === 1 ? "person" : "people"} will also see it.`}
             </p>
           </div>
 

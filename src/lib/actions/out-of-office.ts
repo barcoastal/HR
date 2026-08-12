@@ -15,6 +15,7 @@ import { revalidatePath } from "next/cache";
 function wasSharedWith(
   entry: {
     employeeId: string;
+    employee: { managerId: string | null };
     audienceType: string;
     audienceDeptIds: string | null;
     audienceEmployeeIds: string | null;
@@ -23,9 +24,12 @@ function wasSharedWith(
 ): boolean {
   // You always see your own entries.
   if (viewer.employeeId && entry.employeeId === viewer.employeeId) return true;
+  // A direct manager and HR/admin always have operational visibility.
+  if (viewer.employeeId && entry.employee.managerId === viewer.employeeId) return true;
   if (!entry.audienceType || entry.audienceType === "all") return true;
   // Admins/HR see everything, regardless of the chosen audience.
   if (isAdminAudienceRole(viewer.role)) return true;
+  if (entry.audienceType === "managers") return viewer.role === "MANAGER";
 
   try {
     if (entry.audienceType === "departments") {
@@ -43,7 +47,7 @@ function wasSharedWith(
 }
 
 export type OutOfOfficeAudience = {
-  type: "all" | "departments" | "employees";
+  type: "all" | "managers" | "departments" | "employees";
   departmentIds?: string[];
   employeeIds?: string[];
 };
@@ -54,7 +58,7 @@ export type CreateOutOfOfficeInput = {
   /** "HH:MM" — omit both for a whole-day entry. */
   startTime?: string;
   endTime?: string;
-  type?: "OUT_OF_OFFICE" | "WORKING_REMOTELY";
+  type?: "OUT_OF_OFFICE" | "VACATION" | "SICK" | "MEDICAL_APPOINTMENT" | "WORKING_REMOTELY";
   note?: string;
   audience?: OutOfOfficeAudience;
 };
@@ -95,7 +99,7 @@ const SELECT = {
   audienceDeptIds: true,
   audienceEmployeeIds: true,
   employee: {
-    select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true },
+    select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true, managerId: true },
   },
 } as const;
 
@@ -141,13 +145,21 @@ export async function createOutOfOffice(input: CreateOutOfOfficeInput) {
   }
 
   const audienceType = input.audience?.type ?? "all";
+  const allowedTypes = new Set([
+    "OUT_OF_OFFICE",
+    "VACATION",
+    "SICK",
+    "MEDICAL_APPOINTMENT",
+    "WORKING_REMOTELY",
+  ]);
+  const type = input.type && allowedTypes.has(input.type) ? input.type : "OUT_OF_OFFICE";
 
   await db.outOfOffice.create({
     data: {
       employeeId,
       startDate: startAt,
       endDate: endAt,
-      type: input.type ?? "OUT_OF_OFFICE",
+      type,
       note: input.note?.trim() || null,
       audienceType,
       audienceDeptIds:

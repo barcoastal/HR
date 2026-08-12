@@ -225,6 +225,26 @@ export type SigningRequest = Prisma.SigningRequestModel
  */
 export type OutOfOffice = Prisma.OutOfOfficeModel
 /**
+ * Model TrainingGroup
+ * 
+ */
+export type TrainingGroup = Prisma.TrainingGroupModel
+/**
+ * Model TrainingGroupMember
+ * 
+ */
+export type TrainingGroupMember = Prisma.TrainingGroupMemberModel
+/**
+ * Model TrainingClass
+ * 
+ */
+export type TrainingClass = Prisma.TrainingClassModel
+/**
+ * Model TrainingSession
+ * 
+ */
+export type TrainingSession = Prisma.TrainingSessionModel
+/**
  * Model TimeOffPolicy
  * 
  */

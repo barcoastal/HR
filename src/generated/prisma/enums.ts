@@ -92,6 +92,31 @@ export const OneOnOneStatus = {
 export type OneOnOneStatus = (typeof OneOnOneStatus)[keyof typeof OneOnOneStatus]
 
 
+export const TrainingGroupRole = {
+  TRAINER: 'TRAINER',
+  TRAINEE: 'TRAINEE',
+  VIEWER: 'VIEWER'
+} as const
+
+export type TrainingGroupRole = (typeof TrainingGroupRole)[keyof typeof TrainingGroupRole]
+
+
+export const TrainingClassStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TrainingClassStatus = (typeof TrainingClassStatus)[keyof typeof TrainingClassStatus]
+
+
+export const TrainingSessionStatus = {
+  SCHEDULED: 'SCHEDULED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type TrainingSessionStatus = (typeof TrainingSessionStatus)[keyof typeof TrainingSessionStatus]
+
+
 export const FeedPostType = {
   ANNOUNCEMENT: 'ANNOUNCEMENT',
   GENERAL: 'GENERAL',
@@ -249,6 +274,9 @@ export type PlatformStatus = (typeof PlatformStatus)[keyof typeof PlatformStatus
 
 export const OutOfOfficeType = {
   OUT_OF_OFFICE: 'OUT_OF_OFFICE',
+  VACATION: 'VACATION',
+  SICK: 'SICK',
+  MEDICAL_APPOINTMENT: 'MEDICAL_APPOINTMENT',
   WORKING_REMOTELY: 'WORKING_REMOTELY'
 } as const
 

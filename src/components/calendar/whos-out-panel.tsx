@@ -47,6 +47,13 @@ function daysFromToday(d: Date, today: Date) {
 
 function Row({ entry, today }: { entry: Entry; today: Date }) {
   const remote = entry.type === "WORKING_REMOTELY";
+  const typeLabels: Record<string, string> = {
+    OUT_OF_OFFICE: "Out",
+    VACATION: "PTO",
+    SICK: "Sick",
+    MEDICAL_APPOINTMENT: "Appointment",
+    WORKING_REMOTELY: "Remote",
+  };
   const name = displayName(entry.employee);
   const initials = getInitials(displayFirstName(entry.employee), entry.employee.lastName);
   const colorIdx = displayFirstName(entry.employee).charCodeAt(0) % avatarColors.length;
@@ -88,7 +95,7 @@ function Row({ entry, today }: { entry: Entry; today: Date }) {
             )}
           >
             <Icon name={remote ? "home_work" : "beach_access"} size={11} />
-            {remote ? "Remote" : "Out"}
+            {typeLabels[entry.type] || "Out"}
           </span>
         </p>
         <p className="text-xs text-[var(--color-text-muted)] truncate">

@@ -664,6 +664,57 @@ export type EnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
 }
 
+export type EnumTrainingGroupRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingGroupRole | Prisma.EnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel> | $Enums.TrainingGroupRole
+}
+
+export type EnumTrainingGroupRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingGroupRole | Prisma.EnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingGroupRoleWithAggregatesFilter<$PrismaModel> | $Enums.TrainingGroupRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel>
+}
+
+export type EnumTrainingClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingClassStatus | Prisma.EnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel> | $Enums.TrainingClassStatus
+}
+
+export type EnumTrainingClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingClassStatus | Prisma.EnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrainingClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel>
+}
+
+export type EnumTrainingSessionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingSessionStatus | Prisma.EnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel> | $Enums.TrainingSessionStatus
+}
+
+export type EnumTrainingSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingSessionStatus | Prisma.EnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrainingSessionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel>
+}
+
 export type EnumTimeOffRequestStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.TimeOffRequestStatus | Prisma.EnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.TimeOffRequestStatus[] | Prisma.ListEnumTimeOffRequestStatusFieldRefInput<$PrismaModel>
@@ -1463,6 +1514,57 @@ export type NestedEnumOutOfOfficeTypeWithAggregatesFilter<$PrismaModel = never> 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOutOfOfficeTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumTrainingGroupRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingGroupRole | Prisma.EnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel> | $Enums.TrainingGroupRole
+}
+
+export type NestedEnumTrainingGroupRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingGroupRole | Prisma.EnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingGroupRole[] | Prisma.ListEnumTrainingGroupRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingGroupRoleWithAggregatesFilter<$PrismaModel> | $Enums.TrainingGroupRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingGroupRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumTrainingClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingClassStatus | Prisma.EnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel> | $Enums.TrainingClassStatus
+}
+
+export type NestedEnumTrainingClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingClassStatus | Prisma.EnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingClassStatus[] | Prisma.ListEnumTrainingClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrainingClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingClassStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumTrainingSessionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingSessionStatus | Prisma.EnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel> | $Enums.TrainingSessionStatus
+}
+
+export type NestedEnumTrainingSessionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TrainingSessionStatus | Prisma.EnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TrainingSessionStatus[] | Prisma.ListEnumTrainingSessionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTrainingSessionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TrainingSessionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTrainingSessionStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumTimeOffRequestStatusFilter<$PrismaModel = never> = {

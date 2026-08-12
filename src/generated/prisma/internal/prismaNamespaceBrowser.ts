@@ -88,6 +88,10 @@ export const ModelName = {
   Interview: 'Interview',
   SigningRequest: 'SigningRequest',
   OutOfOffice: 'OutOfOffice',
+  TrainingGroup: 'TrainingGroup',
+  TrainingGroupMember: 'TrainingGroupMember',
+  TrainingClass: 'TrainingClass',
+  TrainingSession: 'TrainingSession',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -362,6 +366,11 @@ export const FeedPostScalarFieldEnum = {
   eventDate: 'eventDate',
   eventEndDate: 'eventEndDate',
   eventLocation: 'eventLocation',
+  eventDescription: 'eventDescription',
+  eventMeetLink: 'eventMeetLink',
+  eventOrganizerUserId: 'eventOrganizerUserId',
+  googleCalendarEventId: 'googleCalendarEventId',
+  eventCancelledAt: 'eventCancelledAt',
   audienceType: 'audienceType',
   audienceDeptIds: 'audienceDeptIds',
   audienceEmployeeIds: 'audienceEmployeeIds',
@@ -764,6 +773,71 @@ export const OutOfOfficeScalarFieldEnum = {
 } as const
 
 export type OutOfOfficeScalarFieldEnum = (typeof OutOfOfficeScalarFieldEnum)[keyof typeof OutOfOfficeScalarFieldEnum]
+
+
+export const TrainingGroupScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingGroupScalarFieldEnum = (typeof TrainingGroupScalarFieldEnum)[keyof typeof TrainingGroupScalarFieldEnum]
+
+
+export const TrainingGroupMemberScalarFieldEnum = {
+  id: 'id',
+  groupId: 'groupId',
+  employeeId: 'employeeId',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type TrainingGroupMemberScalarFieldEnum = (typeof TrainingGroupMemberScalarFieldEnum)[keyof typeof TrainingGroupMemberScalarFieldEnum]
+
+
+export const TrainingClassScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  agenda: 'agenda',
+  location: 'location',
+  organizerId: 'organizerId',
+  createdById: 'createdById',
+  organizerUserId: 'organizerUserId',
+  groupId: 'groupId',
+  attendeeEmployeeIds: 'attendeeEmployeeIds',
+  viewerEmployeeIds: 'viewerEmployeeIds',
+  visibleToManagers: 'visibleToManagers',
+  rangeStart: 'rangeStart',
+  rangeEnd: 'rangeEnd',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  weekdays: 'weekdays',
+  timeZone: 'timeZone',
+  withMeetLink: 'withMeetLink',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingClassScalarFieldEnum = (typeof TrainingClassScalarFieldEnum)[keyof typeof TrainingClassScalarFieldEnum]
+
+
+export const TrainingSessionScalarFieldEnum = {
+  id: 'id',
+  trainingClassId: 'trainingClassId',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  googleCalendarEventId: 'googleCalendarEventId',
+  meetLink: 'meetLink',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TrainingSessionScalarFieldEnum = (typeof TrainingSessionScalarFieldEnum)[keyof typeof TrainingSessionScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {

@@ -12,6 +12,9 @@ export type GoogleCalendarEvent = {
   end: { dateTime?: string; date?: string };
   location?: string;
   htmlLink?: string;
+  hangoutLink?: string;
+  organizer?: { email?: string; displayName?: string; self?: boolean };
+  attendees?: { email?: string; displayName?: string; responseStatus?: string; self?: boolean }[];
 };
 
 // ── Token refresh (per-user mutex) ─────────────────────────
@@ -175,6 +178,22 @@ export async function getConnectedGoogleAccountEmail(userId: string): Promise<st
   return fetchGoogleAccountEmail(accessToken);
 }
 
+export async function assertConnectedGoogleAccount(
+  userId: string,
+  expectedEmail: string
+): Promise<void> {
+  const connectedEmail = await getConnectedGoogleAccountEmail(userId);
+  if (connectedEmail !== expectedEmail.trim().toLowerCase()) {
+    await db.user.update({
+      where: { id: userId },
+      data: { googleCalendarSyncEnabled: false },
+    });
+    throw new Error(
+      `Connected Google account ${connectedEmail} does not match ${expectedEmail.trim().toLowerCase()}`
+    );
+  }
+}
+
 /**
  * Create a 1:1 calendar event on the manager's *own* primary calendar — that
  * way the manager is the organizer (instead of whoever connected the platform-
@@ -315,6 +334,62 @@ export async function patchEventAttendeesForUser(
   }
 }
 
+export async function updateInviteEventForUser(
+  userId: string,
+  eventId: string,
+  event: {
+    summary: string;
+    description?: string;
+    location?: string;
+    startDateTime: string;
+    endDateTime: string;
+    attendees?: { email: string; displayName?: string }[];
+  }
+): Promise<void> {
+  await googleFetch<Record<string, unknown>>(
+    userId,
+    `/calendars/primary/events/${encodeURIComponent(eventId)}?sendUpdates=all`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        summary: event.summary,
+        description: event.description,
+        location: event.location,
+        start: { dateTime: event.startDateTime },
+        end: { dateTime: event.endDateTime },
+        ...(event.attendees ? { attendees: event.attendees } : {}),
+      }),
+    }
+  );
+}
+
+export async function updateStandaloneEventForUser(
+  userId: string,
+  eventId: string,
+  event: {
+    summary: string;
+    description?: string;
+    location?: string;
+    startDateTime: string;
+    endDateTime: string;
+  }
+): Promise<void> {
+  await googleFetch<Record<string, unknown>>(
+    userId,
+    `/calendars/primary/events/${encodeURIComponent(eventId)}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        summary: event.summary,
+        description: event.description,
+        location: event.location,
+        start: { dateTime: event.startDateTime },
+        end: { dateTime: event.endDateTime },
+      }),
+    }
+  );
+}
+
 export async function pushEventToGoogleCalendar(
   userId: string,
   event: {
@@ -347,13 +422,17 @@ export async function deleteEventFromGoogleCalendar(
   googleEventId: string
 ): Promise<void> {
   const { accessToken } = await ensureValidToken(userId);
-  await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${googleEventId}`,
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(googleEventId)}?sendUpdates=all`,
     {
       method: "DELETE",
       headers: { Authorization: `Bearer ${accessToken}` },
     }
   );
+  if (!res.ok && res.status !== 404 && res.status !== 410) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Google Calendar API error ${res.status}: ${text}`);
+  }
 }
 
 // ── OAuth callback handler ─────────────────────────────────

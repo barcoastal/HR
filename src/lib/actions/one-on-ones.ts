@@ -9,7 +9,10 @@ import {
   updateOneOnOneEvent,
   cancelOneOnOneEvent,
 } from "@/lib/google-calendar";
-import { createOneOnOneEventForUser } from "@/lib/google-calendar-sync";
+import {
+  assertConnectedGoogleAccount,
+  createOneOnOneEventForUser,
+} from "@/lib/google-calendar-sync";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
 import { displayName } from "@/lib/utils";
 
@@ -22,12 +25,25 @@ import { displayName } from "@/lib/utils";
 async function getManagerCalendarUserId(managerEmployeeId: string): Promise<string | null> {
   const user = await db.user.findUnique({
     where: { employeeId: managerEmployeeId },
-    select: { id: true, googleCalendarSyncEnabled: true, googleCalendarAccessToken: true, googleCalendarRefreshToken: true },
+    select: {
+      id: true,
+      email: true,
+      googleCalendarSyncEnabled: true,
+      googleCalendarAccessToken: true,
+      googleCalendarRefreshToken: true,
+      employee: { select: { email: true } },
+    },
   });
   if (!user) return null;
   if (!user.googleCalendarSyncEnabled) return null;
   if (!user.googleCalendarAccessToken || !user.googleCalendarRefreshToken) return null;
-  return user.id;
+  try {
+    await assertConnectedGoogleAccount(user.id, user.employee?.email || user.email);
+    return user.id;
+  } catch (err) {
+    console.error("[one-on-one] manager Google account verification failed:", err);
+    return null;
+  }
 }
 
 const DEFAULT_TIME = { hour: 10, minute: 0 };

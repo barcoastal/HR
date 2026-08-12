@@ -26,6 +26,7 @@ export async function createCompanyEvent(data: {
   durationMinutes: number;
   departmentIds: string[];
   employeeIds: string[];
+  trainingGroupIds?: string[];
   includeEveryone?: boolean;
   withMeetLink?: boolean;
 }): Promise<{
@@ -59,6 +60,17 @@ export async function createCompanyEvent(data: {
       select: { id: true },
     });
     for (const e of deptEmployees) idSet.add(e.id);
+  }
+  if (!data.includeEveryone && data.trainingGroupIds?.length) {
+    const groupMembers = await db.trainingGroupMember.findMany({
+      where: {
+        groupId: { in: data.trainingGroupIds },
+        role: { in: ["TRAINER", "TRAINEE"] },
+        employee: { status: "ACTIVE" },
+      },
+      select: { employeeId: true },
+    });
+    for (const member of groupMembers) idSet.add(member.employeeId);
   }
 
   const attendeeSelect = {
@@ -231,11 +243,7 @@ export async function createCompanyEvent(data: {
     // the app calendar and the feed — and nobody else does.
     const authorEmployeeId = session.user.employeeId;
     if (authorEmployeeId) {
-      const audienceType = data.includeEveryone
-        ? "all"
-        : data.departmentIds?.length
-        ? "departments"
-        : "employees";
+      const audienceType = data.includeEveryone ? "all" : "employees";
       const post = await db.feedPost.create({
         data: {
           authorId: authorEmployeeId,
@@ -244,9 +252,14 @@ export async function createCompanyEvent(data: {
           eventDate: start,
           eventEndDate: end,
           eventLocation: data.location || null,
+          eventDescription: data.description || null,
+          eventMeetLink: meetLink,
+          eventOrganizerUserId: organizerUserId,
+          googleCalendarEventId: inserted.eventId || null,
           audienceType,
-          audienceDeptIds: audienceType === "departments" ? JSON.stringify(data.departmentIds) : null,
-          audienceEmployeeIds: audienceType === "employees" ? JSON.stringify(data.employeeIds) : null,
+          audienceDeptIds: null,
+          audienceEmployeeIds:
+            audienceType === "employees" ? JSON.stringify(attendees.map((attendee) => attendee.id)) : null,
           notifyViaEmail: false,
           emailTargetType: "none",
         },
@@ -335,4 +348,159 @@ export async function createCompanyEvent(data: {
     console.error("[createCompanyEvent]", err);
     return { success: false, error: msg };
   }
+}
+
+async function getManageableCompanyEvent(eventId: string) {
+  const session = await requireAuth();
+  const post = await db.feedPost.findUnique({
+    where: { id: eventId },
+    include: {
+      attendees: {
+        include: { user: { select: { id: true, employeeId: true } } },
+      },
+    },
+  });
+  if (!post || post.type !== "EVENT") {
+    return { session, post: null, error: "Event not found" } as const;
+  }
+  const role = session.user.role;
+  const canManage =
+    post.authorId === session.user.employeeId ||
+    role === "SUPER_ADMIN" ||
+    role === "ADMIN" ||
+    role === "HR";
+  if (!canManage) return { session, post: null, error: "Not authorized to manage this event" } as const;
+  return { session, post, error: null } as const;
+}
+
+export async function updateCompanyEvent(data: {
+  eventId: string;
+  title: string;
+  description?: string;
+  location?: string;
+  startTime: string;
+  durationMinutes: number;
+}) {
+  const access = await getManageableCompanyEvent(data.eventId);
+  if (!access.post) return { success: false, error: access.error };
+  if (access.post.eventCancelledAt) return { success: false, error: "This event was cancelled" };
+
+  const title = data.title.trim();
+  const start = new Date(data.startTime);
+  const duration = Math.max(5, Number(data.durationMinutes) || 30);
+  if (!title) return { success: false, error: "Title is required" };
+  if (Number.isNaN(start.getTime())) return { success: false, error: "Invalid start time" };
+  const end = new Date(start.getTime() + duration * 60_000);
+  const description = [
+    data.description?.trim(),
+    access.post.eventMeetLink ? `Join: ${access.post.eventMeetLink}` : null,
+  ].filter(Boolean).join("\n\n");
+
+  const sync = await import("@/lib/google-calendar-sync");
+  if (access.post.eventOrganizerUserId && access.post.googleCalendarEventId) {
+    try {
+      await sync.updateInviteEventForUser(
+        access.post.eventOrganizerUserId,
+        access.post.googleCalendarEventId,
+        {
+          summary: title,
+          description: data.description?.trim() || undefined,
+          location: data.location?.trim() || undefined,
+          startDateTime: start.toISOString(),
+          endDateTime: end.toISOString(),
+        }
+      );
+    } catch (err) {
+      console.error("[updateCompanyEvent] organizer event update failed:", err);
+      return {
+        success: false,
+        needsCalendarConnection: true,
+        error: "The organizer's Google Calendar needs to be reconnected before this event can be edited.",
+      };
+    }
+  }
+
+  await Promise.allSettled(
+    access.post.attendees
+      .filter(
+        (attendance) =>
+          attendance.googleCalendarEventId &&
+          attendance.user.id !== access.post!.eventOrganizerUserId
+      )
+      .map((attendance) =>
+        sync.updateStandaloneEventForUser(
+          attendance.user.id,
+          attendance.googleCalendarEventId!,
+          {
+            summary: title,
+            description: description || undefined,
+            location: data.location?.trim() || undefined,
+            startDateTime: start.toISOString(),
+            endDateTime: end.toISOString(),
+          }
+        )
+      )
+  );
+
+  await db.feedPost.update({
+    where: { id: access.post.id },
+    data: {
+      content: title,
+      eventDescription: data.description?.trim() || null,
+      eventLocation: data.location?.trim() || null,
+      eventDate: start,
+      eventEndDate: end,
+    },
+  });
+  revalidatePath("/calendar");
+  revalidatePath("/");
+  return { success: true };
+}
+
+export async function cancelCompanyEvent(eventId: string) {
+  const access = await getManageableCompanyEvent(eventId);
+  if (!access.post) return { success: false, error: access.error };
+  if (access.post.eventCancelledAt) return { success: true };
+
+  const sync = await import("@/lib/google-calendar-sync");
+  const deletions: Promise<void>[] = [];
+  if (access.post.eventOrganizerUserId && access.post.googleCalendarEventId) {
+    deletions.push(
+      sync.deleteEventFromGoogleCalendar(
+        access.post.eventOrganizerUserId,
+        access.post.googleCalendarEventId
+      )
+    );
+  }
+  for (const attendance of access.post.attendees) {
+    if (
+      attendance.googleCalendarEventId &&
+      attendance.user.id !== access.post.eventOrganizerUserId
+    ) {
+      deletions.push(
+        sync.deleteEventFromGoogleCalendar(
+          attendance.user.id,
+          attendance.googleCalendarEventId
+        )
+      );
+    }
+  }
+  const results = await Promise.allSettled(deletions);
+  const failedCount = results.filter((result) => result.status === "rejected").length;
+  if (failedCount) {
+    console.error(`[cancelCompanyEvent] ${failedCount} Google Calendar deletion(s) failed`);
+  }
+
+  await db.feedPost.update({
+    where: { id: access.post.id },
+    data: { eventCancelledAt: new Date() },
+  });
+  revalidatePath("/calendar");
+  revalidatePath("/");
+  return {
+    success: true,
+    warning: failedCount
+      ? "The HRIS event was cancelled, but one or more personal calendar copies could not be removed."
+      : undefined,
+  };
 }

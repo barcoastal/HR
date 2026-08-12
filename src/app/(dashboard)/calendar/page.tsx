@@ -7,9 +7,34 @@ import { getUpcomingInterviews } from "@/lib/actions/interviews";
 import { getHolidaysForYear } from "@/lib/holidays";
 import { displayName } from "@/lib/utils";
 import { CreateEventDialog } from "@/components/calendar/create-event-dialog";
+import { TrainingCalendarDialog } from "@/components/calendar/training-calendar-dialog";
 import { OutOfOfficeDialog } from "@/components/time-off/out-of-office-dialog";
 import { WhosOutPanel } from "@/components/calendar/whos-out-panel";
 import { getVisibleOutOfOffice, getMyOutOfOffice } from "@/lib/actions/out-of-office";
+import { getTrainingWorkspace, getVisibleTrainingSessions } from "@/lib/actions/training-calendar";
+import { canSeeAudiencePost } from "@/lib/event-audience";
+
+const absenceLabels: Record<string, string> = {
+  OUT_OF_OFFICE: "Out of office",
+  VACATION: "Vacation / PTO",
+  SICK: "Sick",
+  MEDICAL_APPOINTMENT: "Doctor appointment",
+  WORKING_REMOTELY: "Working remotely",
+};
+
+const oneOnOneLabels: Record<string, string> = {
+  THIRTY_DAY: "30-day 1:1",
+  QUARTERLY: "Quarterly 1:1",
+  ANNUAL: "Annual 1:1",
+};
+
+function audienceLabel(type: string) {
+  if (type === "all") return "everyone";
+  if (type === "managers") return "all managers, the direct manager, and HR";
+  if (type === "departments") return "selected departments, the direct manager, and HR";
+  if (type === "employees") return "selected people, the direct manager, and HR";
+  return "the direct manager and HR";
+}
 
 export default async function CalendarPage({
   searchParams,
@@ -18,310 +43,247 @@ export default async function CalendarPage({
 }) {
   const params = (await searchParams) ?? {};
   const session = await requireAuth();
-  const role = session.user?.role;
-  const userId = session.user?.id;
-  const callerEmployeeId = session.user?.employeeId;
+  const role = session.user.role;
+  const userId = session.user.id;
+  const callerEmployeeId = session.user.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const isManagerOrAbove = isAdmin || role === "MANAGER";
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const calendarFrom = new Date(currentYear - 1, 0, 1);
+  const calendarTo = new Date(currentYear + 1, 11, 31, 23, 59, 59);
 
-  // Anniversary reviews are personal — scope them to admin/HR (all), manager
-  // (their direct reports + themselves), or the employee (themselves only).
   const reviewCycleWhere: Record<string, unknown> = {
     isAnniversary: true,
     status: { in: ["ACTIVE", "DRAFT"] },
   };
   if (!isAdmin) {
-    if (!callerEmployeeId) {
-      reviewCycleWhere.id = "__none__";
-    } else if (role === "MANAGER") {
-      const reports = await db.employee.findMany({
-        where: { managerId: callerEmployeeId },
-        select: { id: true },
-      });
-      reviewCycleWhere.employeeId = {
-        in: [callerEmployeeId, ...reports.map((r) => r.id)],
-      };
-    } else {
-      reviewCycleWhere.employeeId = callerEmployeeId;
-    }
+    if (!callerEmployeeId) reviewCycleWhere.id = "__none__";
+    else if (role === "MANAGER") {
+      const reports = await db.employee.findMany({ where: { managerId: callerEmployeeId }, select: { id: true } });
+      reviewCycleWhere.employeeId = { in: [callerEmployeeId, ...reports.map((report) => report.id)] };
+    } else reviewCycleWhere.employeeId = callerEmployeeId;
   }
 
-  const [employees, interviews, feedEvents, reviewCycles, allActiveEmployees, departments, viewer] = await Promise.all([
+  const oneOnOneWhere: Record<string, unknown> = {
+    status: "SCHEDULED",
+    scheduledAt: { gte: calendarFrom, lte: calendarTo },
+  };
+  if (!isAdmin) {
+    if (!callerEmployeeId) oneOnOneWhere.id = "__none__";
+    else if (role === "MANAGER") oneOnOneWhere.OR = [{ managerId: callerEmployeeId }, { employeeId: callerEmployeeId }];
+    else oneOnOneWhere.employeeId = callerEmployeeId;
+  }
+
+  const [
+    employees,
+    interviews,
+    feedEvents,
+    reviewCycles,
+    oneOnOnes,
+    activeDirectory,
+    departments,
+    viewer,
+    viewerEmployee,
+    outOfOffice,
+    myOutOfOffice,
+    visibleTraining,
+    trainingWorkspace,
+    companySize,
+  ] = await Promise.all([
     db.employee.findMany({
       where: { status: "ACTIVE" },
       select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        preferredName: true,
-        birthday: true,
-        anniversaryDate: true,
-        benefitsEligibleDate: true,
-        startDate: true,
-        department: { select: { name: true } },
+        id: true, firstName: true, lastName: true, preferredName: true, email: true,
+        birthday: true, anniversaryDate: true, benefitsEligibleDate: true, startDate: true,
+        departmentId: true, department: { select: { name: true } },
       },
     }),
     isManagerOrAbove ? getUpcomingInterviews() : Promise.resolve([]),
     db.feedPost.findMany({
-      where: { type: "EVENT", eventDate: { not: null } },
+      where: { type: "EVENT", eventDate: { not: null }, eventCancelledAt: null },
       select: {
-        id: true,
-        content: true,
-        eventDate: true,
-        eventEndDate: true,
-        eventLocation: true,
-        audienceType: true,
-        audienceDeptIds: true,
-        audienceEmployeeIds: true,
-        authorId: true,
+        id: true, content: true, eventDescription: true, eventDate: true, eventEndDate: true,
+        eventLocation: true, eventMeetLink: true, audienceType: true, audienceDeptIds: true,
+        audienceEmployeeIds: true, authorId: true,
+        author: { select: { firstName: true, lastName: true, preferredName: true } },
       },
     }),
     db.reviewCycle.findMany({
       where: reviewCycleWhere,
       select: {
-        id: true,
-        name: true,
-        startDate: true,
-        endDate: true,
+        id: true, name: true, startDate: true, endDate: true,
         employee: { select: { firstName: true, lastName: true, preferredName: true } },
       },
     }),
-    isManagerOrAbove
-      ? db.employee.findMany({ where: { status: "ACTIVE" }, select: { id: true, firstName: true, lastName: true, preferredName: true, email: true, departmentId: true } })
-      : Promise.resolve([]),
-    isManagerOrAbove
-      ? db.department.findMany({ select: { id: true, name: true, _count: { select: { employees: true } } }, orderBy: { name: "asc" } })
-      : Promise.resolve([]),
-    userId
-      ? db.user.findUnique({
-          where: { id: userId },
-          select: {
-            googleCalendarSyncEnabled: true,
-            googleCalendarAccessToken: true,
-            googleCalendarRefreshToken: true,
-          },
-        })
-      : Promise.resolve(null),
+    db.oneOnOne.findMany({
+      where: oneOnOneWhere,
+      select: {
+        id: true, scheduledAt: true, type: true, meetingLink: true,
+        employee: { select: { firstName: true, lastName: true, preferredName: true } },
+        manager: { select: { firstName: true, lastName: true, preferredName: true } },
+      },
+    }),
+    db.employee.findMany({
+      where: { status: "ACTIVE" },
+      select: {
+        id: true, firstName: true, lastName: true, preferredName: true, email: true, departmentId: true,
+        user: { select: { googleCalendarSyncEnabled: true, googleCalendarAccessToken: true, googleCalendarRefreshToken: true } },
+      },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    }),
+    db.department.findMany({ select: { id: true, name: true, _count: { select: { employees: true } } }, orderBy: { name: "asc" } }),
+    db.user.findUnique({
+      where: { id: userId },
+      select: { googleCalendarSyncEnabled: true, googleCalendarAccessToken: true, googleCalendarRefreshToken: true },
+    }),
+    callerEmployeeId ? db.employee.findUnique({ where: { id: callerEmployeeId }, select: { departmentId: true } }) : Promise.resolve(null),
+    getVisibleOutOfOffice(calendarFrom, calendarTo),
+    getMyOutOfOffice(),
+    getVisibleTrainingSessions(calendarFrom, calendarTo),
+    getTrainingWorkspace(),
+    db.employee.count({ where: { status: "ACTIVE" } }),
   ]);
 
-  const myCalendarConnected = !!(
-    viewer?.googleCalendarSyncEnabled &&
-    viewer.googleCalendarAccessToken &&
-    viewer.googleCalendarRefreshToken
-  );
-
-  const viewerDept = callerEmployeeId
-    ? await db.employee.findUnique({
-        where: { id: callerEmployeeId },
-        select: { departmentId: true },
-      })
-    : null;
-
-  const now = new Date();
-  const currentYear = now.getFullYear();
+  const myCalendarConnected = !!(viewer?.googleCalendarSyncEnabled && viewer.googleCalendarAccessToken && viewer.googleCalendarRefreshToken);
+  const employeeNameById = new Map(employees.map((employee) => [employee.id, displayName(employee)]));
   const events: CalendarEvent[] = [];
 
-  // Out-of-office notices the viewer is in the audience of. Fetched for a wide
-  // window so paging back/forward a few months still shows them.
-  const oooFrom = new Date(currentYear - 1, 0, 1);
-  const oooTo = new Date(currentYear + 1, 11, 31);
-  const [outOfOffice, myOutOfOffice, allDepartments, directoryForPicker] = await Promise.all([
-    getVisibleOutOfOffice(oooFrom, oooTo),
-    getMyOutOfOffice(),
-    db.department.findMany({
-      select: { id: true, name: true, _count: { select: { employees: true } } },
-      orderBy: { name: "asc" },
-    }),
-    isManagerOrAbove
-      ? db.employee.findMany({
-          where: { status: "ACTIVE" },
-          select: { id: true, firstName: true, lastName: true, preferredName: true, email: true, departmentId: true },
-        })
-      : Promise.resolve([]),
-  ]);
-
-  const companySize = await db.employee.count({ where: { status: "ACTIVE" } });
-
-  for (const emp of employees) {
-    // Personal dates are only company-visible to managers and above —
-    // regular employees see just their own birthday/anniversary.
-    if (!isManagerOrAbove && emp.id !== callerEmployeeId) continue;
-    const name = displayName(emp);
-    const department = emp.department?.name || undefined;
-
-    if (emp.birthday) {
-      const bd = emp.birthday;
-      events.push({
-        id: `bday-${emp.id}`,
-        name,
-        date: new Date(currentYear, bd.getMonth(), bd.getDate()).toISOString(),
-        type: "birthday",
-        department,
-      });
-    }
-
-    if (emp.anniversaryDate) {
-      const ad = emp.anniversaryDate;
-      const years = currentYear - emp.startDate.getFullYear();
-      events.push({
-        id: `anniv-${emp.id}`,
-        name,
-        date: new Date(currentYear, ad.getMonth(), ad.getDate()).toISOString(),
-        type: "anniversary",
-        department,
-        years,
-      });
-    }
-
-    if (emp.benefitsEligibleDate && isManagerOrAbove) {
-      const bed = emp.benefitsEligibleDate;
-      events.push({
-        id: `benefits-${emp.id}`,
-        name,
-        date: new Date(bed.getFullYear(), bed.getMonth(), bed.getDate()).toISOString(),
-        type: "benefits",
-        department,
-      });
-    }
+  for (const employee of employees) {
+    if (!isManagerOrAbove && employee.id !== callerEmployeeId) continue;
+    const name = displayName(employee);
+    const department = employee.department?.name || undefined;
+    if (employee.birthday) events.push({ id: `bday-${employee.id}`, name, date: new Date(currentYear, employee.birthday.getMonth(), employee.birthday.getDate()).toISOString(), type: "birthday", department, allDay: true });
+    if (employee.anniversaryDate) events.push({ id: `anniv-${employee.id}`, name, date: new Date(currentYear, employee.anniversaryDate.getMonth(), employee.anniversaryDate.getDate()).toISOString(), type: "anniversary", department, years: currentYear - employee.startDate.getFullYear(), allDay: true });
+    if (employee.benefitsEligibleDate && isManagerOrAbove) events.push({ id: `benefits-${employee.id}`, name, date: employee.benefitsEligibleDate.toISOString(), type: "benefits", department, allDay: true });
   }
 
   for (const interview of interviews) {
-    const candidateName = `${interview.candidate.firstName} ${interview.candidate.lastName}`;
-    const d = new Date(interview.scheduledAt);
+    const start = new Date(interview.scheduledAt);
     events.push({
       id: `interview-${interview.id}`,
-      name: candidateName,
-      date: d.toISOString(),
-      type: "interview",
-      meetLink: interview.googleMeetLink,
-      time: d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      name: `${interview.candidate.firstName} ${interview.candidate.lastName}`,
+      date: start.toISOString(), type: "interview", meetLink: interview.googleMeetLink,
+      time: start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      description: "Candidate interview",
     });
   }
 
-  const holidays = getHolidaysForYear(currentYear);
-  for (const h of holidays) {
+  for (const holiday of getHolidaysForYear(currentYear)) events.push({
+    id: `holiday-${holiday.category}-${holiday.name.replace(/\s/g, "-").toLowerCase()}`,
+    name: holiday.name, date: holiday.date.toISOString(), type: `holiday-${holiday.category}` as CalendarEvent["type"], allDay: true,
+  });
+
+  for (const review of reviewCycles) if (review.employee) events.push({
+    id: `review-${review.id}`, sourceId: review.id, sourceKind: "review",
+    name: `Review: ${displayName(review.employee)}`, date: review.endDate.toISOString(), endDate: review.endDate.toISOString(),
+    type: "performance-review", description: review.name, organizer: displayName(review.employee), allDay: true,
+  });
+
+  for (const meeting of oneOnOnes) {
+    const employeeName = displayName(meeting.employee);
+    const managerName = displayName(meeting.manager);
     events.push({
-      id: `holiday-${h.category}-${h.name.replace(/\s/g, "-").toLowerCase()}`,
-      name: h.name,
-      date: h.date.toISOString(),
-      type: `holiday-${h.category}` as CalendarEvent["type"],
+      id: `one-on-one-${meeting.id}`, sourceId: meeting.id, sourceKind: "one-on-one",
+      name: `${oneOnOneLabels[meeting.type] || "1:1"}: ${employeeName}`,
+      date: meeting.scheduledAt.toISOString(),
+      endDate: new Date(meeting.scheduledAt.getTime() + 30 * 60_000).toISOString(),
+      type: "one-on-one", meetLink: meeting.meetingLink, organizer: managerName,
+      attendees: [managerName, employeeName], description: "Internal manager and employee meeting",
+      time: meeting.scheduledAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
     });
   }
 
-  // Performance review events
-  for (const rc of reviewCycles) {
-    if (rc.employee) {
+  for (const feedEvent of feedEvents) {
+    if (!canSeeAudiencePost(feedEvent, { employeeId: callerEmployeeId, departmentId: viewerEmployee?.departmentId, role })) continue;
+    if (!feedEvent.eventDate) continue;
+    let attendeeNames: string[] = [];
+    if (feedEvent.audienceType === "employees") {
+      try { attendeeNames = (JSON.parse(feedEvent.audienceEmployeeIds || "[]") as string[]).map((id) => employeeNameById.get(id)).filter((name): name is string => !!name); } catch { attendeeNames = []; }
+    }
+    events.push({
+      id: `feed-event-${feedEvent.id}`, sourceId: feedEvent.id, sourceKind: "company",
+      name: feedEvent.content, date: feedEvent.eventDate.toISOString(), endDate: feedEvent.eventEndDate?.toISOString(),
+      type: "feed-event", location: feedEvent.eventLocation || undefined, description: feedEvent.eventDescription || undefined,
+      meetLink: feedEvent.eventMeetLink, organizer: displayName(feedEvent.author), attendees: attendeeNames,
+      audience: feedEvent.audienceType === "all" ? "everyone" : "selected attendees",
+      canManage: isAdmin || feedEvent.authorId === callerEmployeeId,
+      time: feedEvent.eventDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+    });
+  }
+
+  for (const absence of outOfOffice) {
+    const employeeName = displayName(absence.employee);
+    const cursor = new Date(absence.startDate.getFullYear(), absence.startDate.getMonth(), absence.startDate.getDate());
+    const last = new Date(absence.endDate.getFullYear(), absence.endDate.getMonth(), absence.endDate.getDate());
+    const allDay = absence.startDate.getHours() === 0 && absence.startDate.getMinutes() === 0 && absence.endDate.getHours() === 23;
+    let index = 0;
+    while (cursor <= last && index < 366) {
       events.push({
-        id: `review-${rc.id}`,
-        name: `Review: ${displayName(rc.employee)}`,
-        date: rc.endDate.toISOString(),
-        type: "performance-review" as CalendarEvent["type"],
+        id: `ooo-${absence.id}-${index}`, sourceId: absence.id, sourceKind: "out-of-office",
+        name: `${employeeName}: ${absenceLabels[absence.type] || "Out of office"}`,
+        date: new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), index === 0 ? absence.startDate.getHours() : 0, index === 0 ? absence.startDate.getMinutes() : 0).toISOString(),
+        endDate: absence.endDate.toISOString(), type: absence.type === "WORKING_REMOTELY" ? "working-remotely" : "out-of-office",
+        description: absence.note || absenceLabels[absence.type], organizer: employeeName,
+        audience: audienceLabel(absence.audienceType), allDay,
       });
+      cursor.setDate(cursor.getDate() + 1); index++;
     }
   }
 
-  // Feed events — only ones this viewer is in the audience of
-  const { canSeeAudiencePost } = await import("@/lib/event-audience");
-  for (const fe of feedEvents) {
-    if (
-      !canSeeAudiencePost(fe, {
-        employeeId: callerEmployeeId,
-        departmentId: viewerDept?.departmentId,
-        role,
-      })
-    ) {
-      continue;
-    }
-    if (fe.eventDate) {
-      events.push({
-        id: `feed-event-${fe.id}`,
-        name: fe.content.slice(0, 80),
-        date: fe.eventDate.toISOString(),
-        type: "feed-event",
-        endDate: fe.eventEndDate?.toISOString(),
-        location: fe.eventLocation || undefined,
-      });
-    }
-  }
+  for (const training of visibleTraining) events.push({
+    id: `training-${training.id}`, sourceId: training.trainingClassId, sourceKind: "training",
+    name: training.title, date: training.startAt.toISOString(), endDate: training.endAt.toISOString(), type: "training",
+    location: training.location || undefined, description: training.agenda || "Training session", meetLink: training.meetLink,
+    organizer: training.organizer, attendees: training.attendees, groupName: training.groupName || undefined,
+    canManage: training.canManage, time: training.startAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+  });
 
-  // The calendar places each event on a single day, so a multi-day absence is
-  // expanded into one chip per day it covers.
-  for (const ooo of outOfOffice) {
-    const name = displayName(ooo.employee);
-    const cursor = new Date(
-      ooo.startDate.getFullYear(),
-      ooo.startDate.getMonth(),
-      ooo.startDate.getDate()
-    );
-    const last = new Date(ooo.endDate.getFullYear(), ooo.endDate.getMonth(), ooo.endDate.getDate());
-    let dayIndex = 0;
-    while (cursor <= last && dayIndex < 366) {
-      events.push({
-        id: `ooo-${ooo.id}-${dayIndex}`,
-        name: ooo.note ? `${name} — ${ooo.note}` : name,
-        date: new Date(cursor).toISOString(),
-        type: ooo.type === "WORKING_REMOTELY" ? "working-remotely" : "out-of-office",
-      });
-      cursor.setDate(cursor.getDate() + 1);
-      dayIndex++;
-    }
-  }
+  const directory = activeDirectory.map((employee) => ({
+    id: employee.id, firstName: employee.firstName, lastName: employee.lastName, preferredName: employee.preferredName,
+    email: employee.email, departmentId: employee.departmentId,
+    calendarConnected: !!(employee.user?.googleCalendarSyncEnabled && employee.user.googleCalendarAccessToken && employee.user.googleCalendarRefreshToken),
+  }));
+  const groupData = trainingWorkspace.groups.map((group) => ({
+    id: group.id, name: group.name, description: group.description,
+    members: group.members.map((member) => ({ employeeId: member.employeeId, role: member.role })),
+  }));
+  const classData = trainingWorkspace.classes.map((item) => ({
+    id: item.id, title: item.title, agenda: item.agenda, location: item.location, organizerId: item.organizerId,
+    groupId: item.groupId, attendeeEmployeeIds: item.attendeeEmployeeIds, viewerEmployeeIds: item.viewerEmployeeIds,
+    rangeStart: item.rangeStart.toISOString(), rangeEnd: item.rangeEnd.toISOString(), startTime: item.startTime,
+    endTime: item.endTime, weekdays: item.weekdays, withMeetLink: item.withMeetLink, status: item.status,
+    sessions: item.sessions.map((trainingSession) => ({ id: trainingSession.id, startAt: trainingSession.startAt.toISOString(), endAt: trainingSession.endAt.toISOString(), status: trainingSession.status })),
+    organizer: item.organizer, group: item.group,
+  }));
 
   return (
-    <div className="px-8 py-8">
-      {params.oauth_error && (
-        <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 text-red-500 text-sm">
-          Google Calendar connection failed: {params.oauth_error}
-        </div>
-      )}
-      {params.oauth_success && (
-        <div className="mb-4 px-4 py-3 rounded-lg bg-emerald-500/10 text-emerald-600 text-sm">
-          {params.oauth_success} connected successfully.
-        </div>
-      )}
-      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
-        <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1>
-        <div className="flex items-center gap-3">
-          {userId && <GoogleCalendarConnect connected={myCalendarConnected} userId={userId} />}
-          {callerEmployeeId && (
-            <OutOfOfficeDialog
-              companySize={companySize}
-              departments={allDepartments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
-              employees={directoryForPicker.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, preferredName: e.preferredName, email: e.email, departmentId: e.departmentId }))}
-              myDepartment={
-                viewerDept?.departmentId
-                  ? {
-                      id: viewerDept.departmentId,
-                      name: allDepartments.find((d) => d.id === viewerDept.departmentId)?.name ?? "My department",
-                    }
-                  : null
-              }
-              myEntries={myOutOfOffice.map((e) => ({
-                id: e.id,
-                startDate: e.startDate,
-                endDate: e.endDate,
-                type: e.type,
-                note: e.note,
-                audienceType: e.audienceType,
-              }))}
-            />
-          )}
-          {isManagerOrAbove && (
+    <div className="px-4 py-6 md:px-8 md:py-8">
+      {params.oauth_error && <div className="mb-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-600">Google Calendar connection failed: {params.oauth_error}</div>}
+      {params.oauth_success && <div className="mb-4 rounded-lg bg-emerald-500/10 px-4 py-3 text-sm text-emerald-700">{params.oauth_success} connected successfully.</div>}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div><h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Calendar</h1><p className="mt-1 text-sm text-[var(--color-text-muted)]">Company events, 1:1s, time away, reviews, and training in one place.</p></div>
+        <div className="flex flex-wrap items-center gap-2">
+          <GoogleCalendarConnect connected={myCalendarConnected} userId={userId} />
+          {callerEmployeeId && <OutOfOfficeDialog
+            companySize={companySize}
+            departments={departments.map((department) => ({ id: department.id, name: department.name, employeeCount: department._count.employees }))}
+            employees={directory}
+            myDepartment={viewerEmployee?.departmentId ? { id: viewerEmployee.departmentId, name: departments.find((department) => department.id === viewerEmployee.departmentId)?.name || "My department" } : null}
+            myEntries={myOutOfOffice.map((entry) => ({ id: entry.id, startDate: entry.startDate, endDate: entry.endDate, type: entry.type, note: entry.note, audienceType: entry.audienceType }))}
+          />}
+          {isManagerOrAbove && <>
+            <TrainingCalendarDialog employees={directory} groups={groupData} classes={classData} />
             <CreateEventDialog
-              departments={departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }))}
-              employees={allActiveEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, preferredName: e.preferredName, email: e.email, departmentId: e.departmentId }))}
+              departments={departments.map((department) => ({ id: department.id, name: department.name, employeeCount: department._count.employees }))}
+              employees={directory}
+              trainingGroups={groupData.map((group) => ({ id: group.id, name: group.name, employeeIds: [...new Set(group.members.filter((member) => member.role !== "VIEWER").map((member) => member.employeeId))] }))}
             />
-          )}
+          </>}
         </div>
       </div>
-      <div className="mb-6">
-        <WhosOutPanel entries={outOfOffice} />
-      </div>
-      {myCalendarConnected && userId ? (
-        <CalendarGoogleEvents events={events} userId={userId} />
-      ) : (
-        <CalendarView events={events} />
-      )}
+      <div className="mb-6"><WhosOutPanel entries={outOfOffice} /></div>
+      {myCalendarConnected ? <CalendarGoogleEvents events={events} userId={userId} /> : <CalendarView events={events} />}
     </div>
   );
 }

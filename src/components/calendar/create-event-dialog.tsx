@@ -9,18 +9,21 @@ import { createCompanyEvent } from "@/lib/actions/company-events";
 
 type Department = { id: string; name: string; employeeCount: number };
 type Employee = { id: string; firstName: string; lastName: string; preferredName?: string | null; email: string; departmentId: string | null };
+type TrainingGroup = { id: string; name: string; employeeIds: string[] };
 
 export function CreateEventDialog({
   departments,
   employees,
+  trainingGroups = [],
 }: {
   departments: Department[];
   employees: Employee[];
+  trainingGroups?: TrainingGroup[];
   connected?: boolean; // kept for backwards compat — no longer gates the button
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<"departments" | "people" | "everyone">("departments");
+  const [mode, setMode] = useState<"departments" | "groups" | "people" | "everyone">("departments");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
@@ -30,6 +33,7 @@ export function CreateEventDialog({
   const [withMeet, setWithMeet] = useState(true);
   const [deptIds, setDeptIds] = useState<Set<string>>(new Set());
   const [empIds, setEmpIds] = useState<Set<string>>(new Set());
+  const [groupIds, setGroupIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<{ success: boolean; attendeeCount?: number; addedDirectlyCount?: number; invitedCount?: number; meetLink?: string | null; needsCalendarConnection?: boolean; error?: string } | null>(null);
   const [peopleSearch, setPeopleSearch] = useState("");
@@ -39,6 +43,11 @@ export function CreateEventDialog({
     if (mode === "departments") {
       const set = new Set<string>();
       for (const e of employees) if (e.departmentId && deptIds.has(e.departmentId)) set.add(e.id);
+      return set.size;
+    }
+    if (mode === "groups") {
+      const set = new Set<string>();
+      for (const group of trainingGroups) if (groupIds.has(group.id)) for (const id of group.employeeIds) set.add(id);
       return set.size;
     }
     return empIds.size;
@@ -53,6 +62,11 @@ export function CreateEventDialog({
     const next = new Set(empIds);
     if (next.has(id)) next.delete(id); else next.add(id);
     setEmpIds(next);
+  }
+  function toggleGroup(id: string) {
+    const next = new Set(groupIds);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    setGroupIds(next);
   }
 
   async function handleSubmit() {
@@ -69,6 +83,7 @@ export function CreateEventDialog({
       durationMinutes: parseInt(duration, 10) || 60,
       departmentIds: mode === "departments" ? Array.from(deptIds) : [],
       employeeIds: mode === "people" ? Array.from(empIds) : [],
+      trainingGroupIds: mode === "groups" ? Array.from(groupIds) : [],
       includeEveryone: mode === "everyone",
       withMeetLink: withMeet,
     });
@@ -85,6 +100,7 @@ export function CreateEventDialog({
     setLocation("");
     setDeptIds(new Set());
     setEmpIds(new Set());
+    setGroupIds(new Set());
     setResult(null);
     setMode("departments");
   }
@@ -175,6 +191,7 @@ export function CreateEventDialog({
                 {(
                   [
                     { v: "departments", l: "By department" },
+                    { v: "groups", l: "Saved groups" },
                     { v: "people", l: "Pick people" },
                     { v: "everyone", l: `Everyone (${employees.length})` },
                   ] as const
@@ -221,6 +238,19 @@ export function CreateEventDialog({
                       </label>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {mode === "groups" && (
+                <div className="space-y-1.5 max-h-[200px] overflow-y-auto rounded-lg border border-[var(--color-border)] p-2">
+                  {trainingGroups.length === 0 && <p className="text-[11px] text-[var(--color-text-muted)] italic">No training groups saved yet.</p>}
+                  {trainingGroups.map((group) => (
+                    <label key={group.id} className="flex items-center gap-2 cursor-pointer hover:bg-[var(--color-surface-hover)] rounded px-2 py-1 text-sm">
+                      <input type="checkbox" checked={groupIds.has(group.id)} onChange={() => toggleGroup(group.id)} className="h-3.5 w-3.5 rounded border-gray-300" />
+                      <span className="text-[var(--color-text-primary)]">{group.name}</span>
+                      <span className="text-[10px] text-[var(--color-text-muted)] ml-auto">{group.employeeIds.length} people</span>
+                    </label>
+                  ))}
                 </div>
               )}
             </div>
