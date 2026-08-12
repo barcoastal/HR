@@ -69,24 +69,47 @@ export function calendarEventTypeLabel(type: CalendarEvent["type"]) {
   return "Event";
 }
 
+function clockLabel(date: Date, compact = false) {
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    ...(compact && date.getMinutes() === 0 ? {} : { minute: "2-digit" }),
+  });
+}
+
+export function calendarEventTimeLabel(event: CalendarEvent, includeEnd = false) {
+  if (event.allDay) return "All day";
+  const start = new Date(event.date);
+  if (Number.isNaN(start.getTime())) return event.time || "Time not set";
+  if (includeEnd && event.endDate) {
+    const end = new Date(event.endDate);
+    const sameDay = !Number.isNaN(end.getTime()) && start.toDateString() === end.toDateString();
+    if (sameDay && end.getTime() > start.getTime()) {
+      return `${clockLabel(start)} – ${clockLabel(end)}`;
+    }
+  }
+  return event.time || clockLabel(start, true);
+}
+
 function EventChip({ event, isToday, index, onClick }: {
   event: CalendarEvent;
   isToday: boolean;
   index: number;
   onClick: () => void;
 }) {
-  const label = event.time ? `${event.time} ${event.name}` : event.name;
+  const time = calendarEventTimeLabel(event);
   return (
     <button
       type="button"
       onClick={onClick}
-      title={`${calendarEventTypeLabel(event.type)}: ${event.name}`}
+      title={`${time}, ${calendarEventTypeLabel(event.type)}: ${event.name}`}
       className={cn(
-        "block w-full truncate rounded-full px-2 py-1 text-left text-[10px] font-bold transition-opacity hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40",
+        "flex w-full items-center gap-1.5 rounded-full px-2 py-1 text-left text-[10px] font-bold transition-opacity hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40",
         isToday && index === 0 ? "bg-[var(--color-primary)] text-white" : getChipStyle(event.type)
       )}
     >
-      {label}
+      <span className="shrink-0 font-black">{time}</span>
+      <span aria-hidden="true" className="shrink-0 opacity-45">·</span>
+      <span className="truncate">{event.name}</span>
     </button>
   );
 }
@@ -209,11 +232,11 @@ export function CalendarView({ events }: Props) {
 
       <section className="mt-8 rounded-[var(--radius-xl)] bg-[var(--color-surface-container-lowest)] p-5 md:p-6">
         <div className="mb-4 flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)]"><Icon name="upcoming" size={20} /></span><div><h3 className="font-bold text-[var(--color-on-surface)]">Coming up</h3><p className="text-xs text-[var(--color-text-muted)]">Your next calendar items</p></div></div>
-        {upcoming.length === 0 ? <p className="text-sm text-[var(--color-on-surface-variant)]">No upcoming events</p> : <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{upcoming.map((event) => <button type="button" key={event.id} onClick={() => setSelectedEvent(event)} className="flex items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]"><span className="text-[8px] font-bold uppercase">{new Date(event.date).toLocaleString("en-US", { month: "short" })}</span><span className="text-lg font-black leading-none">{new Date(event.date).getDate()}</span></span><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-on-surface)]">{event.name}</span><span className="block text-xs text-[var(--color-on-surface-variant)]">{calendarEventTypeLabel(event.type)}</span></span></button>)}</div>}
+        {upcoming.length === 0 ? <p className="text-sm text-[var(--color-on-surface-variant)]">No upcoming events</p> : <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">{upcoming.map((event) => <button type="button" key={event.id} onClick={() => setSelectedEvent(event)} className="flex items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]"><span className="text-[8px] font-bold uppercase">{new Date(event.date).toLocaleString("en-US", { month: "short" })}</span><span className="text-lg font-black leading-none">{new Date(event.date).getDate()}</span></span><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-on-surface)]">{event.name}</span><span className="block truncate text-xs text-[var(--color-on-surface-variant)]">{calendarEventTimeLabel(event, true)} · {calendarEventTypeLabel(event.type)}</span></span></button>)}</div>}
       </section>
 
       <Dialog open={!!agenda} onClose={() => setAgenda(null)} title={agenda?.label || "Day agenda"}>
-        <div className="space-y-2">{agenda?.events.map((event) => <button type="button" key={event.id} onClick={() => { setAgenda(null); setSelectedEvent(event); }} className="flex w-full items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className={cn("h-3 w-3 shrink-0 rounded-full", getChipStyle(event.type))} /><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-text-primary)]">{event.name}</span><span className="block text-xs text-[var(--color-text-muted)]">{event.time || calendarEventTypeLabel(event.type)}</span></span><Icon name="chevron_right" size={18} className="ml-auto text-[var(--color-text-muted)]" /></button>)}</div>
+        <div className="space-y-2">{agenda?.events.map((event) => <button type="button" key={event.id} onClick={() => { setAgenda(null); setSelectedEvent(event); }} className="flex w-full items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className={cn("h-3 w-3 shrink-0 rounded-full", getChipStyle(event.type))} /><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-text-primary)]">{event.name}</span><span className="block text-xs text-[var(--color-text-muted)]">{calendarEventTimeLabel(event, true)} · {calendarEventTypeLabel(event.type)}</span></span><Icon name="chevron_right" size={18} className="ml-auto text-[var(--color-text-muted)]" /></button>)}</div>
       </Dialog>
       <CalendarEventDetails event={selectedEvent} open={!!selectedEvent} onClose={() => setSelectedEvent(null)} />
     </div>

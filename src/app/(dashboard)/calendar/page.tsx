@@ -219,13 +219,20 @@ export default async function CalendarPage({
     const allDay = absence.startDate.getHours() === 0 && absence.startDate.getMinutes() === 0 && absence.endDate.getHours() === 23;
     let index = 0;
     while (cursor <= last && index < 366) {
+      const isFirstDay = index === 0;
+      const isLastDay = cursor.toDateString() === last.toDateString();
+      const multiDayTime = !allDay && !isFirstDay && !isLastDay
+        ? "All day"
+        : !allDay && !isFirstDay
+          ? `Until ${absence.endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`
+          : undefined;
       events.push({
         id: `ooo-${absence.id}-${index}`, sourceId: absence.id, sourceKind: "out-of-office",
         name: `${employeeName}: ${absenceLabels[absence.type] || "Out of office"}`,
         date: new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), index === 0 ? absence.startDate.getHours() : 0, index === 0 ? absence.startDate.getMinutes() : 0).toISOString(),
         endDate: absence.endDate.toISOString(), type: absence.type === "WORKING_REMOTELY" ? "working-remotely" : "out-of-office",
         description: absence.note || absenceLabels[absence.type], organizer: employeeName,
-        audience: audienceLabel(absence.audienceType), allDay,
+        audience: audienceLabel(absence.audienceType), allDay, time: multiDayTime,
       });
       cursor.setDate(cursor.getDate() + 1); index++;
     }
