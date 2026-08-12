@@ -1,8 +1,8 @@
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 
 type OutEmployee = {
-  employee: { id: string; firstName: string; lastName: string; jobTitle: string };
+  employee: { id: string; firstName: string; lastName: string; preferredName?: string | null; jobTitle: string };
   policy: { name: string };
 };
 
@@ -32,15 +32,15 @@ export function WhosOutWidget({ outToday }: { outToday: OutEmployee[] }) {
       </div>
       <div className="space-y-2">
         {outToday.map((item, i) => {
-          const initials = getInitials(item.employee.firstName, item.employee.lastName);
-          const colorIdx = item.employee.firstName.charCodeAt(0) % avatarColors.length;
+          const initials = getInitials(displayFirstName(item.employee), item.employee.lastName);
+          const colorIdx = displayFirstName(item.employee).charCodeAt(0) % avatarColors.length;
           return (
             <div key={i} className="flex items-center gap-2">
               <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white font-semibold text-[10px]", avatarColors[colorIdx])}>
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-[var(--color-text-primary)] truncate">{item.employee.firstName} {item.employee.lastName}</p>
+                <p className="text-sm text-[var(--color-text-primary)] truncate">{displayName(item.employee)}</p>
               </div>
               <span className="text-[10px] text-[var(--color-text-muted)]">{item.policy.name}</span>
             </div>

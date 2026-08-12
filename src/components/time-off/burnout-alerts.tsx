@@ -1,10 +1,11 @@
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 
 type Employee = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
 };
 
@@ -28,15 +29,15 @@ export function BurnoutAlerts({ employees }: { employees: Employee[] }) {
         </p>
       </div>
       {employees.map((emp) => {
-        const initials = getInitials(emp.firstName, emp.lastName);
-        const colorIdx = emp.firstName.charCodeAt(0) % avatarColors.length;
+        const initials = getInitials(displayFirstName(emp), emp.lastName);
+        const colorIdx = displayFirstName(emp).charCodeAt(0) % avatarColors.length;
         return (
           <div key={emp.id} className={cn("flex items-center gap-3 p-3 rounded-lg", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
             <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[colorIdx])}>
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[var(--color-text-primary)]">{emp.firstName} {emp.lastName}</p>
+              <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName(emp)}</p>
               <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle}</p>
             </div>
             <span className="text-xs text-amber-500 font-medium">No recent PTO</span>

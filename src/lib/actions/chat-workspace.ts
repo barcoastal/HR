@@ -137,6 +137,7 @@ export async function getWorkspaceMembers(workspaceId: string) {
           id: true,
           firstName: true,
           lastName: true,
+          preferredName: true,
           profilePhoto: true,
           jobTitle: true,
           email: true,
@@ -146,5 +147,6 @@ export async function getWorkspaceMembers(workspaceId: string) {
     orderBy: { employee: { firstName: "asc" } },
   });
 
-  return members.map((m) => m.employee);
+  const { displayFirstName } = await import("@/lib/utils");
+  return members.map((m) => ({ ...m.employee, firstName: displayFirstName(m.employee) }));
 }

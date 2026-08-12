@@ -5,11 +5,12 @@ import { cn, getInitials } from "@/lib/utils";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 
 
-export function TopBar() {
+export function TopBar({ userDisplayName }: { userDisplayName?: string | null }) {
   const { data: session } = useSession();
 
-  const userInitials = session?.user?.name
-    ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
+  const shownName = userDisplayName || session?.user?.name;
+  const userInitials = shownName
+    ? getInitials(shownName.split(" ")[0], shownName.split(" ")[1] || "")
     : "??";
 
   return (

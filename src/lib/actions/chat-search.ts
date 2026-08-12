@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
+import { displayFirstName, displayName } from "@/lib/utils";
 
 export async function searchChat(query: string) {
   await requireAuth();
@@ -16,7 +17,7 @@ export async function searchChat(query: string) {
       contentPlain: { contains: q, mode: "insensitive" },
     },
     include: {
-      author: { select: { id: true, firstName: true, lastName: true, profilePhoto: true } },
+      author: { select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true } },
       channel: { select: { id: true, name: true } },
     },
     take: 10,
@@ -41,12 +42,13 @@ export async function searchChat(query: string) {
     where: {
       OR: [
         { firstName: { contains: q, mode: "insensitive" } },
+        { preferredName: { contains: q, mode: "insensitive" } },
         { lastName: { contains: q, mode: "insensitive" } },
         { email: { contains: q, mode: "insensitive" } },
       ],
       status: { in: ["ACTIVE", "ONBOARDING", "PRE_ONBOARDING"] },
     },
-    select: { id: true, firstName: true, lastName: true, profilePhoto: true, jobTitle: true },
+    select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true, jobTitle: true },
     take: 5,
   });
 
@@ -56,11 +58,11 @@ export async function searchChat(query: string) {
       content: m.contentPlain.slice(0, 100),
       channelId: m.channelId || m.dmThreadId,
       channelName: m.channel?.name || "DM",
-      authorName: `${m.author.firstName} ${m.author.lastName}`,
+      authorName: displayName(m.author),
       authorPhoto: m.author.profilePhoto,
       createdAt: m.createdAt.toISOString(),
     })),
     channels,
-    people,
+    people: people.map((p) => ({ ...p, firstName: displayFirstName(p) })),
   };
 }

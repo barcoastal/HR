@@ -9,7 +9,7 @@ export type CalendarEvent = {
   id: string;
   name: string;
   date: string; // ISO string
-  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review";
+  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review" | "out-of-office" | "working-remotely";
   department?: string;
   years?: number;
   meetLink?: string | null;
@@ -46,6 +46,8 @@ const chipStyles: Record<string, string> = {
   "feed-event": "bg-blue-500/10 text-blue-600",
   "google-calendar": "bg-emerald-500/10 text-emerald-600",
   "performance-review": "bg-purple-500/10 text-purple-600",
+  "out-of-office": "bg-amber-500/15 text-amber-700",
+  "working-remotely": "bg-cyan-500/15 text-cyan-700",
 };
 
 const holidayStyle = "bg-[var(--color-error-container)]/20 text-[var(--color-on-error-container)]";
@@ -67,6 +69,8 @@ function chipIconForType(type: CalendarEvent["type"]): string {
   if (type === "feed-event") return "Event";
   if (type === "google-calendar") return "Google Calendar";
   if (type === "performance-review") return "Review Due";
+  if (type === "out-of-office") return "Out of Office";
+  if (type === "working-remotely") return "Working Remotely";
   return type;
 }
 

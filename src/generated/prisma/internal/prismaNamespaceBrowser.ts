@@ -87,6 +87,7 @@ export const ModelName = {
   PlatformSyncLog: 'PlatformSyncLog',
   Interview: 'Interview',
   SigningRequest: 'SigningRequest',
+  OutOfOffice: 'OutOfOffice',
   TimeOffPolicy: 'TimeOffPolicy',
   TimeOffBalance: 'TimeOffBalance',
   TimeOffRequest: 'TimeOffRequest',
@@ -162,6 +163,8 @@ export type TeamScalarFieldEnum = (typeof TeamScalarFieldEnum)[keyof typeof Team
 export const EmployeeScalarFieldEnum = {
   id: 'id',
   firstName: 'firstName',
+  middleName: 'middleName',
+  preferredName: 'preferredName',
   lastName: 'lastName',
   email: 'email',
   phone: 'phone',
@@ -744,6 +747,23 @@ export const SigningRequestScalarFieldEnum = {
 } as const
 
 export type SigningRequestScalarFieldEnum = (typeof SigningRequestScalarFieldEnum)[keyof typeof SigningRequestScalarFieldEnum]
+
+
+export const OutOfOfficeScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  type: 'type',
+  note: 'note',
+  audienceType: 'audienceType',
+  audienceDeptIds: 'audienceDeptIds',
+  audienceEmployeeIds: 'audienceEmployeeIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OutOfOfficeScalarFieldEnum = (typeof OutOfOfficeScalarFieldEnum)[keyof typeof OutOfOfficeScalarFieldEnum]
 
 
 export const TimeOffPolicyScalarFieldEnum = {

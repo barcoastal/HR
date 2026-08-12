@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, displayName } from "@/lib/utils";
 import { useState, useRef } from "react";
 import { createFeedPost, createShoutoutPost } from "@/lib/actions/feed";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/icon";
 import { CreateEventDialog } from "@/components/feed/create-event-dialog";
 import { CreatePollDialog } from "@/components/feed/create-poll-dialog";
 
-type EmployeeOption = { id: string; firstName: string; lastName: string };
+type EmployeeOption = { id: string; firstName: string; lastName: string; preferredName?: string | null };
 type Attachment = { url: string; type: "IMAGE" | "FILE"; name: string; preview?: string };
 
 const GIPHY_SEARCH_URL = "https://api.giphy.com/v1/gifs/search";
@@ -194,7 +194,7 @@ export function PostComposer({
               .filter((e) => e.id !== employeeId)
               .map((e) => (
                 <option key={e.id} value={e.id}>
-                  {e.firstName} {e.lastName}
+                  {displayName(e)}
                 </option>
               ))}
           </select>

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, displayFirstName, displayName } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
@@ -44,6 +44,7 @@ export default async function OrgPage() {
           id: e.id,
           firstName: e.firstName,
           lastName: e.lastName,
+          preferredName: e.preferredName,
           jobTitle: e.jobTitle,
           profilePhoto: e.profilePhoto,
           departmentName: e.department?.name || null,
@@ -122,7 +123,7 @@ export default async function OrgPage() {
                   key={emp.id}
                   className="w-8 h-8 rounded-full border-2 border-white bg-[var(--color-primary-fixed)] flex items-center justify-center text-xs font-bold text-[var(--color-on-primary-fixed-variant)]"
                 >
-                  {emp.firstName[0]}
+                  {displayFirstName(emp)[0]}
                 </div>
               )
             )}
@@ -137,13 +138,14 @@ export default async function OrgPage() {
             id: e.id,
             firstName: e.firstName,
             lastName: e.lastName,
+            preferredName: e.preferredName,
             jobTitle: e.jobTitle,
             departmentName: e.department?.name || null,
             managerId: e.managerId,
             managerName: e.managerId
               ? (() => {
                   const mgr = activeEmployees.find((m) => m.id === e.managerId);
-                  return mgr ? `${mgr.firstName} ${mgr.lastName}` : null;
+                  return mgr ? displayName(mgr) : null;
                 })()
               : null,
           }))}

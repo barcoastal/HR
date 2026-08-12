@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { addHRNote, deleteHRNote } from "@/lib/actions/hr-notes";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ type Note = {
   id: string;
   content: string;
   createdAt: string;
-  author: { firstName: string; lastName: string };
+  author: { firstName: string; lastName: string; preferredName?: string | null };
 };
 
 export function HRNotesSection({ employeeId, notes }: { employeeId: string; notes: Note[] }) {
@@ -89,7 +89,7 @@ export function HRNotesSection({ employeeId, notes }: { employeeId: string; note
               <p className="text-sm text-[var(--color-text-primary)] whitespace-pre-wrap">{note.content}</p>
               <div className="flex items-center justify-between mt-2">
                 <p className="text-xs text-[var(--color-text-muted)]">
-                  {note.author.firstName} {note.author.lastName} &middot;{" "}
+                  {displayName(note.author)} &middot;{" "}
                   {new Date(note.createdAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -17,6 +17,7 @@ type Employee = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   email: string;
   jobTitle: string;
   status: string;
@@ -24,6 +25,25 @@ type Employee = {
   profilePhoto: string | null;
   department: { name: string } | null;
 };
+
+export type OutOfOfficeInfo = { type: string; note: string | null; endDate: Date | string };
+
+function OutOfOfficeBadge({ info }: { info: OutOfOfficeInfo }) {
+  const remote = info.type === "WORKING_REMOTELY";
+  const back = new Date(info.endDate).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  return (
+    <span
+      title={info.note || undefined}
+      className={cn(
+        "mt-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold",
+        remote ? "bg-cyan-500/15 text-cyan-700" : "bg-amber-500/15 text-amber-700"
+      )}
+    >
+      <Icon name={remote ? "home_work" : "beach_access"} size={12} />
+      {remote ? `Remote until ${back}` : `Out until ${back}`}
+    </span>
+  );
+}
 
 const avatarColors = [
   "bg-indigo-500",
@@ -57,9 +77,12 @@ const PAGE_SIZE = 12;
 export function PeopleList({
   employees,
   departments,
+  outOfOffice = {},
 }: {
   employees: Employee[];
   departments: { name: string; memberCount: number }[];
+  /** employeeId -> current OOO entry, already audience-filtered for this viewer. */
+  outOfOffice?: Record<string, OutOfOfficeInfo>;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedDept, setSelectedDept] = useState("All");
@@ -218,8 +241,8 @@ export function PeopleList({
           </div>
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {pendingEmployees.map((emp) => {
-              const initials = getInitials(emp.firstName, emp.lastName);
-              const colorIdx = emp.firstName.charCodeAt(0) % avatarColors.length;
+              const initials = getInitials(displayFirstName(emp), emp.lastName);
+              const colorIdx = displayFirstName(emp).charCodeAt(0) % avatarColors.length;
               const isSelected = selectedPendingIds.has(emp.id);
               return (
                 <div
@@ -234,14 +257,14 @@ export function PeopleList({
                     checked={isSelected}
                     onChange={() => togglePending(emp.id)}
                     className="h-4 w-4 rounded border-[var(--color-border)] accent-amber-500 shrink-0"
-                    aria-label={`Select ${emp.firstName} ${emp.lastName}`}
+                    aria-label={`Select ${displayName(emp)}`}
                   />
                   <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0", avatarColors[colorIdx])}>
                     {initials}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                      {emp.firstName} {emp.lastName}
+                      {displayName(emp)}
                     </p>
                     <p className="text-xs text-[var(--color-text-muted)] truncate">
                       {emp.jobTitle} {emp.department ? `· ${emp.department.name}` : ""} · {emp.email}
@@ -383,8 +406,8 @@ export function PeopleList({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {/* Featured card — first employee, 2-col span */}
             {featuredEmployee && (() => {
-              const initials = getInitials(featuredEmployee.firstName, featuredEmployee.lastName);
-              const colorIdx = featuredEmployee.firstName.charCodeAt(0) % avatarColors.length;
+              const initials = getInitials(displayFirstName(featuredEmployee), featuredEmployee.lastName);
+              const colorIdx = displayFirstName(featuredEmployee).charCodeAt(0) % avatarColors.length;
               return (
                 <Link
                   href={`/people/${featuredEmployee.id}`}
@@ -418,13 +441,16 @@ export function PeopleList({
                         {featuredEmployee.jobTitle}
                       </p>
                       <p className="text-2xl font-bold text-[var(--color-on-surface)] leading-tight mb-1">
-                        {featuredEmployee.firstName} {featuredEmployee.lastName}
+                        {displayName(featuredEmployee)}
                         {featuredEmployee.pronouns && (
                           <span className="text-sm font-normal text-[var(--color-on-surface-variant)] ml-2">({featuredEmployee.pronouns})</span>
                         )}
                       </p>
                       {featuredEmployee.department && (
                         <p className="text-sm text-[var(--color-on-surface-variant)] mb-4">{featuredEmployee.department.name}</p>
+                      )}
+                      {outOfOffice[featuredEmployee.id] && (
+                        <OutOfOfficeBadge info={outOfOffice[featuredEmployee.id]} />
                       )}
                       <div className="flex items-center gap-2 mt-2">
                         <button
@@ -449,8 +475,8 @@ export function PeopleList({
 
             {/* Regular cards + interspersed team rows */}
             {regularEmployees.map((employee, idx) => {
-              const initials = getInitials(employee.firstName, employee.lastName);
-              const colorIdx = employee.firstName.charCodeAt(0) % avatarColors.length;
+              const initials = getInitials(displayFirstName(employee), employee.lastName);
+              const colorIdx = displayFirstName(employee).charCodeAt(0) % avatarColors.length;
 
               // After every TEAM_ROW_INTERVAL regular cards, insert a team row
               const insertTeamRow = (idx + 1) % TEAM_ROW_INTERVAL === 0;
@@ -483,10 +509,11 @@ export function PeopleList({
                     </div>
                     <div className="flex-1 min-w-0 w-full">
                       <p className="font-bold text-[var(--color-on-surface)] truncate">
-                        {employee.firstName} {employee.lastName}
+                        {displayName(employee)}
                       </p>
                       <p className="text-sm text-[var(--color-on-surface-variant)] truncate mb-3">{employee.jobTitle}</p>
                       <StatusLabel status={employee.status} />
+                      {outOfOffice[employee.id] && <OutOfOfficeBadge info={outOfOffice[employee.id]} />}
                     </div>
                     <div className="w-full mt-1 px-3 py-2 rounded-xl text-xs font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] group-hover:border-[var(--color-primary)]/40 group-hover:text-[var(--color-primary)] transition-colors">
                       View Profile
@@ -515,8 +542,8 @@ export function PeopleList({
                         {/* Avatar stack */}
                         <div className="flex -space-x-3">
                           {teamRowEmployees.map((te, ti) => {
-                            const tInitials = getInitials(te.firstName, te.lastName);
-                            const tColorIdx = te.firstName.charCodeAt(0) % avatarColors.length;
+                            const tInitials = getInitials(displayFirstName(te), te.lastName);
+                            const tColorIdx = displayFirstName(te).charCodeAt(0) % avatarColors.length;
                             return (
                               <div
                                 key={te.id}

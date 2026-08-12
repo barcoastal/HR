@@ -47,8 +47,13 @@ export async function toggleReaction(messageId: string, emoji: string) {
 
 export async function getReactions(messageId: string) {
   await requireAuth();
-  return db.reaction.findMany({
+  const reactions = await db.reaction.findMany({
     where: { messageId },
-    include: { employee: { select: { id: true, firstName: true, lastName: true } } },
+    include: { employee: { select: { id: true, firstName: true, lastName: true, preferredName: true } } },
   });
+  const { displayFirstName } = await import("@/lib/utils");
+  return reactions.map((r) => ({
+    ...r,
+    employee: { ...r.employee, firstName: displayFirstName(r.employee) },
+  }));
 }

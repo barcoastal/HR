@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { setEmployeeManager } from "@/lib/actions/employees";
@@ -14,6 +14,7 @@ type EmployeeInfo = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
   departmentName: string | null;
   managerId: string | null;
@@ -126,13 +127,13 @@ export function ManagerAssignment({ employees }: Props) {
                     getAvatarColor(employee.id)
                   )}
                 >
-                  {getInitials(employee.firstName, employee.lastName)}
+                  {getInitials(displayFirstName(employee), employee.lastName)}
                 </div>
 
                 {/* Name & title */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                    {employee.firstName} {employee.lastName}
+                    {displayName(employee)}
                   </p>
                   <p className="text-xs text-[var(--color-text-muted)] truncate">
                     {employee.jobTitle}
@@ -167,7 +168,7 @@ export function ManagerAssignment({ employees }: Props) {
                       .filter((e) => e.id !== employee.id)
                       .map((e) => (
                         <option key={e.id} value={e.id}>
-                          {e.firstName} {e.lastName}
+                          {displayName(e)}
                         </option>
                       ))}
                   </select>

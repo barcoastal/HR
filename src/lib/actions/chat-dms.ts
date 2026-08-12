@@ -2,12 +2,27 @@
 
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
+import { displayFirstName } from "@/lib/utils";
+
+// Present the preferred name as `firstName` at the serialization boundary so
+// chat client components keep working unchanged.
+function withDisplayMembers<
+  T extends { members: Array<{ employee: { firstName: string; preferredName?: string | null } } & Record<string, unknown>> },
+>(thread: T): T {
+  return {
+    ...thread,
+    members: thread.members.map((m) => ({
+      ...m,
+      employee: { ...m.employee, firstName: displayFirstName(m.employee) },
+    })),
+  };
+}
 
 export async function getDmThreads(workspaceId: string) {
   const session = await requireAuth();
   const employeeId = session.user.employeeId!;
 
-  return db.dmThread.findMany({
+  const threads = await db.dmThread.findMany({
     where: {
       workspaceId,
       members: { some: { employeeId } },
@@ -16,7 +31,7 @@ export async function getDmThreads(workspaceId: string) {
       members: {
         include: {
           employee: {
-            select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+            select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
           },
         },
       },
@@ -28,6 +43,7 @@ export async function getDmThreads(workspaceId: string) {
     },
     orderBy: { createdAt: "desc" },
   });
+  return threads.map(withDisplayMembers);
 }
 
 export async function getOrCreateDmThread(
@@ -52,17 +68,17 @@ export async function getOrCreateDmThread(
       members: {
         include: {
           employee: {
-            select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+            select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
           },
         },
       },
     },
   });
 
-  if (existing) return existing;
+  if (existing) return withDisplayMembers(existing);
 
   // Create new DM thread
-  return db.dmThread.create({
+  const created = await db.dmThread.create({
     data: {
       workspaceId,
       isGroup,
@@ -74,12 +90,13 @@ export async function getOrCreateDmThread(
       members: {
         include: {
           employee: {
-            select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+            select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
           },
         },
       },
     },
   });
+  return withDisplayMembers(created);
 }
 
 export async function updateDmLastRead(dmThreadId: string) {

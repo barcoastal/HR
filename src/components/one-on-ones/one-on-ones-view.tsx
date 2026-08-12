@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -18,6 +18,7 @@ type Person = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
   profilePhoto: string | null;
 };
@@ -72,8 +73,15 @@ export function OneOnOnesView({
   const [tab, setTab] = useState<"upcoming" | "completed">("upcoming");
   const [showNew, setShowNew] = useState(false);
 
-  const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
-  const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => (b.completedAt || "").localeCompare(a.completedAt || ""));
+  // Soonest-upcoming meetings first; overdue (past-dated, never completed) sink below them.
+  const nowIso = new Date().toISOString();
+  const upcoming = meetings.filter((m) => m.status === "SCHEDULED").sort((a, b) => {
+    const aOverdue = a.scheduledAt < nowIso;
+    const bOverdue = b.scheduledAt < nowIso;
+    if (aOverdue !== bOverdue) return aOverdue ? 1 : -1;
+    return aOverdue ? b.scheduledAt.localeCompare(a.scheduledAt) : a.scheduledAt.localeCompare(b.scheduledAt);
+  });
+  const completed = meetings.filter((m) => m.status === "COMPLETED").sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt));
 
   const list = tab === "upcoming" ? upcoming : completed;
   const canCreate =
@@ -146,11 +154,11 @@ function MeetingRow({ meeting: m, canEdit }: { meeting: Meeting; canEdit: boolea
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-sm font-semibold text-[var(--color-text-primary)] truncate">
-            {m.employee.firstName} {m.employee.lastName}
+            {displayName(m.employee)}
           </span>
           <span className="text-xs text-[var(--color-text-muted)]">with</span>
           <span className="text-sm text-[var(--color-text-primary)] truncate">
-            {m.manager.firstName} {m.manager.lastName}
+            {displayName(m.manager)}
           </span>
           <span className={cn("text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded", TYPE_COLOR[m.type])}>
             {TYPE_LABEL[m.type]}
@@ -175,7 +183,7 @@ function Avatar({ person }: { person: Person }) {
     return (
       <img
         src={person.profilePhoto}
-        alt={`${person.firstName} ${person.lastName}`}
+        alt={displayName(person)}
         className="w-9 h-9 rounded-full object-cover ring-2 ring-[var(--color-surface)]"
       />
     );
@@ -187,7 +195,7 @@ function Avatar({ person }: { person: Person }) {
         colorFor(person.id)
       )}
     >
-      {getInitials(person.firstName, person.lastName)}
+      {getInitials(displayFirstName(person), person.lastName)}
     </div>
   );
 }
@@ -196,8 +204,9 @@ type EligibleEmployee = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
-  manager: { id: string; firstName: string; lastName: string } | null;
+  manager: { id: string; firstName: string; lastName: string; preferredName?: string | null } | null;
 };
 
 function defaultDateTimeLocal() {
@@ -264,14 +273,14 @@ function NewOneOnOneDialog({ onClose }: { onClose: () => void }) {
               <option value="">Select…</option>
               {employees.map((e) => (
                 <option key={e.id} value={e.id}>
-                  {e.firstName} {e.lastName} — {e.jobTitle}
+                  {displayName(e)} — {e.jobTitle}
                 </option>
               ))}
             </select>
           )}
           {selected?.manager && (
             <p className="text-[10px] text-[var(--color-text-muted)] mt-1">
-              Manager: {selected.manager.firstName} {selected.manager.lastName}
+              Manager: {displayName(selected.manager)}
             </p>
           )}
         </div>

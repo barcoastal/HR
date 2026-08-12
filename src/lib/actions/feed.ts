@@ -4,13 +4,14 @@ import { db } from "@/lib/db";
 import type { FeedPostType, PollVisibility, ReactionType } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { requireAuth } from "@/lib/auth-helpers";
+import { displayName } from "@/lib/utils";
 
 export type PollOptionView = {
   id: string;
   label: string;
   order: number;
   voteCount: number | null; // null when totals are hidden from this viewer
-  voters: { id: string; firstName: string; lastName: string; profilePhoto: string | null }[] | null;
+  voters: { id: string; firstName: string; lastName: string; preferredName?: string | null; profilePhoto: string | null }[] | null;
 };
 
 export type PollView = {
@@ -49,7 +50,7 @@ export async function getFeedPosts(currentEmployeeId?: string, role?: string) {
             include: {
               votes: {
                 include: {
-                  employee: { select: { id: true, firstName: true, lastName: true, profilePhoto: true } },
+                  employee: { select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true } },
                 },
               },
             },
@@ -111,6 +112,7 @@ export async function getFeedPosts(currentEmployeeId?: string, role?: string) {
               id: v.employee.id,
               firstName: v.employee.firstName,
               lastName: v.employee.lastName,
+              preferredName: v.employee.preferredName,
               profilePhoto: v.employee.profilePhoto,
             }))
           : null,
@@ -197,17 +199,15 @@ export async function createFeedComment(
   // Notify post author about the comment
   const post = await db.feedPost.findUnique({
     where: { id: postId },
-    select: { authorId: true, author: { select: { firstName: true, lastName: true } } },
+    select: { authorId: true, author: { select: { firstName: true, lastName: true, preferredName: true } } },
   });
 
   if (post && post.authorId !== authorId) {
     const commenter = await db.employee.findUnique({
       where: { id: authorId },
-      select: { firstName: true, lastName: true },
+      select: { firstName: true, lastName: true, preferredName: true },
     });
-    const commenterName = commenter
-      ? `${commenter.firstName} ${commenter.lastName}`
-      : "Someone";
+    const commenterName = commenter ? displayName(commenter) : "Someone";
 
     // Check post author's notification preferences
     const postAuthorUser = await db.user.findUnique({
@@ -273,9 +273,9 @@ export async function createShoutoutPost(
 
   const author = await db.employee.findUnique({
     where: { id: authorId },
-    select: { firstName: true, lastName: true },
+    select: { firstName: true, lastName: true, preferredName: true },
   });
-  const authorName = author ? `${author.firstName} ${author.lastName}` : "Someone";
+  const authorName = author ? displayName(author) : "Someone";
 
   // Create in-app notifications for users who opted in
   const inAppUsers = await db.user.findMany({
@@ -485,11 +485,9 @@ export async function toggleReaction(
       if (postAuthorUser?.notifyReactionInApp) {
         const reactor = await db.employee.findUnique({
           where: { id: employeeId },
-          select: { firstName: true, lastName: true },
+          select: { firstName: true, lastName: true, preferredName: true },
         });
-        const reactorName = reactor
-          ? `${reactor.firstName} ${reactor.lastName}`
-          : "Someone";
+        const reactorName = reactor ? displayName(reactor) : "Someone";
 
         await db.notification.create({
           data: {

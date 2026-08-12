@@ -215,8 +215,8 @@ export async function getUpcomingAnniversaryReviews() {
       status: "ACTIVE",
     },
     include: {
-      employee: { select: { id: true, firstName: true, lastName: true, department: { select: { name: true } } } },
-      reviews: { include: { reviewer: { select: { firstName: true, lastName: true } } } },
+      employee: { select: { id: true, firstName: true, lastName: true, preferredName: true, department: { select: { name: true } } } },
+      reviews: { include: { reviewer: { select: { firstName: true, lastName: true, preferredName: true } } } },
       _count: { select: { reviews: true } },
     },
     orderBy: { endDate: "asc" },

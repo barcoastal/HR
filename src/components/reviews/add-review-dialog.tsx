@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { addReviewToCycle } from "@/lib/actions/reviews";
@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import type { ReviewType } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
 
-type SimpleEmployee = { id: string; firstName: string; lastName: string };
+type SimpleEmployee = { id: string; firstName: string; lastName: string; preferredName?: string | null };
 
 export function AddReviewDialog({
   cycleId,
@@ -62,7 +62,7 @@ export function AddReviewDialog({
             <select value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} className={inputClass}>
               <option value="">Select employee...</option>
               {employees.map((e) => (
-                <option key={e.id} value={e.id}>{e.firstName} {e.lastName}</option>
+                <option key={e.id} value={e.id}>{displayName(e)}</option>
               ))}
             </select>
           </div>
@@ -71,7 +71,7 @@ export function AddReviewDialog({
             <select value={reviewerId} onChange={(e) => setReviewerId(e.target.value)} className={inputClass}>
               <option value="">Select reviewer...</option>
               {employees.map((e) => (
-                <option key={e.id} value={e.id}>{e.firstName} {e.lastName}</option>
+                <option key={e.id} value={e.id}>{displayName(e)}</option>
               ))}
             </select>
           </div>

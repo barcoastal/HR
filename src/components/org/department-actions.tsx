@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -19,6 +19,7 @@ type Employee = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
 };
 
@@ -27,7 +28,7 @@ type DeptInfo = {
   name: string;
   description: string | null;
   headId?: string | null;
-  head: { firstName: string; lastName: string } | null;
+  head: { firstName: string; lastName: string; preferredName?: string | null } | null;
   teams: string[];
   memberCount: number;
 };
@@ -85,7 +86,7 @@ function EmployeeSelect({
       <option value="">No department head</option>
       {employees.map((emp) => (
         <option key={emp.id} value={emp.id}>
-          {emp.firstName} {emp.lastName} — {emp.jobTitle}
+          {displayName(emp)} — {emp.jobTitle}
         </option>
       ))}
     </select>

@@ -1,4 +1,4 @@
-import { cn, getInitials, formatDate } from "@/lib/utils";
+import { cn, getInitials, formatDate, displayFirstName, displayName } from "@/lib/utils";
 import { getMyProfile } from "@/lib/actions/my-profile";
 import { requireAuth } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
@@ -39,8 +39,8 @@ export default async function MyProfilePage() {
   const notifPrefs = await getNotificationPreferences(session.user.id);
   const myDocs = (await getMyDocuments()).slice(0, 5);
 
-  const initials = getInitials(profile.firstName, profile.lastName);
-  const colorIdx = profile.firstName.charCodeAt(0) % avatarColors.length;
+  const initials = getInitials(displayFirstName(profile), profile.lastName);
+  const colorIdx = displayFirstName(profile).charCodeAt(0) % avatarColors.length;
   const tenure = (() => {
     const ms = Date.now() - profile.startDate.getTime();
     const years = Math.floor(ms / (365.25 * 24 * 60 * 60 * 1000));
@@ -65,7 +65,7 @@ export default async function MyProfilePage() {
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-bold text-[var(--color-primary)]">{profile.firstName} {profile.lastName}</h1>
+                <h1 className="text-2xl font-bold text-[var(--color-primary)]">{displayName(profile)}</h1>
                 {profile.pronouns && <span className="text-sm text-[var(--color-text-muted)]">({profile.pronouns})</span>}
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{profile.jobTitle} · {profile.department?.name || "No department"}</p>
@@ -204,11 +204,11 @@ export default async function MyProfilePage() {
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Your Buddy</h3>
               <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[profile.buddy.firstName.charCodeAt(0) % avatarColors.length])}>
-                  {getInitials(profile.buddy.firstName, profile.buddy.lastName)}
+                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[displayFirstName(profile.buddy).charCodeAt(0) % avatarColors.length])}>
+                  {getInitials(displayFirstName(profile.buddy), profile.buddy.lastName)}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{profile.buddy.firstName} {profile.buddy.lastName}</p>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(profile.buddy)}</p>
                   <p className="text-xs text-[var(--color-text-muted)]">{profile.buddy.jobTitle}</p>
                 </div>
               </div>
@@ -219,11 +219,11 @@ export default async function MyProfilePage() {
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Reports To</h3>
               <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[profile.manager.firstName.charCodeAt(0) % avatarColors.length])}>
-                  {getInitials(profile.manager.firstName, profile.manager.lastName)}
+                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[displayFirstName(profile.manager).charCodeAt(0) % avatarColors.length])}>
+                  {getInitials(displayFirstName(profile.manager), profile.manager.lastName)}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{profile.manager.firstName} {profile.manager.lastName}</p>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(profile.manager)}</p>
                   <p className="text-xs text-[var(--color-text-muted)]">{profile.manager.jobTitle}</p>
                 </div>
               </div>

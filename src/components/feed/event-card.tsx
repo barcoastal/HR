@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { cn, timeAgo, getInitials } from "@/lib/utils";
+import { cn, timeAgo, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { upsertEventAttendance, getEventAttendees } from "@/lib/actions/feed-events";
 import type { AttendanceStatus } from "@/generated/prisma/client";
@@ -18,6 +18,7 @@ type EventPostProps = {
       id: string;
       firstName: string;
       lastName: string;
+      preferredName?: string | null;
       jobTitle: string;
       profilePhoto?: string | null;
     };
@@ -36,8 +37,8 @@ export function EventCard({ post, currentUserId, currentEmployeeId, reactionsBar
   const [maybeCount, setMaybeCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
-  const initials = getInitials(post.author.firstName, post.author.lastName);
-  const colorIdx = post.author.firstName.charCodeAt(0) % avatarColors.length;
+  const initials = getInitials(displayFirstName(post.author), post.author.lastName);
+  const colorIdx = displayFirstName(post.author).charCodeAt(0) % avatarColors.length;
 
   useEffect(() => {
     getEventAttendees(post.id).then((data) => {
@@ -84,7 +85,7 @@ export function EventCard({ post, currentUserId, currentEmployeeId, reactionsBar
             <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColors[colorIdx])}>{initials}</div>
           )}
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-[var(--color-text-primary)]">{post.author.firstName} {post.author.lastName}</p>
+            <p className="font-semibold text-[var(--color-text-primary)]">{displayName(post.author)}</p>
             <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle}</p>
           </div>
         </div>

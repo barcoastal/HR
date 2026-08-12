@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getInitials, formatDate } from "@/lib/utils";
+import { cn, getInitials, formatDate, displayFirstName, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { getTeamCalendar } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ type CalendarEntry = {
   id: string;
   startDate: Date;
   endDate: Date;
-  employee: { firstName: string; lastName: string };
+  employee: { firstName: string; lastName: string; preferredName?: string | null };
   policy: { name: string };
 };
 
@@ -88,7 +88,7 @@ export function TeamCalendar({ initialEntries, initialYear, initialMonth }: {
                 isWeekend ? "text-[var(--color-text-muted)]/50" : "text-[var(--color-text-primary)]",
                 dayEntries.length > 0 && "bg-[var(--color-accent)]/10 font-medium text-[var(--color-accent)]"
               )}
-              title={dayEntries.map((e) => `${e.employee.firstName} ${e.employee.lastName}`).join(", ")}
+              title={dayEntries.map((e) => displayName(e.employee)).join(", ")}
             >
               {day}
               {dayEntries.length > 0 && (
@@ -103,14 +103,14 @@ export function TeamCalendar({ initialEntries, initialYear, initialMonth }: {
       {entries.length > 0 && (
         <div className="mt-4 space-y-2">
           {entries.map((entry) => {
-            const initials = getInitials(entry.employee.firstName, entry.employee.lastName);
-            const colorIdx = entry.employee.firstName.charCodeAt(0) % avatarColors.length;
+            const initials = getInitials(displayFirstName(entry.employee), entry.employee.lastName);
+            const colorIdx = displayFirstName(entry.employee).charCodeAt(0) % avatarColors.length;
             return (
               <div key={entry.id} className="flex items-center gap-2 text-sm">
                 <div className={cn("h-6 w-6 rounded-full flex items-center justify-center text-white text-[10px] font-semibold", avatarColors[colorIdx])}>
                   {initials}
                 </div>
-                <span className="text-[var(--color-text-primary)]">{entry.employee.firstName} {entry.employee.lastName}</span>
+                <span className="text-[var(--color-text-primary)]">{displayName(entry.employee)}</span>
                 <span className="text-[var(--color-text-muted)]">·</span>
                 <span className="text-[var(--color-text-muted)]">{formatDate(entry.startDate)} – {formatDate(entry.endDate)}</span>
               </div>

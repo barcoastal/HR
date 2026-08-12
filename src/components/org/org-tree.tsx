@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
@@ -9,6 +9,7 @@ type OrgEmployee = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
   profilePhoto: string | null;
   departmentName: string | null;
@@ -26,7 +27,7 @@ function buildTree(employees: OrgEmployee[]): Map<string | null, OrgEmployee[]> 
 }
 
 function CEONode({ employee }: { employee: OrgEmployee }) {
-  const initials = getInitials(employee.firstName, employee.lastName);
+  const initials = getInitials(displayFirstName(employee), employee.lastName);
   return (
     <div className="flex flex-col items-center">
       <div className="w-72 bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center border border-[var(--color-outline-variant)]/20">
@@ -47,7 +48,7 @@ function CEONode({ employee }: { employee: OrgEmployee }) {
           {employee.jobTitle}
         </p>
         <p className="text-lg font-black text-[var(--color-on-surface)] mb-1">
-          {employee.firstName} {employee.lastName}
+          {displayName(employee)}
         </p>
         {employee.departmentName && (
           <p className="text-xs text-[var(--color-on-surface-variant)] mb-4">{employee.departmentName}</p>
@@ -86,7 +87,7 @@ function RecursiveNode({
   const MAX_SHOWN = 5;
   const visible = showAll ? reports : reports.slice(0, MAX_SHOWN);
   const overflow = reports.length - MAX_SHOWN;
-  const initials = getInitials(employee.firstName, employee.lastName);
+  const initials = getInitials(displayFirstName(employee), employee.lastName);
 
   // Nodes with reports render as a manager card; leaf nodes as team cards
   if (!hasReports && depth > 1) {
@@ -114,7 +115,7 @@ function RecursiveNode({
           )}
           <div>
             <p className="text-sm font-black text-[var(--color-on-surface)]">
-              {employee.firstName} {employee.lastName}
+              {displayName(employee)}
             </p>
             <p className="text-xs text-[var(--color-primary)] font-semibold mt-0.5">{employee.jobTitle}</p>
             {employee.departmentName && (
@@ -177,7 +178,7 @@ function DirectorColumn({
 }
 
 function TeamCard({ employee }: { employee: OrgEmployee }) {
-  const initials = getInitials(employee.firstName, employee.lastName);
+  const initials = getInitials(displayFirstName(employee), employee.lastName);
   return (
     <Link href={`/people/${employee.id}`} className="block">
       <div className="bg-[var(--color-surface-container)] rounded-xl border-l-4 border-[var(--color-primary)] w-56 p-3 flex items-center gap-3 hover:bg-[var(--color-surface-container-high)] transition-colors">
@@ -194,7 +195,7 @@ function TeamCard({ employee }: { employee: OrgEmployee }) {
         )}
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold text-[var(--color-on-surface)] truncate">
-            {employee.firstName} {employee.lastName}
+            {displayName(employee)}
           </p>
           <p className="text-[10px] text-[var(--color-on-surface-variant)] truncate">{employee.jobTitle}</p>
         </div>

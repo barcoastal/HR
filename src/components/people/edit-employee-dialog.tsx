@@ -10,6 +10,8 @@ import { Icon } from "@/components/ui/icon";
 type EmployeeData = {
   id: string;
   firstName: string;
+  middleName: string;
+  preferredName: string;
   lastName: string;
   email: string;
   phone: string | null;
@@ -40,6 +42,8 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
     firstName: employee.firstName,
+    middleName: employee.middleName,
+    preferredName: employee.preferredName,
     lastName: employee.lastName,
     email: employee.email,
     phone: employee.phone || "",
@@ -73,6 +77,8 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
     setSaving(true);
     await updateEmployee(employee.id, {
       firstName: form.firstName,
+      middleName: form.middleName || null,
+      preferredName: form.preferredName || null,
       lastName: form.lastName,
       email: form.email,
       phone: form.phone || null,
@@ -130,6 +136,16 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Last Name *</label>
               <input value={form.lastName} onChange={(e) => update("lastName", e.target.value)} className={inputClass} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Middle Name</label>
+              <input value={form.middleName} onChange={(e) => update("middleName", e.target.value)} className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Preferred Name</label>
+              <input value={form.preferredName} onChange={(e) => update("preferredName", e.target.value)} placeholder="Shown across the app" className={inputClass} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">

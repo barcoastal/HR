@@ -9,6 +9,20 @@ export function getInitials(firstName: string, lastName: string) {
   return `${(firstName || "?")[0]}${(lastName || "?")[0]}`.toUpperCase();
 }
 
+// Employees go by their preferred name everywhere in the app; the legal
+// first name only appears where it is explicitly called for (e.g. HR edit).
+export function displayFirstName(emp: { firstName: string; preferredName?: string | null }) {
+  return emp.preferredName?.trim() || emp.firstName;
+}
+
+export function displayName(emp: {
+  firstName: string;
+  lastName: string;
+  preferredName?: string | null;
+}) {
+  return `${displayFirstName(emp)} ${emp.lastName}`;
+}
+
 export function formatDate(date: Date | string) {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",

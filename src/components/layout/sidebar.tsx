@@ -45,7 +45,7 @@ const allNavLinks = [
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r) },
 ];
 
-export function Sidebar({ logoUrl, companyName, isRecruiter = false }: { logoUrl?: string | null; companyName?: string; isRecruiter?: boolean }) {
+export function Sidebar({ logoUrl, companyName, isRecruiter = false, userDisplayName }: { logoUrl?: string | null; companyName?: string; isRecruiter?: boolean; userDisplayName?: string | null }) {
   const pathname = usePathname();
 
   const { data: session } = useSession();
@@ -53,8 +53,9 @@ export function Sidebar({ logoUrl, companyName, isRecruiter = false }: { logoUrl
   const role = (session?.user?.role || "EMPLOYEE") as UserRole;
   const navLinks = allNavLinks.filter((l) => l.access(role, isRecruiter));
 
-  const userInitials = session?.user?.name
-    ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
+  const shownName = userDisplayName || session?.user?.name;
+  const userInitials = shownName
+    ? getInitials(shownName.split(" ")[0], shownName.split(" ")[1] || "")
     : "??";
 
   function isActive(href: string) {
@@ -125,7 +126,7 @@ export function Sidebar({ logoUrl, companyName, isRecruiter = false }: { logoUrl
             )}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                {session.user.name}
+                {shownName || session.user.name}
               </p>
               <p className="text-xs text-[var(--color-text-muted)] truncate">
                 {session.user.role}

@@ -1,7 +1,7 @@
 import { getFeedPosts } from "@/lib/actions/feed";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
-import { getInitials } from "@/lib/utils";
+import { getInitials, displayFirstName } from "@/lib/utils";
 import { PostComposer } from "@/components/feed/post-composer";
 import { PostCard } from "@/components/feed/post-card";
 import { PageHeader } from "@/components/ui/page-header";
@@ -12,18 +12,21 @@ export default async function FeedPage() {
     getFeedPosts(session.user.employeeId || undefined, session.user.role),
     getEmployees(),
   ]);
-  const userInitials = session.user.name
-    ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
-    : "??";
-
   const currentEmployee = session.user.employeeId
     ? employees.find((e) => e.id === session.user.employeeId)
     : null;
+
+  const userInitials = currentEmployee
+    ? getInitials(displayFirstName(currentEmployee), currentEmployee.lastName)
+    : session.user.name
+      ? getInitials(session.user.name.split(" ")[0], session.user.name.split(" ")[1] || "")
+      : "??";
 
   const employeeList = employees.map((e) => ({
     id: e.id,
     firstName: e.firstName,
     lastName: e.lastName,
+    preferredName: e.preferredName,
   }));
 
   return (

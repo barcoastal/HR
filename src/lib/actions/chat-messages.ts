@@ -5,6 +5,13 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { BroadcastEvent, MessagePayload } from "@/lib/chat/ws-types";
+import { displayFirstName } from "@/lib/utils";
+
+// Serialize an author for the client with the preferred name in place of the
+// legal first name, so chat components can keep rendering `firstName`.
+function toDisplayAuthor<T extends { firstName: string; preferredName?: string | null }>(author: T): T {
+  return { ...author, firstName: displayFirstName(author) };
+}
 
 const WS_SERVER_URL = process.env.WS_SERVER_URL || "http://localhost:3001";
 const WS_INTERNAL_SECRET = process.env.WS_INTERNAL_SECRET || "dev-secret";
@@ -44,7 +51,7 @@ export async function getMessages(
     orderBy: { createdAt: "desc" },
     include: {
       author: {
-        select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+        select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
       },
       attachments: true,
       reactions: {
@@ -56,7 +63,7 @@ export async function getMessages(
           contentPlain: true,
           authorId: true,
           author: {
-            select: { firstName: true, lastName: true },
+            select: { firstName: true, lastName: true, preferredName: true },
           },
         },
       },
@@ -66,9 +73,14 @@ export async function getMessages(
 
   const hasMore = messages.length > limit;
   if (hasMore) messages.pop();
+  messages.reverse();
 
   return {
-    messages: messages.reverse(),
+    messages: messages.map((m) => ({
+      ...m,
+      author: toDisplayAuthor(m.author),
+      parent: m.parent ? { ...m.parent, author: toDisplayAuthor(m.parent.author) } : m.parent,
+    })),
     hasMore,
     nextCursor: hasMore ? messages[0]?.id : undefined,
   };
@@ -108,11 +120,13 @@ export async function sendMessage(data: {
     },
     include: {
       author: {
-        select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+        select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
       },
       attachments: true,
     },
   });
+
+  const displayAuthor = toDisplayAuthor(message.author);
 
   const payload: MessagePayload = {
     id: message.id,
@@ -131,7 +145,7 @@ export async function sendMessage(data: {
       url: a.url,
       thumbnailUrl: a.thumbnailUrl,
     })),
-    author: message.author,
+    author: displayAuthor,
   };
 
   await broadcastToWs({
@@ -140,7 +154,7 @@ export async function sendMessage(data: {
     message: payload,
   });
 
-  return message;
+  return { ...message, author: displayAuthor };
 }
 
 export async function editMessage(messageId: string, content: string) {
@@ -239,10 +253,10 @@ export async function getThreadReplies(parentId: string) {
     orderBy: { createdAt: "asc" },
     include: {
       author: {
-        select: { id: true, firstName: true, lastName: true, profilePhoto: true },
+        select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true },
       },
     },
   });
 
-  return replies;
+  return replies.map((r) => ({ ...r, author: toDisplayAuthor(r.author) }));
 }

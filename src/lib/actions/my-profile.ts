@@ -45,6 +45,13 @@ export async function updateMyProfile(
 }
 
 export async function updateProfilePhoto(employeeId: string, photoUrl: string) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  if (!isAdmin && session.user?.employeeId !== employeeId) {
+    throw new Error("Not authorized to update this profile photo");
+  }
   await db.employee.update({
     where: { id: employeeId },
     data: { profilePhoto: photoUrl },

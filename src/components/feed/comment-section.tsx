@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { getInitials, timeAgo } from "@/lib/utils";
+import { getInitials, timeAgo, displayFirstName, displayName } from "@/lib/utils";
 import { useState } from "react";
 import { createFeedComment } from "@/lib/actions/feed";
 import { Icon } from "@/components/ui/icon";
@@ -10,7 +10,7 @@ type Comment = {
   id: string;
   content: string;
   createdAt: Date;
-  author: { id: string; firstName: string; lastName: string };
+  author: { id: string; firstName: string; lastName: string; preferredName?: string | null };
 };
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
@@ -38,8 +38,8 @@ export function CommentSection({
   return (
     <div className="border-t border-[var(--color-border)] pt-3 mt-3 space-y-3">
       {comments.map((comment) => {
-        const initials = getInitials(comment.author.firstName, comment.author.lastName);
-        const colorIdx = comment.author.firstName.charCodeAt(0) % avatarColors.length;
+        const initials = getInitials(displayFirstName(comment.author), comment.author.lastName);
+        const colorIdx = displayFirstName(comment.author).charCodeAt(0) % avatarColors.length;
         return (
           <div key={comment.id} className="flex items-start gap-2">
             <div
@@ -53,7 +53,7 @@ export function CommentSection({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-[var(--color-text-primary)]">
-                  {comment.author.firstName} {comment.author.lastName}
+                  {displayName(comment.author)}
                 </span>
                 <span className="text-[10px] text-[var(--color-text-muted)]">
                   {timeAgo(comment.createdAt)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { submitPollVote } from "@/lib/actions/feed";
@@ -141,21 +141,21 @@ export function PollWidget({ poll }: { poll: PollView }) {
               {opt.voters && opt.voters.length > 0 && (
                 <div className="relative flex items-center gap-1 mt-2 ml-7 flex-wrap">
                   {opt.voters.slice(0, 8).map((v) => {
-                    const c = avatarColors[v.firstName.charCodeAt(0) % avatarColors.length];
+                    const c = avatarColors[displayFirstName(v).charCodeAt(0) % avatarColors.length];
                     return (
                       <div
                         key={v.id}
-                        title={`${v.firstName} ${v.lastName}`}
+                        title={displayName(v)}
                         className="flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)]"
                       >
                         {v.profilePhoto ? (
                           <img src={v.profilePhoto} alt="" className="h-4 w-4 rounded-full object-cover" />
                         ) : (
                           <div className={cn("h-4 w-4 rounded-full flex items-center justify-center text-white text-[8px] font-semibold", c)}>
-                            {getInitials(v.firstName, v.lastName)}
+                            {getInitials(displayFirstName(v), v.lastName)}
                           </div>
                         )}
-                        <span className="text-[10px] text-[var(--color-text-muted)]">{v.firstName}</span>
+                        <span className="text-[10px] text-[var(--color-text-muted)]">{displayFirstName(v)}</span>
                       </div>
                     );
                   })}

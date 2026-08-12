@@ -4,6 +4,7 @@
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
+import { displayFirstName } from "@/lib/utils";
 
 export async function getChannels(workspaceId: string) {
   const session = await requireAuth();
@@ -32,19 +33,27 @@ export async function getChannels(workspaceId: string) {
 export async function getChannelById(channelId: string) {
   const session = await requireAuth();
 
-  return db.channel.findUnique({
+  const channel = await db.channel.findUnique({
     where: { id: channelId },
     include: {
       _count: { select: { members: true, messages: true } },
       members: {
         include: {
           employee: {
-            select: { id: true, firstName: true, lastName: true, profilePhoto: true, jobTitle: true },
+            select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true, jobTitle: true },
           },
         },
       },
     },
   });
+  if (!channel) return channel;
+  return {
+    ...channel,
+    members: channel.members.map((m) => ({
+      ...m,
+      employee: { ...m.employee, firstName: displayFirstName(m.employee) },
+    })),
+  };
 }
 
 export async function createChannel(data: {

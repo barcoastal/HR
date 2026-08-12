@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, displayName } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { createCompanyEvent } from "@/lib/actions/company-events";
 
 type Department = { id: string; name: string; employeeCount: number };
-type Employee = { id: string; firstName: string; lastName: string; email: string; departmentId: string | null };
+type Employee = { id: string; firstName: string; lastName: string; preferredName?: string | null; email: string; departmentId: string | null };
 
 export function CreateEventDialog({
   departments,
@@ -31,7 +31,7 @@ export function CreateEventDialog({
   const [deptIds, setDeptIds] = useState<Set<string>>(new Set());
   const [empIds, setEmpIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; attendeeCount?: number; meetLink?: string | null; error?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; attendeeCount?: number; addedDirectlyCount?: number; invitedCount?: number; meetLink?: string | null; needsCalendarConnection?: boolean; error?: string } | null>(null);
   const [peopleSearch, setPeopleSearch] = useState("");
 
   const attendeeCount = (() => {
@@ -99,7 +99,7 @@ export function CreateEventDialog({
   const filteredEmployees = peopleSearch.trim()
     ? employees.filter((e) => {
         const q = peopleSearch.toLowerCase();
-        return `${e.firstName} ${e.lastName}`.toLowerCase().includes(q) || e.email.toLowerCase().includes(q);
+        return `${e.firstName} ${e.lastName} ${e.preferredName || ""}`.toLowerCase().includes(q) || e.email.toLowerCase().includes(q);
       })
     : employees;
 
@@ -119,9 +119,11 @@ export function CreateEventDialog({
             <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center mx-auto">
               <Icon name="check_circle" size={28} className="text-emerald-500" />
             </div>
-            <p className="text-sm font-medium text-[var(--color-text-primary)]">Event created & invites sent</p>
+            <p className="text-sm font-medium text-[var(--color-text-primary)]">Event created</p>
             <p className="text-xs text-[var(--color-text-muted)]">
-              {result.attendeeCount} attendee{result.attendeeCount !== 1 ? "s" : ""} — Google will email everyone automatically.
+              {result.addedDirectlyCount
+                ? `${result.addedDirectlyCount} added straight to their calendar${result.invitedCount ? `, ${result.invitedCount} invited by email` : ""}.`
+                : `${result.attendeeCount} attendee${result.attendeeCount !== 1 ? "s" : ""} — Google will email everyone automatically.`}
             </p>
             {result.meetLink && (
               <a href={result.meetLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--color-accent)] hover:underline break-all">
@@ -214,7 +216,7 @@ export function CreateEventDialog({
                     {filteredEmployees.map((e) => (
                       <label key={e.id} className="flex items-center gap-2 cursor-pointer hover:bg-[var(--color-surface-hover)] rounded px-2 py-1 text-xs">
                         <input type="checkbox" checked={empIds.has(e.id)} onChange={() => toggleEmp(e.id)} className="h-3.5 w-3.5 rounded border-gray-300" />
-                        <span className="text-[var(--color-text-primary)] truncate">{e.firstName} {e.lastName}</span>
+                        <span className="text-[var(--color-text-primary)] truncate">{displayName(e)}</span>
                         <span className="text-[10px] text-[var(--color-text-muted)] ml-auto truncate">{e.email}</span>
                       </label>
                     ))}
@@ -228,7 +230,17 @@ export function CreateEventDialog({
             </p>
 
             {result && !result.success && (
-              <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-700">{result.error}</div>
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-2 text-xs text-red-700">
+                <p>{result.error}</p>
+                {result.needsCalendarConnection && (
+                  <a
+                    href="/api/platforms/google_calendar/authorize?mode=personal"
+                    className="inline-block mt-2 font-semibold underline"
+                  >
+                    Connect Google Calendar
+                  </a>
+                )}
+              </div>
             )}
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--color-border)]">

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import {
   updateNotebook,
@@ -18,6 +18,7 @@ type Person = {
   id: string;
   firstName: string;
   lastName: string;
+  preferredName?: string | null;
   jobTitle: string;
   email: string;
   profilePhoto: string | null;
@@ -273,7 +274,7 @@ export function OneOnOneDetail({
       {history.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold text-[var(--color-text-primary)] uppercase tracking-wider mb-3">
-            Prior 1:1s with {meeting.employee.firstName}
+            Prior 1:1s with {displayFirstName(meeting.employee)}
           </h2>
           <div className="space-y-3">
             {history.map((h) => (
@@ -310,13 +311,13 @@ function PersonCard({ label, person }: { label: string; person: Person }) {
         <img src={person.profilePhoto} alt="" className="w-10 h-10 rounded-full object-cover" />
       ) : (
         <div className={cn("w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold", colorFor(person.id))}>
-          {getInitials(person.firstName, person.lastName)}
+          {getInitials(displayFirstName(person), person.lastName)}
         </div>
       )}
       <div className="min-w-0">
         <p className="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)]">{label}</p>
         <p className="text-sm font-semibold text-[var(--color-text-primary)] truncate">
-          {person.firstName} {person.lastName}
+          {displayName(person)}
         </p>
         <p className="text-xs text-[var(--color-text-muted)] truncate">{person.jobTitle}</p>
       </div>

@@ -5,6 +5,8 @@ import { PulseSurveyWrapper } from "@/components/pulse/pulse-survey-wrapper";
 import { getCompanySettings } from "@/lib/actions/company-settings";
 import { getSession } from "@/lib/auth-helpers";
 import { IS_SANDBOX } from "@/lib/sandbox";
+import { db } from "@/lib/db";
+import { displayName } from "@/lib/utils";
 import { Suspense } from "react";
 
 export const dynamic = "force-dynamic";
@@ -31,16 +33,26 @@ export default async function DashboardLayout({
     }
   }
 
+  // Preferred display name for the signed-in employee (session.name is legal).
+  let userDisplayName: string | null = null;
+  if (empId) {
+    const me = await db.employee.findUnique({
+      where: { id: empId },
+      select: { firstName: true, lastName: true, preferredName: true },
+    });
+    if (me) userDisplayName = displayName(me);
+  }
+
   return (
     <div className="flex min-h-screen w-full overflow-x-hidden">
-      <Sidebar logoUrl={settings.logoUrl} companyName={settings.companyName} isRecruiter={isRecruiter} />
+      <Sidebar logoUrl={settings.logoUrl} companyName={settings.companyName} isRecruiter={isRecruiter} userDisplayName={userDisplayName} />
       <div className="flex-1 md:ml-64 min-w-0 max-w-full">
         {IS_SANDBOX && (
           <div className="bg-amber-500 text-black text-center text-xs font-semibold py-1.5 px-4">
             SANDBOX ENVIRONMENT — test freely. No emails, job postings, calendar invites, or background checks leave this system. Data can be reset at any time.
           </div>
         )}
-        <TopBar />
+        <TopBar userDisplayName={userDisplayName} />
         <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-hidden">{children}</main>
       </div>
       <MobileNav isRecruiter={isRecruiter} />

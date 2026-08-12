@@ -143,7 +143,12 @@ export async function upsertEventAttendance(data: {
 
   if (user?.googleCalendarSyncEnabled) {
     try {
-      if (data.status === "GOING" && feedPost.eventDate && feedPost.eventEndDate) {
+      if (
+        data.status === "GOING" &&
+        feedPost.eventDate &&
+        feedPost.eventEndDate &&
+        !existing?.googleCalendarEventId // already on their calendar (e.g. direct-pushed)
+      ) {
         const { pushEventToGoogleCalendar } = await import(
           "@/lib/google-calendar-sync"
         );
@@ -194,6 +199,7 @@ export async function getEventAttendance(feedPostId: string) {
             select: {
               firstName: true,
               lastName: true,
+              preferredName: true,
               profilePhoto: true,
             },
           },
@@ -221,7 +227,7 @@ export async function sendPostNotificationEmail(
 
   const post = await db.feedPost.findUnique({
     where: { id: postId },
-    include: { author: { select: { firstName: true, lastName: true } } },
+    include: { author: { select: { firstName: true, lastName: true, preferredName: true } } },
   });
   if (!post) {
     console.log(`[feed-notify] Post ${postId} not found, skipping`);
@@ -234,7 +240,7 @@ export async function sendPostNotificationEmail(
     return;
   }
 
-  const authorName = `${post.author.firstName} ${post.author.lastName}`;
+  const authorName = `${post.author.preferredName?.trim() || post.author.firstName} ${post.author.lastName}`;
 
   // Get all users with active employee profiles who opted into feed emails,
   // limited to the post's audience for targeted posts.

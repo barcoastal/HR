@@ -1,4 +1,4 @@
-import { cn, getInitials } from "@/lib/utils";
+import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { getDepartments } from "@/lib/actions/departments";
 import { getEmployees } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
@@ -15,6 +15,7 @@ export default async function DepartmentsPage() {
     id: e.id,
     firstName: e.firstName,
     lastName: e.lastName,
+    preferredName: e.preferredName,
     jobTitle: e.jobTitle,
   }));
 
@@ -23,7 +24,7 @@ export default async function DepartmentsPage() {
     name: d.name,
     description: d.description,
     headId: d.headId,
-    head: d.head ? { firstName: d.head.firstName, lastName: d.head.lastName } : null,
+    head: d.head ? { firstName: d.head.firstName, lastName: d.head.lastName, preferredName: d.head.preferredName } : null,
     teams: d.teams.map((t) => t.name),
     memberCount: d.employees.length,
   }));
@@ -51,8 +52,8 @@ export default async function DepartmentsPage() {
           </thead>
           <tbody className="divide-y divide-[var(--color-border)]">
             {departments.map((dept) => {
-              const headInitials = dept.head ? getInitials(dept.head.firstName, dept.head.lastName) : "??";
-              const colorIdx = dept.head ? dept.head.firstName.charCodeAt(0) % avatarColors.length : 0;
+              const headInitials = dept.head ? getInitials(displayFirstName(dept.head), dept.head.lastName) : "??";
+              const colorIdx = dept.head ? displayFirstName(dept.head).charCodeAt(0) % avatarColors.length : 0;
               const deptInfo = deptList.find((d) => d.id === dept.id)!;
               return (
                 <tr key={dept.id} className="hover:bg-[var(--color-surface-hover)] transition-colors">
@@ -61,7 +62,7 @@ export default async function DepartmentsPage() {
                     {dept.head ? (
                       <div className="flex items-center gap-2">
                         <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{headInitials}</div>
-                        <span className="text-sm text-[var(--color-text-primary)]">{dept.head.firstName} {dept.head.lastName}</span>
+                        <span className="text-sm text-[var(--color-text-primary)]">{displayName(dept.head)}</span>
                       </div>
                     ) : <span className="text-sm text-[var(--color-text-muted)]">—</span>}
                   </td>
@@ -92,8 +93,8 @@ export default async function DepartmentsPage() {
 
       <div className="md:hidden space-y-3">
         {departments.map((dept) => {
-          const headInitials = dept.head ? getInitials(dept.head.firstName, dept.head.lastName) : "??";
-          const colorIdx = dept.head ? dept.head.firstName.charCodeAt(0) % avatarColors.length : 0;
+          const headInitials = dept.head ? getInitials(displayFirstName(dept.head), dept.head.lastName) : "??";
+          const colorIdx = dept.head ? displayFirstName(dept.head).charCodeAt(0) % avatarColors.length : 0;
           const deptInfo = deptList.find((d) => d.id === dept.id)!;
           return (
             <div key={dept.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
@@ -105,7 +106,7 @@ export default async function DepartmentsPage() {
                 <div className="flex items-center gap-2 mb-3">
                   <div className={cn("h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{headInitials}</div>
                   <div>
-                    <p className="text-sm text-[var(--color-text-primary)]">{dept.head.firstName} {dept.head.lastName}</p>
+                    <p className="text-sm text-[var(--color-text-primary)]">{displayName(dept.head)}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">Department Head</p>
                   </div>
                 </div>

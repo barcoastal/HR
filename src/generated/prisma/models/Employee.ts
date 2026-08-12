@@ -27,6 +27,8 @@ export type AggregateEmployee = {
 export type EmployeeMinAggregateOutputType = {
   id: string | null
   firstName: string | null
+  middleName: string | null
+  preferredName: string | null
   lastName: string | null
   email: string | null
   phone: string | null
@@ -67,6 +69,8 @@ export type EmployeeMinAggregateOutputType = {
 export type EmployeeMaxAggregateOutputType = {
   id: string | null
   firstName: string | null
+  middleName: string | null
+  preferredName: string | null
   lastName: string | null
   email: string | null
   phone: string | null
@@ -107,6 +111,8 @@ export type EmployeeMaxAggregateOutputType = {
 export type EmployeeCountAggregateOutputType = {
   id: number
   firstName: number
+  middleName: number
+  preferredName: number
   lastName: number
   email: number
   phone: number
@@ -149,6 +155,8 @@ export type EmployeeCountAggregateOutputType = {
 export type EmployeeMinAggregateInputType = {
   id?: true
   firstName?: true
+  middleName?: true
+  preferredName?: true
   lastName?: true
   email?: true
   phone?: true
@@ -189,6 +197,8 @@ export type EmployeeMinAggregateInputType = {
 export type EmployeeMaxAggregateInputType = {
   id?: true
   firstName?: true
+  middleName?: true
+  preferredName?: true
   lastName?: true
   email?: true
   phone?: true
@@ -229,6 +239,8 @@ export type EmployeeMaxAggregateInputType = {
 export type EmployeeCountAggregateInputType = {
   id?: true
   firstName?: true
+  middleName?: true
+  preferredName?: true
   lastName?: true
   email?: true
   phone?: true
@@ -342,6 +354,8 @@ export type EmployeeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type EmployeeGroupByOutputType = {
   id: string
   firstName: string
+  middleName: string | null
+  preferredName: string | null
   lastName: string
   email: string
   phone: string | null
@@ -403,6 +417,8 @@ export type EmployeeWhereInput = {
   NOT?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
   id?: Prisma.StringFilter<"Employee"> | string
   firstName?: Prisma.StringFilter<"Employee"> | string
+  middleName?: Prisma.StringNullableFilter<"Employee"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
@@ -462,6 +478,7 @@ export type EmployeeWhereInput = {
   clubMemberships?: Prisma.ClubMemberListRelationFilter
   pulseResponses?: Prisma.PulseResponseListRelationFilter
   timeOffRequests?: Prisma.TimeOffRequestListRelationFilter
+  outOfOffice?: Prisma.OutOfOfficeListRelationFilter
   timeOffBalances?: Prisma.TimeOffBalanceListRelationFilter
   approvedRequests?: Prisma.TimeOffRequestListRelationFilter
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
@@ -488,6 +505,8 @@ export type EmployeeWhereInput = {
 export type EmployeeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -547,6 +566,7 @@ export type EmployeeOrderByWithRelationInput = {
   clubMemberships?: Prisma.ClubMemberOrderByRelationAggregateInput
   pulseResponses?: Prisma.PulseResponseOrderByRelationAggregateInput
   timeOffRequests?: Prisma.TimeOffRequestOrderByRelationAggregateInput
+  outOfOffice?: Prisma.OutOfOfficeOrderByRelationAggregateInput
   timeOffBalances?: Prisma.TimeOffBalanceOrderByRelationAggregateInput
   approvedRequests?: Prisma.TimeOffRequestOrderByRelationAggregateInput
   mentionedInPosts?: Prisma.FeedPostOrderByRelationAggregateInput
@@ -578,6 +598,8 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EmployeeWhereInput[]
   NOT?: Prisma.EmployeeWhereInput | Prisma.EmployeeWhereInput[]
   firstName?: Prisma.StringFilter<"Employee"> | string
+  middleName?: Prisma.StringNullableFilter<"Employee"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   jobTitle?: Prisma.StringFilter<"Employee"> | string
@@ -635,6 +657,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   clubMemberships?: Prisma.ClubMemberListRelationFilter
   pulseResponses?: Prisma.PulseResponseListRelationFilter
   timeOffRequests?: Prisma.TimeOffRequestListRelationFilter
+  outOfOffice?: Prisma.OutOfOfficeListRelationFilter
   timeOffBalances?: Prisma.TimeOffBalanceListRelationFilter
   approvedRequests?: Prisma.TimeOffRequestListRelationFilter
   mentionedInPosts?: Prisma.FeedPostListRelationFilter
@@ -661,6 +684,8 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
 export type EmployeeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrderInput | Prisma.SortOrder
+  preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -707,6 +732,8 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EmployeeScalarWhereWithAggregatesInput | Prisma.EmployeeScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   firstName?: Prisma.StringWithAggregatesFilter<"Employee"> | string
+  middleName?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  preferredName?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   lastName?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   email?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
@@ -747,6 +774,8 @@ export type EmployeeScalarWhereWithAggregatesInput = {
 export type EmployeeCreateInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -802,6 +831,7 @@ export type EmployeeCreateInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -828,6 +858,8 @@ export type EmployeeCreateInput = {
 export type EmployeeUncheckedCreateInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -883,6 +915,7 @@ export type EmployeeUncheckedCreateInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -909,6 +942,8 @@ export type EmployeeUncheckedCreateInput = {
 export type EmployeeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -964,6 +999,7 @@ export type EmployeeUpdateInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -990,6 +1026,8 @@ export type EmployeeUpdateInput = {
 export type EmployeeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1045,6 +1083,7 @@ export type EmployeeUncheckedUpdateInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -1071,6 +1110,8 @@ export type EmployeeUncheckedUpdateInput = {
 export type EmployeeCreateManyInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -1111,6 +1152,8 @@ export type EmployeeCreateManyInput = {
 export type EmployeeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1147,6 +1190,8 @@ export type EmployeeUpdateManyMutationInput = {
 export type EmployeeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1202,6 +1247,8 @@ export type EmployeeOrderByRelationAggregateInput = {
 export type EmployeeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
@@ -1242,6 +1289,8 @@ export type EmployeeCountOrderByAggregateInput = {
 export type EmployeeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
@@ -1282,6 +1331,8 @@ export type EmployeeMaxOrderByAggregateInput = {
 export type EmployeeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   firstName?: Prisma.SortOrder
+  middleName?: Prisma.SortOrder
+  preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
@@ -1858,6 +1909,20 @@ export type EmployeeUpdateOneWithoutCountersignRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutCountersignRequestsInput, Prisma.EmployeeUpdateWithoutCountersignRequestsInput>, Prisma.EmployeeUncheckedUpdateWithoutCountersignRequestsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutOutOfOfficeInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedCreateWithoutOutOfOfficeInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOutOfOfficeInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneRequiredWithoutOutOfOfficeNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedCreateWithoutOutOfOfficeInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutOutOfOfficeInput
+  upsert?: Prisma.EmployeeUpsertWithoutOutOfOfficeInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutOutOfOfficeInput, Prisma.EmployeeUpdateWithoutOutOfOfficeInput>, Prisma.EmployeeUncheckedUpdateWithoutOutOfOfficeInput>
+}
+
 export type EmployeeCreateNestedOneWithoutTimeOffBalancesInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutTimeOffBalancesInput, Prisma.EmployeeUncheckedCreateWithoutTimeOffBalancesInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutTimeOffBalancesInput
@@ -2105,6 +2170,8 @@ export type EmployeeUpdateOneRequiredWithoutOneOnOnesAsManagerNestedInput = {
 export type EmployeeCreateWithoutHeadOfInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2159,6 +2226,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2185,6 +2253,8 @@ export type EmployeeCreateWithoutHeadOfInput = {
 export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2239,6 +2309,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -2270,6 +2341,8 @@ export type EmployeeCreateOrConnectWithoutHeadOfInput = {
 export type EmployeeCreateWithoutDepartmentInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2324,6 +2397,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2350,6 +2424,8 @@ export type EmployeeCreateWithoutDepartmentInput = {
 export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2404,6 +2480,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -2451,6 +2528,8 @@ export type EmployeeUpdateToOneWithWhereWithoutHeadOfInput = {
 export type EmployeeUpdateWithoutHeadOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2505,6 +2584,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -2531,6 +2611,8 @@ export type EmployeeUpdateWithoutHeadOfInput = {
 export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2585,6 +2667,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -2630,6 +2713,8 @@ export type EmployeeScalarWhereInput = {
   NOT?: Prisma.EmployeeScalarWhereInput | Prisma.EmployeeScalarWhereInput[]
   id?: Prisma.StringFilter<"Employee"> | string
   firstName?: Prisma.StringFilter<"Employee"> | string
+  middleName?: Prisma.StringNullableFilter<"Employee"> | string | null
+  preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
@@ -2670,6 +2755,8 @@ export type EmployeeScalarWhereInput = {
 export type EmployeeCreateWithoutTeamInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2724,6 +2811,7 @@ export type EmployeeCreateWithoutTeamInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2750,6 +2838,8 @@ export type EmployeeCreateWithoutTeamInput = {
 export type EmployeeUncheckedCreateWithoutTeamInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2804,6 +2894,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -2856,6 +2947,8 @@ export type EmployeeUpdateManyWithWhereWithoutTeamInput = {
 export type EmployeeCreateWithoutDirectReportsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2910,6 +3003,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -2936,6 +3030,8 @@ export type EmployeeCreateWithoutDirectReportsInput = {
 export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -2990,6 +3086,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3021,6 +3118,8 @@ export type EmployeeCreateOrConnectWithoutDirectReportsInput = {
 export type EmployeeCreateWithoutManagerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3075,6 +3174,7 @@ export type EmployeeCreateWithoutManagerInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3101,6 +3201,8 @@ export type EmployeeCreateWithoutManagerInput = {
 export type EmployeeUncheckedCreateWithoutManagerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3155,6 +3257,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3191,6 +3294,8 @@ export type EmployeeCreateManyManagerInputEnvelope = {
 export type EmployeeCreateWithoutBuddyOfInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3245,6 +3350,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3271,6 +3377,8 @@ export type EmployeeCreateWithoutBuddyOfInput = {
 export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3325,6 +3433,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3356,6 +3465,8 @@ export type EmployeeCreateOrConnectWithoutBuddyOfInput = {
 export type EmployeeCreateWithoutBuddyInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3410,6 +3521,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3436,6 +3548,8 @@ export type EmployeeCreateWithoutBuddyInput = {
 export type EmployeeUncheckedCreateWithoutBuddyInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3490,6 +3604,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -3537,6 +3652,8 @@ export type EmployeeUpdateToOneWithWhereWithoutDirectReportsInput = {
 export type EmployeeUpdateWithoutDirectReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3591,6 +3708,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3617,6 +3735,8 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
 export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3671,6 +3791,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3724,6 +3845,8 @@ export type EmployeeUpdateToOneWithWhereWithoutBuddyOfInput = {
 export type EmployeeUpdateWithoutBuddyOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3778,6 +3901,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3804,6 +3928,8 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
 export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3858,6 +3984,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -3900,6 +4027,8 @@ export type EmployeeUpdateManyWithWhereWithoutBuddyInput = {
 export type EmployeeCreateWithoutUserInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -3954,6 +4083,7 @@ export type EmployeeCreateWithoutUserInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -3980,6 +4110,8 @@ export type EmployeeCreateWithoutUserInput = {
 export type EmployeeUncheckedCreateWithoutUserInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4034,6 +4166,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4076,6 +4209,8 @@ export type EmployeeUpdateToOneWithWhereWithoutUserInput = {
 export type EmployeeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4130,6 +4265,7 @@ export type EmployeeUpdateWithoutUserInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4156,6 +4292,8 @@ export type EmployeeUpdateWithoutUserInput = {
 export type EmployeeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4210,6 +4348,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4236,6 +4375,8 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
 export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4290,6 +4431,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4316,6 +4458,8 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
 export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4370,6 +4514,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4412,6 +4557,8 @@ export type EmployeeUpdateToOneWithWhereWithoutAssignedChecklistItemsInput = {
 export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4466,6 +4613,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4492,6 +4640,8 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
 export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4546,6 +4696,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4572,6 +4723,8 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
 export type EmployeeCreateWithoutEmployeeTasksInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4626,6 +4779,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4652,6 +4806,8 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
 export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4706,6 +4862,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4737,6 +4894,8 @@ export type EmployeeCreateOrConnectWithoutEmployeeTasksInput = {
 export type EmployeeCreateWithoutAssignedTasksInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4792,6 +4951,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -4817,6 +4977,8 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
 export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -4872,6 +5034,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -4913,6 +5076,8 @@ export type EmployeeUpdateToOneWithWhereWithoutEmployeeTasksInput = {
 export type EmployeeUpdateWithoutEmployeeTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4967,6 +5132,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -4993,6 +5159,8 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
 export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5047,6 +5215,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5084,6 +5253,8 @@ export type EmployeeUpdateToOneWithWhereWithoutAssignedTasksInput = {
 export type EmployeeUpdateWithoutAssignedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5139,6 +5310,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5164,6 +5336,8 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
 export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5219,6 +5393,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5244,6 +5419,8 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
 export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5298,6 +5475,7 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5324,6 +5502,8 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
 export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5378,6 +5558,7 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5420,6 +5601,8 @@ export type EmployeeUpdateToOneWithWhereWithoutAnniversaryReviewCyclesInput = {
 export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5474,6 +5657,7 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5500,6 +5684,8 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
 export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5554,6 +5740,7 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -5580,6 +5767,8 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
 export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5634,6 +5823,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5660,6 +5850,8 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
 export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5714,6 +5906,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5745,6 +5938,8 @@ export type EmployeeCreateOrConnectWithoutReviewsAsEmployeeInput = {
 export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5799,6 +5994,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -5825,6 +6021,8 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
 export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -5879,6 +6077,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -5921,6 +6120,8 @@ export type EmployeeUpdateToOneWithWhereWithoutReviewsAsEmployeeInput = {
 export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5975,6 +6176,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6001,6 +6203,8 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
 export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6055,6 +6259,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6092,6 +6297,8 @@ export type EmployeeUpdateToOneWithWhereWithoutReviewsAsReviewerInput = {
 export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6146,6 +6353,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6172,6 +6380,8 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
 export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6226,6 +6436,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6252,6 +6463,8 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
 export type EmployeeCreateWithoutFeedPostsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -6306,6 +6519,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -6332,6 +6546,8 @@ export type EmployeeCreateWithoutFeedPostsInput = {
 export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -6386,6 +6602,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -6417,6 +6634,8 @@ export type EmployeeCreateOrConnectWithoutFeedPostsInput = {
 export type EmployeeCreateWithoutMentionedInPostsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -6472,6 +6691,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -6497,6 +6717,8 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
 export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -6552,6 +6774,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -6593,6 +6816,8 @@ export type EmployeeUpdateToOneWithWhereWithoutFeedPostsInput = {
 export type EmployeeUpdateWithoutFeedPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6647,6 +6872,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6673,6 +6899,8 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
 export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6727,6 +6955,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -6764,6 +6993,8 @@ export type EmployeeUpdateToOneWithWhereWithoutMentionedInPostsInput = {
 export type EmployeeUpdateWithoutMentionedInPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6819,6 +7050,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -6844,6 +7076,8 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
 export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6899,6 +7133,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -6924,6 +7159,8 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
 export type EmployeeCreateWithoutFeedPollVotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -6978,6 +7215,7 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7004,6 +7242,8 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
 export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7058,6 +7298,7 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -7100,6 +7341,8 @@ export type EmployeeUpdateToOneWithWhereWithoutFeedPollVotesInput = {
 export type EmployeeUpdateWithoutFeedPollVotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7154,6 +7397,7 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7180,6 +7424,8 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
 export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7234,6 +7480,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7260,6 +7507,8 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
 export type EmployeeCreateWithoutFeedCommentsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7314,6 +7563,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7340,6 +7590,8 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
 export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7394,6 +7646,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -7436,6 +7689,8 @@ export type EmployeeUpdateToOneWithWhereWithoutFeedCommentsInput = {
 export type EmployeeUpdateWithoutFeedCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7490,6 +7745,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7516,6 +7772,8 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
 export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7570,6 +7828,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7596,6 +7855,8 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
 export type EmployeeCreateWithoutFeedReactionsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7650,6 +7911,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -7676,6 +7938,8 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
 export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7730,6 +7994,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -7772,6 +8037,8 @@ export type EmployeeUpdateToOneWithWhereWithoutFeedReactionsInput = {
 export type EmployeeUpdateWithoutFeedReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7826,6 +8093,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7852,6 +8120,8 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
 export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7906,6 +8176,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -7932,6 +8203,8 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
 export type EmployeeCreateWithoutEmergencyAlertsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -7987,6 +8260,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -8012,6 +8286,8 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
 export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8067,6 +8343,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8108,6 +8385,8 @@ export type EmployeeUpdateToOneWithWhereWithoutEmergencyAlertsInput = {
 export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8163,6 +8442,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8188,6 +8468,8 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
 export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8243,6 +8525,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8268,6 +8551,8 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
 export type EmployeeCreateWithoutNotificationsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8322,6 +8607,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -8348,6 +8634,8 @@ export type EmployeeCreateWithoutNotificationsInput = {
 export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8402,6 +8690,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8444,6 +8733,8 @@ export type EmployeeUpdateToOneWithWhereWithoutNotificationsInput = {
 export type EmployeeUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8498,6 +8789,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8524,6 +8816,8 @@ export type EmployeeUpdateWithoutNotificationsInput = {
 export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8578,6 +8872,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8604,6 +8899,8 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
 export type EmployeeCreateWithoutNotificationRecipientsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8659,6 +8956,7 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -8684,6 +8982,8 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
 export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8739,6 +9039,7 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -8780,6 +9081,8 @@ export type EmployeeUpdateToOneWithWhereWithoutNotificationRecipientsInput = {
 export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8835,6 +9138,7 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8860,6 +9164,8 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
 export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8915,6 +9221,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -8940,6 +9247,8 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
 export type EmployeeCreateWithoutDocumentsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -8994,6 +9303,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9020,6 +9330,8 @@ export type EmployeeCreateWithoutDocumentsInput = {
 export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -9074,6 +9386,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9116,6 +9429,8 @@ export type EmployeeUpdateToOneWithWhereWithoutDocumentsInput = {
 export type EmployeeUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9170,6 +9485,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9196,6 +9512,8 @@ export type EmployeeUpdateWithoutDocumentsInput = {
 export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9250,6 +9568,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9276,6 +9595,8 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
 export type EmployeeCreateWithoutHrNotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -9331,6 +9652,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9356,6 +9678,8 @@ export type EmployeeCreateWithoutHrNotesInput = {
 export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -9411,6 +9735,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9441,6 +9766,8 @@ export type EmployeeCreateOrConnectWithoutHrNotesInput = {
 export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -9496,6 +9823,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -9521,6 +9849,8 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
 export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -9576,6 +9906,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -9617,6 +9948,8 @@ export type EmployeeUpdateToOneWithWhereWithoutHrNotesInput = {
 export type EmployeeUpdateWithoutHrNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9672,6 +10005,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9697,6 +10031,8 @@ export type EmployeeUpdateWithoutHrNotesInput = {
 export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9752,6 +10088,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9788,6 +10125,8 @@ export type EmployeeUpdateToOneWithWhereWithoutAuthoredHRNotesInput = {
 export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9843,6 +10182,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9868,6 +10208,8 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
 export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9923,6 +10265,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -9948,6 +10291,8 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
 export type EmployeeCreateWithoutManagedCandidatesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10003,6 +10348,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10028,6 +10374,8 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
 export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10083,6 +10431,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10124,6 +10473,8 @@ export type EmployeeUpdateToOneWithWhereWithoutManagedCandidatesInput = {
 export type EmployeeUpdateWithoutManagedCandidatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10179,6 +10530,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10204,6 +10556,8 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
 export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10259,6 +10613,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10284,6 +10639,8 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
 export type EmployeeCreateWithoutSigningRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10339,6 +10696,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10364,6 +10722,8 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
 export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10419,6 +10779,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10449,6 +10810,8 @@ export type EmployeeCreateOrConnectWithoutSigningRequestsInput = {
 export type EmployeeCreateWithoutCountersignRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10504,6 +10867,7 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -10529,6 +10893,8 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
 export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -10584,6 +10950,7 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -10625,6 +10992,8 @@ export type EmployeeUpdateToOneWithWhereWithoutSigningRequestsInput = {
 export type EmployeeUpdateWithoutSigningRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10680,6 +11049,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10705,6 +11075,8 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
 export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10760,6 +11132,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -10796,6 +11169,356 @@ export type EmployeeUpdateToOneWithWhereWithoutCountersignRequestsInput = {
 export type EmployeeUpdateWithoutCountersignRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutOutOfOfficeInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutOutOfOfficeInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutOutOfOfficeInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedCreateWithoutOutOfOfficeInput>
+}
+
+export type EmployeeUpsertWithoutOutOfOfficeInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedUpdateWithoutOutOfOfficeInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedCreateWithoutOutOfOfficeInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutOutOfOfficeInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutOutOfOfficeInput, Prisma.EmployeeUncheckedUpdateWithoutOutOfOfficeInput>
+}
+
+export type EmployeeUpdateWithoutOutOfOfficeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10856,6 +11579,7 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
   countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
@@ -10873,9 +11597,11 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
 }
 
-export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
+export type EmployeeUncheckedUpdateWithoutOutOfOfficeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10936,6 +11662,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
@@ -10956,6 +11683,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
 export type EmployeeCreateWithoutTimeOffBalancesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11011,6 +11740,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -11036,6 +11766,8 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
 export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11091,6 +11823,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -11132,6 +11865,8 @@ export type EmployeeUpdateToOneWithWhereWithoutTimeOffBalancesInput = {
 export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11187,6 +11922,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -11212,6 +11948,8 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
 export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11267,6 +12005,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -11292,6 +12031,8 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
 export type EmployeeCreateWithoutTimeOffRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11346,6 +12087,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -11372,6 +12114,8 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
 export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11426,6 +12170,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -11457,6 +12202,8 @@ export type EmployeeCreateOrConnectWithoutTimeOffRequestsInput = {
 export type EmployeeCreateWithoutApprovedRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11512,6 +12259,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
@@ -11537,6 +12285,8 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
 export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -11592,6 +12342,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
@@ -11633,6 +12384,8 @@ export type EmployeeUpdateToOneWithWhereWithoutTimeOffRequestsInput = {
 export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11687,6 +12440,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11713,6 +12467,8 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
 export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11767,6 +12523,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -11804,6 +12561,8 @@ export type EmployeeUpdateToOneWithWhereWithoutApprovedRequestsInput = {
 export type EmployeeUpdateWithoutApprovedRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11859,6 +12618,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
@@ -11884,6 +12644,8 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
 export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11939,6 +12701,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
   assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
@@ -11964,6 +12727,8 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
 export type EmployeeCreateWithoutClubMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12018,6 +12783,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -12044,6 +12810,8 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
 export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12098,6 +12866,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -12140,6 +12909,8 @@ export type EmployeeUpdateToOneWithWhereWithoutClubMembershipsInput = {
 export type EmployeeUpdateWithoutClubMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12194,6 +12965,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12220,6 +12992,8 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
 export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12274,6 +13048,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12300,6 +13075,8 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
 export type EmployeeCreateWithoutPulseResponsesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12354,6 +13131,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -12380,6 +13158,8 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
 export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12434,6 +13214,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -12476,6 +13257,8 @@ export type EmployeeUpdateToOneWithWhereWithoutPulseResponsesInput = {
 export type EmployeeUpdateWithoutPulseResponsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12530,6 +13313,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12556,6 +13340,8 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
 export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12610,6 +13396,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12636,6 +13423,8 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
 export type EmployeeCreateWithoutCountersignStageDocsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12691,6 +13480,7 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -12716,6 +13506,8 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
 export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -12771,6 +13563,7 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -12812,6 +13605,8 @@ export type EmployeeUpdateToOneWithWhereWithoutCountersignStageDocsInput = {
 export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12867,6 +13662,7 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12892,6 +13688,8 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
 export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12947,6 +13745,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -12972,6 +13771,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
 export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13027,6 +13828,7 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13052,6 +13854,8 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
 export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13107,6 +13911,7 @@ export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -13148,6 +13953,8 @@ export type EmployeeUpdateToOneWithWhereWithoutCountersignPositionDocsInput = {
 export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13203,6 +14010,7 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13228,6 +14036,8 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
 export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13283,6 +14093,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13308,6 +14119,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
 export type EmployeeCreateWithoutChatMembersInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13363,6 +14176,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13388,6 +14202,8 @@ export type EmployeeCreateWithoutChatMembersInput = {
 export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13443,6 +14259,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -13484,6 +14301,8 @@ export type EmployeeUpdateToOneWithWhereWithoutChatMembersInput = {
 export type EmployeeUpdateWithoutChatMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13539,6 +14358,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13564,6 +14384,8 @@ export type EmployeeUpdateWithoutChatMembersInput = {
 export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13619,6 +14441,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13644,6 +14467,8 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
 export type EmployeeCreateWithoutCreatedChannelsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13699,6 +14524,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -13724,6 +14550,8 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
 export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -13779,6 +14607,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -13820,6 +14649,8 @@ export type EmployeeUpdateToOneWithWhereWithoutCreatedChannelsInput = {
 export type EmployeeUpdateWithoutCreatedChannelsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13875,6 +14706,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13900,6 +14732,8 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
 export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13955,6 +14789,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -13980,6 +14815,8 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
 export type EmployeeCreateWithoutChannelMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14035,6 +14872,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14060,6 +14898,8 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
 export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14115,6 +14955,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14156,6 +14997,8 @@ export type EmployeeUpdateToOneWithWhereWithoutChannelMembershipsInput = {
 export type EmployeeUpdateWithoutChannelMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14211,6 +15054,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14236,6 +15080,8 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
 export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14291,6 +15137,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14316,6 +15163,8 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
 export type EmployeeCreateWithoutChatMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14371,6 +15220,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14396,6 +15246,8 @@ export type EmployeeCreateWithoutChatMessagesInput = {
 export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14451,6 +15303,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14492,6 +15345,8 @@ export type EmployeeUpdateToOneWithWhereWithoutChatMessagesInput = {
 export type EmployeeUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14547,6 +15402,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14572,6 +15428,8 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
 export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14627,6 +15485,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14652,6 +15511,8 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
 export type EmployeeCreateWithoutDmMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14707,6 +15568,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -14732,6 +15594,8 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
 export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -14787,6 +15651,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -14828,6 +15693,8 @@ export type EmployeeUpdateToOneWithWhereWithoutDmMembershipsInput = {
 export type EmployeeUpdateWithoutDmMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14883,6 +15750,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14908,6 +15776,8 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
 export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14963,6 +15833,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -14988,6 +15859,8 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
 export type EmployeeCreateWithoutChatReactionsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15043,6 +15916,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -15068,6 +15942,8 @@ export type EmployeeCreateWithoutChatReactionsInput = {
 export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15123,6 +15999,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15164,6 +16041,8 @@ export type EmployeeUpdateToOneWithWhereWithoutChatReactionsInput = {
 export type EmployeeUpdateWithoutChatReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15219,6 +16098,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15244,6 +16124,8 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
 export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15299,6 +16181,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15324,6 +16207,8 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
 export type EmployeeCreateWithoutPinnedMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15379,6 +16264,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -15404,6 +16290,8 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
 export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15459,6 +16347,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15500,6 +16389,8 @@ export type EmployeeUpdateToOneWithWhereWithoutPinnedMessagesInput = {
 export type EmployeeUpdateWithoutPinnedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15555,6 +16446,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15580,6 +16472,8 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
 export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15635,6 +16529,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15660,6 +16555,8 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
 export type EmployeeCreateWithoutSavedMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15715,6 +16612,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -15740,6 +16638,8 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
 export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -15795,6 +16695,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -15836,6 +16737,8 @@ export type EmployeeUpdateToOneWithWhereWithoutSavedMessagesInput = {
 export type EmployeeUpdateWithoutSavedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15891,6 +16794,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15916,6 +16820,8 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
 export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15971,6 +16877,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -15996,6 +16903,8 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
 export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16050,6 +16959,7 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -16076,6 +16986,8 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
 export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16130,6 +17042,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -16161,6 +17074,8 @@ export type EmployeeCreateOrConnectWithoutOneOnOnesAsEmployeeInput = {
 export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16215,6 +17130,7 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
@@ -16241,6 +17157,8 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
 export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16295,6 +17213,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
   pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
   mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
@@ -16337,6 +17256,8 @@ export type EmployeeUpdateToOneWithWhereWithoutOneOnOnesAsEmployeeInput = {
 export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16391,6 +17312,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16417,6 +17339,8 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
 export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16471,6 +17395,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16508,6 +17433,8 @@ export type EmployeeUpdateToOneWithWhereWithoutOneOnOnesAsManagerInput = {
 export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16562,6 +17489,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16588,6 +17516,8 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
 export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16642,6 +17572,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16668,6 +17599,8 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
 export type EmployeeCreateManyDepartmentInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16707,6 +17640,8 @@ export type EmployeeCreateManyDepartmentInput = {
 export type EmployeeUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16761,6 +17696,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16787,6 +17723,8 @@ export type EmployeeUpdateWithoutDepartmentInput = {
 export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16841,6 +17779,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -16867,6 +17806,8 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
 export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16906,6 +17847,8 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
 export type EmployeeCreateManyTeamInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -16945,6 +17888,8 @@ export type EmployeeCreateManyTeamInput = {
 export type EmployeeUpdateWithoutTeamInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16999,6 +17944,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17025,6 +17971,8 @@ export type EmployeeUpdateWithoutTeamInput = {
 export type EmployeeUncheckedUpdateWithoutTeamInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17079,6 +18027,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17105,6 +18054,8 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
 export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17144,6 +18095,8 @@ export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
 export type EmployeeCreateManyManagerInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -17183,6 +18136,8 @@ export type EmployeeCreateManyManagerInput = {
 export type EmployeeCreateManyBuddyInput = {
   id?: string
   firstName: string
+  middleName?: string | null
+  preferredName?: string | null
   lastName: string
   email: string
   phone?: string | null
@@ -17222,6 +18177,8 @@ export type EmployeeCreateManyBuddyInput = {
 export type EmployeeUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17276,6 +18233,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17302,6 +18260,8 @@ export type EmployeeUpdateWithoutManagerInput = {
 export type EmployeeUncheckedUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17356,6 +18316,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17382,6 +18343,8 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
 export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17421,6 +18384,8 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
 export type EmployeeUpdateWithoutBuddyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17475,6 +18440,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17501,6 +18467,8 @@ export type EmployeeUpdateWithoutBuddyInput = {
 export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17555,6 +18523,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
   timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
   approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
   mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
@@ -17581,6 +18550,8 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
 export type EmployeeUncheckedUpdateManyWithoutBuddyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17642,6 +18613,7 @@ export type EmployeeCountOutputType = {
   clubMemberships: number
   pulseResponses: number
   timeOffRequests: number
+  outOfOffice: number
   timeOffBalances: number
   approvedRequests: number
   mentionedInPosts: number
@@ -17685,6 +18657,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   clubMemberships?: boolean | EmployeeCountOutputTypeCountClubMembershipsArgs
   pulseResponses?: boolean | EmployeeCountOutputTypeCountPulseResponsesArgs
   timeOffRequests?: boolean | EmployeeCountOutputTypeCountTimeOffRequestsArgs
+  outOfOffice?: boolean | EmployeeCountOutputTypeCountOutOfOfficeArgs
   timeOffBalances?: boolean | EmployeeCountOutputTypeCountTimeOffBalancesArgs
   approvedRequests?: boolean | EmployeeCountOutputTypeCountApprovedRequestsArgs
   mentionedInPosts?: boolean | EmployeeCountOutputTypeCountMentionedInPostsArgs
@@ -17854,6 +18827,13 @@ export type EmployeeCountOutputTypeCountTimeOffRequestsArgs<ExtArgs extends runt
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountOutOfOfficeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OutOfOfficeWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountTimeOffBalancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TimeOffBalanceWhereInput
 }
@@ -18002,6 +18982,8 @@ export type EmployeeCountOutputTypeCountPinnedMessagesArgs<ExtArgs extends runti
 export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   firstName?: boolean
+  middleName?: boolean
+  preferredName?: boolean
   lastName?: boolean
   email?: boolean
   phone?: boolean
@@ -18061,6 +19043,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   clubMemberships?: boolean | Prisma.Employee$clubMembershipsArgs<ExtArgs>
   pulseResponses?: boolean | Prisma.Employee$pulseResponsesArgs<ExtArgs>
   timeOffRequests?: boolean | Prisma.Employee$timeOffRequestsArgs<ExtArgs>
+  outOfOffice?: boolean | Prisma.Employee$outOfOfficeArgs<ExtArgs>
   timeOffBalances?: boolean | Prisma.Employee$timeOffBalancesArgs<ExtArgs>
   approvedRequests?: boolean | Prisma.Employee$approvedRequestsArgs<ExtArgs>
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
@@ -18088,6 +19071,8 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   firstName?: boolean
+  middleName?: boolean
+  preferredName?: boolean
   lastName?: boolean
   email?: boolean
   phone?: boolean
@@ -18132,6 +19117,8 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   firstName?: boolean
+  middleName?: boolean
+  preferredName?: boolean
   lastName?: boolean
   email?: boolean
   phone?: boolean
@@ -18176,6 +19163,8 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type EmployeeSelectScalar = {
   id?: boolean
   firstName?: boolean
+  middleName?: boolean
+  preferredName?: boolean
   lastName?: boolean
   email?: boolean
   phone?: boolean
@@ -18213,7 +19202,7 @@ export type EmployeeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "middleName" | "preferredName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
   team?: boolean | Prisma.Employee$teamArgs<ExtArgs>
@@ -18239,6 +19228,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   clubMemberships?: boolean | Prisma.Employee$clubMembershipsArgs<ExtArgs>
   pulseResponses?: boolean | Prisma.Employee$pulseResponsesArgs<ExtArgs>
   timeOffRequests?: boolean | Prisma.Employee$timeOffRequestsArgs<ExtArgs>
+  outOfOffice?: boolean | Prisma.Employee$outOfOfficeArgs<ExtArgs>
   timeOffBalances?: boolean | Prisma.Employee$timeOffBalancesArgs<ExtArgs>
   approvedRequests?: boolean | Prisma.Employee$approvedRequestsArgs<ExtArgs>
   mentionedInPosts?: boolean | Prisma.Employee$mentionedInPostsArgs<ExtArgs>
@@ -18302,6 +19292,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     clubMemberships: Prisma.$ClubMemberPayload<ExtArgs>[]
     pulseResponses: Prisma.$PulseResponsePayload<ExtArgs>[]
     timeOffRequests: Prisma.$TimeOffRequestPayload<ExtArgs>[]
+    outOfOffice: Prisma.$OutOfOfficePayload<ExtArgs>[]
     timeOffBalances: Prisma.$TimeOffBalancePayload<ExtArgs>[]
     approvedRequests: Prisma.$TimeOffRequestPayload<ExtArgs>[]
     mentionedInPosts: Prisma.$FeedPostPayload<ExtArgs>[]
@@ -18327,6 +19318,8 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     firstName: string
+    middleName: string | null
+    preferredName: string | null
     lastName: string
     email: string
     phone: string | null
@@ -18780,6 +19773,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   clubMemberships<T extends Prisma.Employee$clubMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$clubMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClubMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pulseResponses<T extends Prisma.Employee$pulseResponsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$pulseResponsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PulseResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   timeOffRequests<T extends Prisma.Employee$timeOffRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$timeOffRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  outOfOffice<T extends Prisma.Employee$outOfOfficeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$outOfOfficeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OutOfOfficePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   timeOffBalances<T extends Prisma.Employee$timeOffBalancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$timeOffBalancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffBalancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvedRequests<T extends Prisma.Employee$approvedRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$approvedRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimeOffRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   mentionedInPosts<T extends Prisma.Employee$mentionedInPostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$mentionedInPostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FeedPostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -18832,6 +19826,8 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
 export interface EmployeeFieldRefs {
   readonly id: Prisma.FieldRef<"Employee", 'String'>
   readonly firstName: Prisma.FieldRef<"Employee", 'String'>
+  readonly middleName: Prisma.FieldRef<"Employee", 'String'>
+  readonly preferredName: Prisma.FieldRef<"Employee", 'String'>
   readonly lastName: Prisma.FieldRef<"Employee", 'String'>
   readonly email: Prisma.FieldRef<"Employee", 'String'>
   readonly phone: Prisma.FieldRef<"Employee", 'String'>
@@ -19811,6 +20807,30 @@ export type Employee$timeOffRequestsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.TimeOffRequestScalarFieldEnum | Prisma.TimeOffRequestScalarFieldEnum[]
+}
+
+/**
+ * Employee.outOfOffice
+ */
+export type Employee$outOfOfficeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OutOfOffice
+   */
+  select?: Prisma.OutOfOfficeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OutOfOffice
+   */
+  omit?: Prisma.OutOfOfficeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OutOfOfficeInclude<ExtArgs> | null
+  where?: Prisma.OutOfOfficeWhereInput
+  orderBy?: Prisma.OutOfOfficeOrderByWithRelationInput | Prisma.OutOfOfficeOrderByWithRelationInput[]
+  cursor?: Prisma.OutOfOfficeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OutOfOfficeScalarFieldEnum | Prisma.OutOfOfficeScalarFieldEnum[]
 }
 
 /**

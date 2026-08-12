@@ -10,7 +10,7 @@ export async function getHRNotes(employeeId: string) {
 
   return db.hRNote.findMany({
     where: { employeeId },
-    include: { author: { select: { firstName: true, lastName: true } } },
+    include: { author: { select: { firstName: true, lastName: true, preferredName: true } } },
     orderBy: { createdAt: "desc" },
   });
 }

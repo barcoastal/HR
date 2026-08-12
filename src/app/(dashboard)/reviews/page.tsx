@@ -1,4 +1,4 @@
-import { cn, getInitials, formatDate } from "@/lib/utils";
+import { cn, getInitials, formatDate, displayFirstName, displayName } from "@/lib/utils";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { PageHeader } from "@/components/ui/page-header";
@@ -69,7 +69,7 @@ export default async function ReviewsPage() {
     }),
     db.employee.findMany({
       where: { status: "ACTIVE" },
-      select: { id: true, firstName: true, lastName: true },
+      select: { id: true, firstName: true, lastName: true, preferredName: true },
       orderBy: { firstName: "asc" },
     }),
     db.department.findMany({
@@ -79,7 +79,7 @@ export default async function ReviewsPage() {
     isAdmin ? getUpcomingAnniversaryReviews() : Promise.resolve([]),
   ]);
 
-  const employeeList = employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName }));
+  const employeeList = employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, preferredName: e.preferredName }));
   const departmentList = departments.map((d) => ({ id: d.id, name: d.name, employeeCount: d._count.employees }));
 
   // Stats
@@ -169,7 +169,7 @@ export default async function ReviewsPage() {
                 <div key={rc.id} className={cn("rounded-xl p-4 border", daysLeft <= 7 ? "border-red-500/30 bg-red-500/5" : "border-purple-500/20 bg-purple-500/5")}>
                   <div className="flex items-center gap-2 mb-2">
                     <Icon name="person" size={16} className="text-purple-400" />
-                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{rc.employee?.firstName} {rc.employee?.lastName}</p>
+                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{rc.employee ? displayName(rc.employee) : null}</p>
                   </div>
                   {rc.employee?.department && (
                     <p className="text-xs text-[var(--color-text-muted)] mb-2">{rc.employee.department.name}</p>
@@ -193,19 +193,19 @@ export default async function ReviewsPage() {
           <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">Your Pending Reviews</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {myPendingReviews.map((review) => {
-              const empInitials = getInitials(review.employee.firstName, review.employee.lastName);
-              const colorIdx = review.employee.firstName.charCodeAt(0) % avatarColors.length;
+              const empInitials = getInitials(displayFirstName(review.employee), review.employee.lastName);
+              const colorIdx = displayFirstName(review.employee).charCodeAt(0) % avatarColors.length;
               return (
                 <div key={review.id} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]", "border-l-4 border-l-[var(--color-accent)]")}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{empInitials}</div>
                       <div>
-                        <p className="text-sm font-medium text-[var(--color-text-primary)]">{review.employee.firstName} {review.employee.lastName}</p>
+                        <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName(review.employee)}</p>
                         <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium", typeConfig[review.type] || "")}>{review.type}</span>
                       </div>
                     </div>
-                    <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(review._cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
+                    <SubmitReviewDialog review={{ id: review.id, employeeName: displayName(review.employee), type: review.type, template: resolveTemplate(review._cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
                   </div>
                 </div>
               );
@@ -263,7 +263,7 @@ export default async function ReviewsPage() {
                     <div className="p-5">
                       <div className="flex items-center gap-2 mb-3">
                         <span className={cn("inline-flex px-2 py-0.5 rounded-full text-xs font-medium", typeConfig.MANAGER)}>Manager Review</span>
-                        <span className="text-xs text-[var(--color-text-muted)]">by {pair.managerReview.reviewer.firstName} {pair.managerReview.reviewer.lastName}</span>
+                        <span className="text-xs text-[var(--color-text-muted)]">by {displayName(pair.managerReview.reviewer)}</span>
                         {pair.managerReview.rating && (
                           <div className="flex items-center gap-0.5 ml-auto">
                             {[1, 2, 3, 4, 5].map((n) => (
@@ -368,8 +368,8 @@ export default async function ReviewsPage() {
                         <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Reviews by Employee</h3>
                       </div>
                       {Object.values(reviewsByEmployee).map(({ employee: emp, reviews }) => {
-                        const empInitials = getInitials(emp.firstName, emp.lastName);
-                        const colorIdx = emp.firstName.charCodeAt(0) % avatarColors.length;
+                        const empInitials = getInitials(displayFirstName(emp), emp.lastName);
+                        const colorIdx = displayFirstName(emp).charCodeAt(0) % avatarColors.length;
                         const selfR = reviews.find((r) => r.type === "SELF");
                         const mgrR = reviews.find((r) => r.type === "MANAGER");
                         const peerRs = reviews.filter((r) => r.type === "PEER");
@@ -380,7 +380,7 @@ export default async function ReviewsPage() {
                             <div className="flex items-center gap-3 mb-3">
                               <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[colorIdx])}>{empInitials}</div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-[var(--color-text-primary)]">{emp.firstName} {emp.lastName}</p>
+                                <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(emp)}</p>
                                 <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle} {emp.department ? `· ${emp.department.name}` : ""}</p>
                               </div>
                               {allDone && (
@@ -417,11 +417,11 @@ export default async function ReviewsPage() {
                         return (
                           <div key={review.id} className={cn("rounded-xl p-3 flex items-center justify-between", "bg-[var(--color-background)] border border-[var(--color-border)]")}>
                             <div className="flex items-center gap-3">
-                              <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[review.employee.firstName.charCodeAt(0) % avatarColors.length])}>
-                                {getInitials(review.employee.firstName, review.employee.lastName)}
+                              <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-semibold", avatarColors[displayFirstName(review.employee).charCodeAt(0) % avatarColors.length])}>
+                                {getInitials(displayFirstName(review.employee), review.employee.lastName)}
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-[var(--color-text-primary)]">{review.employee.firstName} {review.employee.lastName}</p>
+                                <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName(review.employee)}</p>
                                 <div className="flex items-center gap-2 mt-0.5">
                                   <span className={cn("inline-flex px-1.5 py-0.5 rounded-full text-xs font-medium", typeConfig[review.type] || "")}>{review.type}</span>
                                   <div className={cn("inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-xs font-medium", cfg.bg, cfg.color)}>
@@ -434,11 +434,11 @@ export default async function ReviewsPage() {
                               </div>
                             </div>
                             <div>
-                              {canSubmit && <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />}
+                              {canSubmit && <SubmitReviewDialog review={{ id: review.id, employeeName: displayName(review.employee), type: review.type, template: resolveTemplate(cycle as any, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />}
                               {canView && (
                                 <ViewReviewDialog review={{
-                                  employeeName: `${review.employee.firstName} ${review.employee.lastName}`,
-                                  reviewerName: `${review.reviewer.firstName} ${review.reviewer.lastName}`,
+                                  employeeName: displayName(review.employee),
+                                  reviewerName: displayName(review.reviewer),
                                   type: review.type,
                                   rating: review.rating,
                                   strengths: review.strengths,
@@ -479,7 +479,7 @@ function ReviewPill({
   cycleActive,
   cycle,
 }: {
-  review: { id: string; status: string; rating: number | null; type: string; reviewerId: string; employeeId: string; employee: { firstName: string; lastName: string }; reviewer: { firstName: string; lastName: string }; strengths: string | null; improvements: string | null; goals: string | null };
+  review: { id: string; status: string; rating: number | null; type: string; reviewerId: string; employeeId: string; employee: { firstName: string; lastName: string; preferredName?: string | null }; reviewer: { firstName: string; lastName: string; preferredName?: string | null }; strengths: string | null; improvements: string | null; goals: string | null };
   type: string;
   currentEmployeeId?: string | null;
   isAdmin: boolean;
@@ -497,7 +497,7 @@ function ReviewPill({
     )}>
       <span className={cn("inline-flex px-1.5 py-0.5 rounded-full font-medium", typeConfig[type] || "")}>{type}</span>
       <span className="text-[var(--color-text-muted)]">
-        {type === "SELF" ? "by self" : `by ${review.reviewer.firstName}`}
+        {type === "SELF" ? "by self" : `by ${displayFirstName(review.reviewer)}`}
       </span>
       {isSubmitted && review.rating && (
         <span className="flex items-center gap-0.5">
@@ -507,12 +507,12 @@ function ReviewPill({
       {isSubmitted && <Icon name="check_circle" size={12} className="text-emerald-400" />}
       {!isSubmitted && <Icon name="schedule" size={12} className="text-[var(--color-text-muted)]" />}
       {canSubmit && (
-        <SubmitReviewDialog review={{ id: review.id, employeeName: `${review.employee.firstName} ${review.employee.lastName}`, type: review.type, template: resolveTemplate(cycle, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
+        <SubmitReviewDialog review={{ id: review.id, employeeName: displayName(review.employee), type: review.type, template: resolveTemplate(cycle, review.type as "SELF" | "MANAGER" | "PEER") as TemplateField[] | null }} />
       )}
       {canView && (
         <ViewReviewDialog review={{
-          employeeName: `${review.employee.firstName} ${review.employee.lastName}`,
-          reviewerName: `${review.reviewer.firstName} ${review.reviewer.lastName}`,
+          employeeName: displayName(review.employee),
+          reviewerName: displayName(review.reviewer),
           type: review.type,
           rating: review.rating,
           strengths: review.strengths,

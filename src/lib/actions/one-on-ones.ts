@@ -11,6 +11,7 @@ import {
 } from "@/lib/google-calendar";
 import { createOneOnOneEventForUser } from "@/lib/google-calendar-sync";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
+import { displayName } from "@/lib/utils";
 
 /**
  * Look up the manager's User and, if they have their own Google Calendar
@@ -177,8 +178,8 @@ export async function listOneOnOnes() {
   return db.oneOnOne.findMany({
     where,
     include: {
-      employee: { select: { id: true, firstName: true, lastName: true, jobTitle: true, profilePhoto: true } },
-      manager: { select: { id: true, firstName: true, lastName: true, jobTitle: true, profilePhoto: true } },
+      employee: { select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true, profilePhoto: true } },
+      manager: { select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true, profilePhoto: true } },
     },
     orderBy: [{ status: "asc" }, { scheduledAt: "asc" }],
   });
@@ -192,8 +193,8 @@ export async function getOneOnOne(id: string) {
   const m = await db.oneOnOne.findUnique({
     where: { id },
     include: {
-      employee: { select: { id: true, firstName: true, lastName: true, jobTitle: true, email: true, profilePhoto: true } },
-      manager: { select: { id: true, firstName: true, lastName: true, jobTitle: true, email: true, profilePhoto: true } },
+      employee: { select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true, email: true, profilePhoto: true } },
+      manager: { select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true, email: true, profilePhoto: true } },
     },
   });
   if (!m) return null;
@@ -207,7 +208,7 @@ export async function getOneOnOne(id: string) {
   // Past notebook entries for context
   const history = await db.oneOnOne.findMany({
     where: { employeeId: m.employeeId, id: { not: m.id }, status: "COMPLETED" },
-    orderBy: { completedAt: "desc" },
+    orderBy: { scheduledAt: "desc" },
     take: 10,
     select: {
       id: true,
@@ -215,7 +216,7 @@ export async function getOneOnOne(id: string) {
       completedAt: true,
       scheduledAt: true,
       notebookMarkdown: true,
-      manager: { select: { firstName: true, lastName: true } },
+      manager: { select: { firstName: true, lastName: true, preferredName: true } },
     },
   });
 
@@ -225,9 +226,9 @@ export async function getOneOnOne(id: string) {
 export async function getPastOneOnOnesForEmployee(employeeId: string) {
   return db.oneOnOne.findMany({
     where: { employeeId, status: "COMPLETED" },
-    orderBy: { completedAt: "desc" },
+    orderBy: { scheduledAt: "desc" },
     include: {
-      manager: { select: { id: true, firstName: true, lastName: true } },
+      manager: { select: { id: true, firstName: true, lastName: true, preferredName: true } },
     },
   });
 }
@@ -244,8 +245,9 @@ export async function listEligibleEmployeesForCreate() {
         id: true,
         firstName: true,
         lastName: true,
+        preferredName: true,
         jobTitle: true,
-        manager: { select: { id: true, firstName: true, lastName: true } },
+        manager: { select: { id: true, firstName: true, lastName: true, preferredName: true } },
       },
       orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
     });
@@ -257,8 +259,9 @@ export async function listEligibleEmployeesForCreate() {
         id: true,
         firstName: true,
         lastName: true,
+        preferredName: true,
         jobTitle: true,
-        manager: { select: { id: true, firstName: true, lastName: true } },
+        manager: { select: { id: true, firstName: true, lastName: true, preferredName: true } },
       },
       orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
     });
@@ -322,7 +325,7 @@ export async function getNextOneOnOneForEmployee(employeeId: string) {
     where: { employeeId, status: "SCHEDULED", scheduledAt: { gte: new Date() } },
     orderBy: { scheduledAt: "asc" },
     include: {
-      manager: { select: { firstName: true, lastName: true } },
+      manager: { select: { firstName: true, lastName: true, preferredName: true } },
     },
   });
 }
@@ -460,12 +463,12 @@ async function autoCreateGoogleEvent(oneOnOneId: string, options?: { sendIcsFall
   const m = await db.oneOnOne.findUnique({
     where: { id: oneOnOneId },
     include: {
-      employee: { select: { firstName: true, lastName: true, email: true } },
-      manager: { select: { firstName: true, lastName: true, email: true } },
+      employee: { select: { firstName: true, lastName: true, preferredName: true, email: true } },
+      manager: { select: { firstName: true, lastName: true, preferredName: true, email: true } },
     },
   });
   if (!m || m.googleEventId) return;
-  const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
+  const summary = `${TYPE_LABEL[m.type]} — ${displayName(m.employee)} & ${displayName(m.manager)}`;
   const description = "1:1 Performance Review";
 
   // Preferred: create the event on the manager's own Google Calendar so they
@@ -506,8 +509,8 @@ async function sendIcsInvite(
     id: string;
     scheduledAt: Date;
     meetingLink: string | null;
-    employee: { firstName: string; lastName: string; email: string };
-    manager: { firstName: string; lastName: string; email: string };
+    employee: { firstName: string; lastName: string; preferredName?: string | null; email: string };
+    manager: { firstName: string; lastName: string; preferredName?: string | null; email: string };
   },
   summary: string,
   description: string,
@@ -521,10 +524,10 @@ async function sendIcsInvite(
       description,
       location: m.meetingLink || undefined,
       organizerEmail: m.manager.email,
-      organizerName: `${m.manager.firstName} ${m.manager.lastName}`,
+      organizerName: displayName(m.manager),
       attendees: [
-        { email: m.employee.email, name: `${m.employee.firstName} ${m.employee.lastName}` },
-        { email: m.manager.email, name: `${m.manager.firstName} ${m.manager.lastName}` },
+        { email: m.employee.email, name: displayName(m.employee) },
+        { email: m.manager.email, name: displayName(m.manager) },
       ],
     });
     const html = `<p>You have a 1:1 review scheduled.</p>
@@ -550,14 +553,14 @@ export async function sendInvite(meetingId: string) {
   const m = await db.oneOnOne.findUnique({
     where: { id: meetingId },
     include: {
-      employee: { select: { firstName: true, lastName: true, email: true } },
-      manager: { select: { firstName: true, lastName: true, email: true } },
+      employee: { select: { firstName: true, lastName: true, preferredName: true, email: true } },
+      manager: { select: { firstName: true, lastName: true, preferredName: true, email: true } },
     },
   });
   if (!m) return { success: false, error: "Not found" };
   if (m.status !== "SCHEDULED") return { success: false, error: "Meeting is not scheduled" };
 
-  const summary = `${TYPE_LABEL[m.type]} — ${m.employee.firstName} ${m.employee.lastName} & ${m.manager.firstName} ${m.manager.lastName}`;
+  const summary = `${TYPE_LABEL[m.type]} — ${displayName(m.employee)} & ${displayName(m.manager)}`;
   const description = "1:1 Performance Review";
 
   // Preferred path: when the manager has connected their own Google Calendar,

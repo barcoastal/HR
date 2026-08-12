@@ -38,7 +38,7 @@ export function ProfilePhotoUpload({
     try {
       const formData = new FormData();
       formData.append("file", file);
-      const res = await fetch("/api/onboarding-docs/upload", { method: "POST", body: formData });
+      const res = await fetch("/api/profile-photo/upload", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Upload failed");
       const { url } = await res.json();
       await updateProfilePhoto(employeeId, url);

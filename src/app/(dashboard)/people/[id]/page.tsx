@@ -1,4 +1,4 @@
-import { cn, getInitials, formatDate } from "@/lib/utils";
+import { cn, getInitials, formatDate, displayFirstName, displayName } from "@/lib/utils";
 import { getEmployeeById } from "@/lib/actions/employees";
 import { requireAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
@@ -16,6 +16,7 @@ import { getNextOneOnOneForEmployee, getPastOneOnOnesForEmployee } from "@/lib/a
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
+import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -51,18 +52,21 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     notFound();
   }
 
-  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes] = await Promise.all([
+  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap] = await Promise.all([
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
     getPastOneOnOnesForEmployee(id),
+    getCurrentOutOfOfficeFor([id]),
   ]);
+
+  const currentOoo = oooMap[id];
 
   const canViewDocuments = isAdmin || isOwnProfile || isDirectReport;
   const canEdit = isAdmin || isOwnProfile;
 
-  const initials = getInitials(employee.firstName, employee.lastName);
-  const colorIdx = employee.firstName.charCodeAt(0) % avatarColors.length;
+  const initials = getInitials(displayFirstName(employee), employee.lastName);
+  const colorIdx = displayFirstName(employee).charCodeAt(0) % avatarColors.length;
   const tenure = (() => {
     const ms = Date.now() - employee.startDate.getTime();
     const years = Math.floor(ms / (365.25 * 24 * 60 * 60 * 1000));
@@ -89,18 +93,33 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             )}
             <div className="flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <h1 className="text-2xl font-bold text-[var(--color-primary)]">{employee.firstName} {employee.lastName}</h1>
+                <h1 className="text-2xl font-bold text-[var(--color-primary)]">{displayName(employee)}</h1>
                 {employee.pronouns && <span className="text-sm text-[var(--color-text-muted)]">({employee.pronouns})</span>}
                 <span className={cn("inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium w-fit", statusColor)}>{employee.status}</span>
               </div>
               <p className="text-[var(--color-text-muted)] mt-0.5">{employee.jobTitle} · {employee.department?.name || "No department"}</p>
+              {currentOoo && (
+                <div
+                  className={cn(
+                    "mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold w-fit",
+                    currentOoo.type === "WORKING_REMOTELY"
+                      ? "bg-cyan-500/15 text-cyan-700"
+                      : "bg-amber-500/15 text-amber-700"
+                  )}
+                >
+                  <Icon name={currentOoo.type === "WORKING_REMOTELY" ? "home_work" : "beach_access"} size={14} />
+                  {currentOoo.type === "WORKING_REMOTELY" ? "Working remotely until " : "Out of office until "}
+                  {formatDate(currentOoo.endDate)}
+                  {currentOoo.note ? ` · ${currentOoo.note}` : ""}
+                </div>
+              )}
             </div>
             {canEdit && (
               <div className="flex items-center gap-2 shrink-0">
                 {isAdmin && employee.status === "ACTIVE" && (
                   <PromoteEmployeeDialog
                     employeeId={employee.id}
-                    employeeName={`${employee.firstName} ${employee.lastName}`}
+                    employeeName={displayName(employee)}
                     currentJobTitle={employee.jobTitle}
                     currentDepartmentId={employee.departmentId}
                     departments={(await db.department.findMany({ orderBy: { name: "asc" } })).map((d) => ({ id: d.id, name: d.name }))}
@@ -109,6 +128,8 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 <EditEmployeeDialog employee={{
                   id: employee.id,
                   firstName: employee.firstName,
+                  middleName: employee.middleName || "",
+                  preferredName: employee.preferredName || "",
                   lastName: employee.lastName,
                   email: employee.email,
                   phone: employee.phone,
@@ -134,11 +155,11 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 {isAdmin && employee.status === "OFFBOARDED" && (
                   <ReactivateEmployeeButton
                     employeeId={employee.id}
-                    employeeName={`${employee.firstName} ${employee.lastName}`}
+                    employeeName={displayName(employee)}
                   />
                 )}
                 {isAdmin && (
-                  <DeleteEmployeeButton employeeId={employee.id} employeeName={`${employee.firstName} ${employee.lastName}`} />
+                  <DeleteEmployeeButton employeeId={employee.id} employeeName={displayName(employee)} />
                 )}
               </div>
             )}
@@ -195,7 +216,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                     <p className="text-xs font-medium text-[var(--color-text-muted)] uppercase tracking-wider">Next 1:1</p>
                     <p className="text-sm font-semibold text-[var(--color-text-primary)] mt-0.5">
                       {new Date(nextOneOnOne.scheduledAt).toLocaleString(undefined, { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
-                      <span className="font-normal text-[var(--color-text-muted)]"> · with {nextOneOnOne.manager.firstName} {nextOneOnOne.manager.lastName}</span>
+                      <span className="font-normal text-[var(--color-text-muted)]"> · with {displayName(nextOneOnOne.manager)}</span>
                     </p>
                   </div>
                 </div>
@@ -228,7 +249,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <div className="flex justify-end">
               <ResendStageDocsButton
                 employeeId={employee.id}
-                employeeName={`${employee.firstName} ${employee.lastName}`}
+                employeeName={displayName(employee)}
                 stage="PRE_ONBOARDING"
               />
             </div>
@@ -266,7 +287,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                             {o.completedAt ? formatDate(o.completedAt) : formatDate(o.scheduledAt)}
                           </span>
                           <span className="text-xs text-[var(--color-text-muted)]">
-                            · with {o.manager.firstName} {o.manager.lastName}
+                            · with {displayName(o.manager)}
                           </span>
                         </div>
                         <Icon name="expand_more" size={16} className="text-[var(--color-text-muted)] group-open:rotate-180 transition-transform" />
@@ -303,7 +324,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                     </div>
                     {review.strengths && <p className="text-sm text-[var(--color-text-primary)]">{review.strengths}</p>}
                     <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                      {review.type} review by {review.reviewer.firstName} {review.reviewer.lastName}
+                      {review.type} review by {displayName(review.reviewer)}
                     </p>
                   </div>
                 ))}
@@ -327,11 +348,11 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Reports To</h3>
               <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[employee.manager.firstName.charCodeAt(0) % avatarColors.length])}>
-                  {getInitials(employee.manager.firstName, employee.manager.lastName)}
+                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[displayFirstName(employee.manager).charCodeAt(0) % avatarColors.length])}>
+                  {getInitials(displayFirstName(employee.manager), employee.manager.lastName)}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{employee.manager.firstName} {employee.manager.lastName}</p>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(employee.manager)}</p>
                   <p className="text-xs text-[var(--color-text-muted)]">{employee.manager.jobTitle}</p>
                 </div>
               </div>
@@ -342,11 +363,11 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
               <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Onboarding Buddy</h3>
               <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[(employee as any).buddy.firstName.charCodeAt(0) % avatarColors.length])}>
-                  {getInitials((employee as any).buddy.firstName, (employee as any).buddy.lastName)}
+                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[displayFirstName((employee as any).buddy).charCodeAt(0) % avatarColors.length])}>
+                  {getInitials(displayFirstName((employee as any).buddy), (employee as any).buddy.lastName)}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{(employee as any).buddy.firstName} {(employee as any).buddy.lastName}</p>
+                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName((employee as any).buddy)}</p>
                   <p className="text-xs text-[var(--color-text-muted)]">{(employee as any).buddy.jobTitle}</p>
                 </div>
               </div>

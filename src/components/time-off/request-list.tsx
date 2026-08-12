@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { getInitials, formatDate } from "@/lib/utils";
+import { getInitials, formatDate, displayFirstName, displayName } from "@/lib/utils";
 import { approveTimeOffRequest, denyTimeOffRequest, cancelTimeOffRequest } from "@/lib/actions/time-off";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
@@ -14,9 +14,9 @@ type Request = {
   reason: string | null;
   status: string;
   createdAt: Date;
-  employee: { id: string; firstName: string; lastName: string; jobTitle: string };
+  employee: { id: string; firstName: string; lastName: string; preferredName?: string | null; jobTitle: string };
   policy: { name: string };
-  approver: { firstName: string; lastName: string } | null;
+  approver: { firstName: string; lastName: string; preferredName?: string | null } | null;
 };
 
 const statusConfig: Record<string, { label: string; color: string; icon: string }> = {
@@ -62,8 +62,8 @@ export function RequestList({
     <div className="space-y-3">
       {requests.map((req) => {
         const cfg = statusConfig[req.status] || statusConfig.PENDING;
-        const initials = getInitials(req.employee.firstName, req.employee.lastName);
-        const colorIdx = req.employee.firstName.charCodeAt(0) % avatarColors.length;
+        const initials = getInitials(displayFirstName(req.employee), req.employee.lastName);
+        const colorIdx = displayFirstName(req.employee).charCodeAt(0) % avatarColors.length;
         const isOwn = req.employee.id === currentEmployeeId;
 
         return (
@@ -74,7 +74,7 @@ export function RequestList({
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="font-semibold text-[var(--color-text-primary)]">{req.employee.firstName} {req.employee.lastName}</p>
+                  <p className="font-semibold text-[var(--color-text-primary)]">{displayName(req.employee)}</p>
                   <span className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium", cfg.color)}>
                     <Icon name={cfg.icon} size={12} />{cfg.label}
                   </span>

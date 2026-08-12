@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireAuth } from "@/lib/auth-helpers";
 import { getArchivedEmployees } from "@/lib/actions/employees";
 import { ArchiveActions } from "@/components/people/archive-actions";
+import { displayName } from "@/lib/utils";
 
 export default async function EmployeeArchivePage() {
   const session = await requireAuth();
@@ -47,7 +48,7 @@ export default async function EmployeeArchivePage() {
               {archived.map((emp) => (
                 <tr key={emp.id} className="border-t border-[var(--color-border)]">
                   <td className="px-4 py-3 font-semibold">
-                    {emp.firstName} {emp.lastName}
+                    {displayName(emp)}
                     <div className="text-xs font-normal text-[var(--color-on-surface-variant)]">{emp.email}</div>
                   </td>
                   <td className="px-4 py-3">{emp.jobTitle}</td>
@@ -57,7 +58,7 @@ export default async function EmployeeArchivePage() {
                   </td>
                   <td className="px-4 py-3 text-[var(--color-on-surface-variant)]">{emp.archivedReason ?? "—"}</td>
                   <td className="px-4 py-3 text-right">
-                    <ArchiveActions id={emp.id} name={`${emp.firstName} ${emp.lastName}`} />
+                    <ArchiveActions id={emp.id} name={displayName(emp)} />
                   </td>
                 </tr>
               ))}

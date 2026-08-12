@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { timeAgo, getInitials } from "@/lib/utils";
+import { timeAgo, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { toggleReaction, deleteFeedPost } from "@/lib/actions/feed";
 import { CommentSection } from "@/components/feed/comment-section";
 import type { ReactionType } from "@/generated/prisma/client";
@@ -20,10 +20,10 @@ type PostWithRelations = {
   eventEndDate?: Date | null;
   eventLocation?: string | null;
   createdAt: Date;
-  author: { id: string; firstName: string; lastName: string; jobTitle: string; pronouns?: string | null; profilePhoto?: string | null };
-  mentionedEmployee?: { id: string; firstName: string; lastName: string; jobTitle: string } | null;
+  author: { id: string; firstName: string; lastName: string; preferredName?: string | null; jobTitle: string; pronouns?: string | null; profilePhoto?: string | null };
+  mentionedEmployee?: { id: string; firstName: string; lastName: string; preferredName?: string | null; jobTitle: string } | null;
   reactions: { id: string; type: string; employeeId: string }[];
-  comments: { id: string; content: string; createdAt: Date; author: { id: string; firstName: string; lastName: string } }[];
+  comments: { id: string; content: string; createdAt: Date; author: { id: string; firstName: string; lastName: string; preferredName?: string | null } }[];
   attachments?: { id: string; url: string; type: string; name: string }[];
   pollView?: PollView | null;
   _count: { comments: number; reactions: number };
@@ -107,7 +107,7 @@ export function PostCard({
   userRole?: string;
 }) {
   const [showComments, setShowComments] = useState(false);
-  const initials = getInitials(post.author.firstName, post.author.lastName);
+  const initials = getInitials(displayFirstName(post.author), post.author.lastName);
   const heartCount = post.reactions.filter((r) => r.type === "HEART").length;
   const celebrateCount = post.reactions.filter((r) => r.type === "CELEBRATE").length;
   const thumbsupCount = post.reactions.filter((r) => r.type === "THUMBSUP").length;
@@ -125,7 +125,7 @@ export function PostCard({
   }
 
   const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
-  const colorIdx = post.author.firstName.charCodeAt(0) % avatarColors.length;
+  const colorIdx = displayFirstName(post.author).charCodeAt(0) % avatarColors.length;
   const avatarColor = avatarColors[colorIdx];
 
   const reactionsBar = (
@@ -179,8 +179,8 @@ export function PostCard({
 
   if (post.type === "SHOUTOUT" && post.mentionedEmployee) {
     const mentioned = post.mentionedEmployee;
-    const mentionedInitials = getInitials(mentioned.firstName, mentioned.lastName);
-    const mentionedColorIdx = mentioned.firstName.charCodeAt(0) % avatarColors.length;
+    const mentionedInitials = getInitials(displayFirstName(mentioned), mentioned.lastName);
+    const mentionedColorIdx = displayFirstName(mentioned).charCodeAt(0) % avatarColors.length;
     return (
       <article className={cn("rounded-2xl overflow-hidden", "bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-rose-500/10", "border border-yellow-400/20")}>
         <div className="p-5">
@@ -192,7 +192,7 @@ export function PostCard({
           <div className="flex items-center gap-3 mb-3">
             <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-[var(--color-text-primary)]">{post.author.firstName} {post.author.lastName}</p>
+              <p className="font-semibold text-[var(--color-text-primary)]">{displayName(post.author)}</p>
               <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle}</p>
             </div>
           </div>
@@ -201,7 +201,7 @@ export function PostCard({
           <div className={cn("flex items-center gap-3 p-3 rounded-lg", "bg-[var(--color-surface)]/50 border border-yellow-400/10")}>
             <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0", avatarColors[mentionedColorIdx])}>{mentionedInitials}</div>
             <div>
-              <p className="text-sm font-semibold text-[var(--color-text-primary)]">{mentioned.firstName} {mentioned.lastName}</p>
+              <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(mentioned)}</p>
               <p className="text-xs text-[var(--color-text-muted)]">{mentioned.jobTitle}</p>
             </div>
           </div>
@@ -222,14 +222,14 @@ export function PostCard({
             <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm shrink-0", avatarColor)}>{initials}</div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-semibold text-[var(--color-text-primary)]">{post.author.firstName} {post.author.lastName}</p>
+                <p className="font-semibold text-[var(--color-text-primary)]">{displayName(post.author)}</p>
                 <Icon name="cake" size={16} className="text-amber-500" />
               </div>
               <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle} · {timeAgo(post.createdAt)}</p>
             </div>
           </div>
           <div className="text-center py-4">
-            <p className="text-2xl font-bold text-[var(--color-text-primary)] mb-1">Happy Birthday, {post.author.firstName}!</p>
+            <p className="text-2xl font-bold text-[var(--color-text-primary)] mb-1">Happy Birthday, {displayFirstName(post.author)}!</p>
             <p className="text-[var(--color-text-muted)]">Wishing you an amazing year ahead. Enjoy your special day!</p>
           </div>
           <div className="pt-3 border-t border-amber-400/20">
@@ -253,7 +253,7 @@ export function PostCard({
           <div className="flex items-center gap-4 mb-3">
             <div className={cn("h-12 w-12 rounded-full flex items-center justify-center text-white font-semibold shrink-0", avatarColor)}>{initials}</div>
             <div>
-              <p className="text-lg font-semibold text-[var(--color-text-primary)]">Welcome {post.author.firstName}!</p>
+              <p className="text-lg font-semibold text-[var(--color-text-primary)]">Welcome {displayFirstName(post.author)}!</p>
               <p className="text-[var(--color-text-muted)]">{post.author.jobTitle}</p>
             </div>
           </div>
@@ -285,7 +285,7 @@ export function PostCard({
               ) : (
                 <div className={cn("h-5 w-5 rounded-full flex items-center justify-center text-white text-[8px] font-bold", avatarColor)}>{initials}</div>
               )}
-              <span>{post.author.firstName} {post.author.lastName}</span>
+              <span>{displayName(post.author)}</span>
             </div>
           </div>
           <div className="pt-3 mt-1 border-t border-red-500/20">
@@ -308,7 +308,7 @@ export function PostCard({
           )}
           <div className="flex-1 min-w-0">
             <p className="font-semibold text-[var(--color-text-primary)]">
-              {post.author.firstName} {post.author.lastName}
+              {displayName(post.author)}
               {post.author.pronouns && <span className="text-xs font-normal text-[var(--color-text-muted)] ml-1">({post.author.pronouns})</span>}
             </p>
             <p className="text-sm text-[var(--color-text-muted)]">{post.author.jobTitle} · {timeAgo(post.createdAt)}</p>

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth-helpers";
 import { getOneOnOne } from "@/lib/actions/one-on-ones";
 import { OneOnOneDetail } from "@/components/one-on-ones/one-on-one-detail";
+import { displayName } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,7 @@ export default async function OneOnOneDetailPage({ params }: { params: Promise<{
             id: meeting.employee.id,
             firstName: meeting.employee.firstName,
             lastName: meeting.employee.lastName,
+            preferredName: meeting.employee.preferredName,
             jobTitle: meeting.employee.jobTitle,
             email: meeting.employee.email,
             profilePhoto: meeting.employee.profilePhoto,
@@ -44,6 +46,7 @@ export default async function OneOnOneDetailPage({ params }: { params: Promise<{
             id: meeting.manager.id,
             firstName: meeting.manager.firstName,
             lastName: meeting.manager.lastName,
+            preferredName: meeting.manager.preferredName,
             jobTitle: meeting.manager.jobTitle,
             email: meeting.manager.email,
             profilePhoto: meeting.manager.profilePhoto,
@@ -55,7 +58,7 @@ export default async function OneOnOneDetailPage({ params }: { params: Promise<{
           completedAt: h.completedAt?.toISOString() || null,
           scheduledAt: h.scheduledAt.toISOString(),
           notebookMarkdown: h.notebookMarkdown,
-          managerName: `${h.manager.firstName} ${h.manager.lastName}`,
+          managerName: displayName(h.manager),
         }))}
         canEdit={canEdit}
       />
