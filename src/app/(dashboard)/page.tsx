@@ -48,13 +48,14 @@ export default async function FeedPage() {
 
       <div className="space-y-4">
         {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post as any}
-            currentEmployeeId={session.user.employeeId || ""}
-            currentUserId={session.user.id}
-            userRole={session.user.role}
-          />
+          <div key={post.id} id={`post-${post.id}`} className="scroll-mt-24">
+            <PostCard
+              post={post as any}
+              currentEmployeeId={session.user.employeeId || ""}
+              currentUserId={session.user.id}
+              userRole={session.user.role}
+            />
+          </div>
         ))}
         {posts.length === 0 && (
           <p className="text-center text-[var(--color-text-muted)] py-12">

@@ -168,9 +168,9 @@ export default async function GuidePage() {
           <h4>Top bar</h4>
           <ul>
             <li><strong>CALATRAVA logo</strong> — clicks back to the Feed.</li>
-            <li><strong>Search bar</strong> (top center) — global search across employees, candidates, positions.</li>
+            <li><strong>Search bar</strong> (top center) — global search across employees, phone numbers, emails, documents, candidates, positions, and visible company updates.</li>
             <li><strong>🔔 bell</strong> with red badge — opens the in-app notifications drawer. Click any notification to jump to the linked record. Numbers over 9 show as <code>9+</code>.</li>
-            <li><strong>Your avatar</strong> (top right) — opens a quick menu with My Profile, settings, sign out.</li>
+            <li><strong>Your avatar</strong> (top right) — opens your My Profile page.</li>
           </ul>
         </section>
 
