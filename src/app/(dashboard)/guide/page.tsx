@@ -1,1264 +1,691 @@
+import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth-helpers";
 import { GuidePrintButton } from "@/components/guide/guide-print-button";
 
-export const metadata = { title: "User Guide · CALATRAVA" };
+export const metadata = { title: "Help & Guide · CALATRAVA" };
 
-function GuideImage({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
+function Role({ children }: { children: ReactNode }) {
+  return <span className="guide-role">{children}</span>;
+}
+
+function Note({
+  title,
+  children,
+  tone = "info",
+}: {
+  title: string;
+  children: ReactNode;
+  tone?: "info" | "success" | "warning";
+}) {
   return (
-    <figure className="my-4 border border-[var(--color-border)] rounded-lg overflow-hidden bg-[var(--color-background)]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt={alt} className="w-full block" />
-      {caption && (
-        <figcaption className="px-3 py-1.5 text-xs text-[var(--color-text-muted)] border-t border-[var(--color-border)]">
-          {caption}
-        </figcaption>
-      )}
-    </figure>
+    <aside className={`guide-note guide-note-${tone}`}>
+      <strong>{title}</strong>
+      <div>{children}</div>
+    </aside>
   );
+}
+
+function Route({ children }: { children: ReactNode }) {
+  return <code className="guide-route">{children}</code>;
 }
 
 export default async function GuidePage() {
   const session = await requireAuth();
-  if (session.user?.role !== "SUPER_ADMIN") {
-    redirect("/");
-  }
+  if (session.user?.role !== "SUPER_ADMIN") redirect("/");
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10 guide-root">
+    <div className="guide-root mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
       <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          .guide-root { max-width: 100% !important; padding: 0 !important; }
-          h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
-          section, figure { break-inside: avoid; page-break-inside: avoid; }
-          body { font-size: 11pt; }
-          .role-pill { border: 1px solid #888 !important; background: #fff !important; color: #000 !important; }
-          figure { max-width: 100%; }
-          figure img { max-height: 4.5in; object-fit: contain; }
-          .toc { display: none !important; }
+        html { scroll-behavior: smooth; }
+        .guide-root { color: var(--color-text-primary); }
+        .guide-hero {
+          background: linear-gradient(140deg, color-mix(in srgb, var(--color-primary-fixed) 78%, white), var(--color-surface-container-lowest));
+          border: 1px solid color-mix(in srgb, var(--color-primary) 16%, var(--color-border));
+          border-radius: 1.5rem;
+          padding: clamp(1.5rem, 4vw, 2.75rem);
         }
-        .guide-prose h1 { font-size: 2.25rem; font-weight: 800; margin-bottom: 0.25rem; }
-        .guide-prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.4rem; }
-        .guide-prose h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-        .guide-prose h4 { font-size: 0.8rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.4rem; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.04em; }
-        .guide-prose p { margin-bottom: 0.7rem; line-height: 1.6; }
-        .guide-prose ul { list-style: disc; padding-left: 1.25rem; margin-bottom: 0.7rem; }
-        .guide-prose ol { list-style: decimal; padding-left: 1.25rem; margin-bottom: 0.7rem; }
-        .guide-prose li { margin-bottom: 0.3rem; line-height: 1.55; }
-        .guide-prose li li { margin-bottom: 0.2rem; }
-        .guide-prose code { background: var(--color-background); padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.9em; }
-        .guide-prose table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 0.9rem; }
-        .guide-prose th, .guide-prose td { border: 1px solid var(--color-border); padding: 0.45rem 0.7rem; text-align: left; vertical-align: top; }
-        .guide-prose th { background: var(--color-background); font-weight: 600; }
-        .role-pill { display: inline-block; padding: 0.1rem 0.5rem; border-radius: 999px; font-size: 0.7rem; font-weight: 600; background: var(--color-accent); color: white; margin-right: 0.25rem; }
-        .callout { background: color-mix(in srgb, var(--color-accent) 8%, transparent); border-left: 3px solid var(--color-accent); padding: 0.7rem 0.9rem; border-radius: 6px; margin: 0.8rem 0; font-size: 0.95rem; }
-        .callout strong { color: var(--color-accent); }
-        .callout-warn { background: color-mix(in srgb, #f59e0b 12%, transparent); border-left: 3px solid #f59e0b; padding: 0.7rem 0.9rem; border-radius: 6px; margin: 0.8rem 0; font-size: 0.95rem; }
-        .toc { background: var(--color-background); border: 1px solid var(--color-border); border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 2rem; }
-        .toc ol { column-count: 2; column-gap: 1.5rem; margin: 0; font-size: 0.9rem; }
-        @media (max-width: 700px) { .toc ol { column-count: 1; } }
-        kbd { background: var(--color-background); border: 1px solid var(--color-border); border-bottom-width: 2px; padding: 0.05rem 0.4rem; border-radius: 4px; font-size: 0.85em; font-family: inherit; }
+        .guide-hero h1 { font-size: clamp(2rem, 5vw, 3.35rem); line-height: 1.02; letter-spacing: -0.045em; font-weight: 850; }
+        .guide-summary { max-width: 46rem; margin-top: .75rem; color: var(--color-text-muted); font-size: 1rem; line-height: 1.65; }
+        .guide-reviewed { margin-top: 1.25rem; display: inline-flex; align-items: center; gap: .45rem; border-radius: 999px; background: var(--color-surface-container-lowest); padding: .4rem .75rem; font-size: .75rem; font-weight: 650; color: var(--color-text-muted); }
+        .guide-nav { margin: 1.5rem 0 2.5rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+        .guide-nav a { display: flex; min-height: 3rem; align-items: center; border: 1px solid var(--color-border); border-radius: .9rem; background: var(--color-surface-container-lowest); padding: .65rem .8rem; color: var(--color-text-primary); font-size: .84rem; font-weight: 650; line-height: 1.25; transition: background-color .15s ease, border-color .15s ease; }
+        .guide-nav a:hover { background: var(--color-surface-hover); border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border)); }
+        .guide-prose section { scroll-margin-top: 5.25rem; margin-top: 3.25rem; }
+        .guide-prose h2 { margin-bottom: .65rem; font-size: clamp(1.55rem, 3vw, 2rem); line-height: 1.15; letter-spacing: -.025em; font-weight: 780; }
+        .guide-prose h3 { margin-top: 1.65rem; margin-bottom: .45rem; font-size: 1.08rem; line-height: 1.35; font-weight: 720; }
+        .guide-prose p { margin-bottom: .75rem; color: var(--color-text-primary); line-height: 1.65; }
+        .guide-prose ul, .guide-prose ol { margin-bottom: .9rem; padding-left: 1.35rem; }
+        .guide-prose ul { list-style: disc; }
+        .guide-prose ol { list-style: decimal; }
+        .guide-prose li { margin-bottom: .4rem; line-height: 1.58; }
+        .guide-prose li::marker { color: var(--color-primary); font-weight: 700; }
+        .guide-prose strong { font-weight: 720; }
+        .guide-prose table { width: 100%; margin: .9rem 0 1.25rem; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--color-border); border-radius: .9rem; font-size: .88rem; }
+        .guide-prose th, .guide-prose td { border-bottom: 1px solid var(--color-border); padding: .7rem .8rem; text-align: left; vertical-align: top; line-height: 1.5; }
+        .guide-prose th { background: var(--color-surface-container-low); font-weight: 700; }
+        .guide-prose tr:last-child td { border-bottom: 0; }
+        .guide-prose code:not(.guide-route) { border-radius: .35rem; background: var(--color-surface-container-low); padding: .08rem .3rem; font-size: .88em; }
+        .guide-route { display: inline-block; border: 1px solid var(--color-border); border-radius: .4rem; background: var(--color-surface-container-lowest); padding: .08rem .38rem; font-size: .82em; color: var(--color-primary); }
+        .guide-role { display: inline-flex; align-items: center; border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border)); border-radius: 999px; background: var(--color-primary-fixed); padding: .12rem .48rem; color: var(--color-on-primary-fixed-variant); font-size: .7rem; font-weight: 750; white-space: nowrap; }
+        .guide-note { margin: 1rem 0; border: 1px solid var(--color-border); border-radius: 1rem; padding: .9rem 1rem; background: var(--color-surface-container-lowest); font-size: .92rem; }
+        .guide-note > strong { display: block; margin-bottom: .25rem; }
+        .guide-note > div > :last-child { margin-bottom: 0; }
+        .guide-note-info { border-color: color-mix(in srgb, var(--color-primary) 30%, var(--color-border)); background: color-mix(in srgb, var(--color-primary-fixed) 45%, var(--color-surface-container-lowest)); }
+        .guide-note-success { border-color: color-mix(in srgb, #059669 35%, var(--color-border)); background: color-mix(in srgb, #d1fae5 48%, var(--color-surface-container-lowest)); }
+        .guide-note-warning { border-color: color-mix(in srgb, #d97706 35%, var(--color-border)); background: color-mix(in srgb, #fef3c7 52%, var(--color-surface-container-lowest)); }
+        .guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin: 1rem 0; }
+        .guide-card { border: 1px solid var(--color-border); border-radius: 1rem; background: var(--color-surface-container-lowest); padding: 1rem; }
+        .guide-card h3 { margin: 0 0 .35rem; }
+        .guide-card p:last-child, .guide-card ul:last-child { margin-bottom: 0; }
+        kbd { border: 1px solid var(--color-border); border-bottom-width: 2px; border-radius: .35rem; background: var(--color-surface-container-low); padding: .06rem .35rem; font-family: inherit; font-size: .82em; }
+        @media (max-width: 760px) {
+          .guide-nav, .guide-grid { grid-template-columns: 1fr; }
+          .guide-prose table { display: block; overflow-x: auto; }
+        }
+        @media print {
+          .no-print, .guide-nav { display: none !important; }
+          .guide-root { max-width: none !important; padding: 0 !important; }
+          .guide-hero { border: 0; padding: 0 0 1rem; background: white; }
+          .guide-prose section { break-before: auto; }
+          .guide-prose h2, .guide-prose h3 { break-after: avoid; }
+          .guide-card, .guide-note, table, tr { break-inside: avoid; }
+          .guide-role { border-color: #777 !important; background: white !important; color: black !important; }
+          body { font-size: 10.5pt; }
+        }
       `}</style>
 
-      <div className="flex items-center justify-between mb-6 no-print">
-        <div>
-          <p className="text-xs uppercase tracking-wider text-[var(--color-text-muted)] font-semibold">Coastal Debt Resolve</p>
-          <h1 className="text-3xl font-black">CALATRAVA — User Guide</h1>
+      <header className="guide-hero">
+        <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
+          <div>
+            <h1>Help &amp; Guide</h1>
+            <p className="guide-summary">
+              The current operating guide for CALATRAVA: where to go, what each action does,
+              who can see it, and when an action affects email, Google Calendar, job boards,
+              background screening, or payroll.
+            </p>
+            <span className="guide-reviewed">Current production behavior · reviewed August 13, 2026</span>
+          </div>
+          <div className="no-print shrink-0"><GuidePrintButton /></div>
         </div>
-        <GuidePrintButton />
-      </div>
+      </header>
 
-      <div className="guide-prose text-[var(--color-text-primary)]">
-        <section>
-          <h1 className="hidden print:block">CALATRAVA — HR Platform User Guide</h1>
-          <p className="text-[var(--color-text-muted)] mb-4">
-            Field-level walkthroughs for every feature, with screenshots of the live platform. Some sections are role-gated — your sidebar will only show what you have access to.
+      <nav className="guide-nav" aria-label="Guide contents">
+        <a href="#start">Start here</a>
+        <a href="#navigation">Navigation &amp; search</a>
+        <a href="#feed">Feed &amp; communication</a>
+        <a href="#people">People &amp; profiles</a>
+        <a href="#recruitment">Recruitment</a>
+        <a href="#candidate-workflows">Candidate workflows</a>
+        <a href="#onboarding">Onboarding &amp; offboarding</a>
+        <a href="#documents">Documents &amp; signatures</a>
+        <a href="#calendar">Calendar &amp; Google</a>
+        <a href="#people-programs">1:1s, reviews &amp; time off</a>
+        <a href="#planning">Planning &amp; analytics</a>
+        <a href="#settings">Settings &amp; integrations</a>
+        <a href="#testing">Sandbox vs production</a>
+        <a href="#privacy">Privacy &amp; permissions</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </nav>
+
+      <main className="guide-prose">
+        <section id="start">
+          <h2>Start here</h2>
+          <p>
+            Production is at <Route>hr.coastaldebt-tools.com</Route>. Google sign-in only accepts
+            <code>@coastaldebt.com</code> accounts that were already invited in User Management.
+            A valid company email that has not been invited receives a not-invited error; an email
+            outside the company domain receives a domain error. Credentials sign-in works only for
+            accounts that were given a password.
           </p>
+          <Note title="First sign-in">
+            The User record must exist first. After a successful Google sign-in, CALATRAVA links the
+            account to an Employee with the same email. If no matching Employee exists, it creates the
+            employee profile at that point.
+          </Note>
 
-          <div className="toc">
-            <h4>Contents</h4>
-            <ol>
-              <li>Sign-in &amp; roles</li>
-              <li>The sidebar &amp; navigation</li>
-              <li>Feed (home)</li>
-              <li>Alerts</li>
-              <li>People — directory</li>
-              <li>Adding an employee (form-by-form)</li>
-              <li>Employee profile page</li>
-              <li>Promoting / editing / deleting an employee</li>
-              <li>Employee Archive</li>
-              <li>My Profile</li>
-              <li>Recruitment — the /cv page</li>
-              <li>Adding a position (every field)</li>
-              <li>Editing / closing / deleting a position</li>
-              <li>Posting a job to a board</li>
-              <li>Adding a candidate (existing or new)</li>
-              <li>Candidate detail dialog (every tab)</li>
-              <li>Moving a candidate through stages</li>
-              <li>Background checks — full flow</li>
-              <li>Offer letters &amp; signing</li>
-              <li>Hiring &amp; onboarding flow</li>
-              <li>Pre-onboarding</li>
-              <li>Onboarding tracker</li>
-              <li>Offboarding</li>
-              <li>Documents &amp; signing — admin</li>
-              <li>Sign Queue (countersign)</li>
-              <li>My Documents</li>
-              <li>Calendar</li>
-              <li>1:1 reviews</li>
-              <li>Performance reviews (anniversary)</li>
-              <li>Time off</li>
-              <li>Your Voice (pulse)</li>
-              <li>Clubs</li>
-              <li>Settings — every panel</li>
-              <li>Company Information</li>
-              <li>User Management</li>
-              <li>Departments &amp; Teams</li>
-              <li>Job Titles</li>
-              <li>Pipeline Stages</li>
-              <li>Onboarding / Pre-onboarding / Offboarding Setup</li>
-              <li>Stage Documents</li>
-              <li>Email Templates (each one)</li>
-              <li>Time-Off Policies</li>
-              <li>Pulse Surveys</li>
-              <li>Notification Settings (matrix)</li>
-              <li>Platform Integrations</li>
-              <li>Roles &amp; Permissions</li>
-              <li>Audit Log</li>
-              <li>Privacy &amp; visibility rules</li>
-              <li>Integrations (deep dive)</li>
-              <li>Public flows: signing &amp; filling</li>
-              <li>Careers page</li>
-              <li>Troubleshooting</li>
-              <li>Glossary &amp; FAQ</li>
-            </ol>
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>1. Sign-in &amp; roles</h2>
-          <ol>
-            <li>Go to <code>hr.coastaldebt-tools.com</code>.</li>
-            <li>Click <strong>Sign in with Google</strong> and use your <code>@coastaldebt.com</code> account. Accounts outside this domain are rejected with <em>&quot;not-invited&quot;</em>.</li>
-            <li>If you have a credentials account (email + password) you can use the password form below the Google button.</li>
-            <li>On first sign-in the system creates an Employee record automatically if one doesn&apos;t exist.</li>
-          </ol>
-
-          <h3>The five roles</h3>
-          <p>Your role determines which sidebar entries and actions you see. Roles are set per user in <strong>Settings → User Management</strong>.</p>
+          <h3>Roles at a glance</h3>
           <table>
-            <thead><tr><th>Role</th><th>What they see &amp; can do</th></tr></thead>
+            <thead><tr><th>Role</th><th>Normal scope</th></tr></thead>
             <tbody>
-              <tr><td><span className="role-pill">SUPER_ADMIN</span></td><td>Full access. Only role that sees Audit Log, Employee Archive, Roles &amp; Permissions, and the Cleanup Demo Data button.</td></tr>
-              <tr><td><span className="role-pill">ADMIN</span></td><td>Same as Super Admin minus the items above. Manages people, recruitment, onboarding, settings, integrations.</td></tr>
-              <tr><td><span className="role-pill">HR</span></td><td>People, recruitment, onboarding/offboarding, documents, reviews, most of settings, notifications.</td></tr>
-              <tr><td><span className="role-pill">MANAGER</span></td><td>Own profile, direct reports&apos; profiles, recruitment pipeline, 1:1s, reviews of direct reports, the company directory.</td></tr>
-              <tr><td><span className="role-pill">EMPLOYEE</span></td><td>Own profile, own documents, feed, clubs, calendar, time off, 1:1s with their manager. Cannot browse colleagues.</td></tr>
+              <tr><td><Role>SUPER_ADMIN</Role></td><td>Full platform access, including employee archive, recruiter manager, audit log, Help &amp; Guide, permissions, and demo-data cleanup.</td></tr>
+              <tr><td><Role>ADMIN</Role></td><td>Company operations: people, alerts, hiring, onboarding, documents, settings, Gusto, hiring plan, analytics, and countersigning.</td></tr>
+              <tr><td><Role>HR</Role></td><td>People and HR workflows, recruitment, onboarding/offboarding, documents, reviews, time off, and analytics. The main Settings link is reserved for Admin and Super Admin.</td></tr>
+              <tr><td><Role>MANAGER</Role></td><td>Company directory, their own and direct-report profiles, 1:1s, reviews, approvals, and any recruitment/analytics access granted to the Manager role.</td></tr>
+              <tr><td><Role>EMPLOYEE</Role></td><td>Feed, personal profile and documents, calendar, clubs, Your Voice, time off, assigned reviews, and their own 1:1s.</td></tr>
             </tbody>
           </table>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>2. The sidebar &amp; navigation</h2>
-          <p>The vertical sidebar on the left is the main nav. Sections are role-filtered. Your own avatar + role badge at the bottom doubles as a quick-link to <strong>My Profile</strong>; the <strong>Sign out</strong> button below it ends your session.</p>
-
-          <h4>Top bar</h4>
-          <ul>
-            <li><strong>CALATRAVA logo</strong> — clicks back to the Feed.</li>
-            <li><strong>Search bar</strong> (top center) — global search across employees, phone numbers, emails, documents, candidates, positions, and visible company updates.</li>
-            <li><strong>🔔 bell</strong> with red badge — opens the in-app notifications drawer. Click any notification to jump to the linked record. Numbers over 9 show as <code>9+</code>.</li>
-            <li><strong>Your avatar</strong> (top right) — opens your My Profile page.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>3. Feed — the homepage</h2>
-          <GuideImage src="/guide/01-feed.png" alt="Feed homepage" caption="Feed — posts, shoutouts, events, and reactions. Everyone lands here after sign-in." />
-
-          <h3>The composer (top)</h3>
-          <ol>
-            <li>Click into <strong>What&apos;s on your mind?</strong>.</li>
-            <li>Choose one of four post types:
-              <ul>
-                <li><strong>Photo</strong> — image picker (PNG/JPG, &lt; 10 MB).</li>
-                <li><strong>Attach</strong> — any file. Renders as a download link in the feed.</li>
-                <li><strong>GIF</strong> — Giphy search box.</li>
-                <li><strong>Shoutout</strong> — pick a colleague to celebrate. Their name appears highlighted in the post; they get a personal email + in-app notification on top of the regular post visibility.</li>
-                <li><strong>Event</strong> — set a start &amp; end date, optional location. Creates a Feed post AND a Calendar event visible to everyone.</li>
-              </ul>
-            </li>
-            <li><strong>Email all</strong> toggle (default on) — when on, every active employee gets the post as an email. Untick to keep it in-app only.</li>
-            <li>Click <strong>Post</strong>.</li>
-          </ol>
-
-          <h3>Each post row</h3>
-          <ul>
-            <li><strong>Author avatar &amp; name</strong>.</li>
-            <li><strong>Time ago</strong> (1d ago, 3h ago, etc.).</li>
-            <li><strong>Content + attachments</strong>.</li>
-            <li><strong>Reactions</strong>: ❤ Love / 🎉 Celebrate / 👍 Like. Counts increment as people react. Each reaction notifies the post author (configurable per user).</li>
-            <li><strong>Comments</strong> — click the 💬 to expand. Comments notify the post author by email + in-app.</li>
-            <li><strong>Delete</strong> — only the post author and admins see this.</li>
-          </ul>
-
-          <div className="callout">
-            <strong>Notification controls:</strong> Each employee can opt out of feed-post / comment / reaction / shoutout emails in <strong>My Profile → Notifications</strong>. The original poster also chooses Email-All vs in-app-only at compose time.
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>4. Alerts (Admin only)</h2>
-          <p>Sidebar → <strong>Alerts</strong>. Visible to <span className="role-pill">SUPER_ADMIN</span> <span className="role-pill">ADMIN</span> only.</p>
-          <p>Surface for company-wide emergency alerts (e.g. office closure, evacuation). Composing an alert sends a high-priority email + in-app notification to every active employee. Use sparingly — they appear in red banners across the dashboard.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>5. People — directory</h2>
-          <p><span className="role-pill">MANAGER</span> and above. The directory of everyone in the company.</p>
-          <GuideImage src="/guide/05-people.png" alt="People list" caption="People — Pending invites at top (yellow), filters + 30 employees grid below." />
-
-          <h3>Top of the page</h3>
-          <ul>
-            <li><strong>Headline count</strong>: &quot;Managing X talented individuals across Y departments.&quot;</li>
-            <li><strong>Archive</strong> button (Super Admin only) — opens <code>/people/archive</code>.</li>
-            <li><strong>Bulk Import</strong> (HR+) — opens the CSV import wizard (see section 6).</li>
-            <li><strong>Add Employee</strong> (HR+) — opens the Add Employee form (see section 6).</li>
-          </ul>
-
-          <h3>Pending Employees block</h3>
-          <p>Employees who&apos;ve been added but haven&apos;t received their login invite yet show in an amber block at the top with their job title and email. Click <strong>Approve</strong> next to each one to send their Welcome email. <strong>Approve All &amp; Send Invites</strong> processes the entire queue.</p>
-
-          <h3>Filters &amp; sort</h3>
-          <ul>
-            <li><strong>Filters</strong> dropdown — by department, status (Active / Onboarding / Pending / Offboarded), role.</li>
-            <li><strong>Recently Joined</strong> toggle — sort newest-first.</li>
-            <li><strong>Floating + button</strong> bottom right — shortcut to Add Employee.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>6. Adding an employee — every field</h2>
-          <p>Two paths.</p>
-
-          <h3>Single add: People → Add Employee</h3>
-          <ol>
-            <li><strong>First name</strong> — required.</li>
-            <li><strong>Last name</strong> — required.</li>
-            <li><strong>Email</strong> — required; must be unique. If a Pending employee already exists with this email it&apos;s linked.</li>
-            <li><strong>Job title</strong> — pick from existing list (Settings → Job Titles) or type a new one.</li>
-            <li><strong>Department</strong> — dropdown.</li>
-            <li><strong>Team</strong> — dropdown filtered to the chosen department.</li>
-            <li><strong>Manager</strong> — searchable employee picker.</li>
-            <li><strong>Buddy</strong> — pairs the new employee with a colleague for onboarding.</li>
-            <li><strong>Start date</strong> — required.</li>
-            <li><strong>Phone, birthday, location</strong> — optional.</li>
-            <li><strong>Status</strong> — Active (default), Onboarding (kicks off the checklist flow), Pre-onboarding, Pending (no login yet).</li>
-            <li>Click <strong>Save</strong>. If status is Onboarding, the system creates the User account, sends the Welcome email, and adds them to /onboarding with their assigned tasks. Otherwise they appear in People immediately.</li>
-          </ol>
-
-          <h3>Bulk add: People → Bulk Import</h3>
-          <ol>
-            <li>Click <strong>Bulk Import</strong>. The dialog shows a CSV template.</li>
-            <li>Required columns: <code>firstName</code>, <code>lastName</code>, <code>email</code>.</li>
-            <li>Optional columns: <code>jobTitle</code>, <code>phone</code>, <code>departmentId</code>, <code>departmentName</code> (creates if missing), <code>managerId</code>, <code>reportsTo</code> (matches by name), <code>startDate</code> (ISO yyyy-mm-dd), <code>location</code>.</li>
-            <li>Drop your CSV onto the picker. The preview shows rows + any errors.</li>
-            <li>Click <strong>Import N employees</strong>. The dialog reports the totals: created, skipped (duplicate emails), errors (invalid rows).</li>
-            <li>New employees default to Status = Pending until you Approve them on the People page.</li>
-          </ol>
-
-          <div className="callout-warn">
-            <strong>Heads up:</strong> Bulk Import will auto-create any Department it sees in <code>departmentName</code> that doesn&apos;t exist. Double-check your CSV — typos like <code>Sales -Openers</code> vs <code>Sales - Openers</code> will create two departments.
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>7. Employee profile page</h2>
-          <p>Click any employee in the People list. The URL is <code>/people/[id]</code>.</p>
-
-          <h3>Visibility rules</h3>
-          <ul>
-            <li>Admin/HR — full profile.</li>
-            <li>The employee themselves — their own profile.</li>
-            <li>Their direct manager — their report&apos;s profile.</li>
-            <li>Everyone else — <strong>404 not found</strong>. This is intentional.</li>
-          </ul>
-
-          <h3>What&apos;s on the page</h3>
-          <ul>
-            <li><strong>Header card</strong> — photo, name, pronouns, status pill, job title + department. Action buttons on the right (admin/owner): Promote, Edit, Reactivate (if offboarded), Delete.</li>
-            <li><strong>About</strong> — bio, hobbies, dietary restrictions.</li>
-            <li><strong>Personal Info</strong> — pronouns, address, T-shirt size, tenure, anniversary.</li>
-            <li><strong>Emergency Contact</strong> — name, phone, relationship. Only visible to admin/HR/owner/manager.</li>
-            <li><strong>Documents</strong> — Employee documents section (uploaded by HR, signed PDFs). HR_ONLY items hidden from the employee themselves.</li>
-            <li><strong>HR Notes</strong> — internal notes from HR/admin. Never shown to the employee.</li>
-            <li><strong>Next 1:1</strong> — if scheduled.</li>
-            <li><strong>Performance Reviews</strong> — past cycles.</li>
-            <li><strong>Gusto Tab</strong> — if Gusto is connected, shows payroll info.</li>
-            <li><strong>Time off</strong> — request &amp; balance (own profile only or admin/HR).</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>8. Promoting / editing / deleting an employee</h2>
-
-          <h3>Promote</h3>
-          <ol>
-            <li>Profile → <strong>Promote</strong> button (admin/HR only).</li>
-            <li>Dialog asks for new Job Title (required) and optional new Department.</li>
-            <li>Save. The promotion is recorded in the Audit Log and announced on the Feed as a Shoutout post.</li>
-          </ol>
-
-          <h3>Edit</h3>
-          <ol>
-            <li>Profile → <strong>Edit</strong> button.</li>
-            <li>The dialog has every field — name, email, phone, job title, department, start date, birthday, address, pronouns, T-shirt size, emergency contact.</li>
-            <li>Save. Updates go live immediately. Email changes also update the linked User account.</li>
-          </ol>
-
-          <h3>Delete (archive)</h3>
-          <ol>
-            <li>Profile → <strong>Delete</strong> button (admin/HR).</li>
-            <li>Confirm. The employee is <em>archived</em>, not hard-deleted:
-              <ul>
-                <li>Status set to archived; <code>archivedAt</code> timestamp recorded.</li>
-                <li>Their User account is removed (login revoked).</li>
-                <li>References from other employees&apos; managerId / buddyId / departmentHead are nulled.</li>
-                <li>All chat / feed / time-off history stays intact.</li>
-              </ul>
-            </li>
-            <li>The employee disappears from /people and every dropdown.</li>
-          </ol>
-
-          <h3>Reactivate (after offboarding)</h3>
-          <p>If the employee was offboarded (not archived), the profile shows a <strong>Reactivate</strong> button. Click it → status returns to Active and a new login can be created.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>9. Employee Archive</h2>
-          <p><span className="role-pill">SUPER_ADMIN</span> only. URL: <code>/people/archive</code>.</p>
-          <p>Lists every archived employee with their name, email, last-known job title, archive date, and archive reason.</p>
-
-          <h3>Restore</h3>
-          <ol>
-            <li>Click <strong>Restore</strong>.</li>
-            <li>A confirm prompt asks whether to also re-enable login:
-              <ul>
-                <li><strong>OK</strong> = restore + recreate the User row so they can sign back in.</li>
-                <li><strong>Cancel</strong> = restore the employee record only; their login stays disabled. You can invite them later via Settings → User Management.</li>
-              </ul>
-            </li>
-          </ol>
-
-          <h3>Delete permanently</h3>
-          <p>Clicks the <strong>Delete permanently</strong> button. Asks for a confirmation, then runs the actual hard-delete cascade across chat/feed/time-off tables. Writes an audit log entry first (<code>employee.purged</code>) so the action is recoverable in records even though the data isn&apos;t.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>10. My Profile</h2>
-          <GuideImage src="/guide/09-my-profile.png" alt="My Profile" caption="My Profile — documents widget, club memberships, personal info, notifications." />
-          <p>Sidebar → <strong>My Profile</strong>. The page you control about yourself. URL: <code>/my-profile</code>.</p>
-
-          <h3>Sections from top to bottom</h3>
-          <ol>
-            <li><strong>Header</strong> — your photo, name, pronouns, job title + department. Click your avatar to upload a new photo (PNG/JPG, &lt; 5 MB).</li>
-            <li><strong>My Documents widget</strong> — your 5 most recent. <em>View all →</em> jumps to /my-documents.</li>
-            <li><strong>Reports To</strong> — your direct manager.</li>
-            <li><strong>My Clubs</strong> — clubs you&apos;ve joined.</li>
-            <li><strong>About</strong> — bio, hobbies, dietary restrictions. Click Edit.</li>
-            <li><strong>Personal Info</strong> — pronouns, address, T-shirt size. Click Edit. You cannot change job title, department, manager, or status from here — only HR can.</li>
-            <li><strong>Emergency Contact</strong> — Click Edit. Visible only to you, your manager, and admin/HR.</li>
-            <li><strong>Notifications</strong> — toggles for each category (per-user):
-              <ul>
-                <li>Email Notifications — master switch.</li>
-                <li>Feed Posts — new posts in feed.</li>
-                <li>Events — calendar events.</li>
-                <li>Comments — replies to your posts.</li>
-                <li>Shoutouts — when someone tags you.</li>
-                <li>Reactions — when someone reacts to your post.</li>
-                <li>Stage changes, sign requests, task assignments, performance reviews — for the relevant roles.</li>
-              </ul>
-            </li>
-            <li><strong>Google Calendar</strong> — connect/disconnect button. When connected, your calendar events show on /calendar.</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>11. Recruitment — the /cv page</h2>
-          <p><span className="role-pill">MANAGER</span> and above. The hub for hiring.</p>
-          <GuideImage src="/guide/02-cv-pipeline.png" alt="Recruitment overview" caption="Recruitment — stats row, AI search, positions list." />
-
-          <h3>Stats row</h3>
-          <ul>
-            <li><strong>Open Positions</strong> — status = OPEN.</li>
-            <li><strong>Active in Pipeline</strong> — candidates not HIRED or REJECTED.</li>
-            <li><strong>Total Candidates</strong> — every candidate ever added or synced.</li>
-            <li><strong>Archived Positions</strong> — closed/filled positions (expandable section further down).</li>
-          </ul>
-
-          <h3>Two tabs</h3>
-          <ul>
-            <li><strong>Recruitment</strong> — per-position kanban. The default.</li>
-            <li><strong>Candidate Database</strong> — the full table of every candidate ever recorded. Lazy-loaded (shows &quot;Loading candidates…&quot; until first opened).</li>
-          </ul>
-
-          <h3>AI candidate search</h3>
-          <p>The collapsible panel at the top. Two modes:</p>
-          <ul>
-            <li><strong>AI</strong> — type a free-text description (e.g. <em>&quot;closer with 5+ years in debt relief, bilingual&quot;</em>). The system uses GPT to rank candidates by skill / experience match. Top 10 results shown with a score.</li>
-            <li><strong>Keyword</strong> — literal substring search across name, email, resume text, skills.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>12. Adding a position — every field</h2>
-          <p>Recruitment → <strong>+ Add Position</strong> (top right).</p>
-          <GuideImage src="/guide/11-add-position.png" alt="New Position dialog" caption="New Position — title, department, description, requirements, salary, type, location, publish targets." />
-          <ol>
-            <li><strong>Title*</strong> — e.g. &quot;Senior React Developer&quot;.</li>
-            <li><strong>Department</strong> — dropdown of existing departments.</li>
-            <li><strong>Description</strong> — multi-line. Markdown allowed for the careers page render. Pulled into Breezy &amp; Indeed when posting.</li>
-            <li><strong>Requirements</strong> — bullet list or comma-separated. Drives the AI candidate match scoring.</li>
-            <li><strong>Salary Range</strong> — free text, e.g. &quot;$80k - $120k&quot;.</li>
-            <li><strong>Job Type</strong> — Full-time / Part-time / Contract / Temporary / Internship.</li>
-            <li><strong>Location</strong> — defaults to &quot;Fort Lauderdale, FL&quot; if blank. Parse format: <code>City, State[, Country]</code>. The Breezy poster auto-builds country / city / state from this string. Words like <em>Remote</em> mark the role as remote.</li>
-            <li><strong>Publish to</strong> — toggle each board:
-              <ul>
-                <li><strong>Careers Page</strong> — shows on <code>coastaldebt.com/careers</code>.</li>
-                <li><strong>Breezy HR</strong> — syndicated to Indeed / LinkedIn / ZipRecruiter via Breezy.</li>
-                <li><strong>Jobing</strong> — read-only sync from pro.jobing.com (manual post required there).</li>
-              </ul>
-            </li>
-            <li>Click <strong>Preview Posting</strong> to see how it&apos;ll look on the careers page, then Save.</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>13. Editing, closing, or deleting a position</h2>
-
-          <h3>Edit</h3>
-          <p>Position row → ✏ icon (Edit). Same fields as Add Position. Saving auto-republishes the Breezy posting if there is one (no duplicates).</p>
-
-          <h3>Close / Fill</h3>
-          <p>Position row → <strong>Close</strong> button. Sets the position status to CLOSED and automatically:</p>
-          <ul>
-            <li>Closes the corresponding posting on Breezy (state = closed).</li>
-            <li>Unpublishes the careers page entry.</li>
-            <li>Removes it from the &quot;Open Positions&quot; list (moves to Archived).</li>
-          </ul>
-          <p>Setting status to FILLED in the candidate detail dialog when hiring does the same close-on-all-boards effect.</p>
-
-          <h3>Delete</h3>
-          <p><span className="role-pill">SUPER_ADMIN</span> only. Position row → 🗑 button. Asks for confirmation. Candidates linked to the position keep their profiles (just detached). Interviews on the position are removed.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>14. Posting a job to a board</h2>
-          <p>Each position card has a <strong>Job boards</strong> sub-panel listing where it&apos;s posted with status pills.</p>
-
-          <h3>Careers Page</h3>
-          <p>Toggle ON to publish to <code>coastaldebt.com/careers</code>. Anyone can apply via the public form there — applicants land in the position&apos;s &quot;New&quot; column with source &quot;careers-page&quot;.</p>
-
-          <h3>Breezy HR</h3>
-          <ol>
-            <li>Click <strong>Post to Breezy</strong>.</li>
-            <li>The system signs into Breezy, creates the position with title + description + requirements + city/state/country + job type.</li>
-            <li>Breezy syndicates to Indeed (sponsored), LinkedIn (organic), ZipRecruiter, Google for Jobs, etc.</li>
-            <li>The Breezy externalId is saved so subsequent clicks <strong>republish the same posting</strong> rather than creating duplicates.</li>
-            <li>Use the status icon next to Breezy to see Published / Paused / Failed.</li>
-          </ol>
-
-          <h3>Jobing</h3>
-          <p>Read-only sync. Posting must still be done in the pro.jobing.com dashboard; applicants from there are imported automatically every cron cycle.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>15. Adding a candidate</h2>
-          <p>Position row → <strong>Add Candidate</strong>.</p>
-
-          <h3>Required: Assign Recruiter</h3>
-          <p>The recruiter dropdown is required when any recruiter is configured. The assigned recruiter receives an email + in-app notification (action <code>RECRUITER_ASSIGNED</code>). The notification is direct — it bypasses the global Notification Rule toggles so the recruiter always sees the assignment.</p>
-          <p>Recruiters see all their assigned applicants under <strong>My Candidates</strong> in the sidebar. The link is only visible to employees configured as recruiters in <code>Settings → Recruiters</code>.</p>
-          <p>On the <strong>Recruitment</strong> tab itself, a <strong>Recruiter</strong> filter is available above Open Positions to narrow the list to one recruiter's portfolio (or to surface candidates with no recruiter assigned).</p>
-
-          <h3>Tab: From Database</h3>
-          <p>Search by name/email. Any existing candidate not already on this position is selectable. Click <strong>Add</strong> next to a row to assign them.</p>
-
-          <h3>Tab: New Candidate</h3>
-          <ol>
-            <li>First name *, Last name *, Email *.</li>
-            <li>Phone (optional).</li>
-            <li>Skills — comma-separated, e.g. <code>sales, CRM, bilingual</code>.</li>
-            <li>Click <strong>Add Candidate</strong>. If the email already exists you get an alert; use the From Database tab instead.</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>16. The Candidate Detail dialog</h2>
-          <p>Click any candidate card. The dialog has every field plus action panels.</p>
-
-          <h3>Identity section</h3>
-          <ul>
-            <li>First name, Last name, Email, Phone, LinkedIn URL.</li>
-            <li>Skills (comma-separated).</li>
-            <li>Experience (free text).</li>
-            <li>Source — the board / referral / direct (auto-set when synced).</li>
-            <li>Notes — free text, internal only.</li>
-          </ul>
-
-          <h3>Recruitment section</h3>
-          <ul>
-            <li><strong>Status</strong> — the stage dropdown. Changing it triggers a stage-change notification + audit log entry.</li>
-            <li><strong>Position</strong> — which position they&apos;re on.</li>
-            <li><strong>Manager</strong> &amp; <strong>Recruiter</strong> dropdowns.</li>
-            <li><strong>Cost of hire</strong>, <strong>Hourly rate</strong>.</li>
-          </ul>
-
-          <h3>Resume</h3>
-          <p>If a resume PDF exists you can view it inline. Resume text (parsed) appears in a collapsible block — fed into the AI search index.</p>
-
-          <h3>Application history</h3>
-          <p>List of every stage transition for this candidate — when it happened, who moved them. Especially useful when reading the Audit Log.</p>
-
-          <h3>Background Check options panel</h3>
-          <p>Only visible when status = BACKGROUND_CHECK. See section 18.</p>
-
-          <h3>Offer section</h3>
-          <p>Upload offer PDF, click Send. See section 19.</p>
-
-          <h3>Do Not Call &amp; Adverse Action</h3>
-          <ul>
-            <li><strong>Mark Do Not Call</strong> — checkbox + reason. Auto-sets status to REJECTED. Permanent (can be undone via Unmark).</li>
-            <li><strong>Send Adverse Action Letter</strong> — appears when BG check is FAILED. Sends the standard rejection letter and locks the candidate as REJECTED + Do Not Call.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>17. Moving a candidate through stages</h2>
-          <p>Three ways:</p>
-          <ol>
-            <li>Hover the card on the kanban → click the <strong>→</strong> button to advance to the next stage.</li>
-            <li>Click the card → change Status dropdown → Save.</li>
-            <li>Drag-and-drop between columns (browser permitting).</li>
-          </ol>
-          <p>Every move writes an audit row: <code>candidate.status.changed</code> with actor, from-stage, to-stage, timestamp.</p>
-
-          <h3>Stage-specific behavior</h3>
-          <table>
-            <thead><tr><th>Move to…</th><th>What happens</th></tr></thead>
-            <tbody>
-              <tr><td>SCREENING, INTERVIEW, OFFER, HIRED, REJECTED, OFFBOARDING</td><td>Immediate. Notifications fire to configured recipients.</td></tr>
-              <tr><td><strong>BACKGROUND_CHECK</strong></td><td>Doesn&apos;t fire the check immediately — instead opens the detail dialog so you can configure check options. Click Save to actually order the check.</td></tr>
-              <tr><td><strong>HIRED</strong></td><td>Opens the detail dialog so you can supply company email + start date + manager. Creates an Employee record, kicks off onboarding.</td></tr>
-              <tr><td><strong>REJECTED</strong></td><td>Can be set explicitly via dropdown, or as a side-effect of Mark Do Not Call or Send Adverse Action Letter. All three paths are audited.</td></tr>
-              <tr><td>PRE_ONBOARDING / ONBOARDING</td><td>Usually set automatically when a candidate is Hired. Manual moves trigger task assignment per the checklist setup.</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>18. Background checks — full flow</h2>
-          <p>Provider: <strong>backgroundchecks.com</strong>. Integrated end-to-end.</p>
-
-          <h3>Initiating a check</h3>
-          <ol>
-            <li>Move the candidate to BG Check (via kanban or dialog). The detail dialog opens automatically.</li>
-            <li>In the <strong>Background Check Options</strong> panel choose:
-              <ul>
-                <li><strong>Report tier</strong>: HIRE1 (basic) / HIRE2 (mid) / HIRE3 (deep). Cost increases per tier.</li>
-                <li><strong>Drug test</strong> — Y/N + panel: drug (5-panel) / drug9 (9-panel) / drug10 (10-panel).</li>
-                <li>Optional checks: MVR, employment verification, education, federal &amp; county criminal, bankruptcy, civil judgment, tax lien, credit report.</li>
-              </ul>
-            </li>
-            <li>Click <strong>Save</strong>. The system posts to <code>app.backgroundchecks.com/api/orders/new</code>. The candidate&apos;s email gets an invite link; the report_key is stored on their record.</li>
-            <li>Status flips to <code>AWAITING_APPLICANT</code> until they complete their form.</li>
-          </ol>
-
-          <h3>Tracking the result</h3>
-          <ul>
-            <li>The dialog shows a colored status pill: <em>Awaiting Applicant → Processing → Passed/Flagged</em>.</li>
-            <li><strong>Refresh Status</strong> button polls backgroundchecks.com for updates.</li>
-            <li><strong>View Report</strong> button (purple) — only appears when the report exists. Opens the full PDF in a new tab, streamed from backgroundchecks.com via our server (so the API key never reaches the browser).</li>
-            <li><strong>Mark Passed / Mark Failed</strong> — manual override when status is still Pending. Clicking Failed shows the Adverse Action banner; sending the letter is still a separate explicit click.</li>
-            <li><strong>Completion notifications</strong> — the first time the check resolves to PASSED or FAILED, the system fires the <code>BACKGROUND_CHECK_COMPLETE</code> notification. By default the Recruiter and HR Team get an email + in-app; the candidate&apos;s Manager gets an in-app. Configurable in Settings → Notification Settings.</li>
-          </ul>
-
-          <h3>If flagged / failed</h3>
-          <p>When backgroundchecks.com flags the report (or you click <strong>Mark Failed</strong>):</p>
-          <ol>
-            <li>The candidate&apos;s <code>backgroundCheckStatus</code> flips to <code>FAILED</code>. <strong>No email is sent and the candidate is NOT auto-rejected.</strong></li>
-            <li>The dialog now shows a red <strong>Adverse Action Letter</strong> banner with a <strong>Send</strong> button. The decision to email + reject is yours.</li>
-            <li>Click <strong>Send</strong> (optionally type a reason in the text box first):
-              <ul>
-                <li>The candidate gets the FCRA-compliant Adverse Action email (template in Settings → Email Templates).</li>
-                <li>The candidate record updates: <code>status = REJECTED</code>, <code>doNotCall = true</code>, <code>doNotCallReason = &quot;Background check failed&quot;</code>.</li>
-                <li>The audit log writes <code>candidate.status.changed</code> with <code>via: adverse_action_letter</code>.</li>
-              </ul>
-            </li>
-            <li>You can&apos;t accidentally double-send — the dialog shows &quot;already sent on date X&quot; after the first send.</li>
-          </ol>
-
-          <div className="callout-warn">
-            <strong>Important:</strong> Once you click Send, the candidate is locked as Do Not Call. To reverse, an admin must use Unmark Do Not Call (and even then the audit log keeps the original event). Refreshing status or marking the report Failed does <em>not</em> by itself send the letter or move the candidate to Rejected — only the explicit Send button does.
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>19. Offer letters &amp; signing</h2>
-          <ol>
-            <li>Move candidate to <strong>Offer</strong> stage.</li>
-            <li>In the detail dialog, scroll to the Offer section.</li>
-            <li>Upload the offer PDF (drag/drop or file picker). The file is stored in the platform&apos;s file blob storage.</li>
-            <li>Click <strong>Send Offer</strong>. The candidate gets an email from <code>hrteam@hr.coastaldebt-tools.com</code> with a tokenized signing link.</li>
-            <li>They click the link → land on <code>/sign/[token]</code> (public, no login needed) → draw or type their signature → click Sign. The signed PDF is generated server-side via pdf-lib.</li>
-            <li>You get an in-app + email notification (action: <code>OFFER_SIGNED</code>).</li>
-            <li>The dialog now shows &quot;Signed on date X&quot; with a Download Signed PDF link.</li>
-            <li>Move to Hired when ready.</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>20. Hiring &amp; onboarding flow</h2>
-          <ol>
-            <li>Move candidate to <strong>Hired</strong>. The detail dialog opens.</li>
-            <li>Fill the company-side fields:
-              <ul>
-                <li><strong>Company email</strong> — their new <code>@coastaldebt.com</code> address.</li>
-                <li><strong>Start date</strong>.</li>
-                <li><strong>Manager</strong> (optional override).</li>
-                <li><strong>Skip Welcome email</strong> toggle.</li>
-              </ul>
-            </li>
-            <li>Click <strong>Confirm Hire</strong>.</li>
-            <li>The system:
-              <ul>
-                <li>Creates an Employee record with status <code>ONBOARDING</code> (or <code>PRE_ONBOARDING</code> if pre-onboarding tasks exist for that department + job title).</li>
-                <li>Creates a User account so they can sign in with Google when start date arrives.</li>
-                <li>Sends the Welcome email with sign-in link (unless you ticked Skip).</li>
-                <li>Assigns onboarding tasks per the checklist setup. Tasks may include documents to sign, emails to fire, or actions assigned to other employees (e.g. IT for laptop, HR for paperwork).</li>
-                <li>Anniversary review cycle is scheduled for 1 year from start date.</li>
-              </ul>
-            </li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>21. Pre-onboarding</h2>
-          <p><span className="role-pill">HR</span> and above. Sidebar → <strong>Pre-Onboarding</strong>.</p>
-          <p>Used for roles where the new hire has tasks to complete <em>before</em> their start date (e.g. background check finalization, signing initial documents). Triggered automatically when a candidate moves to Hired AND their department + job title has pre-onboarding checklist items configured.</p>
-
-          <h3>The page</h3>
-          <ul>
-            <li>Stats: Active Pre-Onboarding, Completed, Pending Tasks.</li>
-            <li>Each pre-onboarding employee shows with task progress.</li>
-            <li><strong>Move to Onboarding</strong> button appears once all pre-onboarding tasks are done — flips status and assigns the regular onboarding tasks.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>22. Onboarding tracker</h2>
-          <p><span className="role-pill">HR</span> and above.</p>
-          <GuideImage src="/guide/18-onboarding.png" alt="Onboarding" caption="Onboarding — Active onboarding count, completed this month, pending tasks." />
-          <ul>
-            <li>Active Onboarding count.</li>
-            <li>Completed This Month.</li>
-            <li>Pending Tasks across all current new hires.</li>
-            <li>Per-employee progress: which tasks done, which pending. Click a task to mark complete or open the linked document.</li>
-            <li><strong>Move to Active</strong> button on each employee once all onboarding tasks complete — flips status to ACTIVE.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>23. Offboarding</h2>
-          <p><span className="role-pill">HR</span> and above.</p>
-          <ol>
-            <li>People → click the employee → scroll to <strong>Start Offboarding</strong> button (or sidebar → Offboarding → pick them).</li>
-            <li>Pick their last day in the dialog.</li>
-            <li>Save. The system:
-              <ul>
-                <li>Sets status to OFFBOARDED with endDate.</li>
-                <li>Revokes their login immediately (User row deleted).</li>
-                <li>Creates offboarding tasks per the configured checklist (IT — revoke access, HR — exit interview, Finance — final pay, etc.).</li>
-                <li>Sends notification email to the configured <strong>Management group</strong> (Settings → Notifications).</li>
-                <li>Logs <code>employee.offboarding_started</code> in the audit log.</li>
-              </ul>
-            </li>
-            <li>Track task completion on the Offboarding page until all are done. The offboarded employee no longer appears in People (filter on status = OFFBOARDED to view).</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>24. Documents &amp; signing — admin</h2>
-          <p><span className="role-pill">MANAGER</span> and above. Sidebar → <strong>Documents</strong>.</p>
-          <GuideImage src="/guide/07-documents.png" alt="Documents page" caption="Documents & Signing — Total / Pending / Awaiting Signature / Signed counters + filterable list." />
-
-          <h3>The counters</h3>
-          <ul>
-            <li><strong>Total</strong> — every doc ever sent.</li>
-            <li><strong>Pending</strong> — sent but not viewed by the recipient.</li>
-            <li><strong>Awaiting Signature</strong> — viewed but not signed.</li>
-            <li><strong>Signed</strong> — fully complete.</li>
-          </ul>
-
-          <h3>Send for Signing flow</h3>
-          <ol>
-            <li>Click <strong>Send for Signing</strong>. The dialog opens.</li>
-            <li>Choose <strong>Recipient</strong>: an employee or candidate.</li>
-            <li>Upload PDF.</li>
-            <li>Give it a name (defaults to the file name).</li>
-            <li>Optionally place signature fields by clicking on the PDF preview — each click drops a signature box at that position on that page.</li>
-            <li>Optional <strong>Countersigner</strong> — pick a second employee who must counter-sign after the first signer.</li>
-            <li>Click <strong>Send</strong>. The recipient gets the email; the doc appears in the list with status Pending.</li>
-          </ol>
-
-          <h3>Send for Filling flow</h3>
-          <p>For fillable PDFs (forms with text fields). Same as Send for Signing but the recipient lands on <code>/fill/[token]</code> where they type into fields, then sign. Often used for I-9, W-4, etc.</p>
-
-          <h3>Filter tabs</h3>
-          <p>All / Pending / Signed / Voided.</p>
-
-          <h3>Per-row actions</h3>
-          <ul>
-            <li><strong>View</strong> — open the latest PDF (original or signed).</li>
-            <li><strong>Resend</strong> — re-send the signing email if they lost the link.</li>
-            <li><strong>Copy link</strong> — get the tokenized URL to paste in chat.</li>
-            <li><strong>Void</strong> — cancel the signing request. The recipient can no longer access it.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>25. Sign Queue (countersign)</h2>
-          <p>Sidebar → <strong>Sign Queue</strong>. Shows every document waiting for <em>your</em> counter-signature. Each row has a Sign button that opens the document with a signature field for you to draw or upload.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>26. My Documents</h2>
-          <GuideImage src="/guide/10-my-documents.png" alt="My Documents" caption="My Documents — your personal hub for documents and signing tasks." />
-
-          <h3>Status badges</h3>
-          <ul>
-            <li><strong>Waiting for you</strong> — yellow. Open the link, sign, done.</li>
-            <li><strong>Awaiting countersign</strong> — purple. You signed; waiting on a manager/HR signer.</li>
-            <li><strong>Signed</strong> — green. Fully complete.</li>
-            <li><strong>On file</strong> — gray. Uploaded by HR (offer letter, W-4, etc.), nothing for you to do.</li>
-            <li><strong>Voided</strong> — gray. Cancelled.</li>
-          </ul>
-
-          <p>HR_ONLY documents are filtered out — you don&apos;t see them here even if they&apos;re tagged to you.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>27. Calendar</h2>
-          <GuideImage src="/guide/04-calendar.png" alt="Calendar" caption="Calendar — Month view with mixed events." />
-
-          <h3>View modes</h3>
-          <p>Month / Week / Day toggle (top right). The blue dot below the date is &quot;today&quot;.</p>
-
-          <h3>What appears (role-dependent)</h3>
-          <ul>
-            <li><strong>Birthdays</strong> 🎂 — everyone, public.</li>
-            <li><strong>Work anniversaries</strong> 🎉 — everyone, public.</li>
-            <li><strong>Holidays</strong> — Jewish (red), Muslim (green), Christian (purple), US federal (blue). Toggle in Settings.</li>
-            <li><strong>Interviews</strong> — manager+ only. Shows candidate name + Meet link.</li>
-            <li><strong>Benefits eligibility dates</strong> — manager+ only.</li>
-            <li><strong>Anniversary review cycles</strong> — scoped per role: admin/HR see all; manager sees own + direct reports; employee sees only their own.</li>
-            <li><strong>Company events</strong> — events posted to the Feed.</li>
-            <li><strong>Your personal Google Calendar</strong> — only when you&apos;ve connected it in Settings.</li>
-          </ul>
-
-          <h3>Creating an event (manager+)</h3>
-          <ol>
-            <li>Click <strong>Create event</strong> (top right).</li>
-            <li>Title, start, end, location.</li>
-            <li>Optionally restrict to specific departments — only members of those departments see it on their calendar.</li>
-            <li>Save. Also posts to the Feed as an Event card.</li>
-          </ol>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>28. 1:1 reviews</h2>
-          <p>Sidebar → <strong>1:1 Reviews</strong>.</p>
-          <GuideImage src="/guide/17-one-on-ones.png" alt="1:1 Reviews" caption="1:1 Reviews — Upcoming (33) and Completed tabs, with each meeting showing manager + report and date." />
-
-          <h3>Scheduling a 1:1 (manager+)</h3>
-          <ol>
-            <li>Click <strong>+ New 1:1</strong>.</li>
-            <li>Pick the employee (direct reports list for managers; all employees for admins/HR).</li>
-            <li>Pick the type: 30-day, Annual, Quarterly, Ad-hoc.</li>
-            <li>Pick date &amp; time.</li>
-            <li>Save. If Google Calendar is connected on both accounts, a calendar event with a Meet link is created automatically.</li>
-          </ol>
-
-          <h3>Running the meeting</h3>
-          <ol>
-            <li>Open the 1:1 record (click Open on the row).</li>
-            <li>Two tabs: <strong>Notebook</strong> (shared markdown notes editable live by both participants) and <strong>History</strong> (past 1:1s with this person).</li>
-            <li>During the meeting, take notes in the Notebook. Auto-saves every few seconds.</li>
-            <li>When done, click <strong>Mark Complete</strong>. The 1:1 moves to the Completed tab. Notebook becomes read-only.</li>
-          </ol>
-
-          <p>Past 1:1 history visible only to: admin/HR, the employee themselves, and their direct manager.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>29. Performance reviews (anniversary)</h2>
-          <p><span className="role-pill">MANAGER</span> and above. Sidebar → <strong>Reviews</strong>.</p>
-          <GuideImage src="/guide/16-reviews.png" alt="Reviews" caption="Reviews — active cycles, per-employee progress." />
-
-          <h3>How review cycles work</h3>
-          <ul>
-            <li>A daily cron runs at midnight checking who has a work anniversary in 14 days.</li>
-            <li>For each match: a new <strong>Review Cycle</strong> is created with two reviews — SELF (employee fills out their own) and MANAGER (their manager fills out theirs).</li>
-            <li>Both parties get an email + in-app notification.</li>
-            <li>The cycle has a 30-day window to complete.</li>
-          </ul>
-
-          <h3>Filling out a review</h3>
-          <ol>
-            <li>Open the cycle → click your assigned review.</li>
-            <li>The template loads — questions vary per department template (configured in Settings → Department Templates).</li>
-            <li>Fill, save draft, or submit.</li>
-            <li>Submitted reviews are read-only.</li>
-            <li>Once both SELF and MANAGER are submitted, the cycle shows Complete in the dashboard.</li>
-          </ol>
-
-          <h3>Manual cycles (admin)</h3>
-          <p>Click <strong>+ New Cycle</strong>. Pick employee + start/end + template. Optionally toggle Anniversary (auto-scheduled) or Custom.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>30. Time off</h2>
-
-          <h3>Requesting time off (employee)</h3>
-          <ol>
-            <li>Go to My Profile → Time Off section (or the Time Off page if visible).</li>
-            <li>Click <strong>Request Time Off</strong>.</li>
-            <li>Pick policy (Vacation / Sick / Personal / Bereavement, etc. — configured by HR).</li>
-            <li>Pick start &amp; end dates.</li>
-            <li>Optional reason.</li>
-            <li>Submit. Your manager gets an email + in-app notification.</li>
-          </ol>
-
-          <h3>Approving requests (manager / admin)</h3>
-          <ol>
-            <li>Notification clicks through to the request row.</li>
-            <li>Review dates / balance / reason.</li>
-            <li>Click <strong>Approve</strong> or <strong>Deny</strong>.</li>
-            <li>Self-approval is blocked — an employee cannot approve their own request.</li>
-          </ol>
-
-          <h3>Balances &amp; policies</h3>
-          <ul>
-            <li><strong>Balance widget</strong> on your profile shows days used / remaining per policy.</li>
-            <li><strong>Policy</strong> — configured in Settings → Time-Off Policies. Defines days/year, unlimited toggle, accrual rules.</li>
-            <li><strong>Assignment</strong> — admin assigns each policy to specific employees in Settings (different policies for different roles/tenures).</li>
-            <li><strong>Burnout report</strong> — Settings → Burnout Alerts. Shows employees who haven&apos;t taken time off in 6+ months.</li>
-            <li><strong>Who&apos;s Out today</strong> — widget on the homepage + calendar markers.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>31. Your Voice (anonymous pulse)</h2>
-          <p>Sidebar → <strong>Your Voice</strong>. The anonymous mood-survey feature.</p>
-          <ul>
-            <li>An admin creates a question in Settings → Pulse Surveys.</li>
-            <li>The active survey appears as a popup on the homepage prompting a 1-5 rating.</li>
-            <li>Responses are aggregated server-side; individual responses are never shown to anyone.</li>
-            <li>Once submitted, you don&apos;t see the popup again until the next survey.</li>
-            <li>Results: Settings → Pulse Surveys → click any past survey → average score + distribution histogram.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>32. Clubs</h2>
-          <p>Sidebar → <strong>Clubs</strong>. Lightweight social groups.</p>
-          <ul>
-            <li>Anyone can create a club: name, description, icon.</li>
-            <li>Members join by clicking <strong>Join</strong>.</li>
-            <li>Each club has its own mini-feed for posts &amp; comments.</li>
-            <li>Club memberships appear on your profile.</li>
-            <li>Examples: Soccer Club, Book Club, FIFA World Cup 2026 (per the live data).</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>33. Settings — every panel</h2>
-          <p><span className="role-pill">ADMIN</span> and above. Sidebar → <strong>Settings</strong>.</p>
-          <p>Single long page. The next sections cover each panel top-to-bottom.</p>
-        </section>
-
-        <section>
-          <h2>34. Company Information</h2>
-          <GuideImage src="/guide/06-settings.png" alt="Company Information panel" caption="Company Info — first panel on /settings." />
-          <ul>
-            <li><strong>Company Name</strong> — used everywhere the brand shows.</li>
-            <li><strong>Domain</strong> — your company website (e.g. <code>www.coastaldebt.com</code>).</li>
-            <li><strong>Industry</strong> — free text, used in reports.</li>
-            <li><strong>Company Size</strong> — headcount, auto-filled from active employees.</li>
-            <li><strong>Company Logo</strong> — uploaded image, displayed on sign-in, careers page, emails.</li>
-            <li><strong>Favicon</strong> — small icon for the browser tab.</li>
-            <li><strong>Sender Email</strong> — the FROM address for outbound mail. Must be a Resend-verified domain (defaults to <code>hrteam@hr.coastaldebt-tools.com</code>).</li>
-            <li><strong>Sender Name</strong> — display name on outbound emails.</li>
-            <li>Save changes.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>35. User Management</h2>
-          <ul>
-            <li><strong>Invite User</strong> button — opens the invite dialog: email, role, optional starter password.</li>
-            <li>Each existing user row shows: email, role, linked employee.</li>
-            <li>Per-row actions: change role, set password, delete user.</li>
-            <li>Role hierarchy guard: ADMINs can&apos;t manage SUPER_ADMIN accounts. Only SUPER_ADMINs can mint other SUPER_ADMINs.</li>
-            <li>You can&apos;t delete your own account.</li>
-            <li>Every change here goes to the Audit Log: <code>user.invited</code>, <code>user.role.changed</code>, <code>user.password.set</code>, <code>user.deleted</code>.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>36. Departments &amp; Teams</h2>
-          <ul>
-            <li>List of departments with head + employee count.</li>
-            <li>Add / rename / delete departments.</li>
-            <li>Each department can have multiple Teams (sub-units).</li>
-            <li>Deleting a department detaches its employees (sets <code>departmentId = null</code>) rather than failing.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>37. Job Titles</h2>
-          <p>The canonical list used in employee profiles and the Add Position dropdown. Add a new title via the input + button. Delete unused ones; deletion is blocked if any employee or position currently uses the title.</p>
-        </section>
-
-        <section>
-          <h2>38. Pipeline Stages</h2>
-          <p>Customizes the kanban columns on /cv.</p>
-          <ul>
-            <li>Each stage has: label, color, icon, visibility toggle, order.</li>
-            <li>Drag to reorder. The default 9 stages are: NEW, SCREENING, INTERVIEW, OFFER, BACKGROUND_CHECK, PRE_ONBOARDING, ONBOARDING, HIRED, OFFBOARDING, REJECTED.</li>
-            <li>NEW, HIRED, REJECTED cannot be removed (system-critical).</li>
-            <li>Hide a stage by toggling Visible off — keeps the data, just hides the column.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>39. Pre-onboarding / Onboarding / Offboarding Setup</h2>
-          <GuideImage src="/guide/13-onboarding-setup.png" alt="Onboarding setup panels" caption="Pre-Onboarding / Onboarding / Offboarding Setup — each has a Department selector and a Base Tasks list." />
-
-          <h3>How checklists resolve</h3>
-          <p>When a candidate is hired (or moved to onboarding/offboarding), the system assigns tasks based on:</p>
-          <ol>
-            <li><strong>Global Base Tasks</strong> (Department = &quot;Global&quot;) — apply to everyone.</li>
-            <li><strong>Department Base Tasks</strong> — apply when their department matches.</li>
-            <li><strong>Job Title Override</strong> — replaces Department tasks for a specific job title (e.g. Sales Closer gets extra tasks vs the generic Sales).</li>
-            <li><strong>Exclusions</strong> — within an Override you can exclude specific Base Tasks.</li>
-          </ol>
-
-          <h3>Each task can include</h3>
-          <ul>
-            <li><strong>Title</strong> (required), <strong>Description</strong>.</li>
-            <li><strong>Assignee</strong> — who owns the task (employee or generic role like IT/HR).</li>
-            <li><strong>Due day</strong> — N days after start.</li>
-            <li><strong>Send Email</strong> — fire an email to the assignee with custom subject/body.</li>
-            <li><strong>Document</strong> — attach a PDF + action: None / Sign / Fill. Sets up a signing request automatically when the task is created.</li>
-            <li><strong>Document Recipient</strong> — Employee (the new hire), Assignee (the task owner), or External (custom email).</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>40. Stage Documents</h2>
-          <p>PDFs auto-attached to candidates / employees when they reach specific stages (HIRED, PRE_ONBOARDING, ONBOARDING, OFFBOARDING).</p>
-          <ul>
-            <li>Upload a PDF + placeholders (<code>{`{{firstName}}`}</code>, <code>{`{{startDate}}`}</code>, etc.) for auto-fill.</li>
-            <li>Toggle Requires Signature / Requires Fill / Requires Countersignature.</li>
-            <li>Pick a Countersigner if required.</li>
-            <li>Documents fire automatically — no manual sending needed.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>41. Email Templates — each one</h2>
-          <GuideImage src="/guide/14-email-templates.png" alt="Email Templates" caption="Email Templates panel — collapsible list, each with a description and override controls." />
-          <p>Every transactional email is templated. Click any row to expand:</p>
-          <table>
-            <thead><tr><th>Template</th><th>When it fires</th></tr></thead>
-            <tbody>
-              <tr><td>WELCOME</td><td>New user invited / hired.</td></tr>
-              <tr><td>SIGNING REQUEST</td><td>Document sent for signing.</td></tr>
-              <tr><td>TASK ASSIGNMENT</td><td>Onboarding task assigned.</td></tr>
-              <tr><td>SIGNING CONFIRMATION</td><td>After successful signing.</td></tr>
-              <tr><td>ONBOARDING</td><td>General onboarding email with optional doc.</td></tr>
-              <tr><td>OFFER LETTER</td><td>Offer sent to candidate.</td></tr>
-              <tr><td>ADVERSE ACTION</td><td>Background check failed.</td></tr>
-              <tr><td>STAGE CHANGE</td><td>Candidate moved through pipeline.</td></tr>
-              <tr><td>ANNIVERSARY REVIEW</td><td>Performance review opened.</td></tr>
-              <tr><td>SHOUTOUT</td><td>You got tagged in a shoutout.</td></tr>
-            </tbody>
-          </table>
-
-          <h3>Editing a template</h3>
-          <ol>
-            <li>Expand a template.</li>
-            <li>Edit subject (one line) + body (HTML allowed).</li>
-            <li>Use <code>{`{{variable}}`}</code> placeholders — available variables are listed below the editor.</li>
-            <li>Click <strong>Preview</strong> to render with sample data.</li>
-            <li>Click <strong>Send Test</strong> to email yourself a preview.</li>
-            <li>Save. Reset to Default reverts to the built-in template.</li>
-          </ol>
-        </section>
-
-        <section>
-          <h2>42. Time-Off Policies</h2>
-          <ul>
-            <li>Add policy: name, days per year (or Unlimited), optional policy PDF for legal terms.</li>
-            <li>Per-employee assignment: which employees get which policies (for tenure-based PTO accruals).</li>
-            <li>Delete policies that aren&apos;t in use.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>43. Pulse Surveys</h2>
-          <ul>
-            <li>Single input box: the question.</li>
-            <li>Click Create — closes the previous active survey and opens this one.</li>
-            <li>Past surveys list with Closed status + response count.</li>
-            <li>Click the chart icon to see avg mood + distribution.</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>44. Notification Settings — the matrix</h2>
-          <GuideImage src="/guide/12-notification-settings.png" alt="Notification Settings matrix" caption="Full Notification Settings matrix — Action × Recipient × Channel + HR Team + Management groups." />
-
-          <h3>The matrix</h3>
-          <p>Rows = Actions. Columns = Email recipients (Candidate / Recruiter / Manager / HR Team / Management) and In-App recipients (same minus Candidate, since candidates don&apos;t have accounts).</p>
-
-          <h3>Available actions</h3>
-          <ul>
-            <li><strong>Candidate Stage Change</strong> — moved between pipeline stages.</li>
-            <li><strong>Offer Letter Sent</strong>.</li>
-            <li><strong>Offer Signed</strong>.</li>
-            <li><strong>Document Sign Request</strong> — when an HR doc is sent for signing.</li>
-            <li><strong>Document Signed</strong> — when the signing completes.</li>
-            <li><strong>Interview Scheduled</strong>.</li>
-            <li><strong>New Hire / Onboarding</strong>.</li>
-            <li><strong>Task Assigned</strong>.</li>
-            <li><strong>Onboarding Completed</strong>.</li>
-            <li><strong>Employee Offboarding Started</strong>.</li>
-            <li><strong>Recruiter Assigned to Candidate</strong>.</li>
-            <li><strong>Background Check Complete</strong> — fires the first time a candidate&apos;s check finishes (PASSED or FAILED). Default recipients: Recruiter + HR Team (email), plus Manager (in-app).</li>
-          </ul>
-
-          <h3>The two groups (bottom)</h3>
-          <ul>
-            <li><strong>HR Team Recipients</strong> — anyone here gets every notification where the HR Team column is enabled.</li>
-            <li><strong>Management Recipients</strong> — same, for the Management column. Add employees by typing their name in the search field.</li>
-          </ul>
-          <p>Click <strong>Save</strong>. Changes apply on the next event.</p>
-        </section>
-
-        <section>
-          <h2>45. Platform Integrations</h2>
-          <GuideImage src="/guide/15-platform-integrations.png" alt="Platform Integrations" caption="Platform Integrations panel — Breezy HR, Indeed, LinkedIn Recruiter, Handshake, EmployFL, Jobing, Google Calendar." />
-
-          <h3>How to connect each</h3>
-          <table>
-            <thead><tr><th>Platform</th><th>Connect method</th></tr></thead>
-            <tbody>
-              <tr><td><strong>LinkedIn Recruiter</strong></td><td>OAuth — &quot;Sign in with LinkedIn&quot;. Requires admin seat.</td></tr>
-              <tr><td><strong>Indeed</strong></td><td>Via Unified.to. The integration key + Indeed connection ID are stored as platform credentials.</td></tr>
-              <tr><td><strong>Breezy HR</strong></td><td>Email + password. Talk to your Breezy admin. The platform signs in on every cron sync (token refreshed). Requires a Breezy plan with API access.</td></tr>
-              <tr><td><strong>Jobing</strong></td><td>API token via pro.jobing.com / NOLIG.</td></tr>
-              <tr><td><strong>Handshake</strong> / <strong>EmployFL</strong></td><td>OAuth login from the panel.</td></tr>
-              <tr><td><strong>Google Calendar</strong></td><td>OAuth — adds calendar.events scope. Used for interview + 1:1 events with auto-Meet links.</td></tr>
-            </tbody>
-          </table>
-
-          <h3>Auto-sync</h3>
-          <p>A Railway cron runs every 5 minutes hitting <code>/api/cron/sync-platforms</code>. For each Active platform with credentials, it pulls every candidate from the platform&apos;s API into our database, downloads their resume PDFs locally, and links them to the right Position via the Breezy externalId mapping.</p>
-
-          <h3>Manual sync</h3>
-          <p>Each platform row has a <strong>Sync now</strong> button if you want to pull immediately without waiting for the next cron tick.</p>
-        </section>
-
-        <section>
-          <h2>46. Roles &amp; Permissions</h2>
-          <p><span className="role-pill">SUPER_ADMIN</span> only. Lets you toggle which permissions each non-super-admin role has (Admin, HR, Manager, Employee). Super Admin always has everything and cannot be edited.</p>
-          <p>Permissions are checked at server-action level — toggling a permission off immediately blocks the action for that role.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>47. Audit Log</h2>
-          <p><span className="role-pill">SUPER_ADMIN</span> only. Sidebar → <strong>Audit Log</strong>.</p>
-          <GuideImage src="/guide/08-audit-log.png" alt="Audit Log" caption="Audit Log — filter by action, actor email, entity type. Each row has timestamp, actor, action name, entity, JSON details." />
-
-          <h3>What gets logged</h3>
-          <ul>
-            <li><code>auth.login</code> — every sign-in (with provider).</li>
-            <li><strong>User events</strong>: <code>user.invited</code>, <code>user.role.changed</code> (from/to), <code>user.password.set</code>, <code>user.deleted</code>.</li>
-            <li><strong>Employee events</strong>: <code>employee.created</code>, <code>employee.updated</code>, <code>employee.promoted</code> (from job title → to job title), <code>employee.offboarding_started</code>, <code>employee.archived</code> (with reason), <code>employee.restored</code>, <code>employee.purged</code>.</li>
-            <li><strong>Candidate events</strong>: <code>candidate.status.changed</code> (with from/to + <code>via</code> field: kanban / adverse-action-letter / mark-do-not-call), <code>candidate.deleted</code>.</li>
-            <li><strong>Position events</strong>: <code>position.status.changed</code>, <code>position.posted_to_breezy</code> (with externalId).</li>
-          </ul>
-
-          <h3>Filtering</h3>
-          <ul>
-            <li><strong>All actions</strong> dropdown — pick one action type.</li>
-            <li><strong>Actor email</strong> — case-insensitive substring match (e.g. <code>bar@</code>).</li>
-            <li><strong>Entity type</strong> — e.g. <code>candidate</code>, <code>employee</code>, <code>user</code>.</li>
-            <li><strong>Clear</strong> button when any filter is active.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>48. Privacy &amp; visibility rules</h2>
-          <ul>
-            <li>Employees cannot view other employees&apos; profiles — only their own.</li>
-            <li>Managers see direct reports&apos; profiles.</li>
-            <li>HR &amp; admin see everyone.</li>
-            <li>HR_ONLY documents are filtered from My Documents and the employee&apos;s own profile widget. The file-serving route also rejects unauthorized fetches.</li>
-            <li>HR Notes are admin/HR-only end to end.</li>
-            <li>Anniversary review events on the Calendar are scoped: admin/HR see all, manager sees own + reports, employee sees only their own.</li>
-            <li>Emergency contact only renders to admin, the employee, or their direct manager.</li>
-            <li>1:1 notebook history visible only to admin/HR, the employee, and their manager.</li>
-            <li>Pulse responses are anonymous — only aggregates are exposed.</li>
-            <li>Background check report PDFs are gated to admin/HR/manager and proxied through our server so the provider API key never reaches the browser.</li>
-          </ul>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>49. Integrations (deep dive)</h2>
-          <table>
-            <thead><tr><th>Service</th><th>What it does &amp; how it&apos;s configured</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Breezy HR</strong></td><td>Source &amp; post integration. Sync runs every 5 min via Railway cron, pulling new applicants and downloading resume PDFs. Position posting reuses externalId so clicking &quot;Post to Breezy&quot; multiple times republishes instead of duplicating.</td></tr>
-              <tr><td><strong>backgroundchecks.com</strong></td><td>Order creation, status polling, PDF report streaming. API key in env: <code>BACKGROUND_CHECK_API_KEY</code>.</td></tr>
-              <tr><td><strong>Google Calendar</strong></td><td>OAuth per user. Interviews + 1:1s get a Meet link automatically. Each user&apos;s personal events overlay on /calendar (private — only the owner sees their own).</td></tr>
-              <tr><td><strong>Gusto</strong></td><td>Payroll integration. Pulls compensation + tax info into the People tab for each employee.</td></tr>
-              <tr><td><strong>Resend</strong></td><td>Email provider. Every transactional email goes through Resend. Domain must be verified.</td></tr>
-              <tr><td><strong>Jobing / NOLIG</strong></td><td>Read-only sync of applicants from pro.jobing.com.</td></tr>
-              <tr><td><strong>LinkedIn Recruiter</strong></td><td>Pulls senior candidates from the LinkedIn recruiter pipeline.</td></tr>
-              <tr><td><strong>Indeed (via Unified.to)</strong></td><td>Sync candidates &amp; post jobs.</td></tr>
-              <tr><td><strong>Handshake / EmployFL</strong></td><td>College graduates / Florida bilingual talent pools.</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>50. Public flows: signing &amp; filling</h2>
-          <p>These pages don&apos;t require login — the signer just needs the tokenized URL we email them.</p>
-
-          <h3>/sign/[token]</h3>
-          <ul>
-            <li>Loads the document preview.</li>
-            <li>Signer either types their name (rendered in a script font) or draws a signature with mouse/touch.</li>
-            <li>Submits. The signed PDF is generated server-side and stored. The platform fires the &quot;Signed&quot; notifications.</li>
-            <li>Once status is SIGNED / VOIDED / AWAITING_COUNTERSIGN, the token returns 410 Gone — no more downloads via this link.</li>
-          </ul>
-
-          <h3>/fill/[token]</h3>
-          <p>Same as sign but for fillable PDFs. Signer enters text into each field, plus signature, then submits. Used for I-9, W-4, contact info forms.</p>
-
-          <h3>/careers</h3>
-          <p>Public careers page. Lists every Open + Published position. Click a position → application form. Submissions create a Candidate row with source &quot;careers-page&quot; in the position&apos;s NEW column. HR Team gets notified.</p>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>51. Troubleshooting</h2>
-          <table>
-            <thead><tr><th>Symptom</th><th>What to do</th></tr></thead>
-            <tbody>
-              <tr><td>&quot;Already exists&quot; alert when adding a candidate</td><td>Switch to From Database tab and assign the existing candidate to this position.</td></tr>
-              <tr><td>Resume PDF returns 403</td><td>The Breezy integration user lacks resume-download permission. Ask a Breezy admin to grant it or reconnect with an admin Breezy account.</td></tr>
-              <tr><td>Position duplicated on Breezy</td><td>Was a known bug; fixed. Delete older duplicates directly in the Breezy dashboard.</td></tr>
-              <tr><td>Candidate&apos;s &quot;via&quot; source shows &quot;applied&quot;</td><td>Legacy data. Self-corrects on the next cron sync (every 5 min).</td></tr>
-              <tr><td>Sync isn&apos;t running</td><td>Check the Railway cron service (<code>hr-cron-sync</code>) is Active and the schedule is <code>*/5 * * * *</code>.</td></tr>
-              <tr><td>&quot;Server Components render&quot; error popup</td><td>Hard-reload the page (<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>). If it persists, share the URL.</td></tr>
-              <tr><td>BG Check &quot;View Report&quot; returns 502</td><td>The report may not be finalized yet, or backgroundchecks.com uses a non-standard PDF path for your account. Try Refresh Status first; if still failing, view the report in their dashboard.</td></tr>
-              <tr><td>Can&apos;t see a colleague&apos;s profile</td><td>Intentional. Only admins/HR, the employee themselves, and their direct manager can view a profile.</td></tr>
-              <tr><td>&quot;Adding…&quot; button stuck</td><td>Hard-reload — your browser may be running an old JS bundle.</td></tr>
-              <tr><td>Cron service shows Crashed</td><td>Open the Deploy Logs of the cron service. Common: malformed Custom Start Command (URL has stray space/newline). Re-paste the curl command cleanly.</td></tr>
-              <tr><td>Email never arrives</td><td>Check Resend dashboard for bounces. Sender domain must be verified.</td></tr>
-            </tbody>
-          </table>
-        </section>
-
-        {/* ============================================================ */}
-        <section>
-          <h2>52. Glossary &amp; FAQ</h2>
-          <h3>Glossary</h3>
-          <table>
-            <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
-            <tbody>
-              <tr><td>Pipeline</td><td>The sequence of stages a candidate passes through (NEW → SCREENING → INTERVIEW → … → HIRED).</td></tr>
-              <tr><td>Source</td><td>Where a candidate came from (Indeed, LinkedIn, careers-page, referral, etc.).</td></tr>
-              <tr><td>Stage</td><td>A column on the kanban. Same as Status.</td></tr>
-              <tr><td>Audit Log</td><td>Append-only record of who did what, when.</td></tr>
-              <tr><td>Pre-onboarding</td><td>Tasks completed before the start date (e.g. signing initial docs).</td></tr>
-              <tr><td>Onboarding</td><td>Tasks from start date until the employee is fully Active.</td></tr>
-              <tr><td>HR Team</td><td>Configurable group of employees who receive notifications when &quot;HR Team&quot; is enabled per action.</td></tr>
-              <tr><td>Management Group</td><td>Same idea, for the Management column.</td></tr>
-              <tr><td>Adverse Action Letter</td><td>FCRA-mandated rejection letter sent when a candidate fails background check.</td></tr>
-              <tr><td>Countersign</td><td>A second signature required after the primary signer signs (e.g. HR signs off on a contract the employee signed).</td></tr>
-              <tr><td>Externall ID</td><td>The identifier on an external platform (Breezy positionId, backgroundchecks.com reportKey).</td></tr>
-            </tbody>
-          </table>
-
-          <h3>FAQ</h3>
-          <ul>
-            <li><strong>Can I undo deleting an employee?</strong> Yes — go to /people/archive and click Restore.</li>
-            <li><strong>Can I see who moved a candidate?</strong> Yes — Audit Log → filter by action <code>candidate.status.changed</code>.</li>
-            <li><strong>Why don&apos;t employees see /people in their sidebar?</strong> Privacy. Only manager+ can browse the directory.</li>
-            <li><strong>Can I customize the careers page?</strong> The page automatically lists every Open + Published position. Logo + company colors come from Settings → Company Information.</li>
-            <li><strong>How often does Breezy sync?</strong> Every 5 minutes (configurable in Railway cron).</li>
-            <li><strong>Where does email go from?</strong> <code>hrteam@hr.coastaldebt-tools.com</code> via Resend. Configurable in Settings.</li>
-          </ul>
-        </section>
-
-        <section>
-          <p className="text-xs text-[var(--color-text-muted)] mt-10 pt-4 border-t border-[var(--color-border)]">
-            CALATRAVA by Coastal Debt Resolve — User Guide. For platform changes or feature requests, check the Audit Log or contact engineering.
+          <p>
+            The role-permission matrix can change some module access. A hidden link or blocked action
+            normally means the current role does not have permission; it is not missing data.
           </p>
         </section>
-      </div>
+
+        <section id="navigation">
+          <h2>Navigation and universal search</h2>
+          <p>
+            The left sidebar shows only the modules available to the signed-in user. On mobile, use the
+            bottom navigation. The CALATRAVA name in the top bar is a label, not a home button; use
+            <strong> Feed</strong> in navigation to return home.
+          </p>
+          <div className="guide-grid">
+            <div className="guide-card">
+              <h3>Find anything you are allowed to see</h3>
+              <p>Click the top search bar or press <kbd>⌘</kbd> + <kbd>K</kbd> on Mac and <kbd>Ctrl</kbd> + <kbd>K</kbd> on Windows.</p>
+              <ul>
+                <li>Search with at least two characters.</li>
+                <li>Use names, preferred names, email, phone, job title, department, document title, position, source, or status.</li>
+                <li>Results are grouped into Employees, Documents, Candidates, Positions, and Updates.</li>
+                <li>Use arrow keys and <kbd>Enter</kbd>, or click a result.</li>
+              </ul>
+            </div>
+            <div className="guide-card">
+              <h3>Top-right controls</h3>
+              <ul>
+                <li>The bell opens in-app notifications and links to the related work.</li>
+                <li>The avatar in the top-right opens <Route>/my-profile</Route> directly.</li>
+                <li>The user card at the bottom of the desktop sidebar identifies the account but is not a profile link.</li>
+                <li><strong>Sign out</strong> ends the session.</li>
+              </ul>
+            </div>
+          </div>
+          <Note title="Search respects privacy">
+            Search never expands access. Admin/HR can find all employee records; managers can find
+            themselves and direct reports; employees can find themselves. Candidate results require
+            recruitment access, and assigned recruiters only see their candidate scope. Confidential
+            HR-only documents are excluded for non-admin viewers.
+          </Note>
+        </section>
+
+        <section id="feed">
+          <h2>Feed, notifications, and communication</h2>
+          <h3>Feed</h3>
+          <p>Feed is the signed-in homepage. Anyone linked to an employee profile can create:</p>
+          <ul>
+            <li><strong>Posts</strong> with text, photos, file attachments, or GIFs.</li>
+            <li><strong>Shoutouts</strong> to a coworker, with optional email delivery.</li>
+            <li><strong>Feed events</strong> with start/end time, location, audience, RSVP, and comments.</li>
+            <li><strong>Polls</strong> with 2–10 options, optional multiple selection, optional email, and Open, Public Anonymous, or Admin Anonymous results.</li>
+          </ul>
+          <p>Visible posts support reactions and comments. Targeted event posts are shown only to their audience and operational admins.</p>
+
+          <h3>Notifications</h3>
+          <p>
+            The bell contains in-app activity. <Route>/notifications</Route> opens the full list. Personal
+            email and in-app preferences live in <strong>My Profile → Notifications</strong>. Company-wide
+            routing rules live in Settings and decide which actions notify candidates, recruiters,
+            managers, the HR team, or the management group.
+          </p>
+
+          <h3>Emergency Alerts</h3>
+          <p><Role>SUPER_ADMIN</Role> <Role>ADMIN</Role> use <Route>/alerts</Route> for urgent broadcasts.</p>
+          <ol>
+            <li>Enter a clear title and message.</li>
+            <li>Use <strong>Send Test</strong> to send to one email first.</li>
+            <li>Review the confirmation and then send the full alert.</li>
+          </ol>
+          <Note title="External effect" tone="warning">
+            In production, a full emergency alert creates a feed item, emails employees, and sends SMS
+            to employees with phone numbers. Confirm the message and audience before sending. Sandbox
+            suppresses the email/SMS delivery.
+          </Note>
+        </section>
+
+        <section id="people">
+          <h2>People, profiles, and organization</h2>
+          <h3>People directory</h3>
+          <p>
+            <Role>MANAGER</Role> and above use <Route>/people</Route> to search and filter active,
+            onboarding, pending, and offboarded employees by name, department, or status. Current
+            out-of-office and remote-work indicators also appear in the directory.
+          </p>
+          <ul>
+            <li><Role>ADMIN</Role> and <Role>HR</Role> can add an employee or bulk import employees from CSV.</li>
+            <li><Role>SUPER_ADMIN</Role> can open the archive, restore employees, or permanently purge archived data.</li>
+            <li>Managers can browse the directory, but detailed profile access remains limited to themselves and direct reports.</li>
+          </ul>
+
+          <h3>Employee profile</h3>
+          <p>Authorized viewers can see job information, department, manager, employment dates, relevant documents, reviews, 1:1 history, time off, emergency contact, and HR notes according to role.</p>
+          <ul>
+            <li>Admin/HR can edit employment details, manager, department, status, and confidential HR information.</li>
+            <li>Promotion records update title/compensation history and appear in analytics.</li>
+            <li>Starting offboarding moves the employee into the configured offboarding workflow.</li>
+            <li>Deleting an employee is recoverable through the Super Admin archive until permanently purged.</li>
+          </ul>
+
+          <h3>My Profile</h3>
+          <p>
+            Everyone can open <Route>/my-profile</Route> from the sidebar or top-right avatar. Employees
+            can update their photo, bio, hobbies, dietary restrictions, address, pronouns, T-shirt size,
+            emergency contact, and notification preferences. Job title, department, manager, status,
+            and compensation remain HR-managed.
+          </p>
+          <p>The profile also shows recent personal documents, buddy, reporting manager, club memberships, start date, and tenure.</p>
+
+          <h3>Organization views</h3>
+          <ul>
+            <li><Route>/org</Route> shows the reporting tree and manager assignments for Manager and above.</li>
+            <li><Route>/org/departments</Route> shows departments, heads, teams, and member counts. Management actions still enforce the user&apos;s permission.</li>
+            <li><Route>/people/archive</Route> is Super Admin only.</li>
+          </ul>
+        </section>
+
+        <section id="recruitment">
+          <h2>Recruitment</h2>
+          <p>
+            <Route>/cv</Route> is the hiring workspace. Admin/HR have full recruitment scope. Managers or
+            assigned recruiters see the scope granted to them. The page includes open positions,
+            position-specific pipelines, the Candidate Database, DNC List, imports, integrations, and
+            archived positions.
+          </p>
+
+          <h3>Positions</h3>
+          <ul>
+            <li><strong>Add Position</strong>: title, department, description, requirements, salary, type, location, and publish targets.</li>
+            <li>Publish to the public Careers page, Breezy (LinkedIn + Indeed), and other configured boards.</li>
+            <li>Edit a position or its individual board postings; pause, resume, or retry when the provider supports it.</li>
+            <li>Use <strong>AI Match</strong> to scan the existing candidate database and pull suitable people into the pipeline.</li>
+            <li>Close a filled position, reopen it, or clone it to hire for the same role again.</li>
+            <li>Permanent position deletion is Super Admin only and cannot be undone.</li>
+          </ul>
+          <Note title="Sandbox job posting">
+            Sandbox returns a simulated success for Breezy posting. It does not publish a real opening.
+            Test content and UI there; verify the live job-board result only in production.
+          </Note>
+
+          <h3>Candidates and database tools</h3>
+          <ul>
+            <li>Add a new candidate manually, parse an uploaded resume, or assign an existing database candidate to a position.</li>
+            <li>CSV import maps source columns and skips exact duplicates.</li>
+            <li>Bulk Resume Upload accepts position folders, extracts PDFs with AI, and merges by email.</li>
+            <li>Candidate Database filters by name, source, position, stage, dates, resume status, pipeline status, and Do Not Call.</li>
+            <li><Route>/cv/duplicates</Route> detects likely duplicates by normalized email, phone, or name. Merging preserves applications, interviews, and signed documents but deletes the duplicate rows, so review the primary record carefully.</li>
+            <li>The DNC List contains candidates marked Do Not Call and allows authorized users to remove that flag.</li>
+          </ul>
+
+          <h3>Recruiter tools</h3>
+          <ul>
+            <li>Settings defines which employees are recruiters.</li>
+            <li>Assigned recruiters get <Route>/my-candidates</Route>, email/in-app assignment notifications, stage filters, candidate contact details, and resumes.</li>
+            <li><Route>/recruiter-manager</Route> is Super Admin only and can review workload or move candidates between recruiters.</li>
+          </ul>
+        </section>
+
+        <section id="candidate-workflows">
+          <h2>Candidate workflows</h2>
+          <h3>Candidate detail and stages</h3>
+          <p>
+            Open a candidate from a pipeline card or database result. The detail dialog contains contact
+            information, resume, skills, source, notes, applications, stage history, recruiter/manager,
+            interviews, offer documents, background status, and hiring controls.
+          </p>
+          <p>
+            Move the card on the kanban or select a stage in the dialog. Pipeline stages, colors, order,
+            notification recipients, and stage documents are configured in Settings. A candidate can
+            have application history across multiple positions without duplicating the person record.
+          </p>
+
+          <h3>Interviews</h3>
+          <ol>
+            <li>Open a candidate in Screening or Interview and choose <strong>Schedule Interview</strong>.</li>
+            <li>Select type, date/time, duration, interviewer, and notes.</li>
+            <li>The configured company Google Calendar connection creates the invite and Google Meet link.</li>
+            <li>Reschedule or cancel from the interview controls; Google is updated in production.</li>
+          </ol>
+
+          <h3>Offers and signatures</h3>
+          <ul>
+            <li>At Offer, prepare the offer document, verify merge fields, and send it to the candidate&apos;s email.</li>
+            <li>The candidate uses the secure public link to sign; CALATRAVA stores the signed PDF and updates status.</li>
+            <li>If countersignature is configured, the request moves to the assigned admin&apos;s Sign Queue after the candidate signs.</li>
+          </ul>
+
+          <h3>Background screening with Continental</h3>
+          <ol>
+            <li>Move the candidate to Background Check and choose the screening options. The standard package includes criminal searches and SSN/address history; optional searches can include employment, education, MVR, and 5-, 9-, or 10-panel drug testing.</li>
+            <li>Saving sends the candidate a Continental Screening invitation in production. A valid candidate email is required.</li>
+            <li>The status begins as <strong>Awaiting Applicant</strong>, then changes as Continental creates and completes the order. The open dialog polls automatically; <strong>Refresh Status</strong> checks immediately.</li>
+            <li>When complete, authorized HR users can open <strong>View Report</strong>. The report is served through CALATRAVA so provider credentials stay private.</li>
+            <li>Passed/failed completion notifications follow the Settings notification matrix.</li>
+            <li>A failed result does not automatically send an adverse-action letter. Review the report and use <strong>Send adverse action letter</strong> deliberately.</li>
+          </ol>
+          <Note title="Provider change" tone="info">
+            New screening orders use Continental Screening Services API v2. The former
+            backgroundchecks.com integration is retired; legacy reports may still be readable for old candidates.
+          </Note>
+
+          <h3>Hire and start onboarding</h3>
+          <p>
+            When marking a candidate Hired, enter the company email and start date and confirm the
+            manager/job details. CALATRAVA creates or links the Employee, preserves the candidate
+            history, sends the configured stage documents, and starts Pre-Onboarding or Onboarding
+            based on the configured checklist.
+          </p>
+        </section>
+
+        <section id="onboarding">
+          <h2>Pre-onboarding, onboarding, and offboarding</h2>
+          <p>These pages are available to roles with the matching workflow permission.</p>
+          <div className="guide-grid">
+            <div className="guide-card">
+              <h3>Pre-Onboarding</h3>
+              <p><Route>/pre-onboarding</Route> tracks work due before the employee&apos;s active start: forms, signatures, welcome steps, equipment requests, or assigned internal tasks.</p>
+            </div>
+            <div className="guide-card">
+              <h3>Onboarding</h3>
+              <p><Route>/onboarding</Route> tracks active new-hire checklists, progress, overdue tasks, responsible owners, and recently completed onboarding.</p>
+            </div>
+            <div className="guide-card">
+              <h3>Offboarding</h3>
+              <p><Route>/offboarding</Route> tracks departing employees, last day, departure type/reason, access removal, equipment, final pay, and completion.</p>
+            </div>
+            <div className="guide-card">
+              <h3>Checklist behavior</h3>
+              <p>Settings can define base tasks and department/job-title-specific tasks. A task can belong to the employee or another owner and can trigger a document or email action.</p>
+            </div>
+          </div>
+          <p>
+            Complete tasks from the employee workflow card. Super Admin can use administrative cleanup
+            controls where shown. Completing all tasks moves the workflow to its completed area; it does
+            not erase the underlying employee history.
+          </p>
+        </section>
+
+        <section id="documents">
+          <h2>Documents and signatures</h2>
+          <h3>Documents &amp; Signing</h3>
+          <p><Route>/documents</Route> is available to everyone, but its contents and actions are role-scoped:</p>
+          <ul>
+            <li>Admin/HR can send documents, target an employee or department, configure fill/sign/countersign requirements, and track all requests.</li>
+            <li>Managers see their own requests and direct-report requests.</li>
+            <li>Employees see only their own requests.</li>
+          </ul>
+          <p>Typical statuses are Pending, Viewed, Awaiting Countersign, Signed, Declined, Expired, or Voided.</p>
+
+          <h3>My Documents</h3>
+          <p>
+            <Route>/my-documents</Route> combines documents on file with personal signing tasks. Open a
+            pending request to use its secure signing/fill link. HR-only documents do not appear in an
+            employee&apos;s My Documents view.
+          </p>
+
+          <h3>Sign Queue</h3>
+          <p>
+            <Role>SUPER_ADMIN</Role> and <Role>ADMIN</Role> use <Route>/sign-queue</Route> for documents
+            that have already been signed by the primary signer and now require that admin&apos;s
+            countersignature. Opening a queue item shows the document before confirmation.
+          </p>
+
+          <h3>Public secure links</h3>
+          <ul>
+            <li><Route>/sign/[token]</Route> supports typed or drawn signatures.</li>
+            <li><Route>/fill/[token]</Route> supports fillable fields plus signature.</li>
+            <li>Tokens expire or stop working after the request reaches a terminal state.</li>
+            <li>Do not forward a signing link to anyone except the intended signer.</li>
+          </ul>
+        </section>
+
+        <section id="calendar">
+          <h2>Calendar, Google Calendar, out of office, and training</h2>
+          <p>
+            <Route>/calendar</Route> combines permitted company events, personal Google events,
+            interviews, 1:1s, training, reviews, birthdays, anniversaries, benefits dates, holidays,
+            out-of-office entries, and remote-work entries. Timed events show their time in upcoming
+            cards, the day agenda, and event details.
+          </p>
+
+          <h3>Connect your personal Google Calendar</h3>
+          <ol>
+            <li>Open Calendar and click <strong>Connect Google Calendar</strong>.</li>
+            <li>Choose the Google account whose email exactly matches the employee&apos;s HRIS email.</li>
+            <li>Approve calendar-event access and return to CALATRAVA.</li>
+            <li>The button changes to <strong>Google Calendar connected</strong>. Personal Google events then overlay in the HRIS calendar.</li>
+          </ol>
+          <Note title="One connection per person" tone="warning">
+            Personal calendar tokens belong to that individual user. Do not choose a shared account or
+            another employee&apos;s account. If the connected Google email does not match the HRIS email,
+            company-event creation is blocked until the matching account is reconnected.
+          </Note>
+
+          <h3>Create a company event</h3>
+          <p><Role>MANAGER</Role> and above can create company events.</p>
+          <ol>
+            <li>Connect your own Google Calendar first.</li>
+            <li>Click <strong>Create event</strong> and enter title, date, start time, duration, location, description, and optional Meet link.</li>
+            <li>Choose the audience: departments, reusable training groups, specific people, or everyone.</li>
+            <li>Review the attendee count and click <strong>Create &amp; send invites</strong>.</li>
+          </ol>
+          <p>
+            The event is created on the creator&apos;s personal Google Calendar, so the creator is the
+            organizer. Attendees with a connected calendar receive a direct calendar copy and are
+            marked Going. Other attendees receive a normal Google invitation from the creator. The
+            same audience sees the event in the HRIS calendar, feed, and notifications.
+          </p>
+          <Note title="What email should the creator receive?" tone="success">
+            Google puts the event on the organizer&apos;s calendar but normally does not email the organizer
+            an invitation. CALATRAVA separately sends the creator an <strong>Event created</strong>
+            confirmation email. Invitees receive Google invitations only when they were not direct-added
+            through their own connected CALATRAVA calendar.
+          </Note>
+          <p>
+            Click a company event to see time, type, organizer, location, Meet link, description, and
+            audience. The creator or Admin/HR can edit or cancel it. Calendar updates are pushed to the
+            organizer event and connected attendee copies.
+          </p>
+
+          <h3>Set out of office</h3>
+          <p>Everyone with an employee profile can click <strong>Set out of office</strong>.</p>
+          <ul>
+            <li>Choose Out of office, Vacation/PTO, Sick day, Doctor appointment, or Working remotely.</li>
+            <li>Choose all day, morning, afternoon, or custom times and add an optional note.</li>
+            <li>Share with everyone, all managers, departments, or specific people when those choices are available.</li>
+            <li>The employee, direct manager, and HR/Admin retain operational visibility even when a narrower audience is selected.</li>
+            <li>Upcoming entries can be removed from the same dialog.</li>
+          </ul>
+
+          <h3>Training calendar</h3>
+          <p><Role>MANAGER</Role> and above can use <strong>Training</strong>.</p>
+          <ul>
+            <li><strong>Groups</strong>: save reusable Trainers, Trainees, and Viewers/Managers.</li>
+            <li><strong>Schedule</strong>: choose a connected trainer as Google organizer, attendees, optional viewers, date range, weekdays, start/end time, location, agenda, and Meet link.</li>
+            <li><strong>Manage</strong>: edit the schedule or cancel an active class and its sessions.</li>
+          </ul>
+          <p>Only a person with a valid personal Google Calendar connection can be selected as the class organizer.</p>
+        </section>
+
+        <section id="people-programs">
+          <h2>1:1s, reviews, time off, clubs, and Your Voice</h2>
+          <h3>1:1 Reviews</h3>
+          <p>
+            <Route>/one-on-ones</Route> tracks recurring 30-day, quarterly, and annual check-ins.
+            Managers can schedule for direct reports; Admin/HR can schedule within their broader scope.
+            The person who initiates a manual 1:1 becomes its manager/organizer for that meeting.
+          </p>
+          <ul>
+            <li>Connect the organizer&apos;s personal calendar so the event is created on that calendar with the correct organizer.</li>
+            <li>If no personal connection is available, the system may fall back to the configured company connection and an ICS email.</li>
+            <li>Open the meeting to use the Meet link, update private manager notebook notes, complete it, reschedule it, or cancel it.</li>
+            <li>Employees see their meetings; managers see their own and direct-report meetings; Admin/HR see all.</li>
+          </ul>
+
+          <h3>Performance Reviews</h3>
+          <p>
+            <Route>/reviews</Route> shows assigned reviews to every participant. Admin/HR create cycles,
+            choose departments/dates/templates, generate Self, Manager, and optional Peer reviews, and
+            monitor completion. Reviewers can submit only work assigned to them while the cycle is active.
+          </p>
+          <p>Anniversary review cycles appear on the calendar according to the viewer&apos;s employee/report scope.</p>
+
+          <h3>Time Off</h3>
+          <p><Route>/time-off</Route> shows policy balances, requests, who is out, a team calendar, and burnout alerts for approvers.</p>
+          <ul>
+            <li>Employees choose a policy, dates, and reason to submit a request.</li>
+            <li>Roles with Approve Time Off can approve or deny requests.</li>
+            <li>If the employee is mapped to Gusto, balances and requests use Gusto; otherwise CALATRAVA uses local policies.</li>
+          </ul>
+
+          <h3>Clubs and Your Voice</h3>
+          <ul>
+            <li><Route>/clubs</Route> lets employees create interest groups, join/leave, and see members.</li>
+            <li><Route>/voice</Route> lets employees submit feedback without storing their identity. Admin/Super Admin can view and respond to submissions.</li>
+            <li>Pulse surveys are separate from Your Voice. Active pulse questions appear in the app and expose aggregate results, not individual answers.</li>
+          </ul>
+        </section>
+
+        <section id="planning">
+          <h2>Hiring plan, analytics, Gusto, and audit</h2>
+          <h3>Hiring Plan</h3>
+          <p>
+            <Role>SUPER_ADMIN</Role> <Role>ADMIN</Role> use <Route>/hiring-plan</Route> to model planned
+            seats. A slot can be filled with a current employee or left TBH so leadership can compare
+            the target structure with current staffing.
+          </p>
+
+          <h3>Analytics</h3>
+          <p>
+            <Route>/analytics</Route> is permission-based and covers headcount, department mix,
+            retention, turnover, tenure, time-to-hire, cost-per-hire, source ROI, recruiter performance,
+            platform spend, pipeline, onboarding, reviews, benefits, birthdays, and anniversaries.
+          </p>
+          <p>
+            <Route>/analytics/testing</Route> is the expanded metrics workspace. Cards labeled future,
+            placeholder, or not yet available are not populated by employee data yet and should not be
+            reported as completed analytics.
+          </p>
+
+          <h3>Gusto</h3>
+          <p>
+            Admins use <Route>/gusto</Route> after connecting Gusto in Settings. It shows connection
+            health, next payroll, pending time-off requests, employee count, payroll data, and mapped
+            employees. Gusto-mapped employees use Gusto balances and request submission on Time Off.
+          </p>
+
+          <h3>Audit Log</h3>
+          <p>
+            <Route>/audit-log</Route> is Super Admin only. Filter by action, actor email, or entity type
+            to investigate sign-ins and major user, employee, candidate, and position changes. Audit
+            records are operational history, not a replacement for the record&apos;s current state.
+          </p>
+        </section>
+
+        <section id="settings">
+          <h2>Settings and integrations</h2>
+          <p><Role>SUPER_ADMIN</Role> <Role>ADMIN</Role> open <Route>/settings</Route>. Panels appear in this operational order:</p>
+          <div className="guide-grid">
+            <div className="guide-card"><h3>Company &amp; access</h3><ul><li>Company name, domain, logo/favicon, sender name/email</li><li>User invitations, passwords, roles, and deletion</li><li>Role permission matrix</li><li>Recruiter assignments</li></ul></div>
+            <div className="guide-card"><h3>Recruitment setup</h3><ul><li>Pipeline stages and candidate custom fields</li><li>Stage notification recipients</li><li>Stage and position documents</li><li>Recruitment platform records and sync controls</li></ul></div>
+            <div className="guide-card"><h3>People programs</h3><ul><li>Department review templates</li><li>Departments, teams, and job titles</li><li>Pre-onboarding, onboarding, and offboarding checklists</li><li>Time-off policies and pulse surveys</li></ul></div>
+            <div className="guide-card"><h3>Delivery &amp; systems</h3><ul><li>Email templates and preview/send-test controls</li><li>Notification action/recipient/channel matrix</li><li>Native and platform integrations</li><li>Gusto connection and employee mapping</li></ul></div>
+          </div>
+
+          <h3>Notification matrix</h3>
+          <p>
+            Rows are system actions such as stage change, offer sent/signed, document request/signed,
+            interview scheduled, onboarding, task assignment, offboarding, recruiter assignment, and
+            background completion. Columns choose candidate, recruiter, manager, HR Team, or Management
+            recipients and email/in-app channels. The HR Team and Management lists at the bottom define
+            who those group columns mean.
+          </p>
+
+          <h3>Platform integrations</h3>
+          <ul>
+            <li><strong>Breezy HR</strong>: candidate sync and LinkedIn/Indeed job posting through Breezy.</li>
+            <li><strong>Indeed, LinkedIn Recruiter, Jobing, Handshake, EmployFL</strong>: connect or store credentials only when that provider is actively used.</li>
+            <li><strong>Google Calendar platform connection</strong>: shared connection for company-level flows such as interviews or fallback behavior. It is separate from each person&apos;s Connect Google Calendar button.</li>
+            <li><strong>Continental Screening</strong>: server-managed screening credentials; not a per-user Settings connection.</li>
+            <li><strong>Resend</strong>: transactional email delivery using the configured verified sender domain.</li>
+            <li><strong>Gusto</strong>: payroll/time-off OAuth plus employee mapping.</li>
+          </ul>
+          <Note title="Personal vs shared Google connection">
+            Company events and training must use the selected organizer&apos;s personal connection so the
+            correct person appears as organizer. The shared platform connection must not be treated as
+            a substitute for a creator&apos;s personal calendar on those flows.
+          </Note>
+        </section>
+
+        <section id="testing">
+          <h2>Sandbox vs production testing</h2>
+          <table>
+            <thead><tr><th>Action</th><th>Sandbox</th><th>Production</th></tr></thead>
+            <tbody>
+              <tr><td>Database/UI workflows</td><td>Real inside the sandbox database; data may be reset.</td><td>Real company data.</td></tr>
+              <tr><td>Email</td><td>Suppressed and logged; no email leaves the system.</td><td>Sent through the live email provider.</td></tr>
+              <tr><td>Job-board posting</td><td>Simulated success; nothing is published.</td><td>Publishes/updates the configured external board.</td></tr>
+              <tr><td>Interview/1:1 calendar flow</td><td>Simulated event and fake Meet link.</td><td>Creates/updates live Google events and invitations.</td></tr>
+              <tr><td>Company event/training</td><td>Do not use sandbox to prove external invite or organizer delivery.</td><td>Uses the organizer&apos;s live personal Google connection.</td></tr>
+              <tr><td>Background check</td><td>Simulated; no Continental invitation is sent.</td><td>Creates a live Continental invitation/order.</td></tr>
+            </tbody>
+          </table>
+          <Note title="How to test safely in production" tone="warning">
+            Use production only when the requirement is an actual email, Google invitation, organizer
+            identity, external posting, or Continental delivery. Put <strong>TEST</strong> in the title,
+            invite the smallest possible audience, avoid real candidate/background actions unless
+            approved, verify the result, and then cancel or clean up the test record.
+          </Note>
+
+          <h3>Calendar acceptance test</h3>
+          <ol>
+            <li>The test creator connects the Google account matching their HRIS email.</li>
+            <li>Create <strong>TEST – Calendar invite</strong> for one known attendee.</li>
+            <li>Confirm the event appears in HRIS with the correct time and organizer.</li>
+            <li>Confirm it appears on the creator&apos;s Google Calendar.</li>
+            <li>Confirm the creator receives CALATRAVA&apos;s Event created email.</li>
+            <li>Confirm the attendee either receives a Google invitation or a direct calendar copy, depending on whether their calendar is connected.</li>
+            <li>Cancel the test event and confirm it is removed or marked cancelled.</li>
+          </ol>
+        </section>
+
+        <section id="privacy">
+          <h2>Privacy and permission rules</h2>
+          <ul>
+            <li>Employees cannot browse other employee profiles. Managers can open themselves and direct reports. Admin/HR can open all profiles.</li>
+            <li>Emergency contact is restricted to authorized operational viewers.</li>
+            <li>HR notes and HR-only documents are never exposed through My Profile, My Documents, file URLs, or universal search to an unauthorized user.</li>
+            <li>Documents are scoped by role even though Documents appears in every sidebar.</li>
+            <li>Candidate and position search requires recruitment access; assigned recruiters remain limited to their scope.</li>
+            <li>Audience-scoped feed events, company events, out-of-office entries, and training sessions are filtered for each viewer.</li>
+            <li>Pulse results are aggregate. Your Voice submissions do not record the employee identity.</li>
+            <li>Background reports are available only to authorized HR/management viewers and are proxied through the server.</li>
+            <li>Super Admin permissions cannot be removed through the role matrix.</li>
+          </ul>
+        </section>
+
+        <section id="troubleshooting">
+          <h2>Troubleshooting</h2>
+          <table>
+            <thead><tr><th>What you see</th><th>What to do</th></tr></thead>
+            <tbody>
+              <tr><td>Google sign-in says not invited</td><td>Confirm User Management contains that exact company email. Being an Employee without a linked User is not enough.</td></tr>
+              <tr><td>Google sign-in says wrong domain</td><td>Use the employee&apos;s <code>@coastaldebt.com</code> account.</td></tr>
+              <tr><td>Calendar says not connected after it used to work</td><td>Open Calendar, disconnect if needed, reconnect the Google account matching the HRIS email, and retry. Google refresh tokens can expire or be revoked.</td></tr>
+              <tr><td>Company event shows the wrong organizer</td><td>Do not recreate it with a shared account. Cancel the bad event, connect the intended creator&apos;s personal Google account, and create a clean test.</td></tr>
+              <tr><td>Creator did not receive a Google invite email</td><td>Expected: Google does not invite its own organizer. Check for CALATRAVA&apos;s Event created confirmation and the event on the creator&apos;s Google Calendar.</td></tr>
+              <tr><td>Invitee did not receive an invite email</td><td>If their CALATRAVA Google Calendar is connected, the event may have been added directly. Check their calendar and in-app notification. Otherwise check spam and email delivery logs.</td></tr>
+              <tr><td>No email/job posting/calendar invite in sandbox</td><td>Expected. Sandbox suppresses or simulates external effects. Use the visible sandbox banner as the source of truth.</td></tr>
+              <tr><td>Candidate already exists</td><td>Use Candidate Database or Add Existing to assign the existing person to the position. Do not create a duplicate.</td></tr>
+              <tr><td>Continental status is still Awaiting Applicant</td><td>The candidate must complete the Continental invitation. Use Refresh Status after completion; link by email only for an existing unmatched provider order.</td></tr>
+              <tr><td>Background report is unavailable</td><td>Refresh status first. Reports normally become available only after a live order is complete. Sandbox checks do not have a real report.</td></tr>
+              <tr><td>A page or button is missing</td><td>Check the user&apos;s role and Settings permission matrix. Search and direct URLs enforce the same data boundaries.</td></tr>
+              <tr><td>Old UI or stuck button after a deployment</td><td>Hard refresh with <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd>, then retry once.</td></tr>
+              <tr><td>Production email never arrives</td><td>Verify the recipient email, sender-domain configuration, Resend delivery/bounce logs, and the user&apos;s notification preferences/rules.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Before reporting a bug</h3>
+          <ul>
+            <li>State whether it happened in sandbox or production.</li>
+            <li>Include the exact page, record/person, time, and the action taken.</li>
+            <li>Copy the full error message and attach a screenshot.</li>
+            <li>For calendar issues, include the expected organizer, creator email, attendee, event title, and whether each person connected Google Calendar.</li>
+            <li>For email issues, include recipient and subject—never paste passwords, tokens, or confidential report contents.</li>
+          </ul>
+        </section>
+
+        <footer className="mt-14 border-t border-[var(--color-border)] pt-5 text-sm text-[var(--color-text-muted)]">
+          CALATRAVA Help &amp; Guide · Based on the current production workflows and permission boundaries.
+        </footer>
+      </main>
     </div>
   );
 }
