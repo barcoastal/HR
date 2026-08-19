@@ -165,6 +165,29 @@ export async function createCandidate(data: {
   return candidate;
 }
 
+/**
+ * Form-facing wrapper around `createCandidate`. Server Action errors thrown
+ * across the boundary are masked by Next.js in production, so a dialog that
+ * catches one can only show a generic string — which is why the Add Candidate
+ * button used to sit on "Adding..." forever with no explanation. Returning the
+ * reason as data keeps the real message (duplicate email, Do Not Call) intact.
+ *
+ * Server-side callers (platform sync, stream import) keep using
+ * `createCandidate` directly and its throwing behaviour.
+ */
+export async function createCandidateChecked(
+  data: Parameters<typeof createCandidate>[0]
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await createCandidate(data);
+    return { ok: true };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[candidates] create failed:", err);
+    return { ok: false, error: message };
+  }
+}
+
 async function notifyRecruiterAssigned(candidateId: string) {
   try {
     const candidate = await db.candidate.findUnique({

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useState, useRef, useTransition } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { createCandidate } from "@/lib/actions/candidates";
+import { createCandidateChecked } from "@/lib/actions/candidates";
 import { parseResume } from "@/lib/actions/parse-resume";
 import { parseLinkedIn } from "@/lib/actions/parse-linkedin";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
   const [parsing, setParsing] = useState(false);
   const [fetchingLinkedIn, setFetchingLinkedIn] = useState(false);
   const [parseError, setParseError] = useState("");
+  const [submitError, setSubmitError] = useState("");
   const [fileName, setFileName] = useState("");
   const [linkedinInput, setLinkedinInput] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -114,34 +115,48 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
   async function handleSubmit() {
     if (!form.firstName || !form.lastName || !form.email) return;
     setLoading(true);
-    await createCandidate({
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      phone: form.phone || undefined,
-      skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
-      experience: form.experience || undefined,
-      source: form.source || undefined,
-      positionId: form.positionId || undefined,
-      linkedinUrl: form.linkedinUrl || undefined,
-      resumeText: form.resumeText || undefined,
-      notes: form.notes || undefined,
-      costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
-    });
-    setForm({ firstName: "", lastName: "", email: "", phone: "", skills: "", experience: "", source: "", positionId: "", linkedinUrl: "", resumeText: "", notes: "", costOfHire: "" });
-    setFileName("");
-    setLinkedinInput("");
-    setParseError("");
-    setLoading(false);
-    setOpen(false);
-    startTransition(() => { router.refresh(); });
+    setSubmitError("");
+    try {
+      const result = await createCandidateChecked({
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        phone: form.phone || undefined,
+        skills: form.skills.split(",").map((s) => s.trim()).filter(Boolean),
+        experience: form.experience || undefined,
+        source: form.source || undefined,
+        positionId: form.positionId || undefined,
+        linkedinUrl: form.linkedinUrl || undefined,
+        resumeText: form.resumeText || undefined,
+        notes: form.notes || undefined,
+        costOfHire: form.costOfHire ? parseFloat(form.costOfHire) : undefined,
+      });
+
+      // Keep the dialog open and the entered details intact so the reason is
+      // readable and the fields can be corrected rather than retyped.
+      if (!result.ok) {
+        setSubmitError(result.error);
+        return;
+      }
+
+      setForm({ firstName: "", lastName: "", email: "", phone: "", skills: "", experience: "", source: "", positionId: "", linkedinUrl: "", resumeText: "", notes: "", costOfHire: "" });
+      setFileName("");
+      setLinkedinInput("");
+      setParseError("");
+      setOpen(false);
+      startTransition(() => { router.refresh(); });
+    } catch {
+      setSubmitError("Could not reach the server. Check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const inputClass = cn("w-full px-3 py-2 rounded-lg text-sm", "bg-[var(--color-background)] border border-[var(--color-border)]", "text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]", "focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40");
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}>
+      <button onClick={() => { setSubmitError(""); setOpen(true); }} className={cn("flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)] transition-colors")}>
         <Icon name="add" size={16} />Add Candidate
       </button>
 
@@ -286,8 +301,14 @@ export function AddCandidateForm({ positions, platforms = [] }: { positions: Pos
             <textarea value={form.resumeText} onChange={(e) => update("resumeText", e.target.value)} rows={3} className={cn(inputClass, "resize-none")} placeholder="Paste resume text or notes about the candidate..." />
           </div>
         </div>
+        {submitError && (
+          <div role="alert" className="flex items-start gap-2 mt-4 rounded-lg bg-red-500/10 border border-red-500/20 p-3">
+            <Icon name="error" size={16} className="text-red-500 mt-0.5 shrink-0" />
+            <p className="text-xs text-red-500">{submitError}</p>
+          </div>
+        )}
         <div className="flex justify-end gap-2 pt-4">
-          <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
+          <button onClick={() => { setSubmitError(""); setOpen(false); }} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
           <button onClick={handleSubmit} disabled={!form.firstName || !form.lastName || !form.email || loading} className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}>
             {loading ? "Adding..." : "Add Candidate"}
           </button>
