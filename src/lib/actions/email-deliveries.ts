@@ -27,6 +27,14 @@ export type EmailDeliveryStats = {
   issues: number;
 };
 
+export type EmailDeliveryPage = {
+  deliveries: EmailDeliverySummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
+};
+
 const DELIVERY_STATUSES = new Set([
   "QUEUED",
   "SENT",
@@ -86,13 +94,16 @@ export async function getRecentEmailDeliveries(limit = 25): Promise<EmailDeliver
 export async function getEmailDeliveryLog(filters: {
   query?: string;
   status?: string;
-  limit?: number;
-} = {}): Promise<EmailDeliverySummary[]> {
+  page?: number;
+  pageSize?: number;
+} = {}): Promise<EmailDeliveryPage> {
   await requireAdmin();
   const query = filters.query?.trim();
   const status = filters.status && DELIVERY_STATUSES.has(filters.status)
     ? filters.status
     : undefined;
+  const requestedPage = Math.max(1, Math.floor(filters.page || 1));
+  const pageSize = Math.max(10, Math.min(100, Math.floor(filters.pageSize || 50)));
   const where: Prisma.EmailDeliveryWhereInput = {
     ...(status ? { status } : {}),
     ...(query ? {
@@ -100,31 +111,41 @@ export async function getEmailDeliveryLog(filters: {
         { recipient: { contains: query, mode: "insensitive" } },
         { subject: { contains: query, mode: "insensitive" } },
         { contextType: { contains: query, mode: "insensitive" } },
+        { sender: { is: { firstName: { contains: query, mode: "insensitive" } } } },
+        { sender: { is: { preferredName: { contains: query, mode: "insensitive" } } } },
+        { sender: { is: { lastName: { contains: query, mode: "insensitive" } } } },
       ],
     } : {}),
   };
+  const total = await db.emailDelivery.count({ where });
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const page = Math.min(requestedPage, pageCount);
   const deliveries = await db.emailDelivery.findMany({
     where,
     orderBy: { createdAt: "desc" },
-    take: Math.max(1, Math.min(250, filters.limit || 200)),
+    skip: (page - 1) * pageSize,
+    take: pageSize,
     include: {
       sender: { select: { firstName: true, preferredName: true, lastName: true } },
     },
   });
-  return deliveries.map(serializeDelivery);
+  return {
+    deliveries: deliveries.map(serializeDelivery),
+    total,
+    page,
+    pageSize,
+    pageCount,
+  };
 }
 
 export async function getEmailDeliveryStats(): Promise<EmailDeliveryStats> {
   await requireAdmin();
-  const since = new Date();
-  since.setDate(since.getDate() - 30);
-  const recent = { createdAt: { gte: since } };
   const [total, delivered, accepted, pending, issues] = await Promise.all([
-    db.emailDelivery.count({ where: recent }),
-    db.emailDelivery.count({ where: { ...recent, status: "DELIVERED" } }),
-    db.emailDelivery.count({ where: { ...recent, status: "SENT" } }),
-    db.emailDelivery.count({ where: { ...recent, status: { in: ["QUEUED", "DELAYED"] } } }),
-    db.emailDelivery.count({ where: { ...recent, status: { in: ["FAILED", "BOUNCED", "SUPPRESSED", "COMPLAINED"] } } }),
+    db.emailDelivery.count(),
+    db.emailDelivery.count({ where: { status: "DELIVERED" } }),
+    db.emailDelivery.count({ where: { status: "SENT" } }),
+    db.emailDelivery.count({ where: { status: { in: ["QUEUED", "DELAYED"] } } }),
+    db.emailDelivery.count({ where: { status: { in: ["FAILED", "BOUNCED", "SUPPRESSED", "COMPLAINED"] } } }),
   ]);
   return { total, delivered, accepted, pending, issues };
 }

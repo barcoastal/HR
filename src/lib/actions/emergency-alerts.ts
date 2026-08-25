@@ -93,6 +93,50 @@ function isValidEmail(email: string | null | undefined): email is string {
   return !!email && EMAIL_RE.test(email.trim());
 }
 
+async function recordEmergencyEmailDeliveries({
+  recipients,
+  subject,
+  status,
+  senderEmployeeId,
+  contextType,
+  contextId,
+  error,
+  providerId,
+}: {
+  recipients: string[];
+  subject: string;
+  status: "SENT" | "FAILED";
+  senderEmployeeId: string;
+  contextType: "EMERGENCY_ALERT" | "EMERGENCY_ALERT_TEST";
+  contextId?: string;
+  error?: string;
+  providerId?: string;
+}) {
+  if (recipients.length === 0) return;
+  const timestamp = new Date();
+  try {
+    await db.emailDelivery.createMany({
+      data: recipients.map((recipient, index) => ({
+        recipient,
+        subject,
+        status,
+        senderEmployeeId,
+        contextType,
+        contextId: contextId || null,
+        error: error || null,
+        sentAt: status === "SENT" ? timestamp : null,
+        failedAt: status === "FAILED" ? timestamp : null,
+        // A BCC blast has one provider ID for many recipients. Only attach a
+        // provider ID when the provider send maps to exactly one log record.
+        providerId: recipients.length === 1 && index === 0 ? providerId : null,
+      })),
+    });
+  } catch (trackingError) {
+    // Tracking must never prevent an emergency alert from being sent.
+    console.error("[emergency] Could not write email delivery records:", trackingError);
+  }
+}
+
 export async function sendEmergencyAlert(title: string, message: string) {
   const session = await requireAdmin();
   const role = session.user?.role;
@@ -177,6 +221,7 @@ export async function sendEmergencyAlert(title: string, message: string) {
   // spam).
   let emailSucceeded = 0;
   let emailFailed = 0;
+  const emailSubject = `[Do Not Reply] [EMERGENCY] ${title}`;
   if (!resend) {
     for (const emp of validRecipients) {
       failedRecipients.push({
@@ -186,6 +231,15 @@ export async function sendEmergencyAlert(title: string, message: string) {
       });
     }
     emailFailed = validRecipients.length;
+    await recordEmergencyEmailDeliveries({
+      recipients: validRecipients.map((employee) => employee.email),
+      subject: emailSubject,
+      status: "FAILED",
+      senderEmployeeId: employeeId,
+      contextType: "EMERGENCY_ALERT",
+      contextId: alert.id,
+      error: "RESEND_API_KEY not configured",
+    });
   } else {
     const CHUNK = 49;
     const senderAddress = branding.senderEmail.trim();
@@ -197,7 +251,7 @@ export async function sendEmergencyAlert(title: string, message: string) {
           from,
           to: senderAddress,
           bcc: bccList,
-          subject: `[Do Not Reply] [EMERGENCY] ${title}`,
+          subject: emailSubject,
           html: emailHtml,
         });
         if (error) {
@@ -207,8 +261,25 @@ export async function sendEmergencyAlert(title: string, message: string) {
             failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
           }
           emailFailed += chunk.length;
+          await recordEmergencyEmailDeliveries({
+            recipients: bccList,
+            subject: emailSubject,
+            status: "FAILED",
+            senderEmployeeId: employeeId,
+            contextType: "EMERGENCY_ALERT",
+            contextId: alert.id,
+            error: reason,
+          });
         } else {
           emailSucceeded += chunk.length;
+          await recordEmergencyEmailDeliveries({
+            recipients: bccList,
+            subject: emailSubject,
+            status: "SENT",
+            senderEmployeeId: employeeId,
+            contextType: "EMERGENCY_ALERT",
+            contextId: alert.id,
+          });
         }
       } catch (err) {
         const reason = err instanceof Error ? err.message : "Network error";
@@ -217,6 +288,15 @@ export async function sendEmergencyAlert(title: string, message: string) {
           failedRecipients.push({ name: `${emp.firstName} ${emp.lastName}`, email: emp.email, reason });
         }
         emailFailed += chunk.length;
+        await recordEmergencyEmailDeliveries({
+          recipients: bccList,
+          subject: emailSubject,
+          status: "FAILED",
+          senderEmployeeId: employeeId,
+          contextType: "EMERGENCY_ALERT",
+          contextId: alert.id,
+          error: reason,
+        });
       }
     }
   }
@@ -266,7 +346,18 @@ export async function sendTestEmergencyAlert(
   if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
     throw new Error("Unauthorized: Only admins can send emergency alerts");
   }
+  const employeeId = session.user?.employeeId;
+  if (!employeeId) throw new Error("No employee profile linked to your account");
+  const emailSubject = `[Do Not Reply] [TEST] [EMERGENCY] ${title}`;
   if (!resend) {
+    await recordEmergencyEmailDeliveries({
+      recipients: [testEmail],
+      subject: emailSubject,
+      status: "FAILED",
+      senderEmployeeId: employeeId,
+      contextType: "EMERGENCY_ALERT_TEST",
+      error: "RESEND_API_KEY not configured",
+    });
     throw new Error("RESEND_API_KEY not configured");
   }
 
@@ -282,15 +373,36 @@ export async function sendTestEmergencyAlert(
     ? `${senderName} <${branding.senderEmail}>`
     : branding.senderEmail;
 
-  const { error } = await resend.emails.send({
-    from,
-    to: testEmail,
-    subject: `[Do Not Reply] [TEST] [EMERGENCY] ${title}`,
-    html: emailHtml,
-  });
+  try {
+    const { data, error } = await resend.emails.send({
+      from,
+      to: testEmail,
+      subject: emailSubject,
+      html: emailHtml,
+    });
 
-  if (error) {
-    throw new Error(`Failed to send: ${error.message}`);
+    if (error) throw error;
+    await recordEmergencyEmailDeliveries({
+      recipients: [testEmail],
+      subject: emailSubject,
+      status: "SENT",
+      senderEmployeeId: employeeId,
+      contextType: "EMERGENCY_ALERT_TEST",
+      providerId: data?.id,
+    });
+  } catch (error) {
+    const reason = error instanceof Error
+      ? error.message
+      : String((error as { message?: unknown })?.message || "Email provider rejected the message");
+    await recordEmergencyEmailDeliveries({
+      recipients: [testEmail],
+      subject: emailSubject,
+      status: "FAILED",
+      senderEmployeeId: employeeId,
+      contextType: "EMERGENCY_ALERT_TEST",
+      error: reason,
+    });
+    throw new Error(`Failed to send: ${reason}`);
   }
 
   return { success: true };

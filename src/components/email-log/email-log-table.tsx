@@ -26,6 +26,9 @@ function contextLabel(value: string | null): string {
     INTERVIEW_INVITATION: "Interview invitation",
     PRE_ADVERSE_ACTION: "Pre-adverse action",
     ADVERSE_ACTION: "Adverse action",
+    EMAIL_TEMPLATE_TEST: "Email template test",
+    EMERGENCY_ALERT: "Emergency alert",
+    EMERGENCY_ALERT_TEST: "Emergency alert test",
   };
   return labels[value] || titleCase(value);
 }
@@ -38,15 +41,35 @@ function eventTime(delivery: EmailDeliverySummary): string {
   }).format(new Date(value));
 }
 
+function pageHref(page: number, query?: string, status?: string): string {
+  const params = new URLSearchParams();
+  if (query) params.set("q", query);
+  if (status) params.set("status", status);
+  if (page > 1) params.set("page", String(page));
+  const search = params.toString();
+  return search ? `/email-log?${search}` : "/email-log";
+}
+
 export function EmailLogTable({
   deliveries,
+  total,
+  page,
+  pageSize,
+  pageCount,
   query,
   status,
 }: {
   deliveries: EmailDeliverySummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  pageCount: number;
   query?: string;
   status?: string;
 }) {
+  const firstRecord = total === 0 ? 0 : (page - 1) * pageSize + 1;
+  const lastRecord = Math.min(total, page * pageSize);
+
   return (
     <section className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
       <form method="get" className="flex flex-col gap-3 border-b border-[var(--color-border)] p-4 sm:flex-row sm:items-end">
@@ -123,6 +146,31 @@ export function EmailLogTable({
           </table>
         </div>
       )}
+
+      <div className="flex flex-col gap-3 border-t border-[var(--color-border)] px-5 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-[var(--color-text-muted)]">
+          Showing {firstRecord.toLocaleString()}–{lastRecord.toLocaleString()} of {total.toLocaleString()} organization-wide emails
+        </p>
+        {pageCount > 1 && (
+          <nav aria-label="Email log pages" className="flex items-center gap-2">
+            {page > 1 ? (
+              <Link href={pageHref(page - 1, query, status)} className="inline-flex h-9 items-center rounded-lg border border-[var(--color-border)] px-3 text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)]">
+                Previous
+              </Link>
+            ) : (
+              <span className="inline-flex h-9 cursor-not-allowed items-center rounded-lg border border-[var(--color-border)] px-3 text-sm text-[var(--color-text-muted)] opacity-50">Previous</span>
+            )}
+            <span className="px-2 text-xs text-[var(--color-text-muted)]">Page {page} of {pageCount}</span>
+            {page < pageCount ? (
+              <Link href={pageHref(page + 1, query, status)} className="inline-flex h-9 items-center rounded-lg border border-[var(--color-border)] px-3 text-sm font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)]">
+                Next
+              </Link>
+            ) : (
+              <span className="inline-flex h-9 cursor-not-allowed items-center rounded-lg border border-[var(--color-border)] px-3 text-sm text-[var(--color-text-muted)] opacity-50">Next</span>
+            )}
+          </nav>
+        )}
+      </div>
     </section>
   );
 }

@@ -7,16 +7,21 @@ import { getEmailDeliveryLog, getEmailDeliveryStats } from "@/lib/actions/email-
 export default async function EmailLogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; status?: string }>;
+  searchParams: Promise<{ q?: string; status?: string; page?: string }>;
 }) {
   await requireAdmin();
   const filters = await searchParams;
-  const [deliveries, stats] = await Promise.all([
-    getEmailDeliveryLog({ query: filters.q, status: filters.status }),
+  const requestedPage = Number.parseInt(filters.page || "1", 10);
+  const [deliveryPage, stats] = await Promise.all([
+    getEmailDeliveryLog({
+      query: filters.q,
+      status: filters.status,
+      page: Number.isFinite(requestedPage) ? requestedPage : 1,
+    }),
     getEmailDeliveryStats(),
   ]);
   const summary = [
-    { label: "Last 30 days", value: stats.total, icon: "mail" },
+    { label: "All recorded emails", value: stats.total, icon: "mail" },
     { label: "Delivered", value: stats.delivered, icon: "mark_email_read" },
     { label: "Provider accepted", value: stats.accepted, icon: "send" },
     { label: "Pending", value: stats.pending, icon: "schedule" },
@@ -27,7 +32,7 @@ export default async function EmailLogPage({
     <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
       <PageHeader
         title="Email Log"
-        description="Confirm each automated email from queue through final delivery, including failures and bounces."
+        description="Organization-wide history of every automated email recorded by Coastal HR, including failures and bounces."
       />
 
       <section aria-label="Email delivery summary" className="mb-5 flex flex-wrap rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]">
@@ -48,7 +53,15 @@ export default async function EmailLogPage({
       <p className="mb-3 text-xs text-[var(--color-text-muted)]">
         Provider accepted means Resend accepted the message. Delivered is confirmed by the signed delivery webhook.
       </p>
-      <EmailLogTable deliveries={deliveries} query={filters.q} status={filters.status} />
+      <EmailLogTable
+        deliveries={deliveryPage.deliveries}
+        total={deliveryPage.total}
+        page={deliveryPage.page}
+        pageSize={deliveryPage.pageSize}
+        pageCount={deliveryPage.pageCount}
+        query={filters.q}
+        status={filters.status}
+      />
     </div>
   );
 }

@@ -280,13 +280,6 @@ export async function sendEmailWithAttachments(
 }
 
 export async function sendTestEmail(to: string, type: string, subject: string, body: string) {
-  if (IS_SANDBOX) {
-    return { success: false, error: "Sandbox mode: outbound email is disabled in this environment" };
-  }
-  if (!resend) {
-    return { success: false, error: "RESEND_API_KEY not configured" };
-  }
-
   const branding = await getCompanyBranding();
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
@@ -323,25 +316,20 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
   const interpolatedSubject = interpolate(subject, sampleVars);
   const interpolatedBody = interpolate(body, sampleVars);
 
-  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
-  const senderEmail = branding.senderEmail.trim();
-  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
-  console.log(`[email] Test email from: "${from}" to: ${to}`);
-  try {
-    const { data, error } = await resend.emails.send({
-      from,
-      to,
-      subject: withNoReplySubject(`[TEST] ${interpolatedSubject}`),
-      html: wrapHtml(interpolatedBody, branding.companyName, branding.logoUrl),
-    });
-    if (error) {
-      console.error(`[email] Resend test email error:`, error);
-      return { success: false, error: error.message };
-    }
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: String(error) };
+  const result = await sendTrackedEmail(
+    to,
+    `[TEST] ${interpolatedSubject}`,
+    interpolatedBody,
+    undefined,
+    { contextType: "EMAIL_TEMPLATE_TEST", contextId: type },
+  );
+
+  if (result.status === "SUPPRESSED") {
+    return { success: false, error: "Sandbox mode: outbound email is disabled in this environment" };
   }
+  return result.success
+    ? { success: true }
+    : { success: false, error: result.error || "Email provider rejected the message" };
 }
 
 export async function sendOnboardingEmail({
