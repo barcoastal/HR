@@ -8,8 +8,13 @@ import { MyCandidatesView } from "@/components/cv/my-candidates-view";
 
 export const dynamic = "force-dynamic";
 
-export default async function MyCandidatesPage() {
+export default async function MyCandidatesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ candidateId?: string }>;
+}) {
   const session = await requireAuth();
+  const focus = await searchParams;
   const employeeId = session.user.employeeId;
   if (!employeeId) redirect("/my-profile");
 
@@ -80,6 +85,7 @@ export default async function MyCandidatesPage() {
             stageId: c.stageId ?? null,
           }))}
           pipelineStages={pipelineStages}
+          focusedCandidateId={focus.candidateId}
         />
       )}
     </div>

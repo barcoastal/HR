@@ -46,7 +46,7 @@ export async function extractPdfFormFields(token: string): Promise<{
   });
 
   if (!request || request.expiresAt < new Date()) return null;
-  if (request.status === "SIGNED" || request.status === "VOIDED") return null;
+  if (request.status === "SIGNED" || request.status === "AWAITING_COUNTERSIGN" || request.status === "VOIDED") return null;
 
   // Mark as viewed
   if (request.status === "PENDING") {
@@ -221,7 +221,7 @@ export async function submitFilledForm(
     include: { employee: true, employeeTask: true },
   });
 
-  if (!request || request.status === "SIGNED" || request.expiresAt < new Date()) {
+  if (!request || request.status === "SIGNED" || request.status === "AWAITING_COUNTERSIGN" || request.status === "VOIDED" || request.expiresAt < new Date()) {
     return { success: false, error: "Invalid or expired request" };
   }
 
@@ -335,11 +335,25 @@ export async function submitFilledForm(
     });
     const filledDocUrl = `/api/onboarding-docs/${filledFilename}`;
 
-    // Update signing request as completed
+    const awaitsCountersign = !!request.countersignerId;
+
+    // A countersigned form is not complete until the internal signer finishes.
     await db.signingRequest.update({
       where: { id: request.id },
-      data: { status: "SIGNED", signedAt: new Date(), signedDocUrl: filledDocUrl },
+      data: {
+        status: awaitsCountersign ? "AWAITING_COUNTERSIGN" : "SIGNED",
+        signedAt: new Date(),
+        signedDocUrl: filledDocUrl,
+      },
     });
+
+    if (awaitsCountersign) {
+      const { notifyCountersigner } = await import("@/lib/actions/countersign");
+      await notifyCountersigner(request.id);
+      revalidatePath("/sign-queue");
+      revalidatePath("/documents");
+      return { success: true };
+    }
 
     // Auto-complete the employee task
     if (request.employeeTaskId) {
@@ -377,7 +391,14 @@ export async function submitFilledForm(
       }
     }
 
+    const writtenOfferEmployeeId = request.employeeTask?.employeeId || request.employeeId;
+    if (writtenOfferEmployeeId) {
+      const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+      await maybeAdvanceWrittenOfferToOnboarding(writtenOfferEmployeeId);
+    }
+
     revalidatePath("/onboarding");
+    revalidatePath("/pre-onboarding");
     revalidatePath("/documents");
     return { success: true };
   } catch (error) {

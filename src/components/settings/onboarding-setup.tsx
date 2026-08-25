@@ -275,7 +275,7 @@ export function OnboardingSetup({
   // Create checklist
   async function handleCreateChecklist() {
     setCreatingChecklist(true);
-    const typeLabel = checklistType === "PRE_ONBOARDING" ? "Pre-Onboarding" : "Onboarding";
+    const typeLabel = checklistType === "PRE_ONBOARDING" ? "Written Offer" : "Onboarding";
     const name = selectedDeptId
       ? `${selectedDeptName} ${typeLabel}`
       : `Global ${typeLabel}`;
@@ -420,7 +420,7 @@ export function OnboardingSetup({
       <div className="flex items-center gap-2 mb-5">
         <Icon name="assignment" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-          {checklistType === "PRE_ONBOARDING" ? "Pre-Onboarding Setup" : "Onboarding Setup"}
+          {checklistType === "PRE_ONBOARDING" ? "Written Offer Setup" : "Onboarding Setup"}
         </h2>
       </div>
 

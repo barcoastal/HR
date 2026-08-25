@@ -146,28 +146,15 @@ export async function createEmployee(data: {
     const preOnboardingTasks = await resolvePreOnboardingTasks(employee.departmentId, employee.jobTitle);
 
     if (preOnboardingTasks.length > 0) {
-      // Has pre-onboarding tasks — set status to PRE_ONBOARDING and assign those
+      // Written Offer documents must finish before internal Onboarding begins.
       await db.employee.update({ where: { id: employee.id }, data: { status: "PRE_ONBOARDING" } });
       employee.status = "PRE_ONBOARDING";
 
-      for (const task of preOnboardingTasks) {
-        await db.employeeTask.create({
-          data: {
-            employeeId: employee.id,
-            checklistItemId: task.checklistItemId,
-            title: task.title,
-            description: task.description,
-            documentAction: task.documentAction,
-            documentUrl: task.documentUrl,
-            documentName: task.documentName,
-            documentRecipient: task.documentRecipient || "EMPLOYEE",
-            externalEmail: task.externalEmail || null,
-            externalName: task.externalName || null,
-            assigneeId: task.assigneeId,
-          },
-        });
-      }
+      const { assignWrittenOfferTasks, maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+      await assignWrittenOfferTasks(employee, preOnboardingTasks);
+      await maybeAdvanceWrittenOfferToOnboarding(employee.id);
       revalidatePath("/onboarding");
+      revalidatePath("/pre-onboarding");
       revalidatePath("/people");
       revalidatePath("/org");
       return employee;
@@ -573,7 +560,7 @@ export async function toggleEmployeeTask(taskId: string) {
   const session = await requireAuth();
   const task = await db.employeeTask.findUnique({
     where: { id: taskId },
-    include: { employee: true },
+    include: { employee: true, signingRequest: true },
   });
   if (!task) return null;
 
@@ -584,6 +571,15 @@ export async function toggleEmployeeTask(taskId: string) {
   const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
   if (!isAssignee && !isManager && !isAdmin) {
     throw new Error("Not authorized to update this task");
+  }
+
+  const isIncompleteWrittenOfferDocument =
+    task.employee.status === "PRE_ONBOARDING" &&
+    task.status !== "DONE" &&
+    (task.documentAction === "SIGN" || task.documentAction === "FILL") &&
+    task.signingRequest?.status !== "SIGNED";
+  if (isIncompleteWrittenOfferDocument) {
+    throw new Error("This document is completed automatically after the recipient signs or fills it.");
   }
 
   const updated = await db.employeeTask.update({
@@ -597,11 +593,43 @@ export async function toggleEmployeeTask(taskId: string) {
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
   revalidatePath(`/people/${task.employeeId}`);
+
+  if (updated.status === "DONE" && task.employee.status === "PRE_ONBOARDING") {
+    const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+    await maybeAdvanceWrittenOfferToOnboarding(task.employeeId);
+  }
   return updated;
 }
 
 export async function addEmployeeTask(employeeId: string, checklistItemId: string) {
-  const item = await db.checklistItem.findUnique({ where: { id: checklistItemId } });
+  const [item, employee] = await Promise.all([
+    db.checklistItem.findUnique({ where: { id: checklistItemId } }),
+    db.employee.findUnique({ where: { id: employeeId } }),
+  ]);
+
+  if (item && employee?.status === "PRE_ONBOARDING") {
+    const { assignWrittenOfferTasks, maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+    const [writtenOfferTask] = await assignWrittenOfferTasks(employee, [{
+      checklistItemId: item.id,
+      title: item.title,
+      description: item.description,
+      order: item.order,
+      dueDay: item.dueDay,
+      assigneeId: item.assigneeId,
+      documentAction: item.documentAction,
+      documentUrl: item.documentUrl,
+      documentName: item.documentName,
+      documentRecipient: item.documentRecipient,
+      externalEmail: item.externalEmail,
+      externalName: item.externalName,
+      sendEmail: item.sendEmail,
+      emailSubject: item.emailSubject,
+      emailBody: item.emailBody,
+    }]);
+    await maybeAdvanceWrittenOfferToOnboarding(employeeId);
+    return writtenOfferTask || null;
+  }
+
   const task = await db.employeeTask.create({
     data: {
       employeeId,
@@ -627,7 +655,7 @@ export async function addCustomEmployeeTask(
   description: string | undefined,
   type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING"
 ) {
-  const typeLabel = type === "PRE_ONBOARDING" ? "Pre-Onboarding" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
+  const typeLabel = type === "PRE_ONBOARDING" ? "Written Offer" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
   // Find or create a checklist for custom tasks
   let checklist = await db.onboardingChecklist.findFirst({
     where: { name: `Custom ${typeLabel} Tasks`, type },
@@ -665,121 +693,9 @@ export async function addCustomEmployeeTask(
 }
 
 export async function completePreOnboarding(employeeId: string, companyEmail?: string) {
-  const employee = await db.employee.findUnique({ where: { id: employeeId } });
-  if (!employee) throw new Error("Employee not found");
-
-  // Update email if a company email was provided
-  const finalEmail = companyEmail?.trim() || employee.email;
-  const updateData: Record<string, unknown> = { status: "ONBOARDING" };
-  if (companyEmail?.trim() && companyEmail.trim() !== employee.email) {
-    updateData.email = companyEmail.trim();
-  }
-
-  // Transition to ONBOARDING
-  await db.employee.update({
-    where: { id: employeeId },
-    data: updateData,
-  });
-
-  // Create user account if missing (pre-onboarding hires skip user creation)
-  const existingUser = await db.user.findFirst({ where: { employeeId } });
-  if (!existingUser) {
-    const userByEmail = await db.user.findUnique({ where: { email: finalEmail } });
-    if (!userByEmail) {
-      await db.user.create({
-        data: {
-          email: finalEmail,
-          role: "EMPLOYEE",
-          employeeId: employee.id,
-        },
-      });
-      const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-      try {
-        await sendWelcomeEmail({
-          to: finalEmail,
-          role: "Employee",
-          loginUrl: `${baseUrl}/login`,
-        });
-      } catch (e) {
-        console.error("[pre-onboarding] Failed to send welcome email:", e);
-      }
-    } else if (!userByEmail.employeeId) {
-      await db.user.update({
-        where: { id: userByEmail.id },
-        data: { employeeId: employee.id },
-      });
-    }
-  }
-
-  // Resolve and assign regular onboarding tasks
-  const { resolveOnboardingTasks } = await import("./onboarding-resolution");
-  const { createSigningRequest } = await import("./signing");
-  const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
-  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-  const resolvedTasks = await resolveOnboardingTasks(employee.departmentId, employee.jobTitle);
-
-  for (const task of resolvedTasks) {
-    const employeeTask = await db.employeeTask.create({
-      data: {
-        employeeId,
-        checklistItemId: task.checklistItemId,
-        title: task.title,
-        description: task.description,
-        documentAction: task.documentAction,
-        documentUrl: task.documentUrl,
-        documentName: task.documentName,
-        documentRecipient: task.documentRecipient || "EMPLOYEE",
-        externalEmail: task.externalEmail || null,
-        externalName: task.externalName || null,
-        assigneeId: task.assigneeId,
-      },
-    });
-
-    if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
-      let toEmail = finalEmail;
-      let toFirstName = employee.firstName;
-      let toEmployeeId = employeeId;
-      if (task.documentRecipient === "ASSIGNEE" && task.assigneeId) {
-        const a = await db.employee.findUnique({ where: { id: task.assigneeId }, select: { id: true, email: true, firstName: true } });
-        if (a) { toEmail = a.email; toFirstName = a.firstName; toEmployeeId = a.id; }
-      } else if (task.documentRecipient === "EXTERNAL" && task.externalEmail) {
-        toEmail = task.externalEmail;
-        toFirstName = task.externalName || "there";
-      }
-      const signingReq = await createSigningRequest(
-        employeeTask.id,
-        toEmployeeId,
-        task.documentUrl,
-        task.documentName
-      );
-      sendSigningRequestEmail({
-        to: toEmail,
-        firstName: toFirstName,
-        documentName: task.documentName,
-        signingUrl: `${baseUrl}/sign/${signingReq.token}`,
-      });
-    }
-
-    if (task.assigneeId) {
-      const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
-      if (assignee) {
-        sendTaskAssignmentEmail({
-          to: assignee.email,
-          assigneeName: assignee.firstName,
-          newHireName: `${employee.firstName} ${employee.lastName}`,
-          taskTitle: task.title,
-          taskDescription: task.description,
-        });
-      }
-    }
-  }
-
-  revalidatePath("/onboarding");
-  revalidatePath("/people");
-  revalidatePath(`/people/${employeeId}`);
-  revalidatePath("/org");
-  return employee;
+  const { advanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+  const result = await advanceWrittenOfferToOnboarding(employeeId, companyEmail);
+  return result.employee;
 }
 
 export async function completeOnboarding(employeeId: string) {

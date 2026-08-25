@@ -297,6 +297,7 @@ model Employee {
   authoredHRNotes          HRNote[]                @relation("HRNoteAuthor")
   emergencyAlerts          EmergencyAlert[]        @relation("EmergencyAlertSender")
   notificationRecipients   NotificationRecipient[]
+  sentEmailDeliveries      EmailDelivery[]         @relation("EmailDeliverySender")
 
   // Chat relations
   chatMembers        ChatMember[]
@@ -811,6 +812,11 @@ model Candidate {
   backgroundCheckOptions     String? // JSON: which checks were requested
   backgroundReportFilename   String? // FileBlob filename of the cached PDF (set when imported)
   backgroundReportImportedAt DateTime?
+  preAdverseActionStatus     String? // SENT, DELIVERED, FAILED, BOUNCED, SUPPRESSED, COMPLAINED
+  preAdverseActionSentAt     DateTime?
+  preAdverseActionDueAt      DateTime? // earliest configured date for the final adverse-action step
+  preAdverseActionProviderId String?
+  preAdverseActionError      String?
   adverseActionLetterSentAt  DateTime? // when the "we will not hire you" letter was sent
   offerDocUrl                String? // URL to uploaded offer PDF
   offerSentAt                DateTime? // When offer was emailed to candidate
@@ -1326,6 +1332,34 @@ model EmailTemplate {
   subject   String
   body      String // HTML with {{variable}} placeholders
   updatedAt DateTime @updatedAt
+}
+
+/// Provider delivery state for every automated email sent by CALATRAVA.
+/// SENT means the provider accepted the message; DELIVERED is set by the
+/// signed Resend webhook. Failure states create an in-app notification for
+/// the employee who initiated the email when one is available.
+model EmailDelivery {
+  id               String    @id @default(uuid())
+  providerId       String?   @unique
+  recipient        String
+  subject          String
+  status           String    @default("QUEUED")
+  error            String?
+  senderEmployeeId String?
+  contextType      String?
+  contextId        String?
+  sentAt           DateTime?
+  deliveredAt      DateTime?
+  failedAt         DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  sender Employee? @relation("EmailDeliverySender", fields: [senderEmployeeId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([senderEmployeeId])
+  @@index([contextType, contextId])
+  @@index([createdAt])
 }
 
 model RolePermission {

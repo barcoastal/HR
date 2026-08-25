@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 
-type ResolvedTask = {
+export type ResolvedTask = {
   checklistItemId: string;
   title: string;
   description: string | null;

@@ -28,6 +28,7 @@ export async function createSigningRequest(
 }
 
 export async function createStandaloneSigningRequest(data: {
+  employeeTaskId?: string;
   employeeId?: string;
   candidateId?: string;
   signerName?: string;
@@ -45,6 +46,7 @@ export async function createStandaloneSigningRequest(data: {
 
   const request = await db.signingRequest.create({
     data: {
+      employeeTaskId: data.employeeTaskId || null,
       employeeId: data.employeeId || null,
       candidateId: data.candidateId || null,
       signerName: data.signerName || null,
@@ -444,7 +446,14 @@ export async function submitSignature(
       }
     }
 
+    const writtenOfferEmployeeId = request.employeeTask?.employeeId || request.employeeId;
+    if (writtenOfferEmployeeId) {
+      const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+      await maybeAdvanceWrittenOfferToOnboarding(writtenOfferEmployeeId);
+    }
+
     revalidatePath("/onboarding");
+    revalidatePath("/pre-onboarding");
     revalidatePath("/documents");
     revalidatePath("/my-documents");
     revalidatePath("/cv");

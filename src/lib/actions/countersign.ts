@@ -254,10 +254,17 @@ export async function submitCountersignature(
       console.error("[countersign] Failed to send completion email:", e);
     }
 
+    const writtenOfferEmployeeId = request.employeeTask?.employeeId || request.employeeId;
+    if (writtenOfferEmployeeId) {
+      const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+      await maybeAdvanceWrittenOfferToOnboarding(writtenOfferEmployeeId);
+    }
+
     revalidatePath("/sign-queue");
     revalidatePath("/documents");
     revalidatePath("/my-documents");
     revalidatePath("/onboarding");
+    revalidatePath("/pre-onboarding");
     revalidatePath("/cv");
     return { success: true };
   } catch (error) {

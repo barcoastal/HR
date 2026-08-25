@@ -283,6 +283,14 @@ export type PositionDocument = Prisma.PositionDocumentModel
  */
 export type EmailTemplate = Prisma.EmailTemplateModel
 /**
+ * Model EmailDelivery
+ * Provider delivery state for every automated email sent by CALATRAVA.
+ * SENT means the provider accepted the message; DELIVERED is set by the
+ * signed Resend webhook. Failure states create an in-app notification for
+ * the employee who initiated the email when one is available.
+ */
+export type EmailDelivery = Prisma.EmailDeliveryModel
+/**
  * Model RolePermission
  * 
  */

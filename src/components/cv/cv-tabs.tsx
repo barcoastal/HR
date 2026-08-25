@@ -42,6 +42,11 @@ type CandidateItem = {
   backgroundCheckStatus: string | null;
   backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
+  preAdverseActionStatus?: string | null;
+  preAdverseActionSentAt?: Date | null;
+  preAdverseActionDueAt?: Date | null;
+  preAdverseActionError?: string | null;
+  adverseActionLetterSentAt?: Date | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
   offerSignedDocUrl: string | null;
@@ -108,6 +113,9 @@ type Props = {
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
   pipelineStages?: PipelineStageConfig[];
+  focusedCandidateId?: string;
+  focusedPositionId?: string;
+  initialTab?: string;
 };
 
 function PositionPipeline({
@@ -120,6 +128,8 @@ function PositionPipeline({
   isArchived,
   departments = [],
   pipelineStages,
+  focusedCandidateId,
+  focusedPositionId,
 }: {
   position: PositionFull;
   candidates: CandidateItem[];
@@ -130,14 +140,26 @@ function PositionPipeline({
   isArchived: boolean;
   departments?: { id: string; name: string }[];
   pipelineStages?: PipelineStageConfig[];
+  focusedCandidateId?: string;
+  focusedPositionId?: string;
 }) {
-  const [expanded, setExpanded] = useState(!isArchived);
+  const isFocusedPosition = focusedPositionId === position.id || candidates.some((candidate) => candidate.id === focusedCandidateId);
+  const [expanded, setExpanded] = useState(!isArchived || isFocusedPosition);
   const [matchDialogOpen, setMatchDialogOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [closing, setClosing] = useState(false);
   const [postingToBreezy, setPostingToBreezy] = useState(false);
   const [breezyResult, setBreezyResult] = useState<{ success: boolean; error?: string } | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isFocusedPosition) return;
+    setExpanded(true);
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(`position-${position.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [isFocusedPosition, position.id]);
 
   const activeCandidates = candidates.filter(
     (c) => !["HIRED", "REJECTED"].includes(c.status)
@@ -208,8 +230,10 @@ function PositionPipeline({
 
   return (
     <div
+      id={`position-${position.id}`}
       className={cn(
-        "rounded-2xl overflow-hidden border transition-colors",
+        "scroll-mt-24 rounded-2xl overflow-hidden border transition-colors",
+        isFocusedPosition && "ring-2 ring-[var(--color-accent)] ring-offset-2 ring-offset-[var(--color-background)]",
         isArchived
           ? "bg-[var(--color-surface)]/50 border-[var(--color-border)]/50 opacity-75"
           : "bg-[var(--color-surface)] border-[var(--color-border)]"
@@ -400,6 +424,11 @@ function PositionPipeline({
                 recruiterId: c.recruiterId || null,
                 backgroundCheckStatus: c.backgroundCheckStatus || null,
                 backgroundCheckOptions: c.backgroundCheckOptions || null,
+                preAdverseActionStatus: c.preAdverseActionStatus || null,
+                preAdverseActionSentAt: c.preAdverseActionSentAt || null,
+                preAdverseActionDueAt: c.preAdverseActionDueAt || null,
+                preAdverseActionError: c.preAdverseActionError || null,
+                adverseActionLetterSentAt: c.adverseActionLetterSentAt || null,
                 offerDocUrl: c.offerDocUrl || null,
                 offerSentAt: c.offerSentAt || null,
                 offerSignedDocUrl: c.offerSignedDocUrl || null,
@@ -412,6 +441,7 @@ function PositionPipeline({
               employees={employees}
               recruiters={recruiters}
               pipelineStages={pipelineStages}
+              focusedCandidateId={focusedCandidateId}
             />
           ) : (
             <p className="text-center text-sm text-[var(--color-text-muted)] py-8">
@@ -461,6 +491,9 @@ export function CVTabs({
   employees,
   recruiters,
   pipelineStages,
+  focusedCandidateId,
+  focusedPositionId,
+  initialTab,
 }: Props) {
   const tabs = [
     { id: "recruitment", label: "Recruitment" },
@@ -468,9 +501,23 @@ export function CVTabs({
     { id: "dnc", label: "DNC List" },
   ];
 
-  const [activeTab, setActiveTab] = useState("recruitment");
+  const [activeTab, setActiveTab] = useState(
+    initialTab === "database" || initialTab === "dnc" ? initialTab : "recruitment"
+  );
   const [showArchive, setShowArchive] = useState(false);
   const [recruiterFilter, setRecruiterFilter] = useState<string>("ALL");
+
+  useEffect(() => {
+    if (initialTab === "database" || initialTab === "dnc") {
+      setActiveTab(initialTab);
+      return;
+    }
+    if (focusedCandidateId || focusedPositionId) {
+      setActiveTab("recruitment");
+      setRecruiterFilter("ALL");
+      if (closedPositions.some((position) => position.id === focusedPositionId)) setShowArchive(true);
+    }
+  }, [closedPositions, focusedCandidateId, focusedPositionId, initialTab]);
 
   // Lazy-load Candidate Database — large query, not needed for the Recruitment
   // tab which is the default landing view. Fetch on first activation.
@@ -510,6 +557,10 @@ export function CVTabs({
             backgroundCheckStatus: (c.backgroundCheckStatus as string) ?? null,
             backgroundCheckId: (c.backgroundCheckId as string) ?? null,
             backgroundCheckOptions: (c.backgroundCheckOptions as string) ?? null,
+            preAdverseActionStatus: (c.preAdverseActionStatus as string) ?? null,
+            preAdverseActionSentAt: (c.preAdverseActionSentAt as Date) ?? null,
+            preAdverseActionDueAt: (c.preAdverseActionDueAt as Date) ?? null,
+            preAdverseActionError: (c.preAdverseActionError as string) ?? null,
             adverseActionLetterSentAt: (c.adverseActionLetterSentAt as Date) ?? null,
             offerDocUrl: (c.offerDocUrl as string) ?? null,
             offerSentAt: (c.offerSentAt as Date) ?? null,
@@ -613,6 +664,8 @@ export function CVTabs({
                       departments={departments}
                       isArchived={false}
                       pipelineStages={pipelineStages}
+                      focusedCandidateId={focusedCandidateId}
+                      focusedPositionId={focusedPositionId}
                     />
                   ))}
               </div>
@@ -662,7 +715,12 @@ export function CVTabs({
                       managerId: c.managerId || null,
                       recruiterId: c.recruiterId || null,
                       backgroundCheckStatus: c.backgroundCheckStatus || null,
-                backgroundCheckOptions: c.backgroundCheckOptions || null,
+                      backgroundCheckOptions: c.backgroundCheckOptions || null,
+                      preAdverseActionStatus: c.preAdverseActionStatus || null,
+                      preAdverseActionSentAt: c.preAdverseActionSentAt || null,
+                      preAdverseActionDueAt: c.preAdverseActionDueAt || null,
+                      preAdverseActionError: c.preAdverseActionError || null,
+                      adverseActionLetterSentAt: c.adverseActionLetterSentAt || null,
                       offerDocUrl: c.offerDocUrl || null,
                       offerSentAt: c.offerSentAt || null,
                       offerSignedDocUrl: c.offerSignedDocUrl || null,
@@ -675,6 +733,7 @@ export function CVTabs({
                     employees={employees}
                     recruiters={recruiters}
                     pipelineStages={pipelineStages}
+                    focusedCandidateId={focusedCandidateId}
                   />
                 </div>
               </div>
@@ -714,6 +773,8 @@ export function CVTabs({
                         departments={departments}
                         isArchived={true}
                         pipelineStages={pipelineStages}
+                        focusedCandidateId={focusedCandidateId}
+                        focusedPositionId={focusedPositionId}
                       />
                     );
                   })}
@@ -747,6 +808,7 @@ export function CVTabs({
             <CandidateDatabase
               candidates={databaseCandidates}
               positions={positions}
+              focusedCandidateId={focusedCandidateId}
             />
           )}
         </div>

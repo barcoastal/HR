@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { updateCandidate, hireCandidateAndStartOnboarding, sendOfferLetter } from "@/lib/actions/candidates";
 import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
 import { getCandidateApplications, markDoNotCall, unmarkDoNotCall } from "@/lib/actions/candidate-applications";
-import { sendAdverseActionLetter } from "@/lib/actions/adverse-action";
+import { sendAdverseActionLetter, sendPreAdverseActionNotice } from "@/lib/actions/adverse-action";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
 import Link from "next/link";
@@ -57,6 +57,10 @@ type CandidateForDialog = {
   backgroundCheckStatus: string | null;
   backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
+  preAdverseActionStatus?: string | null;
+  preAdverseActionSentAt?: Date | null;
+  preAdverseActionDueAt?: Date | null;
+  preAdverseActionError?: string | null;
   adverseActionLetterSentAt?: Date | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
@@ -82,92 +86,173 @@ type Position = { id: string; title: string };
 type EmployeeOption = { id: string; firstName: string; lastName: string; jobTitle: string };
 type Recruiter = { id: string; firstName: string; lastName: string };
 
-function AdverseActionBlock({ candidateId, alreadySentAt: initialSentAt }: { candidateId: string; alreadySentAt: Date | null }) {
-  const [sentAt, setSentAt] = useState<Date | null>(initialSentAt);
+const CONTINENTAL_PORTAL_URL = process.env.NEXT_PUBLIC_CONTINENTAL_PORTAL_URL || "https://clients.continentalss.com";
+
+function AdverseActionBlock({
+  candidateId,
+  initialPreStatus,
+  initialPreSentAt,
+  initialPreDueAt,
+  initialPreError,
+  initialFinalSentAt,
+}: {
+  candidateId: string;
+  initialPreStatus: string | null;
+  initialPreSentAt: Date | null;
+  initialPreDueAt: Date | null;
+  initialPreError: string | null;
+  initialFinalSentAt: Date | null;
+}) {
+  const [preStatus, setPreStatus] = useState<string | null>(initialPreStatus);
+  const [preSentAt, setPreSentAt] = useState<Date | null>(initialPreSentAt);
+  const [preDueAt, setPreDueAt] = useState<Date | null>(initialPreDueAt);
+  const [finalSentAt, setFinalSentAt] = useState<Date | null>(initialFinalSentAt);
   const [sending, setSending] = useState(false);
   const [reason, setReason] = useState("");
-  const [showReason, setShowReason] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [responseDays, setResponseDays] = useState(5);
+  const [error, setError] = useState<string | null>(initialPreError);
 
-  async function send(force = false) {
+  async function sendPreNotice() {
+    setSending(true);
+    setError(null);
+    const res = await sendPreAdverseActionNotice(candidateId, reason || undefined, responseDays);
+    setSending(false);
+    if (res.success) {
+      setPreStatus(res.status || "SENT");
+      setPreSentAt(res.sentAt ? new Date(res.sentAt) : new Date());
+      setPreDueAt(res.dueAt ? new Date(res.dueAt) : null);
+    } else {
+      setPreStatus(res.status || "FAILED");
+      setError(res.error || "Failed to send pre-adverse notice");
+    }
+  }
+
+  async function sendFinal(force = false) {
     setSending(true);
     setError(null);
     const res = await sendAdverseActionLetter(candidateId, reason || undefined, { force });
     setSending(false);
-    if (res.success) {
-      setSentAt(new Date());
-      setShowReason(false);
-    } else if (res.alreadySent) {
-      setError(res.error || "Already sent");
-    } else {
-      setError(res.error || "Failed to send");
-    }
+    if (res.success) setFinalSentAt(new Date());
+    else setError(res.error || "Failed to send final adverse-action letter");
   }
 
+  const responsePeriodComplete = Boolean(preDueAt && new Date(preDueAt).getTime() <= Date.now());
+  const deliveryFailed = preStatus && ["FAILED", "BOUNCED", "SUPPRESSED", "COMPLAINED"].includes(preStatus);
+  const preStatusLabel = preStatus === "DELIVERED"
+    ? "Delivered"
+    : preStatus === "SENT"
+      ? "Sent to provider"
+      : preStatus === "SUPPRESSED"
+        ? "Suppressed"
+        : preStatus
+          ? preStatus.charAt(0) + preStatus.slice(1).toLowerCase()
+          : "Not sent";
+
   return (
-    <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/5 p-3 space-y-2">
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0">
-          <p className="text-xs font-semibold text-red-700 uppercase tracking-wider flex items-center gap-1">
-            <Icon name="mail" size={12} /> Adverse action letter
+    <div className="mt-3 space-y-3 rounded-lg border border-red-500/30 bg-red-500/5 p-3">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <p className="flex items-center gap-1 text-xs font-semibold text-red-700">
+            <Icon name="gavel" size={13} /> Adverse-action workflow
           </p>
-          <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
-            Notify the candidate we&apos;re not moving forward based on the background report (FCRA-compliant template).
+          <p className="mt-0.5 text-[10px] text-[var(--color-text-muted)]">
+            Review the report and applicable requirements before sending either notice.
           </p>
         </div>
-        {sentAt ? (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-700 shrink-0">
-            Sent {new Date(sentAt).toLocaleDateString()}
-          </span>
-        ) : (
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-700 shrink-0">
-            Not sent
-          </span>
-        )}
+        <a
+          href={CONTINENTAL_PORTAL_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10"
+        >
+          Open Continental portal <Icon name="open_in_new" size={11} />
+        </a>
       </div>
-      {showReason && (
+
+      <div className="rounded-lg bg-[var(--color-surface)] p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-xs font-semibold text-[var(--color-text-primary)]">1. Pre-adverse action notice</p>
+            <p className="mt-0.5 text-[10px] text-[var(--color-text-muted)]">
+              Sends the report attachment, current CFPB rights-summary link, and a response date. No hiring decision is made.
+            </p>
+          </div>
+          <span className={cn(
+            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+            deliveryFailed ? "bg-red-500/10 text-red-700" : preSentAt ? "bg-emerald-500/10 text-emerald-700" : "bg-amber-500/10 text-amber-700"
+          )}>
+            {preStatusLabel}
+          </span>
+        </div>
         <textarea
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           rows={2}
-          placeholder="Optional reason shown to the candidate (leave blank for generic wording)"
-          className="w-full px-2 py-1.5 rounded text-xs bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
+          placeholder="Optional description of the information under review"
+          className="mt-2 w-full rounded border border-[var(--color-border)] bg-[var(--color-background)] px-2 py-1.5 text-xs text-[var(--color-text-primary)]"
         />
-      )}
-      {error && <p className="text-[10px] text-red-600">{error}</p>}
-      <div className="flex items-center gap-1.5">
-        {!sentAt && (
-          <>
-            <button
-              onClick={() => (showReason ? send() : setShowReason(true))}
-              disabled={sending}
-              className="px-2.5 py-1 rounded text-[11px] font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center gap-1"
+        <div className="mt-2 flex flex-wrap items-end gap-2">
+          <label className="text-[10px] font-medium text-[var(--color-text-muted)]">
+            Response period
+            <select
+              value={responseDays}
+              onChange={(event) => setResponseDays(Number(event.target.value))}
+              className="mt-1 block rounded border border-[var(--color-border)] bg-[var(--color-background)] px-2 py-1 text-xs text-[var(--color-text-primary)]"
             >
-              {sending && <Icon name="progress_activity" size={10} className="animate-material-spin" />}
-              <Icon name="send" size={10} />
-              {showReason ? "Send letter" : "Send adverse action letter"}
-            </button>
-            {showReason && (
-              <button
-                onClick={() => setShowReason(false)}
-                className="px-2.5 py-1 rounded text-[11px] font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]"
-              >
-                Cancel
-              </button>
-            )}
-          </>
-        )}
-        {sentAt && (
+              <option value={5}>5 business days</option>
+              <option value={7}>7 business days</option>
+              <option value={10}>10 business days</option>
+            </select>
+          </label>
           <button
-            onClick={() => send(true)}
+            type="button"
+            onClick={sendPreNotice}
             disabled={sending}
-            className="px-2.5 py-1 rounded text-[11px] font-medium bg-[var(--color-background)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] border border-[var(--color-border)] flex items-center gap-1"
+            className="inline-flex h-8 items-center gap-1 rounded bg-red-600 px-2.5 text-[11px] font-medium text-white hover:bg-red-700 disabled:opacity-50"
           >
             {sending && <Icon name="progress_activity" size={10} className="animate-material-spin" />}
-            <Icon name="refresh" size={10} /> Resend
+            <Icon name="send" size={10} />
+            {preSentAt ? "Resend pre-adverse notice" : "Send pre-adverse notice"}
           </button>
+        </div>
+        {preSentAt && (
+          <p className="mt-2 text-[10px] text-[var(--color-text-muted)]">
+            Sent {new Date(preSentAt).toLocaleDateString()}
+            {preDueAt ? ` · response period ends ${new Date(preDueAt).toLocaleDateString()}` : ""}
+          </p>
         )}
       </div>
+
+      <div className="rounded-lg bg-[var(--color-surface)] p-3">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <p className="text-xs font-semibold text-[var(--color-text-primary)]">2. Final adverse-action letter</p>
+            <p className="mt-0.5 text-[10px] text-[var(--color-text-muted)]">
+              Available after the configured response period. Sending it rejects the candidate and marks them do not call.
+            </p>
+          </div>
+          <span className={cn(
+            "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+            finalSentAt ? "bg-emerald-500/10 text-emerald-700" : "bg-[var(--color-background)] text-[var(--color-text-muted)]"
+          )}>
+            {finalSentAt ? `Sent ${new Date(finalSentAt).toLocaleDateString()}` : responsePeriodComplete ? "Ready" : "Waiting"}
+          </span>
+        </div>
+        <div className="mt-2">
+          <button
+            type="button"
+            onClick={() => sendFinal(Boolean(finalSentAt))}
+            disabled={sending || !responsePeriodComplete}
+            className="inline-flex h-8 items-center gap-1 rounded bg-red-600 px-2.5 text-[11px] font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {sending && <Icon name="progress_activity" size={10} className="animate-material-spin" />}
+            <Icon name={finalSentAt ? "refresh" : "send"} size={10} />
+            {finalSentAt ? "Resend final letter" : "Send final adverse-action letter"}
+          </button>
+        </div>
+      </div>
+
+      {error && <p role="alert" className="text-[10px] text-red-700">{error}</p>}
     </div>
   );
 }
@@ -909,13 +994,13 @@ export function CandidateDetailDialog({
                     className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs font-medium bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
                   >
                     <Icon name="school" size={14} />
-                    Move to Pre-Onboarding (no email needed yet)
+                    Move to Written Offer (no email needed yet)
                   </button>
                 )}
                 {form.companyEmail === "__PRE_ONBOARDING__" && (
                   <div className="flex items-center gap-2 p-2 rounded-lg bg-amber-500/10 border border-amber-500/20">
                     <Icon name="school" size={14} className="text-amber-500" />
-                    <p className="text-xs text-amber-600">Will move to Pre-Onboarding — email can be assigned later</p>
+                    <p className="text-xs text-amber-600">Will move to Written Offer — email can be assigned later</p>
                     <button onClick={() => update("companyEmail", "")} className="ml-auto text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">Change</button>
                   </div>
                 )}
@@ -1096,7 +1181,11 @@ export function CandidateDetailDialog({
                 {bgCheckStatus === "FAILED" && (
                   <AdverseActionBlock
                     candidateId={candidate.id}
-                    alreadySentAt={candidate.adverseActionLetterSentAt || null}
+                    initialPreStatus={candidate.preAdverseActionStatus || null}
+                    initialPreSentAt={candidate.preAdverseActionSentAt || null}
+                    initialPreDueAt={candidate.preAdverseActionDueAt || null}
+                    initialPreError={candidate.preAdverseActionError || null}
+                    initialFinalSentAt={candidate.adverseActionLetterSentAt || null}
                   />
                 )}
                 {(() => {

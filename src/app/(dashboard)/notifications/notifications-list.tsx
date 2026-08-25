@@ -23,6 +23,7 @@ const FILTERS = [
   { key: "onboarding", label: "Hiring & Onboarding" },
   { key: "interviews", label: "Interviews" },
   { key: "feed", label: "Feed" },
+  { key: "email_delivery", label: "Email Delivery" },
 ];
 
 function timeAgo(dateStr: string) {

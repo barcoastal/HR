@@ -27,9 +27,10 @@ export async function getNotifications(params?: {
     const typeMap: Record<string, string[]> = {
       stage_changes: ["STAGE_CHANGE"],
       signing: ["OFFER_SENT", "OFFER_SIGNED", "DOCUMENT_SIGN_REQUEST", "DOCUMENT_SIGNED"],
-      onboarding: ["NEW_HIRE", "TASK_ASSIGNED", "ONBOARDING_COMPLETED"],
+      onboarding: ["NEW_HIRE", "ONBOARDING_STARTED", "TASK_ASSIGNED", "ONBOARDING_COMPLETED"],
       interviews: ["INTERVIEW_SCHEDULED"],
       feed: ["FEED_POST", "FEED_EVENT"],
+      email_delivery: ["EMAIL_DELIVERY_FAILED"],
     };
     const types = typeMap[params.type];
     if (types) where.type = { in: types };

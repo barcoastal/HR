@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, getInitials, timeAgo } from "@/lib/utils";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
@@ -60,12 +60,30 @@ function parseSkills(skills: string | null): string[] {
 export function MyCandidatesView({
   candidates,
   pipelineStages,
+  focusedCandidateId,
 }: {
   candidates: CandidateRow[];
   pipelineStages: PipelineStage[];
+  focusedCandidateId?: string;
 }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!focusedCandidateId || !candidates.some((candidate) => candidate.id === focusedCandidateId)) return;
+    setSearch("");
+    setStatusFilter("ALL");
+    setHighlightedId(focusedCandidateId);
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(`my-candidate-${focusedCandidateId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(timer);
+    };
+  }, [candidates, focusedCandidateId]);
 
   const visibleStages = pipelineStages.filter((s) => s.visible).sort((a, b) => a.order - b.order);
 
@@ -186,18 +204,18 @@ export function MyCandidatesView({
                   <span className={cn("text-sm font-semibold", s.color || "text-[var(--color-text-primary)]")}>{s.label}</span>
                   <span className="text-xs text-[var(--color-text-muted)]">· {(grouped[s.id] || []).length}</span>
                 </div>
-                <CandidateList rows={grouped[s.id] || []} />
+                <CandidateList rows={grouped[s.id] || []} highlightedId={highlightedId} />
               </div>
             ))}
         </div>
       ) : (
-        <CandidateList rows={filtered} />
+        <CandidateList rows={filtered} highlightedId={highlightedId} />
       )}
     </div>
   );
 }
 
-function CandidateList({ rows }: { rows: CandidateRow[] }) {
+function CandidateList({ rows, highlightedId }: { rows: CandidateRow[]; highlightedId: string | null }) {
   return (
     <div className="space-y-2">
       {rows.map((c) => {
@@ -207,9 +225,14 @@ function CandidateList({ rows }: { rows: CandidateRow[] }) {
         return (
           <div
             key={c.id}
+            id={`my-candidate-${c.id}`}
+            aria-current={highlightedId === c.id ? "true" : undefined}
             className={cn(
-              "rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-3",
-              "flex items-center gap-3 hover:border-[var(--color-accent)]/40 transition-colors"
+              "scroll-mt-28 rounded-xl border bg-[var(--color-surface)] p-3",
+              "flex items-center gap-3 hover:border-[var(--color-accent)]/40 transition-colors duration-200",
+              highlightedId === c.id
+                ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
+                : "border-[var(--color-border)]"
             )}
           >
             <div

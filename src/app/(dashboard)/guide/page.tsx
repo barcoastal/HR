@@ -348,7 +348,8 @@ export default async function GuidePage() {
             <li>The status begins as <strong>Awaiting Applicant</strong>, then changes as Continental creates and completes the order. The open dialog polls automatically; <strong>Refresh Status</strong> checks immediately.</li>
             <li>When complete, authorized HR users can open <strong>View Report</strong>. The report is served through CALATRAVA so provider credentials stay private.</li>
             <li>Passed/failed completion notifications follow the Settings notification matrix.</li>
-            <li>A failed result does not automatically send an adverse-action letter. Review the report and use <strong>Send adverse action letter</strong> deliberately.</li>
+            <li>A flagged result does not automatically reject the candidate. The candidate record guides HR through a pre-adverse notice first, a configurable response period, and then the final adverse-action letter.</li>
+            <li>The pre-adverse notice is sent and tracked by CALATRAVA with the report attached. <strong>Open Continental portal</strong> remains available in the same panel as a backup.</li>
           </ol>
           <Note title="Provider change" tone="info">
             New screening orders use Continental Screening Services API v2. The former
@@ -359,18 +360,18 @@ export default async function GuidePage() {
           <p>
             When marking a candidate Hired, enter the company email and start date and confirm the
             manager/job details. CALATRAVA creates or links the Employee, preserves the candidate
-            history, sends the configured stage documents, and starts Pre-Onboarding or Onboarding
+            history, sends the configured stage documents, and starts Written Offer or Onboarding
             based on the configured checklist.
           </p>
         </section>
 
         <section id="onboarding">
-          <h2>Pre-onboarding, onboarding, and offboarding</h2>
+          <h2>Written Offer, onboarding, and offboarding</h2>
           <p>These pages are available to roles with the matching workflow permission.</p>
           <div className="guide-grid">
             <div className="guide-card">
-              <h3>Pre-Onboarding</h3>
-              <p><Route>/pre-onboarding</Route> tracks work due before the employee&apos;s active start: forms, signatures, welcome steps, equipment requests, or assigned internal tasks.</p>
+              <h3>Written Offer</h3>
+              <p><Route>/pre-onboarding</Route> tracks the forms and signatures a candidate must complete. When every required document is finished, the candidate moves to Onboarding automatically.</p>
             </div>
             <div className="guide-card">
               <h3>Onboarding</h3>
@@ -575,7 +576,7 @@ export default async function GuidePage() {
           <div className="guide-grid">
             <div className="guide-card"><h3>Company &amp; access</h3><ul><li>Company name, domain, logo/favicon, sender name/email</li><li>User invitations, passwords, roles, and deletion</li><li>Role permission matrix</li><li>Recruiter assignments</li></ul></div>
             <div className="guide-card"><h3>Recruitment setup</h3><ul><li>Pipeline stages and candidate custom fields</li><li>Stage notification recipients</li><li>Stage and position documents</li><li>Recruitment platform records and sync controls</li></ul></div>
-            <div className="guide-card"><h3>People programs</h3><ul><li>Department review templates</li><li>Departments, teams, and job titles</li><li>Pre-onboarding, onboarding, and offboarding checklists</li><li>Time-off policies and pulse surveys</li></ul></div>
+            <div className="guide-card"><h3>People programs</h3><ul><li>Department review templates</li><li>Departments, teams, and job titles</li><li>Written Offer, onboarding, and offboarding checklists</li><li>Time-off policies and pulse surveys</li></ul></div>
             <div className="guide-card"><h3>Delivery &amp; systems</h3><ul><li>Email templates and preview/send-test controls</li><li>Notification action/recipient/channel matrix</li><li>Native and platform integrations</li><li>Gusto connection and employee mapping</li></ul></div>
           </div>
 
@@ -594,7 +595,8 @@ export default async function GuidePage() {
             <li><strong>Indeed, LinkedIn Recruiter, Jobing, Handshake, EmployFL</strong>: connect or store credentials only when that provider is actively used.</li>
             <li><strong>Google Calendar platform connection</strong>: shared connection for company-level flows such as interviews or fallback behavior. It is separate from each person&apos;s Connect Google Calendar button.</li>
             <li><strong>Continental Screening</strong>: server-managed screening credentials; not a per-user Settings connection.</li>
-            <li><strong>Resend</strong>: transactional email delivery using the configured verified sender domain.</li>
+            <li><strong>Resend</strong>: transactional email delivery using the configured verified sender domain. Settings shows each automated email as queued, sent, delivered, delayed, or failed.</li>
+            <li>Configure a signed Resend webhook to <Route>/api/email/webhook</Route> with <code>RESEND_WEBHOOK_SECRET</code> so delivered, bounced, suppressed, and complained statuses update automatically. The employee who initiated a failed email receives an in-app notification.</li>
             <li><strong>Gusto</strong>: payroll/time-off OAuth plus employee mapping.</li>
           </ul>
           <Note title="Personal vs shared Google connection">

@@ -68,6 +68,11 @@ export type CandidateMinAggregateOutputType = {
   backgroundCheckOptions: string | null
   backgroundReportFilename: string | null
   backgroundReportImportedAt: Date | null
+  preAdverseActionStatus: string | null
+  preAdverseActionSentAt: Date | null
+  preAdverseActionDueAt: Date | null
+  preAdverseActionProviderId: string | null
+  preAdverseActionError: string | null
   adverseActionLetterSentAt: Date | null
   offerDocUrl: string | null
   offerSentAt: Date | null
@@ -111,6 +116,11 @@ export type CandidateMaxAggregateOutputType = {
   backgroundCheckOptions: string | null
   backgroundReportFilename: string | null
   backgroundReportImportedAt: Date | null
+  preAdverseActionStatus: string | null
+  preAdverseActionSentAt: Date | null
+  preAdverseActionDueAt: Date | null
+  preAdverseActionProviderId: string | null
+  preAdverseActionError: string | null
   adverseActionLetterSentAt: Date | null
   offerDocUrl: string | null
   offerSentAt: Date | null
@@ -154,6 +164,11 @@ export type CandidateCountAggregateOutputType = {
   backgroundCheckOptions: number
   backgroundReportFilename: number
   backgroundReportImportedAt: number
+  preAdverseActionStatus: number
+  preAdverseActionSentAt: number
+  preAdverseActionDueAt: number
+  preAdverseActionProviderId: number
+  preAdverseActionError: number
   adverseActionLetterSentAt: number
   offerDocUrl: number
   offerSentAt: number
@@ -211,6 +226,11 @@ export type CandidateMinAggregateInputType = {
   backgroundCheckOptions?: true
   backgroundReportFilename?: true
   backgroundReportImportedAt?: true
+  preAdverseActionStatus?: true
+  preAdverseActionSentAt?: true
+  preAdverseActionDueAt?: true
+  preAdverseActionProviderId?: true
+  preAdverseActionError?: true
   adverseActionLetterSentAt?: true
   offerDocUrl?: true
   offerSentAt?: true
@@ -254,6 +274,11 @@ export type CandidateMaxAggregateInputType = {
   backgroundCheckOptions?: true
   backgroundReportFilename?: true
   backgroundReportImportedAt?: true
+  preAdverseActionStatus?: true
+  preAdverseActionSentAt?: true
+  preAdverseActionDueAt?: true
+  preAdverseActionProviderId?: true
+  preAdverseActionError?: true
   adverseActionLetterSentAt?: true
   offerDocUrl?: true
   offerSentAt?: true
@@ -297,6 +322,11 @@ export type CandidateCountAggregateInputType = {
   backgroundCheckOptions?: true
   backgroundReportFilename?: true
   backgroundReportImportedAt?: true
+  preAdverseActionStatus?: true
+  preAdverseActionSentAt?: true
+  preAdverseActionDueAt?: true
+  preAdverseActionProviderId?: true
+  preAdverseActionError?: true
   adverseActionLetterSentAt?: true
   offerDocUrl?: true
   offerSentAt?: true
@@ -427,6 +457,11 @@ export type CandidateGroupByOutputType = {
   backgroundCheckOptions: string | null
   backgroundReportFilename: string | null
   backgroundReportImportedAt: Date | null
+  preAdverseActionStatus: string | null
+  preAdverseActionSentAt: Date | null
+  preAdverseActionDueAt: Date | null
+  preAdverseActionProviderId: string | null
+  preAdverseActionError: string | null
   adverseActionLetterSentAt: Date | null
   offerDocUrl: string | null
   offerSentAt: Date | null
@@ -493,6 +528,11 @@ export type CandidateWhereInput = {
   backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportFilename?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportImportedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionDueAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionProviderId?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionError?: Prisma.StringNullableFilter<"Candidate"> | string | null
   adverseActionLetterSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   offerDocUrl?: Prisma.StringNullableFilter<"Candidate"> | string | null
   offerSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -541,6 +581,11 @@ export type CandidateOrderByWithRelationInput = {
   backgroundCheckOptions?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundReportFilename?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundReportImportedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionProviderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionError?: Prisma.SortOrderInput | Prisma.SortOrder
   adverseActionLetterSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   offerDocUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   offerSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -592,6 +637,11 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportFilename?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportImportedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionDueAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionProviderId?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionError?: Prisma.StringNullableFilter<"Candidate"> | string | null
   adverseActionLetterSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   offerDocUrl?: Prisma.StringNullableFilter<"Candidate"> | string | null
   offerSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -640,6 +690,11 @@ export type CandidateOrderByWithAggregationInput = {
   backgroundCheckOptions?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundReportFilename?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundReportImportedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionDueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionProviderId?: Prisma.SortOrderInput | Prisma.SortOrder
+  preAdverseActionError?: Prisma.SortOrderInput | Prisma.SortOrder
   adverseActionLetterSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   offerDocUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   offerSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -691,6 +746,11 @@ export type CandidateScalarWhereWithAggregatesInput = {
   backgroundCheckOptions?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   backgroundReportFilename?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   backgroundReportImportedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
+  preAdverseActionStatus?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  preAdverseActionSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
+  preAdverseActionDueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
+  preAdverseActionProviderId?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  preAdverseActionError?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   adverseActionLetterSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
   offerDocUrl?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   offerSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
@@ -732,6 +792,11 @@ export type CandidateCreateInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -780,6 +845,11 @@ export type CandidateUncheckedCreateInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -824,6 +894,11 @@ export type CandidateUpdateInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -872,6 +947,11 @@ export type CandidateUncheckedUpdateInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -918,6 +998,11 @@ export type CandidateCreateManyInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -959,6 +1044,11 @@ export type CandidateUpdateManyMutationInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1002,6 +1092,11 @@ export type CandidateUncheckedUpdateManyInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1055,6 +1150,11 @@ export type CandidateCountOrderByAggregateInput = {
   backgroundCheckOptions?: Prisma.SortOrder
   backgroundReportFilename?: Prisma.SortOrder
   backgroundReportImportedAt?: Prisma.SortOrder
+  preAdverseActionStatus?: Prisma.SortOrder
+  preAdverseActionSentAt?: Prisma.SortOrder
+  preAdverseActionDueAt?: Prisma.SortOrder
+  preAdverseActionProviderId?: Prisma.SortOrder
+  preAdverseActionError?: Prisma.SortOrder
   adverseActionLetterSentAt?: Prisma.SortOrder
   offerDocUrl?: Prisma.SortOrder
   offerSentAt?: Prisma.SortOrder
@@ -1104,6 +1204,11 @@ export type CandidateMaxOrderByAggregateInput = {
   backgroundCheckOptions?: Prisma.SortOrder
   backgroundReportFilename?: Prisma.SortOrder
   backgroundReportImportedAt?: Prisma.SortOrder
+  preAdverseActionStatus?: Prisma.SortOrder
+  preAdverseActionSentAt?: Prisma.SortOrder
+  preAdverseActionDueAt?: Prisma.SortOrder
+  preAdverseActionProviderId?: Prisma.SortOrder
+  preAdverseActionError?: Prisma.SortOrder
   adverseActionLetterSentAt?: Prisma.SortOrder
   offerDocUrl?: Prisma.SortOrder
   offerSentAt?: Prisma.SortOrder
@@ -1147,6 +1252,11 @@ export type CandidateMinOrderByAggregateInput = {
   backgroundCheckOptions?: Prisma.SortOrder
   backgroundReportFilename?: Prisma.SortOrder
   backgroundReportImportedAt?: Prisma.SortOrder
+  preAdverseActionStatus?: Prisma.SortOrder
+  preAdverseActionSentAt?: Prisma.SortOrder
+  preAdverseActionDueAt?: Prisma.SortOrder
+  preAdverseActionProviderId?: Prisma.SortOrder
+  preAdverseActionError?: Prisma.SortOrder
   adverseActionLetterSentAt?: Prisma.SortOrder
   offerDocUrl?: Prisma.SortOrder
   offerSentAt?: Prisma.SortOrder
@@ -1344,6 +1454,11 @@ export type CandidateCreateWithoutManagerInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1390,6 +1505,11 @@ export type CandidateUncheckedCreateWithoutManagerInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1465,6 +1585,11 @@ export type CandidateScalarWhereInput = {
   backgroundCheckOptions?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportFilename?: Prisma.StringNullableFilter<"Candidate"> | string | null
   backgroundReportImportedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionStatus?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionDueAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  preAdverseActionProviderId?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  preAdverseActionError?: Prisma.StringNullableFilter<"Candidate"> | string | null
   adverseActionLetterSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   offerDocUrl?: Prisma.StringNullableFilter<"Candidate"> | string | null
   offerSentAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
@@ -1506,6 +1631,11 @@ export type CandidateCreateWithoutApplicationsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1553,6 +1683,11 @@ export type CandidateUncheckedCreateWithoutApplicationsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1612,6 +1747,11 @@ export type CandidateUpdateWithoutApplicationsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1659,6 +1799,11 @@ export type CandidateUncheckedUpdateWithoutApplicationsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1702,6 +1847,11 @@ export type CandidateCreateWithoutPositionInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1748,6 +1898,11 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1818,6 +1973,11 @@ export type CandidateCreateWithoutInterviewsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1865,6 +2025,11 @@ export type CandidateUncheckedCreateWithoutInterviewsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -1924,6 +2089,11 @@ export type CandidateUpdateWithoutInterviewsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1971,6 +2141,11 @@ export type CandidateUncheckedUpdateWithoutInterviewsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2014,6 +2189,11 @@ export type CandidateCreateWithoutSigningRequestsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -2061,6 +2241,11 @@ export type CandidateUncheckedCreateWithoutSigningRequestsInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -2120,6 +2305,11 @@ export type CandidateUpdateWithoutSigningRequestsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2167,6 +2357,11 @@ export type CandidateUncheckedUpdateWithoutSigningRequestsInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2211,6 +2406,11 @@ export type CandidateCreateManyManagerInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -2252,6 +2452,11 @@ export type CandidateUpdateWithoutManagerInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2298,6 +2503,11 @@ export type CandidateUncheckedUpdateWithoutManagerInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2343,6 +2553,11 @@ export type CandidateUncheckedUpdateManyWithoutManagerInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2385,6 +2600,11 @@ export type CandidateCreateManyPositionInput = {
   backgroundCheckOptions?: string | null
   backgroundReportFilename?: string | null
   backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
   adverseActionLetterSentAt?: Date | string | null
   offerDocUrl?: string | null
   offerSentAt?: Date | string | null
@@ -2426,6 +2646,11 @@ export type CandidateUpdateWithoutPositionInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2472,6 +2697,11 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2517,6 +2747,11 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2609,6 +2844,11 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   backgroundCheckOptions?: boolean
   backgroundReportFilename?: boolean
   backgroundReportImportedAt?: boolean
+  preAdverseActionStatus?: boolean
+  preAdverseActionSentAt?: boolean
+  preAdverseActionDueAt?: boolean
+  preAdverseActionProviderId?: boolean
+  preAdverseActionError?: boolean
   adverseActionLetterSentAt?: boolean
   offerDocUrl?: boolean
   offerSentAt?: boolean
@@ -2658,6 +2898,11 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   backgroundCheckOptions?: boolean
   backgroundReportFilename?: boolean
   backgroundReportImportedAt?: boolean
+  preAdverseActionStatus?: boolean
+  preAdverseActionSentAt?: boolean
+  preAdverseActionDueAt?: boolean
+  preAdverseActionProviderId?: boolean
+  preAdverseActionError?: boolean
   adverseActionLetterSentAt?: boolean
   offerDocUrl?: boolean
   offerSentAt?: boolean
@@ -2703,6 +2948,11 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   backgroundCheckOptions?: boolean
   backgroundReportFilename?: boolean
   backgroundReportImportedAt?: boolean
+  preAdverseActionStatus?: boolean
+  preAdverseActionSentAt?: boolean
+  preAdverseActionDueAt?: boolean
+  preAdverseActionProviderId?: boolean
+  preAdverseActionError?: boolean
   adverseActionLetterSentAt?: boolean
   offerDocUrl?: boolean
   offerSentAt?: boolean
@@ -2748,6 +2998,11 @@ export type CandidateSelectScalar = {
   backgroundCheckOptions?: boolean
   backgroundReportFilename?: boolean
   backgroundReportImportedAt?: boolean
+  preAdverseActionStatus?: boolean
+  preAdverseActionSentAt?: boolean
+  preAdverseActionDueAt?: boolean
+  preAdverseActionProviderId?: boolean
+  preAdverseActionError?: boolean
   adverseActionLetterSentAt?: boolean
   offerDocUrl?: boolean
   offerSentAt?: boolean
@@ -2761,7 +3016,7 @@ export type CandidateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "stageId" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "stageId" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "preAdverseActionStatus" | "preAdverseActionSentAt" | "preAdverseActionDueAt" | "preAdverseActionProviderId" | "preAdverseActionError" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
   manager?: boolean | Prisma.Candidate$managerArgs<ExtArgs>
@@ -2818,6 +3073,11 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     backgroundCheckOptions: string | null
     backgroundReportFilename: string | null
     backgroundReportImportedAt: Date | null
+    preAdverseActionStatus: string | null
+    preAdverseActionSentAt: Date | null
+    preAdverseActionDueAt: Date | null
+    preAdverseActionProviderId: string | null
+    preAdverseActionError: string | null
     adverseActionLetterSentAt: Date | null
     offerDocUrl: string | null
     offerSentAt: Date | null
@@ -3286,6 +3546,11 @@ export interface CandidateFieldRefs {
   readonly backgroundCheckOptions: Prisma.FieldRef<"Candidate", 'String'>
   readonly backgroundReportFilename: Prisma.FieldRef<"Candidate", 'String'>
   readonly backgroundReportImportedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
+  readonly preAdverseActionStatus: Prisma.FieldRef<"Candidate", 'String'>
+  readonly preAdverseActionSentAt: Prisma.FieldRef<"Candidate", 'DateTime'>
+  readonly preAdverseActionDueAt: Prisma.FieldRef<"Candidate", 'DateTime'>
+  readonly preAdverseActionProviderId: Prisma.FieldRef<"Candidate", 'String'>
+  readonly preAdverseActionError: Prisma.FieldRef<"Candidate", 'String'>
   readonly adverseActionLetterSentAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly offerDocUrl: Prisma.FieldRef<"Candidate", 'String'>
   readonly offerSentAt: Prisma.FieldRef<"Candidate", 'DateTime'>

@@ -45,7 +45,7 @@ export function PositionDocumentsManager({
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Position Documents</h2>
             <p className="text-xs text-[var(--color-text-muted)]">
               Documents tied to a specific position, e.g. compensation plans. Sent automatically at hire
-              alongside the Pre-Onboarding stage documents, only to hires for that position.
+              alongside the Written Offer stage documents, only to hires for that position.
             </p>
           </div>
         </div>

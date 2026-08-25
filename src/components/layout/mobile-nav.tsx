@@ -31,7 +31,7 @@ type DrawerSection = {
 };
 
 const allDrawerLinks = [
-  { href: "/pre-onboarding", label: "Pre-Onboarding", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
+  { href: "/pre-onboarding", label: "Written Offer", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
   { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r), section: "Workflow" },
   { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r), section: "Workflow" },
   { href: "/reviews", label: "Reviews", icon: "assignment_turned_in", access: (r: UserRole) => isManagerOrAbove(r), section: "Workflow" },

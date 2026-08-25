@@ -188,7 +188,7 @@ async function seed() {
     )
   );
   const preOnboarding = await db.onboardingChecklist.create({
-    data: { name: "Sales Pre-Onboarding", type: "PRE_ONBOARDING", departmentId: sales.id },
+    data: { name: "Sales Written Offer", type: "PRE_ONBOARDING", departmentId: sales.id },
   });
   await db.checklistItem.create({
     data: { checklistId: preOnboarding.id, order: 0, title: "Offer letter signed", dueDay: 1 },

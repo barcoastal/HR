@@ -239,7 +239,7 @@ const STAGE_LABELS: Record<string, string> = {
   INTERVIEW: "Interview",
   OFFER: "Offer",
   BACKGROUND_CHECK: "Background Check",
-  PRE_ONBOARDING: "Pre-Onboarding",
+  PRE_ONBOARDING: "Written Offer",
   ONBOARDING: "Onboarding",
   OFFBOARDING: "Offboarding",
   HIRED: "Hired",
@@ -315,6 +315,26 @@ async function sendStageDocumentsEmail(
     const missingPdf = docs.filter((d) => !d.pdfData);
     if (missingPdf.length > 0) {
       console.warn(`[stage-docs] ${missingPdf.length} doc(s) for stage ${status} have NO uploaded PDF and will be skipped: ${missingPdf.map((d) => d.name).join(", ")}`);
+      if (employeeId && status === "PRE_ONBOARDING") {
+        for (const doc of missingPdf.filter((item) => item.requiresSignature || item.requiresFill)) {
+          const documentAction = doc.requiresSignature ? "SIGN" : "FILL";
+          const existingRequirement = await db.employeeTask.findFirst({
+            where: { employeeId, documentName: doc.name, documentAction, status: "PENDING" },
+            select: { id: true },
+          });
+          if (!existingRequirement) {
+            await db.employeeTask.create({
+              data: {
+                employeeId,
+                title: `${documentAction === "SIGN" ? "Sign" : "Complete"} ${doc.name}`,
+                description: "Required Written Offer document — PDF upload is missing",
+                documentAction,
+                documentName: doc.name,
+              },
+            });
+          }
+        }
+      }
     }
     console.log(`[stage-docs] ${pdfDocs.length} docs have PDF data`);
     if (pdfDocs.length === 0) return;
@@ -334,9 +354,59 @@ async function sendStageDocumentsEmail(
       }
     }
 
+    async function resendPendingWrittenOfferRequest(documentAction: "SIGN" | "FILL", documentName: string) {
+      if (!employeeId || status !== "PRE_ONBOARDING" || !options?.onlyDocIds) return false;
+
+      const existingTask = await db.employeeTask.findFirst({
+        where: {
+          employeeId,
+          documentAction,
+          documentName,
+          status: "PENDING",
+          signingRequest: { isNot: null },
+        },
+        include: { signingRequest: true },
+        orderBy: { createdAt: "desc" },
+      });
+      if (!existingTask?.signingRequest) {
+        // Replace an orphaned task from a prior preparation failure so the
+        // retry can become the single active requirement.
+        await db.employeeTask.deleteMany({
+          where: {
+            employeeId,
+            documentAction,
+            documentName,
+            status: "PENDING",
+            signingRequest: { is: null },
+          },
+        });
+        return false;
+      }
+
+      if (documentAction === "SIGN") {
+        const { sendSigningRequestEmail } = await import("@/lib/email");
+        await sendSigningRequestEmail({
+          to: candidate.email,
+          firstName: candidate.firstName,
+          documentName,
+          signingUrl: `${baseUrl}/sign/${existingTask.signingRequest.token}`,
+        });
+      } else {
+        const { sendFillRequestEmail } = await import("@/lib/email");
+        await sendFillRequestEmail({
+          to: candidate.email,
+          firstName: candidate.firstName,
+          documentName,
+          fillUrl: `${baseUrl}/fill/${existingTask.signingRequest.token}`,
+        });
+      }
+      return true;
+    }
+
     // Handle docs that require signing — upload filled PDF to FileBlob, create signing request
     for (const doc of signingDocs) {
      try {
+      if (await resendPendingWrittenOfferRequest("SIGN", doc.name)) continue;
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for signing, ${positions.length} placeholders`);
       const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
@@ -350,13 +420,29 @@ async function sendStageDocumentsEmail(
       });
       const documentUrl = `/api/onboarding-docs/${filename}`;
 
+      // Stage documents become visible, trackable Written Offer tasks. Linking
+      // the signing request lets its completion advance the hire automatically.
+      const employeeTask = employeeId && status === "PRE_ONBOARDING"
+        ? await db.employeeTask.create({
+            data: {
+              employeeId,
+              title: `Sign ${doc.name}`,
+              description: "Required Written Offer document",
+              documentAction: "SIGN",
+              documentUrl,
+              documentName: doc.name,
+            },
+          })
+        : null;
+
       // Create signing request (sends email automatically)
       const { createStandaloneSigningRequest } = await import("@/lib/actions/signing");
       await createStandaloneSigningRequest({
+        employeeTaskId: employeeTask?.id,
         employeeId: employeeId || undefined,
         candidateId: employeeId ? undefined : candidate.id,
-        signerName: employeeId ? undefined : `${candidate.firstName} ${candidate.lastName}`,
-        signerEmail: employeeId ? undefined : candidate.email,
+        signerName: `${candidate.firstName} ${candidate.lastName}`,
+        signerEmail: candidate.email,
         documentUrl,
         documentName: doc.name,
         signaturePlacements,
@@ -371,6 +457,7 @@ async function sendStageDocumentsEmail(
     // Handle docs that require filling — upload filled PDF (with placeholders pre-filled), create fill request
     for (const doc of fillDocs) {
      try {
+      if (await resendPendingWrittenOfferRequest("FILL", doc.name)) continue;
       const positions = JSON.parse(doc.placeholders || "[]");
       console.log(`[stage-docs] Filling "${doc.name}" for fill form, ${positions.length} placeholders`);
       const { pdf: filledPdf, signaturePlacements } = await fillPdfPlaceholders(doc.pdfData!, positions, candidateInfo, settings.companyName);
@@ -383,12 +470,26 @@ async function sendStageDocumentsEmail(
       });
       const documentUrl = `/api/onboarding-docs/${filename}`;
 
+      const employeeTask = employeeId && status === "PRE_ONBOARDING"
+        ? await db.employeeTask.create({
+            data: {
+              employeeId,
+              title: `Complete ${doc.name}`,
+              description: "Required Written Offer document",
+              documentAction: "FILL",
+              documentUrl,
+              documentName: doc.name,
+            },
+          })
+        : null;
+
       // Create a signing request (reused for fill) and send fill email
       const crypto = await import("crypto");
       const token = crypto.randomBytes(32).toString("hex");
       const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
       await db.signingRequest.create({
         data: {
+          employeeTaskId: employeeTask?.id || null,
           employeeId: employeeId || null,
           candidateId: employeeId ? null : candidate.id,
           signerName: `${candidate.firstName} ${candidate.lastName}`,
@@ -1012,8 +1113,9 @@ async function hireInner(
   const employeeEmail = skipEmail ? candidate.email : (options?.companyEmail?.trim() || candidate.email);
   const startDate = options?.startDate ? new Date(options.startDate) : new Date();
 
-  // If skipEmail (pre-onboarding), set status to PRE_ONBOARDING directly
-  const initialStatus = skipEmail ? "PRE_ONBOARDING" : "ONBOARDING";
+  // Every hire enters Written Offer first. With no required documents, the
+  // automatic completion check moves them straight into Onboarding.
+  const initialStatus = "PRE_ONBOARDING";
 
   // Block the hire if an Employee already exists with this email — Prisma's
   // unique constraint would throw a generic P2002 that Next.js then hides in
@@ -1046,7 +1148,7 @@ async function hireInner(
     },
   });
 
-  // Create user account and send welcome email (skip if pre-onboarding without company email)
+  // Create user account and send welcome email unless HR deferred the login email.
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   if (!skipEmail) {
     const existingUser = await db.user.findUnique({ where: { email: employeeEmail } });
@@ -1072,27 +1174,15 @@ async function hireInner(
     });
   }
 
-  // If skipEmail, assign pre-onboarding tasks and return early
+  // If login creation was deferred, assign Written Offer documents and return early.
   if (skipEmail) {
     const { resolvePreOnboardingTasks } = await import("./onboarding-resolution");
+    const { assignWrittenOfferTasks } = await import("@/lib/written-offer");
     const deptId = candidate.position?.departmentId || null;
     const jobTitleStr = candidate.position?.title || null;
     const preOnboardingTasks = await resolvePreOnboardingTasks(deptId, jobTitleStr);
 
-    for (const task of preOnboardingTasks) {
-      await db.employeeTask.create({
-        data: {
-          employeeId: employee.id,
-          checklistItemId: task.checklistItemId,
-          title: task.title,
-          description: task.description,
-          documentAction: task.documentAction,
-          documentUrl: task.documentUrl,
-          documentName: task.documentName,
-          assigneeId: task.assigneeId,
-        },
-      });
-    }
+    await assignWrittenOfferTasks({ ...employee, email: candidate.email }, preOnboardingTasks);
 
     await db.candidate.update({
       where: { id: candidateId },
@@ -1105,13 +1195,15 @@ async function hireInner(
       action: "NEW_HIRE",
       candidateId,
       message: `${candidate.firstName} ${candidate.lastName} has been hired`,
-      link: "/onboarding",
+      link: "/pre-onboarding",
       emailSubject: `New Hire: ${candidate.firstName} ${candidate.lastName}`,
-      emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
+      emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and entered Written Offer.</p>`,
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
     // Send stage documents for PRE_ONBOARDING
     await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+    const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+    await maybeAdvanceWrittenOfferToOnboarding(employee.id);
 
     revalidatePath("/cv");
     revalidatePath("/pre-onboarding");
@@ -1119,147 +1211,42 @@ async function hireInner(
     return { success: true, employeeId: employee.id, taskCount: preOnboardingTasks.length };
   }
 
-  // Check for pre-onboarding tasks first
-  const { resolveOnboardingTasks, resolvePreOnboardingTasks } = await import("./onboarding-resolution");
-  const { createSigningRequest } = await import("./signing");
-  const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
-
+  // Assign Written Offer documents before any internal Onboarding work.
+  const { resolvePreOnboardingTasks } = await import("./onboarding-resolution");
   const deptId = candidate.position?.departmentId || null;
   const jobTitleStr = candidate.position?.title || null;
-
   const preOnboardingTasks = await resolvePreOnboardingTasks(deptId, jobTitleStr);
 
-  if (preOnboardingTasks.length > 0) {
-    // Has pre-onboarding tasks — set status to PRE_ONBOARDING and assign those
-    await db.employee.update({ where: { id: employee.id }, data: { status: "PRE_ONBOARDING" } });
-
-    for (const task of preOnboardingTasks) {
-      await db.employeeTask.create({
-        data: {
-          employeeId: employee.id,
-          checklistItemId: task.checklistItemId,
-          title: task.title,
-          description: task.description,
-          documentAction: task.documentAction,
-          documentUrl: task.documentUrl,
-          documentName: task.documentName,
-          assigneeId: task.assigneeId,
-        },
-      });
-    }
-
-    // Update candidate status
-    await db.candidate.update({
-      where: { id: candidateId },
-      data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
-    });
-
-    // Send NEW_HIRE notification
-    const { sendNotifications: sendNotifs } = await import("@/lib/notifications/send");
-    sendNotifs({
-      action: "NEW_HIRE",
-      candidateId,
-      message: `${candidate.firstName} ${candidate.lastName} has been hired`,
-      link: "/onboarding",
-      emailSubject: `New Hire: ${candidate.firstName} ${candidate.lastName}`,
-      emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
-    }).catch((err) => console.error("[candidates] New hire notification error:", err));
-
-    // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
-
-    revalidatePath("/cv");
-    revalidatePath("/onboarding");
-    revalidatePath("/people");
-    return { success: true, employeeId: employee.id, taskCount: preOnboardingTasks.length };
-  }
-
-  const resolvedTasks = await resolveOnboardingTasks(deptId, jobTitleStr);
-
-  for (const task of resolvedTasks) {
-    const employeeTask = await db.employeeTask.create({
-      data: {
-        employeeId: employee.id,
-        checklistItemId: task.checklistItemId,
-        title: task.title,
-        description: task.description,
-        documentAction: task.documentAction,
-        documentUrl: task.documentUrl,
-        documentName: task.documentName,
-        assigneeId: task.assigneeId,
-      },
-    });
-
-    // Handle document actions — send to company email
-    if (task.documentAction === "SEND" && task.sendEmail && task.emailSubject && task.emailBody) {
-      await sendOnboardingEmail({
-        to: employeeEmail,
-        subject: task.emailSubject,
-        body: task.emailBody,
-        documentUrl: task.documentUrl,
-        documentName: task.documentName,
-      });
-    } else if (task.documentAction === "SIGN" && task.documentUrl && task.documentName) {
-      const signingReq = await createSigningRequest(
-        employeeTask.id,
-        employee.id,
-        task.documentUrl,
-        task.documentName
-      );
-      await sendSigningRequestEmail({
-        to: employeeEmail,
-        firstName: candidate.firstName,
-        documentName: task.documentName,
-        signingUrl: `${baseUrl}/sign/${signingReq.token}`,
-      });
-    } else if (task.sendEmail && task.emailSubject && task.emailBody) {
-      await sendOnboardingEmail({
-        to: employeeEmail,
-        subject: task.emailSubject,
-        body: task.emailBody,
-      });
-    }
-
-    // Notify assigned employee
-    if (task.assigneeId) {
-      const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
-      if (assignee) {
-        await sendTaskAssignmentEmail({
-          to: assignee.email,
-          assigneeName: assignee.firstName,
-          newHireName: `${candidate.firstName} ${candidate.lastName}`,
-          taskTitle: task.title,
-          taskDescription: task.description,
-        });
-      }
-    }
-  }
+  const { assignWrittenOfferTasks } = await import("@/lib/written-offer");
+  await assignWrittenOfferTasks({ ...employee, email: candidate.email }, preOnboardingTasks);
 
   await db.candidate.update({
     where: { id: candidateId },
-    data: { status: "HIRED", hiredAt: new Date() },
+    data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
   });
 
   // Send NEW_HIRE notification
-  const { sendNotifications: sendHireNotifs } = await import("@/lib/notifications/send");
-  sendHireNotifs({
+  const { sendNotifications } = await import("@/lib/notifications/send");
+  sendNotifications({
     action: "NEW_HIRE",
     candidateId,
     message: `${candidate.firstName} ${candidate.lastName} has been hired`,
-    link: "/onboarding",
+    link: "/pre-onboarding",
     emailSubject: `New Hire: ${candidate.firstName} ${candidate.lastName}`,
-    emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and onboarding has started.</p>`,
+    emailBody: `<p><strong>${candidate.firstName} ${candidate.lastName}</strong> has been hired and entered Written Offer.</p>`,
   }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
-  // Send PRE_ONBOARDING stage documents (this branch previously sent none)
+  // Send stage and position-specific Written Offer documents.
   await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+  const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+  await maybeAdvanceWrittenOfferToOnboarding(employee.id);
 
   revalidatePath("/cv");
   revalidatePath("/people");
-  revalidatePath("/org");
   revalidatePath("/onboarding");
+  revalidatePath("/pre-onboarding");
 
-  return { success: true, employeeId: employee.id, taskCount: resolvedTasks.length };
+  return { success: true, employeeId: employee.id, taskCount: preOnboardingTasks.length };
 }
 
 export async function getPositions() {

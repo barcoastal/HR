@@ -38,6 +38,7 @@ type Position = { id: string; title: string };
 type Props = {
   candidates: CandidateItem[];
   positions: Position[];
+  focusedCandidateId?: string;
 };
 
 function parseSkills(skills: string | null): string[] {
@@ -163,7 +164,7 @@ function ResumeViewer({ resumeUrl, candidateName }: { resumeUrl: string; candida
   );
 }
 
-export function CandidateDatabase({ candidates, positions }: Props) {
+export function CandidateDatabase({ candidates, positions, focusedCandidateId }: Props) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
@@ -229,6 +230,36 @@ export function CandidateDatabase({ candidates, positions }: Props) {
   const [selectedPosition, setSelectedPosition] = useState("");
   const [pulling, setPulling] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!focusedCandidateId || !candidates.some((candidate) => candidate.id === focusedCandidateId)) return;
+    setSearch("");
+    setSourceFilter("");
+    setPositionFilter("");
+    setStatusFilter("");
+    setDateFilter("");
+    setResumeFilter("");
+    setPipelineFilter("");
+    setDncFilter("");
+    setExpandedId(focusedCandidateId);
+    setHighlightedId(focusedCandidateId);
+
+    let nestedFrame = 0;
+    const frame = requestAnimationFrame(() => {
+      nestedFrame = requestAnimationFrame(() => {
+        const elements = Array.from(document.querySelectorAll<HTMLElement>(`[data-candidate-record="${focusedCandidateId}"]`));
+        const visible = elements.find((element) => element.offsetParent !== null) || elements[0];
+        visible?.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
+    return () => {
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(nestedFrame);
+      window.clearTimeout(timer);
+    };
+  }, [candidates, focusedCandidateId]);
 
   const distinctSources = useMemo(() => {
     const sources = new Set<string>();
@@ -454,7 +485,16 @@ export function CandidateDatabase({ candidates, positions }: Props) {
         {filtered.map((c) => {
           const skills = parseSkills(c.skills);
           return (
-            <div key={c.id} className={cn("rounded-xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
+            <div
+              key={c.id}
+              data-candidate-record={c.id}
+              className={cn(
+                "scroll-mt-28 rounded-xl border bg-[var(--color-surface)] p-4 transition-colors duration-200",
+                highlightedId === c.id
+                  ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
+                  : "border-[var(--color-border)]"
+              )}
+            >
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <div className="h-8 w-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
@@ -600,9 +640,11 @@ export function CandidateDatabase({ candidates, positions }: Props) {
               return (
                 <React.Fragment key={c.id}>
                   <tr
+                    data-candidate-record={c.id}
                     className={cn(
                       "border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/30 transition-colors cursor-pointer",
-                      isExpanded && "bg-[var(--color-border)]/20"
+                      isExpanded && "bg-[var(--color-border)]/20",
+                      highlightedId === c.id && "bg-[var(--color-accent)]/10 outline outline-2 outline-[var(--color-accent)] outline-offset-[-2px]"
                     )}
                     onClick={() => setExpandedId(isExpanded ? null : c.id)}
                   >

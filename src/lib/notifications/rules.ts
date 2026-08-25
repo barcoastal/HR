@@ -33,5 +33,18 @@ export async function getGroupEmployeeIds(group: string): Promise<string[]> {
 
 // Back-compat alias for existing callers
 export async function getHrTeamEmployeeIds(): Promise<string[]> {
-  return getGroupEmployeeIds("HR_TEAM");
+  const configuredIds = await getGroupEmployeeIds("HR_TEAM");
+  if (configuredIds.length > 0) return configuredIds;
+
+  // A fresh installation may not have an explicit HR Team group yet. Falling
+  // back to linked HR/admin accounts ensures internal workflow alerts are not
+  // silently dropped before Settings has been configured.
+  const hrUsers = await db.user.findMany({
+    where: {
+      role: { in: ["SUPER_ADMIN", "ADMIN", "HR"] },
+      employeeId: { not: null },
+    },
+    select: { employeeId: true },
+  });
+  return hrUsers.flatMap((user) => user.employeeId ? [user.employeeId] : []);
 }

@@ -205,7 +205,8 @@ export async function GET(request: Request) {
               email: true,
               phone: true,
               status: true,
-              position: { select: { title: true } },
+              inPipeline: true,
+              position: { select: { id: true, title: true } },
             },
             orderBy: { updatedAt: "desc" },
             take: 5,
@@ -299,7 +300,11 @@ export async function GET(request: Request) {
         subtitle: candidate.position?.title || "Candidate",
         detail: [candidate.email, candidate.phone].filter(Boolean).join(" · "),
         status: readableStatus(candidate.status),
-        href: recruiterScope ? "/my-candidates" : "/cv",
+        href: recruiterScope
+          ? `/my-candidates?candidateId=${candidate.id}`
+          : candidate.inPipeline
+            ? `/cv?candidateId=${candidate.id}${candidate.position?.id ? `&positionId=${candidate.position.id}` : ""}`
+            : `/cv?tab=database&candidateId=${candidate.id}`,
       })),
       ...positions.map((position) => ({
         id: `position-${position.id}`,
@@ -308,7 +313,7 @@ export async function GET(request: Request) {
         subtitle: [position.department?.name, position.location].filter(Boolean).join(" · ") || "Position",
         detail: position.type || undefined,
         status: readableStatus(position.status),
-        href: "/cv",
+        href: `/cv?positionId=${position.id}`,
       }))
     );
 

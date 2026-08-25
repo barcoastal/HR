@@ -17,7 +17,7 @@ type DocItem = {
 };
 
 const STAGE_LABEL: Record<string, string> = {
-  PRE_ONBOARDING: "Pre-Onboarding",
+  PRE_ONBOARDING: "Written Offer",
   ONBOARDING: "Onboarding",
   OFFBOARDING: "Offboarding",
 };

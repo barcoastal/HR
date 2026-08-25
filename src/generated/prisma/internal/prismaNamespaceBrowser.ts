@@ -104,6 +104,7 @@ export const ModelName = {
   StageDocument: 'StageDocument',
   PositionDocument: 'PositionDocument',
   EmailTemplate: 'EmailTemplate',
+  EmailDelivery: 'EmailDelivery',
   RolePermission: 'RolePermission',
   OAuthState: 'OAuthState',
   ChatWorkspace: 'ChatWorkspace',
@@ -598,6 +599,11 @@ export const CandidateScalarFieldEnum = {
   backgroundCheckOptions: 'backgroundCheckOptions',
   backgroundReportFilename: 'backgroundReportFilename',
   backgroundReportImportedAt: 'backgroundReportImportedAt',
+  preAdverseActionStatus: 'preAdverseActionStatus',
+  preAdverseActionSentAt: 'preAdverseActionSentAt',
+  preAdverseActionDueAt: 'preAdverseActionDueAt',
+  preAdverseActionProviderId: 'preAdverseActionProviderId',
+  preAdverseActionError: 'preAdverseActionError',
   adverseActionLetterSentAt: 'adverseActionLetterSentAt',
   offerDocUrl: 'offerDocUrl',
   offerSentAt: 'offerSentAt',
@@ -1003,6 +1009,26 @@ export const EmailTemplateScalarFieldEnum = {
 } as const
 
 export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
+export const EmailDeliveryScalarFieldEnum = {
+  id: 'id',
+  providerId: 'providerId',
+  recipient: 'recipient',
+  subject: 'subject',
+  status: 'status',
+  error: 'error',
+  senderEmployeeId: 'senderEmployeeId',
+  contextType: 'contextType',
+  contextId: 'contextId',
+  sentAt: 'sentAt',
+  deliveredAt: 'deliveredAt',
+  failedAt: 'failedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmailDeliveryScalarFieldEnum = (typeof EmailDeliveryScalarFieldEnum)[keyof typeof EmailDeliveryScalarFieldEnum]
 
 
 export const RolePermissionScalarFieldEnum = {

@@ -13,8 +13,13 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
 
-export default async function CVPage() {
+export default async function CVPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ candidateId?: string; positionId?: string; tab?: string }>;
+}) {
   await requireManagerOrAdmin();
+  const focus = await searchParams;
   const [pipelineCandidates, totalCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages] = await Promise.all([
     getCandidates({ inPipeline: true }),
     getTotalCandidateCount(),
@@ -90,6 +95,10 @@ export default async function CVPage() {
           backgroundCheckStatus: c.backgroundCheckStatus || null,
           backgroundCheckId: c.backgroundCheckId || null,
           backgroundCheckOptions: c.backgroundCheckOptions || null,
+          preAdverseActionStatus: c.preAdverseActionStatus || null,
+          preAdverseActionSentAt: c.preAdverseActionSentAt || null,
+          preAdverseActionDueAt: c.preAdverseActionDueAt || null,
+          preAdverseActionError: c.preAdverseActionError || null,
           adverseActionLetterSentAt: c.adverseActionLetterSentAt || null,
           offerDocUrl: c.offerDocUrl || null,
           offerSentAt: c.offerSentAt || null,
@@ -136,6 +145,9 @@ export default async function CVPage() {
         employees={allEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, jobTitle: e.jobTitle }))}
         recruiters={recruiters.map((r) => ({ id: r.id, firstName: r.firstName, lastName: r.lastName }))}
         pipelineStages={pipelineStages}
+        focusedCandidateId={focus.candidateId}
+        focusedPositionId={focus.positionId}
+        initialTab={focus.tab}
       />
     </div>
   );

@@ -21,6 +21,8 @@ import { getRecruitmentPlatforms } from "@/lib/actions/recruitment-platforms";
 import { getCompanySettings } from "@/lib/actions/company-settings";
 import { getEmailTemplates } from "@/lib/actions/email-templates";
 import { EmailTemplateManager } from "@/components/settings/email-template-manager";
+import { EmailDeliveryActivity } from "@/components/settings/email-delivery-activity";
+import { getRecentEmailDeliveries } from "@/lib/actions/email-deliveries";
 import { getRolePermissions } from "@/lib/actions/role-permissions";
 import { PermissionsManager } from "@/components/settings/permissions-manager";
 import { hasSyncSupport, SUPPORTED_PLATFORMS } from "@/lib/platform-sync";
@@ -76,6 +78,7 @@ export default async function SettingsPage() {
   ]);
 
   const activeEmployeeCount = await db.employee.count({ where: { status: "ACTIVE" } });
+  const emailDeliveries = await getRecentEmailDeliveries();
 
   let gustoMapping = null;
   if (gustoConnection) {
@@ -243,6 +246,8 @@ export default async function SettingsPage() {
         />
 
         <EmailTemplateManager templates={emailTemplates} userEmail={session.user.email || ""} />
+
+        <EmailDeliveryActivity deliveries={emailDeliveries} />
 
         <PulseSurveyManager
           surveys={pulseSurveys.map((s) => ({

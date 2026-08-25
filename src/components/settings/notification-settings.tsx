@@ -24,6 +24,7 @@ const ACTION_LABELS: Record<string, string> = {
   DOCUMENT_SIGNED: "Document Signed",
   INTERVIEW_SCHEDULED: "Interview Scheduled",
   NEW_HIRE: "New Hire / Onboarding",
+  ONBOARDING_STARTED: "Moved to Onboarding",
   TASK_ASSIGNED: "Task Assigned",
   ONBOARDING_COMPLETED: "Onboarding Completed",
   EMPLOYEE_OFFBOARDING: "Employee Offboarding Started",

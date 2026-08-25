@@ -8,7 +8,6 @@ import {
   addEmployeeTask,
   addCustomEmployeeTask,
   completeOnboarding,
-  completePreOnboarding,
   deleteEmployee,
 } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
@@ -121,9 +120,6 @@ export function OnboardingTimeline({
   const [addingCustom, setAddingCustom] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [showEmailPrompt, setShowEmailPrompt] = useState(false);
-  const [companyEmail, setCompanyEmail] = useState("");
-  const [emailError, setEmailError] = useState<string | null>(null);
   const router = useRouter();
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
@@ -187,37 +183,9 @@ export function OnboardingTimeline({
     router.refresh();
   }
 
-  const hasCompanyEmail = employee.email.endsWith("@coastaldebt.com");
-
   async function handleCompleteOnboarding() {
-    // For pre-onboarding, require a @coastaldebt.com email before moving to onboarding
-    if (type === "PRE_ONBOARDING" && !hasCompanyEmail) {
-      setShowEmailPrompt(true);
-      setCompanyEmail("");
-      setEmailError(null);
-      return;
-    }
     setCompleting(true);
-    if (type === "PRE_ONBOARDING") {
-      await completePreOnboarding(employee.id);
-    } else {
-      await completeOnboarding(employee.id);
-    }
-    setCompleting(false);
-    setCompleted(true);
-    router.refresh();
-  }
-
-  async function handleConfirmCompanyEmail() {
-    const email = companyEmail.trim().toLowerCase();
-    if (!email.endsWith("@coastaldebt.com")) {
-      setEmailError("Must be a @coastaldebt.com email");
-      return;
-    }
-    setEmailError(null);
-    setCompleting(true);
-    setShowEmailPrompt(false);
-    await completePreOnboarding(employee.id, email);
+    await completeOnboarding(employee.id);
     setCompleting(false);
     setCompleted(true);
     router.refresh();
@@ -234,7 +202,7 @@ export function OnboardingTimeline({
     }
   }
 
-  const label = type === "PRE_ONBOARDING" ? "Pre-Onboarding" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
+  const label = type === "PRE_ONBOARDING" ? "Written Offer" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
 
   // Group available items by checklist name
   const groupedAvailable = availableItems.reduce<Record<string, AvailableChecklistItem[]>>((acc, item) => {
@@ -303,14 +271,14 @@ export function OnboardingTimeline({
               <p className="text-sm font-semibold text-[var(--color-text-primary)]">
                 {doneCount}/{totalCount}
               </p>
-              <p className="text-[10px] text-[var(--color-text-muted)]">tasks</p>
+              <p className="text-[10px] text-[var(--color-text-muted)]">{type === "PRE_ONBOARDING" ? "documents" : "tasks"}</p>
             </div>
           </div>
           <Icon name="expand_more" size={16} className={cn("text-[var(--color-text-muted)] transition-transform", expanded && "rotate-180")} />
         </div>
       </button>
 
-      {/* Manual resend of pre-onboarding documents */}
+      {/* Manual resend of Written Offer documents */}
       {type === "PRE_ONBOARDING" && (
         <div className="px-5 pb-2 -mt-1 flex justify-end">
           <ResendStageDocsButton
@@ -380,10 +348,19 @@ export function OnboardingTimeline({
                 </div>
               </div>
 
+              {type === "PRE_ONBOARDING" && (
+                <div className="mb-4 flex items-start gap-2 rounded-xl border border-purple-500/20 bg-purple-500/5 px-3 py-2.5">
+                  <Icon name="automation" size={17} className="mt-0.5 shrink-0 text-purple-500" />
+                  <p className="text-xs leading-5 text-[var(--color-text-muted)]">
+                    This person moves to Onboarding automatically when every required document is complete.
+                  </p>
+                </div>
+              )}
+
               {/* Phase groups */}
               {tasks.length === 0 ? (
                 <p className="text-sm text-[var(--color-text-muted)] text-center py-6">
-                  No tasks assigned yet. Add tasks below.
+                  {type === "PRE_ONBOARDING" ? "No required documents assigned yet." : "No tasks assigned yet. Add tasks below."}
                 </p>
               ) : (
                 <div className="relative ml-4 border-l-2 border-[var(--color-border)]">
@@ -432,16 +409,21 @@ export function OnboardingTimeline({
                                 {phaseTasks.map((task) => {
                                   const isToggling = togglingIds.has(task.id);
                                   const isDone = task.status === "DONE";
+                                  const isLockedDocument =
+                                    type === "PRE_ONBOARDING" &&
+                                    !isDone &&
+                                    (task.documentAction === "SIGN" || task.documentAction === "FILL");
                                   return (
                                     <motion.button
                                       key={task.id}
                                       layout
                                       onClick={() => handleToggleTask(task.id)}
-                                      disabled={isToggling}
+                                      disabled={isToggling || isLockedDocument}
                                       className={cn(
                                         "w-full flex items-start gap-3 p-3 rounded-xl text-left transition-colors",
                                         "hover:bg-[var(--color-surface-hover)]",
-                                        "disabled:opacity-60"
+                                        "disabled:opacity-60",
+                                        isLockedDocument && "cursor-default"
                                       )}
                                     >
                                       <div className="mt-0.5 shrink-0">
@@ -537,7 +519,7 @@ export function OnboardingTimeline({
                   )}
                 >
                   <Icon name="add" size={16} />
-                  Add Tasks
+                  {type === "PRE_ONBOARDING" ? "Add Documents" : "Add Tasks"}
                   {availableItems.length > 0 && (
                     <span className="ml-1 inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full text-xs font-semibold bg-[var(--color-accent)] text-white">
                       {availableItems.length}
@@ -545,7 +527,7 @@ export function OnboardingTimeline({
                   )}
                 </button>
 
-                {(type === "ONBOARDING" || type === "PRE_ONBOARDING") && allDone && (
+                {type === "ONBOARDING" && allDone && (
                   <button
                     onClick={handleCompleteOnboarding}
                     disabled={completing}
@@ -560,69 +542,11 @@ export function OnboardingTimeline({
                     {completing ? (
                       <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</>
                     ) : (
-                      <><Icon name="check_circle" size={16} />{type === "PRE_ONBOARDING" ? "Move to Onboarding" : `Complete ${label}`}</>
+                      <><Icon name="check_circle" size={16} />Complete {label}</>
                     )}
                   </button>
                 )}
               </div>
-
-              {/* Company email prompt for pre-onboarding → onboarding */}
-              <AnimatePresence>
-                {showEmailPrompt && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <Icon name="mail" size={20} className="text-emerald-500 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-sm font-semibold text-[var(--color-text-primary)]">Company email required</p>
-                          <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-                            {employee.firstName} needs a @coastaldebt.com email to move to onboarding. This will be their login email.
-                          </p>
-                        </div>
-                      </div>
-                      <div>
-                        <input
-                          type="email"
-                          value={companyEmail}
-                          onChange={(e) => { setCompanyEmail(e.target.value); setEmailError(null); }}
-                          placeholder={`${employee.firstName.toLowerCase()}.${employee.lastName.toLowerCase()}@coastaldebt.com`}
-                          className={cn(inputClass, emailError && "border-red-400 focus:ring-red-400/40")}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleConfirmCompanyEmail(); } }}
-                        />
-                        {emailError && <p className="text-xs text-red-400 mt-1">{emailError}</p>}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={handleConfirmCompanyEmail}
-                          disabled={!companyEmail.trim() || completing}
-                          className={cn(
-                            "flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
-                            "bg-emerald-500 text-white hover:bg-emerald-600 transition-colors disabled:opacity-50"
-                          )}
-                        >
-                          {completing ? (
-                            <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</>
-                          ) : (
-                            <><Icon name="check_circle" size={16} />Confirm & Move to Onboarding</>
-                          )}
-                        </button>
-                        <button
-                          onClick={() => setShowEmailPrompt(false)}
-                          className="px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
 
               {/* Add Tasks Panel (slide-out inline) */}
               <AnimatePresence>
@@ -636,7 +560,9 @@ export function OnboardingTimeline({
                   >
                     <div className="mt-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-background)] p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-semibold text-[var(--color-text-primary)]">Browse & Add Tasks</p>
+                        <p className="text-sm font-semibold text-[var(--color-text-primary)]">
+                          {type === "PRE_ONBOARDING" ? "Browse & Add Documents" : "Browse & Add Tasks"}
+                        </p>
                         <button
                           onClick={() => setShowAddPanel(false)}
                           className="text-xs text-[var(--color-accent)] hover:underline"
@@ -709,7 +635,7 @@ export function OnboardingTimeline({
                       )}
 
                       {/* Custom task */}
-                      <div className="border-t border-[var(--color-border)] pt-3 mt-3">
+                      {type !== "PRE_ONBOARDING" && <div className="border-t border-[var(--color-border)] pt-3 mt-3">
                         <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Custom Task</label>
                         <input
                           value={customTitle}
@@ -736,7 +662,7 @@ export function OnboardingTimeline({
                           {addingCustom ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="add" size={16} />}
                           {addingCustom ? "Adding..." : "Add Custom Task"}
                         </button>
-                      </div>
+                      </div>}
                     </div>
                   </motion.div>
                 )}

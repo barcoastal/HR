@@ -8,6 +8,7 @@ const ACTION_TYPES = [
   "DOCUMENT_SIGNED",
   "INTERVIEW_SCHEDULED",
   "NEW_HIRE",
+  "ONBOARDING_STARTED",
   "TASK_ASSIGNED",
   "ONBOARDING_COMPLETED",
   "EMPLOYEE_OFFBOARDING",
@@ -48,6 +49,10 @@ const DEFAULTS: Record<string, Record<string, string[]>> = {
     EMAIL: ["candidate", "recruiter", "manager", "hr_team"],
     IN_APP: ["recruiter", "manager", "hr_team"],
   },
+  ONBOARDING_STARTED: {
+    EMAIL: [],
+    IN_APP: ["manager", "hr_team"],
+  },
   TASK_ASSIGNED: {
     EMAIL: [],
     IN_APP: ["recruiter"],
@@ -70,13 +75,13 @@ const DEFAULTS: Record<string, Record<string, string[]>> = {
   },
 };
 
-export async function seedNotificationRules() {
-  const isFreshDb = (await db.notificationRule.count()) === 0;
+export async function seedNotificationRules(actions: readonly string[] = ACTION_TYPES) {
+  const needsStageRuleMigration = (await db.notificationRule.count({ where: { action: "STAGE_CHANGE" } })) === 0;
 
   // Always upsert so newly-added ACTION_TYPES (e.g. RECRUITER_ASSIGNED) get
   // their default rows on existing deployments without resetting toggles
   // admins have already changed.
-  for (const action of ACTION_TYPES) {
+  for (const action of actions) {
     for (const channel of CHANNELS) {
       const recipients = channel === "IN_APP"
         ? RECIPIENTS.filter((r) => r !== "candidate")
@@ -96,7 +101,7 @@ export async function seedNotificationRules() {
     }
   }
 
-  if (!isFreshDb) return;
+  if (!needsStageRuleMigration || !actions.includes("STAGE_CHANGE")) return;
 
   // Migrate existing CompanySettings recipients for STAGE_CHANGE
   try {

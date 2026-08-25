@@ -68,7 +68,16 @@ export default async function OnboardingPage() {
     return tasks.length > 0 && tasks.every((t) => t.status === "DONE");
   });
 
-  const pendingTasks = onboardingEmployees.reduce((acc, emp) => acc + emp.employeeTasks.filter((t) => t.status === "PENDING").length, 0);
+  const pendingTasks = onboardingEmployees.reduce(
+    (acc, emp) => acc + emp.employeeTasks.filter((task) =>
+      task.status === "PENDING" &&
+      (
+        task.checklistItem?.checklist?.type === "ONBOARDING" ||
+        !["SEND", "SIGN", "FILL"].includes(task.documentAction || "")
+      )
+    ).length,
+    0
+  );
 
   const myAssignedTasks = currentEmployeeId
     ? await db.employeeTask.findMany({
@@ -78,7 +87,7 @@ export default async function OnboardingPage() {
         },
         include: {
           employee: true,
-          checklistItem: true,
+          checklistItem: { include: { checklist: true } },
         },
         orderBy: { createdAt: "asc" },
       })
@@ -86,7 +95,7 @@ export default async function OnboardingPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <PageHeader title="Onboarding" description="Track and manage new employee onboarding progress" />
+      <PageHeader title="Onboarding" description="Assign and track internal onboarding tasks across departments and people" />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<Icon name="person_add" size={20} />} color="blue" />
@@ -98,6 +107,10 @@ export default async function OnboardingPage() {
       <div className="space-y-3">
         {onboardingEmployees.map((emp) => {
           const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
+          const internalOnboardingTasks = emp.employeeTasks.filter((task) =>
+            task.checklistItem?.checklist?.type === "ONBOARDING" ||
+            !["SEND", "SIGN", "FILL"].includes(task.documentAction || "")
+          );
           const availableItems = allOnboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
             .map((item) => ({
@@ -119,7 +132,7 @@ export default async function OnboardingPage() {
                 jobTitle: emp.jobTitle,
                 email: emp.email,
               }}
-              tasks={emp.employeeTasks.map((t) => ({
+              tasks={internalOnboardingTasks.map((t) => ({
                 id: t.id,
                 title: t.title || t.checklistItem?.title || "Untitled",
                 description: t.description || t.checklistItem?.description || null,
@@ -164,7 +177,10 @@ export default async function OnboardingPage() {
       )}
 
       <MyOnboardingTasks
-        tasks={myAssignedTasks.map((t) => ({
+        tasks={myAssignedTasks.filter((task) =>
+          task.checklistItem?.checklist?.type === "ONBOARDING" ||
+          !["SEND", "SIGN", "FILL"].includes(task.documentAction || "")
+        ).map((t) => ({
           id: t.id,
           title: t.title || t.checklistItem?.title || "Untitled",
           description: t.description || t.checklistItem?.description || null,

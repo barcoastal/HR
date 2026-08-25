@@ -4,7 +4,7 @@ import { cn, getInitials } from "@/lib/utils";
 import { updateCandidateStatus, updateCandidate, deleteCandidate } from "@/lib/actions/candidates";
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
 import { Icon } from "@/components/ui/icon";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
@@ -31,6 +31,11 @@ type CandidateItem = {
   backgroundCheckStatus: string | null;
   backgroundCheckId?: string | null;
   backgroundCheckOptions: string | null;
+  preAdverseActionStatus?: string | null;
+  preAdverseActionSentAt?: Date | null;
+  preAdverseActionDueAt?: Date | null;
+  preAdverseActionError?: string | null;
+  adverseActionLetterSentAt?: Date | null;
   offerDocUrl: string | null;
   offerSentAt: Date | null;
   offerSignedDocUrl: string | null;
@@ -80,7 +85,7 @@ const RECRUITMENT_EXCLUDED: ReadonlySet<string> = new Set([
 ]);
 
 
-export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[] }) {
+export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages, focusedCandidateId }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[]; focusedCandidateId?: string }) {
   // Columns are keyed by stage id (not status) — several custom stages can
   // share one base status and still render as separate columns.
   const columns = pipelineStages && pipelineStages.length > 0
@@ -113,6 +118,39 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
   const [search, setSearch] = useState("");
   const [expandedColumns, setExpandedColumns] = useState<Record<string, boolean>>({});
   const [positionMenuId, setPositionMenuId] = useState<string | null>(null);
+  const [highlightedCandidateId, setHighlightedCandidateId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!focusedCandidateId) return;
+    const focusedCandidate = candidates.find((candidate) => candidate.id === focusedCandidateId);
+    if (!focusedCandidate) return;
+
+    setSearch("");
+    const columnKey = columnKeyFor(focusedCandidate);
+    if (columnKey) setExpandedColumns((current) => ({ ...current, [columnKey]: true }));
+    setHighlightedCandidateId(focusedCandidateId);
+
+    let nestedFrame = 0;
+    const frame = requestAnimationFrame(() => {
+      nestedFrame = requestAnimationFrame(() => {
+        document.getElementById(`candidate-record-${focusedCandidateId}`)?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "center",
+        });
+      });
+    });
+    const openTimer = window.setTimeout(() => setSelectedCandidate(focusedCandidate), 550);
+    const highlightTimer = window.setTimeout(() => setHighlightedCandidateId(null), 3500);
+    return () => {
+      cancelAnimationFrame(frame);
+      cancelAnimationFrame(nestedFrame);
+      window.clearTimeout(openTimer);
+      window.clearTimeout(highlightTimer);
+    };
+    // columnKeyFor is derived entirely from these candidate/stage props.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [candidates, focusedCandidateId, pipelineStages]);
 
   async function changePosition(id: string, positionId: string) {
     setMovingId(id);
@@ -206,11 +244,14 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                   return (
                     <div
                       key={candidate.id}
+                      id={`candidate-record-${candidate.id}`}
                       onClick={() => setSelectedCandidate(candidate)}
+                      aria-current={highlightedCandidateId === candidate.id ? "true" : undefined}
                       className={cn(
-                        "group rounded-lg p-2.5 cursor-pointer",
+                        "group scroll-mt-28 rounded-lg p-2.5 cursor-pointer",
                         "bg-[var(--color-surface)] border border-[var(--color-border)]",
-                        "hover:border-[var(--color-accent)]/30 hover:shadow-sm transition-all"
+                        "hover:border-[var(--color-accent)]/30 hover:shadow-sm transition-all duration-200",
+                        highlightedCandidateId === candidate.id && "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
                       )}
                     >
                       <div className="flex items-center gap-2">

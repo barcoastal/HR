@@ -53,7 +53,7 @@ export type EditableDoc = {
 export type Countersigner = { id: string; firstName: string; lastName: string; jobTitle: string };
 
 const STAGES = [
-  { value: "PRE_ONBOARDING", label: "Pre-Onboarding" },
+  { value: "PRE_ONBOARDING", label: "Written Offer" },
   { value: "ONBOARDING", label: "Onboarding" },
   { value: "OFFBOARDING", label: "Offboarding" },
 ];

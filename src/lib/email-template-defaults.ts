@@ -4,7 +4,9 @@ export type EmailTemplateType =
   | "TASK_ASSIGNMENT"
   | "SIGNING_CONFIRMATION"
   | "ONBOARDING"
-  | "INTERVIEW_SCHEDULED";
+  | "INTERVIEW_SCHEDULED"
+  | "BACKGROUND_PRE_ADVERSE"
+  | "BACKGROUND_ADVERSE";
 
 export const EMAIL_TEMPLATE_DEFAULTS: Record<
   EmailTemplateType,
@@ -82,5 +84,25 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
 {{meetLinkHtml}}
 {{notesHtml}}
 <p style="margin-top:16px">We look forward to speaking with you!</p>`,
+  },
+  BACKGROUND_PRE_ADVERSE: {
+    description: "Sent before a potential adverse hiring decision based on a background report",
+    variables: ["companyName", "logoUrl", "firstName", "positionTitle", "reason", "responseDueDate", "rightsSummaryUrl"],
+    subject: "Important notice regarding your background report",
+    body: `<p>Dear {{firstName}},</p>
+<p>{{companyName}} is reviewing information in your background report that may affect the decision for <strong>{{positionTitle}}</strong>. No final decision has been made.</p>
+<p>The information under review relates to {{reason}}. A copy of the report is attached.</p>
+<p>Please review the report and contact the consumer reporting agency if any information is inaccurate or incomplete. You may also send relevant context or documentation to our HR team by <strong>{{responseDueDate}}</strong>.</p>
+<p><a href="{{rightsSummaryUrl}}" style="color:#3052FF;text-decoration:underline">Read A Summary of Your Rights Under the Fair Credit Reporting Act</a></p>
+<p>Sincerely,<br/>The {{companyName}} team</p>`,
+  },
+  BACKGROUND_ADVERSE: {
+    description: "Sent after the pre-adverse response period when the final decision is not to proceed",
+    variables: ["companyName", "logoUrl", "firstName", "positionTitle", "reason"],
+    subject: "Update on your application to {{companyName}}",
+    body: `<p>Dear {{firstName}},</p>
+<p>After reviewing your application and the information provided during the pre-adverse action period, {{companyName}} has decided not to move forward with your candidacy for <strong>{{positionTitle}}</strong>. This decision was based, in whole or in part, on {{reason}}.</p>
+<p>The consumer reporting agency did not make this decision and cannot explain why the decision was made. You have the right to dispute inaccurate or incomplete information and to obtain another free copy of your report from the agency within the period provided by law.</p>
+<p>Sincerely,<br/>The {{companyName}} team</p>`,
   },
 };

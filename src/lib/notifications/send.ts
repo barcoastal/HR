@@ -132,9 +132,10 @@ export async function sendNotifications(params: SendParams): Promise<void> {
       for (const r of emailRecipients) {
         if (r.email && !seen.has(r.email)) {
           seen.add(r.email);
-          sendEmail(r.email, emailSubject, emailBody).catch((err) =>
-            console.error(`[notifications] Failed to email ${r.email}:`, err)
-          );
+          const delivery = await sendEmail(r.email, emailSubject, emailBody);
+          if (!delivery.success) {
+            console.error(`[notifications] Failed to email ${r.email}: ${delivery.error || delivery.status}`);
+          }
         }
       }
     }

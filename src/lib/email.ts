@@ -1,5 +1,7 @@
 import { Resend } from "resend";
 import { IS_SANDBOX } from "@/lib/sandbox";
+import { db } from "@/lib/db";
+import { EMAIL_TEMPLATE_DEFAULTS } from "@/lib/email-template-defaults";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -56,6 +58,15 @@ function interpolate(template: string, vars: Record<string, string>): string {
   return result;
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function wrapHtml(content: string, companyName: string, logoUrl: string | null): string {
   const logoHtml = logoUrl
     ? `<img src="${logoUrl}" alt="${companyName}" style="max-height:40px;max-width:180px;display:block" />`
@@ -84,74 +95,165 @@ function withNoReplySubject(subject: string): string {
   return `${NO_REPLY_PREFIX} ${trimmed}`;
 }
 
-export async function sendEmail(to: string, subject: string, html: string) {
+export type EmailDeliveryContext = {
+  contextType?: string;
+  contextId?: string;
+  senderEmployeeId?: string | null;
+};
+
+export type EmailSendResult = {
+  success: boolean;
+  status: "SENT" | "FAILED" | "SUPPRESSED";
+  providerId?: string;
+  deliveryId?: string;
+  error?: string;
+};
+
+async function currentSenderEmployeeId(explicit?: string | null): Promise<string | null> {
+  if (explicit !== undefined) return explicit;
+  try {
+    const { getSession } = await import("@/lib/auth-helpers");
+    const session = await getSession();
+    return session?.user?.employeeId || null;
+  } catch {
+    return null;
+  }
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "object" && error && "message" in error) {
+    return String((error as { message?: unknown }).message || "Email provider rejected the message");
+  }
+  return String(error || "Email provider rejected the message");
+}
+
+async function notifySenderOfFailure(
+  senderEmployeeId: string | null,
+  recipient: string,
+  subject: string,
+  reason: string
+) {
+  if (!senderEmployeeId) return;
+  try {
+    await db.notification.create({
+      data: {
+        recipientId: senderEmployeeId,
+        type: "EMAIL_DELIVERY_FAILED",
+        message: `Email to ${recipient} failed: ${subject}. ${reason}`,
+        link: "/notifications",
+      },
+    });
+  } catch (notificationError) {
+    console.error("[email] Failed to create delivery-failure notification:", notificationError);
+  }
+}
+
+async function sendTrackedEmail(
+  to: string,
+  subject: string,
+  html: string,
+  attachments: { filename: string; content: Buffer }[] | undefined,
+  context: EmailDeliveryContext = {}
+): Promise<EmailSendResult> {
+  const finalSubject = withNoReplySubject(subject);
+  const senderEmployeeId = await currentSenderEmployeeId(context.senderEmployeeId);
+  let deliveryId: string | undefined;
+
+  try {
+    const delivery = await db.emailDelivery.create({
+      data: {
+        recipient: to,
+        subject: finalSubject,
+        status: "QUEUED",
+        senderEmployeeId,
+        contextType: context.contextType || null,
+        contextId: context.contextId || null,
+      },
+      select: { id: true },
+    });
+    deliveryId = delivery.id;
+  } catch (trackingError) {
+    console.error("[email] Could not create delivery record:", trackingError);
+  }
+
   if (IS_SANDBOX) {
-    console.log(`[sandbox] email suppressed — to: ${to}, subject: "${subject}"`);
-    return;
+    console.log(`[sandbox] email suppressed — to: ${to}, subject: "${finalSubject}"`);
+    if (deliveryId) {
+      await db.emailDelivery.update({ where: { id: deliveryId }, data: { status: "SUPPRESSED" } }).catch(() => undefined);
+    }
+    return { success: true, status: "SUPPRESSED", deliveryId };
   }
+
   if (!resend) {
-    console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
-    return;
+    const reason = "RESEND_API_KEY is not configured";
+    console.warn(`[email] ${reason} — skipping email to ${to}: "${finalSubject}"`);
+    if (deliveryId) {
+      await db.emailDelivery.update({
+        where: { id: deliveryId },
+        data: { status: "FAILED", error: reason, failedAt: new Date() },
+      }).catch(() => undefined);
+    }
+    await notifySenderOfFailure(senderEmployeeId, to, finalSubject, reason);
+    return { success: false, status: "FAILED", error: reason, deliveryId };
   }
+
   const branding = await getCompanyBranding();
   const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
-  const finalSubject = withNoReplySubject(subject);
-  console.log(`[email] Sending from: "${from}" to: ${to}`);
+  console.log(`[email] Sending${attachments?.length ? ` with ${attachments.length} attachment(s)` : ""} from: "${from}" to: ${to}`);
+
   try {
     const { data, error } = await resend.emails.send({
       from,
       to,
       subject: finalSubject,
       html: wrapHtml(html, branding.companyName, branding.logoUrl),
+      ...(attachments?.length ? { attachments } : {}),
     });
-    if (error) {
-      console.error(`[email] Resend error for ${to}: "${finalSubject}"`, error);
-    } else {
-      console.log(`[email] Sent to ${to}: "${finalSubject}"`, data);
+    if (error) throw error;
+
+    const providerId = data?.id;
+    if (deliveryId) {
+      await db.emailDelivery.update({
+        where: { id: deliveryId },
+        data: { providerId, status: "SENT", sentAt: new Date(), error: null },
+      }).catch((trackingError) => console.error("[email] Could not update delivery record:", trackingError));
     }
+    console.log(`[email] Provider accepted email to ${to}: "${finalSubject}"`, data);
+    return { success: true, status: "SENT", providerId, deliveryId };
   } catch (error) {
+    const reason = errorMessage(error);
     console.error(`[email] Failed to send to ${to}: "${finalSubject}"`, error);
+    if (deliveryId) {
+      await db.emailDelivery.update({
+        where: { id: deliveryId },
+        data: { status: "FAILED", error: reason, failedAt: new Date() },
+      }).catch(() => undefined);
+    }
+    await notifySenderOfFailure(senderEmployeeId, to, finalSubject, reason);
+    return { success: false, status: "FAILED", error: reason, deliveryId };
   }
+}
+
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  context?: EmailDeliveryContext
+): Promise<EmailSendResult> {
+  return sendTrackedEmail(to, subject, html, undefined, context);
 }
 
 export async function sendEmailWithAttachments(
   to: string,
   subject: string,
   html: string,
-  attachments: { filename: string; content: Buffer }[]
-) {
-  if (IS_SANDBOX) {
-    console.log(`[sandbox] email w/ attachments suppressed — to: ${to}, subject: "${subject}"`);
-    return;
-  }
-  if (!resend) {
-    console.warn(`[email] RESEND_API_KEY not set — skipping email to ${to}: "${subject}"`);
-    return;
-  }
-  const branding = await getCompanyBranding();
-  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
-  const senderEmail = branding.senderEmail.trim();
-  const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
-  const finalSubject = withNoReplySubject(subject);
-  console.log(`[email] Sending with ${attachments.length} attachment(s) from: "${from}" to: ${to}`);
-  try {
-    const { data, error } = await resend.emails.send({
-      from,
-      to,
-      subject: finalSubject,
-      html: wrapHtml(html, branding.companyName, branding.logoUrl),
-      attachments,
-    });
-    if (error) {
-      console.error(`[email] Resend error for ${to}: "${finalSubject}"`, error);
-    } else {
-      console.log(`[email] Sent to ${to}: "${finalSubject}"`, data);
-    }
-  } catch (error) {
-    console.error(`[email] Failed to send to ${to}: "${finalSubject}"`, error);
-  }
+  attachments: { filename: string; content: Buffer }[],
+  context?: EmailDeliveryContext
+): Promise<EmailSendResult> {
+  return sendTrackedEmail(to, subject, html, attachments, context);
 }
 
 export async function sendTestEmail(to: string, type: string, subject: string, body: string) {
@@ -364,23 +466,67 @@ export async function sendInterviewScheduledEmail({
   }
 }
 
-export async function sendAdverseActionEmail({
-  to, firstName, positionTitle, reason,
+export async function sendPreAdverseActionEmail({
+  to, firstName, positionTitle, reason, responseDueAt, report, candidateId,
 }: {
-  to: string; firstName: string; positionTitle?: string; reason?: string;
+  to: string;
+  firstName: string;
+  positionTitle?: string;
+  reason?: string;
+  responseDueAt: Date;
+  report: Buffer;
+  candidateId: string;
 }) {
-  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("BACKGROUND_ADVERSE" as never)]);
+  const [branding, template] = await Promise.all([
+    getCompanyBranding(),
+    getTemplate("BACKGROUND_PRE_ADVERSE"),
+  ]);
+  const rightsSummaryUrl = "https://www.consumerfinance.gov/rules-policy/regulations/1022/k/";
   const vars = {
-    firstName,
-    positionTitle: positionTitle || "the position you applied for",
-    reason: reason || "information revealed by your background report",
-    companyName: branding.companyName,
+    firstName: escapeHtml(firstName),
+    positionTitle: escapeHtml(positionTitle || "the position you applied for"),
+    reason: escapeHtml(reason || "information contained in your background report"),
+    responseDueDate: responseDueAt.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
+    rightsSummaryUrl,
+    companyName: escapeHtml(branding.companyName),
+    logoUrl: branding.logoUrl || "",
+  };
+  const subject = template?.subject || "Important notice regarding your background report";
+  const body = template?.body || EMAIL_TEMPLATE_DEFAULTS.BACKGROUND_PRE_ADVERSE.body;
+  return sendEmailWithAttachments(
+    to,
+    interpolate(subject, vars),
+    interpolate(body, vars),
+    [{ filename: "background-report.pdf", content: report }],
+    { contextType: "PRE_ADVERSE_ACTION", contextId: candidateId }
+  );
+}
+
+export async function sendAdverseActionEmail({
+  to, firstName, positionTitle, reason, candidateId,
+}: {
+  to: string; firstName: string; positionTitle?: string; reason?: string; candidateId: string;
+}) {
+  const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("BACKGROUND_ADVERSE")]);
+  const vars = {
+    firstName: escapeHtml(firstName),
+    positionTitle: escapeHtml(positionTitle || "the position you applied for"),
+    reason: escapeHtml(reason || "information revealed by your background report"),
+    companyName: escapeHtml(branding.companyName),
     logoUrl: branding.logoUrl || "",
   };
   if (template) {
-    await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
+    return sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars), {
+      contextType: "ADVERSE_ACTION",
+      contextId: candidateId,
+    });
   } else {
-    await sendEmail(
+    return sendEmail(
       to,
       `Update on your application to ${branding.companyName}`,
       `
@@ -392,7 +538,8 @@ export async function sendAdverseActionEmail({
         <p>Sincerely,<br/>The ${branding.companyName} team</p>
         <hr style="border:none;border-top:1px solid #eee;margin:24px 0" />
         <p style="color:#666;font-size:11px">This notice is being sent in compliance with the federal Fair Credit Reporting Act and any applicable state or local law.</p>
-      `
+      `,
+      { contextType: "ADVERSE_ACTION", contextId: candidateId }
     );
   }
 }

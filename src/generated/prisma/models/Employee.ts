@@ -496,6 +496,7 @@ export type EmployeeWhereInput = {
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
   emergencyAlerts?: Prisma.EmergencyAlertListRelationFilter
   notificationRecipients?: Prisma.NotificationRecipientListRelationFilter
+  sentEmailDeliveries?: Prisma.EmailDeliveryListRelationFilter
   chatMembers?: Prisma.ChatMemberListRelationFilter
   channelMemberships?: Prisma.ChannelMemberListRelationFilter
   createdChannels?: Prisma.ChannelListRelationFilter
@@ -588,6 +589,7 @@ export type EmployeeOrderByWithRelationInput = {
   authoredHRNotes?: Prisma.HRNoteOrderByRelationAggregateInput
   emergencyAlerts?: Prisma.EmergencyAlertOrderByRelationAggregateInput
   notificationRecipients?: Prisma.NotificationRecipientOrderByRelationAggregateInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryOrderByRelationAggregateInput
   chatMembers?: Prisma.ChatMemberOrderByRelationAggregateInput
   channelMemberships?: Prisma.ChannelMemberOrderByRelationAggregateInput
   createdChannels?: Prisma.ChannelOrderByRelationAggregateInput
@@ -683,6 +685,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   authoredHRNotes?: Prisma.HRNoteListRelationFilter
   emergencyAlerts?: Prisma.EmergencyAlertListRelationFilter
   notificationRecipients?: Prisma.NotificationRecipientListRelationFilter
+  sentEmailDeliveries?: Prisma.EmailDeliveryListRelationFilter
   chatMembers?: Prisma.ChatMemberListRelationFilter
   channelMemberships?: Prisma.ChannelMemberListRelationFilter
   createdChannels?: Prisma.ChannelListRelationFilter
@@ -861,6 +864,7 @@ export type EmployeeCreateInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -949,6 +953,7 @@ export type EmployeeUncheckedCreateInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -1037,6 +1042,7 @@ export type EmployeeUpdateInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -1125,6 +1131,7 @@ export type EmployeeUncheckedUpdateInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2111,6 +2118,22 @@ export type EmployeeUpdateOneWithoutCountersignPositionDocsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutCountersignPositionDocsInput, Prisma.EmployeeUpdateWithoutCountersignPositionDocsInput>, Prisma.EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput>
 }
 
+export type EmployeeCreateNestedOneWithoutSentEmailDeliveriesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSentEmailDeliveriesInput
+  connect?: Prisma.EmployeeWhereUniqueInput
+}
+
+export type EmployeeUpdateOneWithoutSentEmailDeliveriesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeCreateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput>
+  connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutSentEmailDeliveriesInput
+  upsert?: Prisma.EmployeeUpsertWithoutSentEmailDeliveriesInput
+  disconnect?: Prisma.EmployeeWhereInput | boolean
+  delete?: Prisma.EmployeeWhereInput | boolean
+  connect?: Prisma.EmployeeWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeUpdateToOneWithWhereWithoutSentEmailDeliveriesInput, Prisma.EmployeeUpdateWithoutSentEmailDeliveriesInput>, Prisma.EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput>
+}
+
 export type EmployeeCreateNestedOneWithoutChatMembersInput = {
   create?: Prisma.XOR<Prisma.EmployeeCreateWithoutChatMembersInput, Prisma.EmployeeUncheckedCreateWithoutChatMembersInput>
   connectOrCreate?: Prisma.EmployeeCreateOrConnectWithoutChatMembersInput
@@ -2328,6 +2351,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -2415,6 +2439,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2507,6 +2532,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -2594,6 +2620,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -2702,6 +2729,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -2789,6 +2817,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -2937,6 +2966,7 @@ export type EmployeeCreateWithoutTeamInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -3024,6 +3054,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3137,6 +3168,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -3224,6 +3256,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3316,6 +3349,7 @@ export type EmployeeCreateWithoutManagerInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -3403,6 +3437,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3500,6 +3535,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -3587,6 +3623,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3679,6 +3716,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -3766,6 +3804,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -3874,6 +3913,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -3961,6 +4001,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4075,6 +4116,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -4162,6 +4204,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4265,6 +4308,7 @@ export type EmployeeCreateWithoutUserInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -4352,6 +4396,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4455,6 +4500,7 @@ export type EmployeeUpdateWithoutUserInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -4542,6 +4588,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4629,6 +4676,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -4716,6 +4764,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -4819,6 +4868,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -4906,6 +4956,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -4993,6 +5044,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -5080,6 +5132,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -5172,6 +5225,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -5259,6 +5313,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -5362,6 +5417,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -5449,6 +5505,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -5547,6 +5604,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -5634,6 +5692,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -5721,6 +5780,7 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -5808,6 +5868,7 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -5911,6 +5972,7 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -5998,6 +6060,7 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6085,6 +6148,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -6172,6 +6236,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6264,6 +6329,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -6351,6 +6417,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6454,6 +6521,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -6541,6 +6609,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6639,6 +6708,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -6726,6 +6796,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -6813,6 +6884,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -6900,6 +6972,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -6992,6 +7065,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -7079,6 +7153,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7182,6 +7257,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -7269,6 +7345,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7367,6 +7444,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -7454,6 +7532,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7541,6 +7620,7 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -7628,6 +7708,7 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -7731,6 +7812,7 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -7818,6 +7900,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -7905,6 +7988,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -7992,6 +8076,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -8095,6 +8180,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -8182,6 +8268,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8269,6 +8356,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -8356,6 +8444,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -8459,6 +8548,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -8546,6 +8636,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8633,6 +8724,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -8720,6 +8812,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -8823,6 +8916,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -8910,6 +9004,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -8997,6 +9092,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -9084,6 +9180,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -9187,6 +9284,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -9274,6 +9372,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -9361,6 +9460,7 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -9448,6 +9548,7 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -9551,6 +9652,7 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -9638,6 +9740,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -9725,6 +9828,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -9812,6 +9916,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -9915,6 +10020,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -10002,6 +10108,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -10089,6 +10196,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -10176,6 +10284,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -10268,6 +10377,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -10355,6 +10465,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -10458,6 +10569,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -10545,6 +10657,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -10643,6 +10756,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -10730,6 +10844,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -10817,6 +10932,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -10904,6 +11020,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -11007,6 +11124,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -11094,6 +11212,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -11181,6 +11300,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -11268,6 +11388,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -11360,6 +11481,7 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -11447,6 +11569,7 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -11550,6 +11673,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -11637,6 +11761,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -11735,6 +11860,7 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -11822,6 +11948,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -11909,6 +12036,7 @@ export type EmployeeCreateWithoutOutOfOfficeInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -11996,6 +12124,7 @@ export type EmployeeUncheckedCreateWithoutOutOfOfficeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -12099,6 +12228,7 @@ export type EmployeeUpdateWithoutOutOfOfficeInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -12186,6 +12316,7 @@ export type EmployeeUncheckedUpdateWithoutOutOfOfficeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -12273,6 +12404,7 @@ export type EmployeeCreateWithoutTrainingGroupsCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -12360,6 +12492,7 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -12463,6 +12596,7 @@ export type EmployeeUpdateWithoutTrainingGroupsCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -12550,6 +12684,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -12637,6 +12772,7 @@ export type EmployeeCreateWithoutTrainingGroupMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -12724,6 +12860,7 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -12827,6 +12964,7 @@ export type EmployeeUpdateWithoutTrainingGroupMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -12914,6 +13052,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -13001,6 +13140,7 @@ export type EmployeeCreateWithoutTrainingClassesOrganizedInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -13088,6 +13228,7 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -13180,6 +13321,7 @@ export type EmployeeCreateWithoutTrainingClassesCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -13267,6 +13409,7 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -13370,6 +13513,7 @@ export type EmployeeUpdateWithoutTrainingClassesOrganizedInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -13457,6 +13601,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -13555,6 +13700,7 @@ export type EmployeeUpdateWithoutTrainingClassesCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -13642,6 +13788,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -13729,6 +13876,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -13816,6 +13964,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -13919,6 +14068,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -14006,6 +14156,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -14093,6 +14244,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -14180,6 +14332,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -14272,6 +14425,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -14359,6 +14513,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -14462,6 +14617,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -14549,6 +14705,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -14647,6 +14804,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -14734,6 +14892,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -14821,6 +14980,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -14908,6 +15068,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -15011,6 +15172,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -15098,6 +15260,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -15185,6 +15348,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -15272,6 +15436,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -15375,6 +15540,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -15462,6 +15628,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -15549,6 +15716,7 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -15636,6 +15804,7 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -15739,6 +15908,7 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -15826,6 +15996,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -15913,6 +16084,7 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -16000,6 +16172,7 @@ export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -16103,6 +16276,7 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -16185,6 +16359,375 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
   countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
+  chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUncheckedUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeCreateWithoutSentEmailDeliveriesInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
+  team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutDirectReportsInput
+  directReports?: Prisma.EmployeeCreateNestedManyWithoutManagerInput
+  buddy?: Prisma.EmployeeCreateNestedOneWithoutBuddyOfInput
+  buddyOf?: Prisma.EmployeeCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput = {
+  id?: string
+  firstName: string
+  middleName?: string | null
+  preferredName?: string | null
+  lastName: string
+  email: string
+  phone?: string | null
+  jobTitle: string
+  profilePhoto?: string | null
+  departmentId?: string | null
+  teamId?: string | null
+  managerId?: string | null
+  startDate: Date | string
+  endDate?: Date | string | null
+  birthday?: Date | string | null
+  anniversaryDate?: Date | string | null
+  hobbies?: string | null
+  bio?: string | null
+  location?: string | null
+  dietaryRestrictions?: string | null
+  benefitsEligibleDate?: Date | string | null
+  emergencyContactName?: string | null
+  emergencyContactPhone?: string | null
+  emergencyContactRelation?: string | null
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  zipCode?: string | null
+  country?: string | null
+  pronouns?: string | null
+  tShirtSize?: string | null
+  buddyId?: string | null
+  status?: $Enums.EmployeeStatus
+  gustoEmployeeId?: string | null
+  archivedAt?: Date | string | null
+  archivedById?: string | null
+  archivedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
+  buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
+  user?: Prisma.UserUncheckedCreateNestedOneWithoutEmployeeInput
+  headOf?: Prisma.DepartmentUncheckedCreateNestedManyWithoutHeadInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedCreateNestedManyWithoutEmployeeInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedCreateNestedManyWithoutReviewerInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutEmployeeInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedCreateNestedManyWithoutManagerInput
+  feedPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutAuthorInput
+  feedComments?: Prisma.FeedCommentUncheckedCreateNestedManyWithoutAuthorInput
+  feedReactions?: Prisma.FeedReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedCreateNestedManyWithoutEmployeeInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutEmployeeInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutEmployeeInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeInput
+  clubMemberships?: Prisma.ClubMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  pulseResponses?: Prisma.PulseResponseUncheckedCreateNestedManyWithoutEmployeeInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedCreateNestedManyWithoutCreatedByInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutOrganizerInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedCreateNestedManyWithoutCreatedByInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedCreateNestedManyWithoutEmployeeInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedCreateNestedManyWithoutApproverInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedCreateNestedManyWithoutMentionedEmployeeInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  countersignRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedCreateNestedManyWithoutCountersignerInput
+  managedCandidates?: Prisma.CandidateUncheckedCreateNestedManyWithoutManagerInput
+  hrNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutEmployeeInput
+  authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
+  emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
+  notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
+  chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
+  dmMemberships?: Prisma.DmMemberUncheckedCreateNestedManyWithoutEmployeeInput
+  chatReactions?: Prisma.ReactionUncheckedCreateNestedManyWithoutEmployeeInput
+  savedMessages?: Prisma.SavedMessageUncheckedCreateNestedManyWithoutEmployeeInput
+  pinnedMessages?: Prisma.PinnedMessageUncheckedCreateNestedManyWithoutPinnedByInput
+}
+
+export type EmployeeCreateOrConnectWithoutSentEmailDeliveriesInput = {
+  where: Prisma.EmployeeWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput>
+}
+
+export type EmployeeUpsertWithoutSentEmailDeliveriesInput = {
+  update: Prisma.XOR<Prisma.EmployeeUpdateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput>
+  create: Prisma.XOR<Prisma.EmployeeCreateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput>
+  where?: Prisma.EmployeeWhereInput
+}
+
+export type EmployeeUpdateToOneWithWhereWithoutSentEmailDeliveriesInput = {
+  where?: Prisma.EmployeeWhereInput
+  data: Prisma.XOR<Prisma.EmployeeUpdateWithoutSentEmailDeliveriesInput, Prisma.EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput>
+}
+
+export type EmployeeUpdateWithoutSentEmailDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
+  team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutDirectReportsNestedInput
+  directReports?: Prisma.EmployeeUpdateManyWithoutManagerNestedInput
+  buddy?: Prisma.EmployeeUpdateOneWithoutBuddyOfNestedInput
+  buddyOf?: Prisma.EmployeeUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUpdateManyWithoutCountersignerNestedInput
+  managedCandidates?: Prisma.CandidateUpdateManyWithoutManagerNestedInput
+  hrNotes?: Prisma.HRNoteUpdateManyWithoutEmployeeNestedInput
+  authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
+  emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
+  notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
+  channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
+  createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
+  chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
+  dmMemberships?: Prisma.DmMemberUpdateManyWithoutEmployeeNestedInput
+  chatReactions?: Prisma.ReactionUpdateManyWithoutEmployeeNestedInput
+  savedMessages?: Prisma.SavedMessageUpdateManyWithoutEmployeeNestedInput
+  pinnedMessages?: Prisma.PinnedMessageUpdateManyWithoutPinnedByNestedInput
+}
+
+export type EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  middleName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  teamId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  anniversaryDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hobbies?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dietaryRestrictions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  benefitsEligibleDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  emergencyContactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emergencyContactRelation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zipCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pronouns?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tShirtSize?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  buddyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumEmployeeStatusFieldUpdateOperationsInput | $Enums.EmployeeStatus
+  gustoEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
+  buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
+  user?: Prisma.UserUncheckedUpdateOneWithoutEmployeeNestedInput
+  headOf?: Prisma.DepartmentUncheckedUpdateManyWithoutHeadNestedInput
+  reviewsAsEmployee?: Prisma.ReviewUncheckedUpdateManyWithoutEmployeeNestedInput
+  reviewsAsReviewer?: Prisma.ReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  anniversaryReviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsEmployee?: Prisma.OneOnOneUncheckedUpdateManyWithoutEmployeeNestedInput
+  oneOnOnesAsManager?: Prisma.OneOnOneUncheckedUpdateManyWithoutManagerNestedInput
+  feedPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutAuthorNestedInput
+  feedComments?: Prisma.FeedCommentUncheckedUpdateManyWithoutAuthorNestedInput
+  feedReactions?: Prisma.FeedReactionUncheckedUpdateManyWithoutEmployeeNestedInput
+  feedPollVotes?: Prisma.FeedPollVoteUncheckedUpdateManyWithoutEmployeeNestedInput
+  employeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutEmployeeNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutEmployeeNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeNestedInput
+  clubMemberships?: Prisma.ClubMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  pulseResponses?: Prisma.PulseResponseUncheckedUpdateManyWithoutEmployeeNestedInput
+  timeOffRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  outOfOffice?: Prisma.OutOfOfficeUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingGroupsCreated?: Prisma.TrainingGroupUncheckedUpdateManyWithoutCreatedByNestedInput
+  trainingGroupMemberships?: Prisma.TrainingGroupMemberUncheckedUpdateManyWithoutEmployeeNestedInput
+  trainingClassesOrganized?: Prisma.TrainingClassUncheckedUpdateManyWithoutOrganizerNestedInput
+  trainingClassesCreated?: Prisma.TrainingClassUncheckedUpdateManyWithoutCreatedByNestedInput
+  timeOffBalances?: Prisma.TimeOffBalanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  approvedRequests?: Prisma.TimeOffRequestUncheckedUpdateManyWithoutApproverNestedInput
+  mentionedInPosts?: Prisma.FeedPostUncheckedUpdateManyWithoutMentionedEmployeeNestedInput
+  assignedTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  countersignRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignStageDocs?: Prisma.StageDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
+  countersignPositionDocs?: Prisma.PositionDocumentUncheckedUpdateManyWithoutCountersignerNestedInput
   managedCandidates?: Prisma.CandidateUncheckedUpdateManyWithoutManagerNestedInput
   hrNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutEmployeeNestedInput
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16278,6 +16821,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
@@ -16365,6 +16909,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
@@ -16468,6 +17013,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
@@ -16555,6 +17101,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
@@ -16642,6 +17189,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
@@ -16729,6 +17277,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
@@ -16832,6 +17381,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
@@ -16919,6 +17469,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
@@ -17006,6 +17557,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageCreateNestedManyWithoutAuthorInput
@@ -17093,6 +17645,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
   chatMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutAuthorInput
@@ -17196,6 +17749,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUpdateManyWithoutAuthorNestedInput
@@ -17283,6 +17837,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
   chatMessages?: Prisma.MessageUncheckedUpdateManyWithoutAuthorNestedInput
@@ -17370,6 +17925,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -17457,6 +18013,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -17560,6 +18117,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -17647,6 +18205,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -17734,6 +18293,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -17821,6 +18381,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -17924,6 +18485,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -18011,6 +18573,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -18098,6 +18661,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -18185,6 +18749,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -18288,6 +18853,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -18375,6 +18941,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -18462,6 +19029,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -18549,6 +19117,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -18652,6 +19221,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -18739,6 +19309,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -18826,6 +19397,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -18913,6 +19485,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -19016,6 +19589,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -19103,6 +19677,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -19189,6 +19764,7 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -19276,6 +19852,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -19368,6 +19945,7 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   authoredHRNotes?: Prisma.HRNoteCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelCreateNestedManyWithoutCreatedByInput
@@ -19455,6 +20033,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedCreateNestedManyWithoutAuthorInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedCreateNestedManyWithoutSentByInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedCreateNestedManyWithoutEmployeeInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedCreateNestedManyWithoutSenderInput
   chatMembers?: Prisma.ChatMemberUncheckedCreateNestedManyWithoutEmployeeInput
   channelMemberships?: Prisma.ChannelMemberUncheckedCreateNestedManyWithoutEmployeeInput
   createdChannels?: Prisma.ChannelUncheckedCreateNestedManyWithoutCreatedByInput
@@ -19558,6 +20137,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -19645,6 +20225,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -19743,6 +20324,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -19830,6 +20412,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -19958,6 +20541,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -20045,6 +20629,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -20214,6 +20799,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -20301,6 +20887,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -20511,6 +21098,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -20598,6 +21186,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -20726,6 +21315,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   authoredHRNotes?: Prisma.HRNoteUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUpdateManyWithoutCreatedByNestedInput
@@ -20813,6 +21403,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   authoredHRNotes?: Prisma.HRNoteUncheckedUpdateManyWithoutAuthorNestedInput
   emergencyAlerts?: Prisma.EmergencyAlertUncheckedUpdateManyWithoutSentByNestedInput
   notificationRecipients?: Prisma.NotificationRecipientUncheckedUpdateManyWithoutEmployeeNestedInput
+  sentEmailDeliveries?: Prisma.EmailDeliveryUncheckedUpdateManyWithoutSenderNestedInput
   chatMembers?: Prisma.ChatMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   channelMemberships?: Prisma.ChannelMemberUncheckedUpdateManyWithoutEmployeeNestedInput
   createdChannels?: Prisma.ChannelUncheckedUpdateManyWithoutCreatedByNestedInput
@@ -20907,6 +21498,7 @@ export type EmployeeCountOutputType = {
   authoredHRNotes: number
   emergencyAlerts: number
   notificationRecipients: number
+  sentEmailDeliveries: number
   chatMembers: number
   channelMemberships: number
   createdChannels: number
@@ -20955,6 +21547,7 @@ export type EmployeeCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   authoredHRNotes?: boolean | EmployeeCountOutputTypeCountAuthoredHRNotesArgs
   emergencyAlerts?: boolean | EmployeeCountOutputTypeCountEmergencyAlertsArgs
   notificationRecipients?: boolean | EmployeeCountOutputTypeCountNotificationRecipientsArgs
+  sentEmailDeliveries?: boolean | EmployeeCountOutputTypeCountSentEmailDeliveriesArgs
   chatMembers?: boolean | EmployeeCountOutputTypeCountChatMembersArgs
   channelMemberships?: boolean | EmployeeCountOutputTypeCountChannelMembershipsArgs
   createdChannels?: boolean | EmployeeCountOutputTypeCountCreatedChannelsArgs
@@ -21237,6 +21830,13 @@ export type EmployeeCountOutputTypeCountNotificationRecipientsArgs<ExtArgs exten
 /**
  * EmployeeCountOutputType without action
  */
+export type EmployeeCountOutputTypeCountSentEmailDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmailDeliveryWhereInput
+}
+
+/**
+ * EmployeeCountOutputType without action
+ */
 export type EmployeeCountOutputTypeCountChatMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ChatMemberWhereInput
 }
@@ -21373,6 +21973,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
   emergencyAlerts?: boolean | Prisma.Employee$emergencyAlertsArgs<ExtArgs>
   notificationRecipients?: boolean | Prisma.Employee$notificationRecipientsArgs<ExtArgs>
+  sentEmailDeliveries?: boolean | Prisma.Employee$sentEmailDeliveriesArgs<ExtArgs>
   chatMembers?: boolean | Prisma.Employee$chatMembersArgs<ExtArgs>
   channelMemberships?: boolean | Prisma.Employee$channelMembershipsArgs<ExtArgs>
   createdChannels?: boolean | Prisma.Employee$createdChannelsArgs<ExtArgs>
@@ -21562,6 +22163,7 @@ export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   authoredHRNotes?: boolean | Prisma.Employee$authoredHRNotesArgs<ExtArgs>
   emergencyAlerts?: boolean | Prisma.Employee$emergencyAlertsArgs<ExtArgs>
   notificationRecipients?: boolean | Prisma.Employee$notificationRecipientsArgs<ExtArgs>
+  sentEmailDeliveries?: boolean | Prisma.Employee$sentEmailDeliveriesArgs<ExtArgs>
   chatMembers?: boolean | Prisma.Employee$chatMembersArgs<ExtArgs>
   channelMemberships?: boolean | Prisma.Employee$channelMembershipsArgs<ExtArgs>
   createdChannels?: boolean | Prisma.Employee$createdChannelsArgs<ExtArgs>
@@ -21630,6 +22232,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     authoredHRNotes: Prisma.$HRNotePayload<ExtArgs>[]
     emergencyAlerts: Prisma.$EmergencyAlertPayload<ExtArgs>[]
     notificationRecipients: Prisma.$NotificationRecipientPayload<ExtArgs>[]
+    sentEmailDeliveries: Prisma.$EmailDeliveryPayload<ExtArgs>[]
     chatMembers: Prisma.$ChatMemberPayload<ExtArgs>[]
     channelMemberships: Prisma.$ChannelMemberPayload<ExtArgs>[]
     createdChannels: Prisma.$ChannelPayload<ExtArgs>[]
@@ -22115,6 +22718,7 @@ export interface Prisma__EmployeeClient<T, Null = never, ExtArgs extends runtime
   authoredHRNotes<T extends Prisma.Employee$authoredHRNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$authoredHRNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HRNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emergencyAlerts<T extends Prisma.Employee$emergencyAlertsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$emergencyAlertsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmergencyAlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notificationRecipients<T extends Prisma.Employee$notificationRecipientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$notificationRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentEmailDeliveries<T extends Prisma.Employee$sentEmailDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$sentEmailDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailDeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   chatMembers<T extends Prisma.Employee$chatMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$chatMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   channelMemberships<T extends Prisma.Employee$channelMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$channelMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdChannels<T extends Prisma.Employee$createdChannelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Employee$createdChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23567,6 +24171,30 @@ export type Employee$notificationRecipientsArgs<ExtArgs extends runtime.Types.Ex
   take?: number
   skip?: number
   distinct?: Prisma.NotificationRecipientScalarFieldEnum | Prisma.NotificationRecipientScalarFieldEnum[]
+}
+
+/**
+ * Employee.sentEmailDeliveries
+ */
+export type Employee$sentEmailDeliveriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmailDelivery
+   */
+  select?: Prisma.EmailDeliverySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmailDelivery
+   */
+  omit?: Prisma.EmailDeliveryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmailDeliveryInclude<ExtArgs> | null
+  where?: Prisma.EmailDeliveryWhereInput
+  orderBy?: Prisma.EmailDeliveryOrderByWithRelationInput | Prisma.EmailDeliveryOrderByWithRelationInput[]
+  cursor?: Prisma.EmailDeliveryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmailDeliveryScalarFieldEnum | Prisma.EmailDeliveryScalarFieldEnum[]
 }
 
 /**
