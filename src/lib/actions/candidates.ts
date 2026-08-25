@@ -1066,7 +1066,7 @@ type HireResult =
 
 export async function hireCandidateAndStartOnboarding(
   candidateId: string,
-  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
+  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean; requiresTraining?: boolean }
 ): Promise<HireResult> {
   try {
     return await hireInner(candidateId, options);
@@ -1081,7 +1081,7 @@ export async function hireCandidateAndStartOnboarding(
 
 async function hireInner(
   candidateId: string,
-  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean }
+  options?: { companyEmail?: string; startDate?: string; managerId?: string; skipEmail?: boolean; requiresTraining?: boolean }
 ): Promise<HireResult> {
   await assertCandidateAccess(candidateId);
   const candidate = await db.candidate.findUnique({
@@ -1145,6 +1145,7 @@ async function hireInner(
       anniversaryDate: startDate,
       bio: bio || null,
       status: initialStatus,
+      requiresTraining: options?.requiresTraining === true,
     },
   });
 

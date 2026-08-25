@@ -13,7 +13,7 @@ export default async function MyTasksPage() {
   const tasks = employeeId
     ? await db.employeeTask.findMany({
         where: {
-          employee: { status: { in: ["PRE_ONBOARDING", "ONBOARDING"] } },
+          employee: { status: { in: ["PRE_ONBOARDING", "TRAINING", "ONBOARDING"] } },
           OR: [
             { assigneeId: employeeId },
             ...(viewer?.departmentId ? [{ assigneeDepartmentId: viewer.departmentId }] : []),

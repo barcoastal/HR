@@ -6,6 +6,7 @@ import { MyOnboardingTasks } from "@/components/onboarding/my-onboarding-tasks";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
+import { OnboardingTabs } from "@/components/onboarding/onboarding-tabs";
 
 export default async function OnboardingPage() {
   const session = await requireAdmin();
@@ -112,7 +113,8 @@ export default async function OnboardingPage() {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      <PageHeader title="Onboarding" description="Assign and track internal onboarding tasks across departments and people" />
+      <PageHeader title="Onboarding" description="Manage internal onboarding and required training for selected new hires" />
+      <OnboardingTabs active="onboarding" />
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard title="Active Onboarding" value={onboardingEmployees.length} icon={<Icon name="person_add" size={20} />} color="blue" />

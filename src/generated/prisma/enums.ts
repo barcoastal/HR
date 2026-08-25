@@ -13,6 +13,7 @@ export const EmployeeStatus = {
   PENDING: 'PENDING',
   ACTIVE: 'ACTIVE',
   PRE_ONBOARDING: 'PRE_ONBOARDING',
+  TRAINING: 'TRAINING',
   ONBOARDING: 'ONBOARDING',
   OFFBOARDED: 'OFFBOARDED'
 } as const
@@ -33,6 +34,7 @@ export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 export const ChecklistType = {
   PRE_ONBOARDING: 'PRE_ONBOARDING',
+  TRAINING: 'TRAINING',
   ONBOARDING: 'ONBOARDING',
   OFFBOARDING: 'OFFBOARDING'
 } as const

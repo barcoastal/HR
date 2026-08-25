@@ -8,7 +8,7 @@ export async function notifyTaskAssignment(input: {
   employeeName: string;
   taskTitle: string;
   taskDescription?: string | null;
-  workflow: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
+  workflow: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING" | "OFFBOARDING";
 }) {
   const recipients = input.assigneeId
     ? await db.employee.findMany({
@@ -46,6 +46,12 @@ export async function notifyTaskAssignment(input: {
     taskDescription: input.taskDescription,
     taskId: input.taskId,
     taskUrl: `${baseUrl}${path}`,
-    workflowName: input.workflow === "PRE_ONBOARDING" ? "Written Offer" : input.workflow === "ONBOARDING" ? "Onboarding" : "Offboarding",
+    workflowName: input.workflow === "PRE_ONBOARDING"
+      ? "Written Offer"
+      : input.workflow === "TRAINING"
+        ? "Training"
+        : input.workflow === "ONBOARDING"
+          ? "Onboarding"
+          : "Offboarding",
   })));
 }

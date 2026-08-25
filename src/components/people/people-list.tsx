@@ -60,6 +60,7 @@ function StatusLabel({ status }: { status: string }) {
   const config: Record<string, { label: string; icon: string; className: string }> = {
     ACTIVE: { label: "Available", icon: "circle", className: "text-green-600 bg-green-50" },
     PRE_ONBOARDING: { label: "Written Offer", icon: "assignment", className: "text-purple-600 bg-purple-50" },
+    TRAINING: { label: "Training", icon: "school", className: "text-indigo-600 bg-indigo-50" },
     ONBOARDING: { label: "Onboarding", icon: "rocket_launch", className: "text-[var(--color-primary)] bg-[var(--color-primary-fixed)]/30" },
     PENDING: { label: "Pending Approval", icon: "schedule", className: "text-amber-600 bg-amber-50" },
     OFFBOARDED: { label: "Offboarded", icon: "block", className: "text-[var(--color-on-surface-variant)] bg-[var(--color-surface-container)]" },

@@ -46,7 +46,7 @@ export async function searchChat(query: string) {
         { lastName: { contains: q, mode: "insensitive" } },
         { email: { contains: q, mode: "insensitive" } },
       ],
-      status: { in: ["ACTIVE", "ONBOARDING", "PRE_ONBOARDING"] },
+      status: { in: ["ACTIVE", "ONBOARDING", "TRAINING", "PRE_ONBOARDING"] },
     },
     select: { id: true, firstName: true, lastName: true, preferredName: true, profilePhoto: true, jobTitle: true },
     take: 5,

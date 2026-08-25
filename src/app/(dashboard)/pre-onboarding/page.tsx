@@ -58,7 +58,7 @@ export default async function PreOnboardingPage() {
 
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Written Offers</h2>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Candidates move to Onboarding automatically after every required document is complete.</p>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">After every required document is complete, each candidate moves to their selected next step.</p>
       </div>
       <div className="space-y-3">
         {preOnboardingEmployees.map((emp) => {
@@ -87,6 +87,7 @@ export default async function PreOnboardingPage() {
                 lastName: emp.lastName,
                 jobTitle: emp.jobTitle,
                 email: emp.email,
+                requiresTraining: emp.requiresTraining,
               }}
               tasks={writtenOfferTasks.map((t) => ({
                 id: t.id,

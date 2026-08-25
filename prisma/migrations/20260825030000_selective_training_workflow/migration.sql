@@ -1,0 +1,5 @@
+ALTER TYPE "EmployeeStatus" ADD VALUE 'TRAINING';
+ALTER TYPE "ChecklistType" ADD VALUE 'TRAINING';
+
+ALTER TABLE "Employee"
+ADD COLUMN "requiresTraining" BOOLEAN NOT NULL DEFAULT false;

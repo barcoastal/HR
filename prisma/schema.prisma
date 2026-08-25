@@ -15,6 +15,7 @@ enum EmployeeStatus {
   PENDING
   ACTIVE
   PRE_ONBOARDING
+  TRAINING
   ONBOARDING
   OFFBOARDED
 }
@@ -29,6 +30,7 @@ enum UserRole {
 
 enum ChecklistType {
   PRE_ONBOARDING
+  TRAINING
   ONBOARDING
   OFFBOARDING
 }
@@ -249,6 +251,7 @@ model Employee {
   tShirtSize               String?
   buddyId                  String?
   status                   EmployeeStatus @default(ACTIVE)
+  requiresTraining         Boolean        @default(false)
   gustoEmployeeId          String?        @unique
   archivedAt               DateTime?
   archivedById             String?

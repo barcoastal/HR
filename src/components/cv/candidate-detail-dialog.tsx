@@ -334,6 +334,7 @@ export function CandidateDetailDialog({
     stageId: "" as string,
     companyEmail: "",
     startDate: "",
+    requiresTraining: false,
   });
   const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
   const [bgCheckLoading, setBgCheckLoading] = useState(false);
@@ -461,6 +462,7 @@ export function CandidateDetailDialog({
         stageId: candidate.stageId || "",
         companyEmail: "",
         startDate: new Date().toISOString().split("T")[0],
+        requiresTraining: false,
       });
       setBgCheckStatus(candidate.backgroundCheckStatus || null);
       setHireResult(null);
@@ -551,6 +553,7 @@ export function CandidateDetailDialog({
           startDate: form.startDate || undefined,
           managerId: form.managerId || undefined,
           skipEmail: isPreOnboarding,
+          requiresTraining: form.requiresTraining,
         });
         if (!result.success) {
           setSaveError(`Could not hire: ${result.error}`);
@@ -1005,6 +1008,20 @@ export function CandidateDetailDialog({
                     <button onClick={() => update("companyEmail", "")} className="ml-auto text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">Change</button>
                   </div>
                 )}
+                <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-3">
+                  <input
+                    type="checkbox"
+                    checked={form.requiresTraining}
+                    onChange={(event) => setForm((current) => ({ ...current, requiresTraining: event.target.checked }))}
+                    className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+                  />
+                  <span>
+                    <span className="block text-xs font-medium text-[var(--color-text-primary)]">Require training before onboarding</span>
+                    <span className="mt-0.5 block text-[10px] leading-4 text-[var(--color-text-muted)]">
+                      After Written Offer documents are complete, this person will enter the Training queue first.
+                    </span>
+                  </span>
+                </label>
               </div>
             )}
 

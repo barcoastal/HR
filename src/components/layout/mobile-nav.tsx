@@ -66,6 +66,7 @@ export function MobileNav({ isRecruiter = false }: { isRecruiter?: boolean }) {
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
+    if (href === "/onboarding") return pathname.startsWith("/onboarding") || pathname.startsWith("/training");
     return pathname.startsWith(href);
   }
 

@@ -226,6 +226,12 @@ export default async function SettingsPage({
                   jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
                   checklistType="PRE_ONBOARDING"
                 />}
+                {activePanel === "training" && <OnboardingSetup
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                  employees={employeeList}
+                  jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+                  checklistType="TRAINING"
+                />}
                 {activePanel === "onboarding" && <OnboardingSetup
                   departments={departments.map((d) => ({ id: d.id, name: d.name }))}
                   employees={employeeList}

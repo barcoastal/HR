@@ -741,10 +741,6 @@ export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type UserCreateNestedOneWithoutEventAttendancesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutEventAttendancesInput, Prisma.UserUncheckedCreateWithoutEventAttendancesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutEventAttendancesInput

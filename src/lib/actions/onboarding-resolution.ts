@@ -32,6 +32,14 @@ export async function resolvePreOnboardingTasks(
   return resolveTasksByType("PRE_ONBOARDING", departmentId, jobTitle);
 }
 
+/** Resolve the selective training tasks that sit between Written Offer and Onboarding. */
+export async function resolveTrainingTasks(
+  departmentId: string | null,
+  jobTitle: string | null
+): Promise<ResolvedTask[]> {
+  return resolveTasksByType("TRAINING", departmentId, jobTitle);
+}
+
 /**
  * Resolve the full onboarding task list for an employee.
  * Merges: global tasks + department tasks + job title overrides (extras - exclusions).
@@ -44,7 +52,7 @@ export async function resolveOnboardingTasks(
 }
 
 async function resolveTasksByType(
-  type: "PRE_ONBOARDING" | "ONBOARDING",
+  type: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING",
   departmentId: string | null,
   jobTitle: string | null
 ): Promise<ResolvedTask[]> {

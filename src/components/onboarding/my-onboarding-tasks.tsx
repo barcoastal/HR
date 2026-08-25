@@ -14,7 +14,7 @@ type AssignedTask = {
   dueDay: number | null;
   employeeName: string;
   employeeId: string;
-  workflow?: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
+  workflow?: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING" | "OFFBOARDING";
 };
 
 export function MyOnboardingTasks({ tasks, title = "My Onboarding Tasks" }: { tasks: AssignedTask[]; title?: string }) {
@@ -71,7 +71,13 @@ export function MyOnboardingTasks({ tasks, title = "My Onboarding Tasks" }: { ta
                     </p>
                     {task.workflow && (
                       <p className="mt-0.5 text-[11px] font-medium text-[var(--color-accent)]">
-                        {task.workflow === "PRE_ONBOARDING" ? "Written Offer" : task.workflow === "ONBOARDING" ? "Onboarding" : "Offboarding"}
+                        {task.workflow === "PRE_ONBOARDING"
+                          ? "Written Offer"
+                          : task.workflow === "TRAINING"
+                            ? "Training"
+                            : task.workflow === "ONBOARDING"
+                              ? "Onboarding"
+                              : "Offboarding"}
                       </p>
                     )}
                     {task.description && (

@@ -62,7 +62,7 @@ export async function getOrCreateWorkspace() {
 
     // Always sync: enroll any active employees who aren't members yet
     const employees = await db.employee.findMany({
-      where: { status: { in: ["ACTIVE", "ONBOARDING", "PRE_ONBOARDING"] } },
+      where: { status: { in: ["ACTIVE", "ONBOARDING", "TRAINING", "PRE_ONBOARDING"] } },
       select: { id: true },
     });
 

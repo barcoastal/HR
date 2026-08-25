@@ -199,6 +199,7 @@ export const EmployeeScalarFieldEnum = {
   tShirtSize: 'tShirtSize',
   buddyId: 'buddyId',
   status: 'status',
+  requiresTraining: 'requiresTraining',
   gustoEmployeeId: 'gustoEmployeeId',
   archivedAt: 'archivedAt',
   archivedById: 'archivedById',

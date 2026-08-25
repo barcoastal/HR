@@ -74,7 +74,13 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     return years > 0 ? `${years} year${years > 1 ? "s" : ""}, ${months} month${months !== 1 ? "s" : ""}` : `${months} month${months !== 1 ? "s" : ""}`;
   })();
 
-  const statusColor = employee.status === "ACTIVE" ? "bg-emerald-500/15 text-emerald-400" : employee.status === "ONBOARDING" ? "bg-blue-500/15 text-blue-400" : "bg-gray-500/15 text-gray-400";
+  const statusColor = employee.status === "ACTIVE"
+    ? "bg-emerald-500/15 text-emerald-400"
+    : employee.status === "TRAINING"
+      ? "bg-indigo-500/15 text-indigo-400"
+      : employee.status === "ONBOARDING"
+        ? "bg-blue-500/15 text-blue-400"
+        : "bg-gray-500/15 text-gray-400";
 
   const addressParts = [employee.address, employee.city, employee.state, employee.zipCode, employee.country].filter(Boolean);
   const fullAddress = addressParts.join(", ");

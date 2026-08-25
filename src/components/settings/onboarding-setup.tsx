@@ -21,6 +21,13 @@ import {
 type Employee = { id: string; firstName: string; lastName: string };
 type Department = { id: string; name: string };
 type JobTitle = { id: string; name: string };
+type WorkflowChecklistType = "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING";
+
+const WORKFLOW_LABELS: Record<WorkflowChecklistType, string> = {
+  PRE_ONBOARDING: "Written Offer",
+  TRAINING: "Training",
+  ONBOARDING: "Onboarding",
+};
 
 type ChecklistItemData = {
   id: string;
@@ -112,7 +119,7 @@ export function OnboardingSetup({
   departments: Department[];
   employees: Employee[];
   jobTitles: JobTitle[];
-  checklistType?: "PRE_ONBOARDING" | "ONBOARDING";
+  checklistType?: WorkflowChecklistType;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -279,7 +286,7 @@ export function OnboardingSetup({
   // Create checklist
   async function handleCreateChecklist() {
     setCreatingChecklist(true);
-    const typeLabel = checklistType === "PRE_ONBOARDING" ? "Written Offer" : "Onboarding";
+    const typeLabel = WORKFLOW_LABELS[checklistType];
     const name = selectedDeptId
       ? `${selectedDeptName} ${typeLabel}`
       : `Global ${typeLabel}`;
@@ -434,7 +441,7 @@ export function OnboardingSetup({
       <div className="flex items-center gap-2 mb-5">
         <Icon name="assignment" size={20} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">
-          {checklistType === "PRE_ONBOARDING" ? "Written Offer Setup" : "Onboarding Setup"}
+          {WORKFLOW_LABELS[checklistType]} Setup
         </h2>
       </div>
 
@@ -496,7 +503,7 @@ export function OnboardingSetup({
             {checklists.length === 0 && (
               <div className="text-center py-8">
                 <p className="text-sm text-[var(--color-text-muted)] mb-3">
-                  No onboarding checklist for {selectedDeptName}. Create one to get started.
+                  No {WORKFLOW_LABELS[checklistType].toLowerCase()} checklist for {selectedDeptName}. Create one to get started.
                 </p>
                 <button
                   onClick={handleCreateChecklist}
@@ -513,7 +520,7 @@ export function OnboardingSetup({
                   ) : (
                     <Icon name="add" size={16} />
                   )}
-                  {creatingChecklist ? "Creating..." : "Create Onboarding Checklist"}
+                  {creatingChecklist ? "Creating..." : `Create ${WORKFLOW_LABELS[checklistType]} Checklist`}
                 </button>
               </div>
             )}

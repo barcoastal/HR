@@ -37,6 +37,7 @@ export const SETTINGS_PANELS: Partial<Record<SettingsSectionId, readonly { id: s
   ],
   workflows: [
     { id: "written-offer", label: "Written Offer" },
+    { id: "training", label: "Training" },
     { id: "onboarding", label: "Onboarding" },
     { id: "offboarding", label: "Offboarding" },
   ],

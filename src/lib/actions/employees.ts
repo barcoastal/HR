@@ -596,6 +596,7 @@ export async function toggleEmployeeTask(taskId: string) {
     },
   });
   revalidatePath("/onboarding");
+  revalidatePath("/training");
   revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
@@ -666,6 +667,7 @@ export async function addEmployeeTask(employeeId: string, checklistItemId: strin
     });
   }
   revalidatePath("/onboarding");
+  revalidatePath("/training");
   revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
@@ -676,12 +678,18 @@ export async function addCustomEmployeeTask(
   employeeId: string,
   title: string,
   description: string | undefined,
-  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING",
+  type: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING" | "OFFBOARDING",
   assigneeId?: string,
   assigneeDepartmentId?: string
 ) {
   await (await import("@/lib/auth-helpers")).requireAdmin();
-  const typeLabel = type === "PRE_ONBOARDING" ? "Written Offer" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
+  const typeLabel = type === "PRE_ONBOARDING"
+    ? "Written Offer"
+    : type === "TRAINING"
+      ? "Training"
+      : type === "ONBOARDING"
+        ? "Onboarding"
+        : "Offboarding";
   // Find or create a checklist for custom tasks
   let checklist = await db.onboardingChecklist.findFirst({
     where: { name: `Custom ${typeLabel} Tasks`, type, isOverride: true },
@@ -738,6 +746,7 @@ export async function addCustomEmployeeTask(
   }
 
   revalidatePath("/onboarding");
+  revalidatePath("/training");
   revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
@@ -748,6 +757,39 @@ export async function addCustomEmployeeTask(
 export async function completePreOnboarding(employeeId: string, companyEmail?: string) {
   const { advanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
   const result = await advanceWrittenOfferToOnboarding(employeeId, companyEmail);
+  return result.employee;
+}
+
+export async function setEmployeeTrainingRequired(employeeId: string, required: boolean) {
+  const { requireAdmin } = await import("@/lib/auth-helpers");
+  await requireAdmin();
+  const employee = await db.employee.findUnique({ where: { id: employeeId } });
+  if (!employee) throw new Error("Employee not found");
+  if (employee.status !== "PRE_ONBOARDING") {
+    throw new Error("Training can only be selected while the person is in Written Offer.");
+  }
+
+  await db.employee.update({ where: { id: employeeId }, data: { requiresTraining: required } });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.training_requirement_updated",
+    entityType: "employee",
+    entityId: employeeId,
+    details: { required },
+  });
+
+  const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
+  await maybeAdvanceWrittenOfferToOnboarding(employeeId);
+  revalidatePath("/pre-onboarding");
+  revalidatePath("/training");
+  return db.employee.findUnique({ where: { id: employeeId } });
+}
+
+export async function completeTraining(employeeId: string) {
+  const { requireAdmin } = await import("@/lib/auth-helpers");
+  await requireAdmin();
+  const { advanceTrainingToOnboarding } = await import("@/lib/written-offer");
+  const result = await advanceTrainingToOnboarding(employeeId);
   return result.employee;
 }
 

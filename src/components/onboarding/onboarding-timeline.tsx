@@ -7,6 +7,8 @@ import {
   toggleEmployeeTask,
   addEmployeeTask,
   addCustomEmployeeTask,
+  setEmployeeTrainingRequired,
+  completeTraining,
   completeOnboarding,
   deleteEmployee,
 } from "@/lib/actions/employees";
@@ -46,10 +48,11 @@ type Props = {
     lastName: string;
     jobTitle: string;
     email: string;
+    requiresTraining?: boolean;
   };
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
-  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
+  type: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING" | "OFFBOARDING";
   defaultExpanded?: boolean;
   isSuperAdmin?: boolean;
   assignees?: { id: string; firstName: string; lastName: string }[];
@@ -128,6 +131,9 @@ export function OnboardingTimeline({
   const [addingCustom, setAddingCustom] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [trainingRequired, setTrainingRequired] = useState(employee.requiresTraining ?? false);
+  const [savingTrainingRequirement, setSavingTrainingRequirement] = useState(false);
+  const [trainingRequirementError, setTrainingRequirementError] = useState<string | null>(null);
   const router = useRouter();
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
@@ -208,6 +214,33 @@ export function OnboardingTimeline({
     router.refresh();
   }
 
+  async function handleCompleteTraining() {
+    setCompleting(true);
+    try {
+      await completeTraining(employee.id);
+      setCompleted(true);
+      router.refresh();
+    } finally {
+      setCompleting(false);
+    }
+  }
+
+  async function handleTrainingRequirementChange(required: boolean) {
+    const previous = trainingRequired;
+    setTrainingRequired(required);
+    setSavingTrainingRequirement(true);
+    setTrainingRequirementError(null);
+    try {
+      await setEmployeeTrainingRequired(employee.id, required);
+      router.refresh();
+    } catch (error) {
+      setTrainingRequired(previous);
+      setTrainingRequirementError(error instanceof Error ? error.message : "Could not update the training requirement.");
+    } finally {
+      setSavingTrainingRequirement(false);
+    }
+  }
+
   async function handleDelete() {
     setDeleting(true);
     try {
@@ -219,7 +252,13 @@ export function OnboardingTimeline({
     }
   }
 
-  const label = type === "PRE_ONBOARDING" ? "Written Offer" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
+  const label = type === "PRE_ONBOARDING"
+    ? "Written Offer"
+    : type === "TRAINING"
+      ? "Training"
+      : type === "ONBOARDING"
+        ? "Onboarding"
+        : "Offboarding";
 
   // Group available items by checklist name
   const groupedAvailable = availableItems.reduce<Record<string, AvailableChecklistItem[]>>((acc, item) => {
@@ -255,7 +294,9 @@ export function OnboardingTimeline({
               {label} Complete!
             </p>
             <p className="text-sm text-[var(--color-text-muted)] mt-1">
-              {employee.firstName} {employee.lastName} is now an active employee.
+              {type === "TRAINING"
+                ? `${employee.firstName} ${employee.lastName} moved to Onboarding.`
+                : `${employee.firstName} ${employee.lastName} is now an active employee.`}
             </p>
           </div>
         </div>
@@ -297,12 +338,30 @@ export function OnboardingTimeline({
 
       {/* Manual resend of Written Offer documents */}
       {type === "PRE_ONBOARDING" && (
-        <div className="px-5 pb-2 -mt-1 flex justify-end">
-          <ResendStageDocsButton
-            employeeId={employee.id}
-            employeeName={`${employee.firstName} ${employee.lastName}`}
-            stage="PRE_ONBOARDING"
-          />
+        <div className="mx-5 mb-3 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={trainingRequired}
+              disabled={savingTrainingRequirement}
+              onChange={(event) => handleTrainingRequirementChange(event.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)] disabled:opacity-50"
+            />
+            <span>
+              <span className="block text-sm font-medium text-[var(--color-text-primary)]">Require training before onboarding</span>
+              <span className="mt-0.5 block text-xs text-[var(--color-text-muted)]">
+                {trainingRequired ? "After the documents finish, this person moves to Training." : "This person moves directly to Onboarding after the documents finish."}
+              </span>
+            </span>
+          </label>
+          <div className="shrink-0 self-end sm:self-auto">
+            <ResendStageDocsButton
+              employeeId={employee.id}
+              employeeName={`${employee.firstName} ${employee.lastName}`}
+              stage="PRE_ONBOARDING"
+            />
+          </div>
+          {trainingRequirementError && <p role="alert" className="text-xs text-red-500 sm:basis-full">{trainingRequirementError}</p>}
         </div>
       )}
 
@@ -369,7 +428,7 @@ export function OnboardingTimeline({
                 <div className="mb-4 flex items-start gap-2 rounded-xl border border-purple-500/20 bg-purple-500/5 px-3 py-2.5">
                   <Icon name="automation" size={17} className="mt-0.5 shrink-0 text-purple-500" />
                   <p className="text-xs leading-5 text-[var(--color-text-muted)]">
-                    This person moves to Onboarding automatically when every required document is complete.
+                    This person moves to {trainingRequired ? "Training" : "Onboarding"} automatically when every required document is complete.
                   </p>
                 </div>
               )}
@@ -565,6 +624,24 @@ export function OnboardingTimeline({
                       <><Icon name="progress_activity" size={16} className="animate-material-spin" />Processing...</>
                     ) : (
                       <><Icon name="check_circle" size={16} />Complete {label}</>
+                    )}
+                  </button>
+                )}
+
+                {type === "TRAINING" && (tasks.length === 0 || allDone) && (
+                  <button
+                    onClick={handleCompleteTraining}
+                    disabled={completing}
+                    className={cn(
+                      "flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium",
+                      "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors",
+                      "disabled:opacity-50"
+                    )}
+                  >
+                    {completing ? (
+                      <><Icon name="progress_activity" size={16} className="animate-material-spin" />Moving...</>
+                    ) : (
+                      <><Icon name="arrow_forward" size={16} />Move to Onboarding</>
                     )}
                   </button>
                 )}

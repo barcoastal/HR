@@ -62,6 +62,7 @@ export function Sidebar({ logoUrl, companyName, isRecruiter = false, userDisplay
 
   function isActive(href: string) {
     if (href === "/") return pathname === "/";
+    if (href === "/onboarding") return pathname.startsWith("/onboarding") || pathname.startsWith("/training");
     return pathname.startsWith(href);
   }
 

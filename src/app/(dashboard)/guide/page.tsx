@@ -360,18 +360,22 @@ export default async function GuidePage() {
           <p>
             When marking a candidate Hired, enter the company email and start date and confirm the
             manager/job details. CALATRAVA creates or links the Employee, preserves the candidate
-            history, sends the configured stage documents, and starts Written Offer or Onboarding
-            based on the configured checklist.
+            history, sends the configured stage documents, and starts Written Offer. Select
+            training when the person must complete that step before Onboarding.
           </p>
         </section>
 
         <section id="onboarding">
-          <h2>Written Offer, onboarding, and offboarding</h2>
+          <h2>Written Offer, training, onboarding, and offboarding</h2>
           <p>These pages are available to roles with the matching workflow permission.</p>
           <div className="guide-grid">
             <div className="guide-card">
               <h3>Written Offer</h3>
-              <p><Route>/pre-onboarding</Route> tracks the forms and signatures a candidate must complete. When every required document is finished, the candidate moves to Onboarding automatically.</p>
+              <p><Route>/pre-onboarding</Route> tracks the forms and signatures a candidate must complete. Select Require training before onboarding only for people who need that additional step.</p>
+            </div>
+            <div className="guide-card">
+              <h3>Training</h3>
+              <p>The Training tab inside <Route>/onboarding</Route> tracks selected new hires, assigned training work, owners, and completion. Once every training task is complete, HR can move the person to Onboarding.</p>
             </div>
             <div className="guide-card">
               <h3>Onboarding</h3>
@@ -576,7 +580,7 @@ export default async function GuidePage() {
           <div className="guide-grid">
             <div className="guide-card"><h3>Company &amp; access</h3><ul><li>Company name, domain, logo/favicon, sender name/email</li><li>User invitations, passwords, roles, and deletion</li><li>Role permission matrix</li><li>Recruiter assignments</li></ul></div>
             <div className="guide-card"><h3>Recruitment setup</h3><ul><li>Pipeline stages and candidate custom fields</li><li>Stage notification recipients</li><li>Stage and position documents</li><li>Recruitment platform records and sync controls</li></ul></div>
-            <div className="guide-card"><h3>People programs</h3><ul><li>Department review templates</li><li>Departments, teams, and job titles</li><li>Written Offer, onboarding, and offboarding checklists</li><li>Time-off policies and pulse surveys</li></ul></div>
+            <div className="guide-card"><h3>People programs</h3><ul><li>Department review templates</li><li>Departments, teams, and job titles</li><li>Written Offer, training, onboarding, and offboarding checklists</li><li>Time-off policies and pulse surveys</li></ul></div>
             <div className="guide-card"><h3>Delivery &amp; systems</h3><ul><li>Email templates and preview/send-test controls</li><li>Notification action/recipient/channel matrix</li><li>Native and platform integrations</li><li>Gusto connection and employee mapping</li></ul></div>
           </div>
 
