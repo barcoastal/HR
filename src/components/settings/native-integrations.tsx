@@ -48,11 +48,11 @@ export function NativeIntegrations({ connected }: Props) {
 
     if (oauthSuccess) {
       setNotification({ type: "success", message: `${oauthSuccess} connected successfully!` });
-      window.history.replaceState({}, "", "/settings");
+      window.history.replaceState({}, "", "/settings?section=integrations");
       router.refresh();
     } else if (oauthError) {
       setNotification({ type: "error", message: oauthError });
-      window.history.replaceState({}, "", "/settings");
+      window.history.replaceState({}, "", "/settings?section=integrations");
     }
   }, [searchParams, router]);
 

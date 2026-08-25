@@ -205,7 +205,7 @@ export function ScheduleInterviewDialog({
             <Icon name="info" size={16} className="text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-300">
               One branded invitation with a calendar RSVP will still be sent, but it will not include a Meet link until Google Calendar is connected.{" "}
-              <Link href="/settings" className="underline hover:text-amber-200">
+              <Link href="/settings?section=integrations&panel=connected-apps" className="underline hover:text-amber-200">
                 Connect in Settings
               </Link>
             </p>

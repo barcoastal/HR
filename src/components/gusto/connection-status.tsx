@@ -20,7 +20,7 @@ export function GustoConnectionStatus({ connected, companyName, connectedAt, sta
           <p className="text-sm font-medium text-[var(--color-text-primary)]">Gusto is not connected</p>
           <p className="text-xs text-[var(--color-text-muted)]">Connect in Settings to enable payroll and time-off sync.</p>
         </div>
-        <Link href="/settings">
+        <Link href="/settings?section=integrations&panel=payroll">
           <Button variant="secondary" size="sm">Connect</Button>
         </Link>
       </div>
@@ -35,7 +35,7 @@ export function GustoConnectionStatus({ connected, companyName, connectedAt, sta
           <p className="text-sm font-medium text-[var(--color-text-primary)]">Gusto connection lost</p>
           <p className="text-xs text-[var(--color-text-muted)]">Please reconnect in Settings to restore access.</p>
         </div>
-        <Link href="/settings">
+        <Link href="/settings?section=integrations&panel=payroll">
           <Button variant="secondary" size="sm">Reconnect</Button>
         </Link>
       </div>

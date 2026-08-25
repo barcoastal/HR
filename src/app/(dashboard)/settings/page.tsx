@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { getInitials } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { getUsers } from "@/lib/actions/users";
@@ -45,10 +46,33 @@ import { DepartmentReviewTemplates } from "@/components/settings/department-revi
 import { getDepartmentReviewTemplates } from "@/lib/actions/reviews";
 import { db } from "@/lib/db";
 import type { UserRole } from "@/generated/prisma/client";
+import {
+  SETTINGS_SECTIONS,
+  SETTINGS_PANELS,
+  SettingsNavigation,
+  SettingsSectionHeader,
+  SettingsSubnavigation,
+  type SettingsSectionId,
+} from "@/components/settings/settings-navigation";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500", "bg-teal-500"];
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string; panel?: string; oauth_success?: string; oauth_error?: string }>;
+}) {
+  const params = await searchParams;
+  const requestedSection = params.oauth_success || params.oauth_error
+    ? "integrations"
+    : params.section;
+  const activeSection: SettingsSectionId = SETTINGS_SECTIONS.some((section) => section.id === requestedSection)
+    ? requestedSection as SettingsSectionId
+    : "company";
+  const panels = SETTINGS_PANELS[activeSection] || [];
+  const activePanel = panels.some((panel) => panel.id === params.panel)
+    ? params.panel!
+    : panels[0]?.id || "";
   const session = await requireAdmin();
   await seedNotificationRules();
   const [users, departments, employees, jobTitles, policies, pulseSurveys, recruitmentPlatforms, companySettings, emailTemplates, rolePermissions, recruiters, gustoConnection, pipelineStages, candidateFields, stageNotifyRecipients, stageNotifyEmployeeIds, stageDocuments, deptReviewTemplates, notificationRules, notificationRecipients, countersigners, positionDocuments, positions] = await Promise.all([
@@ -78,10 +102,10 @@ export default async function SettingsPage() {
   ]);
 
   const activeEmployeeCount = await db.employee.count({ where: { status: "ACTIVE" } });
-  const emailDeliveries = await getRecentEmailDeliveries();
+  const emailDeliveries = activeSection === "email" && activePanel === "delivery" ? await getRecentEmailDeliveries() : [];
 
   let gustoMapping = null;
-  if (gustoConnection) {
+  if (gustoConnection && activeSection === "integrations" && activePanel === "payroll") {
     try {
       gustoMapping = await getEmployeeMapping();
     } catch {
@@ -105,199 +129,161 @@ export default async function SettingsPage() {
   }));
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
-      <PageHeader title="Settings" description="Manage your company settings, users, and templates" />
+    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+      <PageHeader title="Settings" description="Manage company configuration by area" />
+      <SettingsNavigation active={activeSection} mobile />
 
-      <div className="space-y-8">
-        <CompanyInfo
-          settings={{
-            companyName: companySettings.companyName,
-            domain: companySettings.domain,
-            industry: companySettings.industry,
-            logoUrl: companySettings.logoUrl,
-            faviconUrl: companySettings.faviconUrl,
-            senderEmail: companySettings.senderEmail,
-            senderName: companySettings.senderName,
-          }}
-          activeEmployeeCount={activeEmployeeCount}
-        />
-
-        <SettingsUserManagement
-          users={userList}
-          currentUserRole={(session.user?.role || "EMPLOYEE") as UserRole}
-        />
-
-        <PermissionsManager permissions={rolePermissions} />
-
-        <RecruiterManager
-          recruiters={recruiters.map((r) => ({
-            id: r.id,
-            firstName: r.firstName,
-            lastName: r.lastName,
-            email: r.email,
-            jobTitle: r.jobTitle,
-          }))}
-          allEmployees={employees.map((e) => ({
-            id: e.id,
-            firstName: e.firstName,
-            lastName: e.lastName,
-            email: e.email,
-            jobTitle: e.jobTitle,
-          }))}
-        />
-
-        <PipelineSettings
-          initialStages={pipelineStages}
-          initialCustomFields={candidateFields}
-        />
-
-        <NotificationSettings
-          initialRules={notificationRules}
-          initialRecipients={notificationRecipients}
-          allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
-        />
-
-        <StageDocumentsManager
-          documents={stageDocuments.map((d) => ({
-            id: d.id,
-            stage: d.stage,
-            name: d.name,
-            placeholders: d.placeholders,
-            requiresSignature: d.requiresSignature,
-            requiresFill: d.requiresFill,
-            requiresCountersignature: d.requiresCountersignature,
-            countersignerId: d.countersignerId,
-            order: d.order,
-            hasPdf: d.hasPdf,
-          }))}
-          countersigners={countersigners}
-        />
-
-        <PositionDocumentsManager
-          documents={positionDocuments.map((d) => ({
-            id: d.id,
-            positionId: d.positionId,
-            name: d.name,
-            placeholders: d.placeholders,
-            requiresSignature: d.requiresSignature,
-            requiresFill: d.requiresFill,
-            requiresCountersignature: d.requiresCountersignature,
-            countersignerId: d.countersignerId,
-            order: d.order,
-            hasPdf: d.hasPdf,
-          }))}
-          positions={positions.map((p) => ({
-            id: p.id,
-            title: p.title,
-            departmentName: p.department?.name ?? null,
-          }))}
-          countersigners={countersigners}
-        />
-
-        <DepartmentReviewTemplates
-          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-          templates={deptReviewTemplates.map((t) => ({
-            departmentId: t.departmentId,
-            departmentName: t.department.name,
-            name: t.name,
-            selfTemplate: t.selfTemplate,
-            managerTemplate: t.managerTemplate,
-          }))}
-        />
-
-        <DepartmentManager
-          departments={departments.map((d) => ({
-            id: d.id,
-            name: d.name,
-            description: d.description,
-          }))}
-        />
-
-        <JobTitleManager jobTitles={jobTitles} />
-
-        <OnboardingSetup
-          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-          employees={employeeList}
-          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
-          checklistType="PRE_ONBOARDING"
-        />
-
-        <OnboardingSetup
-          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-          employees={employeeList}
-          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
-        />
-
-        <OffboardingSetup
-          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-          employees={employeeList}
-          jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
-        />
-
-        <PtoPolicyManager
-          policies={policies.map((p) => ({
-            id: p.id,
-            name: p.name,
-            daysPerYear: p.daysPerYear,
-            isUnlimited: p.isUnlimited,
-            documentUrl: p.documentUrl,
-            documentName: p.documentName,
-          }))}
-        />
-
-        <EmailTemplateManager templates={emailTemplates} userEmail={session.user.email || ""} />
-
-        <EmailDeliveryActivity deliveries={emailDeliveries} />
-
-        <PulseSurveyManager
-          surveys={pulseSurveys.map((s) => ({
-            id: s.id,
-            question: s.question,
-            status: s.status,
-            createdAt: s.createdAt,
-            _count: s._count,
-          }))}
-        />
-
-        <Suspense>
-          <NativeIntegrations
-            connected={recruitmentPlatforms
-              .filter((p) => SUPPORTED_PLATFORMS.some((sp) => sp.name === p.name))
-              .map((p) => ({
-                name: p.name,
-                apiKey: p.apiKey,
-                lastSyncAt: p.lastSyncAt,
-                totalSynced: p.totalSynced,
-              }))}
+      <div className="grid items-start gap-8 lg:grid-cols-[240px_minmax(0,1fr)]">
+        <SettingsNavigation active={activeSection} />
+        <main className="min-w-0 max-w-4xl">
+          <SettingsSectionHeader
+            active={activeSection}
+            action={activeSection === "email" ? (
+              <Link href="/email-log" className="inline-flex h-10 items-center rounded-lg bg-[var(--color-accent)] px-4 text-sm font-medium text-white hover:bg-[var(--color-accent-hover)]">
+                Open Email Log
+              </Link>
+            ) : undefined}
           />
-        </Suspense>
+          <SettingsSubnavigation section={activeSection} activePanel={activePanel} />
 
-        <CleanupDemoButton />
+          <div className="space-y-6">
+            {activeSection === "company" && (
+              <>
+                <CompanyInfo
+                  settings={{
+                    companyName: companySettings.companyName,
+                    domain: companySettings.domain,
+                    industry: companySettings.industry,
+                    logoUrl: companySettings.logoUrl,
+                    faviconUrl: companySettings.faviconUrl,
+                    senderEmail: companySettings.senderEmail,
+                    senderName: companySettings.senderName,
+                  }}
+                  activeEmployeeCount={activeEmployeeCount}
+                />
+                <CleanupDemoButton />
+              </>
+            )}
 
-        <PlatformIntegrationManager
-          platforms={recruitmentPlatforms.map((p) => ({
-            id: p.id,
-            name: p.name,
-            accountIdentifier: p.accountIdentifier,
-            type: p.type,
-            monthlyCost: p.monthlyCost,
-            status: p.status,
-            notes: p.notes,
-            apiKey: p.apiKey,
-            lastSyncAt: p.lastSyncAt,
-            totalSynced: p.totalSynced,
-            hasSyncSupport: hasSyncSupport(p.name),
-          }))}
-        />
+            {activeSection === "access" && (
+              <>
+                {activePanel === "users" && <SettingsUserManagement users={userList} currentUserRole={(session.user?.role || "EMPLOYEE") as UserRole} />}
+                {activePanel === "permissions" && <PermissionsManager permissions={rolePermissions} />}
+              </>
+            )}
 
-        <GustoConnection
-          connection={gustoConnection ? {
-            companyName: gustoConnection.companyName,
-            createdAt: gustoConnection.createdAt,
-            tokenExpiresAt: gustoConnection.tokenExpiresAt,
-          } : null}
-          mapping={gustoMapping}
-        />
+            {activeSection === "organization" && (
+              <>
+                {activePanel === "departments" && <DepartmentManager departments={departments.map((d) => ({ id: d.id, name: d.name, description: d.description }))} />}
+                {activePanel === "job-titles" && <JobTitleManager jobTitles={jobTitles} />}
+              </>
+            )}
+
+            {activeSection === "recruitment" && (
+              <>
+                {activePanel === "recruiters" && <RecruiterManager
+                  recruiters={recruiters.map((r) => ({ id: r.id, firstName: r.firstName, lastName: r.lastName, email: r.email, jobTitle: r.jobTitle }))}
+                  allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email, jobTitle: e.jobTitle }))}
+                />}
+                {activePanel === "pipeline" && <PipelineSettings initialStages={pipelineStages} initialCustomFields={candidateFields} />}
+                {activePanel === "notifications" && <NotificationSettings
+                  initialRules={notificationRules}
+                  initialRecipients={notificationRecipients}
+                  allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
+                />}
+              </>
+            )}
+
+            {activeSection === "documents" && (
+              <>
+                {activePanel === "stage-documents" && <StageDocumentsManager
+                  documents={stageDocuments.map((d) => ({
+                    id: d.id, stage: d.stage, name: d.name, placeholders: d.placeholders,
+                    requiresSignature: d.requiresSignature, requiresFill: d.requiresFill,
+                    requiresCountersignature: d.requiresCountersignature, countersignerId: d.countersignerId,
+                    order: d.order, hasPdf: d.hasPdf,
+                  }))}
+                  countersigners={countersigners}
+                />}
+                {activePanel === "position-documents" && <PositionDocumentsManager
+                  documents={positionDocuments.map((d) => ({
+                    id: d.id, positionId: d.positionId, name: d.name, placeholders: d.placeholders,
+                    requiresSignature: d.requiresSignature, requiresFill: d.requiresFill,
+                    requiresCountersignature: d.requiresCountersignature, countersignerId: d.countersignerId,
+                    order: d.order, hasPdf: d.hasPdf,
+                  }))}
+                  positions={positions.map((p) => ({ id: p.id, title: p.title, departmentName: p.department?.name ?? null }))}
+                  countersigners={countersigners}
+                />}
+              </>
+            )}
+
+            {activeSection === "workflows" && (
+              <>
+                {activePanel === "written-offer" && <OnboardingSetup
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                  employees={employeeList}
+                  jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+                  checklistType="PRE_ONBOARDING"
+                />}
+                {activePanel === "onboarding" && <OnboardingSetup
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                  employees={employeeList}
+                  jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+                />}
+                {activePanel === "offboarding" && <OffboardingSetup
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                  employees={employeeList}
+                  jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+                />}
+              </>
+            )}
+
+            {activeSection === "email" && (
+              <>
+                {activePanel === "templates" && <EmailTemplateManager templates={emailTemplates} userEmail={session.user.email || ""} />}
+                {activePanel === "delivery" && <EmailDeliveryActivity deliveries={emailDeliveries} />}
+              </>
+            )}
+
+            {activeSection === "integrations" && (
+              <>
+                {activePanel === "connected-apps" && <Suspense>
+                  <NativeIntegrations
+                    connected={recruitmentPlatforms
+                      .filter((p) => SUPPORTED_PLATFORMS.some((sp) => sp.name === p.name))
+                      .map((p) => ({ name: p.name, apiKey: p.apiKey, lastSyncAt: p.lastSyncAt, totalSynced: p.totalSynced }))}
+                  />
+                </Suspense>}
+                {activePanel === "platform-accounts" && <PlatformIntegrationManager
+                  platforms={recruitmentPlatforms.map((p) => ({
+                    id: p.id, name: p.name, accountIdentifier: p.accountIdentifier, type: p.type,
+                    monthlyCost: p.monthlyCost, status: p.status, notes: p.notes, apiKey: p.apiKey,
+                    lastSyncAt: p.lastSyncAt, totalSynced: p.totalSynced, hasSyncSupport: hasSyncSupport(p.name),
+                  }))}
+                />}
+                {activePanel === "payroll" && <GustoConnection
+                  connection={gustoConnection ? { companyName: gustoConnection.companyName, createdAt: gustoConnection.createdAt, tokenExpiresAt: gustoConnection.tokenExpiresAt } : null}
+                  mapping={gustoMapping}
+                />}
+              </>
+            )}
+
+            {activeSection === "policies" && (
+              <>
+                {activePanel === "pto" && <PtoPolicyManager policies={policies.map((p) => ({ id: p.id, name: p.name, daysPerYear: p.daysPerYear, isUnlimited: p.isUnlimited, documentUrl: p.documentUrl, documentName: p.documentName }))} />}
+                {activePanel === "reviews" && <DepartmentReviewTemplates
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                  templates={deptReviewTemplates.map((t) => ({
+                    departmentId: t.departmentId, departmentName: t.department.name, name: t.name,
+                    selfTemplate: t.selfTemplate, managerTemplate: t.managerTemplate,
+                  }))}
+                />}
+                {activePanel === "pulse" && <PulseSurveyManager surveys={pulseSurveys.map((s) => ({ id: s.id, question: s.question, status: s.status, createdAt: s.createdAt, _count: s._count }))} />}
+              </>
+            )}
+          </div>
+        </main>
       </div>
     </div>
   );

@@ -76,10 +76,10 @@ export function IndeedImport({ platform }: { platform?: SyncablePlatform | null 
               </div>
               <p className="text-sm font-medium text-[var(--color-text-primary)] mb-1">Indeed Not Connected</p>
               <p className="text-xs text-[var(--color-text-muted)] mb-4">
-                Connect your Indeed account in Settings &gt; Recruitment Platforms to import candidates.
+                Connect your Indeed account in Settings &gt; Integrations &gt; Platform Accounts to import candidates.
               </p>
               <a
-                href="/settings"
+                href="/settings?section=integrations&panel=platform-accounts"
                 className={cn(
                   "inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium",
                   "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]"
