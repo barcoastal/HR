@@ -5,6 +5,7 @@ import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
 import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
+import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -1116,6 +1117,8 @@ async function hireInner(
   // Every hire enters Written Offer first. With no required documents, the
   // automatic completion check moves them straight into Onboarding.
   const initialStatus = "PRE_ONBOARDING";
+  const jobTitle = candidate.position?.title || "New Hire";
+  const requiresTraining = await isJobTitleEligibleForTraining(jobTitle) && options?.requiresTraining === true;
 
   // Block the hire if an Employee already exists with this email — Prisma's
   // unique constraint would throw a generic P2002 that Next.js then hides in
@@ -1138,14 +1141,14 @@ async function hireInner(
       lastName: candidate.lastName,
       email: employeeEmail,
       phone: candidate.phone,
-      jobTitle: candidate.position?.title || "New Hire",
+      jobTitle,
       departmentId: candidate.position?.departmentId || null,
       managerId: options?.managerId || candidate.managerId || null,
       startDate,
       anniversaryDate: startDate,
       bio: bio || null,
       status: initialStatus,
-      requiresTraining: options?.requiresTraining === true,
+      requiresTraining,
     },
   });
 

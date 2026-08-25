@@ -133,7 +133,7 @@ export default async function TrainingPage() {
           <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] px-5 py-12 text-center">
             <Icon name="school" size={34} className="mx-auto text-[var(--color-text-muted)]" />
             <p className="mt-3 text-sm font-semibold text-[var(--color-text-primary)]">No one is in Training</p>
-            <p className="mt-1 text-xs text-[var(--color-text-muted)]">Select training on a Written Offer record when a new hire needs this step.</p>
+            <p className="mt-1 text-xs text-[var(--color-text-muted)]">Training can be selected for eligible job titles from the Written Offer record.</p>
           </div>
         )}
       </div>

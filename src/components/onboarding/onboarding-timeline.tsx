@@ -15,6 +15,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
+import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
 
 type TaskItem = {
   id: string;
@@ -49,6 +50,7 @@ type Props = {
     jobTitle: string;
     email: string;
     requiresTraining?: boolean;
+    trainingEligible?: boolean;
   };
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
@@ -135,6 +137,7 @@ export function OnboardingTimeline({
   const [savingTrainingRequirement, setSavingTrainingRequirement] = useState(false);
   const [trainingRequirementError, setTrainingRequirementError] = useState<string | null>(null);
   const router = useRouter();
+  const trainingEligible = employee.trainingEligible ?? isTrainingEligibleJobTitle(employee.jobTitle);
 
   const doneCount = tasks.filter((t) => t.status === "DONE").length;
   const totalCount = tasks.length;
@@ -339,22 +342,24 @@ export function OnboardingTimeline({
       {/* Manual resend of Written Offer documents */}
       {type === "PRE_ONBOARDING" && (
         <div className="mx-5 mb-3 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <label className="flex cursor-pointer items-start gap-3">
-            <input
-              type="checkbox"
-              checked={trainingRequired}
-              disabled={savingTrainingRequirement}
-              onChange={(event) => handleTrainingRequirementChange(event.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)] disabled:opacity-50"
-            />
-            <span>
-              <span className="block text-sm font-medium text-[var(--color-text-primary)]">Require training before onboarding</span>
-              <span className="mt-0.5 block text-xs text-[var(--color-text-muted)]">
-                {trainingRequired ? "After the documents finish, this person moves to Training." : "This person moves directly to Onboarding after the documents finish."}
+          {trainingEligible && (
+            <label className="inline-flex cursor-pointer items-start gap-2 py-1">
+              <input
+                type="checkbox"
+                checked={trainingRequired}
+                disabled={savingTrainingRequirement}
+                onChange={(event) => handleTrainingRequirementChange(event.target.checked)}
+                className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-[var(--color-border)] accent-[var(--color-accent)] disabled:opacity-50"
+              />
+              <span>
+                <span className="block text-xs font-medium text-[var(--color-text-primary)]">Send this {employee.jobTitle} to Training</span>
+                <span className="mt-0.5 block text-[11px] leading-4 text-[var(--color-text-muted)]">
+                  {trainingRequired ? "Moves to Training when the documents are complete." : "Moves directly to Onboarding when the documents are complete."}
+                </span>
               </span>
-            </span>
-          </label>
-          <div className="shrink-0 self-end sm:self-auto">
+            </label>
+          )}
+          <div className="shrink-0 self-end sm:ml-auto sm:self-auto">
             <ResendStageDocsButton
               employeeId={employee.id}
               employeeName={`${employee.firstName} ${employee.lastName}`}

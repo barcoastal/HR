@@ -4,17 +4,20 @@ import { OnboardingTimeline } from "@/components/onboarding/onboarding-timeline"
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
+import { getTrainingEligibleJobTitles } from "@/lib/training-eligibility-server";
+import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
 
 export default async function PreOnboardingPage() {
   const session = await requireAdmin();
   const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
-  const [assignmentAssignees, assignmentDepartments] = await Promise.all([
+  const [assignmentAssignees, assignmentDepartments, trainingEligibleJobTitles] = await Promise.all([
     db.employee.findMany({
       where: { archivedAt: null, status: { not: "OFFBOARDED" } },
       select: { id: true, firstName: true, lastName: true },
       orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
     }),
     db.department.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+    getTrainingEligibleJobTitles(),
   ]);
 
   const preOnboardingEmployees = await db.employee.findMany({
@@ -88,6 +91,7 @@ export default async function PreOnboardingPage() {
                 jobTitle: emp.jobTitle,
                 email: emp.email,
                 requiresTraining: emp.requiresTraining,
+                trainingEligible: isTrainingEligibleJobTitle(emp.jobTitle, trainingEligibleJobTitles),
               }}
               tasks={writtenOfferTasks.map((t) => ({
                 id: t.id,

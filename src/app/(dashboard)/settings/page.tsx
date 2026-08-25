@@ -14,6 +14,7 @@ import { DepartmentManager } from "@/components/settings/department-manager";
 import { JobTitleManager } from "@/components/settings/job-title-manager";
 import { OffboardingSetup } from "@/components/settings/offboarding-setup";
 import { OnboardingSetup } from "@/components/settings/onboarding-setup";
+import { TrainingEligibilitySettings } from "@/components/settings/training-eligibility-settings";
 import { PtoPolicyManager } from "@/components/settings/pto-policy-manager";
 import { PulseSurveyManager } from "@/components/settings/pulse-survey-manager";
 import { PlatformIntegrationManager } from "@/components/settings/platform-integration-manager";
@@ -46,6 +47,7 @@ import { DepartmentReviewTemplates } from "@/components/settings/department-revi
 import { getDepartmentReviewTemplates } from "@/lib/actions/reviews";
 import { db } from "@/lib/db";
 import type { UserRole } from "@/generated/prisma/client";
+import { isTrainingEligibleJobTitle, parseTrainingEligibleJobTitles } from "@/lib/training-eligibility";
 import {
   SETTINGS_SECTIONS,
   SETTINGS_PANELS,
@@ -127,6 +129,10 @@ export default async function SettingsPage({
     firstName: e.firstName,
     lastName: e.lastName,
   }));
+  const configuredTrainingEligibleJobTitles = parseTrainingEligibleJobTitles(companySettings.trainingEligibleJobTitles);
+  const selectedTrainingJobTitles = jobTitles
+    .filter((jobTitle) => isTrainingEligibleJobTitle(jobTitle.name, configuredTrainingEligibleJobTitles))
+    .map((jobTitle) => jobTitle.name);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
@@ -226,12 +232,20 @@ export default async function SettingsPage({
                   jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
                   checklistType="PRE_ONBOARDING"
                 />}
-                {activePanel === "training" && <OnboardingSetup
-                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
-                  employees={employeeList}
-                  jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
-                  checklistType="TRAINING"
-                />}
+                {activePanel === "training" && (
+                  <>
+                    <TrainingEligibilitySettings
+                      jobTitles={jobTitles.map((jobTitle) => ({ id: jobTitle.id, name: jobTitle.name }))}
+                      initialTitles={selectedTrainingJobTitles}
+                    />
+                    <OnboardingSetup
+                      departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+                      employees={employeeList}
+                      jobTitles={jobTitles.map((jt) => ({ id: jt.id, name: jt.name }))}
+                      checklistType="TRAINING"
+                    />
+                  </>
+                )}
                 {activePanel === "onboarding" && <OnboardingSetup
                   departments={departments.map((d) => ({ id: d.id, name: d.name }))}
                   employees={employeeList}

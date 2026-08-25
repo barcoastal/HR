@@ -12,6 +12,7 @@ import { CVTabs } from "@/components/cv/cv-tabs";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
+import { getTrainingEligibleJobTitles } from "@/lib/training-eligibility-server";
 
 export default async function CVPage({
   searchParams,
@@ -20,7 +21,7 @@ export default async function CVPage({
 }) {
   await requireManagerOrAdmin();
   const focus = await searchParams;
-  const [pipelineCandidates, totalCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages] = await Promise.all([
+  const [pipelineCandidates, totalCandidates, positions, recruitmentPlatforms, syncablePlatforms, departments, allEmployees, recruiters, pipelineStages, trainingEligibleJobTitles] = await Promise.all([
     getCandidates({ inPipeline: true }),
     getTotalCandidateCount(),
     getPositions(),
@@ -30,6 +31,7 @@ export default async function CVPage({
     getEmployees(),
     getRecruiters(),
     getPipelineStages(),
+    getTrainingEligibleJobTitles(),
   ]);
 
   const openPositions = positions.filter((p) => p.status === "OPEN");
@@ -145,6 +147,7 @@ export default async function CVPage({
         employees={allEmployees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, jobTitle: e.jobTitle }))}
         recruiters={recruiters.map((r) => ({ id: r.id, firstName: r.firstName, lastName: r.lastName }))}
         pipelineStages={pipelineStages}
+        trainingEligibleJobTitles={trainingEligibleJobTitles}
         focusedCandidateId={focus.candidateId}
         focusedPositionId={focus.positionId}
         initialTab={focus.tab}

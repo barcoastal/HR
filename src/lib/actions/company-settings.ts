@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { cache } from "react";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/auth-helpers";
 
 const SINGLETON_ID = "singleton";
 
@@ -21,6 +22,7 @@ const DEFAULTS = {
   candidateCustomFields: "[]",
   stageNotifyRecipients: '["candidate"]',
   stageNotifyEmployeeIds: '[]',
+  trainingEligibleJobTitles: '["Opener"]',
   updatedAt: new Date(),
 };
 
@@ -79,6 +81,39 @@ export async function updateCompanySettings(data: {
   revalidatePath("/settings");
   revalidatePath("/", "layout");
   return settings;
+}
+
+export async function saveTrainingEligibleJobTitles(requestedTitles: string[]) {
+  const session = await requireAdmin();
+  const availableTitles = await db.jobTitle.findMany({ select: { name: true } });
+  const canonicalByName = new Map(
+    availableTitles.map(({ name }) => [name.trim().toLowerCase(), name.trim()]),
+  );
+  const titles = [...new Set(
+    requestedTitles
+      .map((title) => canonicalByName.get(title.trim().toLowerCase()))
+      .filter((title): title is string => Boolean(title)),
+  )];
+
+  await db.companySettings.upsert({
+    where: { id: SINGLETON_ID },
+    update: { trainingEligibleJobTitles: JSON.stringify(titles) },
+    create: { id: SINGLETON_ID, trainingEligibleJobTitles: JSON.stringify(titles) },
+  });
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "settings.training_eligible_job_titles_updated",
+    entityType: "company_settings",
+    entityId: SINGLETON_ID,
+    details: { titles, updatedBy: session.user?.email || null },
+  });
+
+  revalidatePath("/settings");
+  revalidatePath("/cv");
+  revalidatePath("/pre-onboarding");
+  revalidatePath("/training");
+  return titles;
 }
 
 // ─── Pipeline Configuration ───

@@ -85,7 +85,7 @@ const RECRUITMENT_EXCLUDED: ReadonlySet<string> = new Set([
 ]);
 
 
-export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages, focusedCandidateId }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[]; focusedCandidateId?: string }) {
+export function CandidatePipeline({ candidates, positions, employees, recruiters, pipelineStages, trainingEligibleJobTitles, focusedCandidateId }: { candidates: CandidateItem[]; positions: Position[]; employees?: EmployeeOption[]; recruiters?: Recruiter[]; pipelineStages?: PipelineStageConfig[]; trainingEligibleJobTitles: string[]; focusedCandidateId?: string }) {
   // Columns are keyed by stage id (not status) — several custom stages can
   // share one base status and still render as separate columns.
   const columns = pipelineStages && pipelineStages.length > 0
@@ -412,6 +412,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
         employees={employees}
         recruiters={recruiters}
         pipelineStages={pipelineStages}
+        trainingEligibleJobTitles={trainingEligibleJobTitles}
         open={!!selectedCandidate}
         onClose={() => setSelectedCandidate(null)}
       />

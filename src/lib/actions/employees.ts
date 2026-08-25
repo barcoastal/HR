@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import type { EmployeeStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
+import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 
 export async function getEmployees(filters?: {
   search?: string;
@@ -767,6 +768,9 @@ export async function setEmployeeTrainingRequired(employeeId: string, required: 
   if (!employee) throw new Error("Employee not found");
   if (employee.status !== "PRE_ONBOARDING") {
     throw new Error("Training can only be selected while the person is in Written Offer.");
+  }
+  if (required && !(await isJobTitleEligibleForTraining(employee.jobTitle))) {
+    throw new Error("This job title is not selected for Training in Settings.");
   }
 
   await db.employee.update({ where: { id: employeeId }, data: { requiresTraining: required } });

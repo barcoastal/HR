@@ -963,6 +963,7 @@ export const CompanySettingsScalarFieldEnum = {
   candidateCustomFields: 'candidateCustomFields',
   stageNotifyRecipients: 'stageNotifyRecipients',
   stageNotifyEmployeeIds: 'stageNotifyEmployeeIds',
+  trainingEligibleJobTitles: 'trainingEligibleJobTitles',
   updatedAt: 'updatedAt'
 } as const
 

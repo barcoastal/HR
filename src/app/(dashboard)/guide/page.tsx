@@ -371,7 +371,7 @@ export default async function GuidePage() {
           <div className="guide-grid">
             <div className="guide-card">
               <h3>Written Offer</h3>
-              <p><Route>/pre-onboarding</Route> tracks the forms and signatures a candidate must complete. Select Require training before onboarding only for people who need that additional step.</p>
+              <p><Route>/pre-onboarding</Route> tracks the forms and signatures a candidate must complete. Eligible Training job titles are managed under Settings, Employee Workflows, Training.</p>
             </div>
             <div className="guide-card">
               <h3>Training</h3>

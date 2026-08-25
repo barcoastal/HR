@@ -8,6 +8,7 @@ import {
 } from "@/lib/email";
 import type { ResolvedTask } from "@/lib/actions/onboarding-resolution";
 import type { Employee, EmployeeTask } from "@/generated/prisma/client";
+import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 
 type WrittenOfferEmployee = {
   id: string;
@@ -391,7 +392,12 @@ export async function advanceWrittenOfferToOnboarding(employeeId: string, compan
   const employee = await db.employee.findUnique({ where: { id: employeeId } });
   if (!employee) throw new Error("Employee not found");
   if (employee.status !== "PRE_ONBOARDING") return { transitioned: false, employee };
-  if (employee.requiresTraining) return transitionWrittenOfferToTraining(employee, companyEmail);
+  if (employee.requiresTraining && await isJobTitleEligibleForTraining(employee.jobTitle)) {
+    return transitionWrittenOfferToTraining(employee, companyEmail);
+  }
+  if (employee.requiresTraining) {
+    await db.employee.update({ where: { id: employee.id }, data: { requiresTraining: false } });
+  }
   return transitionToOnboarding(employee, "PRE_ONBOARDING", companyEmail);
 }
 

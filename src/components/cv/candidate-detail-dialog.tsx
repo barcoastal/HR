@@ -13,6 +13,7 @@ import Link from "next/link";
 import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
 import { Icon } from "@/components/ui/icon";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
+import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
 
 type InterviewForDisplay = {
   id: string;
@@ -287,6 +288,7 @@ export function CandidateDetailDialog({
   employees,
   recruiters,
   pipelineStages,
+  trainingEligibleJobTitles,
   open,
   onClose,
 }: {
@@ -295,6 +297,7 @@ export function CandidateDetailDialog({
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
   pipelineStages?: PipelineStageConfig[];
+  trainingEligibleJobTitles: string[];
   open: boolean;
   onClose: () => void;
 }) {
@@ -336,6 +339,8 @@ export function CandidateDetailDialog({
     startDate: "",
     requiresTraining: false,
   });
+  const selectedPositionTitle = positions.find((position) => position.id === form.positionId)?.title;
+  const trainingEligible = isTrainingEligibleJobTitle(selectedPositionTitle, trainingEligibleJobTitles);
   const [bgCheckStatus, setBgCheckStatus] = useState<string | null>(null);
   const [bgCheckLoading, setBgCheckLoading] = useState(false);
   const [bgCheckOptions, setBgCheckOptions] = useState({
@@ -553,7 +558,7 @@ export function CandidateDetailDialog({
           startDate: form.startDate || undefined,
           managerId: form.managerId || undefined,
           skipEmail: isPreOnboarding,
-          requiresTraining: form.requiresTraining,
+          requiresTraining: trainingEligible && form.requiresTraining,
         });
         if (!result.success) {
           setSaveError(`Could not hire: ${result.error}`);
@@ -1008,20 +1013,22 @@ export function CandidateDetailDialog({
                     <button onClick={() => update("companyEmail", "")} className="ml-auto text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">Change</button>
                   </div>
                 )}
-                <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] p-3">
-                  <input
-                    type="checkbox"
-                    checked={form.requiresTraining}
-                    onChange={(event) => setForm((current) => ({ ...current, requiresTraining: event.target.checked }))}
-                    className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
-                  />
-                  <span>
-                    <span className="block text-xs font-medium text-[var(--color-text-primary)]">Require training before onboarding</span>
-                    <span className="mt-0.5 block text-[10px] leading-4 text-[var(--color-text-muted)]">
-                      After Written Offer documents are complete, this person will enter the Training queue first.
+                {trainingEligible && (
+                  <label className="inline-flex cursor-pointer items-start gap-2 py-1">
+                    <input
+                      type="checkbox"
+                      checked={form.requiresTraining}
+                      onChange={(event) => setForm((current) => ({ ...current, requiresTraining: event.target.checked }))}
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+                    />
+                    <span>
+                      <span className="block text-xs font-medium text-[var(--color-text-primary)]">Send this {selectedPositionTitle} candidate to Training</span>
+                      <span className="mt-0.5 block text-[10px] leading-4 text-[var(--color-text-muted)]">
+                        Moves to Training after all Written Offer documents are complete.
+                      </span>
                     </span>
-                  </span>
-                </label>
+                  </label>
+                )}
               </div>
             )}
 
@@ -1468,7 +1475,19 @@ export function CandidateDetailDialog({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Position</label>
-                <select value={form.positionId} onChange={(e) => update("positionId", e.target.value)} className={inputClass}>
+                <select
+                  value={form.positionId}
+                  onChange={(event) => {
+                    const positionId = event.target.value;
+                    const nextTitle = positions.find((position) => position.id === positionId)?.title;
+                    setForm((current) => ({
+                      ...current,
+                      positionId,
+                      requiresTraining: isTrainingEligibleJobTitle(nextTitle, trainingEligibleJobTitles) ? current.requiresTraining : false,
+                    }));
+                  }}
+                  className={inputClass}
+                >
                   <option value="">Select position...</option>
                   {positions.map((p) => (
                     <option key={p.id} value={p.id}>{p.title}</option>

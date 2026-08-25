@@ -113,6 +113,7 @@ type Props = {
   employees?: EmployeeOption[];
   recruiters?: Recruiter[];
   pipelineStages?: PipelineStageConfig[];
+  trainingEligibleJobTitles: string[];
   focusedCandidateId?: string;
   focusedPositionId?: string;
   initialTab?: string;
@@ -128,6 +129,7 @@ function PositionPipeline({
   isArchived,
   departments = [],
   pipelineStages,
+  trainingEligibleJobTitles,
   focusedCandidateId,
   focusedPositionId,
 }: {
@@ -140,6 +142,7 @@ function PositionPipeline({
   isArchived: boolean;
   departments?: { id: string; name: string }[];
   pipelineStages?: PipelineStageConfig[];
+  trainingEligibleJobTitles: string[];
   focusedCandidateId?: string;
   focusedPositionId?: string;
 }) {
@@ -441,6 +444,7 @@ function PositionPipeline({
               employees={employees}
               recruiters={recruiters}
               pipelineStages={pipelineStages}
+              trainingEligibleJobTitles={trainingEligibleJobTitles}
               focusedCandidateId={focusedCandidateId}
             />
           ) : (
@@ -491,6 +495,7 @@ export function CVTabs({
   employees,
   recruiters,
   pipelineStages,
+  trainingEligibleJobTitles,
   focusedCandidateId,
   focusedPositionId,
   initialTab,
@@ -664,6 +669,7 @@ export function CVTabs({
                       departments={departments}
                       isArchived={false}
                       pipelineStages={pipelineStages}
+                      trainingEligibleJobTitles={trainingEligibleJobTitles}
                       focusedCandidateId={focusedCandidateId}
                       focusedPositionId={focusedPositionId}
                     />
@@ -733,6 +739,7 @@ export function CVTabs({
                     employees={employees}
                     recruiters={recruiters}
                     pipelineStages={pipelineStages}
+                    trainingEligibleJobTitles={trainingEligibleJobTitles}
                     focusedCandidateId={focusedCandidateId}
                   />
                 </div>
@@ -773,6 +780,7 @@ export function CVTabs({
                         departments={departments}
                         isArchived={true}
                         pipelineStages={pipelineStages}
+                        trainingEligibleJobTitles={trainingEligibleJobTitles}
                         focusedCandidateId={focusedCandidateId}
                         focusedPositionId={focusedPositionId}
                       />
