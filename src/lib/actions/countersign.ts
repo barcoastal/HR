@@ -216,7 +216,7 @@ export async function submitCountersignature(
     if (request.employeeTaskId) {
       await db.employeeTask.update({
         where: { id: request.employeeTaskId },
-        data: { status: "DONE", completedAt: new Date() },
+        data: { status: "DONE", completedAt: new Date(), completedById: employeeId },
       });
     }
 

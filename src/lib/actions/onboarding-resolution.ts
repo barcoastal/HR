@@ -9,6 +9,7 @@ export type ResolvedTask = {
   order: number;
   dueDay: number | null;
   assigneeId: string | null;
+  assigneeDepartmentId: string | null;
   documentAction: string;
   documentUrl: string | null;
   documentName: string | null;
@@ -117,6 +118,7 @@ async function resolveTasksByType(
     order: item.order,
     dueDay: item.dueDay,
     assigneeId: item.assigneeId,
+    assigneeDepartmentId: item.assigneeDepartmentId,
     documentAction: item.documentAction ?? "NONE",
     documentUrl: item.documentUrl,
     documentName: item.documentName,

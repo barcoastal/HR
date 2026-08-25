@@ -11,6 +11,14 @@ export default async function OnboardingPage() {
   const session = await requireAdmin();
   const currentEmployeeId = session.user?.employeeId;
   const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
+  const [assignmentAssignees, assignmentDepartments] = await Promise.all([
+    db.employee.findMany({
+      where: { archivedAt: null, status: { not: "OFFBOARDED" } },
+      select: { id: true, firstName: true, lastName: true, departmentId: true },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    }),
+    db.department.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+  ]);
 
   const onboardingEmployees = await db.employee.findMany({
     where: { status: "ONBOARDING" },
@@ -21,6 +29,8 @@ export default async function OnboardingPage() {
           checklistItem: { include: { checklist: true } },
           signingRequest: true,
           assignee: true,
+          assigneeDepartment: true,
+          completedBy: true,
         },
       },
     },
@@ -28,8 +38,8 @@ export default async function OnboardingPage() {
   });
 
   const allOnboardingChecklistItems = await db.checklistItem.findMany({
-    where: { checklist: { type: "ONBOARDING" } },
-    include: { checklist: true, assignee: true },
+    where: { checklist: { type: "ONBOARDING", isOverride: false } },
+    include: { checklist: true, assignee: true, assigneeDepartment: true },
     orderBy: { order: "asc" },
   });
 
@@ -56,6 +66,8 @@ export default async function OnboardingPage() {
           checklistItem: { include: { checklist: true } },
           signingRequest: true,
           assignee: true,
+          assigneeDepartment: true,
+          completedBy: true,
         },
       },
     },
@@ -82,7 +94,12 @@ export default async function OnboardingPage() {
   const myAssignedTasks = currentEmployeeId
     ? await db.employeeTask.findMany({
         where: {
-          assigneeId: currentEmployeeId,
+          OR: [
+            { assigneeId: currentEmployeeId },
+            ...(assignmentAssignees.find((employee) => employee.id === currentEmployeeId)?.departmentId
+              ? [{ assigneeDepartmentId: assignmentAssignees.find((employee) => employee.id === currentEmployeeId)!.departmentId! }]
+              : []),
+          ],
           employee: { status: "ONBOARDING" },
         },
         include: {
@@ -118,7 +135,8 @@ export default async function OnboardingPage() {
               title: item.title,
               description: item.description,
               checklistName: item.checklist.name,
-              assigneeName: item.assignee ? `${item.assignee.firstName} ${item.assignee.lastName}` : null,
+                assigneeName: item.assignee ? `${item.assignee.firstName} ${item.assignee.lastName}` : null,
+              assigneeDepartmentName: item.assigneeDepartment?.name || null,
               dueDay: item.dueDay,
             }));
 
@@ -142,11 +160,15 @@ export default async function OnboardingPage() {
                 documentAction: t.documentAction || null,
                 documentName: t.documentName || null,
                 assigneeName: t.assignee ? `${t.assignee.firstName} ${t.assignee.lastName}` : null,
+                assigneeDepartmentName: t.assigneeDepartment?.name || null,
+                completedByName: t.completedBy ? `${t.completedBy.preferredName || t.completedBy.firstName} ${t.completedBy.lastName}` : null,
                 signingStatus: t.signingRequest?.status || null,
               }))}
               availableItems={availableItems}
               type="ONBOARDING"
               isSuperAdmin={isSuperAdmin}
+              assignees={assignmentAssignees.map(({ id, firstName, lastName }) => ({ id, firstName, lastName }))}
+              departments={assignmentDepartments}
             />
           );
         })}
@@ -189,6 +211,7 @@ export default async function OnboardingPage() {
           dueDay: t.checklistItem?.dueDay || null,
           employeeName: `${t.employee.firstName} ${t.employee.lastName}`,
           employeeId: t.employee.id,
+          workflow: t.checklistItem?.checklist?.type,
         }))}
       />
     </div>

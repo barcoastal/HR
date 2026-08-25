@@ -4,7 +4,6 @@ import {
   sendFillRequestEmail,
   sendOnboardingEmail,
   sendSigningRequestEmail,
-  sendTaskAssignmentEmail,
   sendWelcomeEmail,
 } from "@/lib/email";
 import type { ResolvedTask } from "@/lib/actions/onboarding-resolution";
@@ -20,10 +19,9 @@ type WrittenOfferEmployee = {
 export async function assignWrittenOfferTasks(employee: WrittenOfferEmployee, tasks: ResolvedTask[]) {
   const { createSigningRequest } = await import("@/lib/actions/signing");
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const documentTasks = tasks.filter((task) => ["SEND", "SIGN", "FILL"].includes(task.documentAction));
   const createdTasks = [];
 
-  for (const task of documentTasks) {
+  for (const task of tasks) {
     const employeeTask = await db.employeeTask.create({
       data: {
         employeeId: employee.id,
@@ -39,6 +37,7 @@ export async function assignWrittenOfferTasks(employee: WrittenOfferEmployee, ta
         externalEmail: task.externalEmail || null,
         externalName: task.externalName || null,
         assigneeId: task.assigneeId,
+        assigneeDepartmentId: task.assigneeDepartmentId,
       },
     });
     createdTasks.push(employeeTask);
@@ -103,6 +102,17 @@ export async function assignWrittenOfferTasks(employee: WrittenOfferEmployee, ta
     } catch (error) {
       console.error(`[written-offer] Failed to deliver task ${employeeTask.id}:`, error);
     }
+
+    const { notifyTaskAssignment } = await import("@/lib/task-notifications");
+    await notifyTaskAssignment({
+      taskId: employeeTask.id,
+      assigneeId: task.assigneeId,
+      assigneeDepartmentId: task.assigneeDepartmentId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      taskTitle: task.title,
+      taskDescription: task.description,
+      workflow: "PRE_ONBOARDING",
+    });
   }
 
   revalidatePath("/pre-onboarding");
@@ -210,6 +220,7 @@ export async function advanceWrittenOfferToOnboarding(employeeId: string, compan
           externalEmail: task.externalEmail || null,
           externalName: task.externalName || null,
           assigneeId: task.assigneeId,
+          assigneeDepartmentId: task.assigneeDepartmentId,
         },
       }));
     }
@@ -302,22 +313,16 @@ export async function advanceWrittenOfferToOnboarding(employeeId: string, compan
       console.error(`[written-offer] Failed to prepare onboarding document task ${task.id}:`, error);
     }
 
-    if (task.assigneeId) {
-      const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
-      if (assignee) {
-        try {
-          await sendTaskAssignmentEmail({
-            to: assignee.email,
-            assigneeName: assignee.firstName,
-            newHireName: `${employee.firstName} ${employee.lastName}`,
-            taskTitle: task.title || "Onboarding task",
-            taskDescription: task.description,
-          });
-        } catch (error) {
-          console.error(`[written-offer] Failed to notify task assignee ${assignee.id}:`, error);
-        }
-      }
-    }
+    const { notifyTaskAssignment } = await import("@/lib/task-notifications");
+    await notifyTaskAssignment({
+      taskId: task.id,
+      assigneeId: task.assigneeId,
+      assigneeDepartmentId: task.assigneeDepartmentId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      taskTitle: task.title || "Onboarding task",
+      taskDescription: task.description,
+      workflow: "ONBOARDING",
+    });
   }
 
   // Make the transition visible to the manager and configured HR team.

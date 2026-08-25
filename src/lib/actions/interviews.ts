@@ -8,6 +8,11 @@ import {
   cancelInterviewEvent,
   isCalendarConnected as checkCalendarConnected,
 } from "@/lib/google-calendar";
+import { requireManagerOrAdmin } from "@/lib/auth-helpers";
+import {
+  createInviteEventForUser,
+  deleteEventFromGoogleCalendar,
+} from "@/lib/google-calendar-sync";
 
 export async function scheduleInterview(data: {
   candidateId: string;
@@ -16,7 +21,9 @@ export async function scheduleInterview(data: {
   scheduledAt: string; // ISO datetime
   duration: number;
   notes?: string;
+  interviewerId?: string;
 }) {
+  const session = await requireManagerOrAdmin();
   const candidate = await db.candidate.findUnique({
     where: { id: data.candidateId },
     include: { position: true },
@@ -34,19 +41,54 @@ export async function scheduleInterview(data: {
 
   let googleEventId: string | null = null;
   let googleMeetLink: string | null = null;
+  let calendarOrganizerUserId: string | null = null;
+  const interviewerId = data.interviewerId
+    || candidate.recruiterId
+    || session.user?.employeeId;
+  if (!interviewerId) {
+    throw new Error("Select an interviewer before scheduling this interview");
+  }
+  const interviewer = await db.employee.findUnique({
+    where: { id: interviewerId },
+    include: { user: true },
+  });
+  if (!interviewer) throw new Error("The selected interviewer was not found");
 
-  const connected = await checkCalendarConnected();
-  if (connected) {
-    const positionTitle = candidate.position?.title ?? "Open Position";
+  const positionTitle = candidate.position?.title ?? "Open Position";
+  const summary = `${typeLabels[data.type]}: ${candidate.firstName} ${candidate.lastName}`;
+  const description = [
+    `Candidate: ${candidate.firstName} ${candidate.lastName}`,
+    `Position: ${positionTitle}`,
+    `Interviewer: ${interviewer.firstName} ${interviewer.lastName}`,
+    data.notes ? `Notes: ${data.notes}` : "",
+  ].filter(Boolean).join("\n");
+
+  if (interviewer.user?.googleCalendarSyncEnabled) {
+    try {
+      const result = await createInviteEventForUser(interviewer.user.id, {
+        summary,
+        description,
+        startTime: new Date(data.scheduledAt),
+        durationMinutes: data.duration,
+        attendees: [{
+          email: candidate.email,
+          displayName: `${candidate.firstName} ${candidate.lastName}`,
+        }],
+        withMeetLink: true,
+        sendUpdates: "none",
+      });
+      googleEventId = result.eventId;
+      googleMeetLink = result.meetLink;
+      calendarOrganizerUserId = interviewer.user.id;
+    } catch (error) {
+      console.error("[interview] Interviewer calendar creation failed, using shared calendar:", error);
+    }
+  }
+
+  if (!googleEventId && await checkCalendarConnected()) {
     const result = await createInterviewEvent({
-      summary: `${typeLabels[data.type]} — ${candidate.firstName} ${candidate.lastName}`,
-      description: [
-        `Candidate: ${candidate.firstName} ${candidate.lastName}`,
-        `Position: ${positionTitle}`,
-        data.notes ? `\nNotes: ${data.notes}` : "",
-      ]
-        .filter(Boolean)
-        .join("\n"),
+      summary,
+      description,
       startTime: new Date(data.scheduledAt),
       durationMinutes: data.duration,
       candidateEmail: candidate.email,
@@ -59,6 +101,8 @@ export async function scheduleInterview(data: {
     data: {
       candidateId: data.candidateId,
       positionId: data.positionId || candidate.positionId || null,
+      interviewerId: interviewer.id,
+      calendarOrganizerUserId,
       type: data.type,
       scheduledAt: new Date(data.scheduledAt),
       duration: data.duration,
@@ -75,10 +119,15 @@ export async function scheduleInterview(data: {
     await sendInterviewScheduledEmail({
       to: candidate.email,
       firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      interviewId: interview.id,
       interviewType: typeLabels[data.type],
-      positionTitle: candidate.position?.title ?? "Open Position",
+      positionTitle,
       scheduledAt: new Date(data.scheduledAt),
       duration: data.duration,
+      interviewerName: `${interviewer.preferredName || interviewer.firstName} ${interviewer.lastName}`,
+      interviewerEmail: interviewer.email,
+      interviewerEmployeeId: interviewer.id,
       meetLink: googleMeetLink,
       notes: data.notes,
     });
@@ -86,15 +135,14 @@ export async function scheduleInterview(data: {
     console.error("[interview] Failed to send confirmation email:", e);
   }
 
-  // Send INTERVIEW_SCHEDULED notification via rules engine
+  // Keep the internal notification, but never ask the rules engine to send
+  // another interview email. The candidate receives the single tracked invite above.
   const { sendNotifications } = await import("@/lib/notifications/send");
   sendNotifications({
     action: "INTERVIEW_SCHEDULED",
     candidateId: interview.candidateId,
     message: `Interview scheduled with ${candidate.firstName} ${candidate.lastName}`,
     link: "/cv",
-    emailSubject: `Interview Scheduled: ${candidate.firstName} ${candidate.lastName}`,
-    emailBody: `<p>An interview has been scheduled with <strong>${candidate.firstName} ${candidate.lastName}</strong>.</p>`,
   }).catch((err) => console.error("[interviews] Notification error:", err));
 
   revalidatePath("/cv");
@@ -104,6 +152,7 @@ export async function scheduleInterview(data: {
 }
 
 export async function cancelInterview(interviewId: string) {
+  await requireManagerOrAdmin();
   const interview = await db.interview.findUnique({
     where: { id: interviewId },
   });
@@ -111,7 +160,11 @@ export async function cancelInterview(interviewId: string) {
 
   if (interview.googleEventId) {
     try {
-      await cancelInterviewEvent(interview.googleEventId);
+      if (interview.calendarOrganizerUserId) {
+        await deleteEventFromGoogleCalendar(interview.calendarOrganizerUserId, interview.googleEventId);
+      } else {
+        await cancelInterviewEvent(interview.googleEventId);
+      }
     } catch {
       // Event may already be deleted on Google side — proceed with DB update
     }
@@ -127,14 +180,16 @@ export async function cancelInterview(interviewId: string) {
 }
 
 export async function getInterviewsForCandidate(candidateId: string) {
+  await requireManagerOrAdmin();
   return db.interview.findMany({
     where: { candidateId },
-    include: { position: true },
+    include: { position: true, interviewer: true },
     orderBy: { scheduledAt: "desc" },
   });
 }
 
 export async function getUpcomingInterviews() {
+  await requireManagerOrAdmin();
   return db.interview.findMany({
     where: {
       status: "SCHEDULED",
@@ -143,12 +198,14 @@ export async function getUpcomingInterviews() {
     include: {
       candidate: true,
       position: true,
+      interviewer: true,
     },
     orderBy: { scheduledAt: "asc" },
   });
 }
 
 export async function isCalendarConnected(): Promise<boolean> {
+  await requireManagerOrAdmin();
   const { isCalendarConnected: check } = await import("@/lib/google-calendar");
   return check();
 }

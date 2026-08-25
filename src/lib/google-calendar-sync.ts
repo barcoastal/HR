@@ -266,6 +266,7 @@ export async function createInviteEventForUser(
     durationMinutes: number;
     attendees: { email: string; displayName?: string }[];
     withMeetLink?: boolean;
+    sendUpdates?: "all" | "none";
   }
 ): Promise<{ eventId: string; meetLink: string | null }> {
   const { accessToken } = await ensureValidToken(userId);
@@ -289,9 +290,10 @@ export async function createInviteEventForUser(
     };
   }
 
+  const sendUpdates = params.sendUpdates || "all";
   const qs = params.withMeetLink
-    ? "conferenceDataVersion=1&sendUpdates=all"
-    : "sendUpdates=all";
+    ? `conferenceDataVersion=1&sendUpdates=${sendUpdates}`
+    : `sendUpdates=${sendUpdates}`;
   const res = await fetch(
     `https://www.googleapis.com/calendar/v3/calendars/primary/events?${qs}`,
     {

@@ -24,6 +24,8 @@ type TaskItem = {
   documentAction?: string | null;
   documentName?: string | null;
   assigneeName?: string | null;
+  assigneeDepartmentName?: string | null;
+  completedByName?: string | null;
   signingStatus?: string | null; // PENDING | VIEWED | SIGNED
 };
 
@@ -33,6 +35,7 @@ type AvailableChecklistItem = {
   description: string | null;
   checklistName: string;
   assigneeName: string | null;
+  assigneeDepartmentName: string | null;
   dueDay: number | null;
 };
 
@@ -49,6 +52,8 @@ type Props = {
   type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
   defaultExpanded?: boolean;
   isSuperAdmin?: boolean;
+  assignees?: { id: string; firstName: string; lastName: string }[];
+  departments?: { id: string; name: string }[];
 };
 
 const DUE_DAY_LABELS: Record<number, string> = {
@@ -107,6 +112,8 @@ export function OnboardingTimeline({
   type,
   defaultExpanded = false,
   isSuperAdmin = false,
+  assignees = [],
+  departments = [],
 }: Props) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [collapsedPhases, setCollapsedPhases] = useState<Set<string>>(new Set());
@@ -117,6 +124,7 @@ export function OnboardingTimeline({
   const [completed, setCompleted] = useState(false);
   const [customTitle, setCustomTitle] = useState("");
   const [customDesc, setCustomDesc] = useState("");
+  const [customAssignment, setCustomAssignment] = useState("");
   const [addingCustom, setAddingCustom] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -176,9 +184,18 @@ export function OnboardingTimeline({
   async function handleAddCustomTask() {
     if (!customTitle.trim()) return;
     setAddingCustom(true);
-    await addCustomEmployeeTask(employee.id, customTitle.trim(), customDesc.trim() || undefined, type);
+    const [assignmentType, assignmentId] = customAssignment.split(":");
+    await addCustomEmployeeTask(
+      employee.id,
+      customTitle.trim(),
+      customDesc.trim() || undefined,
+      type,
+      assignmentType === "employee" ? assignmentId : undefined,
+      assignmentType === "department" ? assignmentId : undefined
+    );
     setCustomTitle("");
     setCustomDesc("");
+    setCustomAssignment("");
     setAddingCustom(false);
     router.refresh();
   }
@@ -453,7 +470,7 @@ export function OnboardingTimeline({
                                         )}
                                         {isDone && task.completedAt && (
                                           <p className="text-xs text-emerald-500/70 mt-0.5">
-                                            Completed {new Date(task.completedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                                            Completed by {task.completedByName || "automation"} on {new Date(task.completedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
                                           </p>
                                         )}
                                         {/* Document status indicators */}
@@ -488,6 +505,11 @@ export function OnboardingTimeline({
                                           {task.assigneeName && (
                                             <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
                                               <Icon name="account_circle" size={12} />Assigned to: {task.assigneeName}
+                                            </span>
+                                          )}
+                                          {!task.assigneeName && task.assigneeDepartmentName && (
+                                            <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                                              <Icon name="groups" size={12} />Assigned to: {task.assigneeDepartmentName}
                                             </span>
                                           )}
                                         </div>
@@ -606,6 +628,11 @@ export function OnboardingTimeline({
                                               <Icon name="account_circle" size={12} />{item.assigneeName}
                                             </span>
                                           )}
+                                          {!item.assigneeName && item.assigneeDepartmentName && (
+                                            <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
+                                              <Icon name="groups" size={12} />{item.assigneeDepartmentName}
+                                            </span>
+                                          )}
                                           {dueDayLabel && (
                                             <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-lg text-xs bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
                                               <Icon name="calendar_today" size={12} />{dueDayLabel}
@@ -635,7 +662,7 @@ export function OnboardingTimeline({
                       )}
 
                       {/* Custom task */}
-                      {type !== "PRE_ONBOARDING" && <div className="border-t border-[var(--color-border)] pt-3 mt-3">
+                      <div className="border-t border-[var(--color-border)] pt-3 mt-3">
                         <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1.5">Custom Task</label>
                         <input
                           value={customTitle}
@@ -650,6 +677,32 @@ export function OnboardingTimeline({
                           className={cn(inputClass, "mb-2")}
                           placeholder="Description (optional)"
                         />
+                        <select
+                          value={customAssignment}
+                          onChange={(event) => setCustomAssignment(event.target.value)}
+                          className={cn(inputClass, "mb-2")}
+                          aria-label="Assign custom task"
+                        >
+                          <option value="">Unassigned</option>
+                          {assignees.length > 0 && (
+                            <optgroup label="People">
+                              {assignees.map((assignee) => (
+                                <option key={assignee.id} value={`employee:${assignee.id}`}>
+                                  {assignee.firstName} {assignee.lastName}
+                                </option>
+                              ))}
+                            </optgroup>
+                          )}
+                          {departments.length > 0 && (
+                            <optgroup label="Departments">
+                              {departments.map((department) => (
+                                <option key={department.id} value={`department:${department.id}`}>
+                                  {department.name}
+                                </option>
+                              ))}
+                            </optgroup>
+                          )}
+                        </select>
                         <button
                           onClick={handleAddCustomTask}
                           disabled={!customTitle.trim() || addingCustom}
@@ -662,7 +715,7 @@ export function OnboardingTimeline({
                           {addingCustom ? <Icon name="progress_activity" size={16} className="animate-material-spin" /> : <Icon name="add" size={16} />}
                           {addingCustom ? "Adding..." : "Add Custom Task"}
                         </button>
-                      </div>}
+                      </div>
                     </div>
                   </motion.div>
                 )}

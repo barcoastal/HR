@@ -23,6 +23,7 @@ type InterviewForDisplay = {
   googleMeetLink: string | null;
   notes: string | null;
   position: { title: string } | null;
+  interviewer: { firstName: string; preferredName: string | null; lastName: string } | null;
 };
 
 const interviewTypeLabels: Record<InterviewType, string> = {
@@ -1306,6 +1307,9 @@ export function CandidateDetailDialog({
                                 minute: "2-digit",
                               })}{" "}
                               · {interview.duration}min
+                              {interview.interviewer
+                                ? ` · with ${interview.interviewer.preferredName || interview.interviewer.firstName} ${interview.interviewer.lastName}`
+                                : ""}
                             </p>
                           </div>
                         </div>
@@ -1531,6 +1535,8 @@ export function CandidateDetailDialog({
         candidateName={`${candidate.firstName} ${candidate.lastName}`}
         candidateId={candidate.id}
         positionId={candidate.positionId}
+        recruiters={recruiters}
+        defaultInterviewerId={candidate.recruiterId}
         calendarConnected={calendarConnected}
         open={scheduleOpen}
         onClose={() => setScheduleOpen(false)}

@@ -42,7 +42,7 @@ const DEFAULTS: Record<string, Record<string, string[]>> = {
     IN_APP: ["recruiter", "hr_team"],
   },
   INTERVIEW_SCHEDULED: {
-    EMAIL: ["candidate", "recruiter"],
+    EMAIL: [],
     IN_APP: ["recruiter"],
   },
   NEW_HIRE: {

@@ -14,9 +14,10 @@ type AssignedTask = {
   dueDay: number | null;
   employeeName: string;
   employeeId: string;
+  workflow?: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING";
 };
 
-export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
+export function MyOnboardingTasks({ tasks, title = "My Onboarding Tasks" }: { tasks: AssignedTask[]; title?: string }) {
   const [localTasks, setLocalTasks] = useState(tasks);
   useEffect(() => { setLocalTasks(tasks); }, [tasks]);
 
@@ -44,7 +45,7 @@ export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
 
   return (
     <div className="mt-8">
-      <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">My Onboarding Tasks</h2>
+      <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-3">{title}</h2>
       <div className="space-y-4">
         {Object.entries(grouped).map(([empId, group]) => (
           <div key={empId} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
@@ -68,6 +69,11 @@ export function MyOnboardingTasks({ tasks }: { tasks: AssignedTask[] }) {
                     <p className={cn("text-sm", task.status === "DONE" ? "line-through text-[var(--color-text-muted)]" : "text-[var(--color-text-primary)]")}>
                       {task.title}
                     </p>
+                    {task.workflow && (
+                      <p className="mt-0.5 text-[11px] font-medium text-[var(--color-accent)]">
+                        {task.workflow === "PRE_ONBOARDING" ? "Written Offer" : task.workflow === "ONBOARDING" ? "Onboarding" : "Offboarding"}
+                      </p>
+                    )}
                     {task.description && (
                       <p className="text-xs text-[var(--color-text-muted)] mt-0.5">{task.description}</p>
                     )}

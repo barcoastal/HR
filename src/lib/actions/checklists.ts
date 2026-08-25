@@ -31,7 +31,8 @@ export async function addChecklistItem(
   documentAction?: string,
   documentRecipient?: "EMPLOYEE" | "ASSIGNEE" | "EXTERNAL",
   externalEmail?: string | null,
-  externalName?: string | null
+  externalName?: string | null,
+  assigneeDepartmentId?: string | null
 ) {
   const maxOrder = await db.checklistItem.findFirst({
     where: { checklistId },
@@ -45,6 +46,7 @@ export async function addChecklistItem(
       title,
       description: description || null,
       assigneeId: assigneeId || null,
+      assigneeDepartmentId: assigneeId ? null : assigneeDepartmentId || null,
       dueDay: dueDay ?? null,
       order: (maxOrder?.order ?? -1) + 1,
       sendEmail: sendEmail ?? false,
@@ -68,6 +70,7 @@ export async function updateChecklistItem(
     title?: string;
     description?: string | null;
     assigneeId?: string | null;
+    assigneeDepartmentId?: string | null;
     dueDay?: number | null;
     sendEmail?: boolean;
     emailSubject?: string | null;
@@ -80,7 +83,12 @@ export async function updateChecklistItem(
     externalName?: string | null;
   }
 ) {
-  const item = await db.checklistItem.update({ where: { id }, data });
+  const normalized = {
+    ...data,
+    ...(data.assigneeId ? { assigneeDepartmentId: null } : {}),
+    ...(data.assigneeDepartmentId ? { assigneeId: null } : {}),
+  };
+  const item = await db.checklistItem.update({ where: { id }, data: normalized });
   revalidatePath("/settings");
   return item;
 }
@@ -145,7 +153,7 @@ export async function getChecklistsForDepartment(departmentId: string | null, ty
     include: {
       items: {
         orderBy: { order: "asc" },
-        include: { assignee: true },
+        include: { assignee: true, assigneeDepartment: true },
       },
     },
     orderBy: { name: "asc" },
@@ -163,7 +171,7 @@ export async function getOverridesForDepartment(departmentId: string, type: "PRE
       jobTitle: true,
       items: {
         orderBy: { order: "asc" },
-        include: { assignee: true },
+        include: { assignee: true, assigneeDepartment: true },
       },
       exclusions: { include: { excludedItem: true } },
     },

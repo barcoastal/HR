@@ -77,7 +77,9 @@ export async function createInterviewEvent(params: {
   const event = await calendar.events.insert({
     calendarId: "primary",
     conferenceDataVersion: 1,
-    sendUpdates: "all",
+    // The branded Resend invitation carries the RSVP attachment. Keeping
+    // Google silent prevents a second candidate-facing invitation email.
+    sendUpdates: "none",
     requestBody: {
       summary: params.summary,
       description: params.description,

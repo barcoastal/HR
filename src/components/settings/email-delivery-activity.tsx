@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
 import type { EmailDeliverySummary } from "@/lib/actions/email-deliveries";
@@ -44,14 +45,22 @@ export function EmailDeliveryActivity({ deliveries }: { deliveries: EmailDeliver
             Sent means the provider accepted the email. Delivered is confirmed by the signed Resend webhook.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => router.refresh()}
-          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-3 text-xs font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
-        >
-          <Icon name="refresh" size={14} />
-          Refresh status
-        </button>
+        <div className="flex shrink-0 items-center gap-1">
+          <Link
+            href="/email-log"
+            className="inline-flex h-9 items-center rounded-lg px-3 text-xs font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+          >
+            Open Email Log
+          </Link>
+          <button
+            type="button"
+            onClick={() => router.refresh()}
+            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-xs font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 focus-visible:outline-2 focus-visible:outline-[var(--color-accent)]"
+          >
+            <Icon name="refresh" size={14} />
+            Refresh
+          </button>
+        </div>
       </div>
 
       {deliveries.length === 0 ? (

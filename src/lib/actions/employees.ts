@@ -141,7 +141,7 @@ export async function createEmployee(data: {
   if (status === "ONBOARDING") {
     const { resolveOnboardingTasks, resolvePreOnboardingTasks } = await import("./onboarding-resolution");
     const { createSigningRequest } = await import("./signing");
-    const { sendSigningRequestEmail, sendTaskAssignmentEmail } = await import("@/lib/email");
+    const { sendSigningRequestEmail } = await import("@/lib/email");
 
     const preOnboardingTasks = await resolvePreOnboardingTasks(employee.departmentId, employee.jobTitle);
 
@@ -173,6 +173,7 @@ export async function createEmployee(data: {
           documentUrl: task.documentUrl,
           documentName: task.documentName,
           assigneeId: task.assigneeId,
+          assigneeDepartmentId: task.assigneeDepartmentId,
         },
       });
 
@@ -236,19 +237,16 @@ export async function createEmployee(data: {
         });
       }
 
-      // Notify assigned employee
-      if (task.assigneeId) {
-        const assignee = await db.employee.findUnique({ where: { id: task.assigneeId } });
-        if (assignee) {
-          sendTaskAssignmentEmail({
-            to: assignee.email,
-            assigneeName: assignee.firstName,
-            newHireName: `${data.firstName} ${data.lastName}`,
-            taskTitle: task.title,
-            taskDescription: task.description,
-          });
-        }
-      }
+      const { notifyTaskAssignment } = await import("@/lib/task-notifications");
+      await notifyTaskAssignment({
+        taskId: employeeTask.id,
+        assigneeId: task.assigneeId,
+        assigneeDepartmentId: task.assigneeDepartmentId,
+        employeeName: `${data.firstName} ${data.lastName}`,
+        taskTitle: task.title,
+        taskDescription: task.description,
+        workflow: "ONBOARDING",
+      });
     }
     revalidatePath("/onboarding");
   }
@@ -567,9 +565,16 @@ export async function toggleEmployeeTask(taskId: string) {
   // Allow: assigned employee, manager of the new hire, or admin
   const userEmployeeId = session.user?.employeeId;
   const isAssignee = task.assigneeId && task.assigneeId === userEmployeeId;
+  const viewer = userEmployeeId
+    ? await db.employee.findUnique({ where: { id: userEmployeeId }, select: { departmentId: true } })
+    : null;
+  const isAssignedDepartment = Boolean(
+    task.assigneeDepartmentId
+    && viewer?.departmentId === task.assigneeDepartmentId
+  );
   const isManager = task.employee.managerId === userEmployeeId;
   const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
-  if (!isAssignee && !isManager && !isAdmin) {
+  if (!isAssignee && !isAssignedDepartment && !isManager && !isAdmin) {
     throw new Error("Not authorized to update this task");
   }
 
@@ -587,9 +592,11 @@ export async function toggleEmployeeTask(taskId: string) {
     data: {
       status: task.status === "DONE" ? "PENDING" : "DONE",
       completedAt: task.status === "DONE" ? null : new Date(),
+      completedById: task.status === "DONE" ? null : userEmployeeId || null,
     },
   });
   revalidatePath("/onboarding");
+  revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
   revalidatePath(`/people/${task.employeeId}`);
@@ -602,8 +609,9 @@ export async function toggleEmployeeTask(taskId: string) {
 }
 
 export async function addEmployeeTask(employeeId: string, checklistItemId: string) {
+  await (await import("@/lib/auth-helpers")).requireAdmin();
   const [item, employee] = await Promise.all([
-    db.checklistItem.findUnique({ where: { id: checklistItemId } }),
+    db.checklistItem.findUnique({ where: { id: checklistItemId }, include: { checklist: true } }),
     db.employee.findUnique({ where: { id: employeeId } }),
   ]);
 
@@ -616,6 +624,7 @@ export async function addEmployeeTask(employeeId: string, checklistItemId: strin
       order: item.order,
       dueDay: item.dueDay,
       assigneeId: item.assigneeId,
+      assigneeDepartmentId: item.assigneeDepartmentId,
       documentAction: item.documentAction,
       documentUrl: item.documentUrl,
       documentName: item.documentName,
@@ -638,12 +647,26 @@ export async function addEmployeeTask(employeeId: string, checklistItemId: strin
       title: item?.title || undefined,
       description: item?.description || undefined,
       assigneeId: item?.assigneeId || undefined,
+      assigneeDepartmentId: item?.assigneeDepartmentId || undefined,
       documentAction: item?.documentAction || undefined,
       documentUrl: item?.documentUrl || undefined,
       documentName: item?.documentName || undefined,
     },
   });
+  if (item && employee) {
+    const { notifyTaskAssignment } = await import("@/lib/task-notifications");
+    await notifyTaskAssignment({
+      taskId: task.id,
+      assigneeId: item.assigneeId,
+      assigneeDepartmentId: item.assigneeDepartmentId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      taskTitle: item.title,
+      taskDescription: item.description,
+      workflow: item.checklist.type,
+    });
+  }
   revalidatePath("/onboarding");
+  revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
   return task;
@@ -653,16 +676,21 @@ export async function addCustomEmployeeTask(
   employeeId: string,
   title: string,
   description: string | undefined,
-  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING"
+  type: "PRE_ONBOARDING" | "ONBOARDING" | "OFFBOARDING",
+  assigneeId?: string,
+  assigneeDepartmentId?: string
 ) {
+  await (await import("@/lib/auth-helpers")).requireAdmin();
   const typeLabel = type === "PRE_ONBOARDING" ? "Written Offer" : type === "ONBOARDING" ? "Onboarding" : "Offboarding";
   // Find or create a checklist for custom tasks
   let checklist = await db.onboardingChecklist.findFirst({
-    where: { name: `Custom ${typeLabel} Tasks`, type },
+    where: { name: `Custom ${typeLabel} Tasks`, type, isOverride: true },
   });
   if (!checklist) {
     checklist = await db.onboardingChecklist.create({
-      data: { name: `Custom ${typeLabel} Tasks`, type },
+      // Standalone per-person tasks need a checklist relation for workflow
+      // labeling, but must not be resolved as a template for future hires.
+      data: { name: `Custom ${typeLabel} Tasks`, type, isOverride: true },
     });
   }
 
@@ -677,15 +705,40 @@ export async function addCustomEmployeeTask(
       checklistId: checklist.id,
       title,
       description: description || null,
+      assigneeId: assigneeId || null,
+      assigneeDepartmentId: assigneeId ? null : assigneeDepartmentId || null,
       order: (maxOrder?.order ?? -1) + 1,
     },
   });
 
   const task = await db.employeeTask.create({
-    data: { employeeId, checklistItemId: checklistItem.id, status: "PENDING" },
+    data: {
+      employeeId,
+      checklistItemId: checklistItem.id,
+      status: "PENDING",
+      title,
+      description: description || null,
+      assigneeId: assigneeId || null,
+      assigneeDepartmentId: assigneeId ? null : assigneeDepartmentId || null,
+    },
   });
 
+  const employee = await db.employee.findUnique({ where: { id: employeeId }, select: { firstName: true, lastName: true } });
+  if (employee) {
+    const { notifyTaskAssignment } = await import("@/lib/task-notifications");
+    await notifyTaskAssignment({
+      taskId: task.id,
+      assigneeId,
+      assigneeDepartmentId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      taskTitle: title,
+      taskDescription: description,
+      workflow: type,
+    });
+  }
+
   revalidatePath("/onboarding");
+  revalidatePath("/my-tasks");
   revalidatePath("/offboarding");
   revalidatePath("/pre-onboarding");
   revalidatePath("/settings");

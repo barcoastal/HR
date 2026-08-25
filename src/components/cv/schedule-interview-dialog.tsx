@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { scheduleInterview } from "@/lib/actions/interviews";
 import type { InterviewType } from "@/generated/prisma/client";
 import Link from "next/link";
@@ -29,6 +29,8 @@ export function ScheduleInterviewDialog({
   candidateName,
   candidateId,
   positionId,
+  recruiters = [],
+  defaultInterviewerId,
   calendarConnected,
   open,
   onClose,
@@ -37,6 +39,8 @@ export function ScheduleInterviewDialog({
   candidateName: string;
   candidateId: string;
   positionId?: string | null;
+  recruiters?: { id: string; firstName: string; lastName: string }[];
+  defaultInterviewerId?: string | null;
   calendarConnected: boolean;
   open: boolean;
   onClose: () => void;
@@ -47,6 +51,16 @@ export function ScheduleInterviewDialog({
   const [scheduledAt, setScheduledAt] = useState("");
   const [duration, setDuration] = useState(60);
   const [notes, setNotes] = useState("");
+  const [interviewerId, setInterviewerId] = useState(defaultInterviewerId || recruiters[0]?.id || "");
+  const [error, setError] = useState<string | null>(null);
+  const selectedInterviewer = recruiters.find((recruiter) => recruiter.id === interviewerId);
+
+  useEffect(() => {
+    if (open) {
+      setInterviewerId(defaultInterviewerId || recruiters[0]?.id || "");
+      setError(null);
+    }
+  }, [defaultInterviewerId, open, recruiters]);
 
   const inputClass = cn(
     "w-full px-3 py-2 rounded-lg text-sm",
@@ -58,6 +72,7 @@ export function ScheduleInterviewDialog({
   async function handleSubmit() {
     if (!scheduledAt) return;
     setSubmitting(true);
+    setError(null);
     try {
       await scheduleInterview({
         candidateId,
@@ -66,6 +81,7 @@ export function ScheduleInterviewDialog({
         scheduledAt: new Date(scheduledAt).toISOString(),
         duration,
         notes: notes || undefined,
+        interviewerId: interviewerId || undefined,
       });
       onScheduled();
       onClose();
@@ -73,6 +89,8 @@ export function ScheduleInterviewDialog({
       setNotes("");
       setType("VIDEO");
       setDuration(60);
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "The interview could not be scheduled");
     } finally {
       setSubmitting(false);
     }
@@ -89,6 +107,24 @@ export function ScheduleInterviewDialog({
           <div className={cn(inputClass, "bg-[var(--color-surface-hover)] cursor-default")}>
             {candidateName}
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+            Interviewer / Recruiter
+          </label>
+          <select
+            value={interviewerId}
+            onChange={(event) => setInterviewerId(event.target.value)}
+            className={inputClass}
+          >
+            {recruiters.length === 0 && <option value="">Current signed-in recruiter</option>}
+            {recruiters.map((recruiter) => (
+              <option key={recruiter.id} value={recruiter.id}>
+                {recruiter.firstName} {recruiter.lastName}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Interview type */}
@@ -159,19 +195,27 @@ export function ScheduleInterviewDialog({
           <div className="flex items-start gap-2 rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
             <Icon name="info" size={16} className="text-blue-400 mt-0.5 shrink-0" />
             <p className="text-xs text-blue-300">
-              A Google Meet link will be created automatically and calendar invites will be sent to the candidate.
+              One branded invitation will be sent from {selectedInterviewer
+                ? `${selectedInterviewer.firstName} ${selectedInterviewer.lastName}`
+                : "the recruiter"}. It includes the Google Meet details and an attached calendar RSVP.
             </p>
           </div>
         ) : (
           <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
             <Icon name="info" size={16} className="text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-300">
-              Google Calendar is not connected. The interview will be saved without a Meet link.{" "}
+              One branded invitation with a calendar RSVP will still be sent, but it will not include a Meet link until Google Calendar is connected.{" "}
               <Link href="/settings" className="underline hover:text-amber-200">
                 Connect in Settings
               </Link>
             </p>
           </div>
+        )}
+
+        {error && (
+          <p role="alert" className="text-xs font-medium text-red-600">
+            {error}
+          </p>
         )}
       </div>
 

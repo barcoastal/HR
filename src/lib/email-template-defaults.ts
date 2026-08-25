@@ -36,12 +36,13 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
   },
   TASK_ASSIGNMENT: {
     description: "Sent when an onboarding task is assigned to an employee",
-    variables: ["companyName", "logoUrl", "assigneeName", "newHireName", "taskTitle", "taskDescription"],
-    subject: "Onboarding task assigned: {{taskTitle}}",
+    variables: ["companyName", "logoUrl", "assigneeName", "newHireName", "taskTitle", "taskDescription", "taskUrl", "workflowName"],
+    subject: "{{workflowName}} task assigned: {{taskTitle}}",
     body: `<p>Hi {{assigneeName}},</p>
 <p>You've been assigned to help <strong>{{newHireName}}</strong> with:</p>
 <p><strong>{{taskTitle}}</strong></p>
-<p>{{taskDescription}}</p>`,
+<p>{{taskDescription}}</p>
+<p style="margin:24px 0"><a href="{{taskUrl}}" style="display:inline-block;padding:10px 18px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">View Assigned Task</a></p>`,
   },
   SIGNING_CONFIRMATION: {
     description: "Sent after a document has been successfully signed",
@@ -59,7 +60,7 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
   },
   INTERVIEW_SCHEDULED: {
     description:
-      "Sent to the candidate whenever an interview is scheduled (any type). meetLinkHtml renders the Join button only when a Google Meet link exists; notesHtml renders the notes line only when notes were entered.",
+      "The single branded candidate invitation. It includes the recruiter, every interview detail, an optional Meet button, and an attached calendar RSVP.",
     variables: [
       "companyName",
       "logoUrl",
@@ -69,20 +70,26 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
       "date",
       "time",
       "duration",
+      "timeZone",
+      "recruiterName",
+      "recruiterEmail",
       "meetLink",
       "meetLinkHtml",
       "notesHtml",
+      "calendarResponseHtml",
     ],
-    subject: "Interview Scheduled: {{interviewType}} — {{positionTitle}}",
+    subject: "Interview Scheduled: {{interviewType}}: {{positionTitle}}",
     body: `<p>Hi {{firstName}},</p>
 <p>Your <strong>{{interviewType}}</strong> for the <strong>{{positionTitle}}</strong> position at {{companyName}} has been scheduled.</p>
 <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
   <p style="margin:0"><strong>Date:</strong> {{date}}</p>
   <p style="margin:4px 0 0"><strong>Time:</strong> {{time}}</p>
   <p style="margin:4px 0 0"><strong>Duration:</strong> {{duration}} minutes</p>
+  <p style="margin:4px 0 0"><strong>Interviewer:</strong> {{recruiterName}}</p>
 </div>
 {{meetLinkHtml}}
 {{notesHtml}}
+{{calendarResponseHtml}}
 <p style="margin-top:16px">We look forward to speaking with you!</p>`,
   },
   BACKGROUND_PRE_ADVERSE: {

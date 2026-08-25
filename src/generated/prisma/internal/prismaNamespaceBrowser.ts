@@ -259,6 +259,7 @@ export const ChecklistItemScalarFieldEnum = {
   requiresDocument: 'requiresDocument',
   order: 'order',
   assigneeId: 'assigneeId',
+  assigneeDepartmentId: 'assigneeDepartmentId',
   dueDay: 'dueDay',
   sendEmail: 'sendEmail',
   emailSubject: 'emailSubject',
@@ -298,6 +299,8 @@ export const EmployeeTaskScalarFieldEnum = {
   externalEmail: 'externalEmail',
   externalName: 'externalName',
   assigneeId: 'assigneeId',
+  assigneeDepartmentId: 'assigneeDepartmentId',
+  completedById: 'completedById',
   createdAt: 'createdAt'
 } as const
 
@@ -725,6 +728,8 @@ export const InterviewScalarFieldEnum = {
   id: 'id',
   candidateId: 'candidateId',
   positionId: 'positionId',
+  interviewerId: 'interviewerId',
+  calendarOrganizerUserId: 'calendarOrganizerUserId',
   scheduledAt: 'scheduledAt',
   duration: 'duration',
   type: 'type',

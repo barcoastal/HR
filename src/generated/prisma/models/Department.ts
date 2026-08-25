@@ -205,6 +205,8 @@ export type DepartmentWhereInput = {
   employees?: Prisma.EmployeeListRelationFilter
   positions?: Prisma.PositionListRelationFilter
   checklists?: Prisma.OnboardingChecklistListRelationFilter
+  assignedChecklistItems?: Prisma.ChecklistItemListRelationFilter
+  assignedEmployeeTasks?: Prisma.EmployeeTaskListRelationFilter
   reviewCycles?: Prisma.ReviewCycleListRelationFilter
   reviewTemplate?: Prisma.XOR<Prisma.DepartmentReviewTemplateNullableScalarRelationFilter, Prisma.DepartmentReviewTemplateWhereInput> | null
 }
@@ -224,6 +226,8 @@ export type DepartmentOrderByWithRelationInput = {
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
   positions?: Prisma.PositionOrderByRelationAggregateInput
   checklists?: Prisma.OnboardingChecklistOrderByRelationAggregateInput
+  assignedChecklistItems?: Prisma.ChecklistItemOrderByRelationAggregateInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskOrderByRelationAggregateInput
   reviewCycles?: Prisma.ReviewCycleOrderByRelationAggregateInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateOrderByWithRelationInput
 }
@@ -246,6 +250,8 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   employees?: Prisma.EmployeeListRelationFilter
   positions?: Prisma.PositionListRelationFilter
   checklists?: Prisma.OnboardingChecklistListRelationFilter
+  assignedChecklistItems?: Prisma.ChecklistItemListRelationFilter
+  assignedEmployeeTasks?: Prisma.EmployeeTaskListRelationFilter
   reviewCycles?: Prisma.ReviewCycleListRelationFilter
   reviewTemplate?: Prisma.XOR<Prisma.DepartmentReviewTemplateNullableScalarRelationFilter, Prisma.DepartmentReviewTemplateWhereInput> | null
 }, "id">
@@ -289,6 +295,8 @@ export type DepartmentCreateInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -306,6 +314,8 @@ export type DepartmentUncheckedCreateInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -323,6 +333,8 @@ export type DepartmentUpdateInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -340,6 +352,8 @@ export type DepartmentUncheckedUpdateInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -580,6 +594,38 @@ export type DepartmentUpdateOneWithoutChecklistsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutChecklistsInput, Prisma.DepartmentUpdateWithoutChecklistsInput>, Prisma.DepartmentUncheckedUpdateWithoutChecklistsInput>
 }
 
+export type DepartmentCreateNestedOneWithoutAssignedChecklistItemsInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedCreateWithoutAssignedChecklistItemsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutAssignedChecklistItemsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneWithoutAssignedChecklistItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedCreateWithoutAssignedChecklistItemsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutAssignedChecklistItemsInput
+  upsert?: Prisma.DepartmentUpsertWithoutAssignedChecklistItemsInput
+  disconnect?: Prisma.DepartmentWhereInput | boolean
+  delete?: Prisma.DepartmentWhereInput | boolean
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutAssignedChecklistItemsInput, Prisma.DepartmentUpdateWithoutAssignedChecklistItemsInput>, Prisma.DepartmentUncheckedUpdateWithoutAssignedChecklistItemsInput>
+}
+
+export type DepartmentCreateNestedOneWithoutAssignedEmployeeTasksInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedCreateWithoutAssignedEmployeeTasksInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutAssignedEmployeeTasksInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneWithoutAssignedEmployeeTasksNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedCreateWithoutAssignedEmployeeTasksInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutAssignedEmployeeTasksInput
+  upsert?: Prisma.DepartmentUpsertWithoutAssignedEmployeeTasksInput
+  disconnect?: Prisma.DepartmentWhereInput | boolean
+  delete?: Prisma.DepartmentWhereInput | boolean
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUpdateWithoutAssignedEmployeeTasksInput>, Prisma.DepartmentUncheckedUpdateWithoutAssignedEmployeeTasksInput>
+}
+
 export type DepartmentCreateNestedOneWithoutReviewCyclesInput = {
   create?: Prisma.XOR<Prisma.DepartmentCreateWithoutReviewCyclesInput, Prisma.DepartmentUncheckedCreateWithoutReviewCyclesInput>
   connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutReviewCyclesInput
@@ -638,6 +684,8 @@ export type DepartmentCreateWithoutChildrenInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -654,6 +702,8 @@ export type DepartmentUncheckedCreateWithoutChildrenInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -675,6 +725,8 @@ export type DepartmentCreateWithoutParentDepartmentInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -691,6 +743,8 @@ export type DepartmentUncheckedCreateWithoutParentDepartmentInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -728,6 +782,8 @@ export type DepartmentUpdateWithoutChildrenInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -744,6 +800,8 @@ export type DepartmentUncheckedUpdateWithoutChildrenInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -789,6 +847,8 @@ export type DepartmentCreateWithoutTeamsInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -805,6 +865,8 @@ export type DepartmentUncheckedCreateWithoutTeamsInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -837,6 +899,8 @@ export type DepartmentUpdateWithoutTeamsInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -853,6 +917,8 @@ export type DepartmentUncheckedUpdateWithoutTeamsInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -869,6 +935,8 @@ export type DepartmentCreateWithoutEmployeesInput = {
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -885,6 +953,8 @@ export type DepartmentUncheckedCreateWithoutEmployeesInput = {
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -906,6 +976,8 @@ export type DepartmentCreateWithoutHeadInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -922,6 +994,8 @@ export type DepartmentUncheckedCreateWithoutHeadInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -959,6 +1033,8 @@ export type DepartmentUpdateWithoutEmployeesInput = {
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -975,6 +1051,8 @@ export type DepartmentUncheckedUpdateWithoutEmployeesInput = {
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -1007,6 +1085,8 @@ export type DepartmentCreateWithoutChecklistsInput = {
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -1023,6 +1103,8 @@ export type DepartmentUncheckedCreateWithoutChecklistsInput = {
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -1055,6 +1137,8 @@ export type DepartmentUpdateWithoutChecklistsInput = {
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -1071,6 +1155,184 @@ export type DepartmentUncheckedUpdateWithoutChecklistsInput = {
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutAssignedChecklistItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  head?: Prisma.EmployeeCreateNestedOneWithoutHeadOfInput
+  parentDepartment?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
+  children?: Prisma.DepartmentCreateNestedManyWithoutParentDepartmentInput
+  teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
+  reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutAssignedChecklistItemsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  headId?: string | null
+  parentDepartmentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentDepartmentInput
+  teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutAssignedChecklistItemsInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedCreateWithoutAssignedChecklistItemsInput>
+}
+
+export type DepartmentUpsertWithoutAssignedChecklistItemsInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedUpdateWithoutAssignedChecklistItemsInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedCreateWithoutAssignedChecklistItemsInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutAssignedChecklistItemsInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutAssignedChecklistItemsInput, Prisma.DepartmentUncheckedUpdateWithoutAssignedChecklistItemsInput>
+}
+
+export type DepartmentUpdateWithoutAssignedChecklistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  head?: Prisma.EmployeeUpdateOneWithoutHeadOfNestedInput
+  parentDepartment?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.DepartmentUpdateManyWithoutParentDepartmentNestedInput
+  teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
+  reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutAssignedChecklistItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentDepartmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentDepartmentNestedInput
+  teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutAssignedEmployeeTasksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  head?: Prisma.EmployeeCreateNestedOneWithoutHeadOfInput
+  parentDepartment?: Prisma.DepartmentCreateNestedOneWithoutChildrenInput
+  children?: Prisma.DepartmentCreateNestedManyWithoutParentDepartmentInput
+  teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
+  checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutAssignedEmployeeTasksInput = {
+  id?: string
+  name: string
+  description?: string | null
+  headId?: string | null
+  parentDepartmentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.DepartmentUncheckedCreateNestedManyWithoutParentDepartmentInput
+  teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
+  positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
+  checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutAssignedEmployeeTasksInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedCreateWithoutAssignedEmployeeTasksInput>
+}
+
+export type DepartmentUpsertWithoutAssignedEmployeeTasksInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedUpdateWithoutAssignedEmployeeTasksInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedCreateWithoutAssignedEmployeeTasksInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutAssignedEmployeeTasksInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutAssignedEmployeeTasksInput, Prisma.DepartmentUncheckedUpdateWithoutAssignedEmployeeTasksInput>
+}
+
+export type DepartmentUpdateWithoutAssignedEmployeeTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  head?: Prisma.EmployeeUpdateOneWithoutHeadOfNestedInput
+  parentDepartment?: Prisma.DepartmentUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.DepartmentUpdateManyWithoutParentDepartmentNestedInput
+  teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
+  checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
+  reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutAssignedEmployeeTasksInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  headId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  parentDepartmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.DepartmentUncheckedUpdateManyWithoutParentDepartmentNestedInput
+  teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
+  positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
+  checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -1088,6 +1350,8 @@ export type DepartmentCreateWithoutReviewCyclesInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
 
@@ -1104,6 +1368,8 @@ export type DepartmentUncheckedCreateWithoutReviewCyclesInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
 
@@ -1136,6 +1402,8 @@ export type DepartmentUpdateWithoutReviewCyclesInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
 
@@ -1152,6 +1420,8 @@ export type DepartmentUncheckedUpdateWithoutReviewCyclesInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
 
@@ -1168,6 +1438,8 @@ export type DepartmentCreateWithoutReviewTemplateInput = {
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
 }
 
@@ -1184,6 +1456,8 @@ export type DepartmentUncheckedCreateWithoutReviewTemplateInput = {
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   positions?: Prisma.PositionUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
@@ -1216,6 +1490,8 @@ export type DepartmentUpdateWithoutReviewTemplateInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
 }
 
@@ -1232,6 +1508,8 @@ export type DepartmentUncheckedUpdateWithoutReviewTemplateInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
@@ -1247,6 +1525,8 @@ export type DepartmentCreateWithoutPositionsInput = {
   teams?: Prisma.TeamCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateCreateNestedOneWithoutDepartmentInput
 }
@@ -1263,6 +1543,8 @@ export type DepartmentUncheckedCreateWithoutPositionsInput = {
   teams?: Prisma.TeamUncheckedCreateNestedManyWithoutDepartmentInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutDepartmentInput
   checklists?: Prisma.OnboardingChecklistUncheckedCreateNestedManyWithoutDepartmentInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedCreateNestedManyWithoutAssigneeDepartmentInput
   reviewCycles?: Prisma.ReviewCycleUncheckedCreateNestedManyWithoutDepartmentInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedCreateNestedOneWithoutDepartmentInput
 }
@@ -1295,6 +1577,8 @@ export type DepartmentUpdateWithoutPositionsInput = {
   teams?: Prisma.TeamUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -1311,6 +1595,8 @@ export type DepartmentUncheckedUpdateWithoutPositionsInput = {
   teams?: Prisma.TeamUncheckedUpdateManyWithoutDepartmentNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -1336,6 +1622,8 @@ export type DepartmentUpdateWithoutParentDepartmentInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -1352,6 +1640,8 @@ export type DepartmentUncheckedUpdateWithoutParentDepartmentInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -1386,6 +1676,8 @@ export type DepartmentUpdateWithoutHeadInput = {
   employees?: Prisma.EmployeeUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUpdateOneWithoutDepartmentNestedInput
 }
@@ -1402,6 +1694,8 @@ export type DepartmentUncheckedUpdateWithoutHeadInput = {
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutDepartmentNestedInput
   positions?: Prisma.PositionUncheckedUpdateManyWithoutDepartmentNestedInput
   checklists?: Prisma.OnboardingChecklistUncheckedUpdateManyWithoutDepartmentNestedInput
+  assignedChecklistItems?: Prisma.ChecklistItemUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
+  assignedEmployeeTasks?: Prisma.EmployeeTaskUncheckedUpdateManyWithoutAssigneeDepartmentNestedInput
   reviewCycles?: Prisma.ReviewCycleUncheckedUpdateManyWithoutDepartmentNestedInput
   reviewTemplate?: Prisma.DepartmentReviewTemplateUncheckedUpdateOneWithoutDepartmentNestedInput
 }
@@ -1426,6 +1720,8 @@ export type DepartmentCountOutputType = {
   employees: number
   positions: number
   checklists: number
+  assignedChecklistItems: number
+  assignedEmployeeTasks: number
   reviewCycles: number
 }
 
@@ -1435,6 +1731,8 @@ export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extens
   employees?: boolean | DepartmentCountOutputTypeCountEmployeesArgs
   positions?: boolean | DepartmentCountOutputTypeCountPositionsArgs
   checklists?: boolean | DepartmentCountOutputTypeCountChecklistsArgs
+  assignedChecklistItems?: boolean | DepartmentCountOutputTypeCountAssignedChecklistItemsArgs
+  assignedEmployeeTasks?: boolean | DepartmentCountOutputTypeCountAssignedEmployeeTasksArgs
   reviewCycles?: boolean | DepartmentCountOutputTypeCountReviewCyclesArgs
 }
 
@@ -1486,6 +1784,20 @@ export type DepartmentCountOutputTypeCountChecklistsArgs<ExtArgs extends runtime
 /**
  * DepartmentCountOutputType without action
  */
+export type DepartmentCountOutputTypeCountAssignedChecklistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChecklistItemWhereInput
+}
+
+/**
+ * DepartmentCountOutputType without action
+ */
+export type DepartmentCountOutputTypeCountAssignedEmployeeTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeTaskWhereInput
+}
+
+/**
+ * DepartmentCountOutputType without action
+ */
 export type DepartmentCountOutputTypeCountReviewCyclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReviewCycleWhereInput
 }
@@ -1506,6 +1818,8 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   employees?: boolean | Prisma.Department$employeesArgs<ExtArgs>
   positions?: boolean | Prisma.Department$positionsArgs<ExtArgs>
   checklists?: boolean | Prisma.Department$checklistsArgs<ExtArgs>
+  assignedChecklistItems?: boolean | Prisma.Department$assignedChecklistItemsArgs<ExtArgs>
+  assignedEmployeeTasks?: boolean | Prisma.Department$assignedEmployeeTasksArgs<ExtArgs>
   reviewCycles?: boolean | Prisma.Department$reviewCyclesArgs<ExtArgs>
   reviewTemplate?: boolean | Prisma.Department$reviewTemplateArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -1554,6 +1868,8 @@ export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalA
   employees?: boolean | Prisma.Department$employeesArgs<ExtArgs>
   positions?: boolean | Prisma.Department$positionsArgs<ExtArgs>
   checklists?: boolean | Prisma.Department$checklistsArgs<ExtArgs>
+  assignedChecklistItems?: boolean | Prisma.Department$assignedChecklistItemsArgs<ExtArgs>
+  assignedEmployeeTasks?: boolean | Prisma.Department$assignedEmployeeTasksArgs<ExtArgs>
   reviewCycles?: boolean | Prisma.Department$reviewCyclesArgs<ExtArgs>
   reviewTemplate?: boolean | Prisma.Department$reviewTemplateArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
@@ -1577,6 +1893,8 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     employees: Prisma.$EmployeePayload<ExtArgs>[]
     positions: Prisma.$PositionPayload<ExtArgs>[]
     checklists: Prisma.$OnboardingChecklistPayload<ExtArgs>[]
+    assignedChecklistItems: Prisma.$ChecklistItemPayload<ExtArgs>[]
+    assignedEmployeeTasks: Prisma.$EmployeeTaskPayload<ExtArgs>[]
     reviewCycles: Prisma.$ReviewCyclePayload<ExtArgs>[]
     reviewTemplate: Prisma.$DepartmentReviewTemplatePayload<ExtArgs> | null
   }
@@ -1989,6 +2307,8 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
   employees<T extends Prisma.Department$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   positions<T extends Prisma.Department$positionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$positionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PositionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checklists<T extends Prisma.Department$checklistsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$checklistsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OnboardingChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedChecklistItems<T extends Prisma.Department$assignedChecklistItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$assignedChecklistItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedEmployeeTasks<T extends Prisma.Department$assignedEmployeeTasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$assignedEmployeeTasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewCycles<T extends Prisma.Department$reviewCyclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$reviewCyclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReviewCyclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reviewTemplate<T extends Prisma.Department$reviewTemplateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$reviewTemplateArgs<ExtArgs>>): Prisma.Prisma__DepartmentReviewTemplateClient<runtime.Types.Result.GetResult<Prisma.$DepartmentReviewTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -2578,6 +2898,54 @@ export type Department$checklistsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.OnboardingChecklistScalarFieldEnum | Prisma.OnboardingChecklistScalarFieldEnum[]
+}
+
+/**
+ * Department.assignedChecklistItems
+ */
+export type Department$assignedChecklistItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChecklistItem
+   */
+  select?: Prisma.ChecklistItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChecklistItem
+   */
+  omit?: Prisma.ChecklistItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChecklistItemInclude<ExtArgs> | null
+  where?: Prisma.ChecklistItemWhereInput
+  orderBy?: Prisma.ChecklistItemOrderByWithRelationInput | Prisma.ChecklistItemOrderByWithRelationInput[]
+  cursor?: Prisma.ChecklistItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChecklistItemScalarFieldEnum | Prisma.ChecklistItemScalarFieldEnum[]
+}
+
+/**
+ * Department.assignedEmployeeTasks
+ */
+export type Department$assignedEmployeeTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeTask
+   */
+  select?: Prisma.EmployeeTaskSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeTask
+   */
+  omit?: Prisma.EmployeeTaskOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeTaskInclude<ExtArgs> | null
+  where?: Prisma.EmployeeTaskWhereInput
+  orderBy?: Prisma.EmployeeTaskOrderByWithRelationInput | Prisma.EmployeeTaskOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeTaskWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeTaskScalarFieldEnum | Prisma.EmployeeTaskScalarFieldEnum[]
 }
 
 /**

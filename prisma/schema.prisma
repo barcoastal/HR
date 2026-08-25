@@ -187,15 +187,17 @@ model Department {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
-  head             Employee?                 @relation("DepartmentHead", fields: [headId], references: [id], onDelete: SetNull)
-  parentDepartment Department?               @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id], onDelete: SetNull)
-  children         Department[]              @relation("DepartmentHierarchy")
-  teams            Team[]
-  employees        Employee[]                @relation("EmployeeDepartment")
-  positions        Position[]
-  checklists       OnboardingChecklist[]
-  reviewCycles     ReviewCycle[]
-  reviewTemplate   DepartmentReviewTemplate?
+  head                   Employee?                 @relation("DepartmentHead", fields: [headId], references: [id], onDelete: SetNull)
+  parentDepartment       Department?               @relation("DepartmentHierarchy", fields: [parentDepartmentId], references: [id], onDelete: SetNull)
+  children               Department[]              @relation("DepartmentHierarchy")
+  teams                  Team[]
+  employees              Employee[]                @relation("EmployeeDepartment")
+  positions              Position[]
+  checklists             OnboardingChecklist[]
+  assignedChecklistItems ChecklistItem[]           @relation("ChecklistItemAssigneeDepartment")
+  assignedEmployeeTasks  EmployeeTask[]            @relation("EmployeeTaskAssigneeDepartment")
+  reviewCycles           ReviewCycle[]
+  reviewTemplate         DepartmentReviewTemplate?
 
   @@index([headId])
   @@index([parentDepartmentId])
@@ -288,11 +290,13 @@ model Employee {
   approvedRequests         TimeOffRequest[]        @relation("TimeOffApprover")
   mentionedInPosts         FeedPost[]              @relation("FeedPostMention")
   assignedTasks            EmployeeTask[]          @relation("TaskAssignee")
+  completedTasks           EmployeeTask[]          @relation("TaskCompletedBy")
   signingRequests          SigningRequest[]
   countersignRequests      SigningRequest[]        @relation("SigningRequestCountersigner")
   countersignStageDocs     StageDocument[]         @relation("StageDocumentCountersigner")
   countersignPositionDocs  PositionDocument[]      @relation("PositionDocumentCountersigner")
   managedCandidates        Candidate[]             @relation("CandidateManager")
+  interviewsAsInterviewer  Interview[]             @relation("InterviewInterviewer")
   hrNotes                  HRNote[]
   authoredHRNotes          HRNote[]                @relation("HRNoteAuthor")
   emergencyAlerts          EmergencyAlert[]        @relation("EmergencyAlertSender")
@@ -348,8 +352,9 @@ model User {
   notifyPromotionEmail Boolean @default(true)
   notifyPromotionInApp Boolean @default(true)
 
-  employee         Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull)
-  eventAttendances EventAttendance[]
+  employee            Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  eventAttendances    EventAttendance[]
+  organizedInterviews Interview[]       @relation("InterviewCalendarOrganizer")
 }
 
 model OnboardingChecklist {
@@ -371,31 +376,34 @@ model OnboardingChecklist {
 }
 
 model ChecklistItem {
-  id                String  @id @default(uuid())
-  checklistId       String
-  title             String
-  description       String?
-  requiresDocument  Boolean @default(false)
-  order             Int
-  assigneeId        String?
-  dueDay            Int?
-  sendEmail         Boolean @default(false)
-  emailSubject      String?
-  emailBody         String?
-  documentUrl       String?
-  documentName      String?
-  documentAction    String  @default("NONE") // NONE | SEND | SIGN | FILL
-  documentRecipient String  @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
-  externalEmail     String? // used when documentRecipient = EXTERNAL
-  externalName      String? // first name/label for the external recipient
+  id                   String  @id @default(uuid())
+  checklistId          String
+  title                String
+  description          String?
+  requiresDocument     Boolean @default(false)
+  order                Int
+  assigneeId           String?
+  assigneeDepartmentId String?
+  dueDay               Int?
+  sendEmail            Boolean @default(false)
+  emailSubject         String?
+  emailBody            String?
+  documentUrl          String?
+  documentName         String?
+  documentAction       String  @default("NONE") // NONE | SEND | SIGN | FILL
+  documentRecipient    String  @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
+  externalEmail        String? // used when documentRecipient = EXTERNAL
+  externalName         String? // first name/label for the external recipient
 
-  checklist     OnboardingChecklist          @relation(fields: [checklistId], references: [id], onDelete: Cascade)
-  assignee      Employee?                    @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
-  employeeTasks EmployeeTask[]
-  excludedBy    ChecklistOverrideExclusion[]
+  checklist          OnboardingChecklist          @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  assignee           Employee?                    @relation("ChecklistItemAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  assigneeDepartment Department?                  @relation("ChecklistItemAssigneeDepartment", fields: [assigneeDepartmentId], references: [id], onDelete: SetNull)
+  employeeTasks      EmployeeTask[]
+  excludedBy         ChecklistOverrideExclusion[]
 
   @@index([checklistId])
   @@index([assigneeId])
+  @@index([assigneeDepartmentId])
 }
 
 model ChecklistOverrideExclusion {
@@ -412,30 +420,36 @@ model ChecklistOverrideExclusion {
 }
 
 model EmployeeTask {
-  id                String     @id @default(uuid())
-  employeeId        String
-  checklistItemId   String?
-  status            TaskStatus @default(PENDING)
-  documentUrl       String?
-  completedAt       DateTime?
-  title             String?
-  description       String?
-  documentAction    String?
-  documentName      String?
-  documentRecipient String     @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
-  externalEmail     String?
-  externalName      String?
-  assigneeId        String?
-  createdAt         DateTime   @default(now())
+  id                   String     @id @default(uuid())
+  employeeId           String
+  checklistItemId      String?
+  status               TaskStatus @default(PENDING)
+  documentUrl          String?
+  completedAt          DateTime?
+  title                String?
+  description          String?
+  documentAction       String?
+  documentName         String?
+  documentRecipient    String     @default("EMPLOYEE") // EMPLOYEE | ASSIGNEE | EXTERNAL
+  externalEmail        String?
+  externalName         String?
+  assigneeId           String?
+  assigneeDepartmentId String?
+  completedById        String?
+  createdAt            DateTime   @default(now())
 
-  employee       Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  checklistItem  ChecklistItem?  @relation(fields: [checklistItemId], references: [id], onDelete: SetNull)
-  assignee       Employee?       @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
-  signingRequest SigningRequest?
+  employee           Employee        @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  checklistItem      ChecklistItem?  @relation(fields: [checklistItemId], references: [id], onDelete: SetNull)
+  assignee           Employee?       @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  assigneeDepartment Department?     @relation("EmployeeTaskAssigneeDepartment", fields: [assigneeDepartmentId], references: [id], onDelete: SetNull)
+  completedBy        Employee?       @relation("TaskCompletedBy", fields: [completedById], references: [id], onDelete: SetNull)
+  signingRequest     SigningRequest?
 
   @@index([employeeId])
   @@index([checklistItemId])
   @@index([assigneeId])
+  @@index([assigneeDepartmentId])
+  @@index([completedById])
 }
 
 model ReviewCycle {
@@ -967,24 +981,30 @@ model PlatformSyncLog {
 }
 
 model Interview {
-  id             String          @id @default(uuid())
-  candidateId    String
-  positionId     String?
-  scheduledAt    DateTime
-  duration       Int // minutes
-  type           InterviewType   @default(VIDEO)
-  status         InterviewStatus @default(SCHEDULED)
-  googleEventId  String?
-  googleMeetLink String?
-  notes          String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                      String          @id @default(uuid())
+  candidateId             String
+  positionId              String?
+  interviewerId           String?
+  calendarOrganizerUserId String?
+  scheduledAt             DateTime
+  duration                Int // minutes
+  type                    InterviewType   @default(VIDEO)
+  status                  InterviewStatus @default(SCHEDULED)
+  googleEventId           String?
+  googleMeetLink          String?
+  notes                   String?
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
 
-  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
-  position  Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  candidate         Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position          Position? @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  interviewer       Employee? @relation("InterviewInterviewer", fields: [interviewerId], references: [id], onDelete: SetNull)
+  calendarOrganizer User?     @relation("InterviewCalendarOrganizer", fields: [calendarOrganizerUserId], references: [id], onDelete: SetNull)
 
   @@index([candidateId])
   @@index([scheduledAt])
+  @@index([interviewerId])
+  @@index([calendarOrganizerUserId])
 }
 
 model SigningRequest {

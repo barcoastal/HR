@@ -8,6 +8,14 @@ import { Icon } from "@/components/ui/icon";
 export default async function PreOnboardingPage() {
   const session = await requireAdmin();
   const isSuperAdmin = session.user?.role === "SUPER_ADMIN";
+  const [assignmentAssignees, assignmentDepartments] = await Promise.all([
+    db.employee.findMany({
+      where: { archivedAt: null, status: { not: "OFFBOARDED" } },
+      select: { id: true, firstName: true, lastName: true },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    }),
+    db.department.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+  ]);
 
   const preOnboardingEmployees = await db.employee.findMany({
     where: { status: "PRE_ONBOARDING" },
@@ -18,6 +26,8 @@ export default async function PreOnboardingPage() {
           checklistItem: { include: { checklist: true } },
           signingRequest: true,
           assignee: true,
+          assigneeDepartment: true,
+          completedBy: true,
         },
       },
     },
@@ -25,11 +35,8 @@ export default async function PreOnboardingPage() {
   });
 
   const allPreOnboardingChecklistItems = await db.checklistItem.findMany({
-    where: {
-      checklist: { type: "PRE_ONBOARDING" },
-      documentAction: { in: ["SEND", "SIGN", "FILL"] },
-    },
-    include: { checklist: true, assignee: true },
+    where: { checklist: { type: "PRE_ONBOARDING", isOverride: false } },
+    include: { checklist: true, assignee: true, assigneeDepartment: true },
     orderBy: { order: "asc" },
   });
 
@@ -57,7 +64,7 @@ export default async function PreOnboardingPage() {
         {preOnboardingEmployees.map((emp) => {
           const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
           const writtenOfferTasks = emp.employeeTasks.filter((task) =>
-            ["SEND", "SIGN", "FILL"].includes(task.documentAction || "")
+            task.checklistItem?.checklist?.type === "PRE_ONBOARDING"
           );
           const availableItems = allPreOnboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
@@ -67,6 +74,7 @@ export default async function PreOnboardingPage() {
               description: item.description,
               checklistName: item.checklist.name,
               assigneeName: item.assignee ? `${item.assignee.firstName} ${item.assignee.lastName}` : null,
+              assigneeDepartmentName: item.assigneeDepartment?.name || null,
               dueDay: item.dueDay,
             }));
 
@@ -90,11 +98,15 @@ export default async function PreOnboardingPage() {
                 documentAction: t.documentAction || null,
                 documentName: t.documentName || null,
                 assigneeName: t.assignee ? `${t.assignee.firstName} ${t.assignee.lastName}` : null,
+                assigneeDepartmentName: t.assigneeDepartment?.name || null,
+                completedByName: t.completedBy ? `${t.completedBy.preferredName || t.completedBy.firstName} ${t.completedBy.lastName}` : null,
                 signingStatus: t.signingRequest?.status || null,
               }))}
               availableItems={availableItems}
               type="PRE_ONBOARDING"
               isSuperAdmin={isSuperAdmin}
+              assignees={assignmentAssignees}
+              departments={assignmentDepartments}
             />
           );
         })}

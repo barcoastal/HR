@@ -29,6 +29,8 @@ type ChecklistItemData = {
   order: number;
   assigneeId: string | null;
   assignee: { firstName: string; lastName: string } | null;
+  assigneeDepartmentId: string | null;
+  assigneeDepartment: { name: string } | null;
   dueDay: number | null;
   sendEmail: boolean;
   emailSubject: string | null;
@@ -184,6 +186,8 @@ export function OnboardingSetup({
       order: i.order,
       assigneeId: i.assigneeId,
       assignee: i.assignee ? { firstName: i.assignee.firstName, lastName: i.assignee.lastName } : null,
+      assigneeDepartmentId: i.assigneeDepartmentId,
+      assigneeDepartment: i.assigneeDepartment ? { name: i.assigneeDepartment.name } : null,
       dueDay: i.dueDay,
       sendEmail: i.sendEmail,
       emailSubject: i.emailSubject,
@@ -288,18 +292,23 @@ export function OnboardingSetup({
   async function handleAddItem(checklistId: string) {
     if (!newTitle) return;
     setAddingItem(true);
+    const [assignmentType, assignmentId] = newAssigneeId.split(":");
     await addChecklistItem(
       checklistId,
       newTitle,
       newDesc || undefined,
-      newAssigneeId || undefined,
+      assignmentType === "employee" ? assignmentId : undefined,
       newDueDay || undefined,
       undefined, // sendEmail
       undefined, // emailSubject
       undefined, // emailBody
       newDocAction !== "NONE" ? newDocUrl || undefined : undefined,
       newDocAction !== "NONE" ? newDocName || undefined : undefined,
-      newDocAction
+      newDocAction,
+      undefined,
+      undefined,
+      undefined,
+      assignmentType === "department" ? assignmentId : undefined
     );
     setAddingItem(false);
     setNewTitle("");
@@ -370,18 +379,23 @@ export function OnboardingSetup({
     const title = overrideNewTitle[overrideId];
     if (!title) return;
     setOverrideAddingItem((prev) => ({ ...prev, [overrideId]: true }));
+    const [assignmentType, assignmentId] = (overrideNewAssigneeId[overrideId] || "").split(":");
     await addChecklistItem(
       checklistId,
       title,
       overrideNewDesc[overrideId] || undefined,
-      overrideNewAssigneeId[overrideId] || undefined,
+      assignmentType === "employee" ? assignmentId : undefined,
       overrideNewDueDay[overrideId] || undefined,
       undefined,
       undefined,
       undefined,
       (overrideNewDocAction[overrideId] ?? "NONE") !== "NONE" ? overrideNewDocUrl[overrideId] || undefined : undefined,
       (overrideNewDocAction[overrideId] ?? "NONE") !== "NONE" ? overrideNewDocName[overrideId] || undefined : undefined,
-      overrideNewDocAction[overrideId] || "NONE"
+      overrideNewDocAction[overrideId] || "NONE",
+      undefined,
+      undefined,
+      undefined,
+      assignmentType === "department" ? assignmentId : undefined
     );
     setOverrideAddingItem((prev) => ({ ...prev, [overrideId]: false }));
     setOverrideNewTitle((prev) => ({ ...prev, [overrideId]: "" }));
@@ -537,12 +551,27 @@ export function OnboardingSetup({
                               {getDueDayLabel(item.dueDay)}
                             </span>
                           )}
-                          <span className="inline-flex items-center gap-1 text-xs text-[var(--color-text-muted)]">
-                            <Icon name="account_circle" size={12} />
-                            {item.assignee
-                              ? `${item.assignee.firstName} ${item.assignee.lastName}`
-                              : "Unassigned"}
-                          </span>
+                          <select
+                            value={item.assigneeId ? `employee:${item.assigneeId}` : item.assigneeDepartmentId ? `department:${item.assigneeDepartmentId}` : ""}
+                            onChange={async (event) => {
+                              const [assignmentType, assignmentId] = event.target.value.split(":");
+                              await updateChecklistItem(item.id, {
+                                assigneeId: assignmentType === "employee" ? assignmentId : null,
+                                assigneeDepartmentId: assignmentType === "department" ? assignmentId : null,
+                              });
+                              refreshData();
+                            }}
+                            className="rounded-full border-0 bg-[var(--color-surface-hover)] px-2 py-0.5 text-xs text-[var(--color-text-muted)]"
+                            aria-label={`Assignee for ${item.title}`}
+                          >
+                            <option value="">Unassigned</option>
+                            <optgroup label="People">
+                              {employees.map((employee) => <option key={employee.id} value={`employee:${employee.id}`}>{employee.firstName} {employee.lastName}</option>)}
+                            </optgroup>
+                            <optgroup label="Departments">
+                              {departments.map((department) => <option key={department.id} value={`department:${department.id}`}>{department.name}</option>)}
+                            </optgroup>
+                          </select>
                           <select
                             value={item.documentAction}
                             onChange={async (e) => {
@@ -718,11 +747,16 @@ export function OnboardingSetup({
                       className={selectClass}
                     >
                       <option value="">Unassigned</option>
-                      {employees.map((emp) => (
-                        <option key={emp.id} value={emp.id}>
-                          {emp.firstName} {emp.lastName}
-                        </option>
-                      ))}
+                      <optgroup label="People">
+                        {employees.map((emp) => (
+                          <option key={emp.id} value={`employee:${emp.id}`}>{emp.firstName} {emp.lastName}</option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Departments">
+                        {departments.map((department) => (
+                          <option key={department.id} value={`department:${department.id}`}>{department.name}</option>
+                        ))}
+                      </optgroup>
                     </select>
                   </div>
                   <div>
@@ -975,7 +1009,7 @@ export function OnboardingSetup({
                                   <span className="text-xs text-[var(--color-text-muted)]">
                                     {item.assignee
                                       ? `${item.assignee.firstName} ${item.assignee.lastName}`
-                                      : "Unassigned"}
+                                      : item.assigneeDepartment?.name || "Unassigned"}
                                   </span>
                                 </div>
                               </div>
@@ -1075,11 +1109,16 @@ export function OnboardingSetup({
                               className={selectClass}
                             >
                               <option value="">Unassigned</option>
-                              {employees.map((emp) => (
-                                <option key={emp.id} value={emp.id}>
-                                  {emp.firstName} {emp.lastName}
-                                </option>
-                              ))}
+                              <optgroup label="People">
+                                {employees.map((emp) => (
+                                  <option key={emp.id} value={`employee:${emp.id}`}>{emp.firstName} {emp.lastName}</option>
+                                ))}
+                              </optgroup>
+                              <optgroup label="Departments">
+                                {departments.map((department) => (
+                                  <option key={department.id} value={`department:${department.id}`}>{department.name}</option>
+                                ))}
+                              </optgroup>
                             </select>
                           </div>
                           <div>

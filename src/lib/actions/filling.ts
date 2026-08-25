@@ -359,7 +359,11 @@ export async function submitFilledForm(
     if (request.employeeTaskId) {
       await db.employeeTask.update({
         where: { id: request.employeeTaskId },
-        data: { status: "DONE", completedAt: new Date() },
+        data: {
+          status: "DONE",
+          completedAt: new Date(),
+          completedById: request.employeeTask?.documentRecipient === "EXTERNAL" ? null : request.employeeId,
+        },
       });
     }
 

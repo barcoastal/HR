@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { IS_SANDBOX } from "@/lib/sandbox";
 import { db } from "@/lib/db";
 import { EMAIL_TEMPLATE_DEFAULTS } from "@/lib/email-template-defaults";
+import { buildIcsInvite } from "@/lib/ics";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -67,7 +68,13 @@ function escapeHtml(value: string): string {
     .replaceAll("'", "&#039;");
 }
 
-function wrapHtml(content: string, companyName: string, logoUrl: string | null): string {
+function wrapHtml(
+  content: string,
+  companyName: string,
+  logoUrl: string | null,
+  replyTo?: string,
+  replyToName?: string
+): string {
   const logoHtml = logoUrl
     ? `<img src="${logoUrl}" alt="${companyName}" style="max-height:40px;max-width:180px;display:block" />`
     : `<span style="font-size:20px;font-weight:700;color:#3052FF">${companyName}</span>`;
@@ -81,7 +88,11 @@ function wrapHtml(content: string, companyName: string, logoUrl: string | null):
     ${content}
   </div>
   <div style="padding:16px 24px;border-top:1px solid #e5e7eb;text-align:center">
-    <p style="margin:0 0 4px;font-size:12px;color:#9ca3af">This is an automated message — please do not reply to this email.</p>
+    <p style="margin:0 0 4px;font-size:12px;color:#6b7280">${
+      replyTo
+        ? `Questions? Reply to contact ${escapeHtml(replyToName || replyTo)}.`
+        : "This is an automated message. Please do not reply to this email."
+    }</p>
     <p style="margin:0;font-size:12px;color:#9ca3af">${companyName} &middot; Sent via Coastal HR</p>
   </div>
 </div>`;
@@ -99,6 +110,14 @@ export type EmailDeliveryContext = {
   contextType?: string;
   contextId?: string;
   senderEmployeeId?: string | null;
+  fromName?: string;
+  replyTo?: string;
+};
+
+type EmailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
 };
 
 export type EmailSendResult = {
@@ -153,10 +172,13 @@ async function sendTrackedEmail(
   to: string,
   subject: string,
   html: string,
-  attachments: { filename: string; content: Buffer }[] | undefined,
+  attachments: EmailAttachment[] | undefined,
   context: EmailDeliveryContext = {}
 ): Promise<EmailSendResult> {
-  const finalSubject = withNoReplySubject(subject);
+  const safeReplyTo = context.replyTo && isValidEmail(context.replyTo.trim())
+    ? context.replyTo.trim()
+    : undefined;
+  const finalSubject = safeReplyTo ? subject.trim() : withNoReplySubject(subject);
   const senderEmployeeId = await currentSenderEmployeeId(context.senderEmployeeId);
   let deliveryId: string | undefined;
 
@@ -199,7 +221,7 @@ async function sendTrackedEmail(
   }
 
   const branding = await getCompanyBranding();
-  const senderName = branding.senderName.replace(/[<>"]/g, "").trim();
+  const senderName = (context.fromName || branding.senderName).replace(/[<>"]/g, "").trim();
   const senderEmail = branding.senderEmail.trim();
   const from = senderName ? `${senderName} <${senderEmail}>` : senderEmail;
   console.log(`[email] Sending${attachments?.length ? ` with ${attachments.length} attachment(s)` : ""} from: "${from}" to: ${to}`);
@@ -209,7 +231,8 @@ async function sendTrackedEmail(
       from,
       to,
       subject: finalSubject,
-      html: wrapHtml(html, branding.companyName, branding.logoUrl),
+      html: wrapHtml(html, branding.companyName, branding.logoUrl, safeReplyTo, senderName),
+      ...(safeReplyTo ? { replyTo: safeReplyTo } : {}),
       ...(attachments?.length ? { attachments } : {}),
     });
     if (error) throw error;
@@ -250,7 +273,7 @@ export async function sendEmailWithAttachments(
   to: string,
   subject: string,
   html: string,
-  attachments: { filename: string; content: Buffer }[],
+  attachments: EmailAttachment[],
   context?: EmailDeliveryContext
 ): Promise<EmailSendResult> {
   return sendTrackedEmail(to, subject, html, attachments, context);
@@ -279,6 +302,7 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
     newHireName: "John Doe",
     taskTitle: "Complete I-9 Form",
     taskDescription: "Please complete the I-9 employment eligibility form.",
+    workflowName: "Onboarding",
     body: "Welcome to the team! We're excited to have you.",
     documentUrl: `${baseUrl}/docs/sample.pdf`,
     subject: "Welcome to " + branding.companyName,
@@ -290,6 +314,10 @@ export async function sendTestEmail(to: string, type: string, subject: string, b
     meetLink: "https://meet.google.com/abc-defg-hij",
     meetLinkHtml: `<p style="margin-top:16px"><a href="https://meet.google.com/abc-defg-hij" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`,
     notesHtml: `<p style="margin-top:12px;color:#666"><em>Notes: Please have your portfolio ready.</em></p>`,
+    recruiterName: "Sarah Smith",
+    recruiterEmail: "sarah.smith@example.com",
+    timeZone: "EDT",
+    calendarResponseHtml: `<p style="margin-top:16px;color:#374151">Use the attached calendar invitation to accept, tentatively accept, or decline.</p>`,
   };
 
   const interpolatedSubject = interpolate(subject, sampleVars);
@@ -362,22 +390,25 @@ export async function sendSigningRequestEmail({
 }
 
 export async function sendTaskAssignmentEmail({
-  to, assigneeName, newHireName, taskTitle, taskDescription,
+  to, assigneeName, newHireName, taskTitle, taskDescription, taskId, taskUrl, workflowName = "Onboarding",
 }: {
   to: string; assigneeName: string; newHireName: string;
   taskTitle: string; taskDescription?: string | null;
+  taskId?: string; taskUrl?: string; workflowName?: string;
 }) {
   const [branding, template] = await Promise.all([getCompanyBranding(), getTemplate("TASK_ASSIGNMENT")]);
-  const vars = { assigneeName, newHireName, taskTitle, taskDescription: taskDescription || "", companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
+  const vars = { assigneeName, newHireName, taskTitle, taskDescription: taskDescription || "", taskUrl: taskUrl || "", workflowName, companyName: branding.companyName, logoUrl: branding.logoUrl || "" };
+  const context: EmailDeliveryContext = { contextType: "TASK_ASSIGNMENT", contextId: taskId };
   if (template) {
-    await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
+    return sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars), context);
   } else {
-    await sendEmail(to, `Onboarding task assigned: ${taskTitle}`, `
+    return sendEmail(to, `${workflowName} task assigned: ${taskTitle}`, `
       <p>Hi ${assigneeName},</p>
       <p>You've been assigned to help <strong>${newHireName}</strong> with:</p>
       <p><strong>${taskTitle}</strong></p>
       ${taskDescription ? `<p>${taskDescription}</p>` : ""}
-    `);
+      ${taskUrl ? `<p><a href="${taskUrl}" style="display:inline-block;padding:10px 18px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">View assigned task</a></p>` : ""}
+    `, context);
   }
 }
 
@@ -404,66 +435,158 @@ export async function sendWelcomeEmail({
 }
 
 export async function sendInterviewScheduledEmail({
-  to, firstName, interviewType, positionTitle, scheduledAt, duration, meetLink, notes,
+  to,
+  firstName,
+  lastName,
+  interviewId,
+  interviewType,
+  positionTitle,
+  scheduledAt,
+  duration,
+  interviewerName,
+  interviewerEmail,
+  interviewerEmployeeId,
+  meetLink,
+  notes,
+  timeZone = process.env.COMPANY_TIME_ZONE || "America/New_York",
 }: {
-  to: string; firstName: string; interviewType: string; positionTitle: string;
-  scheduledAt: Date; duration: number; meetLink?: string | null; notes?: string | null;
+  to: string;
+  firstName: string;
+  lastName?: string;
+  interviewId: string;
+  interviewType: string;
+  positionTitle: string;
+  scheduledAt: Date;
+  duration: number;
+  interviewerName: string;
+  interviewerEmail: string;
+  interviewerEmployeeId?: string | null;
+  meetLink?: string | null;
+  notes?: string | null;
+  timeZone?: string;
 }) {
   const [branding, template] = await Promise.all([
     getCompanyBranding(),
     getTemplate("INTERVIEW_SCHEDULED"),
   ]);
 
-  const date = scheduledAt.toLocaleDateString("en-US", {
+  const date = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-  });
-  const time = scheduledAt.toLocaleTimeString("en-US", {
+    timeZone,
+  }).format(scheduledAt);
+  const time = new Intl.DateTimeFormat("en-US", {
     hour: "numeric",
     minute: "2-digit",
-  });
-  // Optional pieces are passed as ready HTML (or "") — the interpolate()
-  // conditional stripper removes {{#var}} blocks even when the var is set,
-  // so templates can't rely on conditionals.
+    timeZoneName: "short",
+    timeZone,
+  }).format(scheduledAt);
   const meetLinkHtml = meetLink
-    ? `<p style="margin-top:16px"><a href="${meetLink}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
+    ? `<p style="margin-top:16px"><a href="${escapeHtml(meetLink)}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
     : "";
   const notesHtml = notes
-    ? `<p style="margin-top:12px;color:#666"><em>Notes: ${notes}</em></p>`
+    ? `<p style="margin-top:12px;color:#4b5563"><strong>Notes:</strong> ${escapeHtml(notes)}</p>`
     : "";
+  const calendarResponseHtml = `<p style="margin-top:16px;color:#374151">A calendar invitation is attached. Use your email or calendar app to accept, tentatively accept, or decline.</p>`;
 
-  const vars: Record<string, string> = {
+  const plainVars: Record<string, string> = {
     firstName,
     interviewType,
     positionTitle,
     date,
     time,
     duration: String(duration),
+    timeZone,
+    recruiterName: interviewerName,
+    recruiterEmail: interviewerEmail,
     meetLink: meetLink || "",
-    meetLinkHtml,
-    notesHtml,
     companyName: branding.companyName,
     logoUrl: branding.logoUrl || "",
   };
+  const bodyVars: Record<string, string> = {
+    ...Object.fromEntries(Object.entries(plainVars).map(([key, value]) => [key, escapeHtml(value)])),
+    logoUrl: branding.logoUrl || "",
+    meetLinkHtml,
+    notesHtml,
+    calendarResponseHtml,
+  };
+  const calendarDescription = [
+    `${interviewType} for ${positionTitle}`,
+    `Interviewer: ${interviewerName} (${interviewerEmail})`,
+    `Duration: ${duration} minutes`,
+    meetLink ? `Google Meet: ${meetLink}` : "",
+    notes ? `Notes: ${notes}` : "",
+  ].filter(Boolean).join("\n");
+  const organizerEmail = isValidEmail(interviewerEmail)
+    ? interviewerEmail
+    : branding.senderEmail;
+  const calendarInvite = buildIcsInvite({
+    uid: `${interviewId}@calatrava-hr`,
+    start: scheduledAt,
+    durationMinutes: duration,
+    summary: `${interviewType}: ${positionTitle}`,
+    description: calendarDescription,
+    location: meetLink || undefined,
+    organizerEmail,
+    organizerName: interviewerName,
+    attendees: [{ email: to, name: `${firstName} ${lastName || ""}`.trim() }],
+  });
+  const attachments: EmailAttachment[] = [{
+    filename: "interview-invitation.ics",
+    content: calendarInvite,
+    contentType: "text/calendar; method=REQUEST; charset=utf-8",
+  }];
+  const context: EmailDeliveryContext = {
+    contextType: "INTERVIEW_INVITATION",
+    contextId: interviewId,
+    senderEmployeeId: interviewerEmployeeId,
+    fromName: `${interviewerName} via ${branding.companyName}`,
+    replyTo: isValidEmail(interviewerEmail) ? interviewerEmail : undefined,
+  };
 
   if (template) {
-    await sendEmail(to, interpolate(template.subject, vars), interpolate(template.body, vars));
-  } else {
-    await sendEmail(to, `Interview Scheduled: ${interviewType}`, `
-      <p>Hi ${firstName},</p>
-      <p>Your <strong>${interviewType}</strong> for the <strong>${positionTitle}</strong> position has been scheduled.</p>
-      <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
-        <p style="margin:0"><strong>Date:</strong> ${date}</p>
-        <p style="margin:4px 0 0"><strong>Time:</strong> ${time}</p>
-        <p style="margin:4px 0 0"><strong>Duration:</strong> ${duration} minutes</p>
-      </div>
-      ${meetLinkHtml}
-      ${notesHtml}
-      <p style="margin-top:16px">We look forward to speaking with you!</p>
-    `);
+    let templateBody = interpolate(template.body, bodyVars);
+    const requiredDetails = [
+      ["Interview", interviewType],
+      ["Position", positionTitle],
+      ["Date", date],
+      ["Time", time],
+      ["Duration", `${duration} minutes`],
+      ["Interviewer", interviewerName],
+    ].filter(([, value]) => !templateBody.includes(escapeHtml(value)));
+    if (requiredDetails.length > 0) {
+      templateBody += `<div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">${requiredDetails
+        .map(([label, value], index) => `<p style="margin:${index === 0 ? "0" : "4px 0 0"}"><strong>${label}:</strong> ${escapeHtml(value)}</p>`)
+        .join("")}</div>`;
+    }
+    if (meetLink && !templateBody.includes(escapeHtml(meetLink))) templateBody += meetLinkHtml;
+    if (notes && !templateBody.includes(escapeHtml(notes))) templateBody += notesHtml;
+    if (!templateBody.includes("calendar invitation is attached")) templateBody += calendarResponseHtml;
+    return sendEmailWithAttachments(
+      to,
+      interpolate(template.subject, plainVars),
+      templateBody,
+      attachments,
+      context
+    );
   }
+
+  return sendEmailWithAttachments(to, `Interview Scheduled: ${interviewType}`, `
+    <p>Hi ${escapeHtml(firstName)},</p>
+    <p>Your <strong>${escapeHtml(interviewType)}</strong> for the <strong>${escapeHtml(positionTitle)}</strong> position has been scheduled.</p>
+    <div style="background:#f8f9fa;border-radius:8px;padding:16px;margin:16px 0">
+      <p style="margin:0"><strong>Date:</strong> ${escapeHtml(date)}</p>
+      <p style="margin:4px 0 0"><strong>Time:</strong> ${escapeHtml(time)}</p>
+      <p style="margin:4px 0 0"><strong>Duration:</strong> ${duration} minutes</p>
+      <p style="margin:4px 0 0"><strong>Interviewer:</strong> ${escapeHtml(interviewerName)}</p>
+    </div>
+    ${meetLinkHtml}
+    ${notesHtml}
+    ${calendarResponseHtml}
+    <p style="margin-top:16px">We look forward to speaking with you!</p>
+  `, attachments, context);
 }
 
 export async function sendPreAdverseActionEmail({
