@@ -7,12 +7,14 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
 import { buildMergePlan } from "@/lib/import-export/merge";
 import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
+import { commitImportBatch, type CommitResult, type CommitSummary } from "@/lib/import-export/commit-service";
 import {
   refKey, sameRef,
   type ColumnMapping, type EmployeeSnapshot, type FieldKey, type GroupReason, type MemberRef, type MergeMember, type RowAction, type RowData, type RowError,
 } from "@/lib/import-export/types";
 
 export type ImportBatchStatusValue = "REVIEWING" | "IMPORTED" | "DISCARDED";
+export type { CommitResult, CommitSummary };
 
 export type ImportBatchSummary = {
   id: string;
@@ -35,6 +37,10 @@ export type ImportRowView = {
   targetEmployeeId: string | null;
   mergedIntoRowId: string | null;
   skipReason: string | null;
+  /** Set once the batch has been imported. */
+  result: CommitResult | null;
+  resultEmployeeId: string | null;
+  resultNotes: string[];
 };
 
 export type ImportGroupView = {
@@ -57,6 +63,7 @@ export type ImportBatchDetail = {
     createdAt: string;
     importedAt: string | null;
     uploadedBy: string;
+    summary: CommitSummary | null;
   };
   rows: ImportRowView[];
   groups: ImportGroupView[];
@@ -143,6 +150,9 @@ export async function getImportBatch(id: string): Promise<ImportBatchDetail | nu
     targetEmployeeId: r.targetEmployeeId,
     mergedIntoRowId: r.mergedIntoRowId,
     skipReason: r.skipReason,
+    result: (r.result as CommitResult | null) ?? null,
+    resultEmployeeId: r.resultEmployeeId,
+    resultNotes: (r.resultNotes as string[] | null) ?? [],
   }));
   const groups: ImportGroupView[] = batch.groups.map((g) => ({
     id: g.id,
@@ -174,6 +184,7 @@ export async function getImportBatch(id: string): Promise<ImportBatchDetail | nu
       createdAt: batch.createdAt.toISOString(),
       importedAt: batch.importedAt?.toISOString() ?? null,
       uploadedBy: uploaderName(batch.uploadedBy),
+      summary: (batch.summary as CommitSummary | null) ?? null,
     },
     rows,
     groups,
@@ -388,4 +399,26 @@ export async function discardImportBatch(batchId: string): Promise<void> {
   await requireEditableBatch(batchId);
   await db.importBatch.update({ where: { id: batchId }, data: { status: "DISCARDED" } });
   revalidate(batchId);
+}
+
+/** Apply the batch to the system (spec §4). Allowed only while every duplicate group and row is resolved. */
+export async function commitImport(batchId: string): Promise<CommitSummary> {
+  const session = await requireImportAccess();
+  await requireEditableBatch(batchId);
+  const detail = await getImportBatch(batchId);
+  if (!detail) throw new Error("Import not found");
+  const { needsDecision, needsAttention, newPeople, updates } = detail.stats;
+  if (needsDecision > 0) {
+    throw new Error(`${needsDecision} duplicate group${needsDecision === 1 ? " still needs" : "s still need"} a decision`);
+  }
+  if (needsAttention > 0) {
+    throw new Error(`${needsAttention} row${needsAttention === 1 ? " has" : "s have"} errors to fix or skip`);
+  }
+  if (newPeople + updates === 0) throw new Error("Nothing to import — every row is skipped");
+
+  const summary = await commitImportBatch(batchId, session.user.id);
+  revalidatePath("/people");
+  revalidatePath("/org");
+  revalidate(batchId);
+  return summary;
 }

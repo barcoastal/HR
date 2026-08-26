@@ -24,7 +24,9 @@ export function ImportBatchView({ detail }: { detail: ImportBatchDetail }) {
   const router = useRouter();
   const readOnly = detail.batch.status !== "REVIEWING";
   const canReview = mappingIsComplete(detail.batch.mapping);
-  const [step, setStep] = useState<ImportStepId>(canReview ? "review" : "map");
+  const [step, setStep] = useState<ImportStepId>(
+    detail.batch.status === "IMPORTED" ? "import" : canReview ? "review" : "map",
+  );
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const hasDecisions =
