@@ -1,0 +1,242 @@
+"use client";
+
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Icon } from "@/components/ui/icon";
+import {
+  skipImportRow,
+  unskipImportRow,
+  type ImportBatchDetail,
+  type ImportGroupView,
+  type ImportRowView,
+} from "@/lib/actions/imports";
+import type { MemberRef } from "@/lib/import-export/types";
+import { ComparePanel } from "./compare-panel";
+import { Chip, RowEditor, rowBadge, rowDisplayName } from "./row-editor";
+
+type Selection = { kind: "group"; id: string } | { kind: "row"; id: string } | null;
+type Tab = "groups" | "rows";
+
+const REASON_LABEL: Record<string, string> = { email: "Same email", phone: "Same phone", name: "Same name" };
+
+function groupStatusLabel(group: ImportGroupView, needsDecision: boolean): { label: string; className: string } {
+  if (needsDecision) return { label: "Needs decision", className: "text-amber-600" };
+  if (group.status === "MERGED") return { label: "Merged", className: "text-purple-600" };
+  if (group.status === "SEPARATE") return { label: "Kept separate", className: "text-[var(--color-text-muted)]" };
+  return { label: "Resolved", className: "text-[var(--color-text-muted)]" };
+}
+
+export function ReviewStep({ detail }: { detail: ImportBatchDetail }) {
+  const router = useRouter();
+  const readOnly = detail.batch.status !== "REVIEWING";
+  const rowById = useMemo(() => new Map(detail.rows.map((r) => [r.id, r])), [detail.rows]);
+
+  const isLive = (m: MemberRef) =>
+    m.kind === "employee" ? !!detail.employees[m.id] : ["CREATE", "UPDATE"].includes(rowById.get(m.id)?.action ?? "");
+  const needsDecision = (g: ImportGroupView) => g.status === "PENDING" && g.members.filter(isLive).length >= 2;
+
+  const [tab, setTab] = useState<Tab>("groups");
+  const [selection, setSelection] = useState<Selection>(() => {
+    const first = detail.groups.find(needsDecision) ?? detail.groups[0];
+    return first ? { kind: "group", id: first.id } : null;
+  });
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function run(fn: () => Promise<void>) {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await fn();
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Something went wrong");
+      }
+    });
+  }
+
+  const memberLabel = (m: MemberRef) => {
+    if (m.kind === "employee") return detail.employees[m.id]?.name ?? "Existing person";
+    const r = rowById.get(m.id);
+    return r ? rowDisplayName(r.data) || `Row ${r.rowNumber}` : "Row";
+  };
+
+  const selectedGroup = selection?.kind === "group" ? detail.groups.find((g) => g.id === selection.id) : undefined;
+  const selectedRow = selection?.kind === "row" ? rowById.get(selection.id) : undefined;
+  const s = detail.stats;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-2 text-xs">
+        <Stat icon="call_merge" label="need a decision" value={s.needsDecision} tone={s.needsDecision ? "warn" : "ok"} />
+        <Stat icon="person_add" label="new people ready" value={s.newPeople} />
+        <Stat icon="sync_alt" label="updates" value={s.updates} />
+        <Stat icon="error" label="need attention" value={s.needsAttention} tone={s.needsAttention ? "warn" : undefined} />
+        <Stat icon="block" label="skipped" value={s.skipped} />
+      </div>
+      {error && <p className="text-xs text-red-500">{error}</p>}
+
+      <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
+          <div className="flex border-b border-[var(--color-border)] text-xs font-medium">
+            {(["groups", "rows"] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
+                className={cn(
+                  "flex-1 px-3 py-2 transition-colors",
+                  tab === t
+                    ? "text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]",
+                )}
+              >
+                {t === "groups" ? `Duplicates (${detail.groups.length})` : `All rows (${detail.rows.length})`}
+              </button>
+            ))}
+          </div>
+
+          <div className="max-h-[70vh] overflow-y-auto">
+            {tab === "groups" &&
+              (detail.groups.length === 0 ? (
+                <p className="p-4 text-xs text-[var(--color-text-muted)]">No possible duplicates found.</p>
+              ) : (
+                detail.groups.map((g) => (
+                  <GroupListItem
+                    key={g.id}
+                    group={g}
+                    title={Array.from(new Set(g.members.map(memberLabel))).join(" · ")}
+                    status={groupStatusLabel(g, needsDecision(g))}
+                    active={selection?.kind === "group" && selection.id === g.id}
+                    onSelect={() => setSelection({ kind: "group", id: g.id })}
+                  />
+                ))
+              ))}
+            {tab === "rows" &&
+              detail.rows.map((r) => (
+                <RowListItem
+                  key={r.id}
+                  row={r}
+                  active={selection?.kind === "row" && selection.id === r.id}
+                  onSelect={() => setSelection({ kind: "row", id: r.id })}
+                />
+              ))}
+          </div>
+        </div>
+
+        <div className="min-w-0">
+          {selectedGroup && (
+            <ComparePanel
+              key={selectedGroup.id}
+              detail={detail}
+              group={selectedGroup}
+              readOnly={readOnly}
+              busy={pending}
+              run={run}
+              onSkipRow={(id) => run(() => skipImportRow(detail.batch.id, id))}
+            />
+          )}
+          {selectedRow && (
+            <RowEditor
+              key={selectedRow.id}
+              batchId={detail.batch.id}
+              row={selectedRow}
+              readOnly={readOnly}
+              busy={pending}
+              run={run}
+              onSkip={() => run(() => skipImportRow(detail.batch.id, selectedRow.id))}
+              onUnskip={() => run(() => unskipImportRow(detail.batch.id, selectedRow.id))}
+            />
+          )}
+          {!selectedGroup && !selectedRow && <EmptyHint detail={detail} />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GroupListItem({
+  group,
+  title,
+  status,
+  active,
+  onSelect,
+}: {
+  group: ImportGroupView;
+  title: string;
+  status: { label: string; className: string };
+  active: boolean;
+  onSelect: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        "w-full text-left px-4 py-3 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] transition-colors",
+        active && "bg-[var(--color-accent)]/5",
+      )}
+    >
+      <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{title}</p>
+      <div className="mt-1 flex flex-wrap items-center gap-1">
+        {group.reasons.map((r) => (
+          <span key={r} className="px-1.5 py-0.5 rounded-full bg-[var(--color-surface-container)] text-[10px] text-[var(--color-text-muted)]">
+            {REASON_LABEL[r] ?? r}
+          </span>
+        ))}
+        <span className={cn("ml-auto text-[10px] font-medium", status.className)}>{status.label}</span>
+      </div>
+    </button>
+  );
+}
+
+function RowListItem({ row, active, onSelect }: { row: ImportRowView; active: boolean; onSelect: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={cn(
+        "w-full text-left px-4 py-2.5 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] flex items-center gap-3 transition-colors",
+        active && "bg-[var(--color-accent)]/5",
+      )}
+    >
+      <span className="text-[10px] text-[var(--color-text-muted)] w-8 shrink-0">#{row.rowNumber}</span>
+      <span className="flex-1 min-w-0">
+        <span className="block text-sm text-[var(--color-text-primary)] truncate">{rowDisplayName(row.data) || "(no name)"}</span>
+        <span className="block text-[11px] text-[var(--color-text-muted)] truncate">{row.data.email ?? row.errors[0]?.message ?? ""}</span>
+      </span>
+      <Chip badge={rowBadge(row)} className="shrink-0" />
+    </button>
+  );
+}
+
+function EmptyHint({ detail }: { detail: ImportBatchDetail }) {
+  let text = "Select a duplicate group or a row to see its details.";
+  if (detail.groups.length === 0) {
+    text =
+      detail.stats.needsAttention > 0
+        ? `No duplicates found. ${detail.stats.needsAttention} row${detail.stats.needsAttention === 1 ? "" : "s"} need attention — open All rows to fix them.`
+        : "No duplicates to review. Head to the Import step.";
+  }
+  return (
+    <div className="rounded-xl border border-dashed border-[var(--color-border)] p-12 text-center text-sm text-[var(--color-text-muted)]">
+      {text}
+    </div>
+  );
+}
+
+function Stat({ icon, label, value, tone }: { icon: string; label: string; value: number; tone?: "warn" | "ok" }) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]",
+        tone === "warn" && "border-amber-500/40 text-amber-600",
+        tone === "ok" && "border-emerald-500/40 text-emerald-600",
+      )}
+    >
+      <Icon name={icon} size={14} />
+      <strong>{value}</strong> {label}
+    </span>
+  );
+}
