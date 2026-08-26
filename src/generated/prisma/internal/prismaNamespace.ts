@@ -6737,6 +6737,7 @@ export const InterviewScalarFieldEnum = {
   status: 'status',
   googleEventId: 'googleEventId',
   googleMeetLink: 'googleMeetLink',
+  location: 'location',
   notes: 'notes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

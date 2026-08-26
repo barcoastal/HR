@@ -164,8 +164,9 @@ export default async function CalendarPage({
       id: `interview-${interview.id}`,
       name: `${interview.candidate.firstName} ${interview.candidate.lastName}`,
       date: start.toISOString(), type: "interview", meetLink: interview.googleMeetLink,
+      location: interview.location || undefined,
       time: start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
-      description: "Candidate interview",
+      description: interview.type === "ONSITE" ? "Onsite candidate interview" : "Candidate interview",
     });
   }
 

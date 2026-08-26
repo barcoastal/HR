@@ -62,13 +62,20 @@ export async function getCalendarClient() {
 export async function createInterviewEvent(params: {
   summary: string;
   description?: string;
+  location?: string;
   startTime: Date;
   durationMinutes: number;
   candidateEmail: string;
+  /** Attach a Google Meet conference. Defaults to true; onsite interviews pass false. */
+  withMeetLink?: boolean;
 }): Promise<{ eventId: string; meetLink: string | null }> {
+  const withMeetLink = params.withMeetLink !== false;
   if (IS_SANDBOX) {
     console.log(`[sandbox] calendar event simulated: ${params.summary}`);
-    return { eventId: `sandbox-${Date.now()}`, meetLink: "https://meet.google.com/sandbox-demo-link" };
+    return {
+      eventId: `sandbox-${Date.now()}`,
+      meetLink: withMeetLink ? "https://meet.google.com/sandbox-demo-link" : null,
+    };
   }
   const calendar = await getCalendarClient();
 
@@ -76,22 +83,27 @@ export async function createInterviewEvent(params: {
 
   const event = await calendar.events.insert({
     calendarId: "primary",
-    conferenceDataVersion: 1,
+    ...(withMeetLink ? { conferenceDataVersion: 1 } : {}),
     // The branded Resend invitation carries the RSVP attachment. Keeping
     // Google silent prevents a second candidate-facing invitation email.
     sendUpdates: "none",
     requestBody: {
       summary: params.summary,
       description: params.description,
+      location: params.location,
       start: { dateTime: params.startTime.toISOString() },
       end: { dateTime: endTime.toISOString() },
       attendees: [{ email: params.candidateEmail }],
-      conferenceData: {
-        createRequest: {
-          requestId: `interview-${Date.now()}`,
-          conferenceSolutionKey: { type: "hangoutsMeet" },
-        },
-      },
+      ...(withMeetLink
+        ? {
+            conferenceData: {
+              createRequest: {
+                requestId: `interview-${Date.now()}`,
+                conferenceSolutionKey: { type: "hangoutsMeet" },
+              },
+            },
+          }
+        : {}),
     },
   });
 

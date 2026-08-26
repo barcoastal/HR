@@ -168,6 +168,7 @@ enum InterviewType {
   BEHAVIORAL
   PANEL
   FINAL
+  ONSITE
 }
 
 enum InterviewStatus {
@@ -996,6 +997,7 @@ model Interview {
   status                  InterviewStatus @default(SCHEDULED)
   googleEventId           String?
   googleMeetLink          String?
+  location                String? // onsite interviews: address or office / room
   notes                   String?
   createdAt               DateTime        @default(now())
   updatedAt               DateTime        @updatedAt

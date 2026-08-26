@@ -435,6 +435,7 @@ export async function sendInterviewScheduledEmail({
   interviewerEmail,
   interviewerEmployeeId,
   meetLink,
+  location,
   notes,
   timeZone = process.env.COMPANY_TIME_ZONE || "America/New_York",
 }: {
@@ -450,6 +451,8 @@ export async function sendInterviewScheduledEmail({
   interviewerEmail: string;
   interviewerEmployeeId?: string | null;
   meetLink?: string | null;
+  /** Onsite interviews: address or office / room. Rendered as a "Location:" line. */
+  location?: string | null;
   notes?: string | null;
   timeZone?: string;
 }) {
@@ -474,6 +477,9 @@ export async function sendInterviewScheduledEmail({
   const meetLinkHtml = meetLink
     ? `<p style="margin-top:16px"><a href="${escapeHtml(meetLink)}" style="display:inline-block;padding:12px 24px;background:#3052FF;color:white;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
     : "";
+  const locationHtml = location
+    ? `<p style="margin-top:12px;color:#374151"><strong>Location:</strong> ${escapeHtml(location)}</p>`
+    : "";
   const notesHtml = notes
     ? `<p style="margin-top:12px;color:#4b5563"><strong>Notes:</strong> ${escapeHtml(notes)}</p>`
     : "";
@@ -490,6 +496,7 @@ export async function sendInterviewScheduledEmail({
     recruiterName: interviewerName,
     recruiterEmail: interviewerEmail,
     meetLink: meetLink || "",
+    location: location || "",
     companyName: branding.companyName,
     logoUrl: branding.logoUrl || "",
   };
@@ -497,6 +504,7 @@ export async function sendInterviewScheduledEmail({
     ...Object.fromEntries(Object.entries(plainVars).map(([key, value]) => [key, escapeHtml(value)])),
     logoUrl: branding.logoUrl || "",
     meetLinkHtml,
+    locationHtml,
     notesHtml,
     calendarResponseHtml,
   };
@@ -504,7 +512,8 @@ export async function sendInterviewScheduledEmail({
     `${interviewType} for ${positionTitle}`,
     `Interviewer: ${interviewerName} (${interviewerEmail})`,
     `Duration: ${duration} minutes`,
-    meetLink ? `Google Meet: ${meetLink}` : "",
+    location ? `Location: ${location}` : "",
+    meetLink ? `Join: ${meetLink}` : "",
     notes ? `Notes: ${notes}` : "",
   ].filter(Boolean).join("\n");
   const organizerEmail = isValidEmail(interviewerEmail)
@@ -516,7 +525,7 @@ export async function sendInterviewScheduledEmail({
     durationMinutes: duration,
     summary: `${interviewType}: ${positionTitle}`,
     description: calendarDescription,
-    location: meetLink || undefined,
+    location: location || meetLink || undefined,
     organizerEmail,
     organizerName: interviewerName,
     attendees: [{ email: to, name: `${firstName} ${lastName || ""}`.trim() }],
@@ -550,6 +559,7 @@ export async function sendInterviewScheduledEmail({
         .join("")}</div>`;
     }
     if (meetLink && !templateBody.includes(escapeHtml(meetLink))) templateBody += meetLinkHtml;
+    if (location && !templateBody.includes(escapeHtml(location))) templateBody += locationHtml;
     if (notes && !templateBody.includes(escapeHtml(notes))) templateBody += notesHtml;
     if (!templateBody.includes("calendar invitation is attached")) templateBody += calendarResponseHtml;
     return sendEmailWithAttachments(
@@ -571,6 +581,7 @@ export async function sendInterviewScheduledEmail({
       <p style="margin:4px 0 0"><strong>Interviewer:</strong> ${escapeHtml(interviewerName)}</p>
     </div>
     ${meetLinkHtml}
+    ${locationHtml}
     ${notesHtml}
     ${calendarResponseHtml}
     <p style="margin-top:16px">We look forward to speaking with you!</p>

@@ -231,7 +231,8 @@ export const InterviewType = {
   TECHNICAL: 'TECHNICAL',
   BEHAVIORAL: 'BEHAVIORAL',
   PANEL: 'PANEL',
-  FINAL: 'FINAL'
+  FINAL: 'FINAL',
+  ONSITE: 'ONSITE'
 } as const
 
 export type InterviewType = (typeof InterviewType)[keyof typeof InterviewType]

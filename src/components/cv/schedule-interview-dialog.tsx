@@ -15,7 +15,31 @@ const interviewTypes: { value: InterviewType; label: string }[] = [
   { value: "BEHAVIORAL", label: "Behavioral" },
   { value: "PANEL", label: "Panel" },
   { value: "FINAL", label: "Final Round" },
+  { value: "ONSITE", label: "Onsite / In person" },
 ];
+
+const LAST_LOCATION_KEY = "hr.lastInterviewLocation";
+
+/** Phone screens rarely need a Meet room; every other remote type defaults to one. */
+function defaultWithMeet(type: InterviewType): boolean {
+  return type !== "PHONE_SCREEN";
+}
+
+function readLastLocation(): string {
+  try {
+    return window.localStorage.getItem(LAST_LOCATION_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function saveLastLocation(value: string) {
+  try {
+    window.localStorage.setItem(LAST_LOCATION_KEY, value);
+  } catch {
+    // Storage may be unavailable (private mode, quota); the value is optional.
+  }
+}
 
 const durations = [
   { value: 30, label: "30 minutes" },
@@ -51,16 +75,27 @@ export function ScheduleInterviewDialog({
   const [scheduledAt, setScheduledAt] = useState("");
   const [duration, setDuration] = useState(60);
   const [notes, setNotes] = useState("");
+  const [location, setLocation] = useState("");
+  const [withMeet, setWithMeet] = useState(defaultWithMeet("VIDEO"));
   const [interviewerId, setInterviewerId] = useState(defaultInterviewerId || recruiters[0]?.id || "");
   const [error, setError] = useState<string | null>(null);
   const selectedInterviewer = recruiters.find((recruiter) => recruiter.id === interviewerId);
+  const isOnsite = type === "ONSITE";
+  const wantsMeet = !isOnsite && withMeet;
+  const locationMissing = isOnsite && location.trim().length === 0;
 
   useEffect(() => {
     if (open) {
       setInterviewerId(defaultInterviewerId || recruiters[0]?.id || "");
       setError(null);
+      setLocation((current) => current || readLastLocation());
     }
   }, [defaultInterviewerId, open, recruiters]);
+
+  function handleTypeChange(next: InterviewType) {
+    setType(next);
+    setWithMeet(defaultWithMeet(next));
+  }
 
   const inputClass = cn(
     "w-full px-3 py-2 rounded-lg text-sm",
@@ -70,9 +105,10 @@ export function ScheduleInterviewDialog({
   );
 
   async function handleSubmit() {
-    if (!scheduledAt) return;
+    if (!scheduledAt || locationMissing) return;
     setSubmitting(true);
     setError(null);
+    const trimmedLocation = location.trim();
     try {
       await scheduleInterview({
         candidateId,
@@ -82,12 +118,15 @@ export function ScheduleInterviewDialog({
         duration,
         notes: notes || undefined,
         interviewerId: interviewerId || undefined,
+        location: isOnsite ? trimmedLocation : undefined,
+        withMeet: isOnsite ? undefined : withMeet,
       });
+      if (isOnsite) saveLastLocation(trimmedLocation);
       onScheduled();
       onClose();
       setScheduledAt("");
       setNotes("");
-      setType("VIDEO");
+      handleTypeChange("VIDEO");
       setDuration(60);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "The interview could not be scheduled");
@@ -134,7 +173,7 @@ export function ScheduleInterviewDialog({
           </label>
           <select
             value={type}
-            onChange={(e) => setType(e.target.value as InterviewType)}
+            onChange={(e) => handleTypeChange(e.target.value as InterviewType)}
             className={inputClass}
           >
             {interviewTypes.map((t) => (
@@ -144,6 +183,44 @@ export function ScheduleInterviewDialog({
             ))}
           </select>
         </div>
+
+        {isOnsite ? (
+          <div>
+            <label htmlFor="interview-location" className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
+              Location <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="interview-location"
+              type="text"
+              required
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className={inputClass}
+              placeholder="Address or office / room"
+              autoComplete="street-address"
+            />
+            <p className="mt-1 text-[11px] text-[var(--color-text-muted)]">
+              Shared with the candidate in the invitation and calendar event.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={withMeet}
+                onChange={(e) => setWithMeet(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+              />
+              <span className="text-xs font-medium text-[var(--color-text-primary)]">
+                Create Google Meet link
+              </span>
+            </label>
+            <p className="mt-1 pl-6 text-[11px] text-[var(--color-text-muted)]">
+              Unchecked still sends the calendar invite, just without a join link.
+            </p>
+          </div>
+        )}
 
         {/* Date/Time */}
         <div>
@@ -191,13 +268,17 @@ export function ScheduleInterviewDialog({
         </div>
 
         {/* Calendar status */}
-        {calendarConnected ? (
+        {calendarConnected || !wantsMeet ? (
           <div className="flex items-start gap-2 rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
             <Icon name="info" size={16} className="text-blue-400 mt-0.5 shrink-0" />
             <p className="text-xs text-blue-300">
               One branded invitation will be sent from {selectedInterviewer
                 ? `${selectedInterviewer.firstName} ${selectedInterviewer.lastName}`
-                : "the recruiter"}. It includes the Google Meet details and an attached calendar RSVP.
+                : "the recruiter"}. It includes {isOnsite
+                ? "the interview location"
+                : wantsMeet
+                  ? "the Google Meet details"
+                  : "the interview details (no Meet link)"} and an attached calendar RSVP.
             </p>
           </div>
         ) : (
@@ -228,7 +309,7 @@ export function ScheduleInterviewDialog({
         </button>
         <button
           onClick={handleSubmit}
-          disabled={submitting || !scheduledAt}
+          disabled={submitting || !scheduledAt || locationMissing}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium text-white",
             "bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]",

@@ -22,6 +22,7 @@ type InterviewForDisplay = {
   type: InterviewType;
   status: InterviewStatus;
   googleMeetLink: string | null;
+  location: string | null;
   notes: string | null;
   position: { title: string } | null;
   interviewer: { firstName: string; preferredName: string | null; lastName: string } | null;
@@ -34,6 +35,7 @@ const interviewTypeLabels: Record<InterviewType, string> = {
   BEHAVIORAL: "Behavioral",
   PANEL: "Panel",
   FINAL: "Final",
+  ONSITE: "Onsite",
 };
 
 type CandidateForDialog = {
@@ -1318,7 +1320,11 @@ export function CandidateDetailDialog({
                         className="flex items-center justify-between rounded-lg px-3 py-2 bg-purple-500/10 border border-purple-500/20"
                       >
                         <div className="flex items-center gap-2 min-w-0">
-                          <Icon name="videocam" size={12} className="text-purple-400 shrink-0" />
+                          <Icon
+                            name={interview.type === "ONSITE" ? "location_on" : "videocam"}
+                            size={12}
+                            className="text-purple-400 shrink-0"
+                          />
                           <div className="min-w-0">
                             <span className="text-xs font-medium text-purple-300">
                               {interviewTypeLabels[interview.type]}
@@ -1335,6 +1341,14 @@ export function CandidateDetailDialog({
                                 ? ` · with ${interview.interviewer.preferredName || interview.interviewer.firstName} ${interview.interviewer.lastName}`
                                 : ""}
                             </p>
+                            {interview.location && (
+                              <p
+                                className="text-xs text-[var(--color-text-muted)] truncate"
+                                title={interview.location}
+                              >
+                                {interview.location}
+                              </p>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">

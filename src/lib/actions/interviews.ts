@@ -22,6 +22,10 @@ export async function scheduleInterview(data: {
   duration: number;
   notes?: string;
   interviewerId?: string;
+  /** Required for ONSITE interviews: address or office / room. */
+  location?: string;
+  /** Attach a Google Meet link to the calendar invite (ignored for ONSITE). Defaults to true. */
+  withMeet?: boolean;
 }) {
   const session = await requireManagerOrAdmin();
   const candidate = await db.candidate.findUnique({
@@ -37,7 +41,16 @@ export async function scheduleInterview(data: {
     BEHAVIORAL: "Behavioral Interview",
     PANEL: "Panel Interview",
     FINAL: "Final Interview",
+    ONSITE: "Onsite Interview",
   };
+
+  const location = data.location?.trim() || null;
+  if (data.type === "ONSITE" && !location) {
+    throw new Error("Enter a location (address or office / room) for the onsite interview");
+  }
+  // Onsite interviews never get a Meet link; every other type gets one unless
+  // the scheduler explicitly opted out.
+  const withMeetLink = data.type !== "ONSITE" && data.withMeet !== false;
 
   let googleEventId: string | null = null;
   let googleMeetLink: string | null = null;
@@ -60,6 +73,7 @@ export async function scheduleInterview(data: {
     `Candidate: ${candidate.firstName} ${candidate.lastName}`,
     `Position: ${positionTitle}`,
     `Interviewer: ${interviewer.firstName} ${interviewer.lastName}`,
+    location ? `Location: ${location}` : "",
     data.notes ? `Notes: ${data.notes}` : "",
   ].filter(Boolean).join("\n");
 
@@ -68,13 +82,14 @@ export async function scheduleInterview(data: {
       const result = await createInviteEventForUser(interviewer.user.id, {
         summary,
         description,
+        location: location ?? undefined,
         startTime: new Date(data.scheduledAt),
         durationMinutes: data.duration,
         attendees: [{
           email: candidate.email,
           displayName: `${candidate.firstName} ${candidate.lastName}`,
         }],
-        withMeetLink: true,
+        withMeetLink,
         sendUpdates: "none",
       });
       googleEventId = result.eventId;
@@ -89,9 +104,11 @@ export async function scheduleInterview(data: {
     const result = await createInterviewEvent({
       summary,
       description,
+      location: location ?? undefined,
       startTime: new Date(data.scheduledAt),
       durationMinutes: data.duration,
       candidateEmail: candidate.email,
+      withMeetLink,
     });
     googleEventId = result.eventId;
     googleMeetLink = result.meetLink;
@@ -107,6 +124,7 @@ export async function scheduleInterview(data: {
       scheduledAt: new Date(data.scheduledAt),
       duration: data.duration,
       notes: data.notes || null,
+      location,
       googleEventId,
       googleMeetLink,
     },
@@ -129,6 +147,7 @@ export async function scheduleInterview(data: {
       interviewerEmail: interviewer.email,
       interviewerEmployeeId: interviewer.id,
       meetLink: googleMeetLink,
+      location,
       notes: data.notes,
     });
   } catch (e) {

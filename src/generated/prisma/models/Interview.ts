@@ -46,6 +46,7 @@ export type InterviewMinAggregateOutputType = {
   status: $Enums.InterviewStatus | null
   googleEventId: string | null
   googleMeetLink: string | null
+  location: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +64,7 @@ export type InterviewMaxAggregateOutputType = {
   status: $Enums.InterviewStatus | null
   googleEventId: string | null
   googleMeetLink: string | null
+  location: string | null
   notes: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -80,6 +82,7 @@ export type InterviewCountAggregateOutputType = {
   status: number
   googleEventId: number
   googleMeetLink: number
+  location: number
   notes: number
   createdAt: number
   updatedAt: number
@@ -107,6 +110,7 @@ export type InterviewMinAggregateInputType = {
   status?: true
   googleEventId?: true
   googleMeetLink?: true
+  location?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -124,6 +128,7 @@ export type InterviewMaxAggregateInputType = {
   status?: true
   googleEventId?: true
   googleMeetLink?: true
+  location?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -141,6 +146,7 @@ export type InterviewCountAggregateInputType = {
   status?: true
   googleEventId?: true
   googleMeetLink?: true
+  location?: true
   notes?: true
   createdAt?: true
   updatedAt?: true
@@ -245,6 +251,7 @@ export type InterviewGroupByOutputType = {
   status: $Enums.InterviewStatus
   googleEventId: string | null
   googleMeetLink: string | null
+  location: string | null
   notes: string | null
   createdAt: Date
   updatedAt: Date
@@ -285,6 +292,7 @@ export type InterviewWhereInput = {
   status?: Prisma.EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
   googleEventId?: Prisma.StringNullableFilter<"Interview"> | string | null
   googleMeetLink?: Prisma.StringNullableFilter<"Interview"> | string | null
+  location?: Prisma.StringNullableFilter<"Interview"> | string | null
   notes?: Prisma.StringNullableFilter<"Interview"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
@@ -306,6 +314,7 @@ export type InterviewOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleMeetLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -330,6 +339,7 @@ export type InterviewWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
   googleEventId?: Prisma.StringNullableFilter<"Interview"> | string | null
   googleMeetLink?: Prisma.StringNullableFilter<"Interview"> | string | null
+  location?: Prisma.StringNullableFilter<"Interview"> | string | null
   notes?: Prisma.StringNullableFilter<"Interview"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
@@ -351,6 +361,7 @@ export type InterviewOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleMeetLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -376,6 +387,7 @@ export type InterviewScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumInterviewStatusWithAggregatesFilter<"Interview"> | $Enums.InterviewStatus
   googleEventId?: Prisma.StringNullableWithAggregatesFilter<"Interview"> | string | null
   googleMeetLink?: Prisma.StringNullableWithAggregatesFilter<"Interview"> | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Interview"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Interview"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Interview"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Interview"> | Date | string
@@ -389,6 +401,7 @@ export type InterviewCreateInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -410,6 +423,7 @@ export type InterviewUncheckedCreateInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -423,6 +437,7 @@ export type InterviewUpdateInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -444,6 +459,7 @@ export type InterviewUncheckedUpdateInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -461,6 +477,7 @@ export type InterviewCreateManyInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -474,6 +491,7 @@ export type InterviewUpdateManyMutationInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -491,6 +509,7 @@ export type InterviewUncheckedUpdateManyInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,6 +537,7 @@ export type InterviewCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
   googleMeetLink?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -539,6 +559,7 @@ export type InterviewMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
   googleMeetLink?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -556,6 +577,7 @@ export type InterviewMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
   googleMeetLink?: Prisma.SortOrder
+  location?: Prisma.SortOrder
   notes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -749,6 +771,7 @@ export type InterviewCreateWithoutInterviewerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -768,6 +791,7 @@ export type InterviewUncheckedCreateWithoutInterviewerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -814,6 +838,7 @@ export type InterviewScalarWhereInput = {
   status?: Prisma.EnumInterviewStatusFilter<"Interview"> | $Enums.InterviewStatus
   googleEventId?: Prisma.StringNullableFilter<"Interview"> | string | null
   googleMeetLink?: Prisma.StringNullableFilter<"Interview"> | string | null
+  location?: Prisma.StringNullableFilter<"Interview"> | string | null
   notes?: Prisma.StringNullableFilter<"Interview"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Interview"> | Date | string
@@ -827,6 +852,7 @@ export type InterviewCreateWithoutCalendarOrganizerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -846,6 +872,7 @@ export type InterviewUncheckedCreateWithoutCalendarOrganizerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -885,6 +912,7 @@ export type InterviewCreateWithoutCandidateInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -904,6 +932,7 @@ export type InterviewUncheckedCreateWithoutCandidateInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -943,6 +972,7 @@ export type InterviewCreateWithoutPositionInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -962,6 +992,7 @@ export type InterviewUncheckedCreateWithoutPositionInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1004,6 +1035,7 @@ export type InterviewCreateManyInterviewerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1017,6 +1049,7 @@ export type InterviewUpdateWithoutInterviewerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1036,6 +1069,7 @@ export type InterviewUncheckedUpdateWithoutInterviewerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1052,6 +1086,7 @@ export type InterviewUncheckedUpdateManyWithoutInterviewerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1068,6 +1103,7 @@ export type InterviewCreateManyCalendarOrganizerInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1081,6 +1117,7 @@ export type InterviewUpdateWithoutCalendarOrganizerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1100,6 +1137,7 @@ export type InterviewUncheckedUpdateWithoutCalendarOrganizerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1116,6 +1154,7 @@ export type InterviewUncheckedUpdateManyWithoutCalendarOrganizerInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1132,6 +1171,7 @@ export type InterviewCreateManyCandidateInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1145,6 +1185,7 @@ export type InterviewUpdateWithoutCandidateInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1164,6 +1205,7 @@ export type InterviewUncheckedUpdateWithoutCandidateInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1180,6 +1222,7 @@ export type InterviewUncheckedUpdateManyWithoutCandidateInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1196,6 +1239,7 @@ export type InterviewCreateManyPositionInput = {
   status?: $Enums.InterviewStatus
   googleEventId?: string | null
   googleMeetLink?: string | null
+  location?: string | null
   notes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1209,6 +1253,7 @@ export type InterviewUpdateWithoutPositionInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1228,6 +1273,7 @@ export type InterviewUncheckedUpdateWithoutPositionInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1244,6 +1290,7 @@ export type InterviewUncheckedUpdateManyWithoutPositionInput = {
   status?: Prisma.EnumInterviewStatusFieldUpdateOperationsInput | $Enums.InterviewStatus
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleMeetLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1263,6 +1310,7 @@ export type InterviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   status?: boolean
   googleEventId?: boolean
   googleMeetLink?: boolean
+  location?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1284,6 +1332,7 @@ export type InterviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   status?: boolean
   googleEventId?: boolean
   googleMeetLink?: boolean
+  location?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1305,6 +1354,7 @@ export type InterviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   status?: boolean
   googleEventId?: boolean
   googleMeetLink?: boolean
+  location?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1326,12 +1376,13 @@ export type InterviewSelectScalar = {
   status?: boolean
   googleEventId?: boolean
   googleMeetLink?: boolean
+  location?: boolean
   notes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InterviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "positionId" | "interviewerId" | "calendarOrganizerUserId" | "scheduledAt" | "duration" | "type" | "status" | "googleEventId" | "googleMeetLink" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
+export type InterviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "candidateId" | "positionId" | "interviewerId" | "calendarOrganizerUserId" | "scheduledAt" | "duration" | "type" | "status" | "googleEventId" | "googleMeetLink" | "location" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["interview"]>
 export type InterviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   candidate?: boolean | Prisma.CandidateDefaultArgs<ExtArgs>
   position?: boolean | Prisma.Interview$positionArgs<ExtArgs>
@@ -1371,6 +1422,7 @@ export type $InterviewPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     status: $Enums.InterviewStatus
     googleEventId: string | null
     googleMeetLink: string | null
+    location: string | null
     notes: string | null
     createdAt: Date
     updatedAt: Date
@@ -1812,6 +1864,7 @@ export interface InterviewFieldRefs {
   readonly status: Prisma.FieldRef<"Interview", 'InterviewStatus'>
   readonly googleEventId: Prisma.FieldRef<"Interview", 'String'>
   readonly googleMeetLink: Prisma.FieldRef<"Interview", 'String'>
+  readonly location: Prisma.FieldRef<"Interview", 'String'>
   readonly notes: Prisma.FieldRef<"Interview", 'String'>
   readonly createdAt: Prisma.FieldRef<"Interview", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Interview", 'DateTime'>

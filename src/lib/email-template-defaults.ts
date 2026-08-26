@@ -60,7 +60,7 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
   },
   INTERVIEW_SCHEDULED: {
     description:
-      "The single branded candidate invitation. It includes the recruiter, every interview detail, an optional Meet button, and an attached calendar RSVP.",
+      "The single branded candidate invitation. It includes the recruiter, every interview detail, an optional Meet button or onsite location, and an attached calendar RSVP.",
     variables: [
       "companyName",
       "logoUrl",
@@ -75,6 +75,8 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
       "recruiterEmail",
       "meetLink",
       "meetLinkHtml",
+      "location",
+      "locationHtml",
       "notesHtml",
       "calendarResponseHtml",
     ],
@@ -88,6 +90,7 @@ export const EMAIL_TEMPLATE_DEFAULTS: Record<
   <p style="margin:4px 0 0"><strong>Interviewer:</strong> {{recruiterName}}</p>
 </div>
 {{meetLinkHtml}}
+{{locationHtml}}
 {{notesHtml}}
 {{calendarResponseHtml}}
 <p style="margin-top:16px">We look forward to speaking with you!</p>`,
