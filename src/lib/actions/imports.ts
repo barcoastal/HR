@@ -6,13 +6,11 @@ import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
 import { buildMergePlan } from "@/lib/import-export/merge";
-import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection, type EmployeeSnapshot } from "@/lib/import-export/batch-service";
+import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
 import {
   refKey, sameRef,
-  type ColumnMapping, type FieldKey, type GroupReason, type MemberRef, type MergeMember, type RowAction, type RowData, type RowError,
+  type ColumnMapping, type EmployeeSnapshot, type FieldKey, type GroupReason, type MemberRef, type MergeMember, type RowAction, type RowData, type RowError,
 } from "@/lib/import-export/types";
-
-export type { EmployeeSnapshot };
 
 export type ImportBatchStatusValue = "REVIEWING" | "IMPORTED" | "DISCARDED";
 

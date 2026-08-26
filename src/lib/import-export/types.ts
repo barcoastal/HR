@@ -83,3 +83,6 @@ export function parseRefKey(key: string): MemberRef {
 export function sameRef(a: MemberRef, b: MemberRef): boolean {
   return a.kind === b.kind && a.id === b.id;
 }
+
+/** An existing employee flattened for the side-by-side comparison. */
+export type EmployeeSnapshot = { id: string; name: string; status: string; archived: boolean; data: RowData };

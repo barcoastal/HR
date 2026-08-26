@@ -4,9 +4,10 @@ import { autoDetectMapping } from "./employee-fields";
 import { applyMapping, validateRow } from "./normalize";
 import { detectDuplicates, groupKey } from "./duplicates";
 import { employeeToRowData } from "./employee-row";
-import { refKey, type ColumnMapping, type ExistingEmployeeLite, type MemberRef, type RowData, type RowLite } from "./types";
+import { refKey, type ColumnMapping, type EmployeeSnapshot, type ExistingEmployeeLite, type MemberRef, type RowData, type RowLite } from "./types";
 
-export type EmployeeSnapshot = { id: string; name: string; status: string; archived: boolean; data: RowData };
+export type { EmployeeSnapshot };
+
 
 const LITE_SELECT = { id: true, firstName: true, lastName: true, preferredName: true, email: true, phone: true } as const;
 
