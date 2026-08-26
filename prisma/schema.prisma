@@ -358,6 +358,7 @@ model User {
   employee            Employee?         @relation(fields: [employeeId], references: [id], onDelete: SetNull)
   eventAttendances    EventAttendance[]
   organizedInterviews Interview[]       @relation("InterviewCalendarOrganizer")
+  importBatches       ImportBatch[]     @relation("ImportBatchUploader")
 }
 
 model OnboardingChecklist {
@@ -1687,4 +1688,80 @@ model GustoConnection {
   connectedBy    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+// ---------------------
+// Import & Export
+// ---------------------
+
+enum ImportBatchStatus {
+  REVIEWING
+  IMPORTED
+  DISCARDED
+}
+
+enum ImportRowAction {
+  CREATE
+  UPDATE
+  SKIP
+  MERGED_AWAY
+}
+
+enum ImportGroupStatus {
+  PENDING
+  MERGED
+  SEPARATE
+}
+
+model ImportBatch {
+  id           String            @id @default(uuid())
+  fileName     String
+  fileType     String
+  headers      Json
+  mapping      Json?
+  status       ImportBatchStatus @default(REVIEWING)
+  rowCount     Int
+  summary      Json?
+  uploadedById String
+  uploadedBy   User              @relation("ImportBatchUploader", fields: [uploadedById], references: [id])
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  importedAt   DateTime?
+
+  rows   ImportRow[]
+  groups ImportDuplicateGroup[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model ImportRow {
+  id               String          @id @default(uuid())
+  batchId          String
+  batch            ImportBatch     @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  rowNumber        Int
+  raw              Json
+  data             Json
+  errors           Json
+  action           ImportRowAction @default(CREATE)
+  targetEmployeeId String?
+  mergedIntoRowId  String?
+  skipReason       String?
+  resultEmployeeId String?
+
+  @@index([batchId])
+}
+
+model ImportDuplicateGroup {
+  id        String            @id @default(uuid())
+  batchId   String
+  batch     ImportBatch       @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  status    ImportGroupStatus @default(PENDING)
+  reasons   Json
+  members   Json
+  primary   Json?
+  snapshot  Json?
+  createdAt DateTime          @default(now())
+
+  @@index([batchId])
 }
