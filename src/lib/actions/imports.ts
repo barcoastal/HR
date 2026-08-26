@@ -281,6 +281,7 @@ export async function resolveGroupMerge(
   groupId: string,
   primary: MemberRef,
   choices: Partial<Record<FieldKey, MemberRef>>,
+  overrides: Partial<Record<FieldKey, string>> = {},
 ): Promise<void> {
   await requireImportAccess();
   await requireEditableBatch(batchId);
@@ -288,6 +289,19 @@ export async function resolveGroupMerge(
   if (group.status !== "PENDING") throw new Error("This group already has a decision");
   if (!mergeMembers.some((m) => sameRef(m.ref, primary))) throw new Error("Primary must be a member of the group");
   const plan = buildMergePlan(mergeMembers, primary, choices);
+
+  // Hand-edited values in the Result column win over the picked column values.
+  const merged: RowData = { ...plan.data };
+  for (const [key, raw] of Object.entries(overrides) as [FieldKey, string | undefined][]) {
+    const value = (raw ?? "").trim();
+    if (value) merged[key] = value;
+    else delete merged[key];
+  }
+  const { data: cleaned, errors } = validateRow(merged);
+  if (errors.length > 0) {
+    throw new Error(`Fix these before merging: ${errors.map((e) => e.message).join("; ")}`);
+  }
+  plan.data = cleaned;
 
   const snapshot = liveRows.map((r) => ({
     id: r.id, data: r.data, action: r.action, targetEmployeeId: r.targetEmployeeId, mergedIntoRowId: r.mergedIntoRowId, skipReason: r.skipReason,

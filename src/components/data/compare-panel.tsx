@@ -148,6 +148,7 @@ export function ComparePanel({ detail, group, readOnly, busy, run, onSkipRow }: 
   const [mode, setMode] = useState<Mode>("view");
   const [primary, setPrimary] = useState<MemberRef | null>(null);
   const [choices, setChoices] = useState<FieldChoices>({});
+  const [overrides, setOverrides] = useState<Partial<Record<FieldKey, string>>>({});
 
   // Merge mode only makes sense while a decision is still possible and the chosen primary is still live.
   const merging = mode === "merge" && canDecide && primary !== null && liveMembers.some((m) => sameRef(m.ref, primary));
@@ -157,21 +158,37 @@ export function ComparePanel({ detail, group, readOnly, busy, run, onSkipRow }: 
     if (!initial) return;
     setPrimary(initial);
     setChoices(defaultFieldChoices(liveMembers, initial));
+    setOverrides({});
     setMode("merge");
   }
 
   function choosePrimary(ref: MemberRef) {
     setPrimary(ref);
     setChoices(defaultFieldChoices(liveMembers, ref));
+    setOverrides({});
   }
 
   function chooseField(key: FieldKey, ref: MemberRef) {
     setChoices((prev) => ({ ...prev, [key]: ref }));
+    resetResult(key);
+  }
+
+  function editResult(key: FieldKey, value: string) {
+    setOverrides((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function resetResult(key: FieldKey) {
+    setOverrides((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
   }
 
   function confirmMerge() {
     if (!primary) return;
-    run(() => resolveGroupMerge(detail.batch.id, group.id, primary, choices));
+    run(() => resolveGroupMerge(detail.batch.id, group.id, primary, choices, overrides));
     setMode("view");
   }
 
@@ -234,6 +251,9 @@ export function ComparePanel({ detail, group, readOnly, busy, run, onSkipRow }: 
                     choice={choices[field.key]}
                     onChoose={(ref) => chooseField(field.key, ref)}
                     resultValue={resultValue(field.key)}
+                    override={overrides[field.key]}
+                    onEdit={(v) => editResult(field.key, v)}
+                    onReset={() => resetResult(field.key)}
                   />
                 ))}
               </Fragment>
@@ -283,7 +303,7 @@ function PanelHeader({ group, recordCount, merging }: { group: ImportGroupView; 
       </div>
       <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
         {merging
-          ? "Choose the primary record, then pick a winner for each field that differs. Blanks are filled from the other records."
+          ? "Choose the primary record, pick a winner for each field that differs, and type over anything in the Result column. That column is exactly what gets saved."
           : "Fields that differ are highlighted; identical fields are dimmed."}
       </p>
     </div>
@@ -360,6 +380,9 @@ function FieldRow({
   choice,
   onChoose,
   resultValue,
+  override,
+  onEdit,
+  onReset,
 }: {
   field: FieldDef;
   members: PanelMember[];
@@ -370,7 +393,12 @@ function FieldRow({
   choice: MemberRef | undefined;
   onChoose: (ref: MemberRef) => void;
   resultValue: string | undefined;
+  override: string | undefined;
+  onEdit: (value: string) => void;
+  onReset: () => void;
 }) {
+  const edited = override !== undefined;
+  const editValue = override ?? resultValue ?? "";
   const conflict = tone === "conflict";
   const valueClass = conflict
     ? "font-medium text-[var(--color-text-primary)]"
@@ -407,13 +435,52 @@ function FieldRow({
         );
       })}
       {merging && (
-        <td className="px-4 py-2 align-top max-w-[320px] break-words border-l border-[var(--color-border)] bg-[var(--color-accent)]/5">
-          <Value value={resultValue ?? ""} className="text-[var(--color-text-primary)]" />
+        <td className="px-3 py-1.5 align-top max-w-[320px] border-l border-[var(--color-border)] bg-[var(--color-accent)]/5">
+          <div className="flex items-center gap-1">
+            {field.type === "enum" ? (
+              <select
+                value={editValue}
+                disabled={busy}
+                onChange={(e) => onEdit(e.target.value)}
+                aria-label={`Result for ${field.label}`}
+                className={cn(RESULT_INPUT, edited && "border-[var(--color-accent)]")}
+              >
+                <option value="">—</option>
+                {(field.enumValues ?? []).map((v) => (
+                  <option key={v} value={v}>{v}</option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={field.type === "date" ? "date" : "text"}
+                value={editValue}
+                disabled={busy}
+                onChange={(e) => onEdit(e.target.value)}
+                placeholder="—"
+                aria-label={`Result for ${field.label}`}
+                className={cn(RESULT_INPUT, edited && "border-[var(--color-accent)]")}
+              />
+            )}
+            {edited && (
+              <button
+                type="button"
+                onClick={onReset}
+                disabled={busy}
+                title="Revert to the selected value"
+                className="shrink-0 rounded-md p-1 text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
+              >
+                <Icon name="undo" size={14} />
+              </button>
+            )}
+          </div>
         </td>
       )}
     </tr>
   );
 }
+
+const RESULT_INPUT =
+  "w-full min-w-[160px] rounded-md border border-[var(--color-border)] bg-[var(--color-surface)] px-2 py-1 text-xs text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40 disabled:opacity-50";
 
 function Value({ value, className }: { value: string; className: string }) {
   return <span className={value ? className : "text-[var(--color-text-muted)]"}>{value || "—"}</span>;
