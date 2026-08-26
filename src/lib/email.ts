@@ -168,6 +168,21 @@ async function notifySenderOfFailure(
   }
 }
 
+/** True when `to` belongs to an offboarded or archived employee, or a deactivated login. */
+async function isDeactivatedRecipient(to: string): Promise<boolean> {
+  const email = to.trim();
+  if (!email) return false;
+  const where = { email: { equals: email, mode: "insensitive" as const } };
+  const [user, employee, archived] = await Promise.all([
+    db.user.findFirst({ where, select: { deactivatedAt: true } }),
+    db.employee.findFirst({ where, select: { status: true } }),
+    db.employee.findFirst({ where: { ...where, archivedAt: { not: null } }, select: { id: true } }),
+  ]);
+  if (user?.deactivatedAt) return true;
+  if (employee) return employee.status === "OFFBOARDED";
+  return !!archived;
+}
+
 async function sendTrackedEmail(
   to: string,
   subject: string,
@@ -181,6 +196,30 @@ async function sendTrackedEmail(
   const finalSubject = safeReplyTo ? subject.trim() : withNoReplySubject(subject);
   const senderEmployeeId = await currentSenderEmployeeId(context.senderEmployeeId);
   let deliveryId: string | undefined;
+
+  // Central guard: nothing goes to a person who has been offboarded, archived or deactivated,
+  // no matter which feature is sending. Recorded as SUPPRESSED so the Email Log shows why.
+  if (await isDeactivatedRecipient(to)) {
+    console.warn(`[email] Suppressed — recipient is deactivated: ${to} (${finalSubject})`);
+    try {
+      const delivery = await db.emailDelivery.create({
+        data: {
+          recipient: to,
+          subject: finalSubject,
+          status: "SUPPRESSED",
+          error: "Recipient is deactivated",
+          senderEmployeeId,
+          contextType: context.contextType || null,
+          contextId: context.contextId || null,
+        },
+        select: { id: true },
+      });
+      deliveryId = delivery.id;
+    } catch (trackingError) {
+      console.error("[email] Could not create delivery record:", trackingError);
+    }
+    return { success: false, status: "SUPPRESSED", error: "Recipient is deactivated", deliveryId };
+  }
 
   try {
     const delivery = await db.emailDelivery.create({

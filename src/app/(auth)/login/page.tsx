@@ -39,6 +39,8 @@ function LoginForm() {
         ? "You haven't been invited yet. Ask your admin for access."
         : errorParam === "unauthorized"
           ? "You don't have permission to access that page."
+          : errorParam === "deactivated"
+            ? "This account has been deactivated. Contact HR if you think that's a mistake."
           : errorParam === "CredentialsSignin"
             ? "Invalid username or password."
             : errorParam === "signin-failed"

@@ -30,6 +30,7 @@ export type UserMinAggregateOutputType = {
   passwordHash: string | null
   role: $Enums.UserRole | null
   employeeId: string | null
+  deactivatedAt: Date | null
   createdAt: Date | null
   googleCalendarAccessToken: string | null
   googleCalendarRefreshToken: string | null
@@ -55,6 +56,7 @@ export type UserMaxAggregateOutputType = {
   passwordHash: string | null
   role: $Enums.UserRole | null
   employeeId: string | null
+  deactivatedAt: Date | null
   createdAt: Date | null
   googleCalendarAccessToken: string | null
   googleCalendarRefreshToken: string | null
@@ -80,6 +82,7 @@ export type UserCountAggregateOutputType = {
   passwordHash: number
   role: number
   employeeId: number
+  deactivatedAt: number
   createdAt: number
   googleCalendarAccessToken: number
   googleCalendarRefreshToken: number
@@ -107,6 +110,7 @@ export type UserMinAggregateInputType = {
   passwordHash?: true
   role?: true
   employeeId?: true
+  deactivatedAt?: true
   createdAt?: true
   googleCalendarAccessToken?: true
   googleCalendarRefreshToken?: true
@@ -132,6 +136,7 @@ export type UserMaxAggregateInputType = {
   passwordHash?: true
   role?: true
   employeeId?: true
+  deactivatedAt?: true
   createdAt?: true
   googleCalendarAccessToken?: true
   googleCalendarRefreshToken?: true
@@ -157,6 +162,7 @@ export type UserCountAggregateInputType = {
   passwordHash?: true
   role?: true
   employeeId?: true
+  deactivatedAt?: true
   createdAt?: true
   googleCalendarAccessToken?: true
   googleCalendarRefreshToken?: true
@@ -255,6 +261,7 @@ export type UserGroupByOutputType = {
   passwordHash: string | null
   role: $Enums.UserRole
   employeeId: string | null
+  deactivatedAt: Date | null
   createdAt: Date
   googleCalendarAccessToken: string | null
   googleCalendarRefreshToken: string | null
@@ -301,6 +308,7 @@ export type UserWhereInput = {
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   employeeId?: Prisma.StringNullableFilter<"User"> | string | null
+  deactivatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   googleCalendarAccessToken?: Prisma.StringNullableFilter<"User"> | string | null
   googleCalendarRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
@@ -330,6 +338,7 @@ export type UserOrderByWithRelationInput = {
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deactivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   googleCalendarAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -362,6 +371,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   passwordHash?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  deactivatedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   googleCalendarAccessToken?: Prisma.StringNullableFilter<"User"> | string | null
   googleCalendarRefreshToken?: Prisma.StringNullableFilter<"User"> | string | null
@@ -391,6 +401,7 @@ export type UserOrderByWithAggregationInput = {
   passwordHash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deactivatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   googleCalendarAccessToken?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -422,6 +433,7 @@ export type UserScalarWhereWithAggregatesInput = {
   passwordHash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   employeeId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  deactivatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   googleCalendarAccessToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   googleCalendarRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -446,6 +458,7 @@ export type UserCreateInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -475,6 +488,7 @@ export type UserUncheckedCreateInput = {
   passwordHash?: string | null
   role?: $Enums.UserRole
   employeeId?: string | null
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -502,6 +516,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -531,6 +546,7 @@ export type UserUncheckedUpdateInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -559,6 +575,7 @@ export type UserCreateManyInput = {
   passwordHash?: string | null
   role?: $Enums.UserRole
   employeeId?: string | null
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -583,6 +600,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -608,6 +626,7 @@ export type UserUncheckedUpdateManyInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -638,6 +657,7 @@ export type UserCountOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deactivatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   googleCalendarAccessToken?: Prisma.SortOrder
   googleCalendarRefreshToken?: Prisma.SortOrder
@@ -663,6 +683,7 @@ export type UserMaxOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deactivatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   googleCalendarAccessToken?: Prisma.SortOrder
   googleCalendarRefreshToken?: Prisma.SortOrder
@@ -688,6 +709,7 @@ export type UserMinOrderByAggregateInput = {
   passwordHash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deactivatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   googleCalendarAccessToken?: Prisma.SortOrder
   googleCalendarRefreshToken?: Prisma.SortOrder
@@ -797,6 +819,7 @@ export type UserCreateWithoutEmployeeInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -824,6 +847,7 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -867,6 +891,7 @@ export type UserUpdateWithoutEmployeeInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -894,6 +919,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -921,6 +947,7 @@ export type UserCreateWithoutEventAttendancesInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -949,6 +976,7 @@ export type UserUncheckedCreateWithoutEventAttendancesInput = {
   passwordHash?: string | null
   role?: $Enums.UserRole
   employeeId?: string | null
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -991,6 +1019,7 @@ export type UserUpdateWithoutEventAttendancesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1019,6 +1048,7 @@ export type UserUncheckedUpdateWithoutEventAttendancesInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1045,6 +1075,7 @@ export type UserCreateWithoutOrganizedInterviewsInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -1073,6 +1104,7 @@ export type UserUncheckedCreateWithoutOrganizedInterviewsInput = {
   passwordHash?: string | null
   role?: $Enums.UserRole
   employeeId?: string | null
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -1115,6 +1147,7 @@ export type UserUpdateWithoutOrganizedInterviewsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1143,6 +1176,7 @@ export type UserUncheckedUpdateWithoutOrganizedInterviewsInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1169,6 +1203,7 @@ export type UserCreateWithoutImportBatchesInput = {
   email: string
   passwordHash?: string | null
   role?: $Enums.UserRole
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -1197,6 +1232,7 @@ export type UserUncheckedCreateWithoutImportBatchesInput = {
   passwordHash?: string | null
   role?: $Enums.UserRole
   employeeId?: string | null
+  deactivatedAt?: Date | string | null
   createdAt?: Date | string
   googleCalendarAccessToken?: string | null
   googleCalendarRefreshToken?: string | null
@@ -1239,6 +1275,7 @@ export type UserUpdateWithoutImportBatchesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1267,6 +1304,7 @@ export type UserUncheckedUpdateWithoutImportBatchesInput = {
   passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deactivatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1343,6 +1381,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   passwordHash?: boolean
   role?: boolean
   employeeId?: boolean
+  deactivatedAt?: boolean
   createdAt?: boolean
   googleCalendarAccessToken?: boolean
   googleCalendarRefreshToken?: boolean
@@ -1373,6 +1412,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   role?: boolean
   employeeId?: boolean
+  deactivatedAt?: boolean
   createdAt?: boolean
   googleCalendarAccessToken?: boolean
   googleCalendarRefreshToken?: boolean
@@ -1399,6 +1439,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   passwordHash?: boolean
   role?: boolean
   employeeId?: boolean
+  deactivatedAt?: boolean
   createdAt?: boolean
   googleCalendarAccessToken?: boolean
   googleCalendarRefreshToken?: boolean
@@ -1425,6 +1466,7 @@ export type UserSelectScalar = {
   passwordHash?: boolean
   role?: boolean
   employeeId?: boolean
+  deactivatedAt?: boolean
   createdAt?: boolean
   googleCalendarAccessToken?: boolean
   googleCalendarRefreshToken?: boolean
@@ -1444,7 +1486,7 @@ export type UserSelectScalar = {
   notifyPromotionInApp?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "employeeId" | "createdAt" | "googleCalendarAccessToken" | "googleCalendarRefreshToken" | "googleCalendarTokenExpiresAt" | "googleCalendarSyncEnabled" | "emailNotificationsEnabled" | "notifyFeedPostEmail" | "notifyFeedPostInApp" | "notifyFeedEventEmail" | "notifyFeedEventInApp" | "notifyCommentEmail" | "notifyCommentInApp" | "notifyReactionInApp" | "notifyShoutoutEmail" | "notifyShoutoutInApp" | "notifyPromotionEmail" | "notifyPromotionInApp", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "role" | "employeeId" | "deactivatedAt" | "createdAt" | "googleCalendarAccessToken" | "googleCalendarRefreshToken" | "googleCalendarTokenExpiresAt" | "googleCalendarSyncEnabled" | "emailNotificationsEnabled" | "notifyFeedPostEmail" | "notifyFeedPostInApp" | "notifyFeedEventEmail" | "notifyFeedEventInApp" | "notifyCommentEmail" | "notifyCommentInApp" | "notifyReactionInApp" | "notifyShoutoutEmail" | "notifyShoutoutInApp" | "notifyPromotionEmail" | "notifyPromotionInApp", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
@@ -1473,6 +1515,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     passwordHash: string | null
     role: $Enums.UserRole
     employeeId: string | null
+    deactivatedAt: Date | null
     createdAt: Date
     googleCalendarAccessToken: string | null
     googleCalendarRefreshToken: string | null
@@ -1922,6 +1965,7 @@ export interface UserFieldRefs {
   readonly passwordHash: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly employeeId: Prisma.FieldRef<"User", 'String'>
+  readonly deactivatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly googleCalendarAccessToken: Prisma.FieldRef<"User", 'String'>
   readonly googleCalendarRefreshToken: Prisma.FieldRef<"User", 'String'>

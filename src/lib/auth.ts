@@ -32,6 +32,8 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user || !user.passwordHash) return null;
+        // Offboarded / deactivated people cannot sign in.
+        if (user.deactivatedAt || user.employee?.status === "OFFBOARDED" || user.employee?.archivedAt) return null;
 
         const valid = await bcrypt.compare(credentials.password, user.passwordHash);
         if (!valid) return null;
@@ -117,11 +119,22 @@ export const authOptions: NextAuthOptions = {
         if (!dbUser) {
           return "/login?error=not-invited";
         }
+        if (dbUser.deactivatedAt || dbUser.employee?.status === "OFFBOARDED" || dbUser.employee?.archivedAt) {
+          return "/login?error=deactivated";
+        }
 
         // Auto-link or create the employee profile if the User row has none.
         // Use upsert so a pre-existing Employee with the same email is reused
         // instead of triggering a unique-constraint failure.
         if (!dbUser.employeeId) {
+          // Never resurrect an offboarded or archived person by re-linking them on sign-in.
+          const [priorEmployee, archivedEmployee] = await Promise.all([
+            db.employee.findFirst({ where: { email: { equals: emailLower, mode: "insensitive" } }, select: { status: true } }),
+            db.employee.findFirst({ where: { email: { equals: emailLower, mode: "insensitive" }, archivedAt: { not: null } }, select: { id: true } }),
+          ]);
+          if (priorEmployee?.status === "OFFBOARDED" || (!priorEmployee && archivedEmployee)) {
+            return "/login?error=deactivated";
+          }
           const profileName = (profile as { name?: string })?.name || email.split("@")[0];
           const nameParts = profileName.split(" ");
           const firstName = nameParts[0] || email.split("@")[0];

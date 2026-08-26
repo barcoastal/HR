@@ -106,7 +106,24 @@ async function resolveRecipients(
     }
   }
 
-  return resolved;
+  return dropDeactivated(resolved);
+}
+
+/** Offboarded, archived or deactivated people never receive notifications, whatever role they held. */
+async function dropDeactivated(recipients: ResolvedRecipient[]): Promise<ResolvedRecipient[]> {
+  const ids = Array.from(new Set(recipients.flatMap((r) => (r.employeeId ? [r.employeeId] : []))));
+  if (ids.length === 0) return recipients;
+  const [offboarded, archived, deactivated] = await Promise.all([
+    db.employee.findMany({ where: { id: { in: ids }, status: "OFFBOARDED" }, select: { id: true } }),
+    db.employee.findMany({ where: { id: { in: ids }, archivedAt: { not: null } }, select: { id: true } }),
+    db.user.findMany({ where: { employeeId: { in: ids }, deactivatedAt: { not: null } }, select: { employeeId: true } }),
+  ]);
+  const blocked = new Set<string>([
+    ...offboarded.map((e) => e.id),
+    ...archived.map((e) => e.id),
+    ...deactivated.flatMap((u) => (u.employeeId ? [u.employeeId] : [])),
+  ]);
+  return recipients.filter((r) => !r.employeeId || !blocked.has(r.employeeId));
 }
 
 export async function sendNotifications(params: SendParams): Promise<void> {

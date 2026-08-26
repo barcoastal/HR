@@ -458,11 +458,12 @@ export async function startOffboarding(employeeId: string, endDate: string) {
     });
   }
 
-  // Deactivate user account so offboarded employee can't log in
-  const user = await db.user.findFirst({ where: { employeeId } });
-  if (user && user.role === "EMPLOYEE") {
-    await db.user.update({ where: { id: user.id }, data: { employeeId: null } });
-  }
+  // Deactivate the login for every role: sign-in is refused, open sessions end on
+  // their next request, and the email sender suppresses anything addressed to them.
+  await db.user.updateMany({
+    where: { OR: [{ employeeId }, { email: { equals: employee.email, mode: "insensitive" } }] },
+    data: { deactivatedAt: new Date() },
+  });
 
   const { audit } = await import("@/lib/audit");
   await audit({
@@ -523,6 +524,11 @@ export async function reactivateEmployee(employeeId: string) {
     data: { status: "ACTIVE", endDate: null },
   });
 
+  // Re-enable the login (and re-link it if an older offboarding detached it).
+  await db.user.updateMany({
+    where: { OR: [{ employeeId }, { email: { equals: employee.email, mode: "insensitive" } }] },
+    data: { deactivatedAt: null },
+  });
   // If startOffboarding detached their user account, try to re-link by email.
   const detachedUser = await db.user.findFirst({
     where: { email: employee.email, employeeId: null },

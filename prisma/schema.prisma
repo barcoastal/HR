@@ -332,6 +332,7 @@ model User {
   passwordHash String?
   role         UserRole @default(EMPLOYEE)
   employeeId   String?  @unique
+  deactivatedAt DateTime? // set when the person is offboarded; blocks sign-in and email
   createdAt    DateTime @default(now())
 
   // Google Calendar per-user sync

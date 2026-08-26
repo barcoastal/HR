@@ -12,7 +12,17 @@ export async function requireAuth() {
   if (!session) {
     redirect("/login");
   }
+  if (await isDeactivatedUser(session.user?.id)) {
+    redirect("/login?error=deactivated");
+  }
   return session;
+}
+
+/** True when the login has been deactivated (offboarded) since the session was issued. */
+async function isDeactivatedUser(userId: string | undefined): Promise<boolean> {
+  if (!userId) return false;
+  const user = await db.user.findUnique({ where: { id: userId }, select: { deactivatedAt: true } });
+  return !!user?.deactivatedAt;
 }
 
 export async function requireAdmin() {
@@ -105,6 +115,9 @@ export async function getApiSession() {
 export async function requireApiAuth() {
   const session = await getApiSession();
   if (!session) {
+    return null;
+  }
+  if (await isDeactivatedUser(session.user?.id)) {
     return null;
   }
   return session;

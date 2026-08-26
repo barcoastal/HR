@@ -6217,6 +6217,7 @@ export const UserScalarFieldEnum = {
   passwordHash: 'passwordHash',
   role: 'role',
   employeeId: 'employeeId',
+  deactivatedAt: 'deactivatedAt',
   createdAt: 'createdAt',
   googleCalendarAccessToken: 'googleCalendarAccessToken',
   googleCalendarRefreshToken: 'googleCalendarRefreshToken',

@@ -43,6 +43,8 @@ export async function getHrTeamEmployeeIds(): Promise<string[]> {
     where: {
       role: { in: ["SUPER_ADMIN", "ADMIN", "HR"] },
       employeeId: { not: null },
+      deactivatedAt: null,
+      employee: { status: { not: "OFFBOARDED" }, archivedAt: null },
     },
     select: { employeeId: true },
   });
