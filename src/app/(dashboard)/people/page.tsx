@@ -4,9 +4,10 @@ import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
 import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
+import { displayName } from "@/lib/utils";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
-import { BulkEmployeeImport } from "@/components/people/bulk-employee-import";
+import { Icon } from "@/components/ui/icon";
 
 export default async function PeoplePage() {
   const session = await requireAuth();
@@ -26,9 +27,7 @@ export default async function PeoplePage() {
   ]);
 
   // Only admins see PENDING employees
-  const employees = isAdmin
-    ? allEmployees
-    : allEmployees.filter((e) => e.status !== "PENDING");
+  const employees = isAdmin ? allEmployees : allEmployees.filter((e) => e.status !== "PENDING");
 
   const departmentsWithCounts = departments.map((d) => ({
     name: d.name,
@@ -37,28 +36,30 @@ export default async function PeoplePage() {
 
   const outOfOffice = await getCurrentOutOfOfficeFor(employees.map((e) => e.id));
 
+  const secondaryButton =
+    "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-background)] transition-colors";
+
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12">
-      <div className="mb-12">
-        <div className="flex items-end justify-between gap-4">
+      <div className="mb-8">
+        <div className="flex items-end justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-5xl font-black tracking-tight text-[var(--color-on-surface)] mb-2">People</h2>
             <p className="text-[var(--color-on-surface-variant)] font-medium text-lg">
-              Managing {employees.length} talented individuals across {departments.length} departments.
+              {employees.length} people across {departments.length} departments.
             </p>
           </div>
           <div className="flex gap-3">
             {isSuperAdmin && (
-              <Link
-                href="/people/archive"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-background)] transition-colors"
-              >
+              <Link href="/people/archive" className={secondaryButton}>
                 Archive
               </Link>
             )}
             {isAdmin && (
               <>
-                <BulkEmployeeImport departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
+                <Link href="/data" className={secondaryButton}>
+                  <Icon name="swap_vert" size={16} /> Import & Export
+                </Link>
                 <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
               </>
             )}
@@ -85,6 +86,8 @@ export default async function PeoplePage() {
             pronouns: e.pronouns,
             profilePhoto: e.profilePhoto,
             department: e.department ? { name: e.department.name } : null,
+            manager: e.manager ? { id: e.manager.id, name: displayName(e.manager) } : null,
+            startDate: e.startDate.toISOString(),
           }))}
           departments={departmentsWithCounts}
           outOfOffice={outOfOffice}

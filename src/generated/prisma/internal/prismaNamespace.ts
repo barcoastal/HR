@@ -456,7 +456,10 @@ export const ModelName = {
   WorkerHeartbeat: 'WorkerHeartbeat',
   HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
-  GustoConnection: 'GustoConnection'
+  GustoConnection: 'GustoConnection',
+  ImportBatch: 'ImportBatch',
+  ImportRow: 'ImportRow',
+  ImportDuplicateGroup: 'ImportDuplicateGroup'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -472,7 +475,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5878,6 +5881,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ImportBatch: {
+      payload: Prisma.$ImportBatchPayload<ExtArgs>
+      fields: Prisma.ImportBatchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImportBatchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImportBatchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        findFirst: {
+          args: Prisma.ImportBatchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImportBatchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        findMany: {
+          args: Prisma.ImportBatchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+        }
+        create: {
+          args: Prisma.ImportBatchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        createMany: {
+          args: Prisma.ImportBatchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImportBatchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+        }
+        delete: {
+          args: Prisma.ImportBatchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        update: {
+          args: Prisma.ImportBatchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImportBatchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImportBatchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImportBatchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImportBatchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportBatchPayload>
+        }
+        aggregate: {
+          args: Prisma.ImportBatchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImportBatch>
+        }
+        groupBy: {
+          args: Prisma.ImportBatchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportBatchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImportBatchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportBatchCountAggregateOutputType> | number
+        }
+      }
+    }
+    ImportRow: {
+      payload: Prisma.$ImportRowPayload<ExtArgs>
+      fields: Prisma.ImportRowFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImportRowFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImportRowFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        findFirst: {
+          args: Prisma.ImportRowFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImportRowFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        findMany: {
+          args: Prisma.ImportRowFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+        }
+        create: {
+          args: Prisma.ImportRowCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        createMany: {
+          args: Prisma.ImportRowCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImportRowCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+        }
+        delete: {
+          args: Prisma.ImportRowDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        update: {
+          args: Prisma.ImportRowUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImportRowDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImportRowUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImportRowUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImportRowUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportRowPayload>
+        }
+        aggregate: {
+          args: Prisma.ImportRowAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImportRow>
+        }
+        groupBy: {
+          args: Prisma.ImportRowGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportRowGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImportRowCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportRowCountAggregateOutputType> | number
+        }
+      }
+    }
+    ImportDuplicateGroup: {
+      payload: Prisma.$ImportDuplicateGroupPayload<ExtArgs>
+      fields: Prisma.ImportDuplicateGroupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImportDuplicateGroupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImportDuplicateGroupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        findFirst: {
+          args: Prisma.ImportDuplicateGroupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImportDuplicateGroupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        findMany: {
+          args: Prisma.ImportDuplicateGroupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>[]
+        }
+        create: {
+          args: Prisma.ImportDuplicateGroupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        createMany: {
+          args: Prisma.ImportDuplicateGroupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImportDuplicateGroupCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>[]
+        }
+        delete: {
+          args: Prisma.ImportDuplicateGroupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        update: {
+          args: Prisma.ImportDuplicateGroupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImportDuplicateGroupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImportDuplicateGroupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImportDuplicateGroupUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImportDuplicateGroupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportDuplicateGroupPayload>
+        }
+        aggregate: {
+          args: Prisma.ImportDuplicateGroupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImportDuplicateGroup>
+        }
+        groupBy: {
+          args: Prisma.ImportDuplicateGroupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportDuplicateGroupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImportDuplicateGroupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportDuplicateGroupCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7057,6 +7282,55 @@ export const GustoConnectionScalarFieldEnum = {
 export type GustoConnectionScalarFieldEnum = (typeof GustoConnectionScalarFieldEnum)[keyof typeof GustoConnectionScalarFieldEnum]
 
 
+export const ImportBatchScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  fileType: 'fileType',
+  headers: 'headers',
+  mapping: 'mapping',
+  status: 'status',
+  rowCount: 'rowCount',
+  summary: 'summary',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  importedAt: 'importedAt'
+} as const
+
+export type ImportBatchScalarFieldEnum = (typeof ImportBatchScalarFieldEnum)[keyof typeof ImportBatchScalarFieldEnum]
+
+
+export const ImportRowScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowNumber: 'rowNumber',
+  raw: 'raw',
+  data: 'data',
+  errors: 'errors',
+  action: 'action',
+  targetEmployeeId: 'targetEmployeeId',
+  mergedIntoRowId: 'mergedIntoRowId',
+  skipReason: 'skipReason',
+  resultEmployeeId: 'resultEmployeeId'
+} as const
+
+export type ImportRowScalarFieldEnum = (typeof ImportRowScalarFieldEnum)[keyof typeof ImportRowScalarFieldEnum]
+
+
+export const ImportDuplicateGroupScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  status: 'status',
+  reasons: 'reasons',
+  members: 'members',
+  primary: 'primary',
+  snapshot: 'snapshot',
+  createdAt: 'createdAt'
+} as const
+
+export type ImportDuplicateGroupScalarFieldEnum = (typeof ImportDuplicateGroupScalarFieldEnum)[keyof typeof ImportDuplicateGroupScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -7635,6 +7909,48 @@ export type EnumOneOnOneStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 export type ListEnumOneOnOneStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OneOnOneStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'ImportBatchStatus'
+ */
+export type EnumImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportBatchStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportBatchStatus[]'
+ */
+export type ListEnumImportBatchStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportBatchStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportRowAction'
+ */
+export type EnumImportRowActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportRowAction'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportRowAction[]'
+ */
+export type ListEnumImportRowActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportRowAction[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportGroupStatus'
+ */
+export type EnumImportGroupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportGroupStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportGroupStatus[]'
+ */
+export type ListEnumImportGroupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportGroupStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -7803,6 +8119,9 @@ export type GlobalOmitConfig = {
   hiringPlan?: Prisma.HiringPlanOmit
   oneOnOne?: Prisma.OneOnOneOmit
   gustoConnection?: Prisma.GustoConnectionOmit
+  importBatch?: Prisma.ImportBatchOmit
+  importRow?: Prisma.ImportRowOmit
+  importDuplicateGroup?: Prisma.ImportDuplicateGroupOmit
 }
 
 /* Types for Logging */

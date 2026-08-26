@@ -46,7 +46,11 @@ export async function getEmployees(filters?: {
 
   return db.employee.findMany({
     where: finalWhere,
-    include: { department: true, team: true },
+    include: {
+      department: true,
+      team: true,
+      manager: { select: { id: true, firstName: true, lastName: true, preferredName: true } },
+    },
     orderBy: { firstName: "asc" },
   });
 }
@@ -997,158 +1001,6 @@ export async function getArchivedEmployees() {
     include: { department: true },
     orderBy: { archivedAt: "desc" },
   });
-}
-
-export async function bulkImportEmployees(
-  employees: {
-    firstName: string;
-    lastName: string;
-    email?: string;
-    jobTitle?: string;
-    phone?: string;
-    departmentId?: string;
-    departmentName?: string;
-    managerId?: string;
-    reportsTo?: string;
-    startDate?: string;
-    location?: string;
-  }[]
-): Promise<{ created: number; skipped: string[]; errors: string[] }> {
-  let created = 0;
-  const skipped: string[] = [];
-  const errors: string[] = [];
-
-  // Cache department lookups to avoid repeated DB queries
-  const deptCache: Record<string, string> = {};
-
-  async function resolveDepartmentId(emp: typeof employees[0]): Promise<string | null> {
-    if (emp.departmentId) return emp.departmentId;
-    if (!emp.departmentName) return null;
-
-    const name = emp.departmentName.trim();
-    if (deptCache[name]) return deptCache[name];
-
-    // Try to find existing department (case-insensitive)
-    let dept = await db.department.findFirst({
-      where: { name: { equals: name, mode: "insensitive" } },
-    });
-
-    if (!dept) {
-      dept = await db.department.create({ data: { name } });
-    }
-
-    deptCache[name] = dept.id;
-    return dept.id;
-  }
-
-  // Track created employee IDs + their reportsTo names for second pass
-  const createdEmployees: { id: string; email: string; firstName: string; lastName: string; reportsTo?: string }[] = [];
-
-  for (const emp of employees) {
-    try {
-      // Skip duplicates by email if email is provided
-      if (emp.email) {
-        const existing = await db.employee.findUnique({ where: { email: emp.email } });
-        if (existing) {
-          skipped.push(emp.email);
-          continue;
-        }
-      }
-
-      const departmentId = await resolveDepartmentId(emp);
-
-      // Generate a unique pending email if none provided
-      let email = emp.email;
-      if (!email) {
-        const base = `${emp.firstName.toLowerCase()}.${emp.lastName.toLowerCase().replace(/\s+/g, '')}`;
-        email = `${base}@pending.local`;
-        const existingPending = await db.employee.findUnique({ where: { email } });
-        if (existingPending) {
-          skipped.push(`${emp.firstName} ${emp.lastName} (already imported)`);
-          continue;
-        }
-      }
-
-      const newEmp = await db.employee.create({
-        data: {
-          firstName: emp.firstName,
-          lastName: emp.lastName,
-          email,
-          jobTitle: emp.jobTitle || "Employee",
-          phone: emp.phone || null,
-          departmentId,
-          managerId: emp.managerId || null,
-          startDate: emp.startDate ? new Date(emp.startDate) : new Date(),
-          anniversaryDate: emp.startDate ? new Date(emp.startDate) : new Date(),
-          location: emp.location || null,
-          status: "PENDING",
-        },
-      });
-      created++;
-      createdEmployees.push({
-        id: newEmp.id,
-        email: newEmp.email,
-        firstName: newEmp.firstName,
-        lastName: newEmp.lastName,
-        reportsTo: emp.reportsTo,
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
-      errors.push(`Failed to import ${emp.email || emp.firstName + ' ' + emp.lastName}: ${message}`);
-    }
-  }
-
-  // Second pass: resolve "Reports To" names to manager IDs
-  const managerCache: Record<string, string | null> = {};
-  for (const emp of createdEmployees) {
-    if (!emp.reportsTo) continue;
-    const managerName = emp.reportsTo.trim();
-    if (!managerName) continue;
-
-    if (!(managerName in managerCache)) {
-      // Try to find manager by name (first + last)
-      const parts = managerName.split(/\s+/);
-      let manager = null;
-      if (parts.length >= 2) {
-        const firstName = parts[0];
-        const lastName = parts.slice(1).join(" ");
-        manager = await db.employee.findFirst({
-          where: {
-            firstName: { equals: firstName, mode: "insensitive" },
-            lastName: { equals: lastName, mode: "insensitive" },
-          },
-          select: { id: true },
-        });
-      }
-      if (!manager) {
-        // Fallback: search by full name in either order
-        manager = await db.employee.findFirst({
-          where: {
-            OR: [
-              { firstName: { contains: parts[0], mode: "insensitive" } },
-              { lastName: { contains: parts[0], mode: "insensitive" } },
-            ],
-          },
-          select: { id: true },
-        });
-      }
-      managerCache[managerName] = manager?.id || null;
-    }
-
-    const managerId = managerCache[managerName];
-    if (managerId) {
-      await db.employee.update({
-        where: { id: emp.id },
-        data: { managerId },
-      });
-    } else {
-      errors.push(`Could not find manager "${managerName}" for ${emp.firstName} ${emp.lastName}`);
-    }
-  }
-
-  revalidatePath("/people");
-  revalidatePath("/org");
-  return { created, skipped, errors };
 }
 
 export async function approveAndInviteEmployee(employeeId: string) {

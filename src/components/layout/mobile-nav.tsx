@@ -44,6 +44,7 @@ const allDrawerLinks = [
   { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec, section: "Workflow" },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r), section: "Admin" },
   { href: "/email-log", label: "Email Log", icon: "outgoing_mail", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR", section: "Admin" },
+  { href: "/data", label: "Import & Export", icon: "swap_vert", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR", section: "Admin" },
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r), section: "Admin" },
 ] as const;
 

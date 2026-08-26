@@ -385,3 +385,18 @@ export type OneOnOne = Prisma.OneOnOneModel
  * 
  */
 export type GustoConnection = Prisma.GustoConnectionModel
+/**
+ * Model ImportBatch
+ * 
+ */
+export type ImportBatch = Prisma.ImportBatchModel
+/**
+ * Model ImportRow
+ * 
+ */
+export type ImportRow = Prisma.ImportRowModel
+/**
+ * Model ImportDuplicateGroup
+ * 
+ */
+export type ImportDuplicateGroup = Prisma.ImportDuplicateGroupModel

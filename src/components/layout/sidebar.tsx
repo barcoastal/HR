@@ -23,6 +23,7 @@ const allNavLinks = [
   { href: "/", label: "Feed", icon: "newspaper", access: () => true },
   { href: "/alerts", label: "Alerts", icon: "warning", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
   { href: "/people", label: "People", icon: "group", access: (r: UserRole) => isManagerOrAbove(r) },
+  { href: "/data", label: "Import & Export", icon: "swap_vert", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR" },
   { href: "/pre-onboarding", label: "Written Offer", icon: "assignment_turned_in", access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/onboarding", label: "Onboarding", icon: "person_add", access: (r: UserRole) => canManageOnboarding(r) },
   { href: "/offboarding", label: "Offboarding", icon: "person_remove", access: (r: UserRole) => canManageOffboarding(r) },

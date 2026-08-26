@@ -123,7 +123,10 @@ export const ModelName = {
   WorkerHeartbeat: 'WorkerHeartbeat',
   HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
-  GustoConnection: 'GustoConnection'
+  GustoConnection: 'GustoConnection',
+  ImportBatch: 'ImportBatch',
+  ImportRow: 'ImportRow',
+  ImportDuplicateGroup: 'ImportDuplicateGroup'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1280,6 +1283,55 @@ export const GustoConnectionScalarFieldEnum = {
 } as const
 
 export type GustoConnectionScalarFieldEnum = (typeof GustoConnectionScalarFieldEnum)[keyof typeof GustoConnectionScalarFieldEnum]
+
+
+export const ImportBatchScalarFieldEnum = {
+  id: 'id',
+  fileName: 'fileName',
+  fileType: 'fileType',
+  headers: 'headers',
+  mapping: 'mapping',
+  status: 'status',
+  rowCount: 'rowCount',
+  summary: 'summary',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  importedAt: 'importedAt'
+} as const
+
+export type ImportBatchScalarFieldEnum = (typeof ImportBatchScalarFieldEnum)[keyof typeof ImportBatchScalarFieldEnum]
+
+
+export const ImportRowScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  rowNumber: 'rowNumber',
+  raw: 'raw',
+  data: 'data',
+  errors: 'errors',
+  action: 'action',
+  targetEmployeeId: 'targetEmployeeId',
+  mergedIntoRowId: 'mergedIntoRowId',
+  skipReason: 'skipReason',
+  resultEmployeeId: 'resultEmployeeId'
+} as const
+
+export type ImportRowScalarFieldEnum = (typeof ImportRowScalarFieldEnum)[keyof typeof ImportRowScalarFieldEnum]
+
+
+export const ImportDuplicateGroupScalarFieldEnum = {
+  id: 'id',
+  batchId: 'batchId',
+  status: 'status',
+  reasons: 'reasons',
+  members: 'members',
+  primary: 'primary',
+  snapshot: 'snapshot',
+  createdAt: 'createdAt'
+} as const
+
+export type ImportDuplicateGroupScalarFieldEnum = (typeof ImportDuplicateGroupScalarFieldEnum)[keyof typeof ImportDuplicateGroupScalarFieldEnum]
 
 
 export const SortOrder = {

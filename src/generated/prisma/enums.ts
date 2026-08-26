@@ -314,3 +314,31 @@ export const MentionType = {
 } as const
 
 export type MentionType = (typeof MentionType)[keyof typeof MentionType]
+
+
+export const ImportBatchStatus = {
+  REVIEWING: 'REVIEWING',
+  IMPORTED: 'IMPORTED',
+  DISCARDED: 'DISCARDED'
+} as const
+
+export type ImportBatchStatus = (typeof ImportBatchStatus)[keyof typeof ImportBatchStatus]
+
+
+export const ImportRowAction = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  SKIP: 'SKIP',
+  MERGED_AWAY: 'MERGED_AWAY'
+} as const
+
+export type ImportRowAction = (typeof ImportRowAction)[keyof typeof ImportRowAction]
+
+
+export const ImportGroupStatus = {
+  PENDING: 'PENDING',
+  MERGED: 'MERGED',
+  SEPARATE: 'SEPARATE'
+} as const
+
+export type ImportGroupStatus = (typeof ImportGroupStatus)[keyof typeof ImportGroupStatus]

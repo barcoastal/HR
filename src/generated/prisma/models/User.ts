@@ -321,6 +321,7 @@ export type UserWhereInput = {
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   eventAttendances?: Prisma.EventAttendanceListRelationFilter
   organizedInterviews?: Prisma.InterviewListRelationFilter
+  importBatches?: Prisma.ImportBatchListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -349,6 +350,7 @@ export type UserOrderByWithRelationInput = {
   employee?: Prisma.EmployeeOrderByWithRelationInput
   eventAttendances?: Prisma.EventAttendanceOrderByRelationAggregateInput
   organizedInterviews?: Prisma.InterviewOrderByRelationAggregateInput
+  importBatches?: Prisma.ImportBatchOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -380,6 +382,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
   eventAttendances?: Prisma.EventAttendanceListRelationFilter
   organizedInterviews?: Prisma.InterviewListRelationFilter
+  importBatches?: Prisma.ImportBatchListRelationFilter
 }, "id" | "email" | "employeeId">
 
 export type UserOrderByWithAggregationInput = {
@@ -463,6 +466,7 @@ export type UserCreateInput = {
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
   organizedInterviews?: Prisma.InterviewCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -490,6 +494,7 @@ export type UserUncheckedCreateInput = {
   notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
   organizedInterviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUpdateInput = {
@@ -517,6 +522,7 @@ export type UserUpdateInput = {
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
   organizedInterviews?: Prisma.InterviewUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -544,6 +550,7 @@ export type UserUncheckedUpdateInput = {
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
   organizedInterviews?: Prisma.InterviewUncheckedUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -771,6 +778,20 @@ export type UserUpdateOneWithoutOrganizedInterviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrganizedInterviewsInput, Prisma.UserUpdateWithoutOrganizedInterviewsInput>, Prisma.UserUncheckedUpdateWithoutOrganizedInterviewsInput>
 }
 
+export type UserCreateNestedOneWithoutImportBatchesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutImportBatchesInput, Prisma.UserUncheckedCreateWithoutImportBatchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutImportBatchesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutImportBatchesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutImportBatchesInput, Prisma.UserUncheckedCreateWithoutImportBatchesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutImportBatchesInput
+  upsert?: Prisma.UserUpsertWithoutImportBatchesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutImportBatchesInput, Prisma.UserUpdateWithoutImportBatchesInput>, Prisma.UserUncheckedUpdateWithoutImportBatchesInput>
+}
+
 export type UserCreateWithoutEmployeeInput = {
   id?: string
   email: string
@@ -795,6 +816,7 @@ export type UserCreateWithoutEmployeeInput = {
   notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
   organizedInterviews?: Prisma.InterviewCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeInput = {
@@ -821,6 +843,7 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
   organizedInterviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeInput = {
@@ -863,6 +886,7 @@ export type UserUpdateWithoutEmployeeInput = {
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
   organizedInterviews?: Prisma.InterviewUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeInput = {
@@ -889,6 +913,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
   organizedInterviews?: Prisma.InterviewUncheckedUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutEventAttendancesInput = {
@@ -915,6 +940,7 @@ export type UserCreateWithoutEventAttendancesInput = {
   notifyPromotionInApp?: boolean
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   organizedInterviews?: Prisma.InterviewCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutEventAttendancesInput = {
@@ -941,6 +967,7 @@ export type UserUncheckedCreateWithoutEventAttendancesInput = {
   notifyPromotionEmail?: boolean
   notifyPromotionInApp?: boolean
   organizedInterviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCalendarOrganizerInput
+  importBatches?: Prisma.ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutEventAttendancesInput = {
@@ -983,6 +1010,7 @@ export type UserUpdateWithoutEventAttendancesInput = {
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   organizedInterviews?: Prisma.InterviewUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEventAttendancesInput = {
@@ -1009,6 +1037,7 @@ export type UserUncheckedUpdateWithoutEventAttendancesInput = {
   notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   organizedInterviews?: Prisma.InterviewUncheckedUpdateManyWithoutCalendarOrganizerNestedInput
+  importBatches?: Prisma.ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserCreateWithoutOrganizedInterviewsInput = {
@@ -1035,6 +1064,7 @@ export type UserCreateWithoutOrganizedInterviewsInput = {
   notifyPromotionInApp?: boolean
   employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
   eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
+  importBatches?: Prisma.ImportBatchCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserUncheckedCreateWithoutOrganizedInterviewsInput = {
@@ -1061,6 +1091,7 @@ export type UserUncheckedCreateWithoutOrganizedInterviewsInput = {
   notifyPromotionEmail?: boolean
   notifyPromotionInApp?: boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
+  importBatches?: Prisma.ImportBatchUncheckedCreateNestedManyWithoutUploadedByInput
 }
 
 export type UserCreateOrConnectWithoutOrganizedInterviewsInput = {
@@ -1103,6 +1134,7 @@ export type UserUpdateWithoutOrganizedInterviewsInput = {
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
   eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
+  importBatches?: Prisma.ImportBatchUpdateManyWithoutUploadedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOrganizedInterviewsInput = {
@@ -1129,6 +1161,131 @@ export type UserUncheckedUpdateWithoutOrganizedInterviewsInput = {
   notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
   notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
   eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
+  importBatches?: Prisma.ImportBatchUncheckedUpdateManyWithoutUploadedByNestedInput
+}
+
+export type UserCreateWithoutImportBatchesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  createdAt?: Date | string
+  googleCalendarAccessToken?: string | null
+  googleCalendarRefreshToken?: string | null
+  googleCalendarTokenExpiresAt?: Date | string | null
+  googleCalendarSyncEnabled?: boolean
+  emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
+  employee?: Prisma.EmployeeCreateNestedOneWithoutUserInput
+  eventAttendances?: Prisma.EventAttendanceCreateNestedManyWithoutUserInput
+  organizedInterviews?: Prisma.InterviewCreateNestedManyWithoutCalendarOrganizerInput
+}
+
+export type UserUncheckedCreateWithoutImportBatchesInput = {
+  id?: string
+  email: string
+  passwordHash?: string | null
+  role?: $Enums.UserRole
+  employeeId?: string | null
+  createdAt?: Date | string
+  googleCalendarAccessToken?: string | null
+  googleCalendarRefreshToken?: string | null
+  googleCalendarTokenExpiresAt?: Date | string | null
+  googleCalendarSyncEnabled?: boolean
+  emailNotificationsEnabled?: boolean
+  notifyFeedPostEmail?: boolean
+  notifyFeedPostInApp?: boolean
+  notifyFeedEventEmail?: boolean
+  notifyFeedEventInApp?: boolean
+  notifyCommentEmail?: boolean
+  notifyCommentInApp?: boolean
+  notifyReactionInApp?: boolean
+  notifyShoutoutEmail?: boolean
+  notifyShoutoutInApp?: boolean
+  notifyPromotionEmail?: boolean
+  notifyPromotionInApp?: boolean
+  eventAttendances?: Prisma.EventAttendanceUncheckedCreateNestedManyWithoutUserInput
+  organizedInterviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCalendarOrganizerInput
+}
+
+export type UserCreateOrConnectWithoutImportBatchesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutImportBatchesInput, Prisma.UserUncheckedCreateWithoutImportBatchesInput>
+}
+
+export type UserUpsertWithoutImportBatchesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutImportBatchesInput, Prisma.UserUncheckedUpdateWithoutImportBatchesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutImportBatchesInput, Prisma.UserUncheckedCreateWithoutImportBatchesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutImportBatchesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutImportBatchesInput, Prisma.UserUncheckedUpdateWithoutImportBatchesInput>
+}
+
+export type UserUpdateWithoutImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employee?: Prisma.EmployeeUpdateOneWithoutUserNestedInput
+  eventAttendances?: Prisma.EventAttendanceUpdateManyWithoutUserNestedInput
+  organizedInterviews?: Prisma.InterviewUpdateManyWithoutCalendarOrganizerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutImportBatchesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  googleCalendarAccessToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleCalendarRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleCalendarTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  googleCalendarSyncEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailNotificationsEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedPostInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyFeedEventInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyCommentInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyReactionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyShoutoutInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionEmail?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  notifyPromotionInApp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  eventAttendances?: Prisma.EventAttendanceUncheckedUpdateManyWithoutUserNestedInput
+  organizedInterviews?: Prisma.InterviewUncheckedUpdateManyWithoutCalendarOrganizerNestedInput
 }
 
 
@@ -1139,11 +1296,13 @@ export type UserUncheckedUpdateWithoutOrganizedInterviewsInput = {
 export type UserCountOutputType = {
   eventAttendances: number
   organizedInterviews: number
+  importBatches: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   eventAttendances?: boolean | UserCountOutputTypeCountEventAttendancesArgs
   organizedInterviews?: boolean | UserCountOutputTypeCountOrganizedInterviewsArgs
+  importBatches?: boolean | UserCountOutputTypeCountImportBatchesArgs
 }
 
 /**
@@ -1168,6 +1327,13 @@ export type UserCountOutputTypeCountEventAttendancesArgs<ExtArgs extends runtime
  */
 export type UserCountOutputTypeCountOrganizedInterviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.InterviewWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountImportBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImportBatchWhereInput
 }
 
 
@@ -1197,6 +1363,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
   organizedInterviews?: boolean | Prisma.User$organizedInterviewsArgs<ExtArgs>
+  importBatches?: boolean | Prisma.User$importBatchesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1282,6 +1449,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   eventAttendances?: boolean | Prisma.User$eventAttendancesArgs<ExtArgs>
   organizedInterviews?: boolean | Prisma.User$organizedInterviewsArgs<ExtArgs>
+  importBatches?: boolean | Prisma.User$importBatchesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1297,6 +1465,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     employee: Prisma.$EmployeePayload<ExtArgs> | null
     eventAttendances: Prisma.$EventAttendancePayload<ExtArgs>[]
     organizedInterviews: Prisma.$InterviewPayload<ExtArgs>[]
+    importBatches: Prisma.$ImportBatchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1718,6 +1887,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   employee<T extends Prisma.User$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   eventAttendances<T extends Prisma.User$eventAttendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$eventAttendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   organizedInterviews<T extends Prisma.User$organizedInterviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$organizedInterviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  importBatches<T extends Prisma.User$importBatchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$importBatchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportBatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2229,6 +2399,30 @@ export type User$organizedInterviewsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.InterviewScalarFieldEnum | Prisma.InterviewScalarFieldEnum[]
+}
+
+/**
+ * User.importBatches
+ */
+export type User$importBatchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportBatch
+   */
+  select?: Prisma.ImportBatchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ImportBatch
+   */
+  omit?: Prisma.ImportBatchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportBatchInclude<ExtArgs> | null
+  where?: Prisma.ImportBatchWhereInput
+  orderBy?: Prisma.ImportBatchOrderByWithRelationInput | Prisma.ImportBatchOrderByWithRelationInput[]
+  cursor?: Prisma.ImportBatchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImportBatchScalarFieldEnum | Prisma.ImportBatchScalarFieldEnum[]
 }
 
 /**

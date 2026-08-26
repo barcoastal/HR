@@ -44,7 +44,7 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen w-full overflow-x-hidden">
+    <div className="flex min-h-screen w-full overflow-x-clip">
       <Sidebar logoUrl={settings.logoUrl} companyName={settings.companyName} isRecruiter={isRecruiter} userDisplayName={userDisplayName} />
       <div className="flex-1 md:ml-64 min-w-0 max-w-full">
         {IS_SANDBOX && (
@@ -53,7 +53,7 @@ export default async function DashboardLayout({
           </div>
         )}
         <TopBar userDisplayName={userDisplayName} />
-        <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-hidden">{children}</main>
+        <main className="p-4 pb-28 md:p-8 md:pb-8 max-w-full overflow-x-clip">{children}</main>
       </div>
       <MobileNav isRecruiter={isRecruiter} />
       <Suspense fallback={null}>
