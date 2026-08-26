@@ -86,3 +86,7 @@ export function sameRef(a: MemberRef, b: MemberRef): boolean {
 
 /** An existing employee flattened for the side-by-side comparison. */
 export type EmployeeSnapshot = { id: string; name: string; status: string; archived: boolean; data: RowData };
+
+/** Outcome of committing an import batch. */
+export type CommitSummary = { created: number; updated: number; failed: number; warnings: number; invited: number };
+export type CommitResult = "created" | "updated" | "failed";

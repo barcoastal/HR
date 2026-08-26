@@ -8,11 +8,10 @@ import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
 import {
   commitImport,
-  type CommitResult,
-  type CommitSummary,
   type ImportBatchDetail,
   type ImportRowView,
 } from "@/lib/actions/imports";
+import type { CommitResult, CommitSummary } from "@/lib/import-export/types";
 import { BUTTON, Chip, rowBadge, rowDisplayName, type Badge } from "./row-editor";
 
 const STATUS_LABELS: Record<string, string> = {

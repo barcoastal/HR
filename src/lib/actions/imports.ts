@@ -7,14 +7,14 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
 import { buildMergePlan } from "@/lib/import-export/merge";
 import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
-import { commitImportBatch, type CommitResult, type CommitSummary } from "@/lib/import-export/commit-service";
+import { commitImportBatch } from "@/lib/import-export/commit-service";
+import type { CommitResult, CommitSummary } from "@/lib/import-export/types";
 import {
   refKey, sameRef,
   type ColumnMapping, type EmployeeSnapshot, type FieldKey, type GroupReason, type MemberRef, type MergeMember, type RowAction, type RowData, type RowError,
 } from "@/lib/import-export/types";
 
 export type ImportBatchStatusValue = "REVIEWING" | "IMPORTED" | "DISCARDED";
-export type { CommitResult, CommitSummary };
 
 export type ImportBatchSummary = {
   id: string;

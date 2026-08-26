@@ -5,9 +5,9 @@ import { sendWelcomeEmail } from "@/lib/email";
 import { loadEmployeesLite } from "./batch-service";
 import { matchManager, type ManagerCandidate } from "./manager-match";
 import type { FieldKey, RowData } from "./types";
+import type { CommitSummary, CommitResult } from "./types";
 
-export type CommitSummary = { created: number; updated: number; failed: number; warnings: number; invited: number };
-export type CommitResult = "created" | "updated" | "failed";
+export type { CommitSummary, CommitResult };
 
 // ---------------------------------------------------------------------------
 // Field routing — every FieldKey must land in exactly one of these buckets.
