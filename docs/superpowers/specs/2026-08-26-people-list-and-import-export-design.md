@@ -186,6 +186,21 @@ Approved 2026-08-26. Export tab on `/data`, SUPER_ADMIN / ADMIN / HR only.
 
 **Output**: CSV is UTF-8 with BOM (opens cleanly in Excel), RFC 4180 quoting; Excel is a single sheet with a bold header row. File name `<entity>-<YYYY-MM-DD>.<csv|xlsx>`. Each download writes an audit entry `data.exported` (entity, filters, column count, row count). No export history UI.
 
+## Section 6 — System-wide duplicates (no file involved)
+
+Approved 2026-08-26. Third tab on `/data`: **Duplicates**. SUPER_ADMIN / ADMIN / HR.
+
+- **Scan now** runs `detectDuplicates` over every non-archived employee with employee↔employee pairing enabled (same email / phone / name signals; `@pending.local` emails ignored). Pairs the team has dismissed are excluded. Nothing is persisted between scans except dismissals.
+- Groups render with the same left list + side-by-side compare used by the import review (every column is "Already in system"), including merge mode with primary choice, per-field radios and the editable Result column.
+- **Merge into one** → `mergeEmployees(primaryId, duplicateIds, resultData)`:
+  1. The primary's fields are set to the Result column values (validated like import data; `status` never changed; `email` changed only if no login is bound to the current one).
+  2. Every record that points at a duplicate is re-pointed at the primary — all 49 employee foreign keys in the schema (`EMPLOYEE_FK_TARGETS`, kept in sync with `schema.prisma` by a unit test): tasks, documents, reviews, 1:1s, feed posts/comments/reactions, notifications, HR notes, time off, training, clubs, chat, signing requests, direct reports, buddies, department heads, … Where a unique constraint would collide (e.g. both were members of the same club), the duplicate's row is dropped and the primary's kept.
+  3. Logins: if only the duplicate has a `User`, it is re-linked to the primary; if both do, the primary's is kept and the duplicate's is detached (`employeeId = null`) — the UI says so before confirming.
+  4. The duplicate employee rows are deleted. One `employee.merged` audit entry records the primary, the merged people, and what was re-pointed.
+  Steps run table by table (not one transaction — Postgres aborts a transaction on the first unique violation, and we need to recover from those); re-running a partially failed merge is safe because every step is idempotent.
+- **Not duplicates** → `DuplicateDismissal { employeeAId, employeeBId, dismissedById, createdAt }` (ids stored in sorted order, unique pair) for every pair in the group; those pairs never surface again.
+- Merging is irreversible; the confirm dialog names the record being deleted and what moves.
+
 ## Testing
 
 `vitest` (new dev dependency, `npm test`) covers the pure modules: CSV parsing, header auto-detection, date/phone/email/name normalization, row validation, duplicate detection and group ordering, and merge-resolution (carrier choice, field choices, snapshot/undo shape). UI and server actions are verified by hand on localhost before anything is committed or pushed (`main` auto-deploys).
