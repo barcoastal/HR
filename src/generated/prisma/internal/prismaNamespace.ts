@@ -7311,7 +7311,9 @@ export const ImportRowScalarFieldEnum = {
   targetEmployeeId: 'targetEmployeeId',
   mergedIntoRowId: 'mergedIntoRowId',
   skipReason: 'skipReason',
-  resultEmployeeId: 'resultEmployeeId'
+  resultEmployeeId: 'resultEmployeeId',
+  result: 'result',
+  resultNotes: 'resultNotes'
 } as const
 
 export type ImportRowScalarFieldEnum = (typeof ImportRowScalarFieldEnum)[keyof typeof ImportRowScalarFieldEnum]

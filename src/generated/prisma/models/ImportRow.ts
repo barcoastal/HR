@@ -43,6 +43,7 @@ export type ImportRowMinAggregateOutputType = {
   mergedIntoRowId: string | null
   skipReason: string | null
   resultEmployeeId: string | null
+  result: string | null
 }
 
 export type ImportRowMaxAggregateOutputType = {
@@ -54,6 +55,7 @@ export type ImportRowMaxAggregateOutputType = {
   mergedIntoRowId: string | null
   skipReason: string | null
   resultEmployeeId: string | null
+  result: string | null
 }
 
 export type ImportRowCountAggregateOutputType = {
@@ -68,6 +70,8 @@ export type ImportRowCountAggregateOutputType = {
   mergedIntoRowId: number
   skipReason: number
   resultEmployeeId: number
+  result: number
+  resultNotes: number
   _all: number
 }
 
@@ -89,6 +93,7 @@ export type ImportRowMinAggregateInputType = {
   mergedIntoRowId?: true
   skipReason?: true
   resultEmployeeId?: true
+  result?: true
 }
 
 export type ImportRowMaxAggregateInputType = {
@@ -100,6 +105,7 @@ export type ImportRowMaxAggregateInputType = {
   mergedIntoRowId?: true
   skipReason?: true
   resultEmployeeId?: true
+  result?: true
 }
 
 export type ImportRowCountAggregateInputType = {
@@ -114,6 +120,8 @@ export type ImportRowCountAggregateInputType = {
   mergedIntoRowId?: true
   skipReason?: true
   resultEmployeeId?: true
+  result?: true
+  resultNotes?: true
   _all?: true
 }
 
@@ -215,6 +223,8 @@ export type ImportRowGroupByOutputType = {
   mergedIntoRowId: string | null
   skipReason: string | null
   resultEmployeeId: string | null
+  result: string | null
+  resultNotes: runtime.JsonValue | null
   _count: ImportRowCountAggregateOutputType | null
   _avg: ImportRowAvgAggregateOutputType | null
   _sum: ImportRowSumAggregateOutputType | null
@@ -252,6 +262,8 @@ export type ImportRowWhereInput = {
   mergedIntoRowId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   skipReason?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   resultEmployeeId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  result?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  resultNotes?: Prisma.JsonNullableFilter<"ImportRow">
   batch?: Prisma.XOR<Prisma.ImportBatchScalarRelationFilter, Prisma.ImportBatchWhereInput>
 }
 
@@ -267,6 +279,8 @@ export type ImportRowOrderByWithRelationInput = {
   mergedIntoRowId?: Prisma.SortOrderInput | Prisma.SortOrder
   skipReason?: Prisma.SortOrderInput | Prisma.SortOrder
   resultEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  result?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   batch?: Prisma.ImportBatchOrderByWithRelationInput
 }
 
@@ -285,6 +299,8 @@ export type ImportRowWhereUniqueInput = Prisma.AtLeast<{
   mergedIntoRowId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   skipReason?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   resultEmployeeId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  result?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  resultNotes?: Prisma.JsonNullableFilter<"ImportRow">
   batch?: Prisma.XOR<Prisma.ImportBatchScalarRelationFilter, Prisma.ImportBatchWhereInput>
 }, "id">
 
@@ -300,6 +316,8 @@ export type ImportRowOrderByWithAggregationInput = {
   mergedIntoRowId?: Prisma.SortOrderInput | Prisma.SortOrder
   skipReason?: Prisma.SortOrderInput | Prisma.SortOrder
   resultEmployeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  result?: Prisma.SortOrderInput | Prisma.SortOrder
+  resultNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ImportRowCountOrderByAggregateInput
   _avg?: Prisma.ImportRowAvgOrderByAggregateInput
   _max?: Prisma.ImportRowMaxOrderByAggregateInput
@@ -322,6 +340,8 @@ export type ImportRowScalarWhereWithAggregatesInput = {
   mergedIntoRowId?: Prisma.StringNullableWithAggregatesFilter<"ImportRow"> | string | null
   skipReason?: Prisma.StringNullableWithAggregatesFilter<"ImportRow"> | string | null
   resultEmployeeId?: Prisma.StringNullableWithAggregatesFilter<"ImportRow"> | string | null
+  result?: Prisma.StringNullableWithAggregatesFilter<"ImportRow"> | string | null
+  resultNotes?: Prisma.JsonNullableWithAggregatesFilter<"ImportRow">
 }
 
 export type ImportRowCreateInput = {
@@ -335,6 +355,8 @@ export type ImportRowCreateInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   batch: Prisma.ImportBatchCreateNestedOneWithoutRowsInput
 }
 
@@ -350,6 +372,8 @@ export type ImportRowUncheckedCreateInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUpdateInput = {
@@ -363,6 +387,8 @@ export type ImportRowUpdateInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   batch?: Prisma.ImportBatchUpdateOneRequiredWithoutRowsNestedInput
 }
 
@@ -378,6 +404,8 @@ export type ImportRowUncheckedUpdateInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowCreateManyInput = {
@@ -392,6 +420,8 @@ export type ImportRowCreateManyInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUpdateManyMutationInput = {
@@ -405,6 +435,8 @@ export type ImportRowUpdateManyMutationInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUncheckedUpdateManyInput = {
@@ -419,6 +451,8 @@ export type ImportRowUncheckedUpdateManyInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowListRelationFilter = {
@@ -443,6 +477,8 @@ export type ImportRowCountOrderByAggregateInput = {
   mergedIntoRowId?: Prisma.SortOrder
   skipReason?: Prisma.SortOrder
   resultEmployeeId?: Prisma.SortOrder
+  result?: Prisma.SortOrder
+  resultNotes?: Prisma.SortOrder
 }
 
 export type ImportRowAvgOrderByAggregateInput = {
@@ -458,6 +494,7 @@ export type ImportRowMaxOrderByAggregateInput = {
   mergedIntoRowId?: Prisma.SortOrder
   skipReason?: Prisma.SortOrder
   resultEmployeeId?: Prisma.SortOrder
+  result?: Prisma.SortOrder
 }
 
 export type ImportRowMinOrderByAggregateInput = {
@@ -469,6 +506,7 @@ export type ImportRowMinOrderByAggregateInput = {
   mergedIntoRowId?: Prisma.SortOrder
   skipReason?: Prisma.SortOrder
   resultEmployeeId?: Prisma.SortOrder
+  result?: Prisma.SortOrder
 }
 
 export type ImportRowSumOrderByAggregateInput = {
@@ -532,6 +570,8 @@ export type ImportRowCreateWithoutBatchInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUncheckedCreateWithoutBatchInput = {
@@ -545,6 +585,8 @@ export type ImportRowUncheckedCreateWithoutBatchInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowCreateOrConnectWithoutBatchInput = {
@@ -588,6 +630,8 @@ export type ImportRowScalarWhereInput = {
   mergedIntoRowId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   skipReason?: Prisma.StringNullableFilter<"ImportRow"> | string | null
   resultEmployeeId?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  result?: Prisma.StringNullableFilter<"ImportRow"> | string | null
+  resultNotes?: Prisma.JsonNullableFilter<"ImportRow">
 }
 
 export type ImportRowCreateManyBatchInput = {
@@ -601,6 +645,8 @@ export type ImportRowCreateManyBatchInput = {
   mergedIntoRowId?: string | null
   skipReason?: string | null
   resultEmployeeId?: string | null
+  result?: string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUpdateWithoutBatchInput = {
@@ -614,6 +660,8 @@ export type ImportRowUpdateWithoutBatchInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUncheckedUpdateWithoutBatchInput = {
@@ -627,6 +675,8 @@ export type ImportRowUncheckedUpdateWithoutBatchInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type ImportRowUncheckedUpdateManyWithoutBatchInput = {
@@ -640,6 +690,8 @@ export type ImportRowUncheckedUpdateManyWithoutBatchInput = {
   mergedIntoRowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   skipReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resultEmployeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resultNotes?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -656,6 +708,8 @@ export type ImportRowSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   mergedIntoRowId?: boolean
   skipReason?: boolean
   resultEmployeeId?: boolean
+  result?: boolean
+  resultNotes?: boolean
   batch?: boolean | Prisma.ImportBatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importRow"]>
 
@@ -671,6 +725,8 @@ export type ImportRowSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   mergedIntoRowId?: boolean
   skipReason?: boolean
   resultEmployeeId?: boolean
+  result?: boolean
+  resultNotes?: boolean
   batch?: boolean | Prisma.ImportBatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importRow"]>
 
@@ -686,6 +742,8 @@ export type ImportRowSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   mergedIntoRowId?: boolean
   skipReason?: boolean
   resultEmployeeId?: boolean
+  result?: boolean
+  resultNotes?: boolean
   batch?: boolean | Prisma.ImportBatchDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importRow"]>
 
@@ -701,9 +759,11 @@ export type ImportRowSelectScalar = {
   mergedIntoRowId?: boolean
   skipReason?: boolean
   resultEmployeeId?: boolean
+  result?: boolean
+  resultNotes?: boolean
 }
 
-export type ImportRowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "batchId" | "rowNumber" | "raw" | "data" | "errors" | "action" | "targetEmployeeId" | "mergedIntoRowId" | "skipReason" | "resultEmployeeId", ExtArgs["result"]["importRow"]>
+export type ImportRowOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "batchId" | "rowNumber" | "raw" | "data" | "errors" | "action" | "targetEmployeeId" | "mergedIntoRowId" | "skipReason" | "resultEmployeeId" | "result" | "resultNotes", ExtArgs["result"]["importRow"]>
 export type ImportRowInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   batch?: boolean | Prisma.ImportBatchDefaultArgs<ExtArgs>
 }
@@ -731,6 +791,8 @@ export type $ImportRowPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     mergedIntoRowId: string | null
     skipReason: string | null
     resultEmployeeId: string | null
+    result: string | null
+    resultNotes: runtime.JsonValue | null
   }, ExtArgs["result"]["importRow"]>
   composites: {}
 }
@@ -1166,6 +1228,8 @@ export interface ImportRowFieldRefs {
   readonly mergedIntoRowId: Prisma.FieldRef<"ImportRow", 'String'>
   readonly skipReason: Prisma.FieldRef<"ImportRow", 'String'>
   readonly resultEmployeeId: Prisma.FieldRef<"ImportRow", 'String'>
+  readonly result: Prisma.FieldRef<"ImportRow", 'String'>
+  readonly resultNotes: Prisma.FieldRef<"ImportRow", 'Json'>
 }
     
 

@@ -1748,6 +1748,8 @@ model ImportRow {
   mergedIntoRowId  String?
   skipReason       String?
   resultEmployeeId String?
+  result           String?
+  resultNotes      Json?
 
   @@index([batchId])
 }

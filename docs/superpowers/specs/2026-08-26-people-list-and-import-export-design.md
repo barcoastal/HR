@@ -1,7 +1,7 @@
 # People list view + Import & Export tool — design
 
 **Date:** 2026-08-26
-**Status:** Sections 1–3 approved in chat and being built. Sections 4–5 (Import commit, Export) are *not yet designed* — placeholders only.
+**Status:** Sections 1–3 shipped 2026-08-26. Sections 4–5 approved the same day and being built.
 
 ## Why
 
@@ -147,13 +147,44 @@ Pairs are row↔row and row↔employee (never employee↔employee). Union-find c
   - **Undo** (`undoGroupDecision`): restores the snapshot rows and sets the group back to `PENDING`.
 - The **Import** button is enabled only when no group needs a decision and no row is invalid. (Section 4 will define what it does; until then it is a disabled "Import — next" placeholder with the summary counts.)
 
-## Section 4 — Import (commit) — *not yet designed*
+## Section 4 — Import (commit)
 
-Placeholder in the UI. To be designed: creating `CREATE` rows (status default PENDING → approve/invite flow), applying `UPDATE` rows to their target employee, resolving departments / managers / teams (including managers that are themselves in the batch), audit entries, summary.
+Approved 2026-08-26. Triggered by the **Import** button on the batch page; allowed only while `status = REVIEWING`, no group needs a decision, and no row is invalid.
 
-## Section 5 — Export — *not yet designed*
+**Before committing** the Import step states the external effects: how many people will be created as *Pending* (no login, no email — approve later from People), how many will be created with another status (they get a login and the welcome email, exactly like "Approve & invite"), and how many existing people will be updated. A confirm dialog repeats those numbers.
 
-Agreed direction: pick an entity (People, Candidates, Departments, Time Off, Reviews, Interviews, …), choose columns, apply filters, download CSV/XLSX. Placeholder tab until designed.
+**What happens, row by row** (`commitImportBatch`, one row failing never rolls back the others):
+
+1. **Departments / teams** named in the file are created if they don't exist (case-insensitive match on name). A team needs a department; a team named on a row without a department is skipped with a warning.
+2. **`CREATE` rows** → `Employee.create` with every field in the row's data. Defaults: `jobTitle` "Employee", `startDate` today, `anniversaryDate` = `startDate`, `status` **PENDING**. A row with no email gets `first.last@pending.local` like the old import. If the email is already taken the row **fails** ("Email already in use").
+   Non-PENDING statuses additionally get a `User` account (role EMPLOYEE, linked to the employee — reusing an existing account with that email if present) and the welcome email.
+3. **`UPDATE` rows** → `Employee.update` on `targetEmployeeId` with only the fields present in the row's data; blanks never overwrite. `status` is never changed by an update. `email` is changed only if no `User` account is bound to the current email; otherwise a warning ("Email kept — it's the login").
+4. **Managers** (second pass, after every row exists): `manager` is matched by exact email, else by name (same normalization as duplicate detection: first+last or preferred+last) against all employees, including the ones this import just created. Exactly one match → `managerId` set; none or several → warning on the row.
+5. **Audit**: `employee.created` / `employee.updated` per person (`details.via = "import"`, `batchId`), plus one `import.completed` entry with the summary.
+6. **Batch**: `status = IMPORTED`, `importedAt`, `summary = { created, updated, failed, warnings, invited }`. Each row records `result` (`created` | `updated` | `failed`), `resultEmployeeId`, and `resultNotes` (warnings / failure reason).
+
+`ImportRow` gains `result String?` and `resultNotes Json?`.
+
+**After committing** the batch page opens on the Import step showing a results table: row, name, result chip, notes, link to the person. The People page (`/people`, `/org`) is revalidated. No undo in this version — use Archive/Delete on the person.
+
+## Section 5 — Export
+
+Approved 2026-08-26. Export tab on `/data`, SUPER_ADMIN / ADMIN / HR only.
+
+**Entities (v1)** — a registry (`export-registry.ts`) declares each one's columns (with a default-on set) and filters:
+
+| Entity | Columns | Filters |
+|---|---|---|
+| People | first/last/preferred name, pronouns, email, phone, job title, department, team, manager, status, start/end date, birthday, location, address/city/state/zip/country, emergency contact name/phone/relation, T-shirt size, created | status, department |
+| Candidates | first/last name, email, phone, status, position, source, recruiter, manager, applied, hired, background check status/date, hourly rate, LinkedIn | status, position, applied date range |
+| Departments | name, description, head, parent department, member count, created | — |
+| Time off requests | employee, policy, start, end, days, status, approver, reason, requested | status, date range (start) |
+| Reviews | employee, reviewer, cycle, type, status, rating, created | status, cycle date range |
+| Interviews | candidate, position, interviewer, scheduled at, duration, type, status, meet link, created | status, scheduled date range |
+
+**Builder UI**: pick an entity → tick columns (defaults pre-ticked; Select all / Defaults) → filters → format (**CSV** or **Excel**) → live "N rows match" count → **Download**. The download is a direct `GET /api/data/export?entity=…&columns=…&format=…&<filters>`; the server validates entity and columns against the registry, so the URL cannot request columns the registry doesn't expose.
+
+**Output**: CSV is UTF-8 with BOM (opens cleanly in Excel), RFC 4180 quoting; Excel is a single sheet with a bold header row. File name `<entity>-<YYYY-MM-DD>.<csv|xlsx>`. Each download writes an audit entry `data.exported` (entity, filters, column count, row count). No export history UI.
 
 ## Testing
 

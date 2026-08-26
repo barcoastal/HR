@@ -2821,3 +2821,82 @@ git commit -m "feat(import): duplicate review with side-by-side compare, merge, 
 - [ ] Confirm the dev server on port 3000 belongs to this repo (`lsof -p <pid> | grep cwd`); if not, start `npm run dev` on another port and report that URL.
 - [ ] Walk `/people` (grouping, filters, search, URL state, pending approve) and `/data` → new import → map → review → import summary; discard; history list.
 - [ ] Report to the user: the localhost URL, what to try, and that nothing has been pushed (branch `feature/people-list-import-export`).
+
+---
+
+## Addendum (2026-08-26, later): Sections 4–5 — Import commit and Export
+
+Branch `feature/import-commit-export`. Spec sections 4 and 5 are the requirements. Same global constraints. Schema already has `ImportRow.result String?` and `ImportRow.resultNotes Json?` (pushed + generated).
+
+### Task 14: Manager matching (pure) + commit service + `commitImport` action + Import step UI
+
+**Files:**
+- Create: `src/lib/import-export/manager-match.ts`, test `src/lib/import-export/__tests__/manager-match.test.ts`
+- Create: `src/lib/import-export/commit-service.ts` (server)
+- Modify: `src/lib/actions/imports.ts` — add `commitImport`, expose `result`/`resultNotes` on `ImportRowView` and `summary` on `ImportBatchDetail.batch`
+- Rewrite: `src/components/data/import-step.tsx`; modify `src/components/data/import-batch-view.tsx` (default to the `import` step when `status === "IMPORTED"`; hide Discard when not REVIEWING — already)
+
+**Interfaces:**
+```ts
+// manager-match.ts (pure)
+export type ManagerCandidate = { id: string; firstName: string; lastName: string; preferredName?: string | null; email: string };
+export type ManagerMatch = { id: string } | { error: "none" | "ambiguous" };
+export function matchManager(reference: string, people: ManagerCandidate[]): ManagerMatch;
+//  reference containing "@" → exact case-insensitive email; otherwise nameKeys(first,last,preferred) overlap with nameKeys parsed from "First Last" (first token / rest) — both token orders. Exactly one hit → id.
+
+// commit-service.ts (server)
+export type CommitSummary = { created: number; updated: number; failed: number; warnings: number; invited: number };
+export async function commitImportBatch(batchId: string, actorUserId: string): Promise<CommitSummary>;
+
+// actions/imports.ts
+export async function commitImport(batchId: string): Promise<CommitSummary>;   // guards: REVIEWING, needsDecision===0, needsAttention===0, then commitImportBatch, revalidate /people /org /data and the batch page
+// ImportRowView += { result: "created" | "updated" | "failed" | null; resultNotes: string[] }
+// ImportBatchDetail.batch += { summary: CommitSummary | null }
+```
+
+`commitImportBatch` steps (spec §4): load batch+rows (CREATE/UPDATE only), all employees (active+archived — see `loadEmployeesLite`), departments, teams. Resolve departments/teams (create missing, cache by lowercased name). For each row in `rowNumber` order, inside its own try/catch: CREATE → `db.employee.create` mapping every `FieldKey` (dates via `new Date(v)`, `anniversaryDate = startDate`, `jobTitle ?? "Employee"`, `startDate ?? today`, `status ?? "PENDING"`, email fallback `${first}.${last}@pending.local` lowercased/no spaces; taken email → throw `Email already in use`); when status !== "PENDING" create/link the `User` (copy the block from `approveAndInviteEmployee` in `src/lib/actions/employees.ts:1154`) and call `sendWelcomeEmail` from `@/lib/email` (count `invited`). UPDATE → `db.employee.update` with only present keys; never `status`; `email` only if `db.user.findUnique({ where: { email: current } })` is null, else push warning "Email kept — it's the login". Record `result`, `resultEmployeeId`, `resultNotes`. Second pass: for rows with `data.manager`, `matchManager` against employees ∪ created; set `managerId` or warning ("Manager "X" not found" / "matches more than one person"). Audit via `audit()` from `@/lib/audit` (`employee.created`/`employee.updated` with `details: { via: "import", batchId }`; `import.completed` with the summary). Finally update the batch (`status: "IMPORTED"`, `importedAt`, `summary`).
+
+Import step UI: when REVIEWING → tiles (new / updates / merged / skipped), an **effects** panel ("N people created as Pending — no email", "M created as <status> — they get a login and a welcome email", "K existing people updated"), blockers text as today, and an **Import** button → confirm `Dialog` repeating the numbers → `run(() => commitImport(id))`. When IMPORTED → summary tiles from `batch.summary` + results table (row #, name, `result` chip Created/Updated/Failed, notes, "Open" link to `/people/{resultEmployeeId}`), and a "Go to People" link. Rows with `action` SKIP/MERGED_AWAY are listed under a collapsed "Not imported (n)" section.
+
+Test `matchManager` (email exact, name hit, preferred-name hit, "Last First" order, ambiguous → error, none → error). `npm test`, `tsc`, then commit on this branch (the lead commits; do not push).
+
+### Task 15: Export registry, loaders, CSV, route, builder UI
+
+**Files:**
+- Create: `src/lib/import-export/export-registry.ts` (pure, client-safe), `src/lib/import-export/to-csv.ts` (pure) + test `__tests__/to-csv.test.ts`, `src/lib/import-export/export-loaders.ts` (server), `src/lib/actions/exports.ts` (`"use server"`), `src/app/api/data/export/route.ts`, `src/components/data/export-builder.tsx`
+- Modify: `src/app/(dashboard)/data/page.tsx` (render `ExportBuilder` with options instead of `ExportPlaceholder`); delete `export-placeholder.tsx`
+
+**Interfaces:**
+```ts
+// export-registry.ts
+export type ExportEntityKey = "people" | "candidates" | "departments" | "timeOff" | "reviews" | "interviews";
+export type ExportColumn = { key: string; label: string; default?: boolean };
+export type ExportFilter =
+  | { key: string; label: string; type: "select"; options?: { value: string; label: string }[]; optionsFrom?: "departments" | "positions" }
+  | { key: string; label: string; type: "dateRange" };   // request params `${key}From`, `${key}To` (YYYY-MM-DD)
+export type ExportEntityDef = { key: ExportEntityKey; label: string; description: string; icon: string; columns: ExportColumn[]; filters: ExportFilter[] };
+export const EXPORT_ENTITIES: ExportEntityDef[];
+export const EXPORT_BY_KEY: Record<ExportEntityKey, ExportEntityDef>;
+
+// to-csv.ts
+export function toCsv(headers: string[], rows: (string | number | null | undefined)[][]): string;  // RFC4180 quoting, CRLF, leading BOM
+
+// export-loaders.ts (server)
+export type ExportRow = Record<string, string | number | null>;
+export async function loadExportRows(entity: ExportEntityKey, filters: Record<string, string>): Promise<ExportRow[]>;  // keys = column keys; dates "YYYY-MM-DD", datetimes ISO; names as "First Last"
+export async function countExportRows(entity: ExportEntityKey, filters: Record<string, string>): Promise<number>;
+
+// actions/exports.ts
+export async function getExportOptions(): Promise<{ departments: { value: string; label: string }[]; positions: { value: string; label: string }[] }>;
+export async function previewExportCount(entity: ExportEntityKey, filters: Record<string, string>): Promise<number>;
+
+// GET /api/data/export?entity=&columns=a,b&format=csv|xlsx&<filters>
+//  requireApiAdmin → 403; unknown entity/column → 400; loads rows; csv: "text/csv; charset=utf-8"; xlsx via exceljs (bold header, autoFilter);
+//  Content-Disposition: attachment; filename="<entity>-<YYYY-MM-DD>.<ext>"; audit "data.exported" { entity, filters, columns: n, rows: n }
+```
+
+Column sets per spec §5 table. Enum filter options: People status = `EMPLOYEE_STATUS_VALUES`; Candidate status = the `CandidateStatus` enum; Time off status = PENDING/APPROVED/DENIED/CANCELLED; Review status = PENDING/SUBMITTED; Interview status = SCHEDULED/COMPLETED/CANCELLED. Department filter for People uses `optionsFrom: "departments"`; Position filter for Candidates uses `optionsFrom: "positions"`. Employees loader must include archived? No — active only (default `db` behaviour).
+
+Builder UI (`"use client"`): left column of entity cards (icon, label, description); right: column checkboxes in a 2–3 col grid with "Select all" / "Defaults" links; filters row (selects, two date inputs for ranges); format segmented control CSV / Excel; footer with "N rows match" (call `previewExportCount` via `useTransition`, re-run when entity/filters change) and a **Download** `<a href={url} download>` styled as the primary button (disabled when no columns). Build the URL with `URLSearchParams`.
+
+Test `toCsv` (quotes, commas, newlines, BOM, null → empty). `npm test`, `tsc`, then the lead commits.
