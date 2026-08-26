@@ -400,3 +400,9 @@ export type ImportRow = Prisma.ImportRowModel
  * 
  */
 export type ImportDuplicateGroup = Prisma.ImportDuplicateGroupModel
+/**
+ * Model DuplicateDismissal
+ * A pair of employees the team has marked "not duplicates" on the /data Duplicates tab.
+ * Ids are stored in sorted order so each unordered pair has exactly one row.
+ */
+export type DuplicateDismissal = Prisma.DuplicateDismissalModel

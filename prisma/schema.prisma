@@ -1770,3 +1770,15 @@ model ImportDuplicateGroup {
 
   @@index([batchId])
 }
+
+/// A pair of employees the team has marked "not duplicates" on the /data Duplicates tab.
+/// Ids are stored in sorted order so each unordered pair has exactly one row.
+model DuplicateDismissal {
+  id            String   @id @default(uuid())
+  employeeAId   String
+  employeeBId   String
+  dismissedById String
+  createdAt     DateTime @default(now())
+
+  @@unique([employeeAId, employeeBId])
+}

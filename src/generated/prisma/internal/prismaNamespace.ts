@@ -459,7 +459,8 @@ export const ModelName = {
   GustoConnection: 'GustoConnection',
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
-  ImportDuplicateGroup: 'ImportDuplicateGroup'
+  ImportDuplicateGroup: 'ImportDuplicateGroup',
+  DuplicateDismissal: 'DuplicateDismissal'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -475,7 +476,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6103,6 +6104,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DuplicateDismissal: {
+      payload: Prisma.$DuplicateDismissalPayload<ExtArgs>
+      fields: Prisma.DuplicateDismissalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DuplicateDismissalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DuplicateDismissalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        findFirst: {
+          args: Prisma.DuplicateDismissalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DuplicateDismissalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        findMany: {
+          args: Prisma.DuplicateDismissalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>[]
+        }
+        create: {
+          args: Prisma.DuplicateDismissalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        createMany: {
+          args: Prisma.DuplicateDismissalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DuplicateDismissalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>[]
+        }
+        delete: {
+          args: Prisma.DuplicateDismissalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        update: {
+          args: Prisma.DuplicateDismissalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        deleteMany: {
+          args: Prisma.DuplicateDismissalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DuplicateDismissalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DuplicateDismissalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>[]
+        }
+        upsert: {
+          args: Prisma.DuplicateDismissalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DuplicateDismissalPayload>
+        }
+        aggregate: {
+          args: Prisma.DuplicateDismissalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDuplicateDismissal>
+        }
+        groupBy: {
+          args: Prisma.DuplicateDismissalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DuplicateDismissalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DuplicateDismissalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DuplicateDismissalCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7335,6 +7410,17 @@ export const ImportDuplicateGroupScalarFieldEnum = {
 export type ImportDuplicateGroupScalarFieldEnum = (typeof ImportDuplicateGroupScalarFieldEnum)[keyof typeof ImportDuplicateGroupScalarFieldEnum]
 
 
+export const DuplicateDismissalScalarFieldEnum = {
+  id: 'id',
+  employeeAId: 'employeeAId',
+  employeeBId: 'employeeBId',
+  dismissedById: 'dismissedById',
+  createdAt: 'createdAt'
+} as const
+
+export type DuplicateDismissalScalarFieldEnum = (typeof DuplicateDismissalScalarFieldEnum)[keyof typeof DuplicateDismissalScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8126,6 +8212,7 @@ export type GlobalOmitConfig = {
   importBatch?: Prisma.ImportBatchOmit
   importRow?: Prisma.ImportRowOmit
   importDuplicateGroup?: Prisma.ImportDuplicateGroupOmit
+  duplicateDismissal?: Prisma.DuplicateDismissalOmit
 }
 
 /* Types for Logging */

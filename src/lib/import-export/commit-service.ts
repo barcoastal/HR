@@ -3,43 +3,12 @@ import { db } from "@/lib/db";
 import { audit } from "@/lib/audit";
 import { sendWelcomeEmail } from "@/lib/email";
 import { loadEmployeesLite } from "./batch-service";
+import { createOrgResolver, dateFields, employeeUpdateFromRowData, textFields, type OrgResolver } from "./employee-write";
 import { matchManager, type ManagerCandidate } from "./manager-match";
-import type { FieldKey, RowData } from "./types";
+import type { RowData } from "./types";
 import type { CommitSummary, CommitResult } from "./types";
 
 export type { CommitSummary, CommitResult };
-
-// ---------------------------------------------------------------------------
-// Field routing — every FieldKey must land in exactly one of these buckets.
-// ---------------------------------------------------------------------------
-
-const TEXT_KEYS = [
-  "firstName", "middleName", "lastName", "preferredName", "pronouns", "phone", "jobTitle", "location",
-  "address", "city", "state", "zipCode", "country",
-  "emergencyContactName", "emergencyContactPhone", "emergencyContactRelation",
-  "bio", "hobbies", "dietaryRestrictions", "tShirtSize",
-] as const;
-const DATE_KEYS = ["startDate", "birthday", "anniversaryDate", "benefitsEligibleDate"] as const;
-type SpecialKey = "email" | "status" | "department" | "team" | "manager";
-type Unhandled = Exclude<FieldKey, (typeof TEXT_KEYS)[number] | (typeof DATE_KEYS)[number] | SpecialKey>;
-// Compile-time guard: adding a field to the registry without routing it here is a type error.
-const _everyFieldRouted: Unhandled extends never ? true : never = true;
-void _everyFieldRouted;
-
-type TextPatch = Partial<Record<(typeof TEXT_KEYS)[number], string>>;
-type DatePatch = Partial<Record<(typeof DATE_KEYS)[number], Date>>;
-
-function textFields(data: RowData): TextPatch {
-  const out: TextPatch = {};
-  for (const k of TEXT_KEYS) if (data[k] !== undefined) out[k] = data[k];
-  return out;
-}
-
-function dateFields(data: RowData): DatePatch {
-  const out: DatePatch = {};
-  for (const k of DATE_KEYS) if (data[k]) out[k] = new Date(data[k]!);
-  return out;
-}
 
 /** Today at UTC midnight — dates are stored date-only, matching the "YYYY-MM-DD" row values. */
 function today(): Date {
@@ -56,46 +25,12 @@ function errorMessage(err: unknown): string {
 }
 
 // ---------------------------------------------------------------------------
-// Departments / teams — created on demand, cached by lowercased name.
-// ---------------------------------------------------------------------------
-
-async function createOrgResolver() {
-  const [departments, teams] = await Promise.all([
-    db.department.findMany({ select: { id: true, name: true } }),
-    db.team.findMany({ select: { id: true, name: true, departmentId: true } }),
-  ]);
-  const deptByName = new Map(departments.map((d) => [d.name.trim().toLowerCase(), d.id]));
-  const teamByKey = new Map(teams.map((t) => [`${t.departmentId}|${t.name.trim().toLowerCase()}`, t.id]));
-
-  return {
-    async department(name: string): Promise<string> {
-      const key = name.trim().toLowerCase();
-      let id = deptByName.get(key);
-      if (!id) {
-        id = (await db.department.create({ data: { name: name.trim() }, select: { id: true } })).id;
-        deptByName.set(key, id);
-      }
-      return id;
-    },
-    async team(name: string, departmentId: string): Promise<string> {
-      const key = `${departmentId}|${name.trim().toLowerCase()}`;
-      let id = teamByKey.get(key);
-      if (!id) {
-        id = (await db.team.create({ data: { name: name.trim(), departmentId }, select: { id: true } })).id;
-        teamByKey.set(key, id);
-      }
-      return id;
-    },
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Commit
 // ---------------------------------------------------------------------------
 
 type Ctx = {
   batchId: string;
-  org: Awaited<ReturnType<typeof createOrgResolver>>;
+  org: OrgResolver;
   /** Every employee that can be a manager: existing (archived included) plus the ones created here. */
   candidates: Map<string, ManagerCandidate>;
   takenEmails: Set<string>;
@@ -190,30 +125,14 @@ async function updateEmployee(
   const current = await db.employee.findUnique({ where: { id: row.targetEmployeeId } });
   if (!current) throw new Error("The linked person no longer exists");
 
-  const patch: Prisma.EmployeeUncheckedUpdateInput = { ...textFields(data), ...dateFields(data) };
-
-  if (data.email) {
-    const next = data.email.toLowerCase();
-    if (next !== current.email.toLowerCase()) {
-      const login = await db.user.findUnique({ where: { email: current.email }, select: { id: true } });
-      if (login) notes.push("Email kept — it's the login");
-      else if (ctx.takenEmails.has(next)) notes.push("Email kept — the new one is already used by someone else");
-      else {
-        patch.email = next;
-        ctx.takenEmails.delete(current.email.toLowerCase());
-        ctx.takenEmails.add(next);
-      }
-    }
-  }
-  if (data.status && data.status !== current.status) {
-    notes.push(`Status kept as ${current.status} — updates never change status`);
-  }
-
-  if (data.department) patch.departmentId = await ctx.org.department(data.department);
-  if (data.team) {
-    const departmentId = (patch.departmentId as string | undefined) ?? current.departmentId;
-    if (departmentId) patch.teamId = await ctx.org.team(data.team, departmentId);
-    else notes.push(`Team "${data.team}" skipped — this person has no department`);
+  const { patch, notes: updateNotes } = await employeeUpdateFromRowData(current, data, {
+    org: ctx.org,
+    isEmailTaken: (email) => ctx.takenEmails.has(email),
+  });
+  notes.push(...updateNotes);
+  if (typeof patch.email === "string") {
+    ctx.takenEmails.delete(current.email.toLowerCase());
+    ctx.takenEmails.add(patch.email);
   }
 
   const updated = await db.employee.update({

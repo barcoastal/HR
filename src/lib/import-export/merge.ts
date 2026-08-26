@@ -18,6 +18,45 @@ export function defaultFieldChoices(members: MergeMember[], primary: MemberRef):
   return choices;
 }
 
+/** The merged values: for every field, the value of the chosen member (defaults fill the gaps). */
+function pickMergedData(members: MergeMember[], primary: MemberRef, choices: Partial<Record<FieldKey, MemberRef>>): RowData {
+  const defaults = defaultFieldChoices(members, primary);
+  const data: RowData = {};
+  for (const key of FIELD_KEYS) {
+    const ref = choices[key] ?? defaults[key];
+    if (!ref) continue;
+    const v = valueOf(members, ref, key);
+    if (v !== undefined) data[key] = v;
+  }
+  return data;
+}
+
+/** Hand-edited Result-column values win over the picked column values; an empty override blanks the field. */
+export function applyOverrides(data: RowData, overrides: Partial<Record<FieldKey, string>>): RowData {
+  const merged: RowData = { ...data };
+  for (const [key, raw] of Object.entries(overrides) as [FieldKey, string | undefined][]) {
+    const value = (raw ?? "").trim();
+    if (value) merged[key] = value;
+    else delete merged[key];
+  }
+  return merged;
+}
+
+/**
+ * Result data for merging existing employees into one (system-wide duplicates): the primary's
+ * values, blanks filled from the others, explicit per-field choices, then typed-over values.
+ * Callers validate the result with `validateRow` before writing it.
+ */
+export function mergeEmployeeData(
+  members: MergeMember[],
+  primary: MemberRef,
+  choices: Partial<Record<FieldKey, MemberRef>>,
+  overrides: Partial<Record<FieldKey, string>> = {},
+): RowData {
+  if (!members.some((m) => sameRef(m.ref, primary))) throw new Error("Primary must be a member of the group");
+  return applyOverrides(pickMergedData(members, primary, choices), overrides);
+}
+
 /**
  * Decide which row carries the merged data, what action it takes, and which rows fold away.
  * A row primary carries itself (CREATE); an employee primary is carried by the lowest row (UPDATE).
@@ -39,14 +78,7 @@ export function buildMergePlan(
     carrier = [...rowMembers].sort((a, b) => (a.rowNumber ?? 0) - (b.rowNumber ?? 0))[0];
   }
 
-  const defaults = defaultFieldChoices(members, primary);
-  const data: RowData = {};
-  for (const key of FIELD_KEYS) {
-    const ref = choices[key] ?? defaults[key];
-    if (!ref) continue;
-    const v = valueOf(members, ref, key);
-    if (v !== undefined) data[key] = v;
-  }
+  const data = pickMergedData(members, primary, choices);
 
   return {
     carrierRowId: carrier.ref.id,

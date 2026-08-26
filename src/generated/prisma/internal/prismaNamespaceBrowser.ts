@@ -126,7 +126,8 @@ export const ModelName = {
   GustoConnection: 'GustoConnection',
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
-  ImportDuplicateGroup: 'ImportDuplicateGroup'
+  ImportDuplicateGroup: 'ImportDuplicateGroup',
+  DuplicateDismissal: 'DuplicateDismissal'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1336,6 +1337,17 @@ export const ImportDuplicateGroupScalarFieldEnum = {
 } as const
 
 export type ImportDuplicateGroupScalarFieldEnum = (typeof ImportDuplicateGroupScalarFieldEnum)[keyof typeof ImportDuplicateGroupScalarFieldEnum]
+
+
+export const DuplicateDismissalScalarFieldEnum = {
+  id: 'id',
+  employeeAId: 'employeeAId',
+  employeeBId: 'employeeBId',
+  dismissedById: 'dismissedById',
+  createdAt: 'createdAt'
+} as const
+
+export type DuplicateDismissalScalarFieldEnum = (typeof DuplicateDismissalScalarFieldEnum)[keyof typeof DuplicateDismissalScalarFieldEnum]
 
 
 export const SortOrder = {

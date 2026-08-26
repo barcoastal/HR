@@ -9,6 +9,18 @@ export function groupKey(members: MemberRef[]): string {
   return members.map(refKey).sort().join("|");
 }
 
+/** Order-independent key for a pair of employee ids — the shape stored in DuplicateDismissal. */
+export function pairKey(a: string, b: string): string {
+  return a < b ? `${a}|${b}` : `${b}|${a}`;
+}
+
+export type DetectOptions = {
+  /** Link existing employees with each other too (system-wide scan). Off for imports. */
+  pairEmployees?: boolean;
+  /** `pairKey`s of employee pairs the team has dismissed — never linked directly. */
+  dismissedPairs?: Set<string>;
+};
+
 export function isStrongGroup(reasons: GroupReason[]): boolean {
   return reasons.includes("email") || reasons.includes("phone");
 }
@@ -28,10 +40,13 @@ class UnionFind {
 
 /**
  * Cluster file rows with each other and with existing employees when they share a
- * normalized email, a phone number, or a name. Existing employees never pair with
- * each other directly — only rows introduce links.
+ * normalized email, a phone number, or a name. By default existing employees never
+ * pair with each other directly — only rows introduce links; `pairEmployees` turns
+ * employee↔employee links on (minus `dismissedPairs`) for the system-wide scan.
  */
-export function detectDuplicates(rows: RowLite[], employees: ExistingEmployeeLite[]): DetectedGroup[] {
+export function detectDuplicates(rows: RowLite[], employees: ExistingEmployeeLite[], opts: DetectOptions = {}): DetectedGroup[] {
+  const pairEmployees = opts.pairEmployees ?? false;
+  const dismissed = opts.dismissedPairs ?? new Set<string>();
   const nodes: Node[] = [];
   for (const r of rows) {
     nodes.push({
@@ -75,7 +90,9 @@ export function detectDuplicates(rows: RowLite[], employees: ExistingEmployeeLit
     for (let i = 0; i < bucket.length; i++) {
       for (let j = i + 1; j < bucket.length; j++) {
         const a = bucket[i], b = bucket[j];
-        if (a.ref.kind === "employee" && b.ref.kind === "employee") continue;
+        if (a.ref.kind === "employee" && b.ref.kind === "employee") {
+          if (!pairEmployees || dismissed.has(pairKey(a.ref.id, b.ref.id))) continue;
+        }
         uf.union(refKey(a.ref), refKey(b.ref));
         linked.add(refKey(a.ref));
         linked.add(refKey(b.ref));
@@ -122,7 +139,8 @@ export function detectDuplicates(rows: RowLite[], employees: ExistingEmployeeLit
     const sa = isStrongGroup(a.reasons) ? 0 : 1;
     const sb = isStrongGroup(b.reasons) ? 0 : 1;
     if (sa !== sb) return sa - sb;
-    return minRow(a) - minRow(b);
+    if (minRow(a) !== minRow(b)) return minRow(a) - minRow(b);
+    return a.key.localeCompare(b.key);
   });
   return groups;
 }

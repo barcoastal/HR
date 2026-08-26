@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { defaultFieldChoices, buildMergePlan } from "@/lib/import-export/merge";
+import { defaultFieldChoices, buildMergePlan, mergeEmployeeData } from "@/lib/import-export/merge";
 import { employeeToRowData } from "@/lib/import-export/employee-row";
 import type { MergeMember } from "@/lib/import-export/types";
 
@@ -38,6 +38,28 @@ describe("buildMergePlan", () => {
   });
   it("throws when there is no row to carry the merge", () => {
     expect(() => buildMergePlan([e1], e1.ref, {})).toThrow();
+  });
+});
+
+describe("mergeEmployeeData", () => {
+  const a: MergeMember = { ref: { kind: "employee", id: "a" }, data: { firstName: "Ada", lastName: "Lovelace", email: "ada@corp.com", jobTitle: "Engineer", status: "ACTIVE" } };
+  const b: MergeMember = { ref: { kind: "employee", id: "b" }, data: { firstName: "Ada", lastName: "Lovelace", email: "ada@gmail.com", phone: "3055550142", city: "Miami", status: "PENDING" } };
+
+  it("takes the primary's values, fills blanks from the others, and honours explicit choices", () => {
+    expect(mergeEmployeeData([a, b], a.ref, { email: b.ref })).toEqual({
+      firstName: "Ada", lastName: "Lovelace", email: "ada@gmail.com", jobTitle: "Engineer", status: "ACTIVE", phone: "3055550142", city: "Miami",
+    });
+  });
+
+  it("lets typed-over Result values win and blanks a field when the override is empty", () => {
+    const data = mergeEmployeeData([a, b], b.ref, {}, { jobTitle: "  Staff Engineer ", city: "" });
+    expect(data.jobTitle).toBe("Staff Engineer");
+    expect(data.city).toBeUndefined();
+    expect(data.email).toBe("ada@gmail.com");
+  });
+
+  it("throws when the primary is not a member", () => {
+    expect(() => mergeEmployeeData([a, b], { kind: "employee", id: "zzz" }, {})).toThrow();
   });
 });
 

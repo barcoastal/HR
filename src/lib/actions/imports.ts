@@ -5,7 +5,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
-import { buildMergePlan } from "@/lib/import-export/merge";
+import { applyOverrides, buildMergePlan } from "@/lib/import-export/merge";
 import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
 import { commitImportBatch } from "@/lib/import-export/commit-service";
 import type { CommitResult, CommitSummary } from "@/lib/import-export/types";
@@ -302,13 +302,7 @@ export async function resolveGroupMerge(
   const plan = buildMergePlan(mergeMembers, primary, choices);
 
   // Hand-edited values in the Result column win over the picked column values.
-  const merged: RowData = { ...plan.data };
-  for (const [key, raw] of Object.entries(overrides) as [FieldKey, string | undefined][]) {
-    const value = (raw ?? "").trim();
-    if (value) merged[key] = value;
-    else delete merged[key];
-  }
-  const { data: cleaned, errors } = validateRow(merged);
+  const { data: cleaned, errors } = validateRow(applyOverrides(plan.data, overrides));
   if (errors.length > 0) {
     throw new Error(`Fix these before merging: ${errors.map((e) => e.message).join("; ")}`);
   }
