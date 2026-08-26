@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { listImportBatches } from "@/lib/actions/imports";
+import { getExportOptions } from "@/lib/actions/exports";
 import { PageHeader } from "@/components/ui/page-header";
 import { ImportsList } from "@/components/data/imports-list";
 import { NewImportDialog } from "@/components/data/new-import-dialog";
-import { ExportPlaceholder } from "@/components/data/export-placeholder";
+import { ExportBuilder } from "@/components/data/export-builder";
 import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
   const { tab } = await searchParams;
   const active = tab === "export" ? "export" : "import";
   const batches = active === "import" ? await listImportBatches() : [];
+  const exportOptions = active === "export" ? await getExportOptions() : null;
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
@@ -50,7 +52,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
           );
         })}
       </nav>
-      {active === "import" ? <ImportsList batches={batches} /> : <ExportPlaceholder />}
+      {exportOptions ? <ExportBuilder options={exportOptions} /> : <ImportsList batches={batches} />}
     </div>
   );
 }
