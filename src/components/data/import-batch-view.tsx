@@ -20,12 +20,14 @@ function sameMapping(a: ColumnMapping | null, b: ColumnMapping | null) {
   return JSON.stringify(a) === JSON.stringify(b);
 }
 
+const READ_ONLY_LABEL: Record<string, string> = { IMPORTED: "Imported", UNDONE: "Undone", DISCARDED: "Discarded" };
+
 export function ImportBatchView({ detail }: { detail: ImportBatchDetail }) {
   const router = useRouter();
   const readOnly = detail.batch.status !== "REVIEWING";
   const canReview = mappingIsComplete(detail.batch.mapping);
   const [step, setStep] = useState<ImportStepId>(
-    detail.batch.status === "IMPORTED" ? "import" : canReview ? "review" : "map",
+    detail.batch.status === "IMPORTED" || detail.batch.status === "UNDONE" ? "import" : canReview ? "review" : "map",
   );
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -78,9 +80,7 @@ export function ImportBatchView({ detail }: { detail: ImportBatchDetail }) {
           </h1>
           <p className="text-xs text-[var(--color-text-muted)] mt-1">
             {detail.batch.rowCount} rows · uploaded by {detail.batch.uploadedBy} on {formatDate(detail.batch.createdAt)}
-            {readOnly && (
-              <span className="ml-2 font-medium">· {detail.batch.status === "IMPORTED" ? "Imported" : "Discarded"}</span>
-            )}
+            {readOnly && <span className="ml-2 font-medium">· {READ_ONLY_LABEL[detail.batch.status] ?? detail.batch.status}</span>}
           </p>
         </div>
         {!readOnly && (

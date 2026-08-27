@@ -1,13 +1,14 @@
-import { Prisma, type EmployeeStatus } from "@/generated/prisma/client";
+import { Prisma, type Employee, type EmployeeStatus } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 import { audit } from "@/lib/audit";
 import { sendWelcomeEmail } from "@/lib/email";
 import { loadEmployeesLite } from "./batch-service";
-import { createOrgResolver, dateFields, employeeUpdateFromRowData, textFields, type OrgResolver } from "./employee-write";
+import {
+  createOrgResolver, DATE_KEYS, dateFields, employeeUpdateFromRowData, TEXT_KEYS, textFields, type OrgResolver,
+} from "./employee-write";
 import { matchManager, type ManagerCandidate } from "./manager-match";
-import type { RowData } from "./types";
-import type { CommitSummary, CommitResult } from "./types";
+import type { CommitResult, CommitSummary, CreateSnapshot, RowData, RowSnapshot } from "./types";
 
 export type { CommitSummary, CommitResult };
 
@@ -38,19 +39,35 @@ type Ctx = {
   summary: CommitSummary;
 };
 
-type Outcome = { result: CommitResult; employeeId: string | null; notes: string[] };
+type Outcome = {
+  result: CommitResult;
+  employeeId: string | null;
+  notes: string[];
+  /** Undo bookkeeping, persisted as ImportRow.previous. */
+  previous: RowSnapshot | CreateSnapshot | null;
+  /** UPDATE rows: the manager before this import — copied into `previous` if pass 2 replaces it. */
+  managerBefore?: string | null;
+};
 
-/** Copied from approveAndInviteEmployee: create/link the login, then send the welcome email. Returns true when invited. */
-async function ensureLoginAndInvite(employee: { id: string; email: string }, notes: string[]): Promise<boolean> {
+type LoginOutcome = { invited: boolean; snapshot: CreateSnapshot };
+
+/**
+ * Copied from approveAndInviteEmployee: create/link the login, then send the welcome email. The snapshot
+ * records whether the login was made here or merely linked, so undo knows whether it may delete it.
+ */
+async function ensureLoginAndInvite(employee: { id: string; email: string }, notes: string[]): Promise<LoginOutcome> {
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const snapshot: CreateSnapshot = { loginCreated: false };
   const existingUser = await db.user.findUnique({ where: { email: employee.email } });
   if (!existingUser) {
     await db.user.create({ data: { email: employee.email, role: "EMPLOYEE", employeeId: employee.id } });
+    snapshot.loginCreated = true;
   } else if (!existingUser.employeeId) {
     await db.user.update({ where: { id: existingUser.id }, data: { employeeId: employee.id } });
+    snapshot.linkedUserId = existingUser.id;
   } else if (existingUser.employeeId !== employee.id) {
     notes.push(`A login for ${employee.email} already belongs to someone else — no invite sent`);
-    return false;
+    return { invited: false, snapshot };
   }
   try {
     await sendWelcomeEmail({ to: employee.email, role: "Employee", loginUrl: `${baseUrl}/login` });
@@ -58,10 +75,13 @@ async function ensureLoginAndInvite(employee: { id: string; email: string }, not
     console.error("[import] welcome email failed:", employee.email, err);
     notes.push("Login created, but the welcome email could not be sent");
   }
-  return true;
+  return { invited: true, snapshot };
 }
 
-async function createEmployee(row: { rowNumber: number }, data: RowData, notes: string[], ctx: Ctx): Promise<string> {
+type Created = { employeeId: string; previous: CreateSnapshot };
+type Updated = { employeeId: string; previous: RowSnapshot; managerBefore: string | null };
+
+async function createEmployee(row: { rowNumber: number }, data: RowData, notes: string[], ctx: Ctx): Promise<Created> {
   const firstName = data.firstName ?? "";
   const lastName = data.lastName ?? "";
   const hasEmail = !!data.email;
@@ -110,7 +130,12 @@ async function createEmployee(row: { rowNumber: number }, data: RowData, notes: 
   ctx.takenEmails.add(email);
   ctx.candidates.set(employee.id, employee);
 
-  if (status !== "PENDING" && (await ensureLoginAndInvite(employee, notes))) ctx.summary.invited++;
+  let previous: CreateSnapshot = { loginCreated: false };
+  if (status !== "PENDING") {
+    const login = await ensureLoginAndInvite(employee, notes);
+    previous = login.snapshot;
+    if (login.invited) ctx.summary.invited++;
+  }
 
   await audit({
     action: "employee.created",
@@ -118,7 +143,18 @@ async function createEmployee(row: { rowNumber: number }, data: RowData, notes: 
     entityId: employee.id,
     details: { via: "import", batchId: ctx.batchId, rowNumber: row.rowNumber, name: `${firstName} ${lastName}`, email, status },
   });
-  return employee.id;
+  return { employeeId: employee.id, previous };
+}
+
+/** The values `patch` is about to overwrite, in the shape undo restores from. */
+function snapshotBefore(current: Employee, patch: Prisma.EmployeeUncheckedUpdateInput): RowSnapshot {
+  const previous: RowSnapshot = {};
+  for (const k of TEXT_KEYS) if (k in patch) previous[k] = current[k] ?? null;
+  for (const k of DATE_KEYS) if (k in patch) previous[k] = current[k]?.toISOString().slice(0, 10) ?? null;
+  if ("email" in patch) previous.email = current.email;
+  if ("departmentId" in patch) previous._departmentId = current.departmentId;
+  if ("teamId" in patch) previous._teamId = current.teamId;
+  return previous;
 }
 
 async function updateEmployee(
@@ -126,7 +162,7 @@ async function updateEmployee(
   data: RowData,
   notes: string[],
   ctx: Ctx,
-): Promise<string> {
+): Promise<Updated> {
   if (!row.targetEmployeeId) throw new Error("No existing person is linked to this row");
   // findUnique is not subject to the archived-employee filter in db.ts, so archived targets still resolve.
   const current = await db.employee.findUnique({ where: { id: row.targetEmployeeId } });
@@ -141,6 +177,7 @@ async function updateEmployee(
     ctx.takenEmails.delete(current.email.toLowerCase());
     ctx.takenEmails.add(patch.email);
   }
+  const previous = snapshotBefore(current, patch);
 
   const updated = await db.employee.update({
     where: { id: current.id },
@@ -155,7 +192,7 @@ async function updateEmployee(
     entityId: current.id,
     details: { via: "import", batchId: ctx.batchId, rowNumber: row.rowNumber, fields: Object.keys(patch) },
   });
-  return current.id;
+  return { employeeId: current.id, previous, managerBefore: current.managerId };
 }
 
 async function writeOutcome(rowId: string, outcome: Outcome) {
@@ -165,6 +202,7 @@ async function writeOutcome(rowId: string, outcome: Outcome) {
       result: outcome.result,
       resultEmployeeId: outcome.employeeId,
       resultNotes: outcome.notes as Prisma.InputJsonValue,
+      previous: outcome.previous === null ? Prisma.DbNull : (outcome.previous as Prisma.InputJsonValue),
     },
   });
 }
@@ -201,13 +239,13 @@ export async function commitImportBatch(batchId: string, actorUserId: string): P
     const notes: string[] = [];
     let outcome: Outcome;
     try {
-      const employeeId = row.action === "CREATE"
+      const applied = row.action === "CREATE"
         ? await createEmployee(row, data, notes, ctx)
         : await updateEmployee(row, data, notes, ctx);
-      outcome = { result: row.action === "CREATE" ? "created" : "updated", employeeId, notes };
+      outcome = { result: row.action === "CREATE" ? "created" : "updated", notes, ...applied };
     } catch (err) {
       console.error(`[import] row ${row.rowNumber} failed:`, err);
-      outcome = { result: "failed", employeeId: null, notes: [...notes, errorMessage(err)] };
+      outcome = { result: "failed", employeeId: null, notes: [...notes, errorMessage(err)], previous: null };
     }
     outcomes.set(row.id, outcome);
     await writeOutcome(row.id, outcome);
@@ -222,8 +260,13 @@ export async function commitImportBatch(batchId: string, actorUserId: string): P
     try {
       const match = matchManager(reference, people);
       if ("id" in match) {
-        if (match.id === outcome.employeeId) outcome.notes.push(`Manager "${reference}" is this person — left blank`);
-        else await db.employee.update({ where: { id: outcome.employeeId }, data: { managerId: match.id } });
+        if (match.id === outcome.employeeId) {
+          outcome.notes.push(`Manager "${reference}" is this person — left blank`);
+        } else {
+          await db.employee.update({ where: { id: outcome.employeeId }, data: { managerId: match.id } });
+          // Only now did the import touch the manager, so only now does undo need the old one.
+          if (outcome.result === "updated") (outcome.previous as RowSnapshot)._managerId = outcome.managerBefore ?? null;
+        }
       } else if (match.error === "none") {
         outcome.notes.push(`Manager "${reference}" not found`);
       } else {
@@ -241,7 +284,11 @@ export async function commitImportBatch(batchId: string, actorUserId: string): P
     else ctx.summary.failed++;
     if (o.result !== "failed") ctx.summary.warnings += o.notes.length;
   }
-  const summary = ctx.summary;
+  const summary: CommitSummary = {
+    ...ctx.summary,
+    createdDepartmentIds: ctx.org.created.departmentIds,
+    createdTeamIds: ctx.org.created.teamIds,
+  };
 
   await db.importBatch.update({
     where: { id: batchId },

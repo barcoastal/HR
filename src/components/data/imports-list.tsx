@@ -7,6 +7,7 @@ const STATUS: Record<ImportBatchSummary["status"], { label: string; className: s
   REVIEWING: { label: "Reviewing", className: "bg-amber-500/10 text-amber-600" },
   IMPORTED: { label: "Imported", className: "bg-emerald-500/10 text-emerald-600" },
   DISCARDED: { label: "Discarded", className: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]" },
+  UNDONE: { label: "Undone", className: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]" },
 };
 
 export function ImportsList({ batches }: { batches: ImportBatchSummary[] }) {
@@ -59,6 +60,9 @@ export function ImportsList({ batches }: { batches: ImportBatchSummary[] }) {
                 <span className={cn("inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium", STATUS[b.status].className)}>
                   {STATUS[b.status].label}
                 </span>
+                {b.status === "UNDONE" && b.undoneAt && (
+                  <span className="block mt-1 text-[11px] text-[var(--color-text-muted)]">on {formatDate(b.undoneAt)}</span>
+                )}
               </td>
             </tr>
           ))}

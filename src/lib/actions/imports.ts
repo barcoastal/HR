@@ -8,13 +8,14 @@ import { validateRow } from "@/lib/import-export/normalize";
 import { applyOverrides, buildMergePlan } from "@/lib/import-export/merge";
 import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
 import { commitImportBatch } from "@/lib/import-export/commit-service";
-import type { CommitResult, CommitSummary } from "@/lib/import-export/types";
+import { undoImportBatch } from "@/lib/import-export/undo-service";
+import type { CommitResult, CommitSummary, UndoSummary } from "@/lib/import-export/types";
 import {
   refKey, sameRef,
   type ColumnMapping, type EmployeeSnapshot, type FieldKey, type GroupReason, type MemberRef, type MergeMember, type RowAction, type RowData, type RowError,
 } from "@/lib/import-export/types";
 
-export type ImportBatchStatusValue = "REVIEWING" | "IMPORTED" | "DISCARDED";
+export type ImportBatchStatusValue = "REVIEWING" | "IMPORTED" | "DISCARDED" | "UNDONE";
 
 export type ImportBatchSummary = {
   id: string;
@@ -23,6 +24,7 @@ export type ImportBatchSummary = {
   rowCount: number;
   createdAt: string;
   importedAt: string | null;
+  undoneAt: string | null;
   uploadedBy: string;
   counts: { create: number; update: number; mergedAway: number; skipped: number; invalid: number };
 };
@@ -62,7 +64,9 @@ export type ImportBatchDetail = {
     rowCount: number;
     createdAt: string;
     importedAt: string | null;
+    undoneAt: string | null;
     uploadedBy: string;
+    /** Commit counts; also carries `undo` once the import has been undone. */
     summary: CommitSummary | null;
   };
   rows: ImportRowView[];
@@ -123,6 +127,7 @@ export async function listImportBatches(): Promise<ImportBatchSummary[]> {
     rowCount: b.rowCount,
     createdAt: b.createdAt.toISOString(),
     importedAt: b.importedAt?.toISOString() ?? null,
+    undoneAt: b.undoneAt?.toISOString() ?? null,
     uploadedBy: uploaderName(b.uploadedBy),
     counts: byBatch.get(b.id) ?? { ...EMPTY_COUNTS },
   }));
@@ -183,6 +188,7 @@ export async function getImportBatch(id: string): Promise<ImportBatchDetail | nu
       rowCount: batch.rowCount,
       createdAt: batch.createdAt.toISOString(),
       importedAt: batch.importedAt?.toISOString() ?? null,
+      undoneAt: batch.undoneAt?.toISOString() ?? null,
       uploadedBy: uploaderName(batch.uploadedBy),
       summary: (batch.summary as CommitSummary | null) ?? null,
     },
@@ -425,6 +431,20 @@ export async function commitImport(batchId: string): Promise<CommitSummary> {
   const summary = await commitImportBatch(batchId, session.user.id);
   revalidatePath("/people");
   revalidatePath("/org");
+  revalidate(batchId);
+  return summary;
+}
+
+/**
+ * Reverse an import that was committed: deletes the people it created (and their logins), restores the
+ * people it updated from the row snapshots, and removes the departments/teams it created if empty.
+ */
+export async function undoImport(batchId: string): Promise<UndoSummary> {
+  const session = await requireImportAccess();
+  const summary = await undoImportBatch(batchId, session.user.id);
+  revalidatePath("/people");
+  revalidatePath("/org");
+  revalidatePath("/org/departments");
   revalidate(batchId);
   return summary;
 }

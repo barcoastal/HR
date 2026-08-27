@@ -7371,7 +7371,8 @@ export const ImportBatchScalarFieldEnum = {
   uploadedById: 'uploadedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  importedAt: 'importedAt'
+  importedAt: 'importedAt',
+  undoneAt: 'undoneAt'
 } as const
 
 export type ImportBatchScalarFieldEnum = (typeof ImportBatchScalarFieldEnum)[keyof typeof ImportBatchScalarFieldEnum]
@@ -7390,7 +7391,8 @@ export const ImportRowScalarFieldEnum = {
   skipReason: 'skipReason',
   resultEmployeeId: 'resultEmployeeId',
   result: 'result',
-  resultNotes: 'resultNotes'
+  resultNotes: 'resultNotes',
+  previous: 'previous'
 } as const
 
 export type ImportRowScalarFieldEnum = (typeof ImportRowScalarFieldEnum)[keyof typeof ImportRowScalarFieldEnum]

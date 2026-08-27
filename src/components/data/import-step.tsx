@@ -8,11 +8,19 @@ import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
 import {
   commitImport,
+  undoImport,
   type ImportBatchDetail,
   type ImportRowView,
 } from "@/lib/actions/imports";
-import type { CommitResult, CommitSummary } from "@/lib/import-export/types";
+import { UNDO_NOTE_PREFIX, type CommitResult, type CommitSummary } from "@/lib/import-export/types";
 import { BUTTON, Chip, rowBadge, rowDisplayName, type Badge } from "./row-editor";
+
+const DANGER_BUTTON = {
+  outline:
+    "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold border border-red-500/50 text-red-600 hover:bg-red-500/10 disabled:opacity-50 disabled:pointer-events-none transition-colors",
+  solid:
+    "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:pointer-events-none transition-colors",
+};
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "Pending",
@@ -32,7 +40,7 @@ const RESULT_BADGE: Record<CommitResult, Badge> = {
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 export function ImportStep({ detail, onBack }: { detail: ImportBatchDetail; onBack: () => void }) {
-  if (detail.batch.status === "IMPORTED") return <ImportResults detail={detail} />;
+  if (detail.batch.status === "IMPORTED" || detail.batch.status === "UNDONE") return <ImportResults detail={detail} />;
   if (detail.batch.status === "DISCARDED") {
     return (
       <p className="text-sm text-[var(--color-text-muted)]">
@@ -179,7 +187,7 @@ function ImportPreview({ detail, onBack }: { detail: ImportBatchDetail; onBack: 
 
       <div className="flex items-center justify-end gap-3">
         {!blocked && !nothing && (
-          <span className="text-xs text-[var(--color-text-muted)]">This can’t be undone — use Archive on a person to reverse a mistake.</span>
+          <span className="text-xs text-[var(--color-text-muted)]">You can undo the import afterwards from this page.</span>
         )}
         <button type="button" className={BUTTON.primary} disabled={blocked || nothing || pending} onClick={() => setConfirming(true)}>
           <Icon name="upload" size={14} /> Import
@@ -190,8 +198,8 @@ function ImportPreview({ detail, onBack }: { detail: ImportBatchDetail; onBack: 
         <div className="space-y-4">
           <EffectsList effects={effects} compact />
           <p className="text-xs text-[var(--color-text-muted)]">
-            Welcome emails go out immediately. There is no undo for an import — archive or delete a person to reverse a
-            mistake.
+            Welcome emails go out immediately and can’t be recalled. You can undo the import afterwards — that deletes the
+            people it created and puts updated people back.
           </p>
           {error && <p className="text-xs text-red-500">{error}</p>}
           <div className="flex justify-end gap-2">
@@ -231,10 +239,41 @@ function summaryFromRows(rows: ImportRowView[]): CommitSummary {
   return summary;
 }
 
+/** Undo outcomes live in the same notes array as import warnings, marked by a prefix. */
+function splitNotes(notes: string[]) {
+  const importNotes: string[] = [];
+  const undoNotes: string[] = [];
+  for (const n of notes) {
+    if (n.startsWith(UNDO_NOTE_PREFIX)) undoNotes.push(n.slice(UNDO_NOTE_PREFIX.length));
+    else importNotes.push(n);
+  }
+  return { importNotes, undoNotes };
+}
+
 function ImportResults({ detail }: { detail: ImportBatchDetail }) {
+  const router = useRouter();
   const summary = detail.batch.summary ?? summaryFromRows(detail.rows);
+  const undone = detail.batch.status === "UNDONE";
+  const undo = summary.undo ?? null;
+  const orgCreated = (summary.createdDepartmentIds?.length ?? 0) + (summary.createdTeamIds?.length ?? 0);
   const imported = detail.rows.filter((r) => r.result !== null);
   const notImported = detail.rows.filter((r) => r.result === null);
+  const [confirming, setConfirming] = useState(false);
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
+
+  function confirmUndo() {
+    setError(null);
+    startTransition(async () => {
+      try {
+        await undoImport(detail.batch.id);
+        setConfirming(false);
+        router.refresh();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : "Something went wrong");
+      }
+    });
+  }
 
   const tiles = [
     { label: "Created", value: summary.created, icon: "person_add" },
@@ -247,14 +286,56 @@ function ImportResults({ detail }: { detail: ImportBatchDetail }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-sm text-[var(--color-text-primary)] inline-flex items-center gap-1.5">
-          <Icon name="check_circle" size={18} className="text-emerald-600" />
-          Imported{detail.batch.importedAt ? ` on ${formatDate(detail.batch.importedAt)}` : ""}.
-        </p>
-        <Link href="/people" className={BUTTON.primary}>
-          <Icon name="group" size={14} /> Go to People
-        </Link>
+        {undone ? (
+          <p className="text-sm text-[var(--color-text-primary)] inline-flex items-center gap-1.5">
+            <Icon name="undo" size={18} className="text-[var(--color-text-muted)]" />
+            Undone{detail.batch.undoneAt ? ` on ${formatDate(detail.batch.undoneAt)}` : ""}
+            {detail.batch.importedAt ? ` — originally imported on ${formatDate(detail.batch.importedAt)}` : ""}.
+          </p>
+        ) : (
+          <p className="text-sm text-[var(--color-text-primary)] inline-flex items-center gap-1.5">
+            <Icon name="check_circle" size={18} className="text-emerald-600" />
+            Imported{detail.batch.importedAt ? ` on ${formatDate(detail.batch.importedAt)}` : ""}.
+          </p>
+        )}
+        <div className="flex items-center gap-2">
+          {!undone && (
+            <button type="button" className={DANGER_BUTTON.outline} onClick={() => setConfirming(true)} disabled={pending}>
+              <Icon name="undo" size={14} /> Undo this import
+            </button>
+          )}
+          <Link href="/people" className={BUTTON.primary}>
+            <Icon name="group" size={14} /> Go to People
+          </Link>
+        </div>
       </div>
+
+      {undone && (
+        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-container-low)] p-4 text-sm">
+          <p className="font-semibold text-[var(--color-text-primary)] mb-2">This import was undone</p>
+          {undo ? (
+            <ul className="space-y-1 text-[var(--color-text-secondary)]">
+              <EffectLine icon="person_remove">
+                <strong>{plural(undo.deleted, "person", "people")}</strong> deleted, along with the logins this import made.
+              </EffectLine>
+              <EffectLine icon="history">
+                <strong>{plural(undo.restored, "update")}</strong> reverted to the pre-import values.
+              </EffectLine>
+              {undo.skipped > 0 && (
+                <EffectLine icon="block">
+                  <strong>{plural(undo.skipped, "row")}</strong> skipped — see the notes on each row below.
+                </EffectLine>
+              )}
+              <EffectLine icon="account_tree" muted>
+                {plural(undo.departmentsRemoved, "department")} and {plural(undo.teamsRemoved, "team")} it created were removed
+                because nothing used them any more.
+              </EffectLine>
+            </ul>
+          ) : (
+            <p className="text-[var(--color-text-muted)]">The people it created were deleted and the people it updated were put back.</p>
+          )}
+        </div>
+      )}
 
       <Tiles tiles={tiles} columns={5} />
 
@@ -266,45 +347,64 @@ function ImportResults({ detail }: { detail: ImportBatchDetail }) {
               <th className="px-4 py-2 text-left font-medium">Name</th>
               <th className="px-4 py-2 text-left font-medium">Result</th>
               <th className="px-4 py-2 text-left font-medium">Notes</th>
+              {undone && <th className="px-4 py-2 text-left font-medium">Undo</th>}
               <th className="px-4 py-2 text-right font-medium" />
             </tr>
           </thead>
           <tbody>
             {imported.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-6 text-center text-xs text-[var(--color-text-muted)]">No rows were imported.</td>
+                <td colSpan={undone ? 6 : 5} className="px-4 py-6 text-center text-xs text-[var(--color-text-muted)]">No rows were imported.</td>
               </tr>
             )}
-            {imported.map((r) => (
-              <tr key={r.id} className="border-t border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]">
-                <td className="px-4 py-2.5 text-right text-[var(--color-text-muted)] tabular-nums">{r.rowNumber}</td>
-                <td className="px-4 py-2.5 font-medium text-[var(--color-text-primary)] whitespace-nowrap">
-                  {rowDisplayName(r.data) || <span className="text-[var(--color-text-muted)]">—</span>}
-                </td>
-                <td className="px-4 py-2.5">{r.result && <Chip badge={RESULT_BADGE[r.result]} />}</td>
-                <td className="px-4 py-2.5 text-xs">
-                  {r.resultNotes.length === 0 ? (
-                    <span className="text-[var(--color-text-muted)]">—</span>
-                  ) : (
-                    <ul className={cn("space-y-0.5", r.result === "failed" ? "text-red-500" : "text-amber-600")}>
-                      {r.resultNotes.map((n, i) => (
-                        <li key={i}>{n}</li>
-                      ))}
-                    </ul>
+            {imported.map((r) => {
+              const { importNotes, undoNotes } = splitNotes(r.resultNotes);
+              // Created people are gone once undone (or archived/merged, which is noted); updated people still exist.
+              const canOpen = !!r.resultEmployeeId && !(undone && r.result === "created");
+              return (
+                <tr key={r.id} className="border-t border-[var(--color-border)] hover:bg-[var(--color-surface-hover)]">
+                  <td className="px-4 py-2.5 text-right text-[var(--color-text-muted)] tabular-nums">{r.rowNumber}</td>
+                  <td className="px-4 py-2.5 font-medium text-[var(--color-text-primary)] whitespace-nowrap">
+                    {rowDisplayName(r.data) || <span className="text-[var(--color-text-muted)]">—</span>}
+                  </td>
+                  <td className="px-4 py-2.5">{r.result && <Chip badge={RESULT_BADGE[r.result]} />}</td>
+                  <td className="px-4 py-2.5 text-xs">
+                    {importNotes.length === 0 ? (
+                      <span className="text-[var(--color-text-muted)]">—</span>
+                    ) : (
+                      <ul className={cn("space-y-0.5", r.result === "failed" ? "text-red-500" : "text-amber-600")}>
+                        {importNotes.map((n, i) => (
+                          <li key={i}>{n}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                  {undone && (
+                    <td className="px-4 py-2.5 text-xs">
+                      {undoNotes.length === 0 ? (
+                        <span className="text-[var(--color-text-muted)]">—</span>
+                      ) : (
+                        <ul className="space-y-0.5 text-[var(--color-text-secondary)]">
+                          {undoNotes.map((n, i) => (
+                            <li key={i}>{n}</li>
+                          ))}
+                        </ul>
+                      )}
+                    </td>
                   )}
-                </td>
-                <td className="px-4 py-2.5 text-right">
-                  {r.resultEmployeeId && (
-                    <Link
-                      href={`/people/${r.resultEmployeeId}`}
-                      className="inline-flex items-center gap-1 text-xs font-medium text-[var(--color-accent)] hover:underline whitespace-nowrap"
-                    >
-                      Open <Icon name="open_in_new" size={12} />
-                    </Link>
-                  )}
-                </td>
-              </tr>
-            ))}
+                  <td className="px-4 py-2.5 text-right">
+                    {canOpen && (
+                      <Link
+                        href={`/people/${r.resultEmployeeId}`}
+                        className="inline-flex items-center gap-1 text-xs font-medium text-[var(--color-accent)] hover:underline whitespace-nowrap"
+                      >
+                        Open <Icon name="open_in_new" size={12} />
+                      </Link>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -336,6 +436,43 @@ function ImportResults({ detail }: { detail: ImportBatchDetail }) {
           </div>
         </details>
       )}
+
+      <Dialog open={confirming} onClose={() => !pending && setConfirming(false)} title={`Undo ${detail.batch.fileName}?`}>
+        <div className="space-y-4">
+          <ul className="space-y-2 text-sm">
+            <EffectLine icon="person_remove">
+              Deletes <strong>{plural(summary.created, "person", "people")}</strong> created by this import (and their logins) —
+              including anyone approved or edited since.
+            </EffectLine>
+            <EffectLine icon="history">
+              Reverts <strong>{plural(summary.updated, "update")}</strong> to the values from before the import.
+            </EffectLine>
+            <EffectLine icon="account_tree">
+              Removes <strong>{plural(orgCreated, "department/team", "departments/teams")}</strong> it created if empty.
+            </EffectLine>
+          </ul>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            People archived or deleted since the import are left alone. This cannot be undone.
+          </p>
+          {error && <p className="text-xs text-red-500">{error}</p>}
+          <div className="flex justify-end gap-2">
+            <button type="button" className={BUTTON.secondary} onClick={() => setConfirming(false)} disabled={pending}>
+              Cancel
+            </button>
+            <button type="button" className={DANGER_BUTTON.solid} onClick={confirmUndo} disabled={pending}>
+              {pending ? (
+                <>
+                  <Icon name="progress_activity" size={14} className="animate-material-spin" /> Undoing…
+                </>
+              ) : (
+                <>
+                  <Icon name="undo" size={14} /> Undo import
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

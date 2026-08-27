@@ -1701,6 +1701,7 @@ enum ImportBatchStatus {
   REVIEWING
   IMPORTED
   DISCARDED
+  UNDONE
 }
 
 enum ImportRowAction {
@@ -1730,6 +1731,7 @@ model ImportBatch {
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
   importedAt   DateTime?
+  undoneAt     DateTime?
 
   rows   ImportRow[]
   groups ImportDuplicateGroup[]
@@ -1753,6 +1755,8 @@ model ImportRow {
   resultEmployeeId String?
   result           String?
   resultNotes      Json?
+  /** Undo bookkeeping: for UPDATE rows the overwritten values (RowSnapshot); for CREATE rows { loginCreated } (CreateSnapshot). */
+  previous         Json?
 
   @@index([batchId])
 }

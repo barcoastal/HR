@@ -44,6 +44,7 @@ export type ImportBatchMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   importedAt: Date | null
+  undoneAt: Date | null
 }
 
 export type ImportBatchMaxAggregateOutputType = {
@@ -56,6 +57,7 @@ export type ImportBatchMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   importedAt: Date | null
+  undoneAt: Date | null
 }
 
 export type ImportBatchCountAggregateOutputType = {
@@ -71,6 +73,7 @@ export type ImportBatchCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   importedAt: number
+  undoneAt: number
   _all: number
 }
 
@@ -93,6 +96,7 @@ export type ImportBatchMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   importedAt?: true
+  undoneAt?: true
 }
 
 export type ImportBatchMaxAggregateInputType = {
@@ -105,6 +109,7 @@ export type ImportBatchMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   importedAt?: true
+  undoneAt?: true
 }
 
 export type ImportBatchCountAggregateInputType = {
@@ -120,6 +125,7 @@ export type ImportBatchCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   importedAt?: true
+  undoneAt?: true
   _all?: true
 }
 
@@ -222,6 +228,7 @@ export type ImportBatchGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   importedAt: Date | null
+  undoneAt: Date | null
   _count: ImportBatchCountAggregateOutputType | null
   _avg: ImportBatchAvgAggregateOutputType | null
   _sum: ImportBatchSumAggregateOutputType | null
@@ -260,6 +267,7 @@ export type ImportBatchWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   importedAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+  undoneAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   rows?: Prisma.ImportRowListRelationFilter
   groups?: Prisma.ImportDuplicateGroupListRelationFilter
@@ -278,6 +286,7 @@ export type ImportBatchOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   importedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  undoneAt?: Prisma.SortOrderInput | Prisma.SortOrder
   uploadedBy?: Prisma.UserOrderByWithRelationInput
   rows?: Prisma.ImportRowOrderByRelationAggregateInput
   groups?: Prisma.ImportDuplicateGroupOrderByRelationAggregateInput
@@ -299,6 +308,7 @@ export type ImportBatchWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   importedAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+  undoneAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
   uploadedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   rows?: Prisma.ImportRowListRelationFilter
   groups?: Prisma.ImportDuplicateGroupListRelationFilter
@@ -317,6 +327,7 @@ export type ImportBatchOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   importedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  undoneAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ImportBatchCountOrderByAggregateInput
   _avg?: Prisma.ImportBatchAvgOrderByAggregateInput
   _max?: Prisma.ImportBatchMaxOrderByAggregateInput
@@ -340,6 +351,7 @@ export type ImportBatchScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ImportBatch"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ImportBatch"> | Date | string
   importedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ImportBatch"> | Date | string | null
+  undoneAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ImportBatch"> | Date | string | null
 }
 
 export type ImportBatchCreateInput = {
@@ -354,6 +366,7 @@ export type ImportBatchCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   uploadedBy: Prisma.UserCreateNestedOneWithoutImportBatchesInput
   rows?: Prisma.ImportRowCreateNestedManyWithoutBatchInput
   groups?: Prisma.ImportDuplicateGroupCreateNestedManyWithoutBatchInput
@@ -372,6 +385,7 @@ export type ImportBatchUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   rows?: Prisma.ImportRowUncheckedCreateNestedManyWithoutBatchInput
   groups?: Prisma.ImportDuplicateGroupUncheckedCreateNestedManyWithoutBatchInput
 }
@@ -388,6 +402,7 @@ export type ImportBatchUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutImportBatchesNestedInput
   rows?: Prisma.ImportRowUpdateManyWithoutBatchNestedInput
   groups?: Prisma.ImportDuplicateGroupUpdateManyWithoutBatchNestedInput
@@ -406,6 +421,7 @@ export type ImportBatchUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rows?: Prisma.ImportRowUncheckedUpdateManyWithoutBatchNestedInput
   groups?: Prisma.ImportDuplicateGroupUncheckedUpdateManyWithoutBatchNestedInput
 }
@@ -423,6 +439,7 @@ export type ImportBatchCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
 }
 
 export type ImportBatchUpdateManyMutationInput = {
@@ -437,6 +454,7 @@ export type ImportBatchUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ImportBatchUncheckedUpdateManyInput = {
@@ -452,6 +470,7 @@ export type ImportBatchUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ImportBatchListRelationFilter = {
@@ -477,6 +496,7 @@ export type ImportBatchCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  undoneAt?: Prisma.SortOrder
 }
 
 export type ImportBatchAvgOrderByAggregateInput = {
@@ -493,6 +513,7 @@ export type ImportBatchMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  undoneAt?: Prisma.SortOrder
 }
 
 export type ImportBatchMinOrderByAggregateInput = {
@@ -505,6 +526,7 @@ export type ImportBatchMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   importedAt?: Prisma.SortOrder
+  undoneAt?: Prisma.SortOrder
 }
 
 export type ImportBatchSumOrderByAggregateInput = {
@@ -602,6 +624,7 @@ export type ImportBatchCreateWithoutUploadedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   rows?: Prisma.ImportRowCreateNestedManyWithoutBatchInput
   groups?: Prisma.ImportDuplicateGroupCreateNestedManyWithoutBatchInput
 }
@@ -618,6 +641,7 @@ export type ImportBatchUncheckedCreateWithoutUploadedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   rows?: Prisma.ImportRowUncheckedCreateNestedManyWithoutBatchInput
   groups?: Prisma.ImportDuplicateGroupUncheckedCreateNestedManyWithoutBatchInput
 }
@@ -664,6 +688,7 @@ export type ImportBatchScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ImportBatch"> | Date | string
   importedAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
+  undoneAt?: Prisma.DateTimeNullableFilter<"ImportBatch"> | Date | string | null
 }
 
 export type ImportBatchCreateWithoutRowsInput = {
@@ -678,6 +703,7 @@ export type ImportBatchCreateWithoutRowsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   uploadedBy: Prisma.UserCreateNestedOneWithoutImportBatchesInput
   groups?: Prisma.ImportDuplicateGroupCreateNestedManyWithoutBatchInput
 }
@@ -695,6 +721,7 @@ export type ImportBatchUncheckedCreateWithoutRowsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   groups?: Prisma.ImportDuplicateGroupUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -726,6 +753,7 @@ export type ImportBatchUpdateWithoutRowsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutImportBatchesNestedInput
   groups?: Prisma.ImportDuplicateGroupUpdateManyWithoutBatchNestedInput
 }
@@ -743,6 +771,7 @@ export type ImportBatchUncheckedUpdateWithoutRowsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   groups?: Prisma.ImportDuplicateGroupUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -758,6 +787,7 @@ export type ImportBatchCreateWithoutGroupsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   uploadedBy: Prisma.UserCreateNestedOneWithoutImportBatchesInput
   rows?: Prisma.ImportRowCreateNestedManyWithoutBatchInput
 }
@@ -775,6 +805,7 @@ export type ImportBatchUncheckedCreateWithoutGroupsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
   rows?: Prisma.ImportRowUncheckedCreateNestedManyWithoutBatchInput
 }
 
@@ -806,6 +837,7 @@ export type ImportBatchUpdateWithoutGroupsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   uploadedBy?: Prisma.UserUpdateOneRequiredWithoutImportBatchesNestedInput
   rows?: Prisma.ImportRowUpdateManyWithoutBatchNestedInput
 }
@@ -823,6 +855,7 @@ export type ImportBatchUncheckedUpdateWithoutGroupsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rows?: Prisma.ImportRowUncheckedUpdateManyWithoutBatchNestedInput
 }
 
@@ -838,6 +871,7 @@ export type ImportBatchCreateManyUploadedByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   importedAt?: Date | string | null
+  undoneAt?: Date | string | null
 }
 
 export type ImportBatchUpdateWithoutUploadedByInput = {
@@ -852,6 +886,7 @@ export type ImportBatchUpdateWithoutUploadedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rows?: Prisma.ImportRowUpdateManyWithoutBatchNestedInput
   groups?: Prisma.ImportDuplicateGroupUpdateManyWithoutBatchNestedInput
 }
@@ -868,6 +903,7 @@ export type ImportBatchUncheckedUpdateWithoutUploadedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rows?: Prisma.ImportRowUncheckedUpdateManyWithoutBatchNestedInput
   groups?: Prisma.ImportDuplicateGroupUncheckedUpdateManyWithoutBatchNestedInput
 }
@@ -884,6 +920,7 @@ export type ImportBatchUncheckedUpdateManyWithoutUploadedByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   importedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -939,6 +976,7 @@ export type ImportBatchSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   updatedAt?: boolean
   importedAt?: boolean
+  undoneAt?: boolean
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   rows?: boolean | Prisma.ImportBatch$rowsArgs<ExtArgs>
   groups?: boolean | Prisma.ImportBatch$groupsArgs<ExtArgs>
@@ -958,6 +996,7 @@ export type ImportBatchSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   updatedAt?: boolean
   importedAt?: boolean
+  undoneAt?: boolean
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importBatch"]>
 
@@ -974,6 +1013,7 @@ export type ImportBatchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   updatedAt?: boolean
   importedAt?: boolean
+  undoneAt?: boolean
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["importBatch"]>
 
@@ -990,9 +1030,10 @@ export type ImportBatchSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   importedAt?: boolean
+  undoneAt?: boolean
 }
 
-export type ImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "fileType" | "headers" | "mapping" | "status" | "rowCount" | "summary" | "uploadedById" | "createdAt" | "updatedAt" | "importedAt", ExtArgs["result"]["importBatch"]>
+export type ImportBatchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fileName" | "fileType" | "headers" | "mapping" | "status" | "rowCount" | "summary" | "uploadedById" | "createdAt" | "updatedAt" | "importedAt" | "undoneAt", ExtArgs["result"]["importBatch"]>
 export type ImportBatchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploadedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   rows?: boolean | Prisma.ImportBatch$rowsArgs<ExtArgs>
@@ -1026,6 +1067,7 @@ export type $ImportBatchPayload<ExtArgs extends runtime.Types.Extensions.Interna
     createdAt: Date
     updatedAt: Date
     importedAt: Date | null
+    undoneAt: Date | null
   }, ExtArgs["result"]["importBatch"]>
   composites: {}
 }
@@ -1464,6 +1506,7 @@ export interface ImportBatchFieldRefs {
   readonly createdAt: Prisma.FieldRef<"ImportBatch", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ImportBatch", 'DateTime'>
   readonly importedAt: Prisma.FieldRef<"ImportBatch", 'DateTime'>
+  readonly undoneAt: Prisma.FieldRef<"ImportBatch", 'DateTime'>
 }
     
 

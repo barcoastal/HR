@@ -42,6 +42,8 @@ export function dateFields(data: RowData): DatePatch {
 export type OrgResolver = {
   department(name: string): Promise<string>;
   team(name: string, departmentId: string): Promise<string>;
+  /** Ids this resolver created on demand, in creation order — recorded so an import can be undone. */
+  created: { departmentIds: string[]; teamIds: string[] };
 };
 
 export async function createOrgResolver(): Promise<OrgResolver> {
@@ -51,14 +53,17 @@ export async function createOrgResolver(): Promise<OrgResolver> {
   ]);
   const deptByName = new Map(departments.map((d) => [d.name.trim().toLowerCase(), d.id]));
   const teamByKey = new Map(teams.map((t) => [`${t.departmentId}|${t.name.trim().toLowerCase()}`, t.id]));
+  const created: OrgResolver["created"] = { departmentIds: [], teamIds: [] };
 
   return {
+    created,
     async department(name: string): Promise<string> {
       const key = name.trim().toLowerCase();
       let id = deptByName.get(key);
       if (!id) {
         id = (await db.department.create({ data: { name: name.trim() }, select: { id: true } })).id;
         deptByName.set(key, id);
+        created.departmentIds.push(id);
       }
       return id;
     },
@@ -68,6 +73,7 @@ export async function createOrgResolver(): Promise<OrgResolver> {
       if (!id) {
         id = (await db.team.create({ data: { name: name.trim(), departmentId }, select: { id: true } })).id;
         teamByKey.set(key, id);
+        created.teamIds.push(id);
       }
       return id;
     },

@@ -88,5 +88,39 @@ export function sameRef(a: MemberRef, b: MemberRef): boolean {
 export type EmployeeSnapshot = { id: string; name: string; status: string; archived: boolean; data: RowData };
 
 /** Outcome of committing an import batch. */
-export type CommitSummary = { created: number; updated: number; failed: number; warnings: number; invited: number };
+export type CommitSummary = {
+  created: number;
+  updated: number;
+  failed: number;
+  warnings: number;
+  invited: number;
+  /** Departments/teams the import created on demand — removed again by undo if nothing else uses them. */
+  createdDepartmentIds?: string[];
+  createdTeamIds?: string[];
+  /** Set once the import has been undone. */
+  undo?: UndoSummary;
+};
 export type CommitResult = "created" | "updated" | "failed";
+
+/** Outcome of undoing an imported batch. */
+export type UndoSummary = { deleted: number; restored: number; skipped: number; departmentsRemoved: number; teamsRemoved: number };
+
+/**
+ * What an UPDATE row overwrote, stored in ImportRow.previous so the import can be undone: only the
+ * keys the import changed, `null` where the field was empty before, plus the linked ids (`_managerId`,
+ * `_departmentId`, `_teamId`) so relations are put back exactly rather than re-resolved by name.
+ */
+export type RowSnapshot = Partial<Record<FieldKey, string | null>> & {
+  _managerId?: string | null;
+  _departmentId?: string | null;
+  _teamId?: string | null;
+};
+
+/**
+ * Bookkeeping for a CREATE row (ImportRow.previous): whether the import made the person's login, or
+ * only linked a login that already existed (`linkedUserId`) — undo deletes the former and unlinks the latter.
+ */
+export type CreateSnapshot = { loginCreated: boolean; linkedUserId?: string };
+
+/** Undo outcomes are appended to a row's resultNotes with this prefix so the UI can tell them from import warnings. */
+export const UNDO_NOTE_PREFIX = "Undo: ";

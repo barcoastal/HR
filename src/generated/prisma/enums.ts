@@ -320,7 +320,8 @@ export type MentionType = (typeof MentionType)[keyof typeof MentionType]
 export const ImportBatchStatus = {
   REVIEWING: 'REVIEWING',
   IMPORTED: 'IMPORTED',
-  DISCARDED: 'DISCARDED'
+  DISCARDED: 'DISCARDED',
+  UNDONE: 'UNDONE'
 } as const
 
 export type ImportBatchStatus = (typeof ImportBatchStatus)[keyof typeof ImportBatchStatus]
