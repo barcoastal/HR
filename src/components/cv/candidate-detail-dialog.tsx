@@ -339,7 +339,7 @@ export function CandidateDetailDialog({
     stageId: "" as string,
     companyEmail: "",
     startDate: "",
-    requiresTraining: false,
+    requiresTraining: true,
   });
   const selectedPositionTitle = positions.find((position) => position.id === form.positionId)?.title;
   const trainingEligible = isTrainingEligibleJobTitle(selectedPositionTitle, trainingEligibleJobTitles);
@@ -469,7 +469,7 @@ export function CandidateDetailDialog({
         stageId: candidate.stageId || "",
         companyEmail: "",
         startDate: new Date().toISOString().split("T")[0],
-        requiresTraining: false,
+        requiresTraining: true,
       });
       setBgCheckStatus(candidate.backgroundCheckStatus || null);
       setHireResult(null);
@@ -962,17 +962,17 @@ export function CandidateDetailDialog({
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
-                      Company Email <span className="text-red-400">*</span>
+                      Company Email
                     </label>
                     <input
                       value={form.companyEmail}
                       onChange={(e) => update("companyEmail", e.target.value)}
                       type="email"
                       placeholder={`${form.firstName.toLowerCase()}.${form.lastName.toLowerCase()}@coastaldebt.com`}
-                      className={cn(inputClass, !form.companyEmail && "border-amber-400/50")}
+                      className={inputClass}
                     />
                     <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">
-                      Required — @coastaldebt.com email for login & comms
+                      Optional — leave blank to use their personal email for now; a company address can be set on their profile later
                     </p>
                   </div>
                   <div>
@@ -1026,7 +1026,7 @@ export function CandidateDetailDialog({
                     <span>
                       <span className="block text-xs font-medium text-[var(--color-text-primary)]">Send this {selectedPositionTitle} candidate to Training</span>
                       <span className="mt-0.5 block text-[10px] leading-4 text-[var(--color-text-muted)]">
-                        Moves to Training after all Written Offer documents are complete.
+                        On by default because this job title is marked for training in Settings. Untick to skip it for this person.
                       </span>
                     </span>
                   </label>
@@ -1497,7 +1497,7 @@ export function CandidateDetailDialog({
                     setForm((current) => ({
                       ...current,
                       positionId,
-                      requiresTraining: isTrainingEligibleJobTitle(nextTitle, trainingEligibleJobTitles) ? current.requiresTraining : false,
+                      requiresTraining: isTrainingEligibleJobTitle(nextTitle, trainingEligibleJobTitles),
                     }));
                   }}
                   className={inputClass}
@@ -1556,7 +1556,7 @@ export function CandidateDetailDialog({
             </button>
             <button
               onClick={handleSave}
-              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email || (form.status === "HIRED" && candidate.status !== "HIRED" && (!form.companyEmail || !form.startDate))}
+              disabled={saving || hiring || !form.firstName || !form.lastName || !form.email || (form.status === "HIRED" && candidate.status !== "HIRED" && !form.startDate)}
               className={cn(
                 "px-4 py-2 rounded-lg text-sm font-medium text-white",
                 form.status === "HIRED" && candidate.status !== "HIRED"

@@ -1,5 +1,6 @@
 import { Prisma, type EmployeeStatus } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
+import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 import { audit } from "@/lib/audit";
 import { sendWelcomeEmail } from "@/lib/email";
 import { loadEmployeesLite } from "./batch-service";
@@ -84,6 +85,11 @@ async function createEmployee(row: { rowNumber: number }, data: RowData, notes: 
 
   const dates = dateFields(data);
   const startDate = dates.startDate ?? today();
+  const jobTitle = data.jobTitle ?? "Employee";
+  // Titles marked for training in Settings route to Training automatically when entering the onboarding workflow.
+  const requiresTraining = status === "ONBOARDING" || status === "PRE_ONBOARDING" || status === "TRAINING"
+    ? await isJobTitleEligibleForTraining(jobTitle)
+    : false;
   const employee = await db.employee.create({
     data: {
       ...textFields(data),
@@ -91,7 +97,8 @@ async function createEmployee(row: { rowNumber: number }, data: RowData, notes: 
       firstName,
       lastName,
       email,
-      jobTitle: data.jobTitle ?? "Employee",
+      jobTitle,
+      requiresTraining,
       status,
       startDate,
       anniversaryDate: dates.anniversaryDate ?? startDate,

@@ -94,9 +94,14 @@ export async function createEmployee(data: {
   status?: EmployeeStatus;
 }) {
   const status = data.status || "ACTIVE";
+  // People entering the onboarding workflow go to Training automatically when Settings marks their job title.
+  const requiresTraining = status === "ONBOARDING" || status === "PRE_ONBOARDING" || status === "TRAINING"
+    ? await isJobTitleEligibleForTraining(data.jobTitle)
+    : false;
   const employee = await db.employee.create({
     data: {
       ...data,
+      requiresTraining,
       startDate: new Date(data.startDate),
       birthday: data.birthday ? new Date(data.birthday) : null,
       anniversaryDate: new Date(data.startDate),

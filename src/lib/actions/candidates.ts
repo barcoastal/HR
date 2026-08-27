@@ -1118,7 +1118,8 @@ async function hireInner(
   // automatic completion check moves them straight into Onboarding.
   const initialStatus = "PRE_ONBOARDING";
   const jobTitle = candidate.position?.title || "New Hire";
-  const requiresTraining = await isJobTitleEligibleForTraining(jobTitle) && options?.requiresTraining === true;
+  // Job titles marked for training in Settings go to Training automatically unless the hiring form opted out.
+  const requiresTraining = await isJobTitleEligibleForTraining(jobTitle) && options?.requiresTraining !== false;
 
   // Block the hire if an Employee already exists with this email — Prisma's
   // unique constraint would throw a generic P2002 that Next.js then hides in
