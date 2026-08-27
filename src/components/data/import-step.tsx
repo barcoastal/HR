@@ -31,7 +31,7 @@ const RESULT_BADGE: Record<CommitResult, Badge> = {
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
-export function ImportStep({ detail }: { detail: ImportBatchDetail }) {
+export function ImportStep({ detail, onBack }: { detail: ImportBatchDetail; onBack: () => void }) {
   if (detail.batch.status === "IMPORTED") return <ImportResults detail={detail} />;
   if (detail.batch.status === "DISCARDED") {
     return (
@@ -40,7 +40,7 @@ export function ImportStep({ detail }: { detail: ImportBatchDetail }) {
       </p>
     );
   }
-  return <ImportPreview detail={detail} />;
+  return <ImportPreview detail={detail} onBack={onBack} />;
 }
 
 // ---------------------------------------------------------------------------
@@ -121,7 +121,7 @@ function EffectsList({ effects, compact }: { effects: Effects; compact?: boolean
   );
 }
 
-function ImportPreview({ detail }: { detail: ImportBatchDetail }) {
+function ImportPreview({ detail, onBack }: { detail: ImportBatchDetail; onBack: () => void }) {
   const router = useRouter();
   const s = detail.stats;
   const effects = useMemo(() => computeEffects(detail.rows), [detail.rows]);
@@ -165,13 +165,16 @@ function ImportPreview({ detail }: { detail: ImportBatchDetail }) {
       </div>
 
       {blocked && (
-        <p className="text-xs text-amber-600 inline-flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-700">
           <Icon name="warning" size={14} />
           <span>
             {s.needsDecision > 0 && `${plural(s.needsDecision, "duplicate group")} still need${s.needsDecision === 1 ? "s" : ""} a decision. `}
             {s.needsAttention > 0 && `${plural(s.needsAttention, "row")} ${s.needsAttention === 1 ? "has" : "have"} errors to fix or skip.`}
           </span>
-        </p>
+          <button type="button" onClick={onBack} className="ml-auto inline-flex items-center gap-1 rounded-lg border border-amber-500/40 px-2.5 py-1 font-medium hover:bg-amber-500/10">
+            <Icon name="arrow_back" size={14} /> Back to Review
+          </button>
+        </div>
       )}
 
       <div className="flex items-center justify-end gap-3">

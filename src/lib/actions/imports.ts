@@ -252,6 +252,18 @@ export async function skipImportRow(batchId: string, rowId: string): Promise<voi
   revalidate(batchId);
 }
 
+/** Skip every row that still has validation errors so the import can proceed without them. */
+export async function skipInvalidRows(batchId: string): Promise<number> {
+  await requireImportAccess();
+  await requireEditableBatch(batchId);
+  const result = await db.importRow.updateMany({
+    where: { batchId, action: "SKIP", skipReason: "invalid" },
+    data: { skipReason: "user" },
+  });
+  revalidate(batchId);
+  return result.count;
+}
+
 export async function unskipImportRow(batchId: string, rowId: string): Promise<void> {
   await requireImportAccess();
   await requireEditableBatch(batchId);

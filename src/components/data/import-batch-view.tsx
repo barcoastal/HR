@@ -112,8 +112,8 @@ export function ImportBatchView({ detail }: { detail: ImportBatchDetail }) {
           onSave={handleSaveMapping}
         />
       )}
-      {step === "review" && <ReviewStep detail={detail} />}
-      {step === "import" && <ImportStep detail={detail} />}
+      {step === "review" && <ReviewStep detail={detail} onContinue={() => setStep("import")} />}
+      {step === "import" && <ImportStep detail={detail} onBack={() => setStep("review")} />}
     </div>
   );
 }

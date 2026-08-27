@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import {
   skipImportRow,
+  skipInvalidRows,
   unskipImportRow,
   type ImportBatchDetail,
   type ImportGroupView,
@@ -27,7 +28,7 @@ function groupStatusLabel(group: ImportGroupView, needsDecision: boolean): { lab
   return { label: "Resolved", className: "text-[var(--color-text-muted)]" };
 }
 
-export function ReviewStep({ detail }: { detail: ImportBatchDetail }) {
+export function ReviewStep({ detail, onContinue }: { detail: ImportBatchDetail; onContinue: () => void }) {
   const router = useRouter();
   const readOnly = detail.batch.status !== "REVIEWING";
   const rowById = useMemo(() => new Map(detail.rows.map((r) => [r.id, r])), [detail.rows]);
@@ -68,12 +69,39 @@ export function ReviewStep({ detail }: { detail: ImportBatchDetail }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-2 text-xs">
+      <div className="flex flex-wrap items-center gap-2 text-xs">
         <Stat icon="call_merge" label="need a decision" value={s.needsDecision} tone={s.needsDecision ? "warn" : "ok"} />
         <Stat icon="person_add" label="new people ready" value={s.newPeople} />
         <Stat icon="sync_alt" label="updates" value={s.updates} />
         <Stat icon="error" label="need attention" value={s.needsAttention} tone={s.needsAttention ? "warn" : undefined} />
         <Stat icon="block" label="skipped" value={s.skipped} />
+        <span className="ml-auto flex items-center gap-2">
+          {!readOnly && s.needsAttention > 0 && (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                if (!confirm(`Skip all ${s.needsAttention} row${s.needsAttention === 1 ? "" : "s"} with errors? They won't be imported.`)) return;
+                run(() => skipInvalidRows(detail.batch.id).then(() => undefined));
+              }}
+              className="inline-flex items-center gap-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)] disabled:opacity-50"
+            >
+              <Icon name="block" size={14} /> Skip all rows with errors
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onContinue}
+            className={cn(
+              "inline-flex items-center gap-1 rounded-lg px-3 py-1.5 font-medium",
+              s.needsDecision === 0 && s.needsAttention === 0
+                ? "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]"
+                : "border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)]",
+            )}
+          >
+            Continue to Import <Icon name="arrow_forward" size={14} />
+          </button>
+        </span>
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
 
