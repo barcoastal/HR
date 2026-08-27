@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
@@ -7,13 +6,11 @@ import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
 import { displayName } from "@/lib/utils";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
-import { Icon } from "@/components/ui/icon";
 
 export default async function PeoplePage() {
   const session = await requireAuth();
   const role = session.user?.role;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
-  const isSuperAdmin = role === "SUPER_ADMIN";
 
   // Employees may not browse the company directory — only their own profile.
   // Managers and above can see the list (used for org/team navigation).
@@ -36,9 +33,6 @@ export default async function PeoplePage() {
 
   const outOfOffice = await getCurrentOutOfOfficeFor(employees.map((e) => e.id));
 
-  const secondaryButton =
-    "inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border border-[var(--color-border)] text-[var(--color-on-surface-variant)] hover:bg-[var(--color-background)] transition-colors";
-
   return (
     <div className="max-w-7xl mx-auto p-8 lg:p-12">
       <div className="mb-8">
@@ -50,19 +44,7 @@ export default async function PeoplePage() {
             </p>
           </div>
           <div className="flex gap-3">
-            {isSuperAdmin && (
-              <Link href="/people/archive" className={secondaryButton}>
-                Archive
-              </Link>
-            )}
-            {isAdmin && (
-              <>
-                <Link href="/data" className={secondaryButton}>
-                  <Icon name="swap_vert" size={16} /> Import & Export
-                </Link>
-                <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />
-              </>
-            )}
+            {isAdmin && <AddEmployeeForm departments={departments.map((d) => ({ id: d.id, name: d.name }))} />}
           </div>
         </div>
       </div>

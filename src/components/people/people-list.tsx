@@ -7,10 +7,8 @@ import Link from "next/link";
 import {
   approveAndInviteEmployee,
   bulkApproveAndInviteEmployees,
-  deletePendingEmployees,
 } from "@/lib/actions/employees";
 import { Icon } from "@/components/ui/icon";
-import { Dialog } from "@/components/ui/dialog";
 
 type Employee = {
   id: string;
@@ -210,14 +208,8 @@ export function PeopleList({
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const [approvingId, setApprovingId] = useState<string | null>(null);
   const [approvingAll, setApprovingAll] = useState(false);
-  const [selectedPendingIds, setSelectedPendingIds] = useState<Set<string>>(new Set());
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [deleting, setDeleting] = useState(false);
 
   const pendingEmployees = employees.filter((e) => e.status === "PENDING");
-  const allPendingSelected =
-    pendingEmployees.length > 0 && pendingEmployees.every((e) => selectedPendingIds.has(e.id));
-  const selectedCount = selectedPendingIds.size;
 
   function setParam(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
@@ -253,58 +245,20 @@ export function PeopleList({
     });
   }
 
-  function togglePending(id: string) {
-    setSelectedPendingIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }
-
-  function toggleSelectAllPending() {
-    if (allPendingSelected) {
-      setSelectedPendingIds(new Set());
-    } else {
-      setSelectedPendingIds(new Set(pendingEmployees.map((e) => e.id)));
-    }
-  }
-
   async function handleApprove(id: string) {
     setApprovingId(id);
     await approveAndInviteEmployee(id);
-    setSelectedPendingIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
     setApprovingId(null);
     router.refresh();
   }
 
   async function handleApproveAll() {
+    if (pendingEmployees.length === 0) return;
+    if (!confirm(`Approve all ${pendingEmployees.length} pending people and send them login invitations?`)) return;
     setApprovingAll(true);
-    const ids =
-      selectedCount > 0
-        ? Array.from(selectedPendingIds)
-        : pendingEmployees.map((e) => e.id);
-    await bulkApproveAndInviteEmployees(ids);
-    setSelectedPendingIds(new Set());
+    await bulkApproveAndInviteEmployees(pendingEmployees.map((e) => e.id));
     setApprovingAll(false);
     router.refresh();
-  }
-
-  async function handleDeleteSelected() {
-    if (selectedCount === 0) return;
-    setDeleting(true);
-    try {
-      await deletePendingEmployees(Array.from(selectedPendingIds));
-      setSelectedPendingIds(new Set());
-      setDeleteConfirmOpen(false);
-      router.refresh();
-    } finally {
-      setDeleting(false);
-    }
   }
 
   // Filter → sort → group.
@@ -414,7 +368,7 @@ export function PeopleList({
                   e.stopPropagation();
                   handleApprove(emp.id);
                 }}
-                disabled={approvingId === emp.id || approvingAll || deleting}
+                disabled={approvingId === emp.id || approvingAll}
                 className={cn(
                   "inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-semibold whitespace-nowrap",
                   "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20",
@@ -437,159 +391,6 @@ export function PeopleList({
 
   return (
     <>
-      {/* Pending employees section */}
-      {pendingEmployees.length > 0 && (
-        <div className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
-          <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
-            <div className="flex items-start gap-3 min-w-0">
-              <label className="flex items-center gap-2 mt-0.5 cursor-pointer shrink-0">
-                <input
-                  type="checkbox"
-                  checked={allPendingSelected}
-                  onChange={toggleSelectAllPending}
-                  className="h-4 w-4 rounded border-[var(--color-border)] accent-amber-500"
-                  aria-label="Select all pending employees"
-                />
-                <span className="text-xs text-[var(--color-text-muted)] whitespace-nowrap">Select all</span>
-              </label>
-              <div>
-                <p className="text-sm font-semibold text-[var(--color-text-primary)]">
-                  {pendingEmployees.length} Pending Employee{pendingEmployees.length !== 1 ? "s" : ""}
-                  {selectedCount > 0 && (
-                    <span className="ml-2 text-xs font-medium text-amber-600 dark:text-amber-400">
-                      · {selectedCount} selected
-                    </span>
-                  )}
-                </p>
-                <p className="text-xs text-[var(--color-text-muted)]">
-                  Approve to send login invitations
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              {selectedCount > 0 && (
-                <button
-                  onClick={() => setDeleteConfirmOpen(true)}
-                  disabled={deleting || approvingAll}
-                  className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium",
-                    "bg-red-500/10 text-red-500 hover:bg-red-500/20",
-                    "disabled:opacity-50 transition-colors"
-                  )}
-                >
-                  <Icon name="delete" size={12} />
-                  Delete selected ({selectedCount})
-                </button>
-              )}
-              <button
-                onClick={handleApproveAll}
-                disabled={approvingAll || deleting}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium",
-                  "bg-emerald-500 text-white hover:bg-emerald-600",
-                  "disabled:opacity-50 transition-colors"
-                )}
-              >
-                {approvingAll ? (
-                  <><Icon name="progress_activity" size={12} className="animate-material-spin" /> Approving...</>
-                ) : selectedCount > 0 ? (
-                  <><Icon name="how_to_reg" size={12} /> Approve selected ({selectedCount})</>
-                ) : (
-                  <><Icon name="how_to_reg" size={12} /> Approve All & Send Invites</>
-                )}
-              </button>
-            </div>
-          </div>
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
-            {pendingEmployees.map((emp) => {
-              const initials = getInitials(displayFirstName(emp), emp.lastName);
-              const colorIdx = displayFirstName(emp).charCodeAt(0) % avatarColors.length;
-              const isSelected = selectedPendingIds.has(emp.id);
-              return (
-                <div
-                  key={emp.id}
-                  className={cn(
-                    "flex items-center gap-3 p-2.5 rounded-lg bg-[var(--color-surface)] border",
-                    isSelected ? "border-amber-500/40 bg-amber-500/5" : "border-[var(--color-border)]"
-                  )}
-                >
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => togglePending(emp.id)}
-                    className="h-4 w-4 rounded border-[var(--color-border)] accent-amber-500 shrink-0"
-                    aria-label={`Select ${displayName(emp)}`}
-                  />
-                  <div className={cn("h-9 w-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0", avatarColors[colorIdx])}>
-                    {initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">
-                      {displayName(emp)}
-                    </p>
-                    <p className="text-xs text-[var(--color-text-muted)] truncate">
-                      {emp.jobTitle} {emp.department ? `· ${emp.department.name}` : ""} · {emp.email}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => handleApprove(emp.id)}
-                    disabled={approvingId === emp.id || deleting}
-                    className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium shrink-0",
-                      "bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20",
-                      "disabled:opacity-50 transition-colors"
-                    )}
-                  >
-                    {approvingId === emp.id ? (
-                      <Icon name="progress_activity" size={12} className="animate-material-spin" />
-                    ) : (
-                      <Icon name="how_to_reg" size={12} />
-                    )}
-                    Approve
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <Dialog
-        open={deleteConfirmOpen}
-        onClose={() => !deleting && setDeleteConfirmOpen(false)}
-        title="Delete pending employees?"
-      >
-        <div className="space-y-4">
-          <p className="text-sm text-[var(--color-text-primary)]">
-            Are you sure you want to permanently delete{" "}
-            <strong>{selectedCount}</strong> pending employee{selectedCount !== 1 ? "s" : ""}?
-          </p>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            This cannot be undone. Only pending (not yet approved) records will be removed.
-          </p>
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              onClick={() => setDeleteConfirmOpen(false)}
-              disabled={deleting}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDeleteSelected}
-              disabled={deleting}
-              className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium",
-                "bg-red-500 text-white hover:bg-red-600",
-                "disabled:opacity-50"
-              )}
-            >
-              {deleting ? "Deleting..." : `Yes, delete ${selectedCount}`}
-            </button>
-          </div>
-        </div>
-      </Dialog>
-
       {/* Toolbar */}
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative flex-1 min-w-[220px]">
@@ -638,6 +439,24 @@ export function PeopleList({
           ))}
         </ToolbarSelect>
 
+        {pendingEmployees.length > 0 && (
+          <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-2.5 py-1.5 text-xs">
+            <Icon name="schedule" size={14} className="text-amber-600" />
+            <span className="font-medium text-[var(--color-text-primary)]">{pendingEmployees.length} pending</span>
+            <button
+              type="button"
+              onClick={handleApproveAll}
+              disabled={approvingAll}
+              className="inline-flex items-center gap-1 rounded-md bg-emerald-500 px-2 py-1 font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
+            >
+              {approvingAll ? (
+                <><Icon name="progress_activity" size={12} className="animate-material-spin" /> Approving…</>
+              ) : (
+                <><Icon name="how_to_reg" size={12} /> Approve all &amp; send invites</>
+              )}
+            </button>
+          </div>
+        )}
         <div className="ml-auto text-sm text-[var(--color-on-surface-variant)] font-medium whitespace-nowrap">
           {sorted.length} {sorted.length === 1 ? "person" : "people"}
         </div>
