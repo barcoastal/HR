@@ -16,7 +16,10 @@ import { getNextOneOnOneForEmployee, getPastOneOnOnesForEmployee } from "@/lib/a
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 import { EmployeeGustoTab } from "@/components/gusto/employee-gusto-tab";
+import { GustoSyncCard, GustoSyncCardSkeleton } from "@/components/people/gusto-sync-card";
 import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
+import { isGustoConnected } from "@/lib/actions/gusto";
+import { Suspense } from "react";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -52,12 +55,14 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     notFound();
   }
 
-  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap] = await Promise.all([
+  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap, gustoConnected] = await Promise.all([
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
     getPastOneOnOnesForEmployee(id),
     getCurrentOutOfOfficeFor([id]),
+    // Only admins/HR get the Gusto comparison card, so only ask when it could be shown.
+    isAdmin ? isGustoConnected() : Promise.resolve(false),
   ]);
 
   const currentOoo = oooMap[id];
@@ -338,6 +343,12 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 ))}
               </div>
             </section>
+          )}
+
+          {isAdmin && gustoConnected && (
+            <Suspense fallback={<GustoSyncCardSkeleton />}>
+              <GustoSyncCard employeeId={employee.id} />
+            </Suspense>
           )}
 
           {employee.gustoEmployeeId && (isAdmin || isOwnProfile) && (

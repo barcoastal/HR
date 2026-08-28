@@ -3,6 +3,7 @@ import { getEmployees } from "@/lib/actions/employees";
 import { getDepartments } from "@/lib/actions/departments";
 import { requireAuth } from "@/lib/auth-helpers";
 import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
+import { isGustoConnected } from "@/lib/actions/gusto";
 import { displayName } from "@/lib/utils";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
@@ -34,6 +35,8 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
   const pendingPeople = employees.filter((e) => e.status === "PENDING");
   const activePeople = employees.filter((e) => e.status !== "PENDING");
   const showPending = isAdmin && tab === "pending";
+  // The Pending tab can compare people with Gusto; only worth asking when that tab is shown.
+  const gustoConnected = showPending ? await isGustoConnected() : false;
 
   const departmentsWithCounts = departments.map((d) => ({
     name: d.name,
@@ -87,6 +90,7 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
             createdAt: e.createdAt.toISOString(),
             data: employeeToRowData(e),
           }))}
+          gustoConnected={gustoConnected}
         />
       ) : activePeople.length === 0 ? (
         <div className="text-center py-16">

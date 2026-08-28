@@ -5,6 +5,9 @@ import {
   type GustoEmployee,
   type GustoHomeAddress,
 } from "@/lib/gusto";
+import type { GustoPerson } from "@/lib/gusto-sync/types";
+import { autoDetectMapping } from "./employee-fields";
+import { applyMapping, validateRow } from "./normalize";
 
 /**
  * Column carrying the Gusto employee uuid. It is not a registry field, so autoDetectMapping sends it
@@ -113,6 +116,23 @@ export function gustoEmployeesToRows(
     total: rows.length,
     skippedTerminated: employees.length - active.length,
   };
+}
+
+/**
+ * Pure: the import grid as per-person row data, run through the same auto-mapping and cleaning an
+ * uploaded Gusto batch gets (lowercased emails, digit-only phones, ISO dates), keyed by Gusto uuid.
+ * Values the cleaner rejects are dropped, exactly as they would be in an import.
+ */
+export function gustoRowsToPeople(grid: GustoImportRows): GustoPerson[] {
+  const mapping = autoDetectMapping(grid.headers);
+  const idColumn = grid.headers.indexOf(GUSTO_ID_HEADER);
+  const people: GustoPerson[] = [];
+  for (const raw of grid.rows) {
+    const gustoId = idColumn >= 0 ? clean(raw[idColumn]) : "";
+    if (!gustoId) continue;
+    people.push({ gustoId, data: validateRow(applyMapping(raw, mapping)).data });
+  }
+  return people;
 }
 
 async function mapWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
