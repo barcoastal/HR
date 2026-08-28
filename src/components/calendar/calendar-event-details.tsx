@@ -8,18 +8,12 @@ import { cn } from "@/lib/utils";
 import { cancelCompanyEvent, updateCompanyEvent } from "@/lib/actions/company-events";
 import { cancelTrainingClass } from "@/lib/actions/training-calendar";
 import type { CalendarEvent } from "@/components/calendar/calendar-view";
+import { dateKey, formatDateTime, zonedDateFromInput, zonedParts } from "@/lib/time-zone";
 
 const inputClass = cn(
   "w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm",
   "text-[var(--color-text-primary)] focus:border-[var(--color-accent)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/30"
 );
-
-function formatDateTime(value: string, allDay?: boolean) {
-  const date = new Date(value);
-  return date.toLocaleString("en-US", allDay
-    ? { weekday: "long", month: "long", day: "numeric", year: "numeric" }
-    : { weekday: "long", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
-}
 
 function typeLabel(type: CalendarEvent["type"]) {
   const labels: Partial<Record<CalendarEvent["type"], string>> = {
@@ -52,12 +46,14 @@ export function CalendarEventDetails({ event, open, onClose }: {
     if (!event) return null;
     const start = new Date(event.date);
     const end = event.endDate ? new Date(event.endDate) : new Date(start.getTime() + 60 * 60_000);
+    // Pre-fill the pickers with the company-zone wall clock, not the browser's.
+    const startParts = zonedParts(start);
     return {
       title: event.name,
       description: event.description || "",
       location: event.location || "",
-      date: `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, "0")}-${String(start.getDate()).padStart(2, "0")}`,
-      time: `${String(start.getHours()).padStart(2, "0")}:${String(start.getMinutes()).padStart(2, "0")}`,
+      date: dateKey(start),
+      time: `${String(startParts.hour).padStart(2, "0")}:${String(startParts.minute).padStart(2, "0")}`,
       duration: String(Math.max(5, Math.round((end.getTime() - start.getTime()) / 60_000))),
     };
   }, [event]);
@@ -82,6 +78,11 @@ export function CalendarEventDetails({ event, open, onClose }: {
 
   async function save() {
     if (!form || !eventSourceId) return;
+    const startAt = zonedDateFromInput(form.date, form.time);
+    if (!startAt) {
+      setError("Pick a valid date and time");
+      return;
+    }
     setSaving(true);
     setError(null);
     const result = await updateCompanyEvent({
@@ -89,7 +90,7 @@ export function CalendarEventDetails({ event, open, onClose }: {
       title: form.title,
       description: form.description,
       location: form.location,
-      startTime: new Date(`${form.date}T${form.time}`).toISOString(),
+      startTime: startAt.toISOString(),
       durationMinutes: Number(form.duration),
     });
     setSaving(false);
@@ -164,7 +165,7 @@ export function CalendarEventDetails({ event, open, onClose }: {
             {event.groupName && <span className="text-xs text-[var(--color-text-muted)]">{event.groupName}</span>}
           </div>
           <div className="space-y-3 text-sm">
-            <div className="flex gap-3"><Icon name="schedule" size={19} className="text-[var(--color-accent)]" /><div><p className="font-semibold text-[var(--color-text-primary)]">{formatDateTime(event.date, event.allDay)}</p>{event.endDate && !event.allDay && <p className="text-[var(--color-text-muted)]">Ends {formatDateTime(event.endDate)}</p>}</div></div>
+            <div className="flex gap-3"><Icon name="schedule" size={19} className="text-[var(--color-accent)]" /><div><p className="font-semibold text-[var(--color-text-primary)]">{formatDateTime(new Date(event.date), { allDay: event.allDay })}</p>{event.endDate && !event.allDay && <p className="text-[var(--color-text-muted)]">Ends {formatDateTime(new Date(event.endDate))}</p>}</div></div>
             {event.organizer && <div className="flex gap-3"><Icon name="person" size={19} className="text-[var(--color-accent)]" /><div><p className="text-[var(--color-text-muted)]">Organizer</p><p className="font-semibold text-[var(--color-text-primary)]">{event.organizer}</p></div></div>}
             {event.location && <div className="flex gap-3"><Icon name="location_on" size={19} className="text-[var(--color-accent)]" /><p className="text-[var(--color-text-primary)]">{event.location}</p></div>}
             {event.description && <div className="flex gap-3"><Icon name="notes" size={19} className="text-[var(--color-accent)]" /><p className="whitespace-pre-wrap text-[var(--color-text-primary)]">{event.description}</p></div>}

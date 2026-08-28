@@ -1,5 +1,6 @@
 import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import { dateKey, daysBetween, formatDateShort, formatTime, isEndOfDay, isStartOfDay, zonedDate, zonedParts } from "@/lib/time-zone";
 
 type Entry = {
   id: string;
@@ -25,24 +26,12 @@ const avatarColors = [
   "bg-cyan-500",
 ];
 
-function dayLabel(d: Date) {
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
+const dayLabel = formatDateShort;
+const timeLabel = formatTime;
 
-function timeLabel(d: Date) {
-  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
-
-/** Whole-day entries start at 00:00 and end at 23:59 — anything else is timed. */
+/** Whole-day entries start at 00:00 and end at 23:59 (company zone) — anything else is timed. */
 function isWholeDayBoundary(d: Date) {
-  return (d.getHours() === 0 && d.getMinutes() === 0) || (d.getHours() === 23 && d.getMinutes() === 59);
-}
-
-/** Whole-day difference, ignoring time of day. */
-function daysFromToday(d: Date, today: Date) {
-  const a = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const b = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  return Math.round((a.getTime() - b.getTime()) / 86400000);
+  return isStartOfDay(d) || isEndOfDay(d);
 }
 
 function Row({ entry, today }: { entry: Entry; today: Date }) {
@@ -57,12 +46,12 @@ function Row({ entry, today }: { entry: Entry; today: Date }) {
   const name = displayName(entry.employee);
   const initials = getInitials(displayFirstName(entry.employee), entry.employee.lastName);
   const colorIdx = displayFirstName(entry.employee).charCodeAt(0) % avatarColors.length;
-  const startsIn = daysFromToday(entry.startDate, today);
+  const startsIn = daysBetween(today, entry.startDate);
   const backOn = new Date(entry.endDate.getTime() + 1);
 
   const startTimed = !isWholeDayBoundary(entry.startDate);
   const endTimed = !isWholeDayBoundary(entry.endDate);
-  const sameDay = entry.startDate.toDateString() === entry.endDate.toDateString();
+  const sameDay = dateKey(entry.startDate) === dateKey(entry.endDate);
 
   const when =
     startsIn <= 0
@@ -110,8 +99,9 @@ function Row({ entry, today }: { entry: Entry; today: Date }) {
 
 export function WhosOutPanel({ entries }: { entries: Entry[] }) {
   const today = new Date();
-  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const in7Days = new Date(startOfToday.getTime() + 7 * 86400000);
+  const { year, month, day } = zonedParts(today);
+  const startOfToday = zonedDate(year, month, day);
+  const in7Days = zonedDate(year, month, day + 7);
 
   const outNow = entries
     .filter((e) => e.startDate <= today && e.endDate >= startOfToday)

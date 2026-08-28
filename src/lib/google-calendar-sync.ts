@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { encrypt, decrypt } from "@/lib/encryption";
 import { getOAuthProvider, getOAuthCredentials } from "@/lib/oauth/config";
+import { COMPANY_TIME_ZONE } from "@/lib/time-zone";
 
 // ── Types ──────────────────────────────────────────────────
 
@@ -218,8 +219,8 @@ export async function createOneOnOneEventForUser(
   const body = {
     summary: params.summary,
     description: params.description,
-    start: { dateTime: params.startTime.toISOString() },
-    end: { dateTime: endTime.toISOString() },
+    start: { dateTime: params.startTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
+    end: { dateTime: endTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
     attendees: [{ email: params.employeeEmail }],
     conferenceData: {
       createRequest: {
@@ -276,8 +277,8 @@ export async function createInviteEventForUser(
     summary: params.summary,
     description: params.description,
     location: params.location,
-    start: { dateTime: params.startTime.toISOString() },
-    end: { dateTime: endTime.toISOString() },
+    start: { dateTime: params.startTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
+    end: { dateTime: endTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
     attendees: params.attendees,
     reminders: { useDefault: true },
   };
@@ -357,8 +358,8 @@ export async function updateInviteEventForUser(
         summary: event.summary,
         description: event.description,
         location: event.location,
-        start: { dateTime: event.startDateTime },
-        end: { dateTime: event.endDateTime },
+        start: { dateTime: event.startDateTime, timeZone: COMPANY_TIME_ZONE },
+        end: { dateTime: event.endDateTime, timeZone: COMPANY_TIME_ZONE },
         ...(event.attendees ? { attendees: event.attendees } : {}),
       }),
     }
@@ -385,8 +386,8 @@ export async function updateStandaloneEventForUser(
         summary: event.summary,
         description: event.description,
         location: event.location,
-        start: { dateTime: event.startDateTime },
-        end: { dateTime: event.endDateTime },
+        start: { dateTime: event.startDateTime, timeZone: COMPANY_TIME_ZONE },
+        end: { dateTime: event.endDateTime, timeZone: COMPANY_TIME_ZONE },
       }),
     }
   );
@@ -411,8 +412,8 @@ export async function pushEventToGoogleCalendar(
         summary: event.summary,
         description: event.description,
         location: event.location,
-        start: { dateTime: event.startDateTime },
-        end: { dateTime: event.endDateTime },
+        start: { dateTime: event.startDateTime, timeZone: COMPANY_TIME_ZONE },
+        end: { dateTime: event.endDateTime, timeZone: COMPANY_TIME_ZONE },
       }),
     }
   );

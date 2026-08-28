@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { db } from "@/lib/db";
 import { IS_SANDBOX } from "@/lib/sandbox";
+import { COMPANY_TIME_ZONE } from "@/lib/time-zone";
 
 function getOAuth2Client() {
   const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID;
@@ -91,8 +92,8 @@ export async function createInterviewEvent(params: {
       summary: params.summary,
       description: params.description,
       location: params.location,
-      start: { dateTime: params.startTime.toISOString() },
-      end: { dateTime: endTime.toISOString() },
+      start: { dateTime: params.startTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
+      end: { dateTime: endTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
       attendees: [{ email: params.candidateEmail }],
       ...(withMeetLink
         ? {
@@ -146,8 +147,8 @@ export async function createOneOnOneEvent(params: {
     requestBody: {
       summary: params.summary,
       description: params.description,
-      start: { dateTime: params.startTime.toISOString() },
-      end: { dateTime: endTime.toISOString() },
+      start: { dateTime: params.startTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
+      end: { dateTime: endTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
       attendees: [
         { email: params.managerEmail, responseStatus: "accepted" },
         { email: params.employeeEmail },
@@ -181,8 +182,8 @@ export async function updateOneOnOneEvent(params: {
     eventId: params.googleEventId,
     sendUpdates: "all",
     requestBody: {
-      start: { dateTime: params.startTime.toISOString() },
-      end: { dateTime: endTime.toISOString() },
+      start: { dateTime: params.startTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
+      end: { dateTime: endTime.toISOString(), timeZone: COMPANY_TIME_ZONE },
     },
   });
 }

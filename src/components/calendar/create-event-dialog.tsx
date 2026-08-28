@@ -6,6 +6,7 @@ import { cn, displayName } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { createCompanyEvent } from "@/lib/actions/company-events";
+import { dateKey, zonedDateFromInput } from "@/lib/time-zone";
 
 type Department = { id: string; name: string; employeeCount: number };
 type Employee = { id: string; firstName: string; lastName: string; preferredName?: string | null; email: string; departmentId: string | null };
@@ -27,7 +28,7 @@ export function CreateEventDialog({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [date, setDate] = useState(() => dateKey(new Date()));
   const [time, setTime] = useState("09:00");
   const [duration, setDuration] = useState("60");
   const [withMeet, setWithMeet] = useState(true);
@@ -72,9 +73,12 @@ export function CreateEventDialog({
   async function handleSubmit() {
     if (!title.trim()) return;
     if (attendeeCount === 0) { alert("Select at least one attendee"); return; }
+    // The pickers describe company-zone wall-clock time, whatever the browser's zone.
+    const startAt = zonedDateFromInput(date, time);
+    if (!startAt) { alert("Pick a valid date and time"); return; }
     setSending(true);
     setResult(null);
-    const startTime = new Date(`${date}T${time}`).toISOString();
+    const startTime = startAt.toISOString();
     const res = await createCompanyEvent({
       title: title.trim(),
       description: description.trim() || undefined,

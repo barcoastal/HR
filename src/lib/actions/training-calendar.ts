@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { displayName } from "@/lib/utils";
+import { COMPANY_TIME_ZONE, zonedParts } from "@/lib/time-zone";
 import { revalidatePath } from "next/cache";
 
 type TrainingMemberRole = "TRAINER" | "TRAINEE" | "VIEWER";
@@ -247,7 +248,7 @@ export async function createTrainingClass(input: TrainingClassInput) {
     if (attendees.length < 2) throw new Error("Add at least one active trainee");
     const viewerIds = [...new Set(input.viewerIds || [])];
     const finalEnd = new Date(starts.at(-1)!.getTime() + duration * 60_000);
-    const weekdays = [...new Set(starts.map((start) => start.getDay()))];
+    const weekdays = [...new Set(starts.map((start) => zonedParts(start).weekday))];
 
     const trainingClass = await db.trainingClass.create({
       data: {
@@ -266,7 +267,7 @@ export async function createTrainingClass(input: TrainingClassInput) {
         startTime: input.startTime,
         endTime: input.endTime,
         weekdays: JSON.stringify(weekdays),
-        timeZone: input.timeZone || "America/New_York",
+        timeZone: input.timeZone || COMPANY_TIME_ZONE,
         withMeetLink: input.withMeetLink !== false,
         sessions: {
           create: starts.map((start) => ({
@@ -371,8 +372,8 @@ export async function updateTrainingClass(
           rangeEnd: new Date(starts.at(-1)!.getTime() + duration * 60_000),
           startTime: input.startTime,
           endTime: input.endTime,
-          weekdays: JSON.stringify([...new Set(starts.map((start) => start.getDay()))]),
-          timeZone: input.timeZone || "America/New_York",
+          weekdays: JSON.stringify([...new Set(starts.map((start) => zonedParts(start).weekday))]),
+          timeZone: input.timeZone || COMPANY_TIME_ZONE,
           withMeetLink: input.withMeetLink !== false,
           sessions: {
             create: starts.map((start) => ({

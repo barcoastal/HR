@@ -13,6 +13,7 @@ import { WhosOutPanel } from "@/components/calendar/whos-out-panel";
 import { getVisibleOutOfOffice, getMyOutOfOffice } from "@/lib/actions/out-of-office";
 import { getTrainingWorkspace, getVisibleTrainingSessions } from "@/lib/actions/training-calendar";
 import { canSeeAudiencePost } from "@/lib/event-audience";
+import { dateKey, formatTime, fromDateOnly, isEndOfDay, isStartOfDay, zonedDate, zonedParts } from "@/lib/time-zone";
 
 const absenceLabels: Record<string, string> = {
   OUT_OF_OFFICE: "Out of office",
@@ -48,10 +49,10 @@ export default async function CalendarPage({
   const callerEmployeeId = session.user.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const isManagerOrAbove = isAdmin || role === "MANAGER";
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const calendarFrom = new Date(currentYear - 1, 0, 1);
-  const calendarTo = new Date(currentYear + 1, 11, 31, 23, 59, 59);
+  // Everything below is bucketed in the company zone, never the server's.
+  const currentYear = zonedParts(new Date()).year;
+  const calendarFrom = zonedDate(currentYear - 1, 0, 1);
+  const calendarTo = zonedDate(currentYear + 1, 11, 31, 23, 59, 59);
 
   const reviewCycleWhere: Record<string, unknown> = {
     isAnniversary: true,
@@ -148,50 +149,61 @@ export default async function CalendarPage({
   const myCalendarConnected = !!(viewer?.googleCalendarSyncEnabled && viewer.googleCalendarAccessToken && viewer.googleCalendarRefreshToken);
   const employeeNameById = new Map(employees.map((employee) => [employee.id, displayName(employee)]));
   const events: CalendarEvent[] = [];
+  // Every event carries the company-zone day it belongs to so the client can
+  // group without consulting the browser's zone.
+  const addEvent = (event: Omit<CalendarEvent, "dateKey">) => events.push({ ...event, dateKey: dateKey(new Date(event.date)) });
 
   for (const employee of employees) {
     if (!isManagerOrAbove && employee.id !== callerEmployeeId) continue;
     const name = displayName(employee);
     const department = employee.department?.name || undefined;
-    if (employee.birthday) events.push({ id: `bday-${employee.id}`, name, date: new Date(currentYear, employee.birthday.getMonth(), employee.birthday.getDate()).toISOString(), type: "birthday", department, allDay: true });
-    if (employee.anniversaryDate) events.push({ id: `anniv-${employee.id}`, name, date: new Date(currentYear, employee.anniversaryDate.getMonth(), employee.anniversaryDate.getDate()).toISOString(), type: "anniversary", department, years: currentYear - employee.startDate.getFullYear(), allDay: true });
-    if (employee.benefitsEligibleDate && isManagerOrAbove) events.push({ id: `benefits-${employee.id}`, name, date: employee.benefitsEligibleDate.toISOString(), type: "benefits", department, allDay: true });
+    // Date-only columns are stored as UTC midnight, so read their calendar
+    // parts with the UTC getters and pin the event to the company-zone day.
+    if (employee.birthday) addEvent({ id: `bday-${employee.id}`, name, date: zonedDate(currentYear, employee.birthday.getUTCMonth(), employee.birthday.getUTCDate()).toISOString(), type: "birthday", department, allDay: true });
+    if (employee.anniversaryDate) addEvent({ id: `anniv-${employee.id}`, name, date: zonedDate(currentYear, employee.anniversaryDate.getUTCMonth(), employee.anniversaryDate.getUTCDate()).toISOString(), type: "anniversary", department, years: currentYear - employee.startDate.getUTCFullYear(), allDay: true });
+    if (employee.benefitsEligibleDate && isManagerOrAbove) addEvent({ id: `benefits-${employee.id}`, name, date: fromDateOnly(employee.benefitsEligibleDate).toISOString(), type: "benefits", department, allDay: true });
   }
 
   for (const interview of interviews) {
     const start = new Date(interview.scheduledAt);
-    events.push({
+    addEvent({
       id: `interview-${interview.id}`,
       name: `${interview.candidate.firstName} ${interview.candidate.lastName}`,
       date: start.toISOString(), type: "interview", meetLink: interview.googleMeetLink,
       location: interview.location || undefined,
-      time: start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      time: formatTime(start),
       description: interview.type === "ONSITE" ? "Onsite candidate interview" : "Candidate interview",
     });
   }
 
-  for (const holiday of getHolidaysForYear(currentYear)) events.push({
+  // Holidays are built with the server-local `new Date(y, m, d)`; the local
+  // getters round-trip that exactly, then the day is pinned to the company zone.
+  for (const holiday of getHolidaysForYear(currentYear)) addEvent({
     id: `holiday-${holiday.category}-${holiday.name.replace(/\s/g, "-").toLowerCase()}`,
-    name: holiday.name, date: holiday.date.toISOString(), type: `holiday-${holiday.category}` as CalendarEvent["type"], allDay: true,
+    name: holiday.name, date: zonedDate(holiday.date.getFullYear(), holiday.date.getMonth(), holiday.date.getDate()).toISOString(),
+    type: `holiday-${holiday.category}` as CalendarEvent["type"], allDay: true,
   });
 
-  for (const review of reviewCycles) if (review.employee) events.push({
-    id: `review-${review.id}`, sourceId: review.id, sourceKind: "review",
-    name: `Review: ${displayName(review.employee)}`, date: review.endDate.toISOString(), endDate: review.endDate.toISOString(),
-    type: "performance-review", description: review.name, organizer: displayName(review.employee), allDay: true,
-  });
+  for (const review of reviewCycles) if (review.employee) {
+    const due = fromDateOnly(review.endDate).toISOString();
+    addEvent({
+      id: `review-${review.id}`, sourceId: review.id, sourceKind: "review",
+      name: `Review: ${displayName(review.employee)}`, date: due, endDate: due,
+      type: "performance-review", description: review.name, organizer: displayName(review.employee), allDay: true,
+    });
+  }
 
   for (const meeting of oneOnOnes) {
     const employeeName = displayName(meeting.employee);
     const managerName = displayName(meeting.manager);
-    events.push({
+    addEvent({
       id: `one-on-one-${meeting.id}`, sourceId: meeting.id, sourceKind: "one-on-one",
       name: `${oneOnOneLabels[meeting.type] || "1:1"}: ${employeeName}`,
       date: meeting.scheduledAt.toISOString(),
       endDate: new Date(meeting.scheduledAt.getTime() + 30 * 60_000).toISOString(),
       type: "one-on-one", meetLink: meeting.meetingLink, organizer: managerName,
       attendees: [managerName, employeeName], description: "Internal manager and employee meeting",
-      time: meeting.scheduledAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      time: formatTime(meeting.scheduledAt),
     });
   }
 
@@ -202,49 +214,51 @@ export default async function CalendarPage({
     if (feedEvent.audienceType === "employees") {
       try { attendeeNames = (JSON.parse(feedEvent.audienceEmployeeIds || "[]") as string[]).map((id) => employeeNameById.get(id)).filter((name): name is string => !!name); } catch { attendeeNames = []; }
     }
-    events.push({
+    addEvent({
       id: `feed-event-${feedEvent.id}`, sourceId: feedEvent.id, sourceKind: "company",
       name: feedEvent.content, date: feedEvent.eventDate.toISOString(), endDate: feedEvent.eventEndDate?.toISOString(),
       type: "feed-event", location: feedEvent.eventLocation || undefined, description: feedEvent.eventDescription || undefined,
       meetLink: feedEvent.eventMeetLink, organizer: displayName(feedEvent.author), attendees: attendeeNames,
       audience: feedEvent.audienceType === "all" ? "everyone" : "selected attendees",
       canManage: isAdmin || feedEvent.authorId === callerEmployeeId,
-      time: feedEvent.eventDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+      time: formatTime(feedEvent.eventDate),
     });
   }
 
   for (const absence of outOfOffice) {
     const employeeName = displayName(absence.employee);
-    const cursor = new Date(absence.startDate.getFullYear(), absence.startDate.getMonth(), absence.startDate.getDate());
-    const last = new Date(absence.endDate.getFullYear(), absence.endDate.getMonth(), absence.endDate.getDate());
-    const allDay = absence.startDate.getHours() === 0 && absence.startDate.getMinutes() === 0 && absence.endDate.getHours() === 23;
-    let index = 0;
-    while (cursor <= last && index < 366) {
+    const first = zonedParts(absence.startDate);
+    const lastKey = dateKey(absence.endDate);
+    const allDay = isStartOfDay(absence.startDate) && isEndOfDay(absence.endDate);
+    for (let index = 0; index < 366; index++) {
+      // Company-zone midnight of each day the absence covers.
+      const cursor = zonedDate(first.year, first.month, first.day + index);
+      const cursorKey = dateKey(cursor);
+      if (cursorKey > lastKey) break;
       const isFirstDay = index === 0;
-      const isLastDay = cursor.toDateString() === last.toDateString();
+      const isLastDay = cursorKey === lastKey;
       const multiDayTime = !allDay && !isFirstDay && !isLastDay
         ? "All day"
         : !allDay && !isFirstDay
-          ? `Until ${absence.endDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`
+          ? `Until ${formatTime(absence.endDate)}`
           : undefined;
-      events.push({
+      addEvent({
         id: `ooo-${absence.id}-${index}`, sourceId: absence.id, sourceKind: "out-of-office",
         name: `${employeeName}: ${absenceLabels[absence.type] || "Out of office"}`,
-        date: new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate(), index === 0 ? absence.startDate.getHours() : 0, index === 0 ? absence.startDate.getMinutes() : 0).toISOString(),
+        date: (isFirstDay ? absence.startDate : cursor).toISOString(),
         endDate: absence.endDate.toISOString(), type: absence.type === "WORKING_REMOTELY" ? "working-remotely" : "out-of-office",
         description: absence.note || absenceLabels[absence.type], organizer: employeeName,
         audience: audienceLabel(absence.audienceType), allDay, time: multiDayTime,
       });
-      cursor.setDate(cursor.getDate() + 1); index++;
     }
   }
 
-  for (const training of visibleTraining) events.push({
+  for (const training of visibleTraining) addEvent({
     id: `training-${training.id}`, sourceId: training.trainingClassId, sourceKind: "training",
     name: training.title, date: training.startAt.toISOString(), endDate: training.endAt.toISOString(), type: "training",
     location: training.location || undefined, description: training.agenda || "Training session", meetLink: training.meetLink,
     organizer: training.organizer, attendees: training.attendees, groupName: training.groupName || undefined,
-    canManage: training.canManage, time: training.startAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }),
+    canManage: training.canManage, time: formatTime(training.startAt),
   });
 
   const directory = activeDirectory.map((employee) => ({

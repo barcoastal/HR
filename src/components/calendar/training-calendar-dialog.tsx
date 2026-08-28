@@ -12,6 +12,7 @@ import {
   saveTrainingGroup,
   updateTrainingClass,
 } from "@/lib/actions/training-calendar";
+import { COMPANY_TIME_ZONE, dateKey, parseDateKey, parseTimeKey, zonedDate, zonedParts } from "@/lib/time-zone";
 
 type Employee = {
   id: string;
@@ -61,10 +62,6 @@ const WEEKDAYS = [
   { value: 0, label: "Sun" },
 ];
 
-function localDate(value = new Date()) {
-  return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
-}
-
 function parseIds(value: string | null) {
   try {
     const parsed = JSON.parse(value || "[]");
@@ -91,17 +88,25 @@ function durationMinutes(start: string, end: string) {
   return Math.max(15, (endHour * 60 + endMinute) - (startHour * 60 + startMinute));
 }
 
+/**
+ * Session start instants for every selected weekday in the date range. The
+ * pickers describe company-zone wall-clock time, so each start is built with
+ * `zonedDate` rather than the browser's local zone.
+ */
 function buildSessions(startDate: string, endDate: string, startTime: string, weekdays: Set<number>) {
-  const start = new Date(`${startDate}T00:00:00`);
-  const end = new Date(`${endDate}T00:00:00`);
-  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || end < start) return [];
+  const start = parseDateKey(startDate);
+  const end = parseDateKey(endDate);
+  const clock = parseTimeKey(startTime);
+  if (!start || !end || !clock) return [];
+  // Walk calendar days on a UTC grid (pure arithmetic, no zone) and pin each one.
+  const first = Date.UTC(start.year, start.month, start.day);
+  const last = Date.UTC(end.year, end.month, end.day);
+  if (last < first) return [];
   const values: string[] = [];
-  const cursor = new Date(start);
-  while (cursor <= end && values.length <= 60) {
-    if (weekdays.has(cursor.getDay())) {
-      values.push(new Date(`${localDate(cursor)}T${startTime}:00`).toISOString());
-    }
-    cursor.setDate(cursor.getDate() + 1);
+  for (let cursor = first; cursor <= last && values.length <= 60; cursor += 86_400_000) {
+    const day = new Date(cursor);
+    if (!weekdays.has(day.getUTCDay())) continue;
+    values.push(zonedDate(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate(), clock.hour, clock.minute).toISOString());
   }
   return values;
 }
@@ -137,7 +142,7 @@ export function TrainingCalendarDialog({ employees, groups, classes }: {
   classes: TrainingClass[];
 }) {
   const router = useRouter();
-  const today = localDate();
+  const today = dateKey(new Date());
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"schedule" | "groups" | "manage">("schedule");
   const [saving, setSaving] = useState(false);
@@ -155,7 +160,7 @@ export function TrainingCalendarDialog({ employees, groups, classes }: {
   const [endDate, setEndDate] = useState(today);
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("10:00");
-  const [weekdays, setWeekdays] = useState<Set<number>>(new Set([new Date(`${today}T00:00:00`).getDay()]));
+  const [weekdays, setWeekdays] = useState<Set<number>>(new Set([zonedParts(new Date()).weekday]));
   const [withMeet, setWithMeet] = useState(true);
   const [visibleManagers, setVisibleManagers] = useState(true);
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
@@ -169,10 +174,11 @@ export function TrainingCalendarDialog({ employees, groups, classes }: {
 
   function clearMessages() { setError(null); setSuccess(null); }
   function resetSchedule() {
-    const date = localDate();
+    const now = new Date();
+    const date = dateKey(now);
     setEditingClassId(null); setTitle(""); setAgenda(""); setLocation(""); setGroupId(""); setTrainerId("");
     setTraineeIds(new Set()); setViewerIds(new Set()); setStartDate(date); setEndDate(date); setStartTime("09:00"); setEndTime("10:00");
-    setWeekdays(new Set([new Date(`${date}T00:00:00`).getDay()])); setWithMeet(true); setVisibleManagers(true); clearMessages();
+    setWeekdays(new Set([zonedParts(now).weekday])); setWithMeet(true); setVisibleManagers(true); clearMessages();
   }
 
   function selectGroup(id: string) {
@@ -196,7 +202,7 @@ export function TrainingCalendarDialog({ employees, groups, classes }: {
       title, agenda, location, groupId: groupId || null, trainerId,
       traineeIds: [...traineeIds], viewerIds: [...viewerIds], visibleToManagers: visibleManagers,
       sessionStarts, durationMinutes: durationMinutes(startTime, endTime), startTime, endTime,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "America/New_York", withMeetLink: withMeet,
+      timeZone: COMPANY_TIME_ZONE, withMeetLink: withMeet,
     };
     const result = editingClassId
       ? await updateTrainingClass({ ...payload, trainingClassId: editingClassId })
@@ -216,7 +222,7 @@ export function TrainingCalendarDialog({ employees, groups, classes }: {
     const sessions = item.sessions.filter((session) => session.status === "SCHEDULED");
     const first = sessions[0] ? new Date(sessions[0].startAt) : new Date(item.rangeStart);
     const last = sessions.at(-1) ? new Date(sessions.at(-1)!.startAt) : new Date(item.rangeEnd);
-    setStartDate(localDate(first)); setEndDate(localDate(last)); setStartTime(item.startTime); setEndTime(item.endTime);
+    setStartDate(dateKey(first)); setEndDate(dateKey(last)); setStartTime(item.startTime); setEndTime(item.endTime);
     setWeekdays(new Set(parseWeekdays(item.weekdays))); setWithMeet(item.withMeetLink); setTab("schedule");
   }
 

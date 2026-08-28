@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { isAdminAudienceRole, type AudienceViewer } from "@/lib/event-audience";
+import { parseDateKey, zonedDate, zonedParts } from "@/lib/time-zone";
 import { revalidatePath } from "next/cache";
 
 /**
@@ -75,17 +76,19 @@ function parseTime(value: string | undefined): { hour: number; minute: number } 
 }
 
 /**
- * Parse a "YYYY-MM-DD" input value as a LOCAL calendar date.
- * `new Date("2026-08-05")` parses as UTC midnight, which lands on the previous
- * day for anyone west of UTC — the date the user picked must not shift.
+ * Parse a "YYYY-MM-DD" input value as a calendar date in the company zone.
+ * `new Date("2026-08-05")` parses as UTC midnight and a server-local
+ * constructor follows the server's zone (UTC in production) — either lands
+ * the entry on the wrong evening for Eastern viewers. The date the user
+ * picked must be that day in company time.
  */
-function parseLocalDate(value: string): Date | null {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
-  if (!m) {
-    const fallback = new Date(value);
-    return Number.isNaN(fallback.getTime()) ? null : fallback;
-  }
-  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+function parseCalendarDate(value: string): { year: number; month: number; day: number } | null {
+  const parsed = parseDateKey(value);
+  if (parsed) return parsed;
+  const fallback = new Date(value);
+  if (Number.isNaN(fallback.getTime())) return null;
+  const { year, month, day } = zonedParts(fallback);
+  return { year, month, day };
 }
 
 const SELECT = {
@@ -126,20 +129,20 @@ export async function createOutOfOffice(input: CreateOutOfOfficeInput) {
     return { success: false, error: "Your login isn't linked to an employee record." };
   }
 
-  const start = parseLocalDate(input.startDate);
-  const end = parseLocalDate(input.endDate);
+  const start = parseCalendarDate(input.startDate);
+  const end = parseCalendarDate(input.endDate);
   if (!start || !end) {
     return { success: false, error: "Please pick valid dates." };
   }
 
   // Optional times: whole-day entries span 00:00 → 23:59:59; timed entries
-  // use the picked times on the start/end dates.
+  // use the picked times on the start/end dates. All in the company zone.
   const startTime = parseTime(input.startTime);
   const endTime = parseTime(input.endTime);
-  const startAt = new Date(start.getFullYear(), start.getMonth(), start.getDate(), startTime?.hour ?? 0, startTime?.minute ?? 0);
+  const startAt = zonedDate(start.year, start.month, start.day, startTime?.hour ?? 0, startTime?.minute ?? 0);
   const endAt = endTime
-    ? new Date(end.getFullYear(), end.getMonth(), end.getDate(), endTime.hour, endTime.minute)
-    : new Date(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 59);
+    ? zonedDate(end.year, end.month, end.day, endTime.hour, endTime.minute)
+    : zonedDate(end.year, end.month, end.day, 23, 59, 59);
   if (endAt <= startAt) {
     return { success: false, error: "The end of the entry must be after its start." };
   }

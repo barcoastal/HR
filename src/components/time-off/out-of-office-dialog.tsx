@@ -6,6 +6,7 @@ import { cn, displayName } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { createOutOfOffice, deleteOutOfOffice } from "@/lib/actions/out-of-office";
+import { dateKey, formatDateShort, formatTime, isEndOfDay, isStartOfDay } from "@/lib/time-zone";
 
 type Department = { id: string; name: string; employeeCount: number };
 type Employee = {
@@ -27,12 +28,10 @@ type MyEntry = {
 
 function fmt(d: Date | string) {
   const dt = new Date(d);
-  const date = dt.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-  // Whole-day boundaries (00:00 start / 23:59 end) don't show a time.
-  const isAllDayBoundary =
-    (dt.getHours() === 0 && dt.getMinutes() === 0) || (dt.getHours() === 23 && dt.getMinutes() === 59);
-  if (isAllDayBoundary) return date;
-  return `${date}, ${dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}`;
+  const date = formatDateShort(dt);
+  // Whole-day boundaries (00:00 start / 23:59 end, company zone) don't show a time.
+  if (isStartOfDay(dt) || isEndOfDay(dt)) return date;
+  return `${date}, ${formatTime(dt)}`;
 }
 
 function audienceLabel(t: string) {
@@ -72,7 +71,7 @@ export function OutOfOfficeDialog({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const today = () => new Date().toISOString().slice(0, 10);
+  const today = () => dateKey(new Date());
 
   // The employee directory powers explicit sharing with selected coworkers.
   const canTargetIndividuals = employees.length > 0;
