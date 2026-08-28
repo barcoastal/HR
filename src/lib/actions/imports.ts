@@ -5,6 +5,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
+import { FIELD_KEYS } from "@/lib/import-export/employee-fields";
 import { applyOverrides, buildMergePlan } from "@/lib/import-export/merge";
 import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
 import { commitImportBatch } from "@/lib/import-export/commit-service";
@@ -305,27 +306,11 @@ async function loadGroupMembers(batchId: string, groupId: string) {
   return { group, rows, liveRows, employees, mergeMembers };
 }
 
-export async function resolveGroupMerge(
-  batchId: string,
-  groupId: string,
-  primary: MemberRef,
-  choices: Partial<Record<FieldKey, MemberRef>>,
-  overrides: Partial<Record<FieldKey, string>> = {},
-): Promise<void> {
-  await requireImportAccess();
-  await requireEditableBatch(batchId);
-  const { group, liveRows, mergeMembers } = await loadGroupMembers(batchId, groupId);
-  if (group.status !== "PENDING") throw new Error("This group already has a decision");
-  if (!mergeMembers.some((m) => sameRef(m.ref, primary))) throw new Error("Primary must be a member of the group");
-  const plan = buildMergePlan(mergeMembers, primary, choices);
 
-  // Hand-edited values in the Result column win over the picked column values.
-  const { data: cleaned, errors } = validateRow(applyOverrides(plan.data, overrides));
-  if (errors.length > 0) {
-    throw new Error(`Fix these before merging: ${errors.map((e) => e.message).join("; ")}`);
-  }
-  plan.data = cleaned;
+type LiveRow = { id: string; data: unknown; action: RowAction; targetEmployeeId: string | null; mergedIntoRowId: string | null; skipReason: string | null };
 
+/** Persist a merge plan: carrier row takes the merged data, other rows fold away, group records the decision + undo snapshot. */
+async function commitGroupMerge(groupId: string, primary: MemberRef, plan: ReturnType<typeof buildMergePlan>, liveRows: LiveRow[]): Promise<void> {
   const snapshot = liveRows.map((r) => ({
     id: r.id, data: r.data, action: r.action, targetEmployeeId: r.targetEmployeeId, mergedIntoRowId: r.mergedIntoRowId, skipReason: r.skipReason,
   }));
@@ -357,6 +342,30 @@ export async function resolveGroupMerge(
       },
     });
   });
+}
+
+export async function resolveGroupMerge(
+  batchId: string,
+  groupId: string,
+  primary: MemberRef,
+  choices: Partial<Record<FieldKey, MemberRef>>,
+  overrides: Partial<Record<FieldKey, string>> = {},
+): Promise<void> {
+  await requireImportAccess();
+  await requireEditableBatch(batchId);
+  const { group, liveRows, mergeMembers } = await loadGroupMembers(batchId, groupId);
+  if (group.status !== "PENDING") throw new Error("This group already has a decision");
+  if (!mergeMembers.some((m) => sameRef(m.ref, primary))) throw new Error("Primary must be a member of the group");
+  const plan = buildMergePlan(mergeMembers, primary, choices);
+
+  // Hand-edited values in the Result column win over the picked column values.
+  const { data: cleaned, errors } = validateRow(applyOverrides(plan.data, overrides));
+  if (errors.length > 0) {
+    throw new Error(`Fix these before merging: ${errors.map((e) => e.message).join("; ")}`);
+  }
+  plan.data = cleaned;
+
+  await commitGroupMerge(groupId, primary, plan, liveRows);
   revalidate(batchId);
 }
 
@@ -447,4 +456,40 @@ export async function undoImport(batchId: string): Promise<UndoSummary> {
   revalidatePath("/org/departments");
   revalidate(batchId);
   return summary;
+}
+
+/**
+ * Merge every pending group that pairs file rows with exactly one existing person into that
+ * person. "fill" keeps the existing values and fills blanks from the file; "overwrite" lets file
+ * values win wherever the file has one. Row↔row groups and groups with several existing people are
+ * left for manual review.
+ */
+export async function autoMergeMatches(batchId: string, strategy: "fill" | "overwrite"): Promise<{ merged: number; skipped: number }> {
+  await requireImportAccess();
+  await requireEditableBatch(batchId);
+  const groups = await db.importDuplicateGroup.findMany({ where: { batchId, status: "PENDING" }, select: { id: true } });
+  let merged = 0;
+  let skipped = 0;
+  for (const g of groups) {
+    const { liveRows, mergeMembers } = await loadGroupMembers(batchId, g.id);
+    const employees = mergeMembers.filter((m) => m.ref.kind === "employee");
+    const rows = mergeMembers.filter((m) => m.ref.kind === "row");
+    if (employees.length !== 1 || rows.length === 0) { skipped++; continue; }
+    const primary = employees[0].ref;
+    const choices: Partial<Record<FieldKey, MemberRef>> = {};
+    if (strategy === "overwrite") {
+      for (const key of FIELD_KEYS) {
+        const donor = rows.find((r) => (r.data[key] ?? "").trim() !== "");
+        if (donor) choices[key] = donor.ref;
+      }
+    }
+    const plan = buildMergePlan(mergeMembers, primary, choices);
+    const { data, errors } = validateRow(plan.data);
+    if (errors.length > 0) { skipped++; continue; }
+    plan.data = data;
+    await commitGroupMerge(g.id, primary, plan, liveRows);
+    merged++;
+  }
+  revalidate(batchId);
+  return { merged, skipped };
 }

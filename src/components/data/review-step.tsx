@@ -4,7 +4,9 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import { Dialog } from "@/components/ui/dialog";
 import {
+  autoMergeMatches,
   skipImportRow,
   skipInvalidRows,
   unskipImportRow,
@@ -36,6 +38,12 @@ export function ReviewStep({ detail, onContinue }: { detail: ImportBatchDetail; 
   const isLive = (m: MemberRef) =>
     m.kind === "employee" ? !!detail.employees[m.id] : ["CREATE", "UPDATE"].includes(rowById.get(m.id)?.action ?? "");
   const needsDecision = (g: ImportGroupView) => g.status === "PENDING" && g.members.filter(isLive).length >= 2;
+  // Groups the bulk action can settle: one existing person + at least one file row.
+  const autoMergeable = detail.groups.filter((g) => {
+    if (!needsDecision(g)) return false;
+    const live = g.members.filter(isLive);
+    return live.filter((m) => m.kind === "employee").length === 1 && live.some((m) => m.kind === "row");
+  }).length;
 
   const [tab, setTab] = useState<Tab>("groups");
   const [selection, setSelection] = useState<Selection>(() => {
@@ -44,6 +52,8 @@ export function ReviewStep({ detail, onContinue }: { detail: ImportBatchDetail; 
   });
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [strategy, setStrategy] = useState<"fill" | "overwrite">("fill");
 
   function run(fn: () => Promise<void>) {
     setError(null);
@@ -76,6 +86,16 @@ export function ReviewStep({ detail, onContinue }: { detail: ImportBatchDetail; 
         <Stat icon="error" label="need attention" value={s.needsAttention} tone={s.needsAttention ? "warn" : undefined} />
         <Stat icon="block" label="skipped" value={s.skipped} />
         <span className="ml-auto flex items-center gap-2">
+          {!readOnly && autoMergeable > 0 && (
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => setBulkOpen(true)}
+              className="inline-flex items-center gap-1 rounded-lg border border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10 px-3 py-1.5 font-medium text-[var(--color-accent)] hover:bg-[var(--color-accent)]/15 disabled:opacity-50"
+            >
+              <Icon name="call_merge" size={14} /> Merge all {autoMergeable} match{autoMergeable === 1 ? "" : "es"} into existing people
+            </button>
+          )}
           {!readOnly && s.needsAttention > 0 && (
             <button
               type="button"
@@ -104,6 +124,43 @@ export function ReviewStep({ detail, onContinue }: { detail: ImportBatchDetail; 
         </span>
       </div>
       {error && <p className="text-xs text-red-500">{error}</p>}
+
+      <Dialog open={bulkOpen} onClose={() => !pending && setBulkOpen(false)} title={`Merge ${autoMergeable} match${autoMergeable === 1 ? "" : "es"} into existing people?`}>
+        <div className="space-y-4 text-sm">
+          <p className="text-[var(--color-text-muted)]">
+            Each file row that matches exactly one person already in the system becomes an update to that person. Groups with two file rows or more than one existing person are left for you to review by hand.
+          </p>
+          <div className="space-y-2">
+            {([
+              ["fill", "Keep what's already there, fill in the blanks from the file", "Safe default — existing values are never overwritten."],
+              ["overwrite", "File values win", "Wherever the file has a value it replaces the existing one; blanks in the file leave the existing value alone."],
+            ] as const).map(([value, label, hint]) => (
+              <label key={value} className={cn("flex cursor-pointer items-start gap-3 rounded-lg border p-3", strategy === value ? "border-[var(--color-accent)] bg-[var(--color-accent)]/5" : "border-[var(--color-border)]")}>
+                <input type="radio" name="merge-strategy" value={value} checked={strategy === value} onChange={() => setStrategy(value)} className="mt-1 accent-[var(--color-accent)]" />
+                <span>
+                  <span className="block font-medium text-[var(--color-text-primary)]">{label}</span>
+                  <span className="block text-xs text-[var(--color-text-muted)]">{hint}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+          <p className="text-xs text-[var(--color-text-muted)]">Every merge can still be undone group by group before you import.</p>
+          <div className="flex justify-end gap-2 pt-1">
+            <button type="button" onClick={() => setBulkOpen(false)} disabled={pending} className="rounded-lg border border-[var(--color-border)] px-3 py-1.5 text-xs font-medium text-[var(--color-text-primary)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={() => {
+                setBulkOpen(false);
+                run(() => autoMergeMatches(detail.batch.id, strategy).then(() => undefined));
+              }}
+              className="rounded-lg bg-[var(--color-accent)] px-3 py-1.5 text-xs font-medium text-white hover:bg-[var(--color-accent-hover)] disabled:opacity-50"
+            >
+              Merge {autoMergeable}
+            </button>
+          </div>
+        </div>
+      </Dialog>
 
       <div className="grid gap-4 lg:grid-cols-[360px_1fr]">
         <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
