@@ -10,9 +10,11 @@ interface DialogProps {
   onClose: () => void;
   children: React.ReactNode;
   title?: string;
+  /** Extra classes for the panel, e.g. `max-w-2xl` to widen it. */
+  className?: string;
 }
 
-export function Dialog({ open, onClose, children, title }: DialogProps) {
+export function Dialog({ open, onClose, children, title, className }: DialogProps) {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -44,7 +46,8 @@ export function Dialog({ open, onClose, children, title }: DialogProps) {
             className={cn(
               "relative z-50 w-full max-w-lg max-h-[90vh] overflow-y-auto mx-3 md:mx-0",
               "glass rounded-[var(--radius-lg)] p-4 md:p-6 shadow-[var(--shadow-glass)]",
-              "shadow-2xl"
+              "shadow-2xl",
+              className
             )}
           >
             {title && (

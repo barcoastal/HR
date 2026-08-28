@@ -37,6 +37,7 @@ const allNavLinks = [
   { href: "/sign-queue", label: "Sign Queue", icon: "verified", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
   { href: "/my-documents", label: "My Documents", icon: "folder", access: () => true },
   { href: "/cv", label: "Recruitment", icon: "work", access: (r: UserRole) => canAccessRecruitment(r) },
+  { href: "/background-checks", label: "Background Checks", icon: "verified_user", access: (r: UserRole) => canAccessRecruitment(r) },
   { href: "/recruiter-manager", label: "Recruiter Manager", icon: "manage_accounts", access: (r: UserRole) => r === "SUPER_ADMIN" },
   { href: "/hiring-plan", label: "Hiring Plan", icon: "dashboard", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" },
   { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec },
