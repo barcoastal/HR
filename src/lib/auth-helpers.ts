@@ -21,8 +21,12 @@ export async function requireAuth() {
 /** True when the login has been deactivated (offboarded) since the session was issued. */
 async function isDeactivatedUser(userId: string | undefined): Promise<boolean> {
   if (!userId) return false;
-  const user = await db.user.findUnique({ where: { id: userId }, select: { deactivatedAt: true } });
-  return !!user?.deactivatedAt;
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: { deactivatedAt: true, employee: { select: { status: true, archivedAt: true } } },
+  });
+  if (!user) return false;
+  return !!user.deactivatedAt || user.employee?.status === "OFFBOARDED" || !!user.employee?.archivedAt;
 }
 
 export async function requireAdmin() {

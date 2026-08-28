@@ -9,20 +9,20 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
 
 const interviewTypes: { value: InterviewType; label: string }[] = [
-  { value: "PHONE_SCREEN", label: "Phone Screen" },
+  { value: "PHONE_SCREEN", label: "Pre-screening (Google Meet)" },
+  { value: "ONSITE", label: "Onsite / In person" },
   { value: "VIDEO", label: "Video Interview" },
   { value: "TECHNICAL", label: "Technical" },
-  { value: "BEHAVIORAL", label: "Behavioral" },
   { value: "PANEL", label: "Panel" },
   { value: "FINAL", label: "Final Round" },
-  { value: "ONSITE", label: "Onsite / In person" },
 ];
 
 const LAST_LOCATION_KEY = "hr.lastInterviewLocation";
 
 /** Phone screens rarely need a Meet room; every other remote type defaults to one. */
+// Everything except an onsite interview is held over Google Meet by default (pre-screens included).
 function defaultWithMeet(type: InterviewType): boolean {
-  return type !== "PHONE_SCREEN";
+  return type !== "ONSITE";
 }
 
 function readLastLocation(): string {
@@ -56,6 +56,7 @@ export function ScheduleInterviewDialog({
   recruiters = [],
   defaultInterviewerId,
   calendarConnected,
+  defaultType,
   open,
   onClose,
   onScheduled,
@@ -66,17 +67,19 @@ export function ScheduleInterviewDialog({
   recruiters?: { id: string; firstName: string; lastName: string }[];
   defaultInterviewerId?: string | null;
   calendarConnected: boolean;
+  /** Type pre-selected when the dialog opens (pre-screening vs interview stage). */
+  defaultType?: InterviewType;
   open: boolean;
   onClose: () => void;
   onScheduled: () => void;
 }) {
   const [submitting, setSubmitting] = useState(false);
-  const [type, setType] = useState<InterviewType>("VIDEO");
+  const [type, setType] = useState<InterviewType>(defaultType ?? "VIDEO");
   const [scheduledAt, setScheduledAt] = useState("");
   const [duration, setDuration] = useState(60);
   const [notes, setNotes] = useState("");
   const [location, setLocation] = useState("");
-  const [withMeet, setWithMeet] = useState(defaultWithMeet("VIDEO"));
+  const [withMeet, setWithMeet] = useState(defaultWithMeet(defaultType ?? "VIDEO"));
   const [interviewerId, setInterviewerId] = useState(defaultInterviewerId || recruiters[0]?.id || "");
   const [error, setError] = useState<string | null>(null);
   const selectedInterviewer = recruiters.find((recruiter) => recruiter.id === interviewerId);
@@ -86,11 +89,14 @@ export function ScheduleInterviewDialog({
 
   useEffect(() => {
     if (open) {
+      const initial = defaultType ?? "VIDEO";
+      setType(initial);
+      setWithMeet(defaultWithMeet(initial));
       setInterviewerId(defaultInterviewerId || recruiters[0]?.id || "");
       setError(null);
       setLocation((current) => current || readLastLocation());
     }
-  }, [defaultInterviewerId, open, recruiters]);
+  }, [defaultInterviewerId, defaultType, open, recruiters]);
 
   function handleTypeChange(next: InterviewType) {
     setType(next);

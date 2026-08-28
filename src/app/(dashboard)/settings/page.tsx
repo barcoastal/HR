@@ -124,7 +124,7 @@ export default async function SettingsPage({
     colorIdx: u.email.charCodeAt(0) % avatarColors.length,
   }));
 
-  const employeeList = employees.map((e) => ({
+  const employeeList = employees.filter((e) => e.status !== "OFFBOARDED").map((e) => ({
     id: e.id,
     firstName: e.firstName,
     lastName: e.lastName,

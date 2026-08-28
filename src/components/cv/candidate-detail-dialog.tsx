@@ -29,7 +29,7 @@ type InterviewForDisplay = {
 };
 
 const interviewTypeLabels: Record<InterviewType, string> = {
-  PHONE_SCREEN: "Phone Screen",
+  PHONE_SCREEN: "Pre-screening",
   VIDEO: "Video",
   TECHNICAL: "Technical",
   BEHAVIORAL: "Behavioral",
@@ -281,6 +281,11 @@ const DEFAULT_STATUSES: { value: CandidateStatus; label: string; color: string }
   { value: "HIRED", label: "Hired", color: "bg-green-500" },
   { value: "REJECTED", label: "Rejected", color: "bg-red-500" },
 ];
+
+// Stages where a call can be scheduled from the candidate card. Pre-screening
+// stages default to a Google Meet pre-screen; later stages default to onsite.
+const SCHEDULABLE_STATUSES: string[] = ["NEW", "CONTACTED", "SCREENING", "INTERVIEW", "OFFER", "BACKGROUND_CHECK"];
+const PRESCREEN_STATUSES: string[] = ["NEW", "CONTACTED", "SCREENING"];
 
 type PipelineStageConfig = { id: string; label: string; color: string; bgColor: string; enumValue: string; visible: boolean; order: number };
 
@@ -1289,7 +1294,7 @@ export function CandidateDetailDialog({
             )}
 
             {/* Schedule Interview */}
-            {(form.status === "SCREENING" || form.status === "INTERVIEW") && (
+            {SCHEDULABLE_STATUSES.includes(form.status) && (
               <div>
                 <button
                   onClick={() => setScheduleOpen(true)}
@@ -1300,7 +1305,7 @@ export function CandidateDetailDialog({
                   )}
                 >
                   <Icon name="calendar_today" size={16} />
-                  Schedule Interview
+                  {PRESCREEN_STATUSES.includes(form.status) ? "Schedule pre-screening (Google Meet)" : "Schedule interview"}
                 </button>
               </div>
             )}
@@ -1588,6 +1593,7 @@ export function CandidateDetailDialog({
         recruiters={recruiters}
         defaultInterviewerId={candidate.recruiterId}
         calendarConnected={calendarConnected}
+        defaultType={PRESCREEN_STATUSES.includes(form.status) ? "PHONE_SCREEN" : "ONSITE"}
         open={scheduleOpen}
         onClose={() => setScheduleOpen(false)}
         onScheduled={() => {

@@ -35,7 +35,7 @@ export async function scheduleInterview(data: {
   if (!candidate) throw new Error("Candidate not found");
 
   const typeLabels: Record<InterviewType, string> = {
-    PHONE_SCREEN: "Phone Screen",
+    PHONE_SCREEN: "Pre-screening",
     VIDEO: "Video Interview",
     TECHNICAL: "Technical Interview",
     BEHAVIORAL: "Behavioral Interview",
