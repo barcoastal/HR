@@ -131,6 +131,8 @@ export async function createCompanyEvent(data: {
     where: {
       employeeId: { in: attendees.map((a) => a.id) },
       googleCalendarSyncEnabled: true,
+      deactivatedAt: null,
+      employee: { status: { not: "OFFBOARDED" }, archivedAt: null },
     },
     select: { id: true, employeeId: true },
   });

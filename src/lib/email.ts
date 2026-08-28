@@ -129,14 +129,17 @@ export type EmailSendResult = {
 };
 
 async function currentSenderEmployeeId(explicit?: string | null): Promise<string | null> {
-  if (explicit !== undefined) return explicit;
+  // "Initiated by" is whoever actually clicked: the signed-in person wins. An explicit sender
+  // (e.g. the interviewer on an interview email) only applies when nobody is signed in — crons,
+  // webhooks and other background sends.
   try {
     const { getSession } = await import("@/lib/auth-helpers");
     const session = await getSession();
-    return session?.user?.employeeId || null;
+    if (session?.user?.employeeId) return session.user.employeeId;
   } catch {
-    return null;
+    // no request scope — background send
   }
+  return explicit ?? null;
 }
 
 function errorMessage(error: unknown): string {
