@@ -14,6 +14,7 @@ type EmployeeData = {
   preferredName: string;
   lastName: string;
   email: string;
+  personalEmail: string;
   phone: string | null;
   jobTitle: string;
   departmentId: string | null;
@@ -46,6 +47,7 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
     preferredName: employee.preferredName,
     lastName: employee.lastName,
     email: employee.email,
+    personalEmail: employee.personalEmail,
     phone: employee.phone || "",
     jobTitle: employee.jobTitle,
     departmentId: employee.departmentId || "",
@@ -81,6 +83,7 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
       preferredName: form.preferredName || null,
       lastName: form.lastName,
       email: form.email,
+      personalEmail: form.personalEmail.trim().toLowerCase() || null,
       phone: form.phone || null,
       jobTitle: form.jobTitle,
       departmentId: form.departmentId || null,
@@ -148,10 +151,14 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
               <input value={form.preferredName} onChange={(e) => update("preferredName", e.target.value)} placeholder="Shown across the app" className={inputClass} />
             </div>
           </div>
+          <div>
+            <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Email *</label>
+            <input value={form.email} onChange={(e) => update("email", e.target.value)} type="email" className={inputClass} />
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Email *</label>
-              <input value={form.email} onChange={(e) => update("email", e.target.value)} type="email" className={inputClass} />
+              <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Personal Email</label>
+              <input value={form.personalEmail} onChange={(e) => update("personalEmail", e.target.value)} type="email" placeholder="Second address" className={inputClass} />
             </div>
             <div>
               <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Phone</label>

@@ -138,6 +138,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                   preferredName: employee.preferredName || "",
                   lastName: employee.lastName,
                   email: employee.email,
+                  personalEmail: employee.personalEmail || "",
                   phone: employee.phone,
                   jobTitle: employee.jobTitle,
                   departmentId: employee.departmentId,
@@ -186,6 +187,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
               <InfoRow icon="mail" label="Email" value={employee.email} />
+              {employee.personalEmail && <InfoRow icon="alternate_email" label="Personal Email" value={employee.personalEmail} />}
               {employee.phone && <InfoRow icon="phone" label="Phone" value={employee.phone} />}
               {employee.pronouns && <InfoRow icon="person" label="Pronouns" value={employee.pronouns} />}
               {employee.birthday && <InfoRow icon="calendar_today" label="Birthday" value={formatDate(employee.birthday)} />}

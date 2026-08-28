@@ -8,7 +8,7 @@ import type { FieldKey, RowData } from "./types";
 // ---------------------------------------------------------------------------
 
 export const TEXT_KEYS = [
-  "firstName", "middleName", "lastName", "preferredName", "pronouns", "phone", "jobTitle", "location",
+  "firstName", "middleName", "lastName", "preferredName", "pronouns", "personalEmail", "phone", "jobTitle", "location",
   "address", "city", "state", "zipCode", "country",
   "emergencyContactName", "emergencyContactPhone", "emergencyContactRelation",
   "bio", "hobbies", "dietaryRestrictions", "tShirtSize",

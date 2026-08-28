@@ -95,6 +95,7 @@ const people: EntityLoader = {
       preferredName: text(e.preferredName),
       pronouns: text(e.pronouns),
       email: e.email,
+      personalEmail: text(e.personalEmail),
       phone: text(e.phone),
       jobTitle: e.jobTitle,
       department: e.department?.name ?? null,

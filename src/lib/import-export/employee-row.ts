@@ -2,7 +2,7 @@ import type { RowData } from "./types";
 
 export interface EmployeeForRow {
   firstName: string; middleName: string | null; lastName: string; preferredName: string | null; pronouns: string | null;
-  email: string; phone: string | null; jobTitle: string; location: string | null; status: string;
+  email: string; personalEmail: string | null; phone: string | null; jobTitle: string; location: string | null; status: string;
   startDate: Date | null; birthday: Date | null; anniversaryDate: Date | null; benefitsEligibleDate: Date | null;
   address: string | null; city: string | null; state: string | null; zipCode: string | null; country: string | null;
   emergencyContactName: string | null; emergencyContactPhone: string | null; emergencyContactRelation: string | null;
@@ -19,7 +19,7 @@ export function employeeToRowData(e: EmployeeForRow): RowData {
   const out: RowData = {
     firstName: e.firstName, middleName: e.middleName ?? undefined, lastName: e.lastName,
     preferredName: e.preferredName ?? undefined, pronouns: e.pronouns ?? undefined,
-    email: e.email, phone: e.phone ?? undefined, jobTitle: e.jobTitle, location: e.location ?? undefined, status: e.status,
+    email: e.email, personalEmail: e.personalEmail ?? undefined, phone: e.phone ?? undefined, jobTitle: e.jobTitle, location: e.location ?? undefined, status: e.status,
     department: e.department?.name, team: e.team?.name,
     manager: e.manager ? `${e.manager.firstName} ${e.manager.lastName}`.trim() : undefined,
     startDate: iso(e.startDate), birthday: iso(e.birthday), anniversaryDate: iso(e.anniversaryDate), benefitsEligibleDate: iso(e.benefitsEligibleDate),

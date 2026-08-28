@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { EMPLOYEE_FIELDS, FIELD_GROUPS } from "@/lib/import-export/employee-fields";
-import { defaultFieldChoices } from "@/lib/import-export/merge";
+import { defaultFieldChoices, droppedEmails } from "@/lib/import-export/merge";
 import { normalizeEmail, normalizeName, normalizePhone } from "@/lib/import-export/normalize";
 import {
   refKey,
@@ -147,6 +147,16 @@ export function useMergeState(liveMembers: PanelMember[], canDecide: boolean): M
     chooseField(key, ref) {
       setChoices((prev) => ({ ...prev, [key]: ref }));
       reset(key);
+      // An address kept as the personal email that now wins the Email row would be stored twice — drop the copy.
+      if (key === "email") {
+        const chosen = liveMembers.find((m) => sameRef(m.ref, ref))?.data.email?.trim().toLowerCase();
+        setOverrides((prev) => {
+          if (!chosen || prev.personalEmail === undefined || prev.personalEmail.trim().toLowerCase() !== chosen) return prev;
+          const next = { ...prev };
+          delete next.personalEmail;
+          return next;
+        });
+      }
     },
     edit(key, value) {
       setOverrides((prev) => ({ ...prev, [key]: value }));
@@ -200,7 +210,46 @@ export function CompareTable({
     const ref = choices[key];
     return ref ? memberByKey.get(refKey(ref))?.data[key] : undefined;
   };
+  /** What the Result column will save for a field: the typed-over value, else the chosen member's. */
+  const effectiveValue = (key: FieldKey): string => (overrides[key] ?? resultValue(key) ?? "").trim();
   const columnCount = 1 + members.length + (merging ? 1 : 0);
+
+  // "Keep both" for emails: a merge keeps one address, so when the live records disagree, offer to
+  // keep each losing address as the personal email — only while that slot would otherwise be empty.
+  const keepAsPersonal = merging && !effectiveValue("personalEmail") ? droppedEmails(liveMembers, effectiveValue("email")) : [];
+  const personalKeptFromEmail =
+    merging &&
+    overrides.personalEmail !== undefined &&
+    liveMembers.some((m) => (m.data.email ?? "").trim().toLowerCase() === overrides.personalEmail!.trim().toLowerCase());
+
+  function resultExtra(field: FieldDef): React.ReactNode {
+    if (field.key === "email" && keepAsPersonal.length > 0) {
+      return (
+        <div className="mt-1.5 flex flex-col items-start gap-1">
+          {keepAsPersonal.map((email) => (
+            <button
+              key={email}
+              type="button"
+              disabled={busy}
+              onClick={() => onEdit("personalEmail", email)}
+              className="inline-flex items-start gap-1 text-left text-[11px] font-medium text-[var(--color-accent)] hover:underline disabled:opacity-50"
+            >
+              <Icon name="alternate_email" size={12} className="shrink-0 mt-px" />
+              <span className="break-all">Keep {email} as personal email</span>
+            </button>
+          ))}
+        </div>
+      );
+    }
+    if (field.key === "personalEmail" && personalKeptFromEmail) {
+      return (
+        <p className="mt-1 inline-flex items-center gap-1 text-[10px] text-[var(--color-text-muted)]">
+          <Icon name="call_merge" size={12} className="shrink-0" /> Kept from the Email row — both addresses stay on the record
+        </p>
+      );
+    }
+    return null;
+  }
 
   return (
     <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden">
@@ -256,6 +305,7 @@ export function CompareTable({
                     override={overrides[field.key]}
                     onEdit={(v) => onEdit(field.key, v)}
                     onReset={() => onReset(field.key)}
+                    resultExtra={merging ? resultExtra(field) : null}
                   />
                 ))}
               </Fragment>
@@ -365,6 +415,7 @@ function FieldRow({
   override,
   onEdit,
   onReset,
+  resultExtra,
 }: {
   field: FieldDef;
   members: PanelMember[];
@@ -378,6 +429,8 @@ function FieldRow({
   override: string | undefined;
   onEdit: (value: string) => void;
   onReset: () => void;
+  /** Rendered under the Result input (e.g. "Keep … as personal email"). */
+  resultExtra?: React.ReactNode;
 }) {
   const edited = override !== undefined;
   const editValue = override ?? resultValue ?? "";
@@ -455,6 +508,7 @@ function FieldRow({
               </button>
             )}
           </div>
+          {resultExtra}
         </td>
       )}
     </tr>

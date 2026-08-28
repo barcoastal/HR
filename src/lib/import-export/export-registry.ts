@@ -70,6 +70,7 @@ export const EXPORT_ENTITIES: ExportEntityDef[] = [
       { key: "preferredName", label: "Preferred name" },
       { key: "pronouns", label: "Pronouns" },
       { key: "email", label: "Email", default: true },
+      { key: "personalEmail", label: "Personal email" },
       { key: "phone", label: "Phone", default: true },
       { key: "jobTitle", label: "Job title", default: true },
       { key: "department", label: "Department", default: true },

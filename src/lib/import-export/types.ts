@@ -1,6 +1,6 @@
 export type FieldKey =
   | "firstName" | "middleName" | "lastName" | "preferredName" | "pronouns"
-  | "email" | "phone"
+  | "email" | "personalEmail" | "phone"
   | "jobTitle" | "department" | "team" | "manager" | "status" | "location"
   | "startDate" | "birthday" | "anniversaryDate" | "benefitsEligibleDate"
   | "address" | "city" | "state" | "zipCode" | "country"

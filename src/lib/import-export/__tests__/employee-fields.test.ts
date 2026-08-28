@@ -28,6 +28,11 @@ describe("autoDetectMapping", () => {
     expect(autoDetectMapping(["First Name", "Surname", "Work Email", "Reports To", "Favourite colour"]))
       .toEqual(["firstName", "lastName", "email", "manager", "skip"]);
   });
+  it("keeps work and personal addresses apart", () => {
+    expect(autoDetectMapping(["Work Email", "Personal Email"])).toEqual(["email", "personalEmail"]);
+    expect(autoDetectMapping(["Email", "Personal E-mail", "Home Email"])).toEqual(["email", "personalEmail", "skip"]);
+    expect(autoDetectMapping(["Secondary Email"])).toEqual(["personalEmail"]);
+  });
   it("matches the field key or label directly", () => {
     expect(autoDetectMapping(["jobTitle", "ZIP code"])).toEqual(["jobTitle", "zipCode"]);
   });

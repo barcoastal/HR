@@ -43,6 +43,25 @@ export function applyOverrides(data: RowData, overrides: Partial<Record<FieldKey
 }
 
 /**
+ * Distinct email addresses among `members` other than `chosenEmail` — the ones a merge would
+ * otherwise drop, which the compare table offers to keep as the personal email. Empty unless the
+ * members hold at least two distinct addresses. Comparison is case-insensitive; the first spelling
+ * seen is returned.
+ */
+export function droppedEmails(members: { data: RowData }[], chosenEmail: string | undefined): string[] {
+  const seen = new Map<string, string>();
+  for (const m of members) {
+    const value = m.data.email?.trim();
+    if (!value) continue;
+    const key = value.toLowerCase();
+    if (!seen.has(key)) seen.set(key, value);
+  }
+  if (seen.size < 2) return [];
+  const chosen = (chosenEmail ?? "").trim().toLowerCase();
+  return Array.from(seen.entries()).filter(([key]) => key !== chosen).map(([, value]) => value);
+}
+
+/**
  * Result data for merging existing employees into one (system-wide duplicates): the primary's
  * values, blanks filled from the others, explicit per-field choices, then typed-over values.
  * Callers validate the result with `validateRow` before writing it.

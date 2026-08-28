@@ -225,6 +225,7 @@ model Employee {
   preferredName            String?
   lastName                 String
   email                    String         @unique
+  personalEmail            String?
   phone                    String?
   jobTitle                 String
   profilePhoto             String?

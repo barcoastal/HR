@@ -31,6 +31,7 @@ export type EmployeeMinAggregateOutputType = {
   preferredName: string | null
   lastName: string | null
   email: string | null
+  personalEmail: string | null
   phone: string | null
   jobTitle: string | null
   profilePhoto: string | null
@@ -74,6 +75,7 @@ export type EmployeeMaxAggregateOutputType = {
   preferredName: string | null
   lastName: string | null
   email: string | null
+  personalEmail: string | null
   phone: string | null
   jobTitle: string | null
   profilePhoto: string | null
@@ -117,6 +119,7 @@ export type EmployeeCountAggregateOutputType = {
   preferredName: number
   lastName: number
   email: number
+  personalEmail: number
   phone: number
   jobTitle: number
   profilePhoto: number
@@ -162,6 +165,7 @@ export type EmployeeMinAggregateInputType = {
   preferredName?: true
   lastName?: true
   email?: true
+  personalEmail?: true
   phone?: true
   jobTitle?: true
   profilePhoto?: true
@@ -205,6 +209,7 @@ export type EmployeeMaxAggregateInputType = {
   preferredName?: true
   lastName?: true
   email?: true
+  personalEmail?: true
   phone?: true
   jobTitle?: true
   profilePhoto?: true
@@ -248,6 +253,7 @@ export type EmployeeCountAggregateInputType = {
   preferredName?: true
   lastName?: true
   email?: true
+  personalEmail?: true
   phone?: true
   jobTitle?: true
   profilePhoto?: true
@@ -364,6 +370,7 @@ export type EmployeeGroupByOutputType = {
   preferredName: string | null
   lastName: string
   email: string
+  personalEmail: string | null
   phone: string | null
   jobTitle: string
   profilePhoto: string | null
@@ -428,6 +435,7 @@ export type EmployeeWhereInput = {
   preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
+  personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   jobTitle?: Prisma.StringFilter<"Employee"> | string
   profilePhoto?: Prisma.StringNullableFilter<"Employee"> | string | null
@@ -524,6 +532,7 @@ export type EmployeeOrderByWithRelationInput = {
   preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -624,6 +633,7 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   middleName?: Prisma.StringNullableFilter<"Employee"> | string | null
   preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
+  personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   jobTitle?: Prisma.StringFilter<"Employee"> | string
   profilePhoto?: Prisma.StringNullableFilter<"Employee"> | string | null
@@ -719,6 +729,7 @@ export type EmployeeOrderByWithAggregationInput = {
   preferredName?: Prisma.SortOrderInput | Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  personalEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -768,6 +779,7 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   preferredName?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   lastName?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   email?: Prisma.StringWithAggregatesFilter<"Employee"> | string
+  personalEmail?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   jobTitle?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   profilePhoto?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
@@ -811,6 +823,7 @@ export type EmployeeCreateInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -903,6 +916,7 @@ export type EmployeeUncheckedCreateInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -995,6 +1009,7 @@ export type EmployeeUpdateInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1087,6 +1102,7 @@ export type EmployeeUncheckedUpdateInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1179,6 +1195,7 @@ export type EmployeeCreateManyInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -1222,6 +1239,7 @@ export type EmployeeUpdateManyMutationInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1261,6 +1279,7 @@ export type EmployeeUncheckedUpdateManyInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1319,6 +1338,7 @@ export type EmployeeCountOrderByAggregateInput = {
   preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrder
@@ -1362,6 +1382,7 @@ export type EmployeeMaxOrderByAggregateInput = {
   preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrder
@@ -1405,6 +1426,7 @@ export type EmployeeMinOrderByAggregateInput = {
   preferredName?: Prisma.SortOrder
   lastName?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  personalEmail?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   jobTitle?: Prisma.SortOrder
   profilePhoto?: Prisma.SortOrder
@@ -2353,6 +2375,7 @@ export type EmployeeCreateWithoutHeadOfInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -2444,6 +2467,7 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -2540,6 +2564,7 @@ export type EmployeeCreateWithoutDepartmentInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -2631,6 +2656,7 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -2743,6 +2769,7 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2834,6 +2861,7 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2944,6 +2972,7 @@ export type EmployeeScalarWhereInput = {
   preferredName?: Prisma.StringNullableFilter<"Employee"> | string | null
   lastName?: Prisma.StringFilter<"Employee"> | string
   email?: Prisma.StringFilter<"Employee"> | string
+  personalEmail?: Prisma.StringNullableFilter<"Employee"> | string | null
   phone?: Prisma.StringNullableFilter<"Employee"> | string | null
   jobTitle?: Prisma.StringFilter<"Employee"> | string
   profilePhoto?: Prisma.StringNullableFilter<"Employee"> | string | null
@@ -2987,6 +3016,7 @@ export type EmployeeCreateWithoutTeamInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3078,6 +3108,7 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3195,6 +3226,7 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3286,6 +3318,7 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3382,6 +3415,7 @@ export type EmployeeCreateWithoutManagerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3473,6 +3507,7 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3574,6 +3609,7 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3665,6 +3701,7 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3761,6 +3798,7 @@ export type EmployeeCreateWithoutBuddyInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3852,6 +3890,7 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -3964,6 +4003,7 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4055,6 +4095,7 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4173,6 +4214,7 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4264,6 +4306,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4371,6 +4414,7 @@ export type EmployeeCreateWithoutUserInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -4462,6 +4506,7 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -4569,6 +4614,7 @@ export type EmployeeUpdateWithoutUserInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4660,6 +4706,7 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4751,6 +4798,7 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -4842,6 +4890,7 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -4949,6 +4998,7 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5040,6 +5090,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5131,6 +5182,7 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5222,6 +5274,7 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5318,6 +5371,7 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5409,6 +5463,7 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5505,6 +5560,7 @@ export type EmployeeCreateWithoutCompletedTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5596,6 +5652,7 @@ export type EmployeeUncheckedCreateWithoutCompletedTasksInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -5703,6 +5760,7 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5794,6 +5852,7 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5896,6 +5955,7 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5987,6 +6047,7 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6089,6 +6150,7 @@ export type EmployeeUpdateWithoutCompletedTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6180,6 +6242,7 @@ export type EmployeeUncheckedUpdateWithoutCompletedTasksInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6271,6 +6334,7 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -6362,6 +6426,7 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -6469,6 +6534,7 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6560,6 +6626,7 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6651,6 +6718,7 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -6742,6 +6810,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -6838,6 +6907,7 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -6929,6 +6999,7 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -7036,6 +7107,7 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7127,6 +7199,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7229,6 +7302,7 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7320,6 +7394,7 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7411,6 +7486,7 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -7502,6 +7578,7 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -7598,6 +7675,7 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -7689,6 +7767,7 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -7796,6 +7875,7 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7887,6 +7967,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7989,6 +8070,7 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8080,6 +8162,7 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8171,6 +8254,7 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -8262,6 +8346,7 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -8369,6 +8454,7 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8460,6 +8546,7 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8551,6 +8638,7 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -8642,6 +8730,7 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -8749,6 +8838,7 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8840,6 +8930,7 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8931,6 +9022,7 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9022,6 +9114,7 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9129,6 +9222,7 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9220,6 +9314,7 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9311,6 +9406,7 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9402,6 +9498,7 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9509,6 +9606,7 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9600,6 +9698,7 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9691,6 +9790,7 @@ export type EmployeeCreateWithoutNotificationsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9782,6 +9882,7 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -9889,6 +9990,7 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9980,6 +10082,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10071,6 +10174,7 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -10162,6 +10266,7 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -10269,6 +10374,7 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10360,6 +10466,7 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10451,6 +10558,7 @@ export type EmployeeCreateWithoutDocumentsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -10542,6 +10650,7 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -10649,6 +10758,7 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10740,6 +10850,7 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -10831,6 +10942,7 @@ export type EmployeeCreateWithoutHrNotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -10922,6 +11034,7 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -11018,6 +11131,7 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -11109,6 +11223,7 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -11216,6 +11331,7 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11307,6 +11423,7 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11409,6 +11526,7 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11500,6 +11618,7 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11591,6 +11710,7 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -11682,6 +11802,7 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -11789,6 +11910,7 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11880,6 +12002,7 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -11971,6 +12094,7 @@ export type EmployeeCreateWithoutInterviewsAsInterviewerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12062,6 +12186,7 @@ export type EmployeeUncheckedCreateWithoutInterviewsAsInterviewerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12169,6 +12294,7 @@ export type EmployeeUpdateWithoutInterviewsAsInterviewerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12260,6 +12386,7 @@ export type EmployeeUncheckedUpdateWithoutInterviewsAsInterviewerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12351,6 +12478,7 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12442,6 +12570,7 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12538,6 +12667,7 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12629,6 +12759,7 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -12736,6 +12867,7 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12827,6 +12959,7 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -12929,6 +13062,7 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13020,6 +13154,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13111,6 +13246,7 @@ export type EmployeeCreateWithoutOutOfOfficeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -13202,6 +13338,7 @@ export type EmployeeUncheckedCreateWithoutOutOfOfficeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -13309,6 +13446,7 @@ export type EmployeeUpdateWithoutOutOfOfficeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13400,6 +13538,7 @@ export type EmployeeUncheckedUpdateWithoutOutOfOfficeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13491,6 +13630,7 @@ export type EmployeeCreateWithoutTrainingGroupsCreatedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -13582,6 +13722,7 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -13689,6 +13830,7 @@ export type EmployeeUpdateWithoutTrainingGroupsCreatedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13780,6 +13922,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -13871,6 +14014,7 @@ export type EmployeeCreateWithoutTrainingGroupMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -13962,6 +14106,7 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -14069,6 +14214,7 @@ export type EmployeeUpdateWithoutTrainingGroupMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14160,6 +14306,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14251,6 +14398,7 @@ export type EmployeeCreateWithoutTrainingClassesOrganizedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -14342,6 +14490,7 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -14438,6 +14587,7 @@ export type EmployeeCreateWithoutTrainingClassesCreatedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -14529,6 +14679,7 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -14636,6 +14787,7 @@ export type EmployeeUpdateWithoutTrainingClassesOrganizedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14727,6 +14879,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14829,6 +14982,7 @@ export type EmployeeUpdateWithoutTrainingClassesCreatedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -14920,6 +15074,7 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15011,6 +15166,7 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15102,6 +15258,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15209,6 +15366,7 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15300,6 +15458,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15391,6 +15550,7 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15482,6 +15642,7 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15578,6 +15739,7 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15669,6 +15831,7 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -15776,6 +15939,7 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15867,6 +16031,7 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -15969,6 +16134,7 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16060,6 +16226,7 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16151,6 +16318,7 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -16242,6 +16410,7 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -16349,6 +16518,7 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16440,6 +16610,7 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16531,6 +16702,7 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -16622,6 +16794,7 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -16729,6 +16902,7 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16820,6 +16994,7 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -16911,6 +17086,7 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17002,6 +17178,7 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17109,6 +17286,7 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17200,6 +17378,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17291,6 +17470,7 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17382,6 +17562,7 @@ export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17489,6 +17670,7 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17580,6 +17762,7 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17671,6 +17854,7 @@ export type EmployeeCreateWithoutSentEmailDeliveriesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17762,6 +17946,7 @@ export type EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -17869,6 +18054,7 @@ export type EmployeeUpdateWithoutSentEmailDeliveriesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -17960,6 +18146,7 @@ export type EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -18051,6 +18238,7 @@ export type EmployeeCreateWithoutChatMembersInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -18142,6 +18330,7 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -18249,6 +18438,7 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -18340,6 +18530,7 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -18431,6 +18622,7 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -18522,6 +18714,7 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -18629,6 +18822,7 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -18720,6 +18914,7 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -18811,6 +19006,7 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -18902,6 +19098,7 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -19009,6 +19206,7 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19100,6 +19298,7 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19191,6 +19390,7 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -19282,6 +19482,7 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -19389,6 +19590,7 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19480,6 +19682,7 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19571,6 +19774,7 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -19662,6 +19866,7 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -19769,6 +19974,7 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19860,6 +20066,7 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -19951,6 +20158,7 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20042,6 +20250,7 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20149,6 +20358,7 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -20240,6 +20450,7 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -20331,6 +20542,7 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20422,6 +20634,7 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20529,6 +20742,7 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -20620,6 +20834,7 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -20711,6 +20926,7 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20802,6 +21018,7 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -20909,6 +21126,7 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21000,6 +21218,7 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21091,6 +21310,7 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -21182,6 +21402,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -21278,6 +21499,7 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -21369,6 +21591,7 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -21476,6 +21699,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21567,6 +21791,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21669,6 +21894,7 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21760,6 +21986,7 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21851,6 +22078,7 @@ export type EmployeeCreateManyDepartmentInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -21893,6 +22121,7 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -21984,6 +22213,7 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22075,6 +22305,7 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22117,6 +22348,7 @@ export type EmployeeCreateManyTeamInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -22159,6 +22391,7 @@ export type EmployeeUpdateWithoutTeamInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22250,6 +22483,7 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22341,6 +22575,7 @@ export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22383,6 +22618,7 @@ export type EmployeeCreateManyManagerInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -22425,6 +22661,7 @@ export type EmployeeCreateManyBuddyInput = {
   preferredName?: string | null
   lastName: string
   email: string
+  personalEmail?: string | null
   phone?: string | null
   jobTitle: string
   profilePhoto?: string | null
@@ -22467,6 +22704,7 @@ export type EmployeeUpdateWithoutManagerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22558,6 +22796,7 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22649,6 +22888,7 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22691,6 +22931,7 @@ export type EmployeeUpdateWithoutBuddyInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22782,6 +23023,7 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -22873,6 +23115,7 @@ export type EmployeeUncheckedUpdateManyWithoutBuddyInput = {
   preferredName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  personalEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   jobTitle?: Prisma.StringFieldUpdateOperationsInput | string
   profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -23369,6 +23612,7 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   preferredName?: boolean
   lastName?: boolean
   email?: boolean
+  personalEmail?: boolean
   phone?: boolean
   jobTitle?: boolean
   profilePhoto?: boolean
@@ -23466,6 +23710,7 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   preferredName?: boolean
   lastName?: boolean
   email?: boolean
+  personalEmail?: boolean
   phone?: boolean
   jobTitle?: boolean
   profilePhoto?: boolean
@@ -23513,6 +23758,7 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   preferredName?: boolean
   lastName?: boolean
   email?: boolean
+  personalEmail?: boolean
   phone?: boolean
   jobTitle?: boolean
   profilePhoto?: boolean
@@ -23560,6 +23806,7 @@ export type EmployeeSelectScalar = {
   preferredName?: boolean
   lastName?: boolean
   email?: boolean
+  personalEmail?: boolean
   phone?: boolean
   jobTitle?: boolean
   profilePhoto?: boolean
@@ -23596,7 +23843,7 @@ export type EmployeeSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "middleName" | "preferredName" | "lastName" | "email" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "requiresTraining" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "middleName" | "preferredName" | "lastName" | "email" | "personalEmail" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "requiresTraining" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
   team?: boolean | Prisma.Employee$teamArgs<ExtArgs>
@@ -23730,6 +23977,7 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     preferredName: string | null
     lastName: string
     email: string
+    personalEmail: string | null
     phone: string | null
     jobTitle: string
     profilePhoto: string | null
@@ -24246,6 +24494,7 @@ export interface EmployeeFieldRefs {
   readonly preferredName: Prisma.FieldRef<"Employee", 'String'>
   readonly lastName: Prisma.FieldRef<"Employee", 'String'>
   readonly email: Prisma.FieldRef<"Employee", 'String'>
+  readonly personalEmail: Prisma.FieldRef<"Employee", 'String'>
   readonly phone: Prisma.FieldRef<"Employee", 'String'>
   readonly jobTitle: Prisma.FieldRef<"Employee", 'String'>
   readonly profilePhoto: Prisma.FieldRef<"Employee", 'String'>

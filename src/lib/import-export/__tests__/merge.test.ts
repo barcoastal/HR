@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { defaultFieldChoices, buildMergePlan, mergeEmployeeData } from "@/lib/import-export/merge";
+import { applyOverrides, defaultFieldChoices, buildMergePlan, droppedEmails, mergeEmployeeData } from "@/lib/import-export/merge";
 import { employeeToRowData } from "@/lib/import-export/employee-row";
 import type { MergeMember } from "@/lib/import-export/types";
 
@@ -58,8 +58,41 @@ describe("mergeEmployeeData", () => {
     expect(data.email).toBe("ada@gmail.com");
   });
 
+  it("keeps the losing email as the personal email when the Result says so", () => {
+    const data = mergeEmployeeData([a, b], a.ref, {}, { personalEmail: "ada@gmail.com" });
+    expect(data.email).toBe("ada@corp.com");
+    expect(data.personalEmail).toBe("ada@gmail.com");
+  });
+
   it("throws when the primary is not a member", () => {
     expect(() => mergeEmployeeData([a, b], { kind: "employee", id: "zzz" }, {})).toThrow();
+  });
+});
+
+describe("applyOverrides", () => {
+  it("keeps a personalEmail override alongside the chosen email", () => {
+    expect(applyOverrides({ firstName: "Ada", email: "ada@corp.com" }, { personalEmail: "ada@gmail.com" }))
+      .toEqual({ firstName: "Ada", email: "ada@corp.com", personalEmail: "ada@gmail.com" });
+  });
+  it("trims overrides and blanks a field on an empty one", () => {
+    expect(applyOverrides({ email: "ada@corp.com", personalEmail: "old@home.com" }, { personalEmail: " new@home.com " }).personalEmail).toBe("new@home.com");
+    expect(applyOverrides({ email: "ada@corp.com", personalEmail: "old@home.com" }, { personalEmail: "" }).personalEmail).toBeUndefined();
+  });
+});
+
+describe("droppedEmails", () => {
+  const corp = { data: { email: "ada@corp.com" } };
+  const gmail = { data: { email: "Ada@Gmail.com" } };
+  it("lists the distinct addresses that are not the chosen one", () => {
+    expect(droppedEmails([corp, gmail], "ada@corp.com")).toEqual(["Ada@Gmail.com"]);
+    expect(droppedEmails([corp, gmail], "ADA@GMAIL.COM")).toEqual(["ada@corp.com"]);
+  });
+  it("offers nothing when the members do not disagree", () => {
+    expect(droppedEmails([corp, { data: { email: "ADA@corp.com" } }], "ada@corp.com")).toEqual([]);
+    expect(droppedEmails([corp, { data: {} }], "ada@corp.com")).toEqual([]);
+  });
+  it("offers every address when the chosen email was typed over", () => {
+    expect(droppedEmails([corp, gmail], "someone@else.com")).toEqual(["ada@corp.com", "Ada@Gmail.com"]);
   });
 });
 
@@ -67,13 +100,13 @@ describe("employeeToRowData", () => {
   it("flattens relations and formats dates", () => {
     const data = employeeToRowData({
       firstName: "Ada", middleName: null, lastName: "Lovelace", preferredName: null, pronouns: "she/her",
-      email: "ada@corp.com", phone: null, jobTitle: "Engineer", location: null, status: "ACTIVE",
+      email: "ada@corp.com", personalEmail: "ada@gmail.com", phone: null, jobTitle: "Engineer", location: null, status: "ACTIVE",
       startDate: new Date("2024-03-01T00:00:00Z"), birthday: null, anniversaryDate: null, benefitsEligibleDate: null,
       address: null, city: null, state: null, zipCode: null, country: null,
       emergencyContactName: null, emergencyContactPhone: null, emergencyContactRelation: null,
       bio: null, hobbies: null, dietaryRestrictions: null, tShirtSize: null,
       department: { name: "Engineering" }, team: null, manager: { firstName: "Grace", lastName: "Hopper", preferredName: null },
     });
-    expect(data).toEqual({ firstName: "Ada", lastName: "Lovelace", pronouns: "she/her", email: "ada@corp.com", jobTitle: "Engineer", status: "ACTIVE", startDate: "2024-03-01", department: "Engineering", manager: "Grace Hopper" });
+    expect(data).toEqual({ firstName: "Ada", lastName: "Lovelace", pronouns: "she/her", email: "ada@corp.com", personalEmail: "ada@gmail.com", jobTitle: "Engineer", status: "ACTIVE", startDate: "2024-03-01", department: "Engineering", manager: "Grace Hopper" });
   });
 });
