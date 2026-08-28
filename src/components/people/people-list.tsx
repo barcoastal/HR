@@ -439,24 +439,6 @@ export function PeopleList({
           ))}
         </ToolbarSelect>
 
-        {pendingEmployees.length > 0 && (
-          <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 px-2.5 py-1.5 text-xs">
-            <Icon name="schedule" size={14} className="text-amber-600" />
-            <span className="font-medium text-[var(--color-text-primary)]">{pendingEmployees.length} pending</span>
-            <button
-              type="button"
-              onClick={handleApproveAll}
-              disabled={approvingAll}
-              className="inline-flex items-center gap-1 rounded-md bg-emerald-500 px-2 py-1 font-medium text-white hover:bg-emerald-600 disabled:opacity-50"
-            >
-              {approvingAll ? (
-                <><Icon name="progress_activity" size={12} className="animate-material-spin" /> Approving…</>
-              ) : (
-                <><Icon name="how_to_reg" size={12} /> Approve all &amp; send invites</>
-              )}
-            </button>
-          </div>
-        )}
         <div className="ml-auto text-sm text-[var(--color-on-surface-variant)] font-medium whitespace-nowrap">
           {sorted.length} {sorted.length === 1 ? "person" : "people"}
         </div>
