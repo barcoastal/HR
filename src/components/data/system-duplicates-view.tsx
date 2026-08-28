@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
@@ -60,6 +62,7 @@ function mergeNotice(r: SystemMergeResult): string {
 }
 
 export function SystemDuplicatesView() {
+  const involving = useSearchParams().get("involving") || undefined;
   const [scan, setScan] = useState<SystemScan | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scanning, startScan] = useTransition();
@@ -76,12 +79,12 @@ export function SystemDuplicatesView() {
     setError(null);
     startScan(async () => {
       try {
-        applyScan(await scanSystemDuplicates());
+        applyScan(await scanSystemDuplicates({ involvingStatus: involving }));
       } catch (e) {
         setError(errorMessage(e));
       }
     });
-  }, [applyScan]);
+  }, [applyScan, involving]);
 
   useEffect(() => {
     rescan();
@@ -95,7 +98,7 @@ export function SystemDuplicatesView() {
       try {
         const message = await fn();
         setNotice(message);
-        applyScan(await scanSystemDuplicates());
+        applyScan(await scanSystemDuplicates({ involvingStatus: involving }));
       } catch (e) {
         setError(errorMessage(e));
       }
@@ -113,6 +116,12 @@ export function SystemDuplicatesView() {
           <Icon name={scanning ? "progress_activity" : "person_search"} size={14} className={cn(scanning && "animate-material-spin")} />
           {scanning ? "Scanning…" : "Scan now"}
         </button>
+        {involving && (
+          <span className="inline-flex items-center gap-2 rounded-full border border-amber-500/40 bg-amber-500/5 px-2.5 py-1 text-xs text-amber-700">
+            <Icon name="filter_alt" size={14} /> Only groups that include a {involving.toLowerCase()} person
+            <Link href="/data?tab=duplicates" className="font-medium underline">Show all</Link>
+          </span>
+        )}
         {scan && (
           <p className="text-xs text-[var(--color-text-muted)]">
             {scan.groups.length === 0 ? "No possible duplicates" : plural(scan.groups.length, "possible duplicate group")} among{" "}

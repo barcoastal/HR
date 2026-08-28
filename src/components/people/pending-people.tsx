@@ -7,6 +7,8 @@ import { cn, formatDate } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
 import { approveAndInviteEmployee, bulkApproveAndInviteEmployees, deletePendingEmployees } from "@/lib/actions/employees";
+import { EMPLOYEE_FIELDS } from "@/lib/import-export/employee-fields";
+import type { RowData } from "@/lib/import-export/types";
 
 export type PendingPerson = {
   id: string;
@@ -17,6 +19,8 @@ export type PendingPerson = {
   jobTitle: string;
   department: string | null;
   createdAt: string;
+  /** Every employee field, flattened (department/team/manager as names). */
+  data: RowData;
 };
 
 const BUTTON = {
@@ -33,6 +37,7 @@ export function PendingPeople({ people }: { people: PendingPerson[] }) {
   const [rowBusy, setRowBusy] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hideEmpty, setHideEmpty] = useState(true);
 
   const sorted = useMemo(() => [...people].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [people]);
   const byDay = useMemo(() => {
@@ -40,6 +45,13 @@ export function PendingPeople({ people }: { people: PendingPerson[] }) {
     for (const p of people) counts.set(p.createdAt.slice(0, 10), (counts.get(p.createdAt.slice(0, 10)) ?? 0) + 1);
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
   }, [people]);
+
+  // Columns: every employee field; by default hide the ones nobody has filled in.
+  const columns = useMemo(
+    () => EMPLOYEE_FIELDS.filter((f) => !hideEmpty || people.some((p) => (p.data[f.key] ?? "").trim() !== "")),
+    [hideEmpty, people],
+  );
+  const hiddenCount = EMPLOYEE_FIELDS.length - columns.length;
 
   const allSelected = people.length > 0 && selected.size === people.length;
   const targets = selected.size > 0 ? Array.from(selected) : people.map((p) => p.id);
@@ -120,6 +132,13 @@ export function PendingPeople({ people }: { people: PendingPerson[] }) {
           Select all
           {selected.size > 0 && <span>· {selected.size} selected</span>}
         </label>
+        <label className="inline-flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+          <input type="checkbox" checked={hideEmpty} onChange={(e) => setHideEmpty(e.target.checked)} className="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]" />
+          Hide empty columns{hideEmpty && hiddenCount > 0 ? ` (${hiddenCount})` : ""}
+        </label>
+        <Link href="/data?tab=duplicates&involving=PENDING" className={BUTTON.subtle}>
+          <Icon name="call_merge" size={14} /> Find duplicates among these
+        </Link>
         <span className="ml-auto flex items-center gap-2">
           <button
             type="button"
@@ -145,11 +164,11 @@ export function PendingPeople({ people }: { people: PendingPerson[] }) {
           <thead className="text-xs uppercase tracking-wide text-[var(--color-text-muted)] bg-[var(--color-surface-container-low)]">
             <tr>
               <th className="w-10 px-4 py-2" />
-              <th className="px-4 py-2 text-left font-medium">Person</th>
-              <th className="px-4 py-2 text-left font-medium">Email</th>
-              <th className="px-4 py-2 text-left font-medium">Job title</th>
-              <th className="px-4 py-2 text-left font-medium">Department</th>
-              <th className="px-4 py-2 text-left font-medium">Created</th>
+              <th className="px-4 py-2 text-left font-medium whitespace-nowrap sticky left-10 bg-[var(--color-surface-container-low)]">Person</th>
+              <th className="px-4 py-2 text-left font-medium whitespace-nowrap">Created</th>
+              {columns.map((f) => (
+                <th key={f.key} className="px-4 py-2 text-left font-medium whitespace-nowrap">{f.label}</th>
+              ))}
               <th className="px-4 py-2 text-right font-medium" />
             </tr>
           </thead>
@@ -161,15 +180,20 @@ export function PendingPeople({ people }: { people: PendingPerson[] }) {
                   <td className="px-4 py-2">
                     <input type="checkbox" checked={checked} onChange={() => toggle(p.id)} className="h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]" aria-label={`Select ${p.firstName} ${p.lastName}`} />
                   </td>
-                  <td className="px-4 py-2">
+                  <td className={cn("px-4 py-2 whitespace-nowrap sticky left-10 bg-[var(--color-surface)]", checked && "bg-[var(--color-accent)]/5")}>
                     <Link href={`/people/${p.id}`} className="font-medium text-[var(--color-text-primary)] hover:underline">
                       {p.preferredName || p.firstName} {p.lastName}
                     </Link>
                   </td>
-                  <td className="px-4 py-2 text-[var(--color-text-muted)]">{p.email}</td>
-                  <td className="px-4 py-2 text-[var(--color-text-muted)]">{p.jobTitle}</td>
-                  <td className="px-4 py-2 text-[var(--color-text-muted)]">{p.department ?? "—"}</td>
                   <td className="px-4 py-2 text-[var(--color-text-muted)] whitespace-nowrap">{formatDate(p.createdAt)}</td>
+                  {columns.map((f) => {
+                    const value = (p.data[f.key] ?? "").trim();
+                    return (
+                      <td key={f.key} className={cn("px-4 py-2 whitespace-nowrap max-w-[260px] truncate", value ? "text-[var(--color-text-primary)]" : "text-[var(--color-text-muted)]")} title={value || undefined}>
+                        {value || "—"}
+                      </td>
+                    );
+                  })}
                   <td className="px-4 py-2 text-right">
                     <button type="button" className={BUTTON.subtle} disabled={rowBusy === p.id || busy !== null} onClick={() => approveOne(p.id)}>
                       {rowBusy === p.id ? <Icon name="progress_activity" size={14} className="animate-material-spin" /> : <Icon name="how_to_reg" size={14} />}

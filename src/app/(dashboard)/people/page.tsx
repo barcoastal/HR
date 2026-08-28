@@ -7,6 +7,7 @@ import { displayName } from "@/lib/utils";
 import { PeopleList } from "@/components/people/people-list";
 import { AddEmployeeForm } from "@/components/people/add-employee-form";
 import { PendingPeople } from "@/components/people/pending-people";
+import { employeeToRowData } from "@/lib/import-export/employee-row";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -84,6 +85,7 @@ export default async function PeoplePage({ searchParams }: { searchParams: Promi
             jobTitle: e.jobTitle,
             department: e.department?.name ?? null,
             createdAt: e.createdAt.toISOString(),
+            data: employeeToRowData(e),
           }))}
         />
       ) : activePeople.length === 0 ? (

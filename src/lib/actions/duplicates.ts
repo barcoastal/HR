@@ -36,7 +36,7 @@ async function requireDuplicateAccess() {
  * Run duplicate detection over every non-archived person with employee↔employee pairing on
  * (spec §6). Nothing is persisted; dismissed pairs never link.
  */
-export async function scanSystemDuplicates(): Promise<SystemScan> {
+async function scanAllDuplicates(): Promise<SystemScan> {
   await requireDuplicateAccess();
   const [people, dismissals] = await Promise.all([
     // db.ts hides archived people from findMany by default — exactly the set we want.
@@ -131,4 +131,16 @@ export async function dismissSystemGroup(memberIds: string[]): Promise<void> {
   await db.duplicateDismissal.createMany({ data: rows, skipDuplicates: true });
   await audit({ action: "duplicates.dismissed", entityType: "employee", details: { employeeIds: ids, pairs: rows.length } });
   revalidatePath("/data");
+}
+
+/**
+ * Scan everyone; with `involvingStatus`, keep only groups that include at least one person in
+ * that status (e.g. "PENDING" to review duplicates among people awaiting approval).
+ */
+export async function scanSystemDuplicates(opts?: { involvingStatus?: string }): Promise<SystemScan> {
+  const scan = await scanAllDuplicates();
+  const status = opts?.involvingStatus;
+  if (!status) return scan;
+  const groups = scan.groups.filter((g) => g.members.some((m) => scan.employees[m.id]?.status === status));
+  return { ...scan, groups };
 }
