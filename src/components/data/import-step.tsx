@@ -12,7 +12,8 @@ import {
   type ImportBatchDetail,
   type ImportRowView,
 } from "@/lib/actions/imports";
-import { UNDO_NOTE_PREFIX, type CommitResult, type CommitSummary } from "@/lib/import-export/types";
+import { EMPLOYEE_FIELDS } from "@/lib/import-export/employee-fields";
+import { UNDO_NOTE_PREFIX, type CommitResult, type CommitSummary, type FieldDef, type FieldKey, type RowData } from "@/lib/import-export/types";
 import { BUTTON, Chip, rowBadge, rowDisplayName, type Badge } from "./row-editor";
 
 const DANGER_BUTTON = {
@@ -129,10 +130,181 @@ function EffectsList({ effects, compact }: { effects: Effects; compact?: boolean
   );
 }
 
+// ---------------------------------------------------------------------------
+// Per-person change list (what the commit will actually write)
+// ---------------------------------------------------------------------------
+
+type FieldChange = { key: FieldKey; label: string; from: string | null; to: string };
+type PersonPlan = { rowId: string; rowNumber: number; employeeId: string; name: string; changes: FieldChange[] };
+type ChangePlan = { changed: PersonPlan[]; unchanged: PersonPlan[]; created: ImportRowView[] };
+
+/**
+ * Values that the commit would treat as the same: departments/teams/managers resolve by
+ * case-insensitive name, emails are lowercased, phones are compared by digits only.
+ */
+function comparable(field: FieldDef, value: string): string {
+  const v = value.trim();
+  switch (field.type) {
+    case "relation":
+    case "email":
+      return v.toLowerCase();
+    case "phone":
+      return v.replace(/\D/g, "");
+    default:
+      return v;
+  }
+}
+
+/**
+ * Mirrors the commit rules for UPDATE rows: a field is written only when the row has a value, so
+ * blanks never clear anything, and status is never touched. Rows whose values all match the
+ * person already are reported separately.
+ */
+function computeChangePlan(detail: ImportBatchDetail): ChangePlan {
+  const changed: PersonPlan[] = [];
+  const unchanged: PersonPlan[] = [];
+  const created: ImportRowView[] = [];
+  for (const row of detail.rows) {
+    if (row.action === "CREATE") {
+      created.push(row);
+      continue;
+    }
+    if (row.action !== "UPDATE" || !row.targetEmployeeId) continue;
+    const snapshot = detail.employees[row.targetEmployeeId];
+    const current: RowData = snapshot?.data ?? {};
+    const changes: FieldChange[] = [];
+    for (const field of EMPLOYEE_FIELDS) {
+      if (field.key === "status") continue;
+      const to = (row.data[field.key] ?? "").trim();
+      if (!to) continue;
+      const from = current[field.key] ?? null;
+      if (from !== null && comparable(field, from) === comparable(field, to)) continue;
+      changes.push({ key: field.key, label: field.label, from, to });
+    }
+    const plan: PersonPlan = {
+      rowId: row.id,
+      rowNumber: row.rowNumber,
+      employeeId: row.targetEmployeeId,
+      name: snapshot?.name || rowDisplayName(row.data) || `Row ${row.rowNumber}`,
+      changes,
+    };
+    (changes.length > 0 ? changed : unchanged).push(plan);
+  }
+  return { changed, unchanged, created };
+}
+
+/** Sections start open unless they are long enough to bury the Import button. */
+const OPEN_LIMIT = 25;
+
+function ChangeSection({ title, count, children }: { title: string; count: number; children: React.ReactNode }) {
+  return (
+    <details open={count <= OPEN_LIMIT} className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-container-low)]">
+      <summary className="cursor-pointer select-none px-3 py-2 text-xs font-semibold text-[var(--color-text-primary)]">{title}</summary>
+      <div className="border-t border-[var(--color-border)] px-3 py-2.5">{children}</div>
+    </details>
+  );
+}
+
+function PersonLink({ plan }: { plan: PersonPlan }) {
+  return (
+    <span className="inline-flex items-baseline gap-1.5">
+      <Link href={`/people/${plan.employeeId}`} className="text-sm font-medium text-[var(--color-accent)] hover:underline">
+        {plan.name}
+      </Link>
+      <span className="text-[11px] text-[var(--color-text-muted)] tabular-nums">row {plan.rowNumber}</span>
+    </span>
+  );
+}
+
+const Dot = () => <span className="text-[var(--color-text-muted)]" aria-hidden>·</span>;
+
+function ChangesPreview({ plan }: { plan: ChangePlan }) {
+  const { changed, unchanged, created } = plan;
+  return (
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 space-y-3">
+      <div>
+        <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">What will change</h3>
+        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+          Only the fields listed here are written. Blank cells never clear a value, status is never changed, and an email
+          that is someone’s login is kept.
+        </p>
+      </div>
+
+      {changed.length > 0 && (
+        <ChangeSection title={`Updates to existing people (${changed.length})`} count={changed.length}>
+          <ul className="divide-y divide-[var(--color-border)]">
+            {changed.map((p) => (
+              <li key={p.rowId} className="py-2.5 first:pt-0 last:pb-0">
+                <PersonLink plan={p} />
+                <ul className="mt-1 space-y-0.5 text-xs">
+                  {p.changes.map((c) => (
+                    <li key={c.key} className="flex flex-wrap items-baseline gap-x-1.5">
+                      <span className="text-[var(--color-text-muted)]">{c.label}:</span>
+                      {c.from ? (
+                        <span className="text-[var(--color-text-muted)] line-through">{c.from}</span>
+                      ) : (
+                        <span className="italic text-[var(--color-text-muted)]">empty</span>
+                      )}
+                      <Icon name="arrow_forward" size={12} className="self-center text-[var(--color-text-muted)]" />
+                      <span className="font-medium text-[var(--color-text-primary)]">{c.to}</span>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </ChangeSection>
+      )}
+
+      {unchanged.length > 0 && (
+        <ChangeSection title={`No changes (${unchanged.length})`} count={unchanged.length}>
+          <p className="mb-2 text-xs text-[var(--color-text-muted)]">
+            Every value in these rows already matches the person — importing leaves them as they are.
+          </p>
+          <ul className="flex flex-wrap gap-x-4 gap-y-1">
+            {unchanged.map((p) => (
+              <li key={p.rowId}>
+                <PersonLink plan={p} />
+              </li>
+            ))}
+          </ul>
+        </ChangeSection>
+      )}
+
+      {created.length > 0 && (
+        <ChangeSection title={`New people (${created.length})`} count={created.length}>
+          <ul className="space-y-1 text-xs">
+            {created.map((r) => (
+              <li key={r.id} className="flex flex-wrap items-baseline gap-x-1.5">
+                <span className="text-sm font-medium text-[var(--color-text-primary)]">
+                  {rowDisplayName(r.data) || `Row ${r.rowNumber}`}
+                </span>
+                {r.data.email && (
+                  <>
+                    <Dot />
+                    <span className="text-[var(--color-text-muted)]">{r.data.email}</span>
+                  </>
+                )}
+                {r.data.jobTitle && (
+                  <>
+                    <Dot />
+                    <span className="text-[var(--color-text-muted)]">{r.data.jobTitle}</span>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        </ChangeSection>
+      )}
+    </div>
+  );
+}
+
 function ImportPreview({ detail, onBack }: { detail: ImportBatchDetail; onBack: () => void }) {
   const router = useRouter();
   const s = detail.stats;
   const effects = useMemo(() => computeEffects(detail.rows), [detail.rows]);
+  const changePlan = useMemo(() => computeChangePlan(detail), [detail]);
   const blocked = s.needsDecision > 0 || s.needsAttention > 0;
   const nothing = s.newPeople + s.updates === 0;
   const [confirming, setConfirming] = useState(false);
@@ -171,6 +343,8 @@ function ImportPreview({ detail, onBack }: { detail: ImportBatchDetail; onBack: 
           <EffectsList effects={effects} />
         )}
       </div>
+
+      {!nothing && <ChangesPreview plan={changePlan} />}
 
       {blocked && (
         <div className="flex flex-wrap items-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-xs text-amber-700">

@@ -48,7 +48,7 @@ export async function loadEmployeeSnapshots(ids: string[]): Promise<Record<strin
 
 export async function createBatchFromUpload(args: {
   fileName: string;
-  fileType: "csv" | "xlsx";
+  fileType: "csv" | "xlsx" | "gusto";
   headers: string[];
   rows: string[][];
   uploadedById: string;

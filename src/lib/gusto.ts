@@ -96,14 +96,58 @@ async function gustoFetch<T>(path: string, options: RequestInit = {}): Promise<T
 
 // ── Typed API methods ───────────────────────────────────────
 
+export type GustoJobLocation = {
+  uuid?: string;
+  street_1?: string | null;
+  street_2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  country?: string | null;
+};
+
+export type GustoJob = {
+  uuid?: string;
+  title?: string | null;
+  hire_date?: string | null;
+  primary?: boolean;
+  location?: GustoJobLocation | null;
+  rate?: string;
+  payment_unit?: string;
+  current_compensation_id?: string;
+};
+
+/**
+ * One entry of GET /v1/companies/{company_id}/employees. Only the core fields are reliable —
+ * the sandbox (api.gusto-demo.com) returns partial records, so everything else is optional.
+ */
 export type GustoEmployee = {
   uuid: string;
   first_name: string;
   last_name: string;
   email: string;
-  department?: string;
-  jobs: { title: string; rate: string; payment_unit: string; current_compensation_id: string }[];
+  middle_initial?: string | null;
+  preferred_first_name?: string | null;
+  work_email?: string | null;
+  phone?: string | null;
+  date_of_birth?: string | null;
+  manager_uuid?: string | null;
+  department?: string | null;
+  jobs: GustoJob[];
   terminated: boolean;
+};
+
+/** One entry of GET /v1/employees/{employee_uuid}/home_addresses. */
+export type GustoHomeAddress = {
+  uuid?: string;
+  street_1?: string | null;
+  street_2?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  country?: string | null;
+  active?: boolean;
+  effective_date?: string | null;
 };
 
 export type GustoPayroll = {
@@ -165,6 +209,11 @@ export async function getGustoCompany() {
 
 export async function fetchGustoEmployees(): Promise<GustoEmployee[]> {
   return gustoFetch<GustoEmployee[]>("/companies/{companyId}/employees");
+}
+
+export async function fetchGustoEmployeeHomeAddresses(employeeUuid: string): Promise<GustoHomeAddress[]> {
+  const result = await gustoFetch<GustoHomeAddress[] | null>(`/employees/${employeeUuid}/home_addresses`);
+  return Array.isArray(result) ? result : [];
 }
 
 export async function fetchPayrollRuns(): Promise<GustoPayroll[]> {

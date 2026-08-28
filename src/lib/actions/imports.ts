@@ -7,8 +7,10 @@ import { requireAuth } from "@/lib/auth-helpers";
 import { validateRow } from "@/lib/import-export/normalize";
 import { FIELD_KEYS } from "@/lib/import-export/employee-fields";
 import { applyOverrides, buildMergePlan } from "@/lib/import-export/merge";
-import { loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
+import { createBatchFromUpload, loadEmployeeSnapshots, rebuildBatchRows, runBatchDetection } from "@/lib/import-export/batch-service";
 import { commitImportBatch } from "@/lib/import-export/commit-service";
+import { buildGustoImportRows, linkGustoIds } from "@/lib/import-export/gusto-source";
+import { isGustoConnected } from "@/lib/actions/gusto";
 import { undoImportBatch } from "@/lib/import-export/undo-service";
 import type { CommitResult, CommitSummary, UndoSummary } from "@/lib/import-export/types";
 import {
@@ -205,6 +207,31 @@ export async function getImportBatch(id: string): Promise<ImportBatchDetail | nu
       needsAttention: rows.filter((r) => r.action === "SKIP" && r.skipReason === "invalid").length,
     },
   };
+}
+
+/**
+ * Pull everyone in Gusto into a new review batch — the same flow as a file upload, with the columns
+ * already mapped. Nothing is written to people until the batch is reviewed and imported.
+ */
+export async function startGustoImport(): Promise<{ id: string; total: number; skippedTerminated: number }> {
+  const session = await requireImportAccess();
+  if (!(await isGustoConnected())) throw new Error("Gusto isn't connected");
+
+  const { headers, rows, total, skippedTerminated } = await buildGustoImportRows();
+  if (rows.length === 0) {
+    throw new Error(skippedTerminated > 0 ? "Everyone in Gusto is terminated — there is nobody to import" : "Gusto returned no people");
+  }
+
+  const id = await createBatchFromUpload({
+    fileName: `Gusto employees — ${new Date().toISOString().slice(0, 10)}`,
+    fileType: "gusto",
+    headers,
+    rows,
+    uploadedById: session.user.id,
+  });
+  await rebuildBatchRows(id);
+  revalidatePath("/data");
+  return { id, total, skippedTerminated };
 }
 
 export async function saveImportMapping(batchId: string, mapping: ColumnMapping): Promise<void> {
@@ -425,7 +452,7 @@ export async function discardImportBatch(batchId: string): Promise<void> {
 /** Apply the batch to the system (spec §4). Allowed only while every duplicate group and row is resolved. */
 export async function commitImport(batchId: string): Promise<CommitSummary> {
   const session = await requireImportAccess();
-  await requireEditableBatch(batchId);
+  const batch = await requireEditableBatch(batchId);
   const detail = await getImportBatch(batchId);
   if (!detail) throw new Error("Import not found");
   const { needsDecision, needsAttention, newPeople, updates } = detail.stats;
@@ -438,6 +465,14 @@ export async function commitImport(batchId: string): Promise<CommitSummary> {
   if (newPeople + updates === 0) throw new Error("Nothing to import — every row is skipped");
 
   const summary = await commitImportBatch(batchId, session.user.id);
+  if (batch.fileType === "gusto") {
+    // The people are already saved at this point; a linking problem must not read as a failed import.
+    try {
+      await linkGustoIds(batchId);
+    } catch (err) {
+      console.error("[import] linking Gusto ids failed:", err);
+    }
+  }
   revalidatePath("/people");
   revalidatePath("/org");
   revalidate(batchId);

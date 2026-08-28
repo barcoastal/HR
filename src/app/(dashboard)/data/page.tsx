@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { listImportBatches } from "@/lib/actions/imports";
 import { getExportOptions } from "@/lib/actions/exports";
+import { isGustoConnected } from "@/lib/actions/gusto";
 import { PageHeader } from "@/components/ui/page-header";
 import { ImportsList } from "@/components/data/imports-list";
 import { NewImportDialog } from "@/components/data/new-import-dialog";
@@ -27,7 +28,9 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
   await requireAdmin();
   const { tab } = await searchParams;
   const active = activeTab(tab);
-  const batches = active === "import" ? await listImportBatches() : [];
+  const [batches, gustoConnected] = active === "import"
+    ? await Promise.all([listImportBatches(), isGustoConnected()])
+    : [[], false];
   const exportOptions = active === "export" ? await getExportOptions() : null;
 
   return (
@@ -35,7 +38,7 @@ export default async function DataPage({ searchParams }: { searchParams: Promise
       <PageHeader
         title="Import & Export"
         description="Bring people in from a spreadsheet, review duplicates before anything is saved, export data out of the system, and clean up look-alike records."
-        action={active === "import" ? <NewImportDialog /> : undefined}
+        action={active === "import" ? <NewImportDialog gustoConnected={gustoConnected} /> : undefined}
       />
       <nav aria-label="Import & Export sections" className="mb-6 flex gap-1 border-b border-[var(--color-border)]">
         {TABS.map((t) => {
