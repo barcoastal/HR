@@ -1,0 +1,120 @@
+name: Avi build
+run-name: Avi ${{ inputs.job_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: Avi proposal identifier
+        required: true
+        type: string
+      spec:
+        description: Product change specification with synthetic examples only
+        required: true
+        type: string
+
+concurrency:
+  group: avi-${{ inputs.job_id }}
+  cancel-in-progress: false
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Prepare bounded request
+        env:
+          AVI_JOB_ID: ${{ inputs.job_id }}
+          AVI_SPEC: ${{ inputs.spec }}
+        run: python3 .github/avi/prepare.py
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Implement and inspect
+        id: codex
+        uses: openai/codex-action@86365089eb2b84e0a8fb0717b304f8bdcb13b20e
+        with:
+          openai-api-key: ${{ secrets.AVI_OPENAI_API_KEY }}
+          prompt-file: ${{ runner.temp }}/avi-prompt.md
+          output-file: ${{ runner.temp }}/avi-summary.md
+          permission-profile: ':workspace'
+          safety-strategy: drop-sudo
+          model: gpt-5.4
+          effort: medium
+      - name: Check diff formatting
+        id: diff
+        continue-on-error: true
+        run: git diff --check
+      - name: Unit tests
+        id: tests
+        continue-on-error: true
+        run: npm test
+        env:
+          SANDBOX_MODE: '1'
+      - name: Type check
+        id: types
+        continue-on-error: true
+        run: npx tsc --noEmit --incremental false
+      - name: Application build
+        id: compile
+        continue-on-error: true
+        run: npm run build
+        env:
+          SANDBOX_MODE: '1'
+      - name: Collect patch and actual check outcomes
+        env:
+          AVI_DIFF: ${{ steps.diff.outcome }}
+          AVI_TESTS: ${{ steps.tests.outcome }}
+          AVI_TYPES: ${{ steps.types.outcome }}
+          AVI_BUILD: ${{ steps.compile.outcome }}
+        run: |
+          git add --all
+          mkdir -p "$RUNNER_TEMP/avi-result"
+          git diff --cached --binary HEAD > "$RUNNER_TEMP/avi-result/change.patch"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          temp = Path(os.environ['RUNNER_TEMP'])
+          summary = (temp / 'avi-summary.md').read_text()[:12000]
+          result = {'summary': summary, 'checks': {
+              'diff': os.environ['AVI_DIFF'], 'tests': os.environ['AVI_TESTS'],
+              'types': os.environ['AVI_TYPES'], 'build': os.environ['AVI_BUILD']}}
+          (temp / 'avi-result/report.json').write_text(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: avi-result
+          path: ${{ runner.temp }}/avi-result/
+          retention-days: 7
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: avi-result
+          path: ${{ runner.temp }}/avi-result
+      - name: Validate and publish draft for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AVI_JOB_ID: ${{ inputs.job_id }}
+          AVI_SPEC: ${{ inputs.spec }}
+        run: python3 .github/avi/publish.py
+
