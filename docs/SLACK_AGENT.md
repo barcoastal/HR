@@ -1,82 +1,78 @@
-# Avi, the CALATRAVA agent in Slack
+# Avi, CALATRAVA's Slack teammate
 
-## What the team gets
+The dedicated Avi app helps Coastal Debt's HR team understand CALATRAVA, discuss
+improvements, and prepare code changes. Its service source is in the private
+`barcoastal/avi-hr-agent` repository. This replaces the earlier native Codex Slack
+pilot, which stalled during cloud startup.
 
-Use `@Avi` in Coastal Debt's private `#hris-project` channel to ask about CALATRAVA, investigate product problems, propose improvements, and request code changes. Include `barcoastal/HR` in the request to select this repository explicitly.
+## Conversation
 
-This uses the native Codex Slack integration. No additional Railway bot service is needed for this pilot. GitHub and Slack must first be connected to Codex, and an HR cloud environment must be available to the requester. These files configure repository behavior; adding them does not by itself install or activate the Slack integration.
+Mention the dedicated `Avi` app in private `#hris-project`, then continue in that
+thread. Follow-ups do not need another mention. Members of that HR channel can
+also DM Avi. He uses conversation history received by the dedicated app; history
+from the earlier native integration is not automatically transferred.
 
-## Talk with him
+For example:
 
-The agent's name is **Avi**. Treat him as an AI teammate you can talk things through with. You do not need a technical prompt or a finished specification. He should answer in plain language, ask a useful follow-up when needed, and help shape an idea before anyone asks him to build it. Avi is the workspace bot name for the installed OpenAI Codex app. The app listing still says OpenAI Codex; choose Avi in Slack's mention picker.
+> @Avi Can we talk through making onboarding easier?
 
-Start in `#hris-project`, then keep the conversation in that message's thread. Mention `@Avi` whenever you want his next reply; earlier messages in the thread provide context. For example:
+> The biggest issue is knowing which new hires still have tasks left.
 
-> @Avi in barcoastal/HR, can we talk through making onboarding easier?
+> What would you suggest?
 
-> @Avi the biggest issue is knowing who still has something left to do.
+> Build that version and prepare it for review.
 
-> @Avi what would you suggest?
+Avi answers ordinary conversation directly. Product claims should be verified
+against the current repository and include compact source links. Discussion does
+not start a build. A specific change can be prepared as a proposal with a **Build
+this change** button; its requester starts that proposal. The resulting draft PR
+is for human review. Nothing is merged or deployed automatically by Avi.
 
-> @Avi yes, build that version and prepare it for review.
+## Build workflow
 
-Discussion and questions do not change the product. An explicit build or fix request starts a reviewable implementation. Replies use Codex cloud tasks, so code inspection and builds can take a few minutes. This pilot verifies channel/thread conversations; direct messages and automatic replies without a mention are not promised.
+`.github/workflows/avi-build.yml` receives a bounded, synthetic technical
+specification from Avi's service through `workflow_dispatch`. Raw Slack history,
+employee details, attachments, and production credentials are not build inputs.
 
-## Example requests
+The coding job checks out `main`, installs locked dependencies, and runs the
+official Codex GitHub Action with workspace permissions. It runs unit tests,
+type checking, an application build, and a diff check. Actual CI outcomes are
+reported, including failures and environment limitations.
 
-**Product support**
+A separate publishing job receives only the patch and report. It does not execute
+the proposed product code. It rejects changes to workflows, agent instructions,
+dependency manifests, data exports, symlinks, and new executable files. Accepted
+changes are pushed to a unique `avi/<proposal-id>` branch and opened as a draft PR.
+Only the publishing job receives a GitHub token with write permissions.
 
-> @Avi in barcoastal/HR, explain how to customize onboarding checklists for a department. Check current code, give the exact steps and required role, and link to the relevant sources.
+The runtime polls the real workflow result and updates the originating Slack
+thread. A failed or missing runner must be reported as a failure, not as a
+completed product change. Schema proposals do not authorize database migrations.
+Follow AGENTS.md for development and validation constraints.
 
-**Feedback into a proposal**
+## Activation checklist
 
-> @Avi in barcoastal/HR, review this feedback thread and propose the smallest useful improvement. Explain the problem, current behavior, proposed behavior, and acceptance criteria. Identify anything you could not verify.
+- Dedicated Slack app installed and added to `#hris-project`.
+- Railway service deployed from `barcoastal/avi-hr-agent`, with one replica and a
+  persistent volume for conversation and build state.
+- Dedicated Coastal Debt OpenAI API credentials configured in Railway and as the
+  HR repository Actions secret `AVI_OPENAI_API_KEY`.
+- Runtime GitHub token limited to HR: Contents read, Actions read/write, Pull
+  requests read. The runtime does not need product-code write permission.
+- GitHub repository setting allows Actions to create pull requests.
+- Build workflow installed on `main`, then `BUILD_ENABLED=true` in Avi's service.
+- Verify a real support conversation and one small build through a draft PR.
 
-**Investigate a bug**
+These files describe the implementation; their presence does not establish that
+credentials, deployment, Slack delivery or build completion are working. Confirm
+live results before telling the team Avi is ready.
 
-> @Avi in barcoastal/HR, investigate why editing a person's email can stay on “Saving…”. Trace the UI and server action, explain the likely cause with evidence, and suggest a fix. Use synthetic examples.
+## Product references
 
-**Build a change**
-
-> @Avi in barcoastal/HR, build a fix so saving an employee profile always ends in either a success state or a useful error message. Preserve permission checks, add appropriate regression coverage, and return a reviewable change with test results.
-
-**Improve the workflow**
-
-> @Avi in barcoastal/HR, inspect the onboarding tracker and recommend three concrete usability improvements. Explain who benefits and how we could check whether each improvement helped.
-
-These examples are templates. The reported save issue is a candidate investigation, not a verified diagnosis or an implemented fix.
-
-## Setup
-
-1. In [Codex connections](https://chatgpt.com/codex/settings/connectors), connect the GitHub account with access to `barcoastal/HR`. Select only the repository access needed for this project when that choice is available.
-2. Create a Codex cloud environment for `barcoastal/HR`. Use the normal default branch after these instructions are merged, or a supported branch selection for testing this branch before merge. Confirm which branch the task actually uses.
-3. Configure setup to run `npm ci`. Prisma client generation is already included in `postinstall`. Provide only synthetic development configuration. Code-reading and unit-test tasks do not need production HR data or Railway credentials.
-4. Connect the native Codex Slack app to the **Coastal Debt** workspace. Review the actual OAuth scopes before approving; installation can require a workspace admin.
-5. Add the app to **#hris-project** using Slack's app management. Keep the pilot in this channel and use explicit mentions. This is an operational choice, not a claim that the native app's OAuth permissions are restricted to one channel.
-6. Confirm each intended requester's Codex, GitHub, environment, and Slack access according to the installed integration's requirements.
-7. Run one support task and one small build task. Confirm replies appear in the intended thread, source links are accurate, and the build yields a reviewable artifact.
-
-Connecting the Slack plugin in a Codex desktop conversation is a different connection from installing the native `@Avi` Slack app. Neither substitutes for the other's setup.
-
-## Pilot task to run after connection
-
-> @Avi in barcoastal/HR, read AGENTS.md and docs/SLACK_AGENT.md. Explain how HR can edit onboarding checklists, including role restrictions and the difference between changing a template and an existing employee's tasks. Cite the relevant code. This is a support question; return an explanation.
-
-Then use a separate thread for an explicit, small build request. A person reviewing the change should see its acceptance criteria, actual test results, and any missing validation. Merge and production release follow the team's existing process.
-
-## Implementation notes
-
-- Source repository: `https://github.com/barcoastal/HR`.
-- Product: `https://hr.coastaldebt-tools.com`.
-- Railway project: `30c55835-89e8-4176-9c25-7d89a068e564`.
-- Production HR service: `41a66383-5ea7-4f8c-95df-624395fe40ce`.
-- Slack workspace/channel: Coastal Debt / `#hris-project`.
-- Repository instructions: `AGENTS.md`.
-- Product guide source: `src/app/(dashboard)/guide/page.tsx`.
-- Sandbox reference: `docs/SANDBOX.md`. Verify the database and individual integrations before running interactive tests.
-
-Source inspection, instructions, and code review do not prove the Slack integration is connected. Complete and observe the pilot tasks before describing the agent as live.
-
-## Official reference
-
-[Use Codex in Slack](https://learn.chatgpt.com/docs/third-party/slack) describes installation, repository selection, thread context, cloud task replies, and connection troubleshooting.
+- Product: https://hr.coastaldebt-tools.com
+- Repository: `barcoastal/HR`
+- Product guide: `src/app/(dashboard)/guide/page.tsx`
+- Product instructions: `AGENTS.md`
+- Synthetic development guidance: `docs/SANDBOX.md`
+- [Codex GitHub Action](https://learn.chatgpt.com/docs/github-action)
+- [Dedicated Slack bot reference](https://developers.openai.com/cookbook/examples/agents_api/apps/slack_bot/readme)
