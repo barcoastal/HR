@@ -9,6 +9,7 @@ import {
   isCalendarConnected as checkCalendarConnected,
 } from "@/lib/google-calendar";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
+import { resolveMeetLinkPolicy } from "@/lib/interview-meet-link";
 import {
   createInviteEventForUser,
   deleteEventFromGoogleCalendar,
@@ -24,7 +25,12 @@ export async function scheduleInterview(data: {
   interviewerId?: string;
   /** Required for ONSITE interviews: address or office / room. */
   location?: string;
-  /** Attach a Google Meet link to the calendar invite (ignored for ONSITE). Defaults to true. */
+  /**
+   * Attach a Google Meet link to the calendar event. Defaults to true for remote
+   * interviews. ONSITE interviews only get one when this is explicitly true, so
+   * team members who aren't in the office can join; that link is kept out of
+   * the candidate's invitation.
+   */
   withMeet?: boolean;
 }) {
   const session = await requireManagerOrAdmin();
@@ -48,9 +54,8 @@ export async function scheduleInterview(data: {
   if (data.type === "ONSITE" && !location) {
     throw new Error("Enter a location (address or office / room) for the onsite interview");
   }
-  // Onsite interviews never get a Meet link; every other type gets one unless
-  // the scheduler explicitly opted out.
-  const withMeetLink = data.type !== "ONSITE" && data.withMeet !== false;
+  const { createMeetLink: withMeetLink, shareMeetLinkWithCandidate } =
+    resolveMeetLinkPolicy(data.type, data.withMeet);
 
   let googleEventId: string | null = null;
   let googleMeetLink: string | null = null;
@@ -146,7 +151,7 @@ export async function scheduleInterview(data: {
       interviewerName: `${interviewer.preferredName || interviewer.firstName} ${interviewer.lastName}`,
       interviewerEmail: interviewer.email,
       interviewerEmployeeId: interviewer.id,
-      meetLink: googleMeetLink,
+      meetLink: shareMeetLinkWithCandidate ? googleMeetLink : null,
       location,
       notes: data.notes,
     });

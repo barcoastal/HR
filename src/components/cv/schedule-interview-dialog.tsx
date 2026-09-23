@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { useEffect, useState } from "react";
 import { scheduleInterview } from "@/lib/actions/interviews";
+import { defaultWithMeet } from "@/lib/interview-meet-link";
 import type { InterviewType } from "@/generated/prisma/client";
 import Link from "next/link";
 import { Icon } from "@/components/ui/icon";
@@ -18,12 +19,6 @@ const interviewTypes: { value: InterviewType; label: string }[] = [
 ];
 
 const LAST_LOCATION_KEY = "hr.lastInterviewLocation";
-
-/** Phone screens rarely need a Meet room; every other remote type defaults to one. */
-// Everything except an onsite interview is held over Google Meet by default (pre-screens included).
-function defaultWithMeet(type: InterviewType): boolean {
-  return type !== "ONSITE";
-}
 
 function readLastLocation(): string {
   try {
@@ -84,7 +79,6 @@ export function ScheduleInterviewDialog({
   const [error, setError] = useState<string | null>(null);
   const selectedInterviewer = recruiters.find((recruiter) => recruiter.id === interviewerId);
   const isOnsite = type === "ONSITE";
-  const wantsMeet = !isOnsite && withMeet;
   const locationMissing = isOnsite && location.trim().length === 0;
 
   useEffect(() => {
@@ -125,7 +119,7 @@ export function ScheduleInterviewDialog({
         notes: notes || undefined,
         interviewerId: interviewerId || undefined,
         location: isOnsite ? trimmedLocation : undefined,
-        withMeet: isOnsite ? undefined : withMeet,
+        withMeet,
       });
       if (isOnsite) saveLastLocation(trimmedLocation);
       onScheduled();
@@ -190,7 +184,7 @@ export function ScheduleInterviewDialog({
           </select>
         </div>
 
-        {isOnsite ? (
+        {isOnsite && (
           <div>
             <label htmlFor="interview-location" className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">
               Location <span className="text-red-500">*</span>
@@ -209,24 +203,26 @@ export function ScheduleInterviewDialog({
               Shared with the candidate in the invitation and calendar event.
             </p>
           </div>
-        ) : (
-          <div>
-            <label className="flex items-start gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={withMeet}
-                onChange={(e) => setWithMeet(e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
-              />
-              <span className="text-xs font-medium text-[var(--color-text-primary)]">
-                Create Google Meet link
-              </span>
-            </label>
-            <p className="mt-1 pl-6 text-[11px] text-[var(--color-text-muted)]">
-              Unchecked still sends the calendar invite, just without a join link.
-            </p>
-          </div>
         )}
+
+        <div>
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={withMeet}
+              onChange={(e) => setWithMeet(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-[var(--color-border)] accent-[var(--color-accent)]"
+            />
+            <span className="text-xs font-medium text-[var(--color-text-primary)]">
+              {isOnsite ? "Also create a Google Meet link for remote team members" : "Create Google Meet link"}
+            </span>
+          </label>
+          <p className="mt-1 pl-6 text-[11px] text-[var(--color-text-muted)]">
+            {isOnsite
+              ? "For colleagues who can't be in the room. The candidate receives the address, not the link."
+              : "Unchecked still sends the calendar invite, just without a join link."}
+          </p>
+        </div>
 
         {/* Date/Time */}
         <div>
@@ -274,7 +270,7 @@ export function ScheduleInterviewDialog({
         </div>
 
         {/* Calendar status */}
-        {calendarConnected || !wantsMeet ? (
+        {calendarConnected || !withMeet ? (
           <div className="flex items-start gap-2 rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
             <Icon name="info" size={16} className="text-blue-400 mt-0.5 shrink-0" />
             <p className="text-xs text-blue-300">
@@ -282,16 +278,21 @@ export function ScheduleInterviewDialog({
                 ? `${selectedInterviewer.firstName} ${selectedInterviewer.lastName}`
                 : "the recruiter"}. It includes {isOnsite
                 ? "the interview location"
-                : wantsMeet
+                : withMeet
                   ? "the Google Meet details"
                   : "the interview details (no Meet link)"} and an attached calendar RSVP.
+              {isOnsite && withMeet
+                ? " The Meet link goes on the calendar event and the candidate's profile for your team, not in the candidate's email."
+                : ""}
             </p>
           </div>
         ) : (
           <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 p-3">
             <Icon name="info" size={16} className="text-amber-400 mt-0.5 shrink-0" />
             <p className="text-xs text-amber-300">
-              One branded invitation with a calendar RSVP will still be sent, but it will not include a Meet link until Google Calendar is connected.{" "}
+              One branded invitation with a calendar RSVP will still be sent, but {isOnsite
+                ? "a Meet link for your remote team can't be created"
+                : "it will not include a Meet link"} until Google Calendar is connected.{" "}
               <Link href="/settings?section=integrations&panel=connected-apps" className="underline hover:text-amber-200">
                 Connect in Settings
               </Link>
