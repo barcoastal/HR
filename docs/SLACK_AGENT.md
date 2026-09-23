@@ -1,32 +1,48 @@
-# CALATRAVA agent in Slack
+# Avi, the CALATRAVA agent in Slack
 
 ## What the team gets
 
-Use `@Codex` in Coastal Debt's private `#hris-project` channel to ask about CALATRAVA, investigate product problems, propose improvements, and request code changes. Include `barcoastal/HR` in the request to select this repository explicitly.
+Use `@Avi` in Coastal Debt's private `#hris-project` channel to ask about CALATRAVA, investigate product problems, propose improvements, and request code changes. Include `barcoastal/HR` in the request to select this repository explicitly.
 
 This uses the native Codex Slack integration. No additional Railway bot service is needed for this pilot. GitHub and Slack must first be connected to Codex, and an HR cloud environment must be available to the requester. These files configure repository behavior; adding them does not by itself install or activate the Slack integration.
+
+## Talk with him
+
+The agent's name is **Avi**. Treat him as an AI teammate you can talk things through with. You do not need a technical prompt or a finished specification. He should answer in plain language, ask a useful follow-up when needed, and help shape an idea before anyone asks him to build it. Avi is the workspace bot name for the installed OpenAI Codex app. The app listing still says OpenAI Codex; choose Avi in Slack's mention picker.
+
+Start in `#hris-project`, then keep the conversation in that message's thread. Mention `@Avi` whenever you want his next reply; earlier messages in the thread provide context. For example:
+
+> @Avi in barcoastal/HR, can we talk through making onboarding easier?
+
+> @Avi the biggest issue is knowing who still has something left to do.
+
+> @Avi what would you suggest?
+
+> @Avi yes, build that version and prepare it for review.
+
+Discussion and questions do not change the product. An explicit build or fix request starts a reviewable implementation. Replies use Codex cloud tasks, so code inspection and builds can take a few minutes. This pilot verifies channel/thread conversations; direct messages and automatic replies without a mention are not promised.
 
 ## Example requests
 
 **Product support**
 
-> @Codex in barcoastal/HR, explain how to customize onboarding checklists for a department. Check current code, give the exact steps and required role, and link to the relevant sources.
+> @Avi in barcoastal/HR, explain how to customize onboarding checklists for a department. Check current code, give the exact steps and required role, and link to the relevant sources.
 
 **Feedback into a proposal**
 
-> @Codex in barcoastal/HR, review this feedback thread and propose the smallest useful improvement. Explain the problem, current behavior, proposed behavior, and acceptance criteria. Identify anything you could not verify.
+> @Avi in barcoastal/HR, review this feedback thread and propose the smallest useful improvement. Explain the problem, current behavior, proposed behavior, and acceptance criteria. Identify anything you could not verify.
 
 **Investigate a bug**
 
-> @Codex in barcoastal/HR, investigate why editing a person's email can stay on “Saving…”. Trace the UI and server action, explain the likely cause with evidence, and suggest a fix. Use synthetic examples.
+> @Avi in barcoastal/HR, investigate why editing a person's email can stay on “Saving…”. Trace the UI and server action, explain the likely cause with evidence, and suggest a fix. Use synthetic examples.
 
 **Build a change**
 
-> @Codex in barcoastal/HR, build a fix so saving an employee profile always ends in either a success state or a useful error message. Preserve permission checks, add appropriate regression coverage, and return a reviewable change with test results.
+> @Avi in barcoastal/HR, build a fix so saving an employee profile always ends in either a success state or a useful error message. Preserve permission checks, add appropriate regression coverage, and return a reviewable change with test results.
 
 **Improve the workflow**
 
-> @Codex in barcoastal/HR, inspect the onboarding tracker and recommend three concrete usability improvements. Explain who benefits and how we could check whether each improvement helped.
+> @Avi in barcoastal/HR, inspect the onboarding tracker and recommend three concrete usability improvements. Explain who benefits and how we could check whether each improvement helped.
 
 These examples are templates. The reported save issue is a candidate investigation, not a verified diagnosis or an implemented fix.
 
@@ -40,11 +56,11 @@ These examples are templates. The reported save issue is a candidate investigati
 6. Confirm each intended requester's Codex, GitHub, environment, and Slack access according to the installed integration's requirements.
 7. Run one support task and one small build task. Confirm replies appear in the intended thread, source links are accurate, and the build yields a reviewable artifact.
 
-Connecting the Slack plugin in a Codex desktop conversation is a different connection from installing the native `@Codex` Slack app. Neither substitutes for the other's setup.
+Connecting the Slack plugin in a Codex desktop conversation is a different connection from installing the native `@Avi` Slack app. Neither substitutes for the other's setup.
 
 ## Pilot task to run after connection
 
-> @Codex in barcoastal/HR, read AGENTS.md and docs/SLACK_AGENT.md. Explain how HR can edit onboarding checklists, including role restrictions and the difference between changing a template and an existing employee's tasks. Cite the relevant code. This is a support question; return an explanation.
+> @Avi in barcoastal/HR, read AGENTS.md and docs/SLACK_AGENT.md. Explain how HR can edit onboarding checklists, including role restrictions and the difference between changing a template and an existing employee's tasks. Cite the relevant code. This is a support question; return an explanation.
 
 Then use a separate thread for an explicit, small build request. A person reviewing the change should see its acceptance criteria, actual test results, and any missing validation. Merge and production release follow the team's existing process.
 
