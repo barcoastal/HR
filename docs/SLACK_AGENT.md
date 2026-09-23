@@ -6,6 +6,22 @@ Use `@Codex` in Coastal Debt's private `#hris-project` channel to ask about CALA
 
 This uses the native Codex Slack integration. No additional Railway bot service is needed for this pilot. GitHub and Slack must first be connected to Codex, and an HR cloud environment must be available to the requester. These files configure repository behavior; adding them does not by itself install or activate the Slack integration.
 
+## Talk with him
+
+Treat the agent as an AI teammate you can talk things through with. You do not need a technical prompt or a finished specification. He should answer in plain language, ask a useful follow-up when needed, and help shape an idea before anyone asks him to build it.
+
+Start in `#hris-project`, then keep the conversation in that message's thread. Mention `@Codex` whenever you want his next reply; earlier messages in the thread provide context. For example:
+
+> @Codex in barcoastal/HR, can we talk through making onboarding easier?
+
+> @Codex the biggest issue is knowing who still has something left to do.
+
+> @Codex what would you suggest?
+
+> @Codex yes, build that version and prepare it for review.
+
+Discussion and questions do not change the product. An explicit build or fix request starts a reviewable implementation. Replies use Codex cloud tasks, so code inspection and builds can take a few minutes. This pilot verifies channel/thread conversations; direct messages and automatic replies without a mention are not promised.
+
 ## Example requests
 
 **Product support**
