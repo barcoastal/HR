@@ -69,6 +69,8 @@ jobs:
         run: npm run build
         env:
           SANDBOX_MODE: '1'
+          # Compilation imports the DB client but must never reach a real database.
+          DATABASE_URL: postgresql://avi_build:avi_build@127.0.0.1:1/avi_build
       - name: Collect patch and actual check outcomes
         env:
           AVI_DIFF: ${{ steps.diff.outcome }}
@@ -117,4 +119,3 @@ jobs:
           AVI_JOB_ID: ${{ inputs.job_id }}
           AVI_SPEC: ${{ inputs.spec }}
         run: python3 .github/avi/publish.py
-
