@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { updateEmployee } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
+import type { ArchivedEmailConflict } from "@/lib/employee-profile-update";
 import { Icon } from "@/components/ui/icon";
 
 type EmployeeData = {
@@ -41,6 +42,8 @@ type Department = { id: string; name: string };
 export function EditEmployeeDialog({ employee, departments }: { employee: EmployeeData; departments: Department[] }) {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [archivedConflict, setArchivedConflict] = useState<ArchivedEmailConflict | null>(null);
   const [form, setForm] = useState({
     firstName: employee.firstName,
     middleName: employee.middleName,
@@ -72,41 +75,57 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
 
   function update(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
+    if (key === "email") {
+      setError("");
+      setArchivedConflict(null);
+    }
   }
 
-  async function handleSave() {
+  async function handleSave(archivedEmailOwnerId?: string) {
     if (!form.firstName || !form.lastName || !form.email || !form.jobTitle) return;
     setSaving(true);
-    await updateEmployee(employee.id, {
-      firstName: form.firstName,
-      middleName: form.middleName || null,
-      preferredName: form.preferredName || null,
-      lastName: form.lastName,
-      email: form.email,
-      personalEmail: form.personalEmail.trim().toLowerCase() || null,
-      phone: form.phone || null,
-      jobTitle: form.jobTitle,
-      departmentId: form.departmentId || null,
-      startDate: form.startDate,
-      birthday: form.birthday || null,
-      location: form.location || null,
-      hobbies: form.hobbies || null,
-      bio: form.bio || null,
-      dietaryRestrictions: form.dietaryRestrictions || null,
-      pronouns: form.pronouns || null,
-      tShirtSize: form.tShirtSize || null,
-      address: form.address || null,
-      city: form.city || null,
-      state: form.state || null,
-      zipCode: form.zipCode || null,
-      country: form.country || null,
-      emergencyContactName: form.emergencyContactName || null,
-      emergencyContactPhone: form.emergencyContactPhone || null,
-      emergencyContactRelation: form.emergencyContactRelation || null,
-    });
-    setSaving(false);
-    setOpen(false);
-    router.refresh();
+    setError("");
+    setArchivedConflict(null);
+    try {
+      const result = await updateEmployee(employee.id, {
+        firstName: form.firstName,
+        middleName: form.middleName || null,
+        preferredName: form.preferredName || null,
+        lastName: form.lastName,
+        email: form.email,
+        personalEmail: form.personalEmail.trim().toLowerCase() || null,
+        phone: form.phone || null,
+        jobTitle: form.jobTitle,
+        departmentId: form.departmentId || null,
+        startDate: form.startDate,
+        birthday: form.birthday || null,
+        location: form.location || null,
+        hobbies: form.hobbies || null,
+        bio: form.bio || null,
+        dietaryRestrictions: form.dietaryRestrictions || null,
+        pronouns: form.pronouns || null,
+        tShirtSize: form.tShirtSize || null,
+        address: form.address || null,
+        city: form.city || null,
+        state: form.state || null,
+        zipCode: form.zipCode || null,
+        country: form.country || null,
+        emergencyContactName: form.emergencyContactName || null,
+        emergencyContactPhone: form.emergencyContactPhone || null,
+        emergencyContactRelation: form.emergencyContactRelation || null,
+      }, archivedEmailOwnerId);
+      if (!result.ok) {
+        setError(result.error);
+        setArchivedConflict(result.archivedEmailConflict ?? null);
+        return;
+      }
+      setOpen(false);
+      router.refresh();
+    } catch {
+      setError("Unable to save changes. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   const inputClass = cn(
@@ -119,7 +138,7 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
   return (
     <>
       <button
-        onClick={() => setOpen(true)}
+        onClick={() => { setError(""); setArchivedConflict(null); setOpen(true); }}
         className={cn(
           "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
           "bg-[var(--color-surface-hover)] text-[var(--color-text-primary)]",
@@ -129,7 +148,25 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
         <Icon name="edit" size={12} />Edit
       </button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} title="Edit Employee">
+      <Dialog open={open} onClose={() => { if (!saving) setOpen(false); }} title="Edit Employee">
+        {error && (
+          <div role="alert" className="mb-4 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-800">
+            <p>{error}</p>
+            {archivedConflict && (
+              <>
+                <p className="mt-2">The archived record and its history will be kept. Its former email will be saved in the archive notes. No login will be created or restored.</p>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={() => handleSave(archivedConflict.id)}
+                  className="mt-3 rounded-lg bg-[var(--color-accent)] px-3 py-2 font-medium text-white disabled:opacity-50"
+                >
+                  Use email from archived record
+                </button>
+              </>
+            )}
+          </div>
+        )}
         <div className="space-y-3 max-h-[60vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -269,9 +306,9 @@ export function EditEmployeeDialog({ employee, departments }: { employee: Employ
           </div>
         </div>
         <div className="flex justify-end gap-2 pt-4">
-          <button onClick={() => setOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
+          <button disabled={saving} onClick={() => setOpen(false)} className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Cancel</button>
           <button
-            onClick={handleSave}
+            onClick={() => handleSave()}
             disabled={saving || !form.firstName || !form.lastName || !form.email || !form.jobTitle}
             className={cn("px-4 py-2 rounded-lg text-sm font-medium", "bg-[var(--color-accent)] text-white", "hover:bg-[var(--color-accent-hover)]", "disabled:opacity-50")}
           >

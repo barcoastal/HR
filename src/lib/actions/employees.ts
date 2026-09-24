@@ -268,38 +268,21 @@ export async function createEmployee(data: {
 
 export async function updateEmployee(
   id: string,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
+  archivedEmailOwnerId?: string,
 ) {
-  const { startDate, birthday, ...rest } = data;
-  const oldEmployee = data.email ? await db.employee.findUnique({ where: { id }, select: { email: true } }) : null;
-  const employee = await db.employee.update({
-    where: { id },
-    data: {
-      ...rest,
-      ...(startDate ? { startDate: new Date(startDate as string) } : {}),
-      ...(birthday ? { birthday: new Date(birthday as string) } : {}),
-    },
-  });
-
-  // Sync email change to User account so login still works
-  if (data.email && oldEmployee && oldEmployee.email !== data.email) {
-    const user = await db.user.findFirst({ where: { employeeId: id } });
-    if (user) {
-      await db.user.update({ where: { id: user.id }, data: { email: data.email as string } });
-    }
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const { saveEmployeeProfile } = await import("@/lib/employee-profile-update");
+  const result = await saveEmployeeProfile(id, data, session.user, archivedEmailOwnerId);
+  if (result.ok) {
+    revalidatePath("/people");
+    revalidatePath(`/people/${id}`);
+    revalidatePath("/people/archive");
+    revalidatePath("/settings");
+    revalidatePath("/my-profile");
   }
-
-  const { audit } = await import("@/lib/audit");
-  await audit({
-    action: "employee.updated",
-    entityType: "employee",
-    entityId: id,
-    details: { fields: Object.keys(data) },
-  });
-
-  revalidatePath("/people");
-  revalidatePath(`/people/${id}`);
-  return employee;
+  return result;
 }
 
 export async function promoteEmployee(
