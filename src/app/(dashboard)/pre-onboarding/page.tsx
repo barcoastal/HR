@@ -6,6 +6,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
 import { getTrainingEligibleJobTitles } from "@/lib/training-eligibility-server";
 import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
+import { planWrittenOfferPushThrough } from "@/lib/written-offer-override";
 
 export default async function PreOnboardingPage() {
   const session = await requireAdmin();
@@ -37,6 +38,15 @@ export default async function PreOnboardingPage() {
     orderBy: { startDate: "desc" },
   });
 
+  const standaloneRequests = await db.signingRequest.findMany({
+    where: {
+      employeeId: { in: preOnboardingEmployees.map((emp) => emp.id) },
+      employeeTaskId: null,
+      status: { not: "VOIDED" },
+    },
+    select: { id: true, employeeId: true, status: true, documentName: true, createdAt: true },
+  });
+
   const allPreOnboardingChecklistItems = await db.checklistItem.findMany({
     where: { checklist: { type: "PRE_ONBOARDING", isOverride: false } },
     include: { checklist: true, assignee: true, assigneeDepartment: true },
@@ -66,9 +76,18 @@ export default async function PreOnboardingPage() {
       <div className="space-y-3">
         {preOnboardingEmployees.map((emp) => {
           const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
+          // Include every sign/fill document, not only checklist-backed ones:
+          // they all hold the person in Written Offer until complete.
           const writtenOfferTasks = emp.employeeTasks.filter((task) =>
-            task.checklistItem?.checklist?.type === "PRE_ONBOARDING"
+            task.checklistItem?.checklist?.type === "PRE_ONBOARDING" ||
+            task.documentAction === "SIGN" ||
+            task.documentAction === "FILL"
           );
+          const { outstandingDocuments } = planWrittenOfferPushThrough({
+            employeeCreatedAt: emp.createdAt,
+            tasks: emp.employeeTasks,
+            standaloneRequests: standaloneRequests.filter((request) => request.employeeId === emp.id),
+          });
           const availableItems = allPreOnboardingChecklistItems
             .filter((item) => !assignedItemIds.has(item.id))
             .map((item) => ({
@@ -108,6 +127,7 @@ export default async function PreOnboardingPage() {
                 signingStatus: t.signingRequest?.status || null,
               }))}
               availableItems={availableItems}
+              outstandingDocuments={outstandingDocuments}
               type="PRE_ONBOARDING"
               isSuperAdmin={isSuperAdmin}
               assignees={assignmentAssignees}

@@ -15,6 +15,8 @@ import {
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
+import { PushThroughWrittenOfferButton } from "@/components/onboarding/push-through-written-offer-button";
+import type { OutstandingDocument } from "@/lib/written-offer-override";
 import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
 
 type TaskItem = {
@@ -29,7 +31,7 @@ type TaskItem = {
   assigneeName?: string | null;
   assigneeDepartmentName?: string | null;
   completedByName?: string | null;
-  signingStatus?: string | null; // PENDING | VIEWED | SIGNED
+  signingStatus?: string | null; // PENDING | VIEWED | SIGNED | VOIDED
 };
 
 type AvailableChecklistItem = {
@@ -54,6 +56,8 @@ type Props = {
   };
   tasks: TaskItem[];
   availableItems: AvailableChecklistItem[];
+  /** Written Offer only: every document still holding this person in the stage. */
+  outstandingDocuments?: OutstandingDocument[];
   type: "PRE_ONBOARDING" | "TRAINING" | "ONBOARDING" | "OFFBOARDING";
   defaultExpanded?: boolean;
   isSuperAdmin?: boolean;
@@ -114,6 +118,7 @@ export function OnboardingTimeline({
   employee,
   tasks,
   availableItems,
+  outstandingDocuments = [],
   type,
   defaultExpanded = false,
   isSuperAdmin = false,
@@ -127,6 +132,7 @@ export function OnboardingTimeline({
   const [addingIds, setAddingIds] = useState<Set<string>>(new Set());
   const [completing, setCompleting] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [movedTo, setMovedTo] = useState<string | null>(null);
   const [customTitle, setCustomTitle] = useState("");
   const [customDesc, setCustomDesc] = useState("");
   const [customAssignment, setCustomAssignment] = useState("");
@@ -228,6 +234,12 @@ export function OnboardingTimeline({
     }
   }
 
+  function handlePushedThrough(status: string) {
+    setMovedTo(status);
+    setCompleted(true);
+    router.refresh();
+  }
+
   async function handleTrainingRequirementChange(required: boolean) {
     const previous = trainingRequired;
     setTrainingRequired(required);
@@ -297,9 +309,11 @@ export function OnboardingTimeline({
               {label} Complete!
             </p>
             <p className="text-sm text-[var(--color-text-muted)] mt-1">
-              {type === "TRAINING"
-                ? `${employee.firstName} ${employee.lastName} moved to Onboarding.`
-                : `${employee.firstName} ${employee.lastName} is now an active employee.`}
+              {type === "PRE_ONBOARDING"
+                ? `${employee.firstName} ${employee.lastName} moved to ${movedTo === "TRAINING" ? "Training" : "Onboarding"}.`
+                : type === "TRAINING"
+                  ? `${employee.firstName} ${employee.lastName} moved to Onboarding.`
+                  : `${employee.firstName} ${employee.lastName} is now an active employee.`}
             </p>
           </div>
         </div>
@@ -339,7 +353,7 @@ export function OnboardingTimeline({
         </div>
       </button>
 
-      {/* Manual resend of Written Offer documents */}
+      {/* Manual resend and push-through of Written Offer documents */}
       {type === "PRE_ONBOARDING" && (
         <div className="mx-5 mb-3 flex flex-col gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
           {trainingEligible && (
@@ -359,11 +373,18 @@ export function OnboardingTimeline({
               </span>
             </label>
           )}
-          <div className="shrink-0 self-end sm:ml-auto sm:self-auto">
+          <div className="flex shrink-0 flex-wrap justify-end gap-2 self-end sm:ml-auto sm:self-auto">
             <ResendStageDocsButton
               employeeId={employee.id}
               employeeName={`${employee.firstName} ${employee.lastName}`}
               stage="PRE_ONBOARDING"
+            />
+            <PushThroughWrittenOfferButton
+              employeeId={employee.id}
+              employeeName={`${employee.firstName} ${employee.lastName}`}
+              outstandingDocuments={outstandingDocuments}
+              nextStep={trainingRequired ? "Training" : "Onboarding"}
+              onMoved={handlePushedThrough}
             />
           </div>
           {trainingRequirementError && <p role="alert" className="text-xs text-red-500 sm:basis-full">{trainingRequirementError}</p>}
@@ -564,6 +585,11 @@ export function OnboardingTimeline({
                                             )}>
                                               <Icon name="edit_document" size={12} />
                                               {task.signingStatus === "SIGNED" ? "Completed" : task.signingStatus === "VIEWED" ? "Viewed" : "Pending Fill"}
+                                            </span>
+                                          )}
+                                          {!isDone && task.signingStatus === "VOIDED" && (
+                                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-red-500/10 text-red-500">
+                                              <Icon name="link_off" size={12} />Signing link cancelled
                                             </span>
                                           )}
                                           {task.assigneeName && (

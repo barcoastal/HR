@@ -753,9 +753,31 @@ export async function addCustomEmployeeTask(
   return task;
 }
 
+/**
+ * Manual push-through for signed copies collected outside the system: confirms
+ * the outstanding Written Offer documents, then moves the person on.
+ */
 export async function completePreOnboarding(employeeId: string, companyEmail?: string) {
+  const { requireAdmin } = await import("@/lib/auth-helpers");
+  const session = await requireAdmin();
+
+  const { applyWrittenOfferPushThrough } = await import("@/lib/written-offer-override");
+  const plan = await applyWrittenOfferPushThrough(employeeId, session.user?.employeeId || null);
+
   const { advanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
   const result = await advanceWrittenOfferToOnboarding(employeeId, companyEmail);
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.written_offer_pushed_through",
+    entityType: "employee",
+    entityId: employeeId,
+    details: {
+      name: `${result.employee.firstName} ${result.employee.lastName}`,
+      movedTo: result.employee.status,
+      documentsReceivedOutsideSystem: plan.outstandingDocuments.map((document) => document.name),
+    },
+  });
   return result.employee;
 }
 
