@@ -152,9 +152,9 @@ export async function GET(request: Request) {
             OR: [
               { name: textCondition(token) },
               { employee: employeeTokenFilter(token) },
-              ...(["onboarding", "offboarding", "review", "general"]
+              ...(["onboarding", "offboarding", "review", "general", "financial", "medical"]
                 .filter((category) => category.includes(token.toLowerCase()))
-                .map((category) => ({ category: category.toUpperCase() as "ONBOARDING" | "OFFBOARDING" | "REVIEW" | "GENERAL" }))),
+                .map((category) => ({ category: category.toUpperCase() as "ONBOARDING" | "OFFBOARDING" | "REVIEW" | "GENERAL" | "FINANCIAL" | "MEDICAL" }))),
             ],
           })),
         },

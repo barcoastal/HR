@@ -134,6 +134,8 @@ enum DocumentCategory {
   OFFBOARDING
   REVIEW
   GENERAL
+  FINANCIAL
+  MEDICAL // always HR_ONLY, see resolveDocumentVisibility
 }
 
 enum DocumentVisibility {

@@ -185,7 +185,9 @@ export const DocumentCategory = {
   ONBOARDING: 'ONBOARDING',
   OFFBOARDING: 'OFFBOARDING',
   REVIEW: 'REVIEW',
-  GENERAL: 'GENERAL'
+  GENERAL: 'GENERAL',
+  FINANCIAL: 'FINANCIAL',
+  MEDICAL: 'MEDICAL'
 } as const
 
 export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCategory]

@@ -6,6 +6,11 @@ import { revalidatePath } from "next/cache";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
 import { sendSigningRequestEmail } from "@/lib/email";
 import crypto from "crypto";
+import {
+  resolveDocumentVisibility,
+  type DocumentFolderKey,
+  type DocumentVisibilityKey,
+} from "@/lib/document-folders";
 
 export async function getEmployeeDocuments(employeeId: string) {
   const session = await requireAuth();
@@ -38,7 +43,7 @@ export async function addEmployeeDocument(data: {
       name: data.name,
       url: data.url,
       category: data.category,
-      visibility: data.visibility,
+      visibility: resolveDocumentVisibility(data.category, data.visibility),
     },
   });
 
@@ -157,6 +162,43 @@ export async function sendDocForFilling(
   revalidatePath(`/people/${employeeId}`);
   revalidatePath("/onboarding");
   return { success: true };
+}
+
+export async function updateEmployeeDocument(
+  docId: string,
+  changes: { category?: DocumentFolderKey; visibility?: DocumentVisibilityKey }
+) {
+  const session = await requireAuth();
+  const { updateDocumentSettings } = await import("@/lib/employee-document-update");
+  const result = await updateDocumentSettings(docId, changes, session.user);
+  if (!result.ok) return result;
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "document.settings_changed",
+    entityType: "document",
+    entityId: docId,
+    details: { employeeId: result.employeeId, name: result.name, ...changes },
+  });
+  revalidatePath(`/people/${result.employeeId}`);
+  return { ok: true as const };
+}
+
+export async function makeAllEmployeeDocumentsHrOnly(employeeId: string) {
+  const session = await requireAuth();
+  const { restrictAllDocumentsToHr } = await import("@/lib/employee-document-update");
+  const result = await restrictAllDocumentsToHr(employeeId, session.user);
+  if (!result.ok) return result;
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "document.all_restricted_to_hr",
+    entityType: "employee",
+    entityId: employeeId,
+    details: { documentsChanged: result.changed },
+  });
+  revalidatePath(`/people/${employeeId}`);
+  return result;
 }
 
 export async function deleteEmployeeDocument(docId: string) {
