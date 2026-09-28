@@ -60,15 +60,20 @@ function getAvatarColor(id: string): string {
 export function ManagerAssignment({ employees }: Props) {
   const router = useRouter();
   const [savingIds, setSavingIds] = useState<Record<string, boolean>>({});
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
 
   async function handleManagerChange(
     employeeId: string,
     managerId: string | null
   ) {
     setSavingIds((prev) => ({ ...prev, [employeeId]: true }));
+    setErrors((prev) => ({ ...prev, [employeeId]: null }));
     try {
-      await setEmployeeManager(employeeId, managerId);
+      const result = await setEmployeeManager(employeeId, managerId);
+      if (!result.ok) setErrors((prev) => ({ ...prev, [employeeId]: result.error }));
       router.refresh();
+    } catch {
+      setErrors((prev) => ({ ...prev, [employeeId]: "Could not save the manager. Please try again." }));
     } finally {
       setSavingIds((prev) => ({ ...prev, [employeeId]: false }));
     }
@@ -152,6 +157,9 @@ export function ManagerAssignment({ employees }: Props) {
 
                 {/* Manager dropdown */}
                 <div className="flex items-center gap-2 flex-shrink-0">
+                  {errors[employee.id] && (
+                    <p role="alert" className="max-w-[14rem] text-xs text-red-500">{errors[employee.id]}</p>
+                  )}
                   <select
                     value={employee.managerId ?? ""}
                     onChange={(e) =>

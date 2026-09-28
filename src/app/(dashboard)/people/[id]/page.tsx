@@ -7,6 +7,7 @@ import { EditEmployeeDialog } from "@/components/people/edit-employee-dialog";
 import { PromoteEmployeeDialog } from "@/components/people/promote-employee-dialog";
 import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
 import { ReactivateEmployeeButton } from "@/components/people/reactivate-employee-button";
+import { ReportsToCard } from "@/components/people/reports-to-card";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
@@ -54,6 +55,15 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
   if (!isAdmin && !isOwnProfile && !(isManagerRole && isDirectReport)) {
     notFound();
   }
+
+  // Only Admin/HR can assign a manager, so only they need the list to pick from.
+  const managerCandidates = isAdmin
+    ? await db.employee.findMany({
+        where: { id: { not: employee.id }, archivedAt: null, status: { not: "OFFBOARDED" } },
+        select: { id: true, firstName: true, lastName: true, preferredName: true, jobTitle: true },
+        orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+      })
+    : [];
 
   const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap, gustoConnected] = await Promise.all([
     getHRNotes(id),
@@ -363,19 +373,19 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
         </div>
 
         <div className="space-y-6">
-          {employee.manager && (
-            <section className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] p-5")}>
-              <h3 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-3">Reports To</h3>
-              <div className="flex items-center gap-3">
-                <div className={cn("h-10 w-10 rounded-full flex items-center justify-center text-white font-semibold text-sm", avatarColors[displayFirstName(employee.manager).charCodeAt(0) % avatarColors.length])}>
-                  {getInitials(displayFirstName(employee.manager), employee.manager.lastName)}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--color-text-primary)]">{displayName(employee.manager)}</p>
-                  <p className="text-xs text-[var(--color-text-muted)]">{employee.manager.jobTitle}</p>
-                </div>
-              </div>
-            </section>
+          {(employee.manager || isAdmin) && (
+            <ReportsToCard
+              employeeId={employee.id}
+              manager={employee.manager ? {
+                id: employee.manager.id,
+                firstName: employee.manager.firstName,
+                lastName: employee.manager.lastName,
+                preferredName: employee.manager.preferredName,
+                jobTitle: employee.manager.jobTitle,
+              } : null}
+              canEdit={isAdmin}
+              candidates={managerCandidates}
+            />
           )}
 
           {(employee as any).buddy && (

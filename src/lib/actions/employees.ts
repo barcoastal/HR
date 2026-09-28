@@ -534,7 +534,10 @@ export async function reactivateEmployee(employeeId: string) {
   revalidatePath("/org");
 }
 
-export async function setEmployeeManager(employeeId: string, managerId: string | null) {
+export async function setEmployeeManager(
+  employeeId: string,
+  managerId: string | null
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const { requireAuth } = await import("@/lib/auth-helpers");
   const session = await requireAuth();
   const role = session.user?.role;
@@ -542,14 +545,48 @@ export async function setEmployeeManager(employeeId: string, managerId: string |
     throw new Error("Not authorized to change managers");
   }
 
-  const employee = await db.employee.update({
+  const employee = await db.employee.findUnique({
+    where: { id: employeeId },
+    select: { firstName: true, lastName: true, managerId: true },
+  });
+  if (!employee) return { ok: false, error: "Employee not found." };
+
+  let managerName: string | null = null;
+  if (managerId) {
+    const manager = await db.employee.findUnique({
+      where: { id: managerId },
+      select: { firstName: true, lastName: true, status: true, archivedAt: true },
+    });
+    if (!manager || manager.archivedAt || manager.status === "OFFBOARDED") {
+      return { ok: false, error: "That manager is no longer active." };
+    }
+    const { managerAssignmentError } = await import("@/lib/reporting-line");
+    const people = await db.employee.findMany({ select: { id: true, managerId: true } });
+    const problem = managerAssignmentError(employeeId, managerId, people);
+    if (problem) return { ok: false, error: problem };
+    managerName = `${manager.firstName} ${manager.lastName}`;
+  }
+
+  await db.employee.update({
     where: { id: employeeId },
     data: { managerId },
+  });
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.manager_changed",
+    entityType: "employee",
+    entityId: employeeId,
+    details: {
+      name: `${employee.firstName} ${employee.lastName}`,
+      fromManagerId: employee.managerId,
+      toManagerId: managerId,
+      toManagerName: managerName,
+    },
   });
   revalidatePath("/people");
   revalidatePath(`/people/${employeeId}`);
   revalidatePath("/org");
-  return employee;
+  return { ok: true };
 }
 
 export async function toggleEmployeeTask(taskId: string) {
