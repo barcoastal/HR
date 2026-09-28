@@ -1,8 +1,9 @@
-import { cn, formatDate } from "@/lib/utils";
+import { displayName, getInitials, displayFirstName } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
 import { StartOffboardingDialog } from "@/components/offboarding/start-offboarding-dialog";
 import { OnboardingTaskManager } from "@/components/onboarding/onboarding-task-manager";
+import { FormerEmployeesList } from "@/components/offboarding/former-employees-list";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Icon } from "@/components/ui/icon";
@@ -32,12 +33,18 @@ export default async function OffboardingPage() {
     orderBy: { order: "asc" },
   });
 
-  const completedOffboarding = await db.employee.findMany({
-    where: { status: "OFFBOARDED", endDate: { lt: new Date() } },
-    include: { department: true },
-    orderBy: { endDate: "desc" },
-    take: 5,
+  // Everyone who has already left. Archived (deleted) records live in the Employee Archive.
+  const formerEmployees = await db.employee.findMany({
+    where: {
+      status: "OFFBOARDED",
+      archivedAt: null,
+      OR: [{ endDate: { lt: new Date() } }, { endDate: null }],
+    },
+    include: { department: true, _count: { select: { documents: true } } },
+    orderBy: { endDate: { sort: "desc", nulls: "last" } },
   });
+  const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const completedThisMonth = formerEmployees.filter((emp) => emp.endDate && emp.endDate >= startOfMonth).length;
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
@@ -59,7 +66,7 @@ export default async function OffboardingPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         <StatCard title="Active Offboarding" value={offboardingEmployees.length} icon={<Icon name="person_remove" size={20} />} color="amber" />
-        <StatCard title="Completed This Month" value={completedOffboarding.length} icon={<Icon name="check_circle" size={20} />} color="emerald" />
+        <StatCard title="Completed This Month" value={completedThisMonth} icon={<Icon name="check_circle" size={20} />} color="emerald" />
       </div>
 
       <div className="mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Active Offboarding</h2></div>
@@ -103,28 +110,26 @@ export default async function OffboardingPage() {
         {offboardingEmployees.length === 0 && <p className="text-center text-[var(--color-text-muted)] py-8">No active offboarding</p>}
       </div>
 
-      {completedOffboarding.length > 0 && (
-        <>
-          <div className="mt-8 mb-4"><h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Recently Completed</h2></div>
-          <div className="space-y-3">
-            {completedOffboarding.map((emp) => (
-              <div key={emp.id} className={cn("rounded-2xl p-4", "bg-[var(--color-surface)] border border-[var(--color-border)]")}>
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-gray-500 flex items-center justify-center text-white font-semibold text-sm shrink-0">{emp.firstName[0]}{emp.lastName[0]}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[var(--color-text-primary)]">{emp.firstName} {emp.lastName}</p>
-                    <p className="text-xs text-[var(--color-text-muted)]">{emp.jobTitle} · {emp.department?.name}</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs">
-                    <Icon name="check_circle" size={16} className="text-emerald-400" />
-                    <span className="text-emerald-400 font-medium">Completed</span>
-                    {emp.endDate && <span className="text-[var(--color-text-muted)] ml-1">{formatDate(emp.endDate)}</span>}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
+      <div className="mt-8 mb-4">
+        <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Former employees</h2>
+        <p className="mt-1 text-sm text-[var(--color-text-muted)]">See who can be rehired. Open a person to view their documents and history.</p>
+      </div>
+      {formerEmployees.length === 0 ? (
+        <p className="text-center text-[var(--color-text-muted)] py-8">No former employees yet</p>
+      ) : (
+        <FormerEmployeesList
+          people={formerEmployees.map((emp) => ({
+            id: emp.id,
+            name: displayName(emp),
+            initials: getInitials(displayFirstName(emp), emp.lastName),
+            jobTitle: emp.jobTitle,
+            departmentName: emp.department?.name || null,
+            endDate: emp.endDate?.toISOString() || null,
+            rehireEligible: emp.rehireEligible,
+            rehireNotes: emp.rehireNotes,
+            documentCount: emp._count.documents,
+          }))}
+        />
       )}
     </div>
   );

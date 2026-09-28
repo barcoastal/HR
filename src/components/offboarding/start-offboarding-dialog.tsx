@@ -6,6 +6,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { startOffboarding } from "@/lib/actions/employees";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
+import { parseRehireChoice } from "@/lib/rehire-eligibility";
 
 type Employee = {
   id: string;
@@ -26,13 +27,18 @@ export function StartOffboardingDialog({ employees }: { employees: Employee[] })
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState("");
   const [endDate, setEndDate] = useState(defaultEndDate);
+  const [rehireChoice, setRehireChoice] = useState("");
+  const [rehireNotes, setRehireNotes] = useState("");
   const [success, setSuccess] = useState<{ name: string; taskCount: number } | null>(null);
   const router = useRouter();
 
   async function handleSubmit() {
     if (!selectedId || !endDate) return;
     setLoading(true);
-    const result = await startOffboarding(selectedId, endDate);
+    const result = await startOffboarding(selectedId, endDate, {
+      eligible: parseRehireChoice(rehireChoice),
+      notes: rehireNotes,
+    });
     setSuccess({
       name: `${result.employee.firstName} ${result.employee.lastName}`,
       taskCount: result.taskCount,
@@ -45,6 +51,8 @@ export function StartOffboardingDialog({ employees }: { employees: Employee[] })
     setOpen(false);
     setSelectedId("");
     setEndDate(defaultEndDate);
+    setRehireChoice("");
+    setRehireNotes("");
     setSuccess(null);
   }
 
@@ -108,6 +116,24 @@ export function StartOffboardingDialog({ employees }: { employees: Employee[] })
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   className={inputClass}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Eligible for rehire?</label>
+                <select value={rehireChoice} onChange={(e) => setRehireChoice(e.target.value)} className={inputClass}>
+                  <option value="">Not decided yet</option>
+                  <option value="yes">Yes, eligible for rehire</option>
+                  <option value="no">No, not eligible for rehire</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--color-text-primary)] mb-1">Rehire notes</label>
+                <textarea
+                  value={rehireNotes}
+                  onChange={(e) => setRehireNotes(e.target.value)}
+                  rows={2}
+                  placeholder="Optional. Visible to HR and admins only."
+                  className={cn(inputClass, "resize-none")}
                 />
               </div>
             </div>

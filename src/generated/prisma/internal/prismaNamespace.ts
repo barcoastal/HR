@@ -6280,6 +6280,8 @@ export const EmployeeScalarFieldEnum = {
   archivedAt: 'archivedAt',
   archivedById: 'archivedById',
   archivedReason: 'archivedReason',
+  rehireEligible: 'rehireEligible',
+  rehireNotes: 'rehireNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

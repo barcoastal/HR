@@ -260,6 +260,8 @@ model Employee {
   archivedAt               DateTime?
   archivedById             String?
   archivedReason           String?
+  rehireEligible           Boolean? // set at offboarding; null = not decided yet
+  rehireNotes              String?
   createdAt                DateTime       @default(now())
   updatedAt                DateTime       @updatedAt
 

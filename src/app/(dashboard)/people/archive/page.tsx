@@ -39,6 +39,7 @@ export default async function EmployeeArchivePage() {
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Job</th>
                 <th className="px-4 py-3">Department</th>
+                <th className="px-4 py-3">Documents</th>
                 <th className="px-4 py-3">Archived</th>
                 <th className="px-4 py-3">Reason</th>
                 <th className="px-4 py-3 text-right">Actions</th>
@@ -48,11 +49,12 @@ export default async function EmployeeArchivePage() {
               {archived.map((emp) => (
                 <tr key={emp.id} className="border-t border-[var(--color-border)]">
                   <td className="px-4 py-3 font-semibold">
-                    {displayName(emp)}
+                    <Link href={`/people/${emp.id}`} className="hover:underline">{displayName(emp)}</Link>
                     <div className="text-xs font-normal text-[var(--color-on-surface-variant)]">{emp.email}</div>
                   </td>
                   <td className="px-4 py-3">{emp.jobTitle}</td>
                   <td className="px-4 py-3">{emp.department?.name ?? "—"}</td>
+                  <td className="px-4 py-3">{emp._count.documents}</td>
                   <td className="px-4 py-3 text-[var(--color-on-surface-variant)]">
                     {emp.archivedAt ? new Date(emp.archivedAt).toLocaleDateString() : "—"}
                   </td>

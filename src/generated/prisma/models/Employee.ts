@@ -64,6 +64,8 @@ export type EmployeeMinAggregateOutputType = {
   archivedAt: Date | null
   archivedById: string | null
   archivedReason: string | null
+  rehireEligible: boolean | null
+  rehireNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -108,6 +110,8 @@ export type EmployeeMaxAggregateOutputType = {
   archivedAt: Date | null
   archivedById: string | null
   archivedReason: string | null
+  rehireEligible: boolean | null
+  rehireNotes: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -152,6 +156,8 @@ export type EmployeeCountAggregateOutputType = {
   archivedAt: number
   archivedById: number
   archivedReason: number
+  rehireEligible: number
+  rehireNotes: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -198,6 +204,8 @@ export type EmployeeMinAggregateInputType = {
   archivedAt?: true
   archivedById?: true
   archivedReason?: true
+  rehireEligible?: true
+  rehireNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -242,6 +250,8 @@ export type EmployeeMaxAggregateInputType = {
   archivedAt?: true
   archivedById?: true
   archivedReason?: true
+  rehireEligible?: true
+  rehireNotes?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -286,6 +296,8 @@ export type EmployeeCountAggregateInputType = {
   archivedAt?: true
   archivedById?: true
   archivedReason?: true
+  rehireEligible?: true
+  rehireNotes?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -403,6 +415,8 @@ export type EmployeeGroupByOutputType = {
   archivedAt: Date | null
   archivedById: string | null
   archivedReason: string | null
+  rehireEligible: boolean | null
+  rehireNotes: string | null
   createdAt: Date
   updatedAt: Date
   _count: EmployeeCountAggregateOutputType | null
@@ -468,6 +482,8 @@ export type EmployeeWhereInput = {
   archivedAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   archivedById?: Prisma.StringNullableFilter<"Employee"> | string | null
   archivedReason?: Prisma.StringNullableFilter<"Employee"> | string | null
+  rehireEligible?: Prisma.BoolNullableFilter<"Employee"> | boolean | null
+  rehireNotes?: Prisma.StringNullableFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
@@ -565,6 +581,8 @@ export type EmployeeOrderByWithRelationInput = {
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rehireEligible?: Prisma.SortOrderInput | Prisma.SortOrder
+  rehireNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
@@ -665,6 +683,8 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   archivedAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   archivedById?: Prisma.StringNullableFilter<"Employee"> | string | null
   archivedReason?: Prisma.StringNullableFilter<"Employee"> | string | null
+  rehireEligible?: Prisma.BoolNullableFilter<"Employee"> | boolean | null
+  rehireNotes?: Prisma.StringNullableFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
@@ -762,6 +782,8 @@ export type EmployeeOrderByWithAggregationInput = {
   archivedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   archivedReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rehireEligible?: Prisma.SortOrderInput | Prisma.SortOrder
+  rehireNotes?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
@@ -812,6 +834,8 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   archivedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   archivedById?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   archivedReason?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
+  rehireEligible?: Prisma.BoolNullableWithAggregatesFilter<"Employee"> | boolean | null
+  rehireNotes?: Prisma.StringNullableWithAggregatesFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
 }
@@ -852,6 +876,8 @@ export type EmployeeCreateInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -949,6 +975,8 @@ export type EmployeeUncheckedCreateInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -1038,6 +1066,8 @@ export type EmployeeUpdateInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -1135,6 +1165,8 @@ export type EmployeeUncheckedUpdateInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -1228,6 +1260,8 @@ export type EmployeeCreateManyInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1268,6 +1302,8 @@ export type EmployeeUpdateManyMutationInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1312,6 +1348,8 @@ export type EmployeeUncheckedUpdateManyInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1371,6 +1409,8 @@ export type EmployeeCountOrderByAggregateInput = {
   archivedAt?: Prisma.SortOrder
   archivedById?: Prisma.SortOrder
   archivedReason?: Prisma.SortOrder
+  rehireEligible?: Prisma.SortOrder
+  rehireNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1415,6 +1455,8 @@ export type EmployeeMaxOrderByAggregateInput = {
   archivedAt?: Prisma.SortOrder
   archivedById?: Prisma.SortOrder
   archivedReason?: Prisma.SortOrder
+  rehireEligible?: Prisma.SortOrder
+  rehireNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1459,6 +1501,8 @@ export type EmployeeMinOrderByAggregateInput = {
   archivedAt?: Prisma.SortOrder
   archivedById?: Prisma.SortOrder
   archivedReason?: Prisma.SortOrder
+  rehireEligible?: Prisma.SortOrder
+  rehireNotes?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1618,6 +1662,10 @@ export type EnumEmployeeStatusFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
 }
 
 export type EmployeeUpdateOneWithoutDirectReportsNestedInput = {
@@ -2404,6 +2452,8 @@ export type EmployeeCreateWithoutHeadOfInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -2500,6 +2550,8 @@ export type EmployeeUncheckedCreateWithoutHeadOfInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2593,6 +2645,8 @@ export type EmployeeCreateWithoutDepartmentInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   team?: Prisma.TeamCreateNestedOneWithoutEmployeesInput
@@ -2688,6 +2742,8 @@ export type EmployeeUncheckedCreateWithoutDepartmentInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -2798,6 +2854,8 @@ export type EmployeeUpdateWithoutHeadOfInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -2894,6 +2952,8 @@ export type EmployeeUncheckedUpdateWithoutHeadOfInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -3005,6 +3065,8 @@ export type EmployeeScalarWhereInput = {
   archivedAt?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   archivedById?: Prisma.StringNullableFilter<"Employee"> | string | null
   archivedReason?: Prisma.StringNullableFilter<"Employee"> | string | null
+  rehireEligible?: Prisma.BoolNullableFilter<"Employee"> | boolean | null
+  rehireNotes?: Prisma.StringNullableFilter<"Employee"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
 }
@@ -3045,6 +3107,8 @@ export type EmployeeCreateWithoutTeamInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3140,6 +3204,8 @@ export type EmployeeUncheckedCreateWithoutTeamInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3255,6 +3321,8 @@ export type EmployeeCreateWithoutDirectReportsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3351,6 +3419,8 @@ export type EmployeeUncheckedCreateWithoutDirectReportsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   buddyOf?: Prisma.EmployeeUncheckedCreateNestedManyWithoutBuddyInput
@@ -3444,6 +3514,8 @@ export type EmployeeCreateWithoutManagerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3539,6 +3611,8 @@ export type EmployeeUncheckedCreateWithoutManagerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3638,6 +3712,8 @@ export type EmployeeCreateWithoutBuddyOfInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3734,6 +3810,8 @@ export type EmployeeUncheckedCreateWithoutBuddyOfInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -3827,6 +3905,8 @@ export type EmployeeCreateWithoutBuddyInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -3922,6 +4002,8 @@ export type EmployeeUncheckedCreateWithoutBuddyInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4032,6 +4114,8 @@ export type EmployeeUpdateWithoutDirectReportsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4128,6 +4212,8 @@ export type EmployeeUncheckedUpdateWithoutDirectReportsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   buddyOf?: Prisma.EmployeeUncheckedUpdateManyWithoutBuddyNestedInput
@@ -4243,6 +4329,8 @@ export type EmployeeUpdateWithoutBuddyOfInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4339,6 +4427,8 @@ export type EmployeeUncheckedUpdateWithoutBuddyOfInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -4443,6 +4533,8 @@ export type EmployeeCreateWithoutUserInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4539,6 +4631,8 @@ export type EmployeeUncheckedCreateWithoutUserInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -4643,6 +4737,8 @@ export type EmployeeUpdateWithoutUserInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -4739,6 +4835,8 @@ export type EmployeeUncheckedUpdateWithoutUserInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -4827,6 +4925,8 @@ export type EmployeeCreateWithoutAssignedChecklistItemsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -4923,6 +5023,8 @@ export type EmployeeUncheckedCreateWithoutAssignedChecklistItemsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5027,6 +5129,8 @@ export type EmployeeUpdateWithoutAssignedChecklistItemsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5123,6 +5227,8 @@ export type EmployeeUncheckedUpdateWithoutAssignedChecklistItemsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5211,6 +5317,8 @@ export type EmployeeCreateWithoutEmployeeTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5307,6 +5415,8 @@ export type EmployeeUncheckedCreateWithoutEmployeeTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5400,6 +5510,8 @@ export type EmployeeCreateWithoutAssignedTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5496,6 +5608,8 @@ export type EmployeeUncheckedCreateWithoutAssignedTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5589,6 +5703,8 @@ export type EmployeeCreateWithoutCompletedTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -5685,6 +5801,8 @@ export type EmployeeUncheckedCreateWithoutCompletedTasksInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -5789,6 +5907,8 @@ export type EmployeeUpdateWithoutEmployeeTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -5885,6 +6005,8 @@ export type EmployeeUncheckedUpdateWithoutEmployeeTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -5984,6 +6106,8 @@ export type EmployeeUpdateWithoutAssignedTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6080,6 +6204,8 @@ export type EmployeeUncheckedUpdateWithoutAssignedTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6179,6 +6305,8 @@ export type EmployeeUpdateWithoutCompletedTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6275,6 +6403,8 @@ export type EmployeeUncheckedUpdateWithoutCompletedTasksInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6363,6 +6493,8 @@ export type EmployeeCreateWithoutAnniversaryReviewCyclesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6459,6 +6591,8 @@ export type EmployeeUncheckedCreateWithoutAnniversaryReviewCyclesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -6563,6 +6697,8 @@ export type EmployeeUpdateWithoutAnniversaryReviewCyclesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -6659,6 +6795,8 @@ export type EmployeeUncheckedUpdateWithoutAnniversaryReviewCyclesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -6747,6 +6885,8 @@ export type EmployeeCreateWithoutReviewsAsEmployeeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -6843,6 +6983,8 @@ export type EmployeeUncheckedCreateWithoutReviewsAsEmployeeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -6936,6 +7078,8 @@ export type EmployeeCreateWithoutReviewsAsReviewerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7032,6 +7176,8 @@ export type EmployeeUncheckedCreateWithoutReviewsAsReviewerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7136,6 +7282,8 @@ export type EmployeeUpdateWithoutReviewsAsEmployeeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7232,6 +7380,8 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsEmployeeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -7331,6 +7481,8 @@ export type EmployeeUpdateWithoutReviewsAsReviewerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -7427,6 +7579,8 @@ export type EmployeeUncheckedUpdateWithoutReviewsAsReviewerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -7515,6 +7669,8 @@ export type EmployeeCreateWithoutFeedPostsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7611,6 +7767,8 @@ export type EmployeeUncheckedCreateWithoutFeedPostsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7704,6 +7862,8 @@ export type EmployeeCreateWithoutMentionedInPostsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -7800,6 +7960,8 @@ export type EmployeeUncheckedCreateWithoutMentionedInPostsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -7904,6 +8066,8 @@ export type EmployeeUpdateWithoutFeedPostsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8000,6 +8164,8 @@ export type EmployeeUncheckedUpdateWithoutFeedPostsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8099,6 +8265,8 @@ export type EmployeeUpdateWithoutMentionedInPostsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8195,6 +8363,8 @@ export type EmployeeUncheckedUpdateWithoutMentionedInPostsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8283,6 +8453,8 @@ export type EmployeeCreateWithoutFeedPollVotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8379,6 +8551,8 @@ export type EmployeeUncheckedCreateWithoutFeedPollVotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8483,6 +8657,8 @@ export type EmployeeUpdateWithoutFeedPollVotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8579,6 +8755,8 @@ export type EmployeeUncheckedUpdateWithoutFeedPollVotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -8667,6 +8845,8 @@ export type EmployeeCreateWithoutFeedCommentsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -8763,6 +8943,8 @@ export type EmployeeUncheckedCreateWithoutFeedCommentsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -8867,6 +9049,8 @@ export type EmployeeUpdateWithoutFeedCommentsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -8963,6 +9147,8 @@ export type EmployeeUncheckedUpdateWithoutFeedCommentsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9051,6 +9237,8 @@ export type EmployeeCreateWithoutFeedReactionsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9147,6 +9335,8 @@ export type EmployeeUncheckedCreateWithoutFeedReactionsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -9251,6 +9441,8 @@ export type EmployeeUpdateWithoutFeedReactionsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9347,6 +9539,8 @@ export type EmployeeUncheckedUpdateWithoutFeedReactionsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9435,6 +9629,8 @@ export type EmployeeCreateWithoutEmergencyAlertsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9531,6 +9727,8 @@ export type EmployeeUncheckedCreateWithoutEmergencyAlertsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -9635,6 +9833,8 @@ export type EmployeeUpdateWithoutEmergencyAlertsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -9731,6 +9931,8 @@ export type EmployeeUncheckedUpdateWithoutEmergencyAlertsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -9819,6 +10021,8 @@ export type EmployeeCreateWithoutNotificationsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -9915,6 +10119,8 @@ export type EmployeeUncheckedCreateWithoutNotificationsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10019,6 +10225,8 @@ export type EmployeeUpdateWithoutNotificationsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10115,6 +10323,8 @@ export type EmployeeUncheckedUpdateWithoutNotificationsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10203,6 +10413,8 @@ export type EmployeeCreateWithoutNotificationRecipientsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10299,6 +10511,8 @@ export type EmployeeUncheckedCreateWithoutNotificationRecipientsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10403,6 +10617,8 @@ export type EmployeeUpdateWithoutNotificationRecipientsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10499,6 +10715,8 @@ export type EmployeeUncheckedUpdateWithoutNotificationRecipientsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10587,6 +10805,8 @@ export type EmployeeCreateWithoutDocumentsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -10683,6 +10903,8 @@ export type EmployeeUncheckedCreateWithoutDocumentsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -10787,6 +11009,8 @@ export type EmployeeUpdateWithoutDocumentsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -10883,6 +11107,8 @@ export type EmployeeUncheckedUpdateWithoutDocumentsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -10971,6 +11197,8 @@ export type EmployeeCreateWithoutHrNotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11067,6 +11295,8 @@ export type EmployeeUncheckedCreateWithoutHrNotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11160,6 +11390,8 @@ export type EmployeeCreateWithoutAuthoredHRNotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11256,6 +11488,8 @@ export type EmployeeUncheckedCreateWithoutAuthoredHRNotesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11360,6 +11594,8 @@ export type EmployeeUpdateWithoutHrNotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11456,6 +11692,8 @@ export type EmployeeUncheckedUpdateWithoutHrNotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -11555,6 +11793,8 @@ export type EmployeeUpdateWithoutAuthoredHRNotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -11651,6 +11891,8 @@ export type EmployeeUncheckedUpdateWithoutAuthoredHRNotesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -11739,6 +11981,8 @@ export type EmployeeCreateWithoutManagedCandidatesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -11835,6 +12079,8 @@ export type EmployeeUncheckedCreateWithoutManagedCandidatesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -11939,6 +12185,8 @@ export type EmployeeUpdateWithoutManagedCandidatesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12035,6 +12283,8 @@ export type EmployeeUncheckedUpdateWithoutManagedCandidatesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12123,6 +12373,8 @@ export type EmployeeCreateWithoutInterviewsAsInterviewerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -12219,6 +12471,8 @@ export type EmployeeUncheckedCreateWithoutInterviewsAsInterviewerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -12323,6 +12577,8 @@ export type EmployeeUpdateWithoutInterviewsAsInterviewerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12419,6 +12675,8 @@ export type EmployeeUncheckedUpdateWithoutInterviewsAsInterviewerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -12507,6 +12765,8 @@ export type EmployeeCreateWithoutSigningRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -12603,6 +12863,8 @@ export type EmployeeUncheckedCreateWithoutSigningRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -12696,6 +12958,8 @@ export type EmployeeCreateWithoutCountersignRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -12792,6 +13056,8 @@ export type EmployeeUncheckedCreateWithoutCountersignRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -12896,6 +13162,8 @@ export type EmployeeUpdateWithoutSigningRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -12992,6 +13260,8 @@ export type EmployeeUncheckedUpdateWithoutSigningRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -13091,6 +13361,8 @@ export type EmployeeUpdateWithoutCountersignRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -13187,6 +13459,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -13275,6 +13549,8 @@ export type EmployeeCreateWithoutOutOfOfficeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -13371,6 +13647,8 @@ export type EmployeeUncheckedCreateWithoutOutOfOfficeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -13475,6 +13753,8 @@ export type EmployeeUpdateWithoutOutOfOfficeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -13571,6 +13851,8 @@ export type EmployeeUncheckedUpdateWithoutOutOfOfficeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -13659,6 +13941,8 @@ export type EmployeeCreateWithoutTrainingGroupsCreatedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -13755,6 +14039,8 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupsCreatedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -13859,6 +14145,8 @@ export type EmployeeUpdateWithoutTrainingGroupsCreatedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -13955,6 +14243,8 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupsCreatedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -14043,6 +14333,8 @@ export type EmployeeCreateWithoutTrainingGroupMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -14139,6 +14431,8 @@ export type EmployeeUncheckedCreateWithoutTrainingGroupMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -14243,6 +14537,8 @@ export type EmployeeUpdateWithoutTrainingGroupMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -14339,6 +14635,8 @@ export type EmployeeUncheckedUpdateWithoutTrainingGroupMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -14427,6 +14725,8 @@ export type EmployeeCreateWithoutTrainingClassesOrganizedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -14523,6 +14823,8 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesOrganizedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -14616,6 +14918,8 @@ export type EmployeeCreateWithoutTrainingClassesCreatedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -14712,6 +15016,8 @@ export type EmployeeUncheckedCreateWithoutTrainingClassesCreatedInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -14816,6 +15122,8 @@ export type EmployeeUpdateWithoutTrainingClassesOrganizedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -14912,6 +15220,8 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesOrganizedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -15011,6 +15321,8 @@ export type EmployeeUpdateWithoutTrainingClassesCreatedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -15107,6 +15419,8 @@ export type EmployeeUncheckedUpdateWithoutTrainingClassesCreatedInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -15195,6 +15509,8 @@ export type EmployeeCreateWithoutTimeOffBalancesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -15291,6 +15607,8 @@ export type EmployeeUncheckedCreateWithoutTimeOffBalancesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -15395,6 +15713,8 @@ export type EmployeeUpdateWithoutTimeOffBalancesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -15491,6 +15811,8 @@ export type EmployeeUncheckedUpdateWithoutTimeOffBalancesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -15579,6 +15901,8 @@ export type EmployeeCreateWithoutTimeOffRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -15675,6 +15999,8 @@ export type EmployeeUncheckedCreateWithoutTimeOffRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -15768,6 +16094,8 @@ export type EmployeeCreateWithoutApprovedRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -15864,6 +16192,8 @@ export type EmployeeUncheckedCreateWithoutApprovedRequestsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -15968,6 +16298,8 @@ export type EmployeeUpdateWithoutTimeOffRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -16064,6 +16396,8 @@ export type EmployeeUncheckedUpdateWithoutTimeOffRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -16163,6 +16497,8 @@ export type EmployeeUpdateWithoutApprovedRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -16259,6 +16595,8 @@ export type EmployeeUncheckedUpdateWithoutApprovedRequestsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -16347,6 +16685,8 @@ export type EmployeeCreateWithoutClubMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -16443,6 +16783,8 @@ export type EmployeeUncheckedCreateWithoutClubMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -16547,6 +16889,8 @@ export type EmployeeUpdateWithoutClubMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -16643,6 +16987,8 @@ export type EmployeeUncheckedUpdateWithoutClubMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -16731,6 +17077,8 @@ export type EmployeeCreateWithoutPulseResponsesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -16827,6 +17175,8 @@ export type EmployeeUncheckedCreateWithoutPulseResponsesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -16931,6 +17281,8 @@ export type EmployeeUpdateWithoutPulseResponsesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -17027,6 +17379,8 @@ export type EmployeeUncheckedUpdateWithoutPulseResponsesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -17115,6 +17469,8 @@ export type EmployeeCreateWithoutCountersignStageDocsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -17211,6 +17567,8 @@ export type EmployeeUncheckedCreateWithoutCountersignStageDocsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -17315,6 +17673,8 @@ export type EmployeeUpdateWithoutCountersignStageDocsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -17411,6 +17771,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignStageDocsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -17499,6 +17861,8 @@ export type EmployeeCreateWithoutCountersignPositionDocsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -17595,6 +17959,8 @@ export type EmployeeUncheckedCreateWithoutCountersignPositionDocsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -17699,6 +18065,8 @@ export type EmployeeUpdateWithoutCountersignPositionDocsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -17795,6 +18163,8 @@ export type EmployeeUncheckedUpdateWithoutCountersignPositionDocsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -17883,6 +18253,8 @@ export type EmployeeCreateWithoutSentEmailDeliveriesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -17979,6 +18351,8 @@ export type EmployeeUncheckedCreateWithoutSentEmailDeliveriesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -18083,6 +18457,8 @@ export type EmployeeUpdateWithoutSentEmailDeliveriesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -18179,6 +18555,8 @@ export type EmployeeUncheckedUpdateWithoutSentEmailDeliveriesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -18267,6 +18645,8 @@ export type EmployeeCreateWithoutChatMembersInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -18363,6 +18743,8 @@ export type EmployeeUncheckedCreateWithoutChatMembersInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -18467,6 +18849,8 @@ export type EmployeeUpdateWithoutChatMembersInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -18563,6 +18947,8 @@ export type EmployeeUncheckedUpdateWithoutChatMembersInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -18651,6 +19037,8 @@ export type EmployeeCreateWithoutCreatedChannelsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -18747,6 +19135,8 @@ export type EmployeeUncheckedCreateWithoutCreatedChannelsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -18851,6 +19241,8 @@ export type EmployeeUpdateWithoutCreatedChannelsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -18947,6 +19339,8 @@ export type EmployeeUncheckedUpdateWithoutCreatedChannelsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -19035,6 +19429,8 @@ export type EmployeeCreateWithoutChannelMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -19131,6 +19527,8 @@ export type EmployeeUncheckedCreateWithoutChannelMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -19235,6 +19633,8 @@ export type EmployeeUpdateWithoutChannelMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -19331,6 +19731,8 @@ export type EmployeeUncheckedUpdateWithoutChannelMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -19419,6 +19821,8 @@ export type EmployeeCreateWithoutChatMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -19515,6 +19919,8 @@ export type EmployeeUncheckedCreateWithoutChatMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -19619,6 +20025,8 @@ export type EmployeeUpdateWithoutChatMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -19715,6 +20123,8 @@ export type EmployeeUncheckedUpdateWithoutChatMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -19803,6 +20213,8 @@ export type EmployeeCreateWithoutDmMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -19899,6 +20311,8 @@ export type EmployeeUncheckedCreateWithoutDmMembershipsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -20003,6 +20417,8 @@ export type EmployeeUpdateWithoutDmMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -20099,6 +20515,8 @@ export type EmployeeUncheckedUpdateWithoutDmMembershipsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -20187,6 +20605,8 @@ export type EmployeeCreateWithoutChatReactionsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -20283,6 +20703,8 @@ export type EmployeeUncheckedCreateWithoutChatReactionsInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -20387,6 +20809,8 @@ export type EmployeeUpdateWithoutChatReactionsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -20483,6 +20907,8 @@ export type EmployeeUncheckedUpdateWithoutChatReactionsInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -20571,6 +20997,8 @@ export type EmployeeCreateWithoutPinnedMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -20667,6 +21095,8 @@ export type EmployeeUncheckedCreateWithoutPinnedMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -20771,6 +21201,8 @@ export type EmployeeUpdateWithoutPinnedMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -20867,6 +21299,8 @@ export type EmployeeUncheckedUpdateWithoutPinnedMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -20955,6 +21389,8 @@ export type EmployeeCreateWithoutSavedMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -21051,6 +21487,8 @@ export type EmployeeUncheckedCreateWithoutSavedMessagesInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -21155,6 +21593,8 @@ export type EmployeeUpdateWithoutSavedMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -21251,6 +21691,8 @@ export type EmployeeUncheckedUpdateWithoutSavedMessagesInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -21339,6 +21781,8 @@ export type EmployeeCreateWithoutOneOnOnesAsEmployeeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -21435,6 +21879,8 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsEmployeeInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -21528,6 +21974,8 @@ export type EmployeeCreateWithoutOneOnOnesAsManagerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   department?: Prisma.DepartmentCreateNestedOneWithoutEmployeesInput
@@ -21624,6 +22072,8 @@ export type EmployeeUncheckedCreateWithoutOneOnOnesAsManagerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   directReports?: Prisma.EmployeeUncheckedCreateNestedManyWithoutManagerInput
@@ -21728,6 +22178,8 @@ export type EmployeeUpdateWithoutOneOnOnesAsEmployeeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -21824,6 +22276,8 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsEmployeeInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -21923,6 +22377,8 @@ export type EmployeeUpdateWithoutOneOnOnesAsManagerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -22019,6 +22475,8 @@ export type EmployeeUncheckedUpdateWithoutOneOnOnesAsManagerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -22110,6 +22568,8 @@ export type EmployeeCreateManyDepartmentInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -22150,6 +22610,8 @@ export type EmployeeUpdateWithoutDepartmentInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   team?: Prisma.TeamUpdateOneWithoutEmployeesNestedInput
@@ -22245,6 +22707,8 @@ export type EmployeeUncheckedUpdateWithoutDepartmentInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -22337,6 +22801,8 @@ export type EmployeeUncheckedUpdateManyWithoutDepartmentInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -22380,6 +22846,8 @@ export type EmployeeCreateManyTeamInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -22420,6 +22888,8 @@ export type EmployeeUpdateWithoutTeamInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -22515,6 +22985,8 @@ export type EmployeeUncheckedUpdateWithoutTeamInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -22607,6 +23079,8 @@ export type EmployeeUncheckedUpdateManyWithoutTeamInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -22650,6 +23124,8 @@ export type EmployeeCreateManyManagerInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -22693,6 +23169,8 @@ export type EmployeeCreateManyBuddyInput = {
   archivedAt?: Date | string | null
   archivedById?: string | null
   archivedReason?: string | null
+  rehireEligible?: boolean | null
+  rehireNotes?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -22733,6 +23211,8 @@ export type EmployeeUpdateWithoutManagerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -22828,6 +23308,8 @@ export type EmployeeUncheckedUpdateWithoutManagerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -22920,6 +23402,8 @@ export type EmployeeUncheckedUpdateManyWithoutManagerInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -22960,6 +23444,8 @@ export type EmployeeUpdateWithoutBuddyInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneWithoutEmployeesNestedInput
@@ -23055,6 +23541,8 @@ export type EmployeeUncheckedUpdateWithoutBuddyInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   directReports?: Prisma.EmployeeUncheckedUpdateManyWithoutManagerNestedInput
@@ -23147,6 +23635,8 @@ export type EmployeeUncheckedUpdateManyWithoutBuddyInput = {
   archivedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   archivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   archivedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rehireEligible?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  rehireNotes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -23645,6 +24135,8 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   archivedAt?: boolean
   archivedById?: boolean
   archivedReason?: boolean
+  rehireEligible?: boolean
+  rehireNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -23743,6 +24235,8 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   archivedAt?: boolean
   archivedById?: boolean
   archivedReason?: boolean
+  rehireEligible?: boolean
+  rehireNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -23791,6 +24285,8 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   archivedAt?: boolean
   archivedById?: boolean
   archivedReason?: boolean
+  rehireEligible?: boolean
+  rehireNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
@@ -23839,11 +24335,13 @@ export type EmployeeSelectScalar = {
   archivedAt?: boolean
   archivedById?: boolean
   archivedReason?: boolean
+  rehireEligible?: boolean
+  rehireNotes?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "middleName" | "preferredName" | "lastName" | "email" | "personalEmail" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "requiresTraining" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "middleName" | "preferredName" | "lastName" | "email" | "personalEmail" | "phone" | "jobTitle" | "profilePhoto" | "departmentId" | "teamId" | "managerId" | "startDate" | "endDate" | "birthday" | "anniversaryDate" | "hobbies" | "bio" | "location" | "dietaryRestrictions" | "benefitsEligibleDate" | "emergencyContactName" | "emergencyContactPhone" | "emergencyContactRelation" | "address" | "city" | "state" | "zipCode" | "country" | "pronouns" | "tShirtSize" | "buddyId" | "status" | "requiresTraining" | "gustoEmployeeId" | "archivedAt" | "archivedById" | "archivedReason" | "rehireEligible" | "rehireNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.Employee$departmentArgs<ExtArgs>
   team?: boolean | Prisma.Employee$teamArgs<ExtArgs>
@@ -24010,6 +24508,8 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     archivedAt: Date | null
     archivedById: string | null
     archivedReason: string | null
+    rehireEligible: boolean | null
+    rehireNotes: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["employee"]>
@@ -24527,6 +25027,8 @@ export interface EmployeeFieldRefs {
   readonly archivedAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly archivedById: Prisma.FieldRef<"Employee", 'String'>
   readonly archivedReason: Prisma.FieldRef<"Employee", 'String'>
+  readonly rehireEligible: Prisma.FieldRef<"Employee", 'Boolean'>
+  readonly rehireNotes: Prisma.FieldRef<"Employee", 'String'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>
 }

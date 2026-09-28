@@ -415,7 +415,14 @@ export async function promoteEmployee(
   revalidatePath("/");
 }
 
-export async function startOffboarding(employeeId: string, endDate: string) {
+export async function startOffboarding(
+  employeeId: string,
+  endDate: string,
+  rehire?: { eligible: boolean | null; notes?: string | null }
+) {
+  const { requireAdmin } = await import("@/lib/auth-helpers");
+  await requireAdmin();
+
   const offboardingChecklists = await db.onboardingChecklist.findMany({
     where: { type: "OFFBOARDING" },
     include: { items: { orderBy: { order: "asc" } } },
@@ -427,6 +434,8 @@ export async function startOffboarding(employeeId: string, endDate: string) {
     data: {
       status: "OFFBOARDED",
       endDate: new Date(endDate),
+      rehireEligible: rehire?.eligible ?? null,
+      rehireNotes: rehire?.notes?.trim() || null,
     },
   });
 
@@ -458,7 +467,7 @@ export async function startOffboarding(employeeId: string, endDate: string) {
     action: "employee.offboarding_started",
     entityType: "employee",
     entityId: employeeId,
-    details: { endDate, taskCount: allChecklistItems.length },
+    details: { endDate, taskCount: allChecklistItems.length, rehireEligible: rehire?.eligible ?? null },
   });
 
   // Notify the configured Management (and any other enabled recipients) group
@@ -491,6 +500,26 @@ export async function startOffboarding(employeeId: string, endDate: string) {
   revalidatePath("/settings");
 
   return { employee, taskCount: allChecklistItems.length };
+}
+
+export async function setRehireEligibility(employeeId: string, eligible: boolean | null, notes?: string | null) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const { saveRehireEligibility } = await import("@/lib/rehire-eligibility-update");
+  const result = await saveRehireEligibility(employeeId, { eligible, notes }, session.user);
+  if (!result.ok) return result;
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: "employee.rehire_eligibility_set",
+    entityType: "employee",
+    entityId: employeeId,
+    details: { name: result.name, rehireEligible: eligible, notes: notes?.trim() || null },
+  });
+  revalidatePath("/offboarding");
+  revalidatePath(`/people/${employeeId}`);
+  revalidatePath("/people/archive");
+  return { ok: true as const };
 }
 
 export async function reactivateEmployee(employeeId: string) {
@@ -1051,7 +1080,7 @@ export async function getArchivedEmployees() {
   }
   return db.employee.findMany({
     where: { archivedAt: { not: null } },
-    include: { department: true },
+    include: { department: true, _count: { select: { documents: true } } },
     orderBy: { archivedAt: "desc" },
   });
 }

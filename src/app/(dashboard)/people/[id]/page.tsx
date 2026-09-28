@@ -8,6 +8,7 @@ import { PromoteEmployeeDialog } from "@/components/people/promote-employee-dial
 import { DeleteEmployeeButton } from "@/components/people/delete-employee-button";
 import { ReactivateEmployeeButton } from "@/components/people/reactivate-employee-button";
 import { ReportsToCard } from "@/components/people/reports-to-card";
+import { RehireEligibilityCard } from "@/components/people/rehire-eligibility-card";
 import { HRNotesSection } from "@/components/people/hr-notes-section";
 import { EmployeeDocumentsSection } from "@/components/people/employee-documents-section";
 import { ResendStageDocsButton } from "@/components/onboarding/resend-stage-docs-button";
@@ -373,6 +374,14 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
         </div>
 
         <div className="space-y-6">
+          {isAdmin && employee.status === "OFFBOARDED" && (
+            <RehireEligibilityCard
+              employeeId={employee.id}
+              eligible={employee.rehireEligible}
+              notes={employee.rehireNotes}
+            />
+          )}
+
           {(employee.manager || isAdmin) && (
             <ReportsToCard
               employeeId={employee.id}
