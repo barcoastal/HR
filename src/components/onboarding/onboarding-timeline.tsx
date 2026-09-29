@@ -513,8 +513,8 @@ export function OnboardingTimeline({
                                   const isDone = task.status === "DONE";
                                   const isLockedDocument =
                                     type === "PRE_ONBOARDING" &&
-                                    !isDone &&
-                                    (task.documentAction === "SIGN" || task.documentAction === "FILL");
+                                    ((!isDone && (task.documentAction === "SIGN" || task.documentAction === "FILL")) ||
+                                      task.documentAction === "SEND");
                                   return (
                                     <motion.button
                                       key={task.id}
@@ -562,7 +562,7 @@ export function OnboardingTimeline({
                                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                           {task.documentAction === "SEND" && (
                                             <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                              <Icon name="send" size={12} />Sent
+                                              <Icon name="send" size={12} />{type === "PRE_ONBOARDING" ? "Sent by email" : "Sent"}
                                             </span>
                                           )}
                                           {task.documentAction === "SIGN" && (

@@ -547,6 +547,10 @@ async function sendStageDocumentsEmail(
             },
           });
           console.log(`[stage-docs] Created Document record "${doc.name}" for employee ${employeeId}`);
+          if (status === "PRE_ONBOARDING") {
+            const { recordSentWrittenOfferDocument } = await import("@/lib/written-offer-sent-documents");
+            await recordSentWrittenOfferDocument(employeeId, { name: doc.name, url: `/api/onboarding-docs/${filename}` });
+          }
         }
        } catch (e) {
          console.error(`[stage-docs] FAILED attachment doc "${doc.name}", skipping and continuing with the rest:`, e);

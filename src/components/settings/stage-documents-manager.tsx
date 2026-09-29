@@ -128,6 +128,11 @@ export function StageDocumentsManager({ documents, countersigners }: { documents
                       <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
                       <p className={cn("text-xs flex items-center gap-1.5", !doc.hasPdf ? "text-amber-400" : "text-[var(--color-text-muted)]")}>
                         {!doc.hasPdf ? "No PDF — click edit to upload" : `${placeholders.length} placeholder${placeholders.length !== 1 ? "s" : ""} marked`}
+                        {doc.hasPdf && !doc.requiresSignature && !doc.requiresFill && (
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-500">
+                            <Icon name="mail" size={10} />email attachment only, not signed
+                          </span>
+                        )}
                         {doc.requiresSignature && (
                           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-400">
                             <Icon name="draw" size={10} />sign

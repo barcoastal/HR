@@ -77,11 +77,13 @@ export default async function PreOnboardingPage() {
         {preOnboardingEmployees.map((emp) => {
           const assignedItemIds = new Set(emp.employeeTasks.map((t) => t.checklistItemId).filter(Boolean));
           // Include every sign/fill document, not only checklist-backed ones:
-          // they all hold the person in Written Offer until complete.
+          // they all hold the person in Written Offer until complete. Emailed
+          // attachments are listed too so it is clear they went out.
           const writtenOfferTasks = emp.employeeTasks.filter((task) =>
             task.checklistItem?.checklist?.type === "PRE_ONBOARDING" ||
             task.documentAction === "SIGN" ||
-            task.documentAction === "FILL"
+            task.documentAction === "FILL" ||
+            task.documentAction === "SEND"
           );
           const { outstandingDocuments } = planWrittenOfferPushThrough({
             employeeCreatedAt: emp.createdAt,
