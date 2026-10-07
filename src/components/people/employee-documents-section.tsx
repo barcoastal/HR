@@ -6,6 +6,7 @@ import {
   addEmployeeDocument,
   deleteEmployeeDocument,
   makeAllEmployeeDocumentsHrOnly,
+  pullCandidateResumeToEmployee,
   sendDocForSigning,
   updateEmployeeDocument,
 } from "@/lib/actions/employee-documents";
@@ -124,11 +125,30 @@ export function EmployeeDocumentsSection({
   const [confirmingHrOnly, setConfirmingHrOnly] = useState(false);
   const [restricting, setRestricting] = useState(false);
   const [restrictError, setRestrictError] = useState<string | null>(null);
+  const [pullingResume, setPullingResume] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const folders = groupDocumentsByFolder(documents);
   const visibleToEmployeeCount = documents.filter((doc) => doc.visibility === "EVERYONE").length;
+  const hasResumeDoc = documents.some(
+    (doc) => doc.name.toLowerCase().startsWith("resume") || /\/api\/resumes\//.test(doc.url)
+  );
+
+  async function handlePullResume() {
+    setPullingResume(true);
+    try {
+      const result = await pullCandidateResumeToEmployee(employeeId);
+      if (!result.success) {
+        alert(result.error || "Could not attach resume");
+      } else {
+        router.refresh();
+      }
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Could not attach resume");
+    }
+    setPullingResume(false);
+  }
 
   async function handleUpload() {
     const file = fileRef.current?.files?.[0];
@@ -260,6 +280,22 @@ export function EmployeeDocumentsSection({
               >
                 <Icon name="lock" size={12} />
                 Make all HR only
+              </button>
+            )}
+            {!hasResumeDoc && (
+              <button
+                type="button"
+                onClick={handlePullResume}
+                disabled={pullingResume}
+                title="Copy the applicant resume from the matching candidate record onto this profile"
+                className={cn(
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium border",
+                  "border-[var(--color-border)] text-[var(--color-text-primary)]",
+                  "hover:bg-[var(--color-surface-hover)] transition-colors disabled:opacity-50"
+                )}
+              >
+                <Icon name="description" size={12} />
+                {pullingResume ? "Pulling…" : "Pull resume"}
               </button>
             )}
             <button

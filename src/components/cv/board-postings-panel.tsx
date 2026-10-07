@@ -93,6 +93,13 @@ export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: s
           {postings === null && (
             <p className="text-[11px] text-[var(--color-text-muted)] py-2">Loading…</p>
           )}
+          {postings?.some((p) => p.board === "BREEZY") && (
+            <p className="text-[10px] text-[var(--color-text-muted)] leading-snug px-1 pb-1">
+              LinkedIn (and Indeed) syndication runs inside Breezy after you Post here.
+              In Breezy → Company Settings → Integrations, LinkedIn must be connected and the
+              position must show as distributed — CALATRAVA cannot publish to LinkedIn directly.
+            </p>
+          )}
           {postings?.map((p) => {
             const meta = BOARD_META[p.board];
             const badge = STATUS_BADGE[p.status] || STATUS_BADGE.NOT_POSTED;
@@ -103,7 +110,7 @@ export function BoardPostingsPanel({ positionId, defaultTitle }: { positionId: s
             return (
               <div key={p.board} className="flex flex-wrap items-center gap-3 px-2 py-2 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)]">
                 <Icon name={meta.icon} size={14} className={cn(meta.color, "shrink-0")} />
-                <span className="text-xs font-medium text-[var(--color-text-primary)] w-24 shrink-0">{meta.label}</span>
+                <span className="text-xs font-medium text-[var(--color-text-primary)] w-36 shrink-0">{meta.label}</span>
                 {supportsTitleOverride && (
                   <button
                     onClick={async () => {

@@ -211,3 +211,25 @@ export async function deleteEmployeeDocument(docId: string) {
   await db.document.delete({ where: { id: docId } });
   revalidatePath(`/people/${doc.employeeId}`);
 }
+
+/** Pull the matching candidate resume onto this employee's Documents (HR-only). */
+export async function pullCandidateResumeToEmployee(employeeId: string) {
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") {
+    return { success: false as const, error: "Not authorized" };
+  }
+  const { attachResumeFromMatchingCandidate } = await import("@/lib/hire-resume");
+  const result = await attachResumeFromMatchingCandidate(employeeId);
+  if (result.attached) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: "document.resume_pulled_from_candidate",
+      entityType: "employee",
+      entityId: employeeId,
+      details: {},
+    });
+    revalidatePath(`/people/${employeeId}`);
+    return { success: true as const };
+  }
+  return { success: false as const, error: result.reason || "Could not attach resume" };
+}

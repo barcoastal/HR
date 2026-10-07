@@ -10,6 +10,78 @@ export async function getPositionDocuments(positionId: string) {
   });
 }
 
+const POSITION_DOC_SELECT = {
+  id: true,
+  name: true,
+  pdfData: true,
+  placeholders: true,
+  requiresSignature: true,
+  requiresFill: true,
+  requiresCountersignature: true,
+  countersignerId: true,
+} as const;
+
+/**
+ * Position documents send only at Written Offer, and they are stored on a
+ * specific Position row. Hires often sit on a different Retention Specialist
+ * req with the same title, or the employee email no longer matches the
+ * candidate — so look up by position id, applications, and job title.
+ */
+export async function resolvePositionDocumentsForWrittenOffer(opts: {
+  positionId?: string | null;
+  candidateEmail?: string | null;
+  jobTitle?: string | null;
+}) {
+  const ids = new Set<string>();
+  if (opts.positionId) ids.add(opts.positionId);
+
+  const email = opts.candidateEmail?.trim();
+  let title = opts.jobTitle?.trim() || "";
+
+  if (email) {
+    const candidate = await db.candidate.findFirst({
+      where: { email: { equals: email, mode: "insensitive" } },
+      orderBy: { createdAt: "desc" },
+      select: {
+        positionId: true,
+        jobAppliedTo: true,
+        applications: { select: { positionId: true } },
+      },
+    });
+    if (candidate?.positionId) ids.add(candidate.positionId);
+    for (const application of candidate?.applications ?? []) {
+      if (application.positionId) ids.add(application.positionId);
+    }
+    if (!title && candidate?.jobAppliedTo) title = candidate.jobAppliedTo.trim();
+  }
+
+  if (title) {
+    const matchingPositions = await db.position.findMany({
+      where: { title: { equals: title, mode: "insensitive" } },
+      select: { id: true },
+    });
+    for (const position of matchingPositions) ids.add(position.id);
+  }
+
+  if (ids.size === 0) return [];
+
+  const docs = await db.positionDocument.findMany({
+    where: { positionId: { in: [...ids] } },
+    select: POSITION_DOC_SELECT,
+    orderBy: [{ positionId: "asc" }, { order: "asc" }],
+  });
+
+  // Same title can have several open reqs; keep one doc per name so we do not
+  // email the compensation plan twice.
+  const seen = new Set<string>();
+  return docs.filter((doc) => {
+    const key = doc.name.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 export async function getAllPositionDocuments() {
   // Don't return pdfData in list queries (too large)
   const docs = await db.positionDocument.findMany({
@@ -89,25 +161,21 @@ export async function deletePositionDocument(id: string) {
  * record that shares the employee's email (employees don't carry positionId).
  */
 export async function getPositionDocumentsForEmployee(employeeId: string) {
-  const employee = await db.employee.findUnique({ where: { id: employeeId }, select: { email: true } });
-  if (!employee?.email) return [];
-  const candidate = await db.candidate.findFirst({
-    where: { email: employee.email, positionId: { not: null } },
-    orderBy: { createdAt: "desc" },
-    select: { positionId: true },
+  const employee = await db.employee.findUnique({
+    where: { id: employeeId },
+    select: { email: true, jobTitle: true },
   });
-  if (!candidate?.positionId) return [];
-  const docs = await db.positionDocument.findMany({
-    where: { positionId: candidate.positionId },
-    select: { id: true, name: true, placeholders: true, requiresSignature: true, requiresFill: true, order: true },
-    orderBy: { order: "asc" },
+  if (!employee) return [];
+  const docs = await resolvePositionDocumentsForWrittenOffer({
+    candidateEmail: employee.email,
+    jobTitle: employee.jobTitle,
   });
-  const withPdf = docs.length > 0
-    ? await db.positionDocument.findMany({
-        where: { id: { in: docs.map((d) => d.id) }, pdfData: { not: null } },
-        select: { id: true },
-      })
-    : [];
-  const pdfSet = new Set(withPdf.map((d) => d.id));
-  return docs.map((d) => ({ ...d, hasPdf: pdfSet.has(d.id) }));
+  return docs.map((d) => ({
+    id: d.id,
+    name: d.name,
+    placeholders: d.placeholders,
+    requiresSignature: d.requiresSignature,
+    requiresFill: d.requiresFill,
+    hasPdf: Boolean(d.pdfData),
+  }));
 }

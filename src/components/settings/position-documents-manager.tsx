@@ -44,8 +44,9 @@ export function PositionDocumentsManager({
           <div>
             <h2 className="text-lg font-semibold text-[var(--color-text-primary)]">Position Documents</h2>
             <p className="text-xs text-[var(--color-text-muted)]">
-              Documents tied to a specific position, e.g. compensation plans. Sent automatically at hire
-              alongside the Written Offer stage documents, only to hires for that position.
+              Documents tied to a job title/position (e.g. compensation plans). Sent automatically when
+              someone is hired into Written Offer — not when they are moved to Offer on the pipeline.
+              Matched by the hired position and job title.
             </p>
           </div>
         </div>

@@ -273,19 +273,12 @@ async function sendStageDocumentsEmail(
     let positionDocs: { id: string; name: string; pdfData: string | null; placeholders: string; requiresSignature: boolean; requiresFill: boolean; requiresCountersignature: boolean; countersignerId: string | null }[] = [];
     if (status === "PRE_ONBOARDING") {
       try {
-        const { getPositionDocuments } = await import("@/lib/actions/position-documents");
-        let posId = candidate.positionId;
-        if (!posId) {
-          // Manual resend passes an employee record with no positionId — resolve
-          // the position through the candidate record sharing the same email.
-          const cand = await db.candidate.findFirst({
-            where: { email: candidate.email, positionId: { not: null } },
-            orderBy: { createdAt: "desc" },
-            select: { positionId: true },
-          });
-          posId = cand?.positionId ?? null;
-        }
-        if (posId) positionDocs = await getPositionDocuments(posId);
+        const { resolvePositionDocumentsForWrittenOffer } = await import("@/lib/actions/position-documents");
+        positionDocs = await resolvePositionDocumentsForWrittenOffer({
+          positionId: candidate.positionId,
+          candidateEmail: candidate.email,
+          jobTitle: options?.positionTitle ?? undefined,
+        });
       } catch (posErr) {
         console.error(`[stage-docs] Failed to load position documents for ${candidate.email}:`, posErr);
       }
@@ -1157,6 +1150,20 @@ async function hireInner(
     },
   });
 
+  // Keep the applicant resume visible on the People profile after hire.
+  try {
+    const { attachCandidateResumeToEmployee } = await import("@/lib/hire-resume");
+    await attachCandidateResumeToEmployee({
+      employeeId: employee.id,
+      candidateId: candidate.id,
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      resumeUrl: candidate.resumeUrl,
+    });
+  } catch (resumeErr) {
+    console.error("[hire] resume attach failed (hire continues):", resumeErr);
+  }
+
   // Create user account and send welcome email unless HR deferred the login email.
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   if (!skipEmail) {
@@ -1210,7 +1217,9 @@ async function hireInner(
     }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
     // Send stage documents for PRE_ONBOARDING
-    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+    await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate, {
+      positionTitle: jobTitle,
+    });
     const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
     await maybeAdvanceWrittenOfferToOnboarding(employee.id);
 
@@ -1246,7 +1255,9 @@ async function hireInner(
   }).catch((err) => console.error("[candidates] New hire notification error:", err));
 
   // Send stage and position-specific Written Offer documents.
-  await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate);
+  await sendStageDocumentsEmail("PRE_ONBOARDING", candidate, employee.id, startDate, {
+    positionTitle: jobTitle,
+  });
   const { maybeAdvanceWrittenOfferToOnboarding } = await import("@/lib/written-offer");
   await maybeAdvanceWrittenOfferToOnboarding(employee.id);
 

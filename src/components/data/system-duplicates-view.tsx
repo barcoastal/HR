@@ -126,6 +126,7 @@ export function SystemDuplicatesView() {
           <p className="text-xs text-[var(--color-text-muted)]">
             {scan.groups.length === 0 ? "No possible duplicates" : plural(scan.groups.length, "possible duplicate group")} among{" "}
             {plural(scan.scanned, "person", "people")} · scanned {new Date(scan.scannedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+            {" · "}Pick the profile with the active work login as primary — that email is kept.
           </p>
         )}
         {pending && (
