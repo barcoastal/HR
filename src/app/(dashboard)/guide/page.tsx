@@ -32,7 +32,8 @@ function Route({ children }: { children: ReactNode }) {
 
 export default async function GuidePage() {
   const session = await requireAuth();
-  if (session.user?.role !== "SUPER_ADMIN") redirect("/");
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") redirect("/");
 
   return (
     <div className="guide-root mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">

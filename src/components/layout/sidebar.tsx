@@ -43,7 +43,7 @@ const allNavLinks = [
   { href: "/my-candidates", label: "My Candidates", icon: "assignment_ind", access: (_r: UserRole, isRec?: boolean) => !!isRec },
   { href: "/email-log", label: "Email Log", icon: "outgoing_mail", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR" },
   { href: "/audit-log", label: "Audit Log", icon: "history", access: (r: UserRole) => r === "SUPER_ADMIN" },
-  { href: "/guide", label: "Help & Guide", icon: "menu_book", access: (r: UserRole) => r === "SUPER_ADMIN" },
+  { href: "/guide", label: "Help & Guide", icon: "menu_book", access: (r: UserRole) => r === "SUPER_ADMIN" || r === "ADMIN" || r === "HR" },
   { href: "/analytics", label: "Analytics", icon: "bar_chart", access: (r: UserRole) => canAccessAnalytics(r) },
   { href: "/my-profile", label: "My Profile", icon: "account_circle", access: () => true },
   { href: "/settings", label: "Settings", icon: "settings", access: (r: UserRole) => canAccessSettings(r) },

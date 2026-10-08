@@ -23,7 +23,7 @@ Help Coastal Debt's HR team understand, improve, and build CALATRAVA. The produc
 
 ## Product context and source map
 
-Start with `src/app/(dashboard)/guide/page.tsx` for terminology and user flows; verify important details against current code because the guide can lag behind implementation. The guide route itself is currently restricted to super admins, so prefer the relevant product screen plus a repository source reference over directing every user to `/guide`.
+Start with `src/app/(dashboard)/guide/page.tsx` for terminology and user flows; verify important details against current code because the guide can lag behind implementation. The guide route is available to super admins, admins and HR (opened to HR on 2026-10-08); managers and employees cannot open it, so prefer the relevant product screen plus a repository source reference when answering them.
 
 | Area | Sources |
 | --- | --- |
