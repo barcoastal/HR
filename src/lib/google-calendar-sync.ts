@@ -314,14 +314,23 @@ export async function createInviteEventForUser(
   return { eventId: data.id ?? "", meetLink: data.hangoutLink ?? null };
 }
 
+/** One event on the user's primary calendar, with attendee responses. */
+export async function getEventForUser(
+  userId: string,
+  eventId: string
+): Promise<{ id?: string; attendees?: { email?: string; displayName?: string; responseStatus?: string }[] }> {
+  return googleFetch(userId, `/calendars/primary/events/${encodeURIComponent(eventId)}`);
+}
+
 export async function patchEventAttendeesForUser(
   userId: string,
   eventId: string,
-  attendees: { email: string; displayName?: string }[]
+  attendees: { email: string; displayName?: string }[],
+  sendUpdates: "all" | "none" = "all"
 ): Promise<void> {
   const { accessToken } = await ensureValidToken(userId);
   const res = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${eventId}?sendUpdates=all`,
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(eventId)}?sendUpdates=${sendUpdates}`,
     {
       method: "PATCH",
       headers: {

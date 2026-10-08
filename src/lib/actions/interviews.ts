@@ -6,14 +6,29 @@ import type { InterviewType } from "@/generated/prisma/client";
 import {
   createInterviewEvent,
   cancelInterviewEvent,
+  getInterviewEventResponse,
+  resendInterviewEventInvite,
   isCalendarConnected as checkCalendarConnected,
 } from "@/lib/google-calendar";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import { resolveMeetLinkPolicy } from "@/lib/interview-meet-link";
+import { candidateRsvp, inviteDelivery, type CandidateRsvp } from "@/lib/interview-invite";
 import {
   createInviteEventForUser,
   deleteEventFromGoogleCalendar,
+  getEventForUser,
+  patchEventAttendeesForUser,
 } from "@/lib/google-calendar-sync";
+
+const INTERVIEW_TYPE_LABELS: Record<InterviewType, string> = {
+  PHONE_SCREEN: "Pre-screening",
+  VIDEO: "Video Interview",
+  TECHNICAL: "Technical Interview",
+  BEHAVIORAL: "Behavioral Interview",
+  PANEL: "Panel Interview",
+  FINAL: "Final Interview",
+  ONSITE: "Onsite Interview",
+};
 
 export async function scheduleInterview(data: {
   candidateId: string;
@@ -40,15 +55,7 @@ export async function scheduleInterview(data: {
   });
   if (!candidate) throw new Error("Candidate not found");
 
-  const typeLabels: Record<InterviewType, string> = {
-    PHONE_SCREEN: "Pre-screening",
-    VIDEO: "Video Interview",
-    TECHNICAL: "Technical Interview",
-    BEHAVIORAL: "Behavioral Interview",
-    PANEL: "Panel Interview",
-    FINAL: "Final Interview",
-    ONSITE: "Onsite Interview",
-  };
+  const typeLabels = INTERVIEW_TYPE_LABELS;
 
   const location = data.location?.trim() || null;
   if (data.type === "ONSITE" && !location) {
@@ -95,7 +102,9 @@ export async function scheduleInterview(data: {
           displayName: `${candidate.firstName} ${candidate.lastName}`,
         }],
         withMeetLink,
-        sendUpdates: "none",
+        // Google sends the invitation from the interviewer's own calendar — the one invite the
+        // candidate can accept, and the interviewer sees the answer on the event.
+        sendUpdates: "all",
       });
       googleEventId = result.eventId;
       googleMeetLink = result.meetLink;
@@ -136,7 +145,8 @@ export async function scheduleInterview(data: {
   });
 
   // Send interview confirmation email to candidate — uses the editable
-  // INTERVIEW_SCHEDULED template from Settings > Email Templates.
+  // INTERVIEW_SCHEDULED template from Settings > Email Templates. Google already carries the
+  // invitation when an event exists; the .ics attachment is only the no-calendar fallback.
   try {
     const { sendInterviewScheduledEmail } = await import("@/lib/email");
     await sendInterviewScheduledEmail({
@@ -154,6 +164,7 @@ export async function scheduleInterview(data: {
       meetLink: shareMeetLinkWithCandidate ? googleMeetLink : null,
       location,
       notes: data.notes,
+      attachCalendarInvite: inviteDelivery(!!googleEventId).attachIcs,
     });
   } catch (e) {
     console.error("[interview] Failed to send confirmation email:", e);
@@ -203,13 +214,96 @@ export async function cancelInterview(interviewId: string) {
   revalidatePath("/calendar");
 }
 
+/** The candidate's answer on the Google event behind a scheduled interview; null when unknown. */
+async function candidateResponseFor(interview: {
+  status: string;
+  googleEventId: string | null;
+  calendarOrganizerUserId: string | null;
+  candidate: { email: string };
+}): Promise<CandidateRsvp | null> {
+  if (interview.status !== "SCHEDULED" || !interview.googleEventId) return null;
+  try {
+    if (interview.calendarOrganizerUserId) {
+      const event = await getEventForUser(interview.calendarOrganizerUserId, interview.googleEventId);
+      return candidateRsvp(event.attendees, interview.candidate.email);
+    }
+    return await getInterviewEventResponse(interview.googleEventId, interview.candidate.email);
+  } catch (error) {
+    console.error("[interview] Could not read the candidate's calendar response:", error);
+    return null;
+  }
+}
+
 export async function getInterviewsForCandidate(candidateId: string) {
   await requireManagerOrAdmin();
-  return db.interview.findMany({
+  const interviews = await db.interview.findMany({
     where: { candidateId },
-    include: { position: true, interviewer: true },
+    include: { position: true, interviewer: true, candidate: { select: { email: true } } },
     orderBy: { scheduledAt: "desc" },
   });
+  const responses = await Promise.all(interviews.map((i) => candidateResponseFor(i)));
+  return interviews.map((interview, idx) => ({ ...interview, candidateResponse: responses[idx] }));
+}
+
+/**
+ * Send the candidate their invitation again. With a Google event, Google re-sends its own
+ * invitation (the one with Accept / Decline); without one, the branded email with the .ics goes
+ * out again.
+ */
+export async function resendInterviewInvite(interviewId: string): Promise<{ via: "google" | "email" }> {
+  await requireManagerOrAdmin();
+  const interview = await db.interview.findUnique({
+    where: { id: interviewId },
+    include: { candidate: true, position: true, interviewer: true },
+  });
+  if (!interview) throw new Error("Interview not found");
+  if (interview.status !== "SCHEDULED") throw new Error("This interview is no longer scheduled");
+  const { candidate } = interview;
+
+  if (interview.googleEventId) {
+    if (interview.calendarOrganizerUserId) {
+      // Google only mails attendees it has news for: take the candidate off silently, put them back.
+      const event = await getEventForUser(interview.calendarOrganizerUserId, interview.googleEventId);
+      const wanted = candidate.email.trim().toLowerCase();
+      const others = (event.attendees ?? [])
+        .filter((a) => (a.email ?? "").trim().toLowerCase() !== wanted && a.email)
+        .map((a) => ({ email: a.email as string, displayName: a.displayName }));
+      await patchEventAttendeesForUser(interview.calendarOrganizerUserId, interview.googleEventId, others, "none");
+      await patchEventAttendeesForUser(
+        interview.calendarOrganizerUserId,
+        interview.googleEventId,
+        [...others, { email: candidate.email, displayName: `${candidate.firstName} ${candidate.lastName}` }],
+        "all",
+      );
+    } else {
+      await resendInterviewEventInvite(interview.googleEventId, candidate.email);
+    }
+    return { via: "google" };
+  }
+
+  const interviewer = interview.interviewer;
+  if (!interviewer) throw new Error("This interview has no interviewer — cancel it and schedule again");
+  const { shareMeetLinkWithCandidate } = resolveMeetLinkPolicy(interview.type, !!interview.googleMeetLink);
+  const { sendInterviewScheduledEmail } = await import("@/lib/email");
+  const sent = await sendInterviewScheduledEmail({
+    to: candidate.email,
+    firstName: candidate.firstName,
+    lastName: candidate.lastName,
+    interviewId: interview.id,
+    interviewType: INTERVIEW_TYPE_LABELS[interview.type],
+    positionTitle: interview.position?.title ?? "Open Position",
+    scheduledAt: interview.scheduledAt,
+    duration: interview.duration,
+    interviewerName: `${interviewer.preferredName || interviewer.firstName} ${interviewer.lastName}`,
+    interviewerEmail: interviewer.email,
+    interviewerEmployeeId: interviewer.id,
+    meetLink: shareMeetLinkWithCandidate ? interview.googleMeetLink : null,
+    location: interview.location,
+    notes: interview.notes ?? undefined,
+    attachCalendarInvite: true,
+  });
+  if (!sent.success) throw new Error(sent.error || "The invitation email could not be sent");
+  return { via: "email" };
 }
 
 export async function getUpcomingInterviews() {

@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { Dialog } from "@/components/ui/dialog";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { updateCandidate, hireCandidateAndStartOnboarding, sendOfferLetter } from "@/lib/actions/candidates";
-import { getInterviewsForCandidate, cancelInterview, isCalendarConnected } from "@/lib/actions/interviews";
+import { getInterviewsForCandidate, cancelInterview, isCalendarConnected, resendInterviewInvite } from "@/lib/actions/interviews";
+import { RSVP_LABEL, type CandidateRsvp } from "@/lib/interview-invite";
 import { getCandidateApplications, markDoNotCall, unmarkDoNotCall } from "@/lib/actions/candidate-applications";
 import { sendAdverseActionLetter, sendPreAdverseActionNotice } from "@/lib/actions/adverse-action";
 import { useRouter } from "next/navigation";
@@ -26,6 +27,15 @@ type InterviewForDisplay = {
   notes: string | null;
   position: { title: string } | null;
   interviewer: { firstName: string; preferredName: string | null; lastName: string } | null;
+  /** The candidate's answer to the calendar invitation; null when there is no Google event or it could not be read. */
+  candidateResponse: CandidateRsvp | null;
+};
+
+const RSVP_STYLE: Record<CandidateRsvp, { icon: string; className: string }> = {
+  accepted: { icon: "check_circle", className: "bg-emerald-500/10 text-emerald-600" },
+  declined: { icon: "cancel", className: "bg-red-500/10 text-red-500" },
+  tentative: { icon: "help", className: "bg-amber-500/10 text-amber-600" },
+  needsAction: { icon: "schedule", className: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]" },
 };
 
 const interviewTypeLabels: Record<InterviewType, string> = {
@@ -361,6 +371,8 @@ export function CandidateDetailDialog({
   const router = useRouter();
 
   const [interviews, setInterviews] = useState<InterviewForDisplay[]>([]);
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [inviteNotice, setInviteNotice] = useState<{ tone: "ok" | "error"; text: string } | null>(null);
   const [calendarConnected, setCalendarConnected] = useState(false);
   const [scheduleOpen, setScheduleOpen] = useState(false);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -674,6 +686,25 @@ export function CandidateDetailDialog({
       if (candidate) await loadInterviews(candidate.id);
     } finally {
       setCancellingId(null);
+    }
+  }
+
+  async function handleResendInvite(interviewId: string) {
+    setResendingId(interviewId);
+    setInviteNotice(null);
+    try {
+      const { via } = await resendInterviewInvite(interviewId);
+      setInviteNotice({
+        tone: "ok",
+        text: via === "google"
+          ? "Google sent the calendar invitation again — the candidate can accept it from that email."
+          : "The invitation email with the calendar attachment was sent again.",
+      });
+      if (candidate) await loadInterviews(candidate.id);
+    } catch (e) {
+      setInviteNotice({ tone: "error", text: e instanceof Error ? e.message : "The invitation could not be sent again" });
+    } finally {
+      setResendingId(null);
     }
   }
 
@@ -1334,6 +1365,18 @@ export function CandidateDetailDialog({
                             <span className="text-xs font-medium text-purple-300">
                               {interviewTypeLabels[interview.type]}
                             </span>
+                            {interview.status === "SCHEDULED" && interview.candidateResponse && (
+                              <span
+                                className={cn(
+                                  "ml-1.5 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium align-middle",
+                                  RSVP_STYLE[interview.candidateResponse].className,
+                                )}
+                                title="The candidate’s answer to the calendar invitation"
+                              >
+                                <Icon name={RSVP_STYLE[interview.candidateResponse].icon} size={10} />
+                                {RSVP_LABEL[interview.candidateResponse]}
+                              </span>
+                            )}
                             <p className="text-xs text-[var(--color-text-muted)]">
                               {new Date(interview.scheduledAt).toLocaleDateString("en-US", {
                                 month: "short",
@@ -1368,6 +1411,20 @@ export function CandidateDetailDialog({
                               Join
                             </a>
                           )}
+                          {interview.status === "SCHEDULED" && (
+                            <button
+                              onClick={() => handleResendInvite(interview.id)}
+                              disabled={resendingId === interview.id}
+                              className="p-1 rounded text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors disabled:opacity-50"
+                              title="Send the calendar invitation to the candidate again"
+                            >
+                              {resendingId === interview.id ? (
+                                <Icon name="progress_activity" size={12} className="animate-material-spin" />
+                              ) : (
+                                <Icon name="forward_to_inbox" size={14} />
+                              )}
+                            </button>
+                          )}
                           <button
                             onClick={() => handleCancelInterview(interview.id)}
                             disabled={cancellingId === interview.id}
@@ -1384,6 +1441,12 @@ export function CandidateDetailDialog({
                       </div>
                     ))}
                 </div>
+                {inviteNotice && (
+                  <p className={cn("mt-1.5 text-xs", inviteNotice.tone === "ok" ? "text-emerald-600" : "text-red-500")}>{inviteNotice.text}</p>
+                )}
+                <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                  Google Calendar sends the invitation the candidate accepts; their answer shows here once they respond.
+                </p>
               </div>
             )}
 

@@ -3,6 +3,7 @@ import { IS_SANDBOX } from "@/lib/sandbox";
 import { db } from "@/lib/db";
 import { EMAIL_TEMPLATE_DEFAULTS } from "@/lib/email-template-defaults";
 import { buildIcsInvite } from "@/lib/ics";
+import { inviteDelivery } from "@/lib/interview-invite";
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
@@ -479,12 +480,15 @@ export async function sendInterviewScheduledEmail({
   meetLink,
   location,
   notes,
+  attachCalendarInvite = true,
   timeZone = process.env.COMPANY_TIME_ZONE || "America/New_York",
 }: {
   to: string;
   firstName: string;
   lastName?: string;
   interviewId: string;
+  /** False when a Google Calendar event exists: Google sends the real invitation, so no .ics here. */
+  attachCalendarInvite?: boolean;
   interviewType: string;
   positionTitle: string;
   scheduledAt: Date;
@@ -525,7 +529,8 @@ export async function sendInterviewScheduledEmail({
   const notesHtml = notes
     ? `<p style="margin-top:12px;color:#4b5563"><strong>Notes:</strong> ${escapeHtml(notes)}</p>`
     : "";
-  const calendarResponseHtml = `<p style="margin-top:16px;color:#374151">A calendar invitation is attached. Use your email or calendar app to accept, tentatively accept, or decline.</p>`;
+  const { candidateNote } = inviteDelivery(!attachCalendarInvite);
+  const calendarResponseHtml = `<p style="margin-top:16px;color:#374151">${escapeHtml(candidateNote)}</p>`;
 
   const plainVars: Record<string, string> = {
     firstName,
@@ -561,22 +566,23 @@ export async function sendInterviewScheduledEmail({
   const organizerEmail = isValidEmail(interviewerEmail)
     ? interviewerEmail
     : branding.senderEmail;
-  const calendarInvite = buildIcsInvite({
-    uid: `${interviewId}@calatrava-hr`,
-    start: scheduledAt,
-    durationMinutes: duration,
-    summary: `${interviewType}: ${positionTitle}`,
-    description: calendarDescription,
-    location: location || meetLink || undefined,
-    organizerEmail,
-    organizerName: interviewerName,
-    attendees: [{ email: to, name: `${firstName} ${lastName || ""}`.trim() }],
-  });
-  const attachments: EmailAttachment[] = [{
-    filename: "interview-invitation.ics",
-    content: calendarInvite,
-    contentType: "text/calendar; method=REQUEST; charset=utf-8",
-  }];
+  const attachments: EmailAttachment[] = attachCalendarInvite
+    ? [{
+        filename: "interview-invitation.ics",
+        content: buildIcsInvite({
+          uid: `${interviewId}@calatrava-hr`,
+          start: scheduledAt,
+          durationMinutes: duration,
+          summary: `${interviewType}: ${positionTitle}`,
+          description: calendarDescription,
+          location: location || meetLink || undefined,
+          organizerEmail,
+          organizerName: interviewerName,
+          attendees: [{ email: to, name: `${firstName} ${lastName || ""}`.trim() }],
+        }),
+        contentType: "text/calendar; method=REQUEST; charset=utf-8",
+      }]
+    : [];
   const context: EmailDeliveryContext = {
     contextType: "INTERVIEW_INVITATION",
     contextId: interviewId,
@@ -603,7 +609,13 @@ export async function sendInterviewScheduledEmail({
     if (meetLink && !templateBody.includes(escapeHtml(meetLink))) templateBody += meetLinkHtml;
     if (location && !templateBody.includes(escapeHtml(location))) templateBody += locationHtml;
     if (notes && !templateBody.includes(escapeHtml(notes))) templateBody += notesHtml;
-    if (!templateBody.includes("calendar invitation is attached")) templateBody += calendarResponseHtml;
+    // Templates saved before Google carried the invitation may still say one is attached.
+    const staleAttachedNote = /A calendar invitation is attached\.[^<]*/;
+    if (!attachCalendarInvite && staleAttachedNote.test(templateBody)) {
+      templateBody = templateBody.replace(staleAttachedNote, escapeHtml(candidateNote));
+    } else if (!templateBody.includes("calendar invitation")) {
+      templateBody += calendarResponseHtml;
+    }
     return sendEmailWithAttachments(
       to,
       interpolate(template.subject, plainVars),

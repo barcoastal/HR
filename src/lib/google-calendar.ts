@@ -2,6 +2,7 @@ import { google } from "googleapis";
 import { db } from "@/lib/db";
 import { IS_SANDBOX } from "@/lib/sandbox";
 import { COMPANY_TIME_ZONE } from "@/lib/time-zone";
+import { candidateRsvp, type CandidateRsvp } from "@/lib/interview-invite";
 
 function getOAuth2Client() {
   const clientId = process.env.GOOGLE_CALENDAR_CLIENT_ID;
@@ -85,9 +86,10 @@ export async function createInterviewEvent(params: {
   const event = await calendar.events.insert({
     calendarId: "primary",
     ...(withMeetLink ? { conferenceDataVersion: 1 } : {}),
-    // The branded Resend invitation carries the RSVP attachment. Keeping
-    // Google silent prevents a second candidate-facing invitation email.
-    sendUpdates: "none",
+    // Google mails the candidate its own invitation: the only one whose Accept / Decline
+    // updates this event. (An .ics sent from the company mailbox gave Gmail nothing to accept,
+    // and the responses never reached this calendar.) The branded email carries the details.
+    sendUpdates: "all",
     requestBody: {
       summary: params.summary,
       description: params.description,
@@ -112,6 +114,36 @@ export async function createInterviewEvent(params: {
     eventId: event.data.id ?? "",
     meetLink: event.data.hangoutLink ?? null,
   };
+}
+
+/** The candidate's answer to the Google invitation, or null when they are not on the event. */
+export async function getInterviewEventResponse(googleEventId: string, candidateEmail: string): Promise<CandidateRsvp | null> {
+  if (IS_SANDBOX) return "needsAction";
+  const calendar = await getCalendarClient();
+  const { data } = await calendar.events.get({ calendarId: "primary", eventId: googleEventId });
+  return candidateRsvp(data.attendees, candidateEmail);
+}
+
+/**
+ * Make Google send the candidate a fresh invitation for an existing event. Google only mails
+ * attendees it has news for, so the candidate is taken off the event silently and put back.
+ */
+export async function resendInterviewEventInvite(googleEventId: string, candidateEmail: string): Promise<void> {
+  if (IS_SANDBOX) {
+    console.log(`[sandbox] calendar invitation re-sent to ${candidateEmail}`);
+    return;
+  }
+  const calendar = await getCalendarClient();
+  const { data } = await calendar.events.get({ calendarId: "primary", eventId: googleEventId });
+  const wanted = candidateEmail.trim().toLowerCase();
+  const others = (data.attendees ?? []).filter((a) => (a.email ?? "").trim().toLowerCase() !== wanted);
+  await calendar.events.patch({ calendarId: "primary", eventId: googleEventId, sendUpdates: "none", requestBody: { attendees: others } });
+  await calendar.events.patch({
+    calendarId: "primary",
+    eventId: googleEventId,
+    sendUpdates: "all",
+    requestBody: { attendees: [...others, { email: candidateEmail }] },
+  });
 }
 
 export async function cancelInterviewEvent(googleEventId: string): Promise<void> {
