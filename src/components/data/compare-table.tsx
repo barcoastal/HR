@@ -43,7 +43,7 @@ export type Overrides = Partial<Record<FieldKey, string>>;
 /** How the live members' values for one field relate to each other. */
 type Tone = "conflict" | "same" | "partial" | "empty";
 
-export const REASON_LABEL: Record<string, string> = { email: "Same email", phone: "Same phone", name: "Same name" };
+export const REASON_LABEL: Record<string, string> = { email: "Same email", phone: "Same phone", name: "Same name", manual: "Picked by hand" };
 export const ARCHIVED_BADGE: Badge = { label: "Archived", className: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]" };
 export const MISSING_BADGE: Badge = { label: "No longer exists", className: "bg-red-500/10 text-red-500" };
 
@@ -328,7 +328,7 @@ function TableHeader({ reasons, recordCount, merging }: { reasons: GroupReason[]
     <div className="px-4 py-3 border-b border-[var(--color-border)]">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">
-          {merging ? "Merge into one" : "Possible duplicate"}
+          {merging ? "Merge into one" : reasons.includes("manual") ? "Compare people" : "Possible duplicate"}
         </h3>
         <span className="text-xs text-[var(--color-text-muted)]">{recordCount} records</span>
         <span className="flex flex-wrap items-center gap-1 ml-auto">

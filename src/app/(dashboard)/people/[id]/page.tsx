@@ -182,6 +182,19 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                   />
                 )}
                 {isAdmin && (
+                  <Link
+                    href={`/data?tab=duplicates&people=${employee.id}`}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium",
+                      "border border-[var(--color-border)] text-[var(--color-text-primary)]",
+                      "hover:bg-[var(--color-surface-hover)] transition-colors"
+                    )}
+                    title="Compare this person with another record and merge them into one"
+                  >
+                    <Icon name="call_merge" size={16} /> Merge duplicate
+                  </Link>
+                )}
+                {isAdmin && (
                   <DeleteEmployeeButton employeeId={employee.id} employeeName={displayName(employee)} />
                 )}
               </div>

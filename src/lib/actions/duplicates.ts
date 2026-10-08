@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { audit } from "@/lib/audit";
-import { detectDuplicates, isStrongGroup, pairKey } from "@/lib/import-export/duplicates";
+import { detectDuplicates, groupKey, isStrongGroup, pairKey } from "@/lib/import-export/duplicates";
 import { mergeEmployeeData } from "@/lib/import-export/merge";
 import { validateRow } from "@/lib/import-export/normalize";
 import { loadEmployeeSnapshots } from "@/lib/import-export/batch-service";
@@ -25,11 +25,26 @@ export type SystemScan = {
 
 export type SystemMergeResult = MergeEmployeesResult & { primaryName: string; mergedNames: string[] };
 
+export type ComparePerson = { id: string; name: string; email: string; status: string };
+
 async function requireDuplicateAccess() {
   const session = await requireAuth();
   const role = session.user?.role;
   if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") throw new Error("Forbidden");
   return session;
+}
+
+/** Within a group: people with a login first, then the oldest record — a sensible default primary. */
+function memberOrder(logins: Record<string, string>, createdAt: Map<string, number>) {
+  return (a: MemberRef, b: MemberRef) => {
+    const la = logins[a.id] ? 0 : 1;
+    const lb = logins[b.id] ? 0 : 1;
+    if (la !== lb) return la - lb;
+    const ca = createdAt.get(a.id) ?? 0;
+    const cb = createdAt.get(b.id) ?? 0;
+    if (ca !== cb) return ca - cb;
+    return a.id.localeCompare(b.id);
+  };
 }
 
 /**
@@ -58,18 +73,9 @@ async function scanAllDuplicates(): Promise<SystemScan> {
   const logins: Record<string, string> = {};
   for (const u of users) if (u.employeeId) logins[u.employeeId] = u.email;
 
-  // Within a group: people with a login first, then the oldest record — a sensible default primary.
   const createdAt = new Map(people.map((p) => [p.id, p.createdAt.getTime()]));
-  const memberOrder = (a: MemberRef, b: MemberRef) => {
-    const la = logins[a.id] ? 0 : 1;
-    const lb = logins[b.id] ? 0 : 1;
-    if (la !== lb) return la - lb;
-    const ca = createdAt.get(a.id) ?? 0;
-    const cb = createdAt.get(b.id) ?? 0;
-    if (ca !== cb) return ca - cb;
-    return a.id.localeCompare(b.id);
-  };
-  const groups: SystemGroup[] = detected.map((g) => ({ id: g.key, reasons: g.reasons, members: [...g.members].sort(memberOrder) }));
+  const order = memberOrder(logins, createdAt);
+  const groups: SystemGroup[] = detected.map((g) => ({ id: g.key, reasons: g.reasons, members: [...g.members].sort(order) }));
   // Strong signals first, then alphabetically by the first person's name.
   const nameOf = (g: SystemGroup) => employees[g.members[0].id]?.name ?? "";
   groups.sort((a, b) => {
@@ -80,6 +86,48 @@ async function scanAllDuplicates(): Promise<SystemScan> {
   });
 
   return { groups, employees, logins, scanned: people.length, scannedAt: new Date().toISOString() };
+}
+
+/** Everyone HR can pick for a by-hand comparison (archived people excluded), alphabetically. */
+export async function listPeopleForCompare(): Promise<ComparePerson[]> {
+  await requireDuplicateAccess();
+  const people = await db.employee.findMany({
+    select: { id: true, firstName: true, lastName: true, preferredName: true, email: true, status: true },
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+  });
+  return people.map((p) => ({ id: p.id, name: `${p.preferredName || p.firstName} ${p.lastName}`.trim(), email: p.email, status: p.status }));
+}
+
+/**
+ * Side-by-side view of people HR picked by hand — for duplicates the scan cannot see because
+ * nothing (email, phone, name) matches exactly. Same compare/merge as a scanned group. Archived
+ * people are refused: restore them from the People archive first.
+ */
+export async function compareSystemPeople(peopleIds: string[]): Promise<SystemScan> {
+  await requireDuplicateAccess();
+  const ids = Array.from(new Set(peopleIds.map((id) => id.trim()).filter(Boolean)));
+  if (ids.length < 2) throw new Error("Pick at least two people to compare");
+  const [employees, people, users] = await Promise.all([
+    loadEmployeeSnapshots(ids),
+    db.employee.findMany({ where: { id: { in: ids } }, select: { id: true, createdAt: true } }),
+    db.user.findMany({ where: { employeeId: { in: ids } }, select: { employeeId: true, email: true } }),
+  ]);
+  if (ids.some((id) => !employees[id])) throw new Error("One of these people no longer exists — pick again");
+  const archived = ids.filter((id) => employees[id].archived).map((id) => employees[id].name);
+  if (archived.length > 0) {
+    throw new Error(`${archived.join(", ")} ${archived.length === 1 ? "is" : "are"} archived — restore them from the People archive before merging`);
+  }
+  const logins: Record<string, string> = {};
+  for (const u of users) if (u.employeeId) logins[u.employeeId] = u.email;
+  const createdAt = new Map(people.map((p) => [p.id, p.createdAt.getTime()]));
+  const members: MemberRef[] = ids.map((id) => ({ kind: "employee" as const, id })).sort(memberOrder(logins, createdAt));
+  return {
+    groups: [{ id: groupKey(members), reasons: ["manual"], members }],
+    employees,
+    logins,
+    scanned: ids.length,
+    scannedAt: new Date().toISOString(),
+  };
 }
 
 /**

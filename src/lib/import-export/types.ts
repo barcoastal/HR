@@ -30,7 +30,8 @@ export type ColumnMapping = (FieldKey | "skip")[];
 
 export type MemberRef = { kind: "row"; id: string } | { kind: "employee"; id: string };
 
-export type GroupReason = "email" | "phone" | "name";
+/** Why people were grouped: a shared email/phone/name from the scan, or "manual" when HR picked them by hand. */
+export type GroupReason = "email" | "phone" | "name" | "manual";
 
 export interface DetectedGroup {
   /** sorted member refs joined with "|" — stable across runs */

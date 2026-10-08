@@ -4,6 +4,7 @@ import { loadEmployeesLite } from "./batch-service";
 import { EMPLOYEE_FK_TARGETS, type EmployeeFkTarget } from "./employee-fk-targets";
 import { createOrgResolver, employeeUpdateFromRowData } from "./employee-write";
 import { matchManager } from "./manager-match";
+import { planMergeLogins, type GroupLogin } from "./merge-logins";
 import type { RowData } from "./types";
 
 export type MergeEmployeesArgs = {
@@ -93,9 +94,12 @@ async function repoint(
  * transaction — Postgres aborts a transaction on the first unique violation and we recover from
  * those — and every step is idempotent, so re-running a partially failed merge is safe:
  *   1. re-point all 49 employee foreign keys from each duplicate to the primary;
- *   2. logins: a duplicate's User moves to the primary when it has none, otherwise it is detached;
+ *   2. logins: the group login whose address is the Result email is kept (moved to the primary
+ *      if needed); every other login is detached and deactivated — a detached login that could
+ *      still sign in would recreate the duplicate profile on its next sign-in (see auth.ts);
  *   3. delete the duplicate employees;
- *   4. apply the Result data to the primary with the import-update rules;
+ *   4. apply the Result data to the primary with the import-update rules; when a login is kept
+ *      the primary's email becomes that login's address;
  *   5. one `employee.merged` audit entry.
  */
 export async function mergeEmployees(args: MergeEmployeesArgs): Promise<MergeEmployeesResult> {
@@ -132,21 +136,20 @@ export async function mergeEmployees(args: MergeEmployeesArgs): Promise<MergeEmp
     }
   }
 
-  // 2. Logins.
-  let primaryUser = await db.user.findUnique({ where: { employeeId: primaryId }, select: { id: true, email: true } });
-  let relinkedUser: string | null = null;
+  // 2. Logins. Detach the losers before relinking the winner: User.employeeId is unique.
+  const logins: GroupLogin[] = (
+    await db.user.findMany({ where: { employeeId: { in: groupIds } }, select: { id: true, employeeId: true, email: true } })
+  ).flatMap((u) => (u.employeeId ? [{ userId: u.id, employeeId: u.employeeId, email: u.email }] : []));
+  const loginPlan = planMergeLogins({ primaryId, duplicateIds: duplicates.map((d) => d.id), logins, resultEmail: data.email });
   const detachedUsers: string[] = [];
-  for (const dup of duplicates) {
-    const dupUser = await db.user.findUnique({ where: { employeeId: dup.id }, select: { id: true, email: true } });
-    if (!dupUser) continue;
-    if (!primaryUser) {
-      await db.user.update({ where: { id: dupUser.id }, data: { employeeId: primaryId } });
-      primaryUser = dupUser;
-      relinkedUser = dupUser.email;
-    } else {
-      await db.user.update({ where: { id: dupUser.id }, data: { employeeId: null } });
-      detachedUsers.push(dupUser.email);
-    }
+  for (const loser of loginPlan.detached) {
+    await db.user.update({ where: { id: loser.userId }, data: { employeeId: null, deactivatedAt: new Date() } });
+    detachedUsers.push(loser.email);
+  }
+  let relinkedUser: string | null = null;
+  if (loginPlan.kept && loginPlan.kept.employeeId !== primaryId) {
+    await db.user.update({ where: { id: loginPlan.kept.userId }, data: { employeeId: primaryId } });
+    relinkedUser = loginPlan.kept.email;
   }
 
   // 3. Delete the duplicates (anything still attached cascades or nulls per the schema).
@@ -161,12 +164,21 @@ export async function mergeEmployees(args: MergeEmployeesArgs): Promise<MergeEmp
   }
 
   // 4. Apply the Result column to the primary. Runs after the deletes so the primary can take a
-  //    duplicate's (unique) email.
+  //    duplicate's (unique) email. With a login kept, the email is settled here — it follows the
+  //    login — rather than by the import-update rules, which would refuse to move off a login.
   const org = await createOrgResolver();
-  const { patch, notes } = await employeeUpdateFromRowData(primary, data, {
-    org,
-    isEmailTaken: async (email) => !!(await db.employee.findUnique({ where: { email }, select: { id: true } })),
-  });
+  const isEmailTaken = async (email: string) => !!(await db.employee.findUnique({ where: { email }, select: { id: true } }));
+  const dataWithoutEmail: RowData = { ...data };
+  delete dataWithoutEmail.email;
+  const { patch, notes } = await employeeUpdateFromRowData(primary, loginPlan.kept ? dataWithoutEmail : data, { org, isEmailTaken });
+  notes.push(...loginPlan.notes);
+  if (loginPlan.kept) {
+    const next = loginPlan.kept.email.toLowerCase();
+    if (next !== primary.email.toLowerCase()) {
+      if (await isEmailTaken(next)) notes.push(`Email kept — ${loginPlan.kept.email} is already used by someone else`);
+      else patch.email = next;
+    }
+  }
   // The Result column shows managers by name; only resolve it when it differs from the primary's
   // current manager (whose name may be ambiguous — or a duplicate that was just deleted).
   const currentManager = primary.manager ? `${primary.manager.firstName} ${primary.manager.lastName}`.trim() : null;
