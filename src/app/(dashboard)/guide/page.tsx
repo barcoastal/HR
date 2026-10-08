@@ -416,6 +416,15 @@ export default async function GuidePage() {
             employee&apos;s My Documents view.
           </p>
 
+          <h3>Resumes on the People profile</h3>
+          <p>
+            Hiring a candidate copies their resume into the profile&apos;s Documents as an HR-only file.
+            For people hired before that existed, <strong>Pull resume</strong> on the profile finds the
+            candidate record by email, then by name. When it cannot be sure (the person applied with a
+            personal address, or several candidates share the name) it opens a picker: choose the right
+            candidate record, or search by the name they applied under, and the resume is copied over.
+          </p>
+
           <h3>Sign Queue</h3>
           <p>
             <Role>SUPER_ADMIN</Role> and <Role>ADMIN</Role> use <Route>/sign-queue</Route> for documents
