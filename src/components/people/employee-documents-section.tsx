@@ -11,6 +11,8 @@ import {
   updateEmployeeDocument,
 } from "@/lib/actions/employee-documents";
 import { Dialog } from "@/components/ui/dialog";
+import { ResumeCandidatePicker } from "./resume-candidate-picker";
+import type { ResumeCandidate } from "@/lib/hire-resume";
 import { useRouter } from "next/navigation";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
@@ -126,6 +128,7 @@ export function EmployeeDocumentsSection({
   const [restricting, setRestricting] = useState(false);
   const [restrictError, setRestrictError] = useState<string | null>(null);
   const [pullingResume, setPullingResume] = useState(false);
+  const [resumePicker, setResumePicker] = useState<{ reason: string; candidates: ResumeCandidate[] } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -139,10 +142,13 @@ export function EmployeeDocumentsSection({
     setPullingResume(true);
     try {
       const result = await pullCandidateResumeToEmployee(employeeId);
-      if (!result.success) {
-        alert(result.error || "Could not attach resume");
-      } else {
+      if (result.success) {
         router.refresh();
+      } else if (result.candidates) {
+        // No certain match: let HR point at the right candidate record.
+        setResumePicker({ reason: result.error, candidates: result.candidates });
+      } else {
+        alert(result.error || "Could not attach resume");
       }
     } catch (err) {
       alert(err instanceof Error ? err.message : "Could not attach resume");
@@ -537,6 +543,15 @@ export function EmployeeDocumentsSection({
           </div>
         </div>
       </Dialog>
+
+      <ResumeCandidatePicker
+        open={resumePicker !== null}
+        onClose={() => setResumePicker(null)}
+        employeeId={employeeId}
+        reason={resumePicker?.reason ?? ""}
+        suggestions={resumePicker?.candidates ?? []}
+        onAttached={() => router.refresh()}
+      />
     </section>
   );
 }

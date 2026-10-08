@@ -212,24 +212,38 @@ export async function deleteEmployeeDocument(docId: string) {
   revalidatePath(`/people/${doc.employeeId}`);
 }
 
-/** Pull the matching candidate resume onto this employee's Documents (HR-only). */
-export async function pullCandidateResumeToEmployee(employeeId: string) {
+/**
+ * Pull a candidate resume onto this employee's Documents (HR-only). Without a
+ * candidateId the match is automatic (email, then an unambiguous name); when it
+ * can't decide, `candidates` lists the records HR can choose from.
+ */
+export async function pullCandidateResumeToEmployee(employeeId: string, candidateId?: string) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") {
     return { success: false as const, error: "Not authorized" };
   }
   const { attachResumeFromMatchingCandidate } = await import("@/lib/hire-resume");
-  const result = await attachResumeFromMatchingCandidate(employeeId);
+  const result = await attachResumeFromMatchingCandidate(employeeId, candidateId);
   if (result.attached) {
     const { audit } = await import("@/lib/audit");
     await audit({
       action: "document.resume_pulled_from_candidate",
       entityType: "employee",
       entityId: employeeId,
-      details: {},
+      details: candidateId ? { candidateId, pickedByHr: true } : {},
     });
     revalidatePath(`/people/${employeeId}`);
     return { success: true as const };
   }
-  return { success: false as const, error: result.reason || "Could not attach resume" };
+  return { success: false as const, error: result.reason || "Could not attach resume", candidates: result.candidates };
+}
+
+/** Candidates HR can pick a resume from: name matches by default, or a name/email search. */
+export async function searchResumeCandidates(employeeId: string, query: string) {
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") {
+    return [];
+  }
+  const { listResumeCandidates } = await import("@/lib/hire-resume");
+  return listResumeCandidates(employeeId, query);
 }
