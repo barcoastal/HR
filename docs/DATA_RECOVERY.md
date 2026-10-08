@@ -14,8 +14,16 @@ _Last reviewed 2026-10-08._
 
 ## Backup schedule
 
-Railway takes **daily, weekly and monthly** snapshots of both volumes. Each schedule keeps its
-snapshots for Railway's retention window; see the current windows and the newest snapshot with:
+Enabled 2026-10-08. Railway takes **daily, weekly and monthly** snapshots of both volumes, and a
+first manual snapshot of each was taken the same day (manual snapshots never expire).
+
+| Schedule | Kept for |
+| --- | --- |
+| Daily | 6 days |
+| Weekly | 27 days |
+| Monthly | 89 days |
+
+See the current windows and the newest snapshot with:
 
 ```
 python3 scripts/railway-backups.py status
