@@ -55,7 +55,12 @@ def status(inst):
         sched = ", ".join(f"{x['kind'].lower()} (kept {round(x['retentionSeconds'] / 86400)} days)" for x in s) or "NONE"
         print(f"{name} ({i['service']['name']}, {round(i['currentSizeMB'])} MB)")
         print(f"  schedules: {sched}")
-        print(f"  backups:   {len(b)}" + (f", newest {b[0]['createdAt'][:16]} expires {b[0]['expiresAt'][:10]}" if b else ""))
+        if b:
+            newest = b[0]
+            expires = f"expires {newest['expiresAt'][:10]}" if newest.get("expiresAt") else "no expiry (manual backup)"
+            print(f"  backups:   {len(b)}, newest {newest['createdAt'][:16]} ({newest.get('name') or 'scheduled'}), {expires}")
+        else:
+            print("  backups:   0")
 
 def enable(inst):
     # Schedules first on every volume, so a failed backup request never leaves a volume unscheduled.
