@@ -126,11 +126,14 @@ FROM "Interview" i
 LEFT JOIN "Candidate" c ON c.id = i."candidateId"
 LEFT JOIN "Position" p ON p.id = i."positionId";
 
--- Role: password set by the setup script (not hardcoded here)
+-- Role: password set by the setup script (not hardcoded here). The password is
+-- (re)applied on every run so it always matches the saved connection details.
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'reporting_readonly') THEN
     CREATE ROLE reporting_readonly LOGIN PASSWORD 'REPLACE_ME';
+  ELSE
+    ALTER ROLE reporting_readonly WITH LOGIN PASSWORD 'REPLACE_ME';
   END IF;
 END $$;
 

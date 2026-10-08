@@ -21,26 +21,31 @@ else
 fi
 
 if psql "$URL" -Atc "select 1 from pg_roles where rolname='reporting_readonly'" | grep -q 1; then
-  echo "Role reporting_readonly already exists; keeping its password."
-  ROLE_EXISTED=1
-else
-  ROLE_EXISTED=0
+  echo "Role reporting_readonly already exists; setting its password to the one in $OUT."
 fi
 
 sed "s/REPLACE_ME/$PASSWORD/" scripts/reporting-readonly.sql | psql "$URL" -v ON_ERROR_STOP=1 -q
 echo "Schema 'reporting' and views applied."
 
-HOSTPORT=$(python3 -c 'import sys; from urllib.parse import urlparse; u=urlparse(sys.argv[1]); print(f"{u.hostname}:{u.port} db={u.path.lstrip(chr(47))}")' "$URL")
-if [ "$ROLE_EXISTED" = "0" ] || [ ! -f "$OUT" ]; then
-  umask 077
-  {
-    echo "HR reporting read-only login (SELECT on schema 'reporting' only)"
-    echo "host/port/db: $HOSTPORT"
-    echo "user: reporting_readonly"
-    echo "password: $PASSWORD"
-    echo "sslmode: require"
-  } > "$OUT"
-  echo "Connection details for Evgeny saved to $OUT"
+HOST=$(python3 -c 'import sys; from urllib.parse import urlparse; print(urlparse(sys.argv[1]).hostname)' "$URL")
+PORT=$(python3 -c 'import sys; from urllib.parse import urlparse; print(urlparse(sys.argv[1]).port)' "$URL")
+DBNAME=$(python3 -c 'import sys; from urllib.parse import urlparse; print(urlparse(sys.argv[1]).path.lstrip("/"))' "$URL")
+umask 077
+{
+  echo "HR reporting read-only login (SELECT on schema 'reporting' only)"
+  echo "host/port/db: $HOST:$PORT db=$DBNAME"
+  echo "user: reporting_readonly"
+  echo "password: $PASSWORD"
+  echo "sslmode: require"
+} > "$OUT"
+echo "Connection details for Evgeny saved to $OUT"
+
+# Prove the saved login works before handing it over.
+if PGPASSWORD="$PASSWORD" psql "host=$HOST port=$PORT dbname=$DBNAME user=reporting_readonly sslmode=require" -Atc "select count(*) from reporting.positions" >/dev/null 2>&1; then
+  echo "Login check: reporting_readonly can connect and read schema 'reporting'."
+else
+  echo "Login check FAILED: reporting_readonly could not connect with the saved password." >&2
+  exit 1
 fi
 
 echo "--- check"
