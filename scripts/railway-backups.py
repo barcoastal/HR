@@ -7,19 +7,28 @@ Railway volume backups for the HR project (production environment).
 
 Uses the Railway CLI login in ~/.railway/config.json. Prints no secrets.
 """
-import json, os, sys, urllib.request
+import json, os, subprocess, sys, time, urllib.request
 
 ENVIRONMENT_ID = "95102327-9c72-47c3-b850-f4061e21bd0d"  # HR project, production
 VOLUMES = ("postgres-volume", "hr-volume")  # the HRIS database and the resumes on disk
 KINDS = ["DAILY", "WEEKLY", "MONTHLY"]
 
+CONFIG = os.path.expanduser("~/.railway/config.json")
+
+def token():
+    """The CLI's access token lives about an hour; `railway whoami` refreshes it in place."""
+    user = json.load(open(CONFIG))["user"]
+    if user.get("tokenExpiresAt", 0) - time.time() < 300:
+        subprocess.run(["railway", "whoami"], check=True, capture_output=True)
+        user = json.load(open(CONFIG))["user"]
+    return user["accessToken"]
+
 def api(query, variables=None):
-    cfg = json.load(open(os.path.expanduser("~/.railway/config.json")))
-    token = cfg["user"]["accessToken"]
+    token_ = token()
     req = urllib.request.Request(
         "https://backboard.railway.com/graphql/v2",
         data=json.dumps({"query": query, "variables": variables or {}}).encode(),
-        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json", "User-Agent": "curl/8.7.1", "Accept": "*/*"},
+        headers={"Authorization": f"Bearer {token_}", "Content-Type": "application/json", "User-Agent": "curl/8.7.1", "Accept": "*/*"},
     )
     out = json.load(urllib.request.urlopen(req))
     if out.get("errors"):
