@@ -170,11 +170,59 @@ export async function listResumeCandidates(employeeId: string, query = ""): Prom
   return describe(await candidatesNamedLike(employee), "name");
 }
 
+type MatchedCandidate = { id: string; firstName: string; lastName: string; resumeUrl: string | null };
+
+export type ResumeMatch =
+  | { found: true; candidate: MatchedCandidate; matchedBy: "email" | "name" }
+  | { found: false; reason: string; candidates: ResumeCandidate[] };
+
+type MatchableEmployee = EmployeeNames & { email: string; personalEmail?: string | null };
+
+/**
+ * The candidate record an employee's resume should come from, without writing anything:
+ * work or personal email first, then an exact name when only one such candidate has a
+ * resume. Anything less certain comes back as a list for HR to choose from.
+ */
+export async function findResumeCandidate(employee: MatchableEmployee): Promise<ResumeMatch> {
+  const emails = [employee.email, employee.personalEmail]
+    .map((e) => e?.trim().toLowerCase())
+    .filter((e): e is string => Boolean(e));
+  if (emails.length > 0) {
+    const byEmail = await db.candidate.findFirst({
+      where: {
+        OR: emails.map((email) => ({ email: { equals: email, mode: "insensitive" as const } })),
+      },
+      orderBy: [{ hiredAt: "desc" }, { createdAt: "desc" }],
+      select: { id: true, firstName: true, lastName: true, resumeUrl: true },
+    });
+    if (byEmail) return { found: true, candidate: byEmail, matchedBy: "email" };
+  }
+
+  const rows = await candidatesNamedLike(employee);
+  const named = await describe(rows, "name");
+  const withResume = named.filter((c) => c.hasResume);
+  if (named.length === 0) return { found: false, reason: "No matching candidate", candidates: [] };
+  if (withResume.length !== 1) {
+    return {
+      found: false,
+      reason:
+        withResume.length === 0
+          ? "The candidate records with this name have no resume"
+          : "Several candidates share this name",
+      candidates: named,
+    };
+  }
+  const row = rows.find((r) => r.id === withResume[0].id)!;
+  return {
+    found: true,
+    candidate: { id: row.id, firstName: row.firstName, lastName: row.lastName, resumeUrl: row.resumeUrl },
+    matchedBy: "name",
+  };
+}
+
 /**
  * For people hired before resume copy existed. HR can name the candidate record
- * outright; otherwise match on work/personal email, then on an exact name when
- * only one such candidate has a resume. Anything less certain comes back as a
- * list for HR to choose from.
+ * outright; otherwise the match comes from findResumeCandidate.
  */
 export async function attachResumeFromMatchingCandidate(
   employeeId: string,
@@ -186,7 +234,7 @@ export async function attachResumeFromMatchingCandidate(
   });
   if (!employee) return { attached: false, reason: "Employee not found" };
 
-  let candidate: { id: string; firstName: string; lastName: string; resumeUrl: string | null } | null = null;
+  let candidate: MatchedCandidate | null = null;
 
   if (candidateId) {
     candidate = await db.candidate.findUnique({
@@ -195,39 +243,9 @@ export async function attachResumeFromMatchingCandidate(
     });
     if (!candidate) return { attached: false, reason: "Candidate not found" };
   } else {
-    const emails = [employee.email, employee.personalEmail]
-      .map((e) => e?.trim().toLowerCase())
-      .filter((e): e is string => Boolean(e));
-    if (emails.length > 0) {
-      candidate = await db.candidate.findFirst({
-        where: {
-          OR: emails.map((email) => ({ email: { equals: email, mode: "insensitive" as const } })),
-        },
-        orderBy: [{ hiredAt: "desc" }, { createdAt: "desc" }],
-        select: { id: true, firstName: true, lastName: true, resumeUrl: true },
-      });
-    }
-
-    if (!candidate) {
-      const rows = await candidatesNamedLike(employee);
-      const named = await describe(rows, "name");
-      const withResume = named.filter((c) => c.hasResume);
-      if (named.length === 0) {
-        return { attached: false, reason: "No matching candidate", candidates: [] };
-      }
-      if (withResume.length !== 1) {
-        return {
-          attached: false,
-          reason:
-            withResume.length === 0
-              ? "The candidate records with this name have no resume"
-              : "Several candidates share this name",
-          candidates: named,
-        };
-      }
-      const row = rows.find((r) => r.id === withResume[0].id)!;
-      candidate = { id: row.id, firstName: row.firstName, lastName: row.lastName, resumeUrl: row.resumeUrl };
-    }
+    const match = await findResumeCandidate(employee);
+    if (!match.found) return { attached: false, reason: match.reason, candidates: match.candidates };
+    candidate = match.candidate;
   }
 
   const result = await attachCandidateResumeToEmployee({
