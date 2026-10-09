@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth-helpers";
-import { getOneOnOne } from "@/lib/actions/one-on-ones";
+import { getOneOnOne, getOneOnOneResponse } from "@/lib/actions/one-on-ones";
 import { OneOnOneDetail } from "@/components/one-on-ones/one-on-one-detail";
 import { displayName } from "@/lib/utils";
 
@@ -21,6 +21,8 @@ export default async function OneOnOneDetailPage({ params }: { params: Promise<{
     role === "ADMIN" ||
     role === "HR" ||
     meeting.managerId === myEmployeeId;
+  // The employee's answer to the manager's Google invitation, shown to whoever runs the 1:1.
+  const employeeResponse = canEdit && meeting.status === "SCHEDULED" ? await getOneOnOneResponse(id) : null;
 
   return (
     <div className="max-w-4xl mx-auto p-8 lg:p-12">
@@ -61,6 +63,7 @@ export default async function OneOnOneDetailPage({ params }: { params: Promise<{
           managerName: displayName(h.manager),
         }))}
         canEdit={canEdit}
+        employeeResponse={employeeResponse}
       />
     </div>
   );

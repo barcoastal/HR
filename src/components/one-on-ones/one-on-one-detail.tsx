@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn, getInitials, displayFirstName, displayName } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import { RESPONSE_LABEL, type EventResponse } from "@/lib/event-responses";
 import {
   updateNotebook,
   updateMeetingLink,
@@ -64,14 +65,24 @@ function colorFor(id: string) {
   return avatarColors[Math.abs(h) % avatarColors.length];
 }
 
+const RESPONSE_BADGE: Record<EventResponse, { icon: string; className: string }> = {
+  accepted: { icon: "check_circle", className: "bg-emerald-500/15 text-emerald-600" },
+  declined: { icon: "cancel", className: "bg-red-500/15 text-red-500" },
+  tentative: { icon: "help", className: "bg-amber-500/15 text-amber-600" },
+  needsAction: { icon: "schedule", className: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]" },
+};
+
 export function OneOnOneDetail({
   meeting,
   history,
   canEdit,
+  employeeResponse = null,
 }: {
   meeting: Meeting;
   history: HistoryEntry[];
   canEdit: boolean;
+  /** The employee's answer to the Google invitation; null when none has gone out from a connected calendar. */
+  employeeResponse?: EventResponse | null;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -97,6 +108,15 @@ export function OneOnOneDetail({
             <span className={cn("text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded", STATUS_BADGE[meeting.status])}>
               {meeting.status}
             </span>
+            {employeeResponse && meeting.status === "SCHEDULED" && (
+              <span
+                title={`${displayFirstName(meeting.employee)}'s answer to the calendar invitation`}
+                className={cn("inline-flex items-center gap-1 rounded px-2 py-0.5 text-[10px] font-semibold", RESPONSE_BADGE[employeeResponse].className)}
+              >
+                <Icon name={RESPONSE_BADGE[employeeResponse].icon} size={12} />
+                {displayFirstName(meeting.employee)}: {RESPONSE_LABEL[employeeResponse]}
+              </span>
+            )}
           </div>
           <p className="text-sm text-[var(--color-text-muted)]">
             {meeting.status === "COMPLETED" && meeting.completedAt

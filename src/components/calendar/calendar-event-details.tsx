@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
-import { cancelCompanyEvent, updateCompanyEvent } from "@/lib/actions/company-events";
+import { cancelCompanyEvent, getCompanyEventResponses, updateCompanyEvent } from "@/lib/actions/company-events";
+import { RESPONSE_LABEL, type AttendeeResponse, type EventResponse } from "@/lib/event-responses";
 import { cancelTrainingClass } from "@/lib/actions/training-calendar";
 import type { CalendarEvent } from "@/components/calendar/calendar-view";
 import { dateKey, formatDateTime, zonedDateFromInput, zonedParts } from "@/lib/time-zone";
@@ -31,6 +32,19 @@ function typeLabel(type: CalendarEvent["type"]) {
   };
   return labels[type] || (type.startsWith("holiday-") ? "Holiday" : "Calendar event");
 }
+
+const RESPONSE_STYLE: Record<EventResponse, string> = {
+  accepted: "bg-emerald-500/10 text-emerald-700",
+  declined: "bg-red-500/10 text-red-700",
+  tentative: "bg-amber-500/10 text-amber-700",
+  needsAction: "bg-[var(--color-surface-container)] text-[var(--color-text-muted)]",
+};
+const RESPONSE_ICON: Record<EventResponse, string> = {
+  accepted: "check_circle",
+  declined: "cancel",
+  tentative: "help",
+  needsAction: "schedule",
+};
 
 export function CalendarEventDetails({ event, open, onClose }: {
   event: CalendarEvent | null;
@@ -58,6 +72,22 @@ export function CalendarEventDetails({ event, open, onClose }: {
     };
   }, [event]);
   const [form, setForm] = useState(defaults);
+  // Who has answered, for the organizer and HR. Loaded when a Calendar-page event opens.
+  const [responses, setResponses] = useState<AttendeeResponse[] | null>(null);
+  const responsesFor = open && event?.sourceKind === "company" && event.canManage ? event.sourceId : undefined;
+  useEffect(() => {
+    setResponses(null);
+    if (!responsesFor) return;
+    let cancelled = false;
+    getCompanyEventResponses(responsesFor)
+      .then((result) => {
+        if (!cancelled && result) setResponses(result.responses);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [responsesFor]);
 
   if (!event || !defaults) return null;
   const eventSourceId = event.sourceId;
@@ -170,7 +200,11 @@ export function CalendarEventDetails({ event, open, onClose }: {
             {event.location && <div className="flex gap-3"><Icon name="location_on" size={19} className="text-[var(--color-accent)]" /><p className="text-[var(--color-text-primary)]">{event.location}</p></div>}
             {event.description && <div className="flex gap-3"><Icon name="notes" size={19} className="text-[var(--color-accent)]" /><p className="whitespace-pre-wrap text-[var(--color-text-primary)]">{event.description}</p></div>}
             {event.audience && <div className="flex gap-3"><Icon name="visibility" size={19} className="text-[var(--color-accent)]" /><p className="text-[var(--color-text-primary)]">Visible to {event.audience}</p></div>}
-            {!!event.attendees?.length && <div className="flex gap-3"><Icon name="group" size={19} className="text-[var(--color-accent)]" /><div><p className="text-[var(--color-text-muted)]">Attendees</p><p className="text-[var(--color-text-primary)]">{event.attendees.join(", ")}</p></div></div>}
+            {responses?.length ? (
+              <div className="flex gap-3"><Icon name="group" size={19} className="text-[var(--color-accent)]" /><div className="min-w-0 flex-1"><p className="text-[var(--color-text-muted)]">Responses</p><ul className="mt-1 space-y-1">{responses.map((r) => <li key={r.email} className="flex items-center justify-between gap-3"><span className="truncate text-[var(--color-text-primary)]">{r.name}</span><span className={cn("inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold", RESPONSE_STYLE[r.response])}><Icon name={RESPONSE_ICON[r.response]} size={12} />{RESPONSE_LABEL[r.response]}</span></li>)}</ul></div></div>
+            ) : (
+              !!event.attendees?.length && <div className="flex gap-3"><Icon name="group" size={19} className="text-[var(--color-accent)]" /><div><p className="text-[var(--color-text-muted)]">Attendees</p><p className="text-[var(--color-text-primary)]">{event.attendees.join(", ")}</p></div></div>
+            )}
           </div>
           {(event.meetLink || event.htmlLink) && <div className="flex flex-wrap gap-2">{event.meetLink && <a href={event.meetLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white"><Icon name="videocam" size={17} />Join meeting</a>}{event.htmlLink && <a href={event.htmlLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)]"><Icon name="open_in_new" size={17} />Open in Google</a>}</div>}
           {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-700">{error}</p>}

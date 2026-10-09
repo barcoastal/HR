@@ -12,7 +12,9 @@ import {
 import {
   assertConnectedGoogleAccount,
   createOneOnOneEventForUser,
+  getEventForUser,
 } from "@/lib/google-calendar-sync";
+import { responseFromGoogle, type EventResponse } from "@/lib/event-responses";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
 import { displayName } from "@/lib/utils";
 
@@ -605,10 +607,36 @@ export async function sendInvite(meetingId: string) {
     }
   }
 
-  // Default: email-based ICS invite from the platform address. The ICS lists
-  // the manager as the organizer so the calendar entries on both sides land
-  // correctly. The actual email comes from noreply@... so nobody specific
-  // shows up as the sender.
-  await sendIcsInvite(m, summary, description);
-  return { success: true };
+  // Without the manager's own calendar there is nothing the employee can accept with a
+  // click: an .ics mailed from the noreply address gives Gmail no Accept button and the
+  // answer never comes back. Ask for the connection instead of sending a dead-end email.
+  return {
+    success: false,
+    needsCalendarConnection: true,
+    error:
+      "Connect your Google Calendar on the 1:1 Reviews page first. Google then sends the invitation the employee can accept, and their answer shows here.",
+  };
+}
+
+/**
+ * The employee's answer to the 1:1 invitation on the manager's Google event, or null when
+ * no invitation has gone out from a connected calendar (or it could not be read).
+ */
+export async function getOneOnOneResponse(meetingId: string): Promise<EventResponse | null> {
+  const m = await db.oneOnOne.findUnique({
+    where: { id: meetingId },
+    select: { googleEventId: true, managerId: true, status: true, employee: { select: { email: true } } },
+  });
+  if (!m || !m.googleEventId || m.status !== "SCHEDULED") return null;
+  const managerUserId = await getManagerCalendarUserId(m.managerId);
+  if (!managerUserId) return null;
+  try {
+    const event = await getEventForUser(managerUserId, m.googleEventId);
+    const wanted = m.employee.email.trim().toLowerCase();
+    const attendee = event.attendees?.find((a) => (a.email ?? "").trim().toLowerCase() === wanted);
+    return attendee ? responseFromGoogle(attendee.responseStatus) : null;
+  } catch (err) {
+    console.error("[one-on-one] Could not read the employee's calendar response:", err);
+    return null;
+  }
 }

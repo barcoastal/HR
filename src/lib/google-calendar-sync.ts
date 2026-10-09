@@ -402,6 +402,47 @@ export async function updateStandaloneEventForUser(
   );
 }
 
+/**
+ * Record one attendee's answer on the organizer's event, so an answer given inside the app
+ * shows up on the same Google event everyone else looks at. Quiet (no Google emails).
+ * Returns false when that address is not on the event.
+ */
+export async function setAttendeeResponseForUser(
+  organizerUserId: string,
+  eventId: string,
+  attendeeEmail: string,
+  responseStatus: "accepted" | "declined" | "tentative" | "needsAction"
+): Promise<boolean> {
+  const event = await googleFetch<{
+    attendees?: { email?: string; displayName?: string; responseStatus?: string; optional?: boolean; comment?: string }[];
+  }>(organizerUserId, `/calendars/primary/events/${encodeURIComponent(eventId)}`);
+  const wanted = attendeeEmail.trim().toLowerCase();
+  const attendees = event.attendees ?? [];
+  if (!attendees.some((a) => (a.email ?? "").trim().toLowerCase() === wanted)) return false;
+  const { accessToken } = await ensureValidToken(organizerUserId);
+  const res = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/primary/events/${encodeURIComponent(eventId)}?sendUpdates=none`,
+    {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        attendees: attendees.map((a) => ({
+          email: a.email,
+          displayName: a.displayName,
+          optional: a.optional,
+          comment: a.comment,
+          responseStatus: (a.email ?? "").trim().toLowerCase() === wanted ? responseStatus : a.responseStatus,
+        })),
+      }),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Google Calendar API error ${res.status}: ${text}`);
+  }
+  return true;
+}
+
 export async function pushEventToGoogleCalendar(
   userId: string,
   event: {

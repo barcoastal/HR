@@ -3,6 +3,14 @@
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
+import {
+  attendeeResponses,
+  responseCounts,
+  type AttendeeResponse,
+  type EventResponse,
+  type GoogleAttendee,
+  type InAppAnswer,
+} from "@/lib/event-responses";
 
 function escapeHtml(value: string): string {
   return value.replace(
@@ -34,7 +42,6 @@ export async function createCompanyEvent(data: {
   eventId?: string;
   meetLink?: string | null;
   attendeeCount?: number;
-  addedDirectlyCount?: number;
   invitedCount?: number;
   needsCalendarConnection?: boolean;
   error?: string;
@@ -124,21 +131,12 @@ export async function createCompanyEvent(data: {
     };
   }
 
-  // Attendees who connected their own Google Calendar get the event written
-  // straight onto their calendar (no invite to accept); everyone else gets a
-  // regular Google invite from the creator's calendar.
-  const syncedUsers = await db.user.findMany({
-    where: {
-      employeeId: { in: attendees.map((a) => a.id) },
-      googleCalendarSyncEnabled: true,
-      deactivatedAt: null,
-      employee: { status: { not: "OFFBOARDED" }, archivedAt: null },
-    },
-    select: { id: true, employeeId: true },
-  });
-  const userIdByEmployee = new Map(syncedUsers.map((u) => [u.employeeId!, u.id]));
-  const directAttendees = attendees.filter((a) => userIdByEmployee.has(a.id));
-  let inviteAttendees = attendees.filter((a) => !userIdByEmployee.has(a.id));
+  // Everyone except the creator is a real attendee on the creator's Google event. Google
+  // mails each of them the one invitation they can answer with a click: accepting puts the
+  // event on their calendar, and the organizer sees (and is emailed) every answer. The
+  // creator's own calendar already holds the event, so they are never invited to it.
+  const organizerEmployeeId = session.user.employeeId ?? null;
+  const inviteAttendees = attendees.filter((a) => a.id !== organizerEmployeeId);
 
   const toGoogleAttendee = (a: (typeof attendees)[number]) => ({
     email: a.email,
@@ -195,51 +193,7 @@ export async function createCompanyEvent(data: {
       };
     }
     const organizerUserId = session.user.id;
-
-    // Write the event directly onto connected users' calendars. Anyone whose
-    // push fails is folded back into the regular invite list.
     const meetLink = inserted.meetLink;
-    const description = [data.description, meetLink ? `Join: ${meetLink}` : null]
-      .filter(Boolean)
-      .join("\n\n");
-    const pushed: { employeeId: string; userId: string; googleEventId: string }[] = [];
-    const pushFailed: typeof attendees = [];
-    await Promise.all(
-      directAttendees.map(async (a) => {
-        const userId = userIdByEmployee.get(a.id)!;
-        // The organizer's own calendar already has the event — no copy needed.
-        if (userId === organizerUserId) {
-          pushed.push({ employeeId: a.id, userId, googleEventId: inserted!.eventId });
-          return;
-        }
-        try {
-          const googleEventId = await sync.pushEventToGoogleCalendar(userId, {
-            summary: title,
-            description: description || undefined,
-            location: data.location || undefined,
-            startDateTime: start.toISOString(),
-            endDateTime: end.toISOString(),
-          });
-          pushed.push({ employeeId: a.id, userId, googleEventId });
-        } catch (err) {
-          console.error(`[createCompanyEvent] direct push failed for employee ${a.id}:`, err);
-          pushFailed.push(a);
-        }
-      })
-    );
-
-    if (pushFailed.length > 0 && inserted.eventId) {
-      inviteAttendees = [...inviteAttendees, ...pushFailed];
-      try {
-        await sync.patchEventAttendeesForUser(
-          organizerUserId,
-          inserted.eventId,
-          inviteAttendees.map(toGoogleAttendee)
-        );
-      } catch (err) {
-        console.error("[createCompanyEvent] fallback invite patch failed:", err);
-      }
-    }
 
     // Store the event in-app too (audience-scoped), so invitees see it on
     // the app calendar and the feed — and nobody else does.
@@ -267,16 +221,10 @@ export async function createCompanyEvent(data: {
         },
       });
 
-      // Direct-pushed users are already on the calendar — mark them GOING and
-      // remember their copy's event id so declining later removes it.
-      if (pushed.length > 0) {
+      // The organizer is on their own calendar already; everyone else answers the invitation.
+      if (attendees.some((a) => a.id === organizerEmployeeId)) {
         await db.eventAttendance.createMany({
-          data: pushed.map((p) => ({
-            feedPostId: post.id,
-            userId: p.userId,
-            status: "GOING" as const,
-            googleCalendarEventId: p.googleEventId,
-          })),
+          data: [{ feedPostId: post.id, userId: organizerUserId, status: "GOING" as const, googleCalendarEventId: inserted.eventId || null }],
           skipDuplicates: true,
         });
       }
@@ -342,7 +290,6 @@ export async function createCompanyEvent(data: {
       eventId: inserted.eventId,
       meetLink,
       attendeeCount: attendees.length,
-      addedDirectlyCount: pushed.length,
       invitedCount: inviteAttendees.length,
     };
   } catch (err) {
@@ -505,4 +452,72 @@ export async function cancelCompanyEvent(eventId: string) {
       ? "The HRIS event was cancelled, but one or more personal calendar copies could not be removed."
       : undefined,
   };
+}
+
+/**
+ * Who has answered a Calendar-page event, for the organizer and HR. Google's answers come
+ * off the organizer's event; answers given in the app fill in the rest. Null when the
+ * caller may not see them or the event is not one of ours.
+ */
+export async function getCompanyEventResponses(eventId: string): Promise<{
+  responses: AttendeeResponse[];
+  counts: Record<EventResponse, number>;
+  fromGoogle: boolean;
+} | null> {
+  const session = await requireAuth();
+  const post = await db.feedPost.findUnique({
+    where: { id: eventId, type: "EVENT" },
+    select: {
+      authorId: true,
+      audienceType: true,
+      audienceEmployeeIds: true,
+      eventOrganizerUserId: true,
+      googleCalendarEventId: true,
+      attendees: { select: { status: true, user: { select: { email: true, employee: { select: { email: true } } } } } },
+    },
+  });
+  if (!post) return null;
+  const role = session.user.role;
+  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+  const isOrganizer = post.eventOrganizerUserId === session.user.id || post.authorId === session.user.employeeId;
+  if (!isAdmin && !isOrganizer) return null;
+
+  let inviteeIds: string[] | null = null;
+  if (post.audienceType === "employees") {
+    try {
+      inviteeIds = JSON.parse(post.audienceEmployeeIds || "[]") as string[];
+    } catch {
+      inviteeIds = [];
+    }
+  }
+  const organizer = post.eventOrganizerUserId
+    ? await db.user.findUnique({ where: { id: post.eventOrganizerUserId }, select: { employeeId: true } })
+    : null;
+  const people = await db.employee.findMany({
+    where: inviteeIds ? { id: { in: inviteeIds } } : { status: "ACTIVE" },
+    select: { id: true, email: true, firstName: true, lastName: true, preferredName: true },
+    orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
+  });
+  const invitees = people
+    .filter((p) => p.id !== organizer?.employeeId && p.email)
+    .map((p) => ({ email: p.email, name: `${p.preferredName?.trim() || p.firstName} ${p.lastName}` }));
+
+  const inApp: Record<string, InAppAnswer> = {};
+  for (const a of post.attendees) {
+    for (const email of [a.user.employee?.email, a.user.email]) if (email) inApp[email] = a.status;
+  }
+
+  let googleAttendees: GoogleAttendee[] | null = null;
+  if (post.eventOrganizerUserId && post.googleCalendarEventId) {
+    try {
+      const sync = await import("@/lib/google-calendar-sync");
+      const event = await sync.getEventForUser(post.eventOrganizerUserId, post.googleCalendarEventId);
+      googleAttendees = event.attendees ?? [];
+    } catch (err) {
+      console.error("[getCompanyEventResponses] Could not read the organizer's event:", err);
+    }
+  }
+
+  const responses = attendeeResponses({ invitees, googleAttendees, inApp });
+  return { responses, counts: responseCounts(responses), fromGoogle: googleAttendees !== null };
 }

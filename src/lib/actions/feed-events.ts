@@ -103,6 +103,8 @@ export async function upsertEventAttendance(data: {
       eventEndDate: true,
       eventLocation: true,
       type: true,
+      eventOrganizerUserId: true,
+      googleCalendarEventId: true,
     },
   });
   if (!feedPost || feedPost.type !== "EVENT") {
@@ -135,13 +137,50 @@ export async function upsertEventAttendance(data: {
     },
   });
 
-  // Google Calendar sync
+  // An answer given here is recorded on the organizer's Google event as well, so the
+  // organizer and everyone invited see one answer. Events created from the Calendar page
+  // have such an event; older ones and plain feed events fall through to the personal copy.
+  let recordedOnOrganizerEvent = false;
+  if (
+    feedPost.eventOrganizerUserId &&
+    feedPost.googleCalendarEventId &&
+    feedPost.eventOrganizerUserId !== data.userId
+  ) {
+    try {
+      const responder = await db.user.findUnique({
+        where: { id: data.userId },
+        select: { email: true, employee: { select: { email: true } } },
+      });
+      const emails = Array.from(
+        new Set([responder?.employee?.email, responder?.email].filter((e): e is string => Boolean(e)))
+      );
+      const { setAttendeeResponseForUser } = await import("@/lib/google-calendar-sync");
+      const { googleStatusForAnswer } = await import("@/lib/event-responses");
+      for (const email of emails) {
+        if (
+          await setAttendeeResponseForUser(
+            feedPost.eventOrganizerUserId,
+            feedPost.googleCalendarEventId,
+            email,
+            googleStatusForAnswer(data.status)
+          )
+        ) {
+          recordedOnOrganizerEvent = true;
+          break;
+        }
+      }
+    } catch (err) {
+      console.error("[feed-events] Could not record the answer on the organizer's event:", err);
+    }
+  }
+
+  // Personal-calendar copy, only for events that have no organizer event to answer on.
   const user = await db.user.findUnique({
     where: { id: data.userId },
     select: { googleCalendarSyncEnabled: true },
   });
 
-  if (user?.googleCalendarSyncEnabled) {
+  if (!recordedOnOrganizerEvent && user?.googleCalendarSyncEnabled) {
     try {
       if (
         data.status === "GOING" &&

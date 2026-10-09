@@ -473,20 +473,23 @@ export default async function GuidePage() {
           </ol>
           <p>
             The event is created on the creator&apos;s personal Google Calendar, so the creator is the
-            organizer. Attendees with a connected calendar receive a direct calendar copy and are
-            marked Going. Other attendees receive a normal Google invitation from the creator. The
-            same audience sees the event in the HRIS calendar, feed, and notifications.
+            organizer. Every other attendee receives a normal Google invitation from the creator, the
+            one with <strong>Yes / Maybe / No</strong> in the email. One click answers it: accepting
+            puts the event on their calendar, and Google emails the organizer each answer. The same
+            audience sees the event in the HRIS calendar, feed, and notifications.
           </p>
           <Note title="What email should the creator receive?" tone="success">
             Google puts the event on the organizer&apos;s calendar but normally does not email the organizer
             an invitation. CALATRAVA separately sends the creator an <strong>Event created</strong>
-            confirmation email. Invitees receive Google invitations only when they were not direct-added
-            through their own connected CALATRAVA calendar.
+            confirmation email. Each answer an invitee gives arrives from Google as a separate email.
           </Note>
           <p>
             Click a company event to see time, type, organizer, location, Meet link, description, and
-            audience. The creator or Admin/HR can edit or cancel it. Calendar updates are pushed to the
-            organizer event and connected attendee copies.
+            audience. The creator and Admin/HR also see a <strong>Responses</strong> list: each invitee
+            with Accepted, Declined, Maybe, or No response yet, read live from the organizer&apos;s
+            Google event. Going / Maybe / Not going clicked inside the app count as the same answer.
+            The creator or Admin/HR can edit or cancel the event; Google carries the change to everyone
+            invited.
           </p>
 
           <h3>Set out of office</h3>
@@ -518,8 +521,8 @@ export default async function GuidePage() {
             The person who initiates a manual 1:1 becomes its manager/organizer for that meeting.
           </p>
           <ul>
-            <li>Connect the organizer&apos;s personal calendar so the event is created on that calendar with the correct organizer.</li>
-            <li>If no personal connection is available, the system may fall back to the configured company connection and an ICS email.</li>
+            <li>Connect the organizer&apos;s personal calendar so the event is created on that calendar with the correct organizer. Google then sends the employee an invitation they answer with one click, and the meeting page shows their answer (Accepted, Declined, Maybe, or No response yet) next to the status.</li>
+            <li><strong>Send invite</strong> needs that connection; without it the button explains what to connect instead of sending an email nobody can accept.</li>
             <li>Open the meeting to use the Meet link, update private manager notebook notes, complete it, reschedule it, or cancel it.</li>
             <li>Employees see their meetings; managers see their own and direct-report meetings; Admin/HR see all.</li>
           </ul>

@@ -36,7 +36,7 @@ export function CreateEventDialog({
   const [empIds, setEmpIds] = useState<Set<string>>(new Set());
   const [groupIds, setGroupIds] = useState<Set<string>>(new Set());
   const [sending, setSending] = useState(false);
-  const [result, setResult] = useState<{ success: boolean; attendeeCount?: number; addedDirectlyCount?: number; invitedCount?: number; meetLink?: string | null; needsCalendarConnection?: boolean; error?: string } | null>(null);
+  const [result, setResult] = useState<{ success: boolean; attendeeCount?: number; invitedCount?: number; meetLink?: string | null; needsCalendarConnection?: boolean; error?: string } | null>(null);
   const [peopleSearch, setPeopleSearch] = useState("");
 
   const attendeeCount = (() => {
@@ -141,9 +141,7 @@ export function CreateEventDialog({
             </div>
             <p className="text-sm font-medium text-[var(--color-text-primary)]">Event created</p>
             <p className="text-xs text-[var(--color-text-muted)]">
-              {result.addedDirectlyCount
-                ? `${result.addedDirectlyCount} added straight to their calendar${result.invitedCount ? `, ${result.invitedCount} invited by email` : ""}.`
-                : `${result.attendeeCount} attendee${result.attendeeCount !== 1 ? "s" : ""} — Google will email everyone automatically.`}
+              {`${result.attendeeCount} attendee${result.attendeeCount !== 1 ? "s" : ""} — Google emails each person an invitation they can accept, and you'll see their answers on the event.`}
             </p>
             {result.meetLink && (
               <a href={result.meetLink} target="_blank" rel="noopener noreferrer" className="text-xs text-[var(--color-accent)] hover:underline break-all">
