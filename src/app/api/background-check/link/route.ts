@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+  if (role !== "SUPER_ADMIN") { // background checks are Super Admin only
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   if (!isContinentalConfigured()) {

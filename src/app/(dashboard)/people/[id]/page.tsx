@@ -307,6 +307,7 @@ export default async function EmployeeProfilePage({
                 uploadedAt: d.uploadedAt.toISOString(),
               }))}
               isAdmin={isAdmin}
+              isSuperAdmin={role === "SUPER_ADMIN"}
             />
           )}
 

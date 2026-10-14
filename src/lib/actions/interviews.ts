@@ -308,7 +308,7 @@ export async function resendInterviewInvite(interviewId: string): Promise<{ via:
 
 export async function getUpcomingInterviews() {
   await requireManagerOrAdmin();
-  return db.interview.findMany({
+  const interviews = await db.interview.findMany({
     where: {
       status: "SCHEDULED",
       scheduledAt: { gte: new Date() },
@@ -320,6 +320,8 @@ export async function getUpcomingInterviews() {
     },
     orderBy: { scheduledAt: "asc" },
   });
+  const { redactNestedCandidatesForViewer } = await import("@/lib/background-checks/viewer-redaction");
+  return redactNestedCandidatesForViewer(interviews);
 }
 
 export async function isCalendarConnected(): Promise<boolean> {

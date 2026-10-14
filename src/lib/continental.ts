@@ -239,14 +239,16 @@ export async function fireBgCheckCompleteNotification(
     const { sendNotifications } = await import("@/lib/notifications/send");
     const fullName = `${candidate.firstName} ${candidate.lastName}`;
     const positionTitle = candidate.position?.title || "their position";
-    const resultLabel = newStatus === "PASSED" ? "Passed — Clear" : "Flagged for Review";
+    // Recipients can include recruiters and HR, but the result itself is
+    // Super Admin only — so the notice says the check finished, not how.
+    void newStatus;
     await sendNotifications({
       action: "BACKGROUND_CHECK_COMPLETE",
       candidateId,
-      message: `Background check complete for ${fullName}: ${resultLabel}`,
+      message: `Background check complete for ${fullName}. Super Admins can review the result in I-9 & Background Checks.`,
       link: "/cv",
-      emailSubject: `Background check ${newStatus === "PASSED" ? "passed" : "flagged"}: ${fullName}`,
-      emailBody: `<p>The background check for <strong>${fullName}</strong>${candidate.position?.title ? ` (${positionTitle})` : ""} has completed.</p><p>Result: <strong>${resultLabel}</strong>.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in CALATRAVA</a></p>`,
+      emailSubject: `Background check complete: ${fullName}`,
+      emailBody: `<p>The background check for <strong>${fullName}</strong>${candidate.position?.title ? ` (${positionTitle})` : ""} has completed.</p><p>Results are visible to Super Admins only, under I-9 &amp; Background Checks.</p><p><a href="${process.env.NEXTAUTH_URL || ""}/cv">Open in CALATRAVA</a></p>`,
     });
   } catch (err) {
     console.error("[background-check] notification failed:", err);

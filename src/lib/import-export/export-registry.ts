@@ -11,7 +11,18 @@ import { REJECTION_REASONS } from "@/lib/candidate-rejection";
 
 export type ExportEntityKey = "people" | "candidates" | "departments" | "timeOff" | "reviews" | "interviews";
 
-export type ExportColumn = { key: string; label: string; default?: boolean };
+export type ExportColumn = {
+  key: string;
+  label: string;
+  default?: boolean;
+  /** Only Super Admins may export this column (background-check data). */
+  superAdminOnly?: boolean;
+};
+
+/** The columns this role may export. */
+export function exportColumnsFor<T extends { columns: ExportColumn[] }>(def: T, role: string | null | undefined): ExportColumn[] {
+  return role === "SUPER_ADMIN" ? def.columns : def.columns.filter((c) => !c.superAdminOnly);
+}
 
 export type ExportFilter =
   | {
@@ -115,8 +126,8 @@ export const EXPORT_ENTITIES: ExportEntityDef[] = [
       { key: "manager", label: "Hiring manager" },
       { key: "appliedAt", label: "Applied", default: true },
       { key: "hiredAt", label: "Hired" },
-      { key: "backgroundCheckStatus", label: "Background check status" },
-      { key: "backgroundCheckDate", label: "Background check date" },
+      { key: "backgroundCheckStatus", label: "Background check status", superAdminOnly: true },
+      { key: "backgroundCheckDate", label: "Background check date", superAdminOnly: true },
       { key: "hourlyRate", label: "Hourly rate" },
       { key: "linkedinUrl", label: "LinkedIn" },
       { key: "starred", label: "Starred" },

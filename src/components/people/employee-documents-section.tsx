@@ -16,7 +16,8 @@ import type { ResumeCandidate } from "@/lib/hire-resume";
 import { useRouter } from "next/navigation";
 import type { DocumentCategory, DocumentVisibility } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
-import { DOCUMENT_FOLDERS, groupDocumentsByFolder } from "@/lib/document-folders";
+import { documentFoldersFor, groupDocumentsByFolder } from "@/lib/document-folders";
+import { isSuperAdminOnlyCategory } from "@/lib/document-access";
 
 type Doc = {
   id: string;
@@ -37,16 +38,21 @@ const selectClass = cn(
 function FolderAndVisibilityFields({
   category,
   visibility,
+  isSuperAdmin,
   onCategoryChange,
   onVisibilityChange,
 }: {
   category: DocumentCategory;
   visibility: DocumentVisibility;
+  isSuperAdmin: boolean;
   onCategoryChange: (category: DocumentCategory) => void;
   onVisibilityChange: (visibility: DocumentVisibility) => void;
 }) {
   const isMedical = category === "MEDICAL";
-  const shownVisibility = isMedical ? "HR_ONLY" : visibility;
+  const isRestricted = isSuperAdminOnlyCategory(category);
+  const shownVisibility = isRestricted ? "SUPER_ADMIN_ONLY" : isMedical ? "HR_ONLY" : visibility;
+  // I-9 and Background check folders are only offered to Super Admins.
+  const folders = documentFoldersFor(isSuperAdmin ? "SUPER_ADMIN" : null);
 
   return (
     <>
@@ -58,7 +64,7 @@ function FolderAndVisibilityFields({
           className={selectClass}
         >
           <option value="GENERAL">General</option>
-          {DOCUMENT_FOLDERS.filter((folder) => folder.key !== "GENERAL").map((folder) => (
+          {folders.filter((folder) => folder.key !== "GENERAL").map((folder) => (
             <option key={folder.key} value={folder.key}>{folder.label}</option>
           ))}
         </select>
@@ -69,7 +75,7 @@ function FolderAndVisibilityFields({
         <div className="flex gap-3">
           <button
             type="button"
-            disabled={isMedical}
+            disabled={isMedical || isRestricted}
             onClick={() => onVisibilityChange("EVERYONE")}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors",
@@ -84,8 +90,10 @@ function FolderAndVisibilityFields({
           </button>
           <button
             type="button"
+            disabled={isRestricted}
             onClick={() => onVisibilityChange("HR_ONLY")}
             className={cn(
+              "disabled:opacity-40 disabled:cursor-not-allowed",
               "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors",
               shownVisibility === "HR_ONLY"
                 ? "border-red-400 bg-red-500/10 text-red-400"
@@ -99,6 +107,11 @@ function FolderAndVisibilityFields({
         {isMedical && (
           <p className="mt-1.5 text-xs text-[var(--color-text-muted)]">Medical documents are always HR only.</p>
         )}
+        {isRestricted && (
+          <p className="mt-1.5 text-xs text-[var(--color-text-muted)]">
+            I-9s and background checks are visible to Super Admins only — not to admins, HR, the manager or the employee.
+          </p>
+        )}
       </div>
     </>
   );
@@ -108,10 +121,12 @@ export function EmployeeDocumentsSection({
   employeeId,
   documents,
   isAdmin,
+  isSuperAdmin = false,
 }: {
   employeeId: string;
   documents: Doc[];
   isAdmin: boolean;
+  isSuperAdmin?: boolean;
 }) {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -159,8 +174,9 @@ export function EmployeeDocumentsSection({
   async function handleUpload() {
     const file = fileRef.current?.files?.[0];
     if (!file) return;
+    const sendForSigning = requireSignature && !isSuperAdminOnlyCategory(category);
 
-    if (requireSignature && !file.name.toLowerCase().endsWith(".pdf")) {
+    if (sendForSigning && !file.name.toLowerCase().endsWith(".pdf")) {
       alert("Only PDF files can be sent for signing.");
       return;
     }
@@ -179,7 +195,7 @@ export function EmployeeDocumentsSection({
         url: data.url,
         category,
         visibility,
-        requireSignature,
+        requireSignature: sendForSigning,
       });
 
       setUploadOpen(false);
@@ -381,6 +397,12 @@ export function EmployeeDocumentsSection({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium text-[var(--color-text-primary)] truncate">{doc.name}</p>
+                          {doc.visibility === "SUPER_ADMIN_ONLY" && (
+                            <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/15 text-purple-400 font-medium shrink-0">
+                              <Icon name="shield_lock" size={10} />
+                              Super Admin only
+                            </span>
+                          )}
                           {doc.visibility === "HR_ONLY" && (
                             <span className="flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-red-500/15 text-red-400 font-medium shrink-0">
                               <Icon name="lock" size={10} />
@@ -402,7 +424,7 @@ export function EmployeeDocumentsSection({
                           <Icon name="tune" size={12} />
                         </button>
                       )}
-                      {isAdmin && isPdf(doc.name) && (
+                      {isAdmin && isPdf(doc.name) && doc.visibility !== "SUPER_ADMIN_ONLY" && (
                         <button
                           onClick={() => handleSendForSigning(doc)}
                           disabled={sendingDocId === doc.id}
@@ -436,6 +458,7 @@ export function EmployeeDocumentsSection({
           <FolderAndVisibilityFields
             category={editCategory}
             visibility={editVisibility}
+            isSuperAdmin={isSuperAdmin}
             onCategoryChange={setEditCategory}
             onVisibilityChange={setEditVisibility}
           />
@@ -480,11 +503,13 @@ export function EmployeeDocumentsSection({
           <FolderAndVisibilityFields
             category={category}
             visibility={visibility}
+            isSuperAdmin={isSuperAdmin}
             onCategoryChange={setCategory}
             onVisibilityChange={setVisibility}
           />
 
-          {/* Require Signature toggle */}
+          {/* Require Signature toggle (never for I-9s / background checks) */}
+          {!isSuperAdminOnlyCategory(category) && (
           <div
             onClick={() => setRequireSignature(!requireSignature)}
             className={cn(
@@ -518,6 +543,7 @@ export function EmployeeDocumentsSection({
               )} />
             </div>
           </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <button
@@ -531,14 +557,14 @@ export function EmployeeDocumentsSection({
               disabled={uploading}
               className={cn(
                 "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium",
-                requireSignature
+                requireSignature && !isSuperAdminOnlyCategory(category)
                   ? "bg-emerald-600 text-white hover:bg-emerald-700"
                   : "bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)]",
                 "disabled:opacity-50 transition-colors"
               )}
             >
-              {requireSignature && <Icon name="edit_note" size={12} />}
-              {uploading ? "Uploading..." : requireSignature ? "Upload & Send for Signing" : "Upload"}
+              {requireSignature && !isSuperAdminOnlyCategory(category) && <Icon name="edit_note" size={12} />}
+              {uploading ? "Uploading..." : requireSignature && !isSuperAdminOnlyCategory(category) ? "Upload & Send for Signing" : "Upload"}
             </button>
           </div>
         </div>

@@ -8,6 +8,12 @@ import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
 import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
 import { resolveRejectionUpdate, clearedRejectionIfLeaving, type RejectionInput } from "@/lib/candidate-rejection";
 import { recordStageEvent, currentUserId } from "@/lib/candidate-stage-events";
+// Background-check status/results are Super Admin only; every candidate record
+// returned from here goes through these so the fields are blank for everyone else.
+import {
+  redactCandidateForViewer as redactBackgroundCheckForViewer,
+  redactCandidatesForViewer as redactBackgroundChecksForViewer,
+} from "@/lib/background-checks/viewer-redaction";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -40,12 +46,13 @@ export async function getCandidates(filters?: {
   // Pipeline cards never render resumeText content (only a "has resume" badge),
   // and the full position object is over-fetched — title is the only field used.
   // Dropping these turns a multi-MB response into something tiny.
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where,
     omit: { resumeText: true },
     include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function createCandidate(data: {
@@ -165,7 +172,7 @@ export async function createCandidate(data: {
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 /**
@@ -748,7 +755,7 @@ export async function updateCandidateStatus(
   }
 
   revalidatePath("/cv");
-  return updated;
+  return redactBackgroundCheckForViewer(updated);
 }
 
 export async function searchCandidates(query: string) {
@@ -764,7 +771,7 @@ export async function searchCandidates(query: string) {
     include: { position: true },
     orderBy: { createdAt: "desc" },
   });
-  return candidates;
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function advancedSearchCandidates(params: {
@@ -826,7 +833,7 @@ export async function advancedSearchCandidates(params: {
     orderBy: { createdAt: "desc" },
   });
 
-  return candidates;
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function bulkImportCandidates(
@@ -1127,7 +1134,7 @@ export async function updateCandidate(
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 export async function updateCandidateNotes(id: string, notes: string) {
@@ -1137,7 +1144,7 @@ export async function updateCandidateNotes(id: string, notes: string) {
     data: { notes },
   });
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 type HireResult =
@@ -1744,7 +1751,7 @@ export async function assignCandidateToPosition(
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 export async function findMatchingCandidates(keywords: string[]) {
@@ -1755,7 +1762,7 @@ export async function findMatchingCandidates(keywords: string[]) {
     { resumeText: { contains: kw, mode: "insensitive" as const } },
     { notes: { contains: kw, mode: "insensitive" as const } },
   ]);
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where: {
       inPipeline: false,
       status: { notIn: ["HIRED", "REJECTED"] },
@@ -1765,6 +1772,7 @@ export async function findMatchingCandidates(keywords: string[]) {
     orderBy: { createdAt: "desc" },
     take: 20,
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function getAllCandidatesForDatabase() {
@@ -1773,12 +1781,13 @@ export async function getAllCandidatesForDatabase() {
   // Note: client-side search on resumeText is no longer possible; use
   // advancedSearchCandidates for server-side full-text search if needed.
   const scope = await getRecruiterScope();
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where: scope ? { recruiterId: scope } : undefined,
     omit: { resumeText: true },
     include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 /** Lightweight count for stat cards — avoids loading rows. */
@@ -1882,7 +1891,7 @@ export async function pullCandidateToRecruitment(
     });
   }
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 /**

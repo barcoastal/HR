@@ -38,6 +38,15 @@ export async function requireAdmin() {
   return session;
 }
 
+/** Super Admin only (I-9 forms, background checks). Everyone else gets the standard no-access redirect. */
+export async function requireSuperAdmin() {
+  const session = await requireAuth();
+  if (session.user?.role !== "SUPER_ADMIN") {
+    redirect("/login?error=unauthorized");
+  }
+  return session;
+}
+
 export async function requireManagerOrAdmin() {
   const session = await requireAuth();
   const role = session.user?.role;
@@ -135,5 +144,13 @@ export async function requireApiAdmin() {
   if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
     return null;
   }
+  return session;
+}
+
+/** For API routes — returns null unless the caller is a Super Admin. */
+export async function requireApiSuperAdmin() {
+  const session = await requireApiAuth();
+  if (!session) return null;
+  if (session.user?.role !== "SUPER_ADMIN") return null;
   return session;
 }

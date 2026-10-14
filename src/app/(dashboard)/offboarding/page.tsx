@@ -1,6 +1,7 @@
 import { displayName, getInitials, displayFirstName } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
+import { visibleDocumentsWhere } from "@/lib/document-access";
 import { StartOffboardingDialog } from "@/components/offboarding/start-offboarding-dialog";
 import { OnboardingTaskManager } from "@/components/onboarding/onboarding-task-manager";
 import { FormerEmployeesList } from "@/components/offboarding/former-employees-list";
@@ -40,7 +41,8 @@ export default async function OffboardingPage() {
       archivedAt: null,
       OR: [{ endDate: { lt: new Date() } }, { endDate: null }],
     },
-    include: { department: true, _count: { select: { documents: true } } },
+    // Counts follow the viewer's document visibility (I-9s / background checks are Super Admin only).
+    include: { department: true, _count: { select: { documents: { where: visibleDocumentsWhere(session.user?.role) } } } },
     orderBy: { endDate: { sort: "desc", nulls: "last" } },
   });
   const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);

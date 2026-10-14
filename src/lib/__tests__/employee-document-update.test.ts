@@ -94,3 +94,35 @@ describe("restrictAllDocumentsToHr", () => {
     });
   });
 });
+
+describe("I-9 and background-check documents", () => {
+  const superAdmin = { role: "SUPER_ADMIN" };
+  const admin = { role: "ADMIN" };
+  const i9Form = { id: "doc-3", employeeId: "person", name: "I-9.pdf", category: "I9", visibility: "SUPER_ADMIN_ONLY" };
+
+  it("won't let HR or admins file a document as an I-9", async () => {
+    for (const actor of [hr, admin]) {
+      const result = await updateDocumentSettings("doc-1", { category: "I9" }, actor);
+      expect(result.ok).toBe(false);
+    }
+    expect(mocks.document.update).not.toHaveBeenCalled();
+  });
+
+  it("answers 'not found' when HR tries to change an I-9", async () => {
+    mocks.document.findUnique.mockResolvedValue(i9Form);
+
+    const result = await updateDocumentSettings("doc-3", { visibility: "EVERYONE" }, hr);
+
+    expect(result).toEqual({ ok: false, error: "Document not found" });
+    expect(mocks.document.update).not.toHaveBeenCalled();
+  });
+
+  it("keeps a Super Admin's I-9 Super Admin only", async () => {
+    await updateDocumentSettings("doc-1", { category: "I9", visibility: "EVERYONE" }, superAdmin);
+
+    expect(mocks.document.update).toHaveBeenCalledWith({
+      where: { id: "doc-1" },
+      data: { category: "I9", visibility: "SUPER_ADMIN_ONLY" },
+    });
+  });
+});

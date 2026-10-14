@@ -7,7 +7,7 @@ import {
   assertCandidateAccess,
   getRecruiterScope,
   requireAuth,
-  requireManagerOrAdmin,
+  requireSuperAdmin,
 } from "@/lib/auth-helpers";
 import { displayName } from "@/lib/utils";
 import {
@@ -50,7 +50,7 @@ import type {
  * never produce a different outcome than the automated paths.
  */
 
-const PAGE_PATH = "/background-checks";
+const PAGE_PATH = "/compliance";
 
 const candidateSelect = {
   id: true,
@@ -330,7 +330,7 @@ async function performRefresh(candidate: CandidateRecord, bulk: boolean): Promis
 
 /** Every candidate with a check on file, scoped like the recruitment pages. */
 export async function listBackgroundChecks(): Promise<BackgroundCheckList> {
-  await requireManagerOrAdmin();
+  await requireSuperAdmin();
   const candidates = await loadScopedCandidates();
   const names = await recruiterNames(candidates.map((c) => c.recruiterId));
   const rows = candidates.map((c) => toRow(c, c.recruiterId ? names.get(c.recruiterId) ?? null : null));
@@ -345,7 +345,7 @@ export async function listBackgroundChecks(): Promise<BackgroundCheckList> {
 
 /** Stored row plus whatever Continental returns right now. Provider failures are reported, never thrown. */
 export async function getBackgroundCheckDetail(candidateId: string): Promise<BackgroundCheckDetail> {
-  await requireManagerOrAdmin();
+  await requireSuperAdmin();
   await assertCandidateAccess(candidateId);
   const candidate = await loadCandidate(candidateId);
   const row = await rowFor(candidate);
@@ -364,7 +364,7 @@ export async function getBackgroundCheckDetail(candidateId: string): Promise<Bac
 
 /** Re-fetch one check from Continental and apply the same transitions as the postback. */
 export async function refreshBackgroundCheck(candidateId: string): Promise<RefreshBackgroundCheckResult> {
-  await requireManagerOrAdmin();
+  await requireSuperAdmin();
   await assertCandidateAccess(candidateId);
   const candidate = await loadCandidate(candidateId);
   const result = await performRefresh(candidate, false);
@@ -375,7 +375,7 @@ export async function refreshBackgroundCheck(candidateId: string): Promise<Refre
 
 /** Refresh every AWAITING_APPLICANT / PENDING check in the caller's scope, one at a time. */
 export async function refreshPendingBackgroundChecks(): Promise<RefreshPendingResult> {
-  await requireManagerOrAdmin();
+  await requireSuperAdmin();
   const result: RefreshPendingResult = { refreshed: 0, changed: 0, skipped: 0, errors: [] };
   if (!isContinentalConfigured()) {
     result.errors.push({

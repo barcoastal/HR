@@ -11,15 +11,22 @@ import {
   type DocumentFolderKey,
   type DocumentVisibilityKey,
 } from "@/lib/document-folders";
+import {
+  isSuperAdmin,
+  isSuperAdminOnlyCategory,
+  isSuperAdminOnlyDocument,
+  visibleDocumentsWhere,
+} from "@/lib/document-access";
 
 export async function getEmployeeDocuments(employeeId: string) {
   const session = await requireAuth();
-  const isAdmin = session.user?.role === "SUPER_ADMIN" || session.user?.role === "ADMIN" || session.user?.role === "HR";
 
   return db.document.findMany({
     where: {
       employeeId,
-      ...(!isAdmin ? { visibility: "EVERYONE" } : {}),
+      // HR_ONLY is hidden from managers/employees; I-9s and background checks
+      // from everyone but Super Admins.
+      ...visibleDocumentsWhere(session.user?.role),
     },
     orderBy: { uploadedAt: "desc" },
   });
@@ -36,6 +43,10 @@ export async function addEmployeeDocument(data: {
 }) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  const restricted = isSuperAdminOnlyCategory(data.category);
+  if (restricted && !isSuperAdmin(session.user?.role)) {
+    throw new Error("Only Super Admins can file I-9s and background checks.");
+  }
 
   const doc = await db.document.create({
     data: {
@@ -46,6 +57,21 @@ export async function addEmployeeDocument(data: {
       visibility: resolveDocumentVisibility(data.category, data.visibility),
     },
   });
+
+  if (restricted) {
+    // Never sent for signing/filling: that would put the file in the
+    // employee's tasks and inbox.
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: data.category === "I9" ? "i9.uploaded" : "background_check_document.uploaded",
+      entityType: "document",
+      entityId: doc.id,
+      details: { employeeId: data.employeeId, name: data.name },
+    });
+    revalidatePath(`/people/${data.employeeId}`);
+    revalidatePath("/compliance");
+    return doc;
+  }
 
   if (data.requireFill) {
     await sendDocForFilling(data.employeeId, data.url, data.name);
@@ -60,6 +86,7 @@ export async function addEmployeeDocument(data: {
 export async function sendDocForSigning(employeeId: string, documentUrl: string, documentName: string) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  await assertNotRestrictedDocumentUrl(documentUrl);
 
   const employee = await db.employee.findUnique({ where: { id: employeeId } });
   if (!employee) throw new Error("Employee not found");
@@ -116,6 +143,7 @@ export async function sendDocForFilling(
 ) {
   const session = await requireAuth();
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
+  await assertNotRestrictedDocumentUrl(documentUrl);
 
   const employee = await db.employee.findUnique({ where: { id: employeeId } });
   if (!employee) throw new Error("Employee not found");
@@ -215,10 +243,33 @@ export async function deleteEmployeeDocument(docId: string) {
   if (session.user?.role !== "SUPER_ADMIN" && session.user?.role !== "ADMIN" && session.user?.role !== "HR") throw new Error("Not authorized");
 
   const doc = await db.document.findUnique({ where: { id: docId } });
-  if (!doc) throw new Error("Document not found");
+  const restricted = doc ? isSuperAdminOnlyDocument(doc) : false;
+  if (!doc || (restricted && !isSuperAdmin(session.user?.role))) throw new Error("Document not found");
 
   await db.document.delete({ where: { id: docId } });
+  if (restricted) {
+    const { audit } = await import("@/lib/audit");
+    await audit({
+      action: doc.category === "I9" ? "i9.deleted" : "background_check_document.deleted",
+      entityType: "document",
+      entityId: docId,
+      details: { employeeId: doc.employeeId, name: doc.name },
+    });
+    revalidatePath("/compliance");
+  }
   revalidatePath(`/people/${doc.employeeId}`);
+}
+
+/**
+ * I-9s and background checks are never sent out for signing or filling — the
+ * request would surface the file in the employee's tasks and email.
+ */
+async function assertNotRestrictedDocumentUrl(documentUrl: string) {
+  const restricted = await db.document.findFirst({
+    where: { url: documentUrl, OR: [{ visibility: "SUPER_ADMIN_ONLY" }, { category: { in: ["I9", "BACKGROUND_CHECK"] } }] },
+    select: { id: true },
+  });
+  if (restricted) throw new Error("I-9s and background checks can't be sent for signing.");
 }
 
 /**

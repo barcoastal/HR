@@ -9,6 +9,8 @@ import { RSVP_LABEL, type CandidateRsvp } from "@/lib/interview-invite";
 import { getCandidateApplications, markDoNotCall, unmarkDoNotCall } from "@/lib/actions/candidate-applications";
 import { sendAdverseActionLetter, sendPreAdverseActionNotice } from "@/lib/actions/adverse-action";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { canViewBackgroundChecks } from "@/lib/document-access";
 import type { CandidateStatus, InterviewType, InterviewStatus } from "@/generated/prisma/client";
 import Link from "next/link";
 import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
@@ -376,6 +378,10 @@ export function CandidateDetailDialog({
     blj: "N",
   });
   const router = useRouter();
+  // Background-check status, results and reports are Super Admin only; the
+  // server blanks those fields for everyone else, and the status API refuses.
+  const { data: session } = useSession();
+  const canSeeBackgroundCheck = canViewBackgroundChecks(session?.user?.role);
 
   const [interviews, setInterviews] = useState<InterviewForDisplay[]>([]);
   const [resendingId, setResendingId] = useState<string | null>(null);
@@ -534,6 +540,7 @@ export function CandidateDetailDialog({
   // BACKGROUND_CHECK_COMPLETE notification. Stops once we see PASSED/FAILED.
   useEffect(() => {
     if (!open || !candidate) return;
+    if (!canSeeBackgroundCheck) return;
     if (candidate.status !== "BACKGROUND_CHECK") return;
     if (!candidate.backgroundCheckId) return;
     // Skip polling when the persisted status is already resolved.
@@ -571,7 +578,7 @@ export function CandidateDetailDialog({
       cancelled = true;
       if (intervalId) clearInterval(intervalId);
     };
-  }, [open, candidate, router]);
+  }, [open, candidate, router, canSeeBackgroundCheck]);
 
   function update(key: string, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -1179,8 +1186,19 @@ export function CandidateDetailDialog({
               </div>
             )}
 
+            {/* Background Check — non-Super Admins only learn that a check is under way */}
+            {candidate.status === "BACKGROUND_CHECK" && !canSeeBackgroundCheck && (
+              <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-1">
+                <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check</p>
+                <p className="text-sm text-[var(--color-text-primary)]">A background check has been sent for this candidate.</p>
+                <p className="text-[10px] text-[var(--color-text-muted)]">
+                  Status, results and reports are visible to Super Admins only, under I-9 &amp; Background Checks.
+                </p>
+              </div>
+            )}
+
             {/* Background Check — status when already initiated */}
-            {candidate.status === "BACKGROUND_CHECK" && (
+            {candidate.status === "BACKGROUND_CHECK" && canSeeBackgroundCheck && (
               <div className="rounded-lg border border-orange-500/30 bg-orange-500/5 p-3 space-y-2">
                 <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Background Check</p>
                 <div className="flex items-center justify-between">

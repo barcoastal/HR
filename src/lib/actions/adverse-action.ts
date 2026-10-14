@@ -3,6 +3,7 @@
 import { db } from "@/lib/db";
 import { assertCandidateAccess, requireAuth } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
+import { canViewBackgroundChecks } from "@/lib/document-access";
 
 function addBusinessDays(date: Date, days: number): Date {
   const result = new Date(date);
@@ -26,7 +27,11 @@ export async function sendPreAdverseActionNotice(
   dueAt?: string;
   error?: string;
 }> {
-  await requireAuth();
+  const session = await requireAuth();
+  // Background-check results and the adverse-action trail are Super Admin only.
+  if (!canViewBackgroundChecks(session.user?.role)) {
+    return { success: false, error: "Only Super Admins can manage background-check adverse actions." };
+  }
   await assertCandidateAccess(candidateId);
   const responseDays = Math.max(1, Math.min(30, Math.round(responseWindowBusinessDays)));
   const candidate = await db.candidate.findUnique({
@@ -121,7 +126,11 @@ export async function sendAdverseActionLetter(
   reason?: string,
   options?: { force?: boolean }
 ): Promise<{ success: boolean; error?: string; alreadySent?: boolean }> {
-  await requireAuth();
+  const session = await requireAuth();
+  // Background-check results and the adverse-action trail are Super Admin only.
+  if (!canViewBackgroundChecks(session.user?.role)) {
+    return { success: false, error: "Only Super Admins can manage background-check adverse actions." };
+  }
   await assertCandidateAccess(candidateId);
   const candidate = await db.candidate.findUnique({
     where: { id: candidateId },

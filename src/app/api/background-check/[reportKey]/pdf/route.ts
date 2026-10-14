@@ -19,7 +19,7 @@ const LEGACY_API_KEY = process.env.BACKGROUND_CHECK_API_KEY || "";
  * served straight from that cache. Legacy backgroundchecks.com reports fall
  * back to a live fetch (and get cached the same way on first success).
  *
- * Gated to SUPER_ADMIN / ADMIN / HR.
+ * Gated to SUPER_ADMIN (I-9 & Background Checks).
  */
 export async function GET(
   _req: NextRequest,
@@ -28,7 +28,7 @@ export async function GET(
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const role = session.user?.role;
-  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+  if (role !== "SUPER_ADMIN") { // background checks are Super Admin only
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
