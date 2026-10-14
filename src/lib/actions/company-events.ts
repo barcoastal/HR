@@ -11,6 +11,8 @@ import {
   type GoogleAttendee,
   type InAppAnswer,
 } from "@/lib/event-responses";
+import { normalizeEventVisibility, visibilityAllowsRole } from "@/lib/event-audience";
+import { isCalendarColor } from "@/lib/calendar-colors";
 
 function escapeHtml(value: string): string {
   return value.replace(
@@ -37,6 +39,10 @@ export async function createCompanyEvent(data: {
   trainingGroupIds?: string[];
   includeEveryone?: boolean;
   withMeetLink?: boolean;
+  /** Palette colour for the calendar chip. */
+  color?: string | null;
+  /** Who else may see the event: everyone | managers | admins | invited. */
+  visibility?: string;
 }): Promise<{
   success: boolean;
   eventId?: string;
@@ -57,6 +63,8 @@ export async function createCompanyEvent(data: {
   const start = new Date(data.startTime);
   if (isNaN(start.getTime())) return { success: false, error: "Invalid start time" };
   const duration = Math.max(5, data.durationMinutes || 30);
+  const visibility = normalizeEventVisibility(data.visibility);
+  const eventColor = isCalendarColor(data.color) ? data.color : null;
 
   // Resolve attendee list
   const where: Record<string, unknown> = { status: "ACTIVE", email: { not: undefined } };
@@ -89,7 +97,12 @@ export async function createCompanyEvent(data: {
   } as const;
   let attendees: { id: string; email: string; firstName: string; lastName: string; preferredName: string | null }[] = [];
   if (data.includeEveryone) {
-    attendees = await db.employee.findMany({ where, select: attendeeSelect });
+    const everyone = await db.employee.findMany({ where, select: { ...attendeeSelect, user: { select: { role: true } } } });
+    // "Everyone" on a partitioned event means everyone the partition admits:
+    // restricted events are never sent to other people's calendars.
+    attendees = everyone
+      .filter((a) => visibility !== "managers" && visibility !== "admins" ? true : visibilityAllowsRole(visibility, a.user?.role))
+      .map(({ user: _user, ...rest }) => rest);
   } else {
     if (idSet.size === 0) {
       return { success: false, error: "Pick at least one department or person" };
@@ -199,7 +212,9 @@ export async function createCompanyEvent(data: {
     // the app calendar and the feed — and nobody else does.
     const authorEmployeeId = session.user.employeeId;
     if (authorEmployeeId) {
-      const audienceType = data.includeEveryone ? "all" : "employees";
+      // Partitioned events always record their exact invitee list, so the
+      // visibility check never relies on a company-wide audience.
+      const audienceType = data.includeEveryone && visibility === "everyone" ? "all" : "employees";
       const post = await db.feedPost.create({
         data: {
           authorId: authorEmployeeId,
@@ -218,6 +233,8 @@ export async function createCompanyEvent(data: {
             audienceType === "employees" ? JSON.stringify(attendees.map((attendee) => attendee.id)) : null,
           notifyViaEmail: false,
           emailTargetType: "none",
+          eventColor,
+          eventVisibility: visibility,
         },
       });
 
@@ -329,6 +346,8 @@ export async function updateCompanyEvent(data: {
   location?: string;
   startTime: string;
   durationMinutes: number;
+  color?: string | null;
+  visibility?: string;
 }) {
   const access = await getManageableCompanyEvent(data.eventId);
   if (!access.post) return { success: false, error: access.error };
@@ -399,6 +418,8 @@ export async function updateCompanyEvent(data: {
       eventLocation: data.location?.trim() || null,
       eventDate: start,
       eventEndDate: end,
+      ...(data.color !== undefined ? { eventColor: isCalendarColor(data.color) ? data.color : null } : {}),
+      ...(data.visibility !== undefined ? { eventVisibility: normalizeEventVisibility(data.visibility) } : {}),
     },
   });
   revalidatePath("/calendar");

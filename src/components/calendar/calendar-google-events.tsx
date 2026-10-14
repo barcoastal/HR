@@ -4,13 +4,20 @@ import { useState, useEffect, useRef } from "react";
 import { CalendarView, type CalendarEvent } from "@/components/calendar/calendar-view";
 import { getGoogleCalendarEvents } from "@/lib/actions/calendar-sync";
 import { dateKey, formatTime, zonedDate, zonedDateFromInput, zonedParts } from "@/lib/time-zone";
+import type { CategoryColors } from "@/lib/calendar-colors";
 
 export function CalendarGoogleEvents({
   events: serverEvents,
   userId,
+  categoryColors,
+  canCustomizeColors,
+  initialEventId,
 }: {
   events: CalendarEvent[];
   userId: string;
+  categoryColors?: CategoryColors;
+  canCustomizeColors?: boolean;
+  initialEventId?: string;
 }) {
   const [googleEvents, setGoogleEvents] = useState<CalendarEvent[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +80,7 @@ export function CalendarGoogleEvents({
           {error}
         </div>
       )}
-      <CalendarView events={allEvents} />
+      <CalendarView events={allEvents} categoryColors={categoryColors} canCustomizeColors={canCustomizeColors} initialEventId={initialEventId} />
     </div>
   );
 }

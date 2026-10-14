@@ -1,11 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { Dialog } from "@/components/ui/dialog";
 import { CalendarEventDetails } from "@/components/calendar/calendar-event-details";
+import { CalendarLegend } from "@/components/calendar/calendar-legend";
 import { dateKey, formatInZone, formatTime, zonedDate, zonedParts } from "@/lib/time-zone";
+import { calendarCategoryOf, calendarChipClass, type CalendarCategory, type CategoryColors } from "@/lib/calendar-colors";
+import { MILESTONE_STATUS_LABEL, type MilestoneKind, type MilestoneStatus } from "@/lib/review-milestones";
 
 export type CalendarEvent = {
   id: string;
@@ -14,7 +17,7 @@ export type CalendarEvent = {
   date: string;
   /** `YYYY-MM-DD` in the company zone — the day this event is filed under. */
   dateKey: string;
-  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review" | "one-on-one" | "training" | "out-of-office" | "working-remotely";
+  type: "birthday" | "anniversary" | "benefits" | "interview" | "holiday-jewish" | "holiday-muslim" | "holiday-christian" | "holiday-american" | "feed-event" | "google-calendar" | "performance-review" | "review-milestone" | "one-on-one" | "training" | "out-of-office" | "working-remotely";
   department?: string;
   years?: number;
   meetLink?: string | null;
@@ -29,33 +32,35 @@ export type CalendarEvent = {
   allDay?: boolean;
   canManage?: boolean;
   sourceId?: string;
-  sourceKind?: "company" | "training" | "one-on-one" | "review" | "out-of-office" | "google";
+  sourceKind?: "company" | "training" | "one-on-one" | "review" | "out-of-office" | "google" | "milestone";
   groupName?: string;
+  /** Palette colour chosen for this event (company events). */
+  color?: string | null;
+  /** Company-event partition: everyone | managers | admins | invited. */
+  visibility?: string;
+  milestone?: {
+    key: string;
+    employeeId: string;
+    employeeName: string;
+    kind: MilestoneKind;
+    label: string;
+    status: MilestoneStatus;
+    dueKey: string;
+    meetingId?: string;
+    meetingKey?: string;
+    canSchedule: boolean;
+  };
 };
 
-type Props = { events: CalendarEvent[] };
-
-const chipStyles: Record<string, string> = {
-  birthday: "bg-[var(--color-tertiary-container)]/15 text-[var(--color-tertiary)]",
-  anniversary: "bg-[var(--color-tertiary-fixed)] text-[var(--color-on-tertiary-fixed-variant)]",
-  interview: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
-  benefits: "bg-[var(--color-primary-fixed)] text-[var(--color-on-primary-fixed-variant)]",
-  "feed-event": "bg-blue-500/10 text-blue-700",
-  "google-calendar": "bg-emerald-500/10 text-emerald-700",
-  "performance-review": "bg-purple-500/10 text-purple-700",
-  "one-on-one": "bg-fuchsia-500/10 text-fuchsia-700",
-  training: "bg-indigo-500/10 text-indigo-700",
-  "out-of-office": "bg-amber-500/15 text-amber-800",
-  "working-remotely": "bg-cyan-500/15 text-cyan-800",
+type Props = {
+  events: CalendarEvent[];
+  categoryColors?: CategoryColors;
+  canCustomizeColors?: boolean;
+  /** Open this event's details on load (e.g. from a reminder email link). */
+  initialEventId?: string;
 };
 
-const holidayStyle = "bg-[var(--color-error-container)]/20 text-[var(--color-on-error-container)]";
-
-function getChipStyle(type: CalendarEvent["type"]) {
-  return type.startsWith("holiday-")
-    ? holidayStyle
-    : chipStyles[type] || "bg-[var(--color-surface-container)] text-[var(--color-on-surface-variant)]";
-}
+const HIDDEN_LAYERS_KEY = "calendar.hiddenLayers";
 
 export function calendarEventTypeLabel(type: CalendarEvent["type"]) {
   if (type === "birthday") return "Birthday";
@@ -65,6 +70,7 @@ export function calendarEventTypeLabel(type: CalendarEvent["type"]) {
   if (type === "feed-event") return "Company event";
   if (type === "google-calendar") return "Google Calendar";
   if (type === "performance-review") return "Review due";
+  if (type === "review-milestone") return "Review milestone";
   if (type === "one-on-one") return "1:1 meeting";
   if (type === "training") return "Training";
   if (type === "out-of-office") return "Out of office";
@@ -87,13 +93,21 @@ export function calendarEventTimeLabel(event: CalendarEvent, includeEnd = false)
   return event.time || formatTime(start, { compact: true });
 }
 
-function EventChip({ event, isToday, index, onClick }: {
+const MILESTONE_ICON: Record<MilestoneStatus, string> = {
+  due: "pending_actions",
+  overdue: "warning",
+  scheduled: "event_available",
+  completed: "task_alt",
+};
+
+function EventChip({ event, isToday, index, colors, onClick }: {
   event: CalendarEvent;
   isToday: boolean;
   index: number;
+  colors: CategoryColors;
   onClick: () => void;
 }) {
-  const time = calendarEventTimeLabel(event);
+  const time = event.milestone ? MILESTONE_STATUS_LABEL[event.milestone.status] : calendarEventTimeLabel(event);
   return (
     <button
       type="button"
@@ -101,21 +115,24 @@ function EventChip({ event, isToday, index, onClick }: {
       title={`${time}, ${calendarEventTypeLabel(event.type)}: ${event.name}`}
       className={cn(
         "flex w-full items-center gap-1.5 rounded-full px-2 py-1 text-left text-[10px] font-bold transition-opacity hover:opacity-75 focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40",
-        isToday && index === 0 ? "bg-[var(--color-primary)] text-white" : getChipStyle(event.type)
+        isToday && index === 0 ? "bg-[var(--color-primary)] text-white" : calendarChipClass(event.type, colors, event.color)
       )}
     >
-      <span className="shrink-0 font-black">{time}</span>
+      {event.milestone
+        ? <Icon name={MILESTONE_ICON[event.milestone.status]} size={12} className="shrink-0" />
+        : <span className="shrink-0 font-black">{time}</span>}
       <span aria-hidden="true" className="shrink-0 opacity-45">·</span>
       <span className="truncate">{event.name}</span>
     </button>
   );
 }
 
-function DayCell({ day, isCurrentMonth, isToday, events, onEvent, onMore }: {
+function DayCell({ day, isCurrentMonth, isToday, events, colors, onEvent, onMore }: {
   day: number;
   isCurrentMonth: boolean;
   isToday: boolean;
   events: CalendarEvent[];
+  colors: CategoryColors;
   onEvent: (event: CalendarEvent) => void;
   onMore: () => void;
 }) {
@@ -133,7 +150,7 @@ function DayCell({ day, isCurrentMonth, isToday, events, onEvent, onMore }: {
         <span className={cn("text-sm font-bold", isToday ? "font-black text-[var(--color-primary)]" : "text-[var(--color-on-surface)]")}>{day}</span>
         {isToday && <span className="hidden rounded-full bg-[var(--color-primary)] px-1.5 py-0.5 text-[8px] font-bold uppercase text-white md:inline">Today</span>}
       </div>
-      {visibleEvents.map((event, index) => <EventChip key={event.id} event={event} isToday={isToday} index={index} onClick={() => onEvent(event)} />)}
+      {visibleEvents.map((event, index) => <EventChip key={event.id} event={event} isToday={isToday} index={index} colors={colors} onClick={() => onEvent(event)} />)}
       {overflow > 0 && (
         <button type="button" onClick={onMore} className="w-fit rounded px-1 text-[10px] font-bold text-[var(--color-on-surface-variant)] hover:bg-[var(--color-surface-container)] hover:text-[var(--color-primary)]">
           +{overflow} more
@@ -155,13 +172,46 @@ function monthPrefix(year: number, month: number) {
   return `${year}-${String(month + 1).padStart(2, "0")}-`;
 }
 
-export function CalendarView({ events }: Props) {
+export function CalendarView({ events: allEvents, categoryColors = {}, canCustomizeColors = false, initialEventId }: Props) {
+  // Layer toggles, remembered per browser. Storage can be unavailable.
+  const [hiddenLayers, setHiddenLayers] = useState<Set<CalendarCategory>>(() => new Set());
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(HIDDEN_LAYERS_KEY) || "[]");
+      if (Array.isArray(saved)) setHiddenLayers(new Set(saved as CalendarCategory[]));
+    } catch {
+      // ignore
+    }
+  }, []);
+  function toggleLayer(category: CalendarCategory) {
+    setHiddenLayers((prev) => {
+      const next = new Set(prev);
+      if (next.has(category)) next.delete(category); else next.add(category);
+      try { window.localStorage.setItem(HIDDEN_LAYERS_KEY, JSON.stringify([...next])); } catch { /* ignore */ }
+      return next;
+    });
+  }
+  const presentLayers = useMemo(() => new Set(allEvents.map((event) => calendarCategoryOf(event.type))), [allEvents]);
+  const events = useMemo(
+    () => hiddenLayers.size ? allEvents.filter((event) => !hiddenLayers.has(calendarCategoryOf(event.type))) : allEvents,
+    [allEvents, hiddenLayers]
+  );
   // "Today" is the company-zone day, wherever the browser is.
   const today = useMemo(() => zonedParts(new Date()), []);
   const todayKey = `${monthPrefix(today.year, today.month)}${String(today.day).padStart(2, "0")}`;
   const [currentMonth, setCurrentMonth] = useState(today.month);
   const [currentYear, setCurrentYear] = useState(today.year);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(() => initialEventId ? allEvents.find((event) => event.id === initialEventId) || null : null);
+  // Jump to the month of an event opened from a link.
+  useEffect(() => {
+    if (!initialEventId) return;
+    const target = allEvents.find((event) => event.id === initialEventId);
+    if (!target) return;
+    setCurrentYear(Number(target.dateKey.slice(0, 4)));
+    setCurrentMonth(Number(target.dateKey.slice(5, 7)) - 1);
+    // Only on first load.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [agenda, setAgenda] = useState<{ label: string; events: CalendarEvent[] } | null>(null);
   const data = monthData(currentYear, currentMonth);
 
@@ -225,10 +275,18 @@ export function CalendarView({ events }: Props) {
         <span className="text-xs text-[var(--color-text-muted)]">Click any calendar item to see its details</span>
       </div>
 
+      <CalendarLegend
+        colors={categoryColors}
+        hidden={hiddenLayers}
+        present={presentLayers}
+        onToggle={toggleLayer}
+        canCustomize={canCustomizeColors}
+      />
+
       <div className="overflow-x-auto rounded-[var(--radius-xl)] bg-[var(--color-surface-container-low)] p-3 md:p-4">
         <div className="min-w-[760px]">
           <div className="mb-3 grid grid-cols-7">{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => <div key={day} className="py-2 text-center text-[10px] font-black uppercase tracking-widest text-[var(--color-outline)]">{day}</div>)}</div>
-          <div className="grid grid-cols-7 gap-2 md:gap-3">{cells.map((cell) => <DayCell key={cell.key} day={cell.day} isCurrentMonth={cell.current} isToday={cell.today} events={cell.events} onEvent={setSelectedEvent} onMore={() => openAgenda(cell.day, cell.events)} />)}</div>
+          <div className="grid grid-cols-7 gap-2 md:gap-3">{cells.map((cell) => <DayCell key={cell.key} day={cell.day} isCurrentMonth={cell.current} isToday={cell.today} events={cell.events} colors={categoryColors} onEvent={setSelectedEvent} onMore={() => openAgenda(cell.day, cell.events)} />)}</div>
         </div>
       </div>
 
@@ -238,7 +296,7 @@ export function CalendarView({ events }: Props) {
       </section>
 
       <Dialog open={!!agenda} onClose={() => setAgenda(null)} title={agenda?.label || "Day agenda"}>
-        <div className="space-y-2">{agenda?.events.map((event) => <button type="button" key={event.id} onClick={() => { setAgenda(null); setSelectedEvent(event); }} className="flex w-full items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className={cn("h-3 w-3 shrink-0 rounded-full", getChipStyle(event.type))} /><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-text-primary)]">{event.name}</span><span className="block text-xs text-[var(--color-text-muted)]">{calendarEventTimeLabel(event, true)} · {calendarEventTypeLabel(event.type)}</span></span><Icon name="chevron_right" size={18} className="ml-auto text-[var(--color-text-muted)]" /></button>)}</div>
+        <div className="space-y-2">{agenda?.events.map((event) => <button type="button" key={event.id} onClick={() => { setAgenda(null); setSelectedEvent(event); }} className="flex w-full items-center gap-3 rounded-2xl border border-[var(--color-border)] p-3 text-left hover:bg-[var(--color-surface-hover)]"><span className={cn("h-3 w-3 shrink-0 rounded-full", calendarChipClass(event.type, categoryColors, event.color))} /><span className="min-w-0"><span className="block truncate text-sm font-bold text-[var(--color-text-primary)]">{event.name}</span><span className="block text-xs text-[var(--color-text-muted)]">{calendarEventTimeLabel(event, true)} · {calendarEventTypeLabel(event.type)}</span></span><Icon name="chevron_right" size={18} className="ml-auto text-[var(--color-text-muted)]" /></button>)}</div>
       </Dialog>
       <CalendarEventDetails event={selectedEvent} open={!!selectedEvent} onClose={() => setSelectedEvent(null)} />
     </div>

@@ -27,7 +27,7 @@ type Person = {
 
 type Meeting = {
   id: string;
-  type: "THIRTY_DAY" | "QUARTERLY" | "ANNUAL";
+  type: "THIRTY_DAY" | "SIXTY_DAY" | "NINETY_DAY" | "QUARTERLY" | "ANNUAL";
   status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
   scheduledAt: string;
   completedAt: string | null;
@@ -39,7 +39,7 @@ type Meeting = {
 
 type HistoryEntry = {
   id: string;
-  type: "THIRTY_DAY" | "QUARTERLY" | "ANNUAL";
+  type: "THIRTY_DAY" | "SIXTY_DAY" | "NINETY_DAY" | "QUARTERLY" | "ANNUAL";
   completedAt: string | null;
   scheduledAt: string;
   notebookMarkdown: string | null;
@@ -48,6 +48,8 @@ type HistoryEntry = {
 
 const TYPE_LABEL: Record<Meeting["type"], string> = {
   THIRTY_DAY: "30-Day Check-In",
+  SIXTY_DAY: "60-Day Review",
+  NINETY_DAY: "90-Day Review",
   QUARTERLY: "Quarterly Review",
   ANNUAL: "Annual Review",
 };

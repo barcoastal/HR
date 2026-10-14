@@ -339,6 +339,8 @@ export default async function EmployeeProfilePage({
                 {pastOneOnOnes.map((o) => {
                   const TYPE_LABEL: Record<typeof o.type, string> = {
                     THIRTY_DAY: "30-Day Check-In",
+                    SIXTY_DAY: "60-Day Review",
+                    NINETY_DAY: "90-Day Review",
                     QUARTERLY: "Quarterly Review",
                     ANNUAL: "Annual Review",
                   };

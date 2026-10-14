@@ -531,6 +531,28 @@ export default async function GuidePage() {
             invited.
           </p>
 
+          <h3>Colors, visibility, and layers</h3>
+          <ul>
+            <li>When creating or editing a company event, pick a <strong>Color</strong> (Blue, Green, Purple, Pink, Orange, Red, Teal, Gray) or leave the category default.</li>
+            <li><strong>Visible to</strong> controls who else sees the event besides the people invited: <strong>Everyone</strong> (the usual rules), <strong>Managers &amp; admins only</strong>, <strong>Admins / HR only</strong>, or <strong>Only invited people</strong> (not even Admin/HR). Choosing <strong>Everyone</strong> under Invite on a restricted event invites only the roles that may see it, so restricted events never land on other people&apos;s Google calendars. People who cannot see an event cannot RSVP to it either.</li>
+            <li>The row of labels above the month is a legend and a set of layer toggles: click one to hide or show that kind of item. Your choice is remembered in this browser.</li>
+            <li>Admin/HR can click <strong>Colors</strong> to give each kind of item (company events, reviews, 1:1s, interviews, training, time off, holidays, and so on) one color for everyone. An event&apos;s own color still wins.</li>
+          </ul>
+
+          <h3>Review milestones</h3>
+          <p>
+            For every active employee the calendar shows the upcoming <strong>30-day</strong>, <strong>60-day</strong>, and
+            <strong> 90-day</strong> reviews (counted from the start date), <strong>Quarterly</strong> reviews every three
+            months after that, and a <strong>Yearly</strong> review on each work anniversary (the anniversary date when set).
+            Each item shows Not scheduled, Overdue, Scheduled, or Completed. Only the employee&apos;s manager chain, Admin/HR,
+            and the oversight recipients below can see them; employees never see review milestones.
+          </p>
+          <ul>
+            <li>Admin/HR and managers above the employee click a milestone and then <strong>Schedule</strong> to pick a date and time. This creates the 1:1 (with the usual Google invitation) and marks the milestone Scheduled. An existing 1:1 of the matching type close to the due date also counts.</li>
+            <li>A week before each unscheduled milestone, the employee&apos;s manager gets an email and an in-app notification such as &ldquo;Rex&apos;s 60-day review is due on &hellip; &mdash; schedule it&rdquo; with a link straight to it. Each reminder is sent once. The reminder runs from the daily scheduler calling <code>/api/cron/review-reminders</code>.</li>
+            <li><strong>Review &amp; 1:1 oversight alerts</strong> (Settings &rarr; Recruitment &rarr; Notifications): turn the alerts on, add the people who should hear about them, and optionally limit them to departments such as Closers. Those people are emailed and notified when 1:1s are scheduled or completed and when review milestones come due, and can see those milestones on the calendar. The rule starts off with nobody on it.</li>
+          </ul>
+
           <h3>Set out of office</h3>
           <p>Everyone with an employee profile can click <strong>Set out of office</strong>.</p>
           <ul>
@@ -555,8 +577,8 @@ export default async function GuidePage() {
           <h2>1:1s, reviews, time off, clubs, and Your Voice</h2>
           <h3>1:1 Reviews</h3>
           <p>
-            <Route>/one-on-ones</Route> tracks recurring 30-day, quarterly, and annual check-ins.
-            Managers can schedule for direct reports; Admin/HR can schedule within their broader scope.
+            <Route>/one-on-ones</Route> tracks 30-day, 60-day, 90-day, quarterly, and annual check-ins.
+            Managers can schedule for anyone who reports to them, directly or further down; Admin/HR can schedule within their broader scope.
             The person who initiates a manual 1:1 becomes its manager/organizer for that meeting.
           </p>
           <ul>

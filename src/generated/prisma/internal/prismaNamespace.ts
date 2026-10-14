@@ -457,6 +457,9 @@ export const ModelName = {
   WorkerHeartbeat: 'WorkerHeartbeat',
   HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
+  ReviewMilestoneReminder: 'ReviewMilestoneReminder',
+  ReviewOversightRule: 'ReviewOversightRule',
+  CalendarCategoryColor: 'CalendarCategoryColor',
   GustoConnection: 'GustoConnection',
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
@@ -479,7 +482,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateStageEvent" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal" | "recruitmentClass" | "recruitmentClassMember"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateStageEvent" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "reviewMilestoneReminder" | "reviewOversightRule" | "calendarCategoryColor" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal" | "recruitmentClass" | "recruitmentClassMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -5885,6 +5888,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ReviewMilestoneReminder: {
+      payload: Prisma.$ReviewMilestoneReminderPayload<ExtArgs>
+      fields: Prisma.ReviewMilestoneReminderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReviewMilestoneReminderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReviewMilestoneReminderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        findFirst: {
+          args: Prisma.ReviewMilestoneReminderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReviewMilestoneReminderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        findMany: {
+          args: Prisma.ReviewMilestoneReminderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>[]
+        }
+        create: {
+          args: Prisma.ReviewMilestoneReminderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        createMany: {
+          args: Prisma.ReviewMilestoneReminderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReviewMilestoneReminderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>[]
+        }
+        delete: {
+          args: Prisma.ReviewMilestoneReminderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        update: {
+          args: Prisma.ReviewMilestoneReminderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReviewMilestoneReminderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReviewMilestoneReminderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReviewMilestoneReminderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReviewMilestoneReminderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewMilestoneReminderPayload>
+        }
+        aggregate: {
+          args: Prisma.ReviewMilestoneReminderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReviewMilestoneReminder>
+        }
+        groupBy: {
+          args: Prisma.ReviewMilestoneReminderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewMilestoneReminderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReviewMilestoneReminderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewMilestoneReminderCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReviewOversightRule: {
+      payload: Prisma.$ReviewOversightRulePayload<ExtArgs>
+      fields: Prisma.ReviewOversightRuleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReviewOversightRuleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReviewOversightRuleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        findFirst: {
+          args: Prisma.ReviewOversightRuleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReviewOversightRuleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        findMany: {
+          args: Prisma.ReviewOversightRuleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>[]
+        }
+        create: {
+          args: Prisma.ReviewOversightRuleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        createMany: {
+          args: Prisma.ReviewOversightRuleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReviewOversightRuleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>[]
+        }
+        delete: {
+          args: Prisma.ReviewOversightRuleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        update: {
+          args: Prisma.ReviewOversightRuleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        deleteMany: {
+          args: Prisma.ReviewOversightRuleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReviewOversightRuleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReviewOversightRuleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>[]
+        }
+        upsert: {
+          args: Prisma.ReviewOversightRuleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReviewOversightRulePayload>
+        }
+        aggregate: {
+          args: Prisma.ReviewOversightRuleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReviewOversightRule>
+        }
+        groupBy: {
+          args: Prisma.ReviewOversightRuleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewOversightRuleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReviewOversightRuleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReviewOversightRuleCountAggregateOutputType> | number
+        }
+      }
+    }
+    CalendarCategoryColor: {
+      payload: Prisma.$CalendarCategoryColorPayload<ExtArgs>
+      fields: Prisma.CalendarCategoryColorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CalendarCategoryColorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CalendarCategoryColorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        findFirst: {
+          args: Prisma.CalendarCategoryColorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CalendarCategoryColorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        findMany: {
+          args: Prisma.CalendarCategoryColorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>[]
+        }
+        create: {
+          args: Prisma.CalendarCategoryColorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        createMany: {
+          args: Prisma.CalendarCategoryColorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CalendarCategoryColorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>[]
+        }
+        delete: {
+          args: Prisma.CalendarCategoryColorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        update: {
+          args: Prisma.CalendarCategoryColorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        deleteMany: {
+          args: Prisma.CalendarCategoryColorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CalendarCategoryColorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CalendarCategoryColorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>[]
+        }
+        upsert: {
+          args: Prisma.CalendarCategoryColorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CalendarCategoryColorPayload>
+        }
+        aggregate: {
+          args: Prisma.CalendarCategoryColorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCalendarCategoryColor>
+        }
+        groupBy: {
+          args: Prisma.CalendarCategoryColorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarCategoryColorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CalendarCategoryColorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CalendarCategoryColorCountAggregateOutputType> | number
+        }
+      }
+    }
     GustoConnection: {
       payload: Prisma.$GustoConnectionPayload<ExtArgs>
       fields: Prisma.GustoConnectionFieldRefs
@@ -6680,6 +6905,8 @@ export const FeedPostScalarFieldEnum = {
   eventOrganizerUserId: 'eventOrganizerUserId',
   googleCalendarEventId: 'googleCalendarEventId',
   eventCancelledAt: 'eventCancelledAt',
+  eventColor: 'eventColor',
+  eventVisibility: 'eventVisibility',
   audienceType: 'audienceType',
   audienceDeptIds: 'audienceDeptIds',
   audienceEmployeeIds: 'audienceEmployeeIds',
@@ -7586,11 +7813,44 @@ export const OneOnOneScalarFieldEnum = {
   notebookMarkdown: 'notebookMarkdown',
   meetingLink: 'meetingLink',
   googleEventId: 'googleEventId',
+  milestoneKey: 'milestoneKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type OneOnOneScalarFieldEnum = (typeof OneOnOneScalarFieldEnum)[keyof typeof OneOnOneScalarFieldEnum]
+
+
+export const ReviewMilestoneReminderScalarFieldEnum = {
+  id: 'id',
+  milestoneKey: 'milestoneKey',
+  employeeId: 'employeeId',
+  kind: 'kind',
+  dueDate: 'dueDate',
+  recipients: 'recipients',
+  sentAt: 'sentAt'
+} as const
+
+export type ReviewMilestoneReminderScalarFieldEnum = (typeof ReviewMilestoneReminderScalarFieldEnum)[keyof typeof ReviewMilestoneReminderScalarFieldEnum]
+
+
+export const ReviewOversightRuleScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  departmentIds: 'departmentIds',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewOversightRuleScalarFieldEnum = (typeof ReviewOversightRuleScalarFieldEnum)[keyof typeof ReviewOversightRuleScalarFieldEnum]
+
+
+export const CalendarCategoryColorScalarFieldEnum = {
+  category: 'category',
+  color: 'color',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CalendarCategoryColorScalarFieldEnum = (typeof CalendarCategoryColorScalarFieldEnum)[keyof typeof CalendarCategoryColorScalarFieldEnum]
 
 
 export const GustoConnectionScalarFieldEnum = {
@@ -8521,6 +8781,9 @@ export type GlobalOmitConfig = {
   workerHeartbeat?: Prisma.WorkerHeartbeatOmit
   hiringPlan?: Prisma.HiringPlanOmit
   oneOnOne?: Prisma.OneOnOneOmit
+  reviewMilestoneReminder?: Prisma.ReviewMilestoneReminderOmit
+  reviewOversightRule?: Prisma.ReviewOversightRuleOmit
+  calendarCategoryColor?: Prisma.CalendarCategoryColorOmit
   gustoConnection?: Prisma.GustoConnectionOmit
   importBatch?: Prisma.ImportBatchOmit
   importRow?: Prisma.ImportRowOmit

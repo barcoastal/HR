@@ -10,6 +10,10 @@ import { RESPONSE_LABEL, type AttendeeResponse, type EventResponse } from "@/lib
 import { cancelTrainingClass } from "@/lib/actions/training-calendar";
 import type { CalendarEvent } from "@/components/calendar/calendar-view";
 import { dateKey, formatDateTime, zonedDateFromInput, zonedParts } from "@/lib/time-zone";
+import { EventAppearanceFields } from "@/components/calendar/event-appearance-fields";
+import { normalizeEventVisibility, type EventVisibility } from "@/lib/event-audience";
+import { createOneOnOne } from "@/lib/actions/one-on-ones";
+import { MILESTONE_MEETING_TYPE, MILESTONE_STATUS_LABEL } from "@/lib/review-milestones";
 
 const inputClass = cn(
   "w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2 text-sm",
@@ -25,6 +29,7 @@ function typeLabel(type: CalendarEvent["type"]) {
     "feed-event": "Company event",
     "google-calendar": "Google Calendar",
     "performance-review": "Performance review",
+    "review-milestone": "Review milestone",
     "one-on-one": "1:1 meeting",
     training: "Training",
     "out-of-office": "Out of office",
@@ -69,8 +74,11 @@ export function CalendarEventDetails({ event, open, onClose }: {
       date: dateKey(start),
       time: `${String(startParts.hour).padStart(2, "0")}:${String(startParts.minute).padStart(2, "0")}`,
       duration: String(Math.max(5, Math.round((end.getTime() - start.getTime()) / 60_000))),
+      color: event.color || "",
+      visibility: normalizeEventVisibility(event.visibility) as EventVisibility,
     };
   }, [event]);
+  const [scheduling, setScheduling] = useState<{ date: string; time: string } | null>(null);
   const [form, setForm] = useState(defaults);
   // Who has answered, for the organizer and HR. Loaded when a Calendar-page event opens.
   const [responses, setResponses] = useState<AttendeeResponse[] | null>(null);
@@ -94,6 +102,7 @@ export function CalendarEventDetails({ event, open, onClose }: {
   const eventSourceKind = event.sourceKind;
 
   function close() {
+    setScheduling(null);
     setEditing(false);
     setConfirmCancel(false);
     setError(null);
@@ -122,6 +131,8 @@ export function CalendarEventDetails({ event, open, onClose }: {
       location: form.location,
       startTime: startAt.toISOString(),
       durationMinutes: Number(form.duration),
+      color: form.color || null,
+      visibility: form.visibility,
     });
     setSaving(false);
     if (!result.success) {
@@ -129,6 +140,31 @@ export function CalendarEventDetails({ event, open, onClose }: {
       return;
     }
     setEditing(false);
+    router.refresh();
+    close();
+  }
+
+  async function scheduleMilestone() {
+    const milestone = event?.milestone;
+    if (!milestone || !scheduling) return;
+    const startAt = zonedDateFromInput(scheduling.date, scheduling.time);
+    if (!startAt) {
+      setError("Pick a valid date and time");
+      return;
+    }
+    setSaving(true);
+    setError(null);
+    const result = await createOneOnOne({
+      employeeId: milestone.employeeId,
+      type: MILESTONE_MEETING_TYPE[milestone.kind],
+      scheduledAt: startAt,
+      milestoneKey: milestone.key,
+    });
+    setSaving(false);
+    if (!result.success) {
+      setError(result.error || "Could not schedule the review");
+      return;
+    }
     router.refresh();
     close();
   }
@@ -179,6 +215,13 @@ export function CalendarEventDetails({ event, open, onClose }: {
             Description
             <textarea rows={3} className={cn(inputClass, "mt-1")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
           </label>
+          <EventAppearanceFields
+            color={form.color}
+            onColor={(color) => setForm({ ...form, color })}
+            visibility={form.visibility}
+            onVisibility={(visibility) => setForm({ ...form, visibility })}
+            inputClass={inputClass}
+          />
           {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-700">{error}</p>}
           <div className="flex justify-end gap-2 border-t border-[var(--color-border)] pt-4">
             <button type="button" onClick={() => setEditing(false)} className="rounded-xl px-4 py-2 text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Back</button>
@@ -196,7 +239,18 @@ export function CalendarEventDetails({ event, open, onClose }: {
           </div>
           <div className="space-y-3 text-sm">
             <div className="flex gap-3"><Icon name="schedule" size={19} className="text-[var(--color-accent)]" /><div><p className="font-semibold text-[var(--color-text-primary)]">{formatDateTime(new Date(event.date), { allDay: event.allDay })}</p>{event.endDate && !event.allDay && <p className="text-[var(--color-text-muted)]">Ends {formatDateTime(new Date(event.endDate))}</p>}</div></div>
-            {event.organizer && <div className="flex gap-3"><Icon name="person" size={19} className="text-[var(--color-accent)]" /><div><p className="text-[var(--color-text-muted)]">Organizer</p><p className="font-semibold text-[var(--color-text-primary)]">{event.organizer}</p></div></div>}
+            {event.milestone && (
+              <div className="flex gap-3"><Icon name="flag" size={19} className="text-[var(--color-accent)]" /><div>
+                <p className="font-semibold text-[var(--color-text-primary)]">{MILESTONE_STATUS_LABEL[event.milestone.status]}</p>
+                {event.milestone.meetingKey && (event.milestone.status === "scheduled" || event.milestone.status === "completed") && (
+                  <p className="text-[var(--color-text-muted)]">
+                    Meeting on {formatDateTime(zonedDateFromInput(event.milestone.meetingKey) || new Date(event.date), { allDay: true })}
+                    {event.milestone.meetingId && event.milestone.canSchedule && <> · <a href={`/one-on-ones/${event.milestone.meetingId}`} className="font-semibold text-[var(--color-accent)] hover:underline">Open 1:1</a></>}
+                  </p>
+                )}
+              </div></div>
+            )}
+            {event.organizer && <div className="flex gap-3"><Icon name="person" size={19} className="text-[var(--color-accent)]" /><div><p className="text-[var(--color-text-muted)]">{event.milestone ? "Manager" : "Organizer"}</p><p className="font-semibold text-[var(--color-text-primary)]">{event.organizer}</p></div></div>}
             {event.location && <div className="flex gap-3"><Icon name="location_on" size={19} className="text-[var(--color-accent)]" /><p className="text-[var(--color-text-primary)]">{event.location}</p></div>}
             {event.description && <div className="flex gap-3"><Icon name="notes" size={19} className="text-[var(--color-accent)]" /><p className="whitespace-pre-wrap text-[var(--color-text-primary)]">{event.description}</p></div>}
             {event.audience && <div className="flex gap-3"><Icon name="visibility" size={19} className="text-[var(--color-accent)]" /><p className="text-[var(--color-text-primary)]">Visible to {event.audience}</p></div>}
@@ -207,6 +261,38 @@ export function CalendarEventDetails({ event, open, onClose }: {
             )}
           </div>
           {(event.meetLink || event.htmlLink) && <div className="flex flex-wrap gap-2">{event.meetLink && <a href={event.meetLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white"><Icon name="videocam" size={17} />Join meeting</a>}{event.htmlLink && <a href={event.htmlLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-4 py-2 text-sm font-semibold text-[var(--color-text-primary)]"><Icon name="open_in_new" size={17} />Open in Google</a>}</div>}
+          {event.milestone?.canSchedule && (event.milestone.status === "due" || event.milestone.status === "overdue") && (
+            <div className="border-t border-[var(--color-border)] pt-4">
+              {scheduling ? (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 gap-2">
+                    <label className="col-span-2 text-xs font-semibold text-[var(--color-text-primary)]">
+                      Date
+                      <input type="date" className={cn(inputClass, "mt-1")} value={scheduling.date} onChange={(e) => setScheduling({ ...scheduling, date: e.target.value })} />
+                    </label>
+                    <label className="text-xs font-semibold text-[var(--color-text-primary)]">
+                      Time
+                      <input type="time" className={cn(inputClass, "mt-1")} value={scheduling.time} onChange={(e) => setScheduling({ ...scheduling, time: e.target.value })} />
+                    </label>
+                  </div>
+                  <p className="text-[11px] text-[var(--color-text-muted)]">Creates a 30-minute 1:1 with {event.milestone.employeeName}. With your Google Calendar connected, Google sends them an invitation they can accept; otherwise both of you get an emailed invite.</p>
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={() => setScheduling(null)} className="rounded-xl px-3 py-2 text-sm font-semibold text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)]">Back</button>
+                    <button type="button" onClick={scheduleMilestone} disabled={saving} className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                      {saving && <Icon name="progress_activity" size={16} className="animate-material-spin" />}
+                      Schedule review
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-end">
+                  <button type="button" onClick={() => { setError(null); setScheduling({ date: event.milestone!.dueKey < dateKey(new Date()) ? dateKey(new Date()) : event.milestone!.dueKey, time: "10:00" }); }} className="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-4 py-2 text-sm font-semibold text-white">
+                    <Icon name="event" size={17} />Schedule
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           {error && <p className="rounded-xl bg-red-500/10 px-3 py-2 text-sm text-red-700">{error}</p>}
           {event.canManage && (event.sourceKind === "company" || event.sourceKind === "training") && (
             <div className="border-t border-[var(--color-border)] pt-4">

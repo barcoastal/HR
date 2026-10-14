@@ -386,6 +386,21 @@ export type HiringPlan = Prisma.HiringPlanModel
  */
 export type OneOnOne = Prisma.OneOnOneModel
 /**
+ * Model ReviewMilestoneReminder
+ * 
+ */
+export type ReviewMilestoneReminder = Prisma.ReviewMilestoneReminderModel
+/**
+ * Model ReviewOversightRule
+ * 
+ */
+export type ReviewOversightRule = Prisma.ReviewOversightRuleModel
+/**
+ * Model CalendarCategoryColor
+ * 
+ */
+export type CalendarCategoryColor = Prisma.CalendarCategoryColorModel
+/**
  * Model GustoConnection
  * 
  */

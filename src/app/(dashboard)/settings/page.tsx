@@ -35,7 +35,8 @@ import { PipelineSettings } from "@/components/settings/pipeline-settings";
 import { getRecruiters, getPipelineStages, getCandidateCustomFields, getStageNotifyRecipients, getStageNotifyEmployeeIds } from "@/lib/actions/company-settings";
 import { getAllStageDocuments, getEligibleCountersigners } from "@/lib/actions/stage-documents";
 import { NotificationSettings } from "@/components/settings/notification-settings";
-import { getNotificationRules, getNotificationRecipients } from "@/lib/actions/notification-settings";
+import { getNotificationRules, getNotificationRecipients, getReviewOversightSettings } from "@/lib/actions/notification-settings";
+import { ReviewOversightSettings } from "@/components/settings/review-oversight-settings";
 import { seedNotificationRules } from "@/lib/notifications/seed";
 import { StageDocumentsManager } from "@/components/settings/stage-documents-manager";
 import { PositionDocumentsManager } from "@/components/settings/position-documents-manager";
@@ -105,6 +106,7 @@ export default async function SettingsPage({
 
   const activeEmployeeCount = await db.employee.count({ where: { status: "ACTIVE" } });
   const emailDeliveries = activeSection === "email" && activePanel === "delivery" ? await getRecentEmailDeliveries() : [];
+  const reviewOversight = activeSection === "recruitment" && activePanel === "notifications" ? await getReviewOversightSettings() : null;
 
   let gustoMapping = null;
   if (gustoConnection && activeSection === "integrations" && activePanel === "payroll") {
@@ -196,6 +198,11 @@ export default async function SettingsPage({
                   initialRules={notificationRules}
                   initialRecipients={notificationRecipients}
                   allEmployees={employees.map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
+                />}
+                {activePanel === "notifications" && reviewOversight && <ReviewOversightSettings
+                  initial={reviewOversight}
+                  allEmployees={employees.filter((e) => e.status !== "OFFBOARDED").map((e) => ({ id: e.id, firstName: e.firstName, lastName: e.lastName, email: e.email }))}
+                  departments={departments.map((d) => ({ id: d.id, name: d.name }))}
                 />}
               </>
             )}

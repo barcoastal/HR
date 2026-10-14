@@ -7,6 +7,8 @@ import { Dialog } from "@/components/ui/dialog";
 import { Icon } from "@/components/ui/icon";
 import { createCompanyEvent } from "@/lib/actions/company-events";
 import { dateKey, zonedDateFromInput } from "@/lib/time-zone";
+import { EventAppearanceFields } from "@/components/calendar/event-appearance-fields";
+import type { EventVisibility } from "@/lib/event-audience";
 
 type Department = { id: string; name: string; employeeCount: number };
 type Employee = { id: string; firstName: string; lastName: string; preferredName?: string | null; email: string; departmentId: string | null };
@@ -32,6 +34,8 @@ export function CreateEventDialog({
   const [time, setTime] = useState("09:00");
   const [duration, setDuration] = useState("60");
   const [withMeet, setWithMeet] = useState(true);
+  const [color, setColor] = useState("");
+  const [visibility, setVisibility] = useState<EventVisibility>("everyone");
   const [deptIds, setDeptIds] = useState<Set<string>>(new Set());
   const [empIds, setEmpIds] = useState<Set<string>>(new Set());
   const [groupIds, setGroupIds] = useState<Set<string>>(new Set());
@@ -90,6 +94,8 @@ export function CreateEventDialog({
       trainingGroupIds: mode === "groups" ? Array.from(groupIds) : [],
       includeEveryone: mode === "everyone",
       withMeetLink: withMeet,
+      color: color || null,
+      visibility,
     });
     setSending(false);
     setResult(res);
@@ -107,6 +113,8 @@ export function CreateEventDialog({
     setGroupIds(new Set());
     setResult(null);
     setMode("departments");
+    setColor("");
+    setVisibility("everyone");
   }
 
   const input = cn(
@@ -182,6 +190,8 @@ export function CreateEventDialog({
               <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} className={input} />
             </div>
 
+            <EventAppearanceFields color={color} onColor={setColor} visibility={visibility} onVisibility={setVisibility} inputClass={input} />
+
             <label className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
               <input type="checkbox" checked={withMeet} onChange={(e) => setWithMeet(e.target.checked)} className="h-3.5 w-3.5 rounded border-gray-300" />
               Add a Google Meet link
@@ -195,7 +205,7 @@ export function CreateEventDialog({
                     { v: "departments", l: "By department" },
                     { v: "groups", l: "Saved groups" },
                     { v: "people", l: "Pick people" },
-                    { v: "everyone", l: `Everyone (${employees.length})` },
+                    { v: "everyone", l: visibility === "managers" ? "All managers & admins" : visibility === "admins" ? "All admins & HR" : `Everyone (${employees.length})` },
                   ] as const
                 ).map((opt) => (
                   <button
