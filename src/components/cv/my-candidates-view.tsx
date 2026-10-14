@@ -1,7 +1,7 @@
 "use client";
 
 import { cn, getInitials, timeAgo } from "@/lib/utils";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
@@ -70,20 +70,28 @@ export function MyCandidatesView({
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
+  // Focus a candidate opened from search once, not on every later list refresh.
+  const handledFocusRef = useRef<string | null>(null);
   useEffect(() => {
     if (!focusedCandidateId || !candidates.some((candidate) => candidate.id === focusedCandidateId)) return;
+    if (handledFocusRef.current === focusedCandidateId) return;
+    handledFocusRef.current = focusedCandidateId;
     setSearch("");
     setStatusFilter("ALL");
     setHighlightedId(focusedCandidateId);
     const frame = requestAnimationFrame(() => {
       document.getElementById(`my-candidate-${focusedCandidateId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
     });
-    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
     return () => {
       cancelAnimationFrame(frame);
-      window.clearTimeout(timer);
     };
   }, [candidates, focusedCandidateId]);
+
+  useEffect(() => {
+    if (!highlightedId) return;
+    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
+    return () => window.clearTimeout(timer);
+  }, [highlightedId]);
 
   const visibleStages = pipelineStages.filter((s) => s.visible).sort((a, b) => a.order - b.order);
 

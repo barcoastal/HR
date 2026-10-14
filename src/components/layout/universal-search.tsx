@@ -39,6 +39,7 @@ export function UniversalSearch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const closeSearchRef = useRef(() => {});
 
   const groupedResults = useMemo(
     () => GROUPS.map((group) => ({ ...group, results: results.filter((result) => result.kind === group.kind) })).filter((group) => group.results.length > 0),
@@ -51,7 +52,7 @@ export function UniversalSearch() {
         event.preventDefault();
         setOpen(true);
       } else if (event.key === "Escape") {
-        setOpen(false);
+        closeSearchRef.current();
       }
     }
     window.addEventListener("keydown", handleShortcut);
@@ -108,7 +109,13 @@ export function UniversalSearch() {
 
   function closeSearch() {
     setOpen(false);
+    setQuery("");
+    setResults([]);
+    setError(null);
+    setActiveIndex(0);
   }
+
+  closeSearchRef.current = closeSearch;
 
   function openResult(result: SearchResult) {
     closeSearch();

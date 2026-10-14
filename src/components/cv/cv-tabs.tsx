@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PlatformSyncPanel } from "@/components/cv/platform-sync-panel";
 import { SearchCandidates } from "@/components/cv/search-candidates";
 import { CandidatePipeline } from "@/components/cv/candidate-pipeline";
@@ -512,7 +512,12 @@ export function CVTabs({
   const [showArchive, setShowArchive] = useState(false);
   const [recruiterFilter, setRecruiterFilter] = useState<string>("ALL");
 
+  // Apply a search deep link once; later refreshes must not reset the user's tab or filter.
+  const handledFocusRef = useRef<string | null>(null);
   useEffect(() => {
+    const focusKey = `${initialTab ?? ""}|${focusedCandidateId ?? ""}|${focusedPositionId ?? ""}`;
+    if (handledFocusRef.current === focusKey) return;
+    handledFocusRef.current = focusKey;
     if (initialTab === "database" || initialTab === "dnc") {
       setActiveTab(initialTab);
       return;

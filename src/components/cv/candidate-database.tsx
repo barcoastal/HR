@@ -232,8 +232,12 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
+  // Focus a candidate opened from search once, not on every later list refresh.
+  const handledFocusRef = useRef<string | null>(null);
   useEffect(() => {
     if (!focusedCandidateId || !candidates.some((candidate) => candidate.id === focusedCandidateId)) return;
+    if (handledFocusRef.current === focusedCandidateId) return;
+    handledFocusRef.current = focusedCandidateId;
     setSearch("");
     setSourceFilter("");
     setPositionFilter("");
@@ -253,13 +257,17 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
         visible?.scrollIntoView({ behavior: "smooth", block: "center" });
       });
     });
-    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
     return () => {
       cancelAnimationFrame(frame);
       cancelAnimationFrame(nestedFrame);
-      window.clearTimeout(timer);
     };
   }, [candidates, focusedCandidateId]);
+
+  useEffect(() => {
+    if (!highlightedId) return;
+    const timer = window.setTimeout(() => setHighlightedId(null), 3500);
+    return () => window.clearTimeout(timer);
+  }, [highlightedId]);
 
   const distinctSources = useMemo(() => {
     const sources = new Set<string>();
