@@ -18,6 +18,7 @@ import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
 import { validateRejection, type RejectionInput } from "@/lib/candidate-rejection";
 import { CandidateStarButton } from "./candidate-star-button";
 import { DoNotCallDialog, RejectionReasonFields, type RejectionValue } from "./rejection-reason";
+import { CandidateClassesPanel } from "@/components/classes/candidate-classes-panel";
 
 type InterviewForDisplay = {
   id: string;
@@ -836,6 +837,8 @@ export function CandidateDetailDialog({
                 {dncBusy ? "..." : localDoNotCall ? "Remove DNC" : "Mark Do Not Call"}
               </button>
             </div>
+
+            {candidate && <CandidateClassesPanel candidateId={candidate.id} />}
 
             {/* Application history */}
             {applications.length > 0 && (

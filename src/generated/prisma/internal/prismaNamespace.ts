@@ -461,7 +461,9 @@ export const ModelName = {
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
   ImportDuplicateGroup: 'ImportDuplicateGroup',
-  DuplicateDismissal: 'DuplicateDismissal'
+  DuplicateDismissal: 'DuplicateDismissal',
+  RecruitmentClass: 'RecruitmentClass',
+  RecruitmentClassMember: 'RecruitmentClassMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -477,7 +479,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateStageEvent" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateStageEvent" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal" | "recruitmentClass" | "recruitmentClassMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -6253,6 +6255,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RecruitmentClass: {
+      payload: Prisma.$RecruitmentClassPayload<ExtArgs>
+      fields: Prisma.RecruitmentClassFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecruitmentClassFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecruitmentClassFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        findFirst: {
+          args: Prisma.RecruitmentClassFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecruitmentClassFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        findMany: {
+          args: Prisma.RecruitmentClassFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>[]
+        }
+        create: {
+          args: Prisma.RecruitmentClassCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        createMany: {
+          args: Prisma.RecruitmentClassCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecruitmentClassCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>[]
+        }
+        delete: {
+          args: Prisma.RecruitmentClassDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        update: {
+          args: Prisma.RecruitmentClassUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecruitmentClassDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecruitmentClassUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecruitmentClassUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecruitmentClassUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassPayload>
+        }
+        aggregate: {
+          args: Prisma.RecruitmentClassAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecruitmentClass>
+        }
+        groupBy: {
+          args: Prisma.RecruitmentClassGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentClassGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecruitmentClassCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentClassCountAggregateOutputType> | number
+        }
+      }
+    }
+    RecruitmentClassMember: {
+      payload: Prisma.$RecruitmentClassMemberPayload<ExtArgs>
+      fields: Prisma.RecruitmentClassMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RecruitmentClassMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RecruitmentClassMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.RecruitmentClassMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RecruitmentClassMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        findMany: {
+          args: Prisma.RecruitmentClassMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>[]
+        }
+        create: {
+          args: Prisma.RecruitmentClassMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        createMany: {
+          args: Prisma.RecruitmentClassMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RecruitmentClassMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.RecruitmentClassMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        update: {
+          args: Prisma.RecruitmentClassMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.RecruitmentClassMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RecruitmentClassMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RecruitmentClassMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.RecruitmentClassMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RecruitmentClassMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.RecruitmentClassMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRecruitmentClassMember>
+        }
+        groupBy: {
+          args: Prisma.RecruitmentClassMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentClassMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RecruitmentClassMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RecruitmentClassMemberCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7524,6 +7674,37 @@ export const DuplicateDismissalScalarFieldEnum = {
 export type DuplicateDismissalScalarFieldEnum = (typeof DuplicateDismissalScalarFieldEnum)[keyof typeof DuplicateDismissalScalarFieldEnum]
 
 
+export const RecruitmentClassScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  role: 'role',
+  positionId: 'positionId',
+  startDate: 'startDate',
+  targetCount: 'targetCount',
+  notes: 'notes',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentClassScalarFieldEnum = (typeof RecruitmentClassScalarFieldEnum)[keyof typeof RecruitmentClassScalarFieldEnum]
+
+
+export const RecruitmentClassMemberScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  candidateId: 'candidateId',
+  color: 'color',
+  note: 'note',
+  addedById: 'addedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentClassMemberScalarFieldEnum = (typeof RecruitmentClassMemberScalarFieldEnum)[keyof typeof RecruitmentClassMemberScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -8144,6 +8325,34 @@ export type EnumImportGroupStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 export type ListEnumImportGroupStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportGroupStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'RecruitmentClassStatus'
+ */
+export type EnumRecruitmentClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruitmentClassStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'RecruitmentClassStatus[]'
+ */
+export type ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruitmentClassStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'RecruitmentClassColor'
+ */
+export type EnumRecruitmentClassColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruitmentClassColor'>
+    
+
+
+/**
+ * Reference to a field of type 'RecruitmentClassColor[]'
+ */
+export type ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RecruitmentClassColor[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -8317,6 +8526,8 @@ export type GlobalOmitConfig = {
   importRow?: Prisma.ImportRowOmit
   importDuplicateGroup?: Prisma.ImportDuplicateGroupOmit
   duplicateDismissal?: Prisma.DuplicateDismissalOmit
+  recruitmentClass?: Prisma.RecruitmentClassOmit
+  recruitmentClassMember?: Prisma.RecruitmentClassMemberOmit
 }
 
 /* Types for Logging */

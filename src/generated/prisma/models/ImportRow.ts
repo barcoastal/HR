@@ -821,7 +821,8 @@ export type $ImportRowPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     result: string | null
     resultNotes: runtime.JsonValue | null
     /**
-     * * Undo bookkeeping: for UPDATE rows the overwritten values (RowSnapshot); for CREATE rows { loginCreated } (CreateSnapshot).
+     * *
+     *    * Undo bookkeeping: for UPDATE rows the overwritten values (RowSnapshot); for CREATE rows { loginCreated } (CreateSnapshot).
      */
     previous: runtime.JsonValue | null
   }, ExtArgs["result"]["importRow"]>

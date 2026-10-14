@@ -332,13 +332,13 @@ model Employee {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String?
-  role         UserRole @default(EMPLOYEE)
-  employeeId   String?  @unique
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String?
+  role          UserRole  @default(EMPLOYEE)
+  employeeId    String?   @unique
   deactivatedAt DateTime? // set when the person is offboarded; blocks sign-in and email
-  createdAt    DateTime @default(now())
+  createdAt     DateTime  @default(now())
 
   // Google Calendar per-user sync
   googleCalendarAccessToken    String?
@@ -863,12 +863,13 @@ model Candidate {
   createdAt                  DateTime        @default(now())
   updatedAt                  DateTime        @updatedAt
 
-  position        Position?              @relation(fields: [positionId], references: [id])
-  manager         Employee?              @relation("CandidateManager", fields: [managerId], references: [id])
-  interviews      Interview[]
-  signingRequests SigningRequest[]
-  applications    CandidateApplication[]
-  stageEvents     CandidateStageEvent[]
+  position         Position?                @relation(fields: [positionId], references: [id])
+  manager          Employee?                @relation("CandidateManager", fields: [managerId], references: [id])
+  interviews       Interview[]
+  signingRequests  SigningRequest[]
+  applications     CandidateApplication[]
+  stageEvents      CandidateStageEvent[]
+  classMemberships RecruitmentClassMember[]
 
   @@index([positionId])
   @@index([status])
@@ -930,23 +931,24 @@ model CandidateApplication {
 }
 
 model Position {
-  id            String                 @id @default(uuid())
-  title         String
-  departmentId  String?
-  description   String?
-  requirements  String?
-  salary        String?
-  location      String?
-  type          String? // Full-time, Part-time, Contract
-  status        PositionStatus         @default(OPEN)
-  published     Boolean                @default(false)
-  jobingJobId   String?
-  candidates    Candidate[]
-  interviews    Interview[]
-  applications  CandidateApplication[]
-  boardPostings PositionBoardPosting[]
-  documents     PositionDocument[]
-  createdAt     DateTime               @default(now())
+  id                 String                 @id @default(uuid())
+  title              String
+  departmentId       String?
+  description        String?
+  requirements       String?
+  salary             String?
+  location           String?
+  type               String? // Full-time, Part-time, Contract
+  status             PositionStatus         @default(OPEN)
+  published          Boolean                @default(false)
+  jobingJobId        String?
+  candidates         Candidate[]
+  interviews         Interview[]
+  applications       CandidateApplication[]
+  boardPostings      PositionBoardPosting[]
+  documents          PositionDocument[]
+  recruitmentClasses RecruitmentClass[]
+  createdAt          DateTime               @default(now())
 
   department Department? @relation(fields: [departmentId], references: [id])
 
@@ -1334,22 +1336,22 @@ model PulseResponse {
 // ---------------------
 
 model CompanySettings {
-  id                     String   @id @default("singleton")
-  companyName            String   @default("Coastal HR")
-  domain                 String   @default("")
-  industry               String   @default("")
-  companySize            String   @default("")
-  logoUrl                String?
-  faviconUrl             String?
-  senderEmail            String   @default("noreply@hr.coastaldebt-tools.com")
-  senderName             String   @default("Coastal HR")
-  recruiterIds           String   @default("[]")
-  pipelineStages         String   @default("[]")
-  candidateCustomFields  String   @default("[]")
-  stageNotifyRecipients  String   @default("[\"candidate\"]") // JSON array: "candidate", "recruiter", "manager"
-  stageNotifyEmployeeIds String   @default("[]") // JSON array of employee IDs to always notify
-  trainingEligibleJobTitles String @default("[\"Opener\"]") // JSON array of job-title names routed through Training
-  updatedAt              DateTime @updatedAt
+  id                        String   @id @default("singleton")
+  companyName               String   @default("Coastal HR")
+  domain                    String   @default("")
+  industry                  String   @default("")
+  companySize               String   @default("")
+  logoUrl                   String?
+  faviconUrl                String?
+  senderEmail               String   @default("noreply@hr.coastaldebt-tools.com")
+  senderName                String   @default("Coastal HR")
+  recruiterIds              String   @default("[]")
+  pipelineStages            String   @default("[]")
+  candidateCustomFields     String   @default("[]")
+  stageNotifyRecipients     String   @default("[\"candidate\"]") // JSON array: "candidate", "recruiter", "manager"
+  stageNotifyEmployeeIds    String   @default("[]") // JSON array of employee IDs to always notify
+  trainingEligibleJobTitles String   @default("[\"Opener\"]") // JSON array of job-title names routed through Training
+  updatedAt                 DateTime @updatedAt
 }
 
 model StageDocument {
@@ -1795,7 +1797,9 @@ model ImportRow {
   resultEmployeeId String?
   result           String?
   resultNotes      Json?
-  /** Undo bookkeeping: for UPDATE rows the overwritten values (RowSnapshot); for CREATE rows { loginCreated } (CreateSnapshot). */
+  /**
+   * Undo bookkeeping: for UPDATE rows the overwritten values (RowSnapshot); for CREATE rows { loginCreated } (CreateSnapshot).
+   */
   previous         Json?
 
   @@index([batchId])
@@ -1825,4 +1829,56 @@ model DuplicateDismissal {
   createdAt     DateTime @default(now())
 
   @@unique([employeeAId, employeeBId])
+}
+
+enum RecruitmentClassStatus {
+  UPCOMING
+  STARTED
+  CANCELLED
+}
+
+enum RecruitmentClassColor {
+  RED // Not moving forward
+  YELLOW // In process
+  GREEN // Cleared and ready to start
+}
+
+/// A recruitment class (cohort): a role with a fixed start date and the
+/// candidates expected to start together, e.g. "Openers – Oct 12".
+/// Not to be confused with TrainingClass (employee training sessions).
+model RecruitmentClass {
+  id          String                 @id @default(uuid())
+  name        String
+  role        String
+  positionId  String?
+  startDate   DateTime               @db.Date
+  targetCount Int?
+  notes       String?
+  status      RecruitmentClassStatus @default(UPCOMING)
+  createdById String? // User.id
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  position Position?                @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  members  RecruitmentClassMember[]
+
+  @@index([startDate])
+  @@index([positionId])
+}
+
+model RecruitmentClassMember {
+  id          String                @id @default(uuid())
+  classId     String
+  candidateId String
+  color       RecruitmentClassColor @default(YELLOW)
+  note        String?
+  addedById   String? // User.id
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  class     RecruitmentClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  candidate Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, candidateId])
+  @@index([candidateId])
 }
