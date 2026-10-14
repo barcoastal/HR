@@ -166,7 +166,24 @@ export async function sendAdverseActionLetter(
         doNotCall: true,
         doNotCallReason: candidate.doNotCallReason || "Background check failed",
         doNotCallAt: candidate.doNotCallAt || new Date(),
+        // The adverse-action letter is the standard "failed background check"
+        // disposition — no picker needed on this path.
+        rejectionReason: "FAILED_BACKGROUND_CHECK",
+        rejectionNote: reason || null,
+        rejectedAt: previousStatus === "REJECTED" && candidate.rejectedAt ? candidate.rejectedAt : new Date(),
       },
+    });
+    const { recordStageEvent, currentUserId } = await import("@/lib/candidate-stage-events");
+    await recordStageEvent({
+      candidateId,
+      fromStatus: previousStatus,
+      toStatus: "REJECTED",
+      fromStageId: candidate.stageId,
+      toStageId: candidate.stageId,
+      reason: "FAILED_BACKGROUND_CHECK",
+      note: reason || null,
+      source: "adverse_action_letter",
+      changedById: await currentUserId(),
     });
     const { audit } = await import("@/lib/audit");
     await audit({

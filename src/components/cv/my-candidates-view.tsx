@@ -5,6 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
+import { CandidateStarButton } from "./candidate-star-button";
+import { RejectionReasonTag } from "./rejection-reason";
 
 type CandidateRow = {
   id: string;
@@ -21,6 +23,9 @@ type CandidateRow = {
   createdAt: Date;
   backgroundCheckStatus: string | null;
   position: { title: string } | null;
+  starred?: boolean;
+  rejectionReason?: string | null;
+  rejectionNote?: string | null;
 };
 
 type PipelineStage = {
@@ -69,6 +74,7 @@ export function MyCandidatesView({
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [highlightedId, setHighlightedId] = useState<string | null>(null);
+  const [starredOnly, setStarredOnly] = useState(false);
 
   // Focus a candidate opened from search once, not on every later list refresh.
   const handledFocusRef = useRef<string | null>(null);
@@ -78,6 +84,7 @@ export function MyCandidatesView({
     handledFocusRef.current = focusedCandidateId;
     setSearch("");
     setStatusFilter("ALL");
+    setStarredOnly(false);
     setHighlightedId(focusedCandidateId);
     const frame = requestAnimationFrame(() => {
       document.getElementById(`my-candidate-${focusedCandidateId}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -111,6 +118,7 @@ export function MyCandidatesView({
     const q = search.trim().toLowerCase();
     return candidates.filter((c) => {
       if (statusFilter !== "ALL" && stageKeyFor(c) !== statusFilter) return false;
+      if (starredOnly && !c.starred) return false;
       if (!q) return true;
       const skills = parseSkills(c.skills).join(" ");
       return (
@@ -123,7 +131,7 @@ export function MyCandidatesView({
         skills.toLowerCase().includes(q)
       );
     });
-  }, [candidates, search, statusFilter]);
+  }, [candidates, search, statusFilter, starredOnly]);
 
   const grouped = useMemo(() => {
     const groups: Record<string, CandidateRow[]> = {};
@@ -168,6 +176,22 @@ export function MyCandidatesView({
             )}
           />
         </div>
+        <button
+          type="button"
+          onClick={() => setStarredOnly((v) => !v)}
+          aria-pressed={starredOnly}
+          title="Show only starred candidates"
+          className={cn(
+            "shrink-0 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-xs font-medium border transition-colors",
+            starredOnly
+              ? "bg-amber-500/10 text-amber-600 border-amber-500/30"
+              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:text-[var(--color-text-primary)]"
+          )}
+        >
+          <Icon name="star" fill={starredOnly} size={14} />
+          Starred only
+          <span className="opacity-70">· {candidates.filter((c) => c.starred).length}</span>
+        </button>
       </div>
 
       <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1">
@@ -240,9 +264,11 @@ function CandidateList({ rows, highlightedId }: { rows: CandidateRow[]; highligh
               "flex items-center gap-3 hover:border-[var(--color-accent)]/40 transition-colors duration-200",
               highlightedId === c.id
                 ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
-                : "border-[var(--color-border)]"
+                : "border-[var(--color-border)]",
+              c.starred && "border-l-4 border-l-amber-400"
             )}
           >
+            <CandidateStarButton candidateId={c.id} starred={!!c.starred} size={18} />
             <div
               className={cn(
                 "h-10 w-10 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0",
@@ -259,6 +285,7 @@ function CandidateList({ rows, highlightedId }: { rows: CandidateRow[]; highligh
                 <span className={cn("text-[10px] px-2 py-0.5 rounded-full font-medium", STATUS_TINT[c.status] || "bg-gray-500/10 text-gray-500")}>
                   {c.status.replace("_", " ")}
                 </span>
+                {c.status === "REJECTED" && <RejectionReasonTag reason={c.rejectionReason} note={c.rejectionNote} />}
                 {c.position && (
                   <span className="text-[10px] text-[var(--color-text-muted)] truncate">
                     for <span className="text-[var(--color-text-primary)]">{c.position.title}</span>

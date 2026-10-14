@@ -180,6 +180,11 @@ export type JobTitle = Prisma.JobTitleModel
  */
 export type Candidate = Prisma.CandidateModel
 /**
+ * Model CandidateStageEvent
+ * 
+ */
+export type CandidateStageEvent = Prisma.CandidateStageEventModel
+/**
  * Model CandidateApplication
  * 
  */

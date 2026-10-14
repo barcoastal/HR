@@ -60,6 +60,9 @@ type CandidateItem = {
   doNotCall?: boolean;
   doNotCallReason?: string | null;
   stageId?: string | null;
+  starred?: boolean;
+  rejectionReason?: string | null;
+  rejectionNote?: string | null;
 };
 
 type PositionFull = {
@@ -439,6 +442,9 @@ function PositionPipeline({
                 position: c.position,
                 applicationCount: c.applicationCount ?? null,
                 stageId: c.stageId ?? null,
+                starred: c.starred ?? false,
+                rejectionReason: c.rejectionReason ?? null,
+                rejectionNote: c.rejectionNote ?? null,
               }))}
               positions={allPositions}
               employees={employees}
@@ -584,6 +590,9 @@ export function CVTabs({
             doNotCall: (c.doNotCall as boolean) ?? false,
             doNotCallReason: (c.doNotCallReason as string) ?? null,
             applicationCount: (c.applicationCount as number) ?? 1,
+            starred: (c.starred as boolean) ?? false,
+            rejectionReason: (c.rejectionReason as string) ?? null,
+            rejectionNote: (c.rejectionNote as string) ?? null,
           }))
         );
       })
@@ -739,6 +748,9 @@ export function CVTabs({
                       position: c.position,
                       applicationCount: c.applicationCount ?? null,
                       stageId: c.stageId ?? null,
+                      starred: c.starred ?? false,
+                      rejectionReason: c.rejectionReason ?? null,
+                      rejectionNote: c.rejectionNote ?? null,
                     }))}
                     positions={positions}
                     employees={employees}

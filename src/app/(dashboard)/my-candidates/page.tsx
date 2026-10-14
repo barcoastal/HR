@@ -83,6 +83,9 @@ export default async function MyCandidatesPage({
             backgroundCheckStatus: c.backgroundCheckStatus || null,
             position: c.position ? { title: c.position.title } : null,
             stageId: c.stageId ?? null,
+            starred: c.starred,
+            rejectionReason: c.rejectionReason ?? null,
+            rejectionNote: c.rejectionNote ?? null,
           }))}
           pipelineStages={pipelineStages}
           focusedCandidateId={focus.candidateId}

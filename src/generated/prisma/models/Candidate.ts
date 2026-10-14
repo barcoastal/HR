@@ -82,6 +82,12 @@ export type CandidateMinAggregateOutputType = {
   doNotCallReason: string | null
   doNotCallAt: Date | null
   applicationCount: number | null
+  starred: boolean | null
+  starredAt: Date | null
+  starredById: string | null
+  rejectionReason: string | null
+  rejectionNote: string | null
+  rejectedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -130,6 +136,12 @@ export type CandidateMaxAggregateOutputType = {
   doNotCallReason: string | null
   doNotCallAt: Date | null
   applicationCount: number | null
+  starred: boolean | null
+  starredAt: Date | null
+  starredById: string | null
+  rejectionReason: string | null
+  rejectionNote: string | null
+  rejectedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -178,6 +190,12 @@ export type CandidateCountAggregateOutputType = {
   doNotCallReason: number
   doNotCallAt: number
   applicationCount: number
+  starred: number
+  starredAt: number
+  starredById: number
+  rejectionReason: number
+  rejectionNote: number
+  rejectedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -240,6 +258,12 @@ export type CandidateMinAggregateInputType = {
   doNotCallReason?: true
   doNotCallAt?: true
   applicationCount?: true
+  starred?: true
+  starredAt?: true
+  starredById?: true
+  rejectionReason?: true
+  rejectionNote?: true
+  rejectedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -288,6 +312,12 @@ export type CandidateMaxAggregateInputType = {
   doNotCallReason?: true
   doNotCallAt?: true
   applicationCount?: true
+  starred?: true
+  starredAt?: true
+  starredById?: true
+  rejectionReason?: true
+  rejectionNote?: true
+  rejectedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -336,6 +366,12 @@ export type CandidateCountAggregateInputType = {
   doNotCallReason?: true
   doNotCallAt?: true
   applicationCount?: true
+  starred?: true
+  starredAt?: true
+  starredById?: true
+  rejectionReason?: true
+  rejectionNote?: true
+  rejectedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -471,6 +507,12 @@ export type CandidateGroupByOutputType = {
   doNotCallReason: string | null
   doNotCallAt: Date | null
   applicationCount: number
+  starred: boolean
+  starredAt: Date | null
+  starredById: string | null
+  rejectionReason: string | null
+  rejectionNote: string | null
+  rejectedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: CandidateCountAggregateOutputType | null
@@ -542,6 +584,12 @@ export type CandidateWhereInput = {
   doNotCallReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
   doNotCallAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   applicationCount?: Prisma.IntFilter<"Candidate"> | number
+  starred?: Prisma.BoolFilter<"Candidate"> | boolean
+  starredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  starredById?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionNote?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
@@ -549,6 +597,7 @@ export type CandidateWhereInput = {
   interviews?: Prisma.InterviewListRelationFilter
   signingRequests?: Prisma.SigningRequestListRelationFilter
   applications?: Prisma.CandidateApplicationListRelationFilter
+  stageEvents?: Prisma.CandidateStageEventListRelationFilter
 }
 
 export type CandidateOrderByWithRelationInput = {
@@ -595,6 +644,12 @@ export type CandidateOrderByWithRelationInput = {
   doNotCallReason?: Prisma.SortOrderInput | Prisma.SortOrder
   doNotCallAt?: Prisma.SortOrderInput | Prisma.SortOrder
   applicationCount?: Prisma.SortOrder
+  starred?: Prisma.SortOrder
+  starredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  starredById?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   position?: Prisma.PositionOrderByWithRelationInput
@@ -602,6 +657,7 @@ export type CandidateOrderByWithRelationInput = {
   interviews?: Prisma.InterviewOrderByRelationAggregateInput
   signingRequests?: Prisma.SigningRequestOrderByRelationAggregateInput
   applications?: Prisma.CandidateApplicationOrderByRelationAggregateInput
+  stageEvents?: Prisma.CandidateStageEventOrderByRelationAggregateInput
 }
 
 export type CandidateWhereUniqueInput = Prisma.AtLeast<{
@@ -651,6 +707,12 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   doNotCallReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
   doNotCallAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   applicationCount?: Prisma.IntFilter<"Candidate"> | number
+  starred?: Prisma.BoolFilter<"Candidate"> | boolean
+  starredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  starredById?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionNote?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   position?: Prisma.XOR<Prisma.PositionNullableScalarRelationFilter, Prisma.PositionWhereInput> | null
@@ -658,6 +720,7 @@ export type CandidateWhereUniqueInput = Prisma.AtLeast<{
   interviews?: Prisma.InterviewListRelationFilter
   signingRequests?: Prisma.SigningRequestListRelationFilter
   applications?: Prisma.CandidateApplicationListRelationFilter
+  stageEvents?: Prisma.CandidateStageEventListRelationFilter
 }, "id" | "email">
 
 export type CandidateOrderByWithAggregationInput = {
@@ -704,6 +767,12 @@ export type CandidateOrderByWithAggregationInput = {
   doNotCallReason?: Prisma.SortOrderInput | Prisma.SortOrder
   doNotCallAt?: Prisma.SortOrderInput | Prisma.SortOrder
   applicationCount?: Prisma.SortOrder
+  starred?: Prisma.SortOrder
+  starredAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  starredById?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.CandidateCountOrderByAggregateInput
@@ -760,6 +829,12 @@ export type CandidateScalarWhereWithAggregatesInput = {
   doNotCallReason?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
   doNotCallAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
   applicationCount?: Prisma.IntWithAggregatesFilter<"Candidate"> | number
+  starred?: Prisma.BoolWithAggregatesFilter<"Candidate"> | boolean
+  starredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
+  starredById?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  rejectionNote?: Prisma.StringNullableWithAggregatesFilter<"Candidate"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Candidate"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Candidate"> | Date | string
 }
@@ -806,6 +881,12 @@ export type CandidateCreateInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
@@ -813,6 +894,7 @@ export type CandidateCreateInput = {
   interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateInput = {
@@ -859,11 +941,18 @@ export type CandidateUncheckedCreateInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUpdateInput = {
@@ -908,6 +997,12 @@ export type CandidateUpdateInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
@@ -915,6 +1010,7 @@ export type CandidateUpdateInput = {
   interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateInput = {
@@ -961,11 +1057,18 @@ export type CandidateUncheckedUpdateInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateCreateManyInput = {
@@ -1012,6 +1115,12 @@ export type CandidateCreateManyInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1058,6 +1167,12 @@ export type CandidateUpdateManyMutationInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1106,6 +1221,12 @@ export type CandidateUncheckedUpdateManyInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1164,6 +1285,12 @@ export type CandidateCountOrderByAggregateInput = {
   doNotCallReason?: Prisma.SortOrder
   doNotCallAt?: Prisma.SortOrder
   applicationCount?: Prisma.SortOrder
+  starred?: Prisma.SortOrder
+  starredAt?: Prisma.SortOrder
+  starredById?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1218,6 +1345,12 @@ export type CandidateMaxOrderByAggregateInput = {
   doNotCallReason?: Prisma.SortOrder
   doNotCallAt?: Prisma.SortOrder
   applicationCount?: Prisma.SortOrder
+  starred?: Prisma.SortOrder
+  starredAt?: Prisma.SortOrder
+  starredById?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1266,6 +1399,12 @@ export type CandidateMinOrderByAggregateInput = {
   doNotCallReason?: Prisma.SortOrder
   doNotCallAt?: Prisma.SortOrder
   applicationCount?: Prisma.SortOrder
+  starred?: Prisma.SortOrder
+  starredAt?: Prisma.SortOrder
+  starredById?: Prisma.SortOrder
+  rejectionReason?: Prisma.SortOrder
+  rejectionNote?: Prisma.SortOrder
+  rejectedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -1338,6 +1477,20 @@ export type NullableFloatFieldUpdateOperationsInput = {
   decrement?: number
   multiply?: number
   divide?: number
+}
+
+export type CandidateCreateNestedOneWithoutStageEventsInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutStageEventsInput, Prisma.CandidateUncheckedCreateWithoutStageEventsInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutStageEventsInput
+  connect?: Prisma.CandidateWhereUniqueInput
+}
+
+export type CandidateUpdateOneRequiredWithoutStageEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.CandidateCreateWithoutStageEventsInput, Prisma.CandidateUncheckedCreateWithoutStageEventsInput>
+  connectOrCreate?: Prisma.CandidateCreateOrConnectWithoutStageEventsInput
+  upsert?: Prisma.CandidateUpsertWithoutStageEventsInput
+  connect?: Prisma.CandidateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CandidateUpdateToOneWithWhereWithoutStageEventsInput, Prisma.CandidateUpdateWithoutStageEventsInput>, Prisma.CandidateUncheckedUpdateWithoutStageEventsInput>
 }
 
 export type CandidateCreateNestedOneWithoutApplicationsInput = {
@@ -1468,12 +1621,19 @@ export type CandidateCreateWithoutManagerInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateWithoutManagerInput = {
@@ -1519,11 +1679,18 @@ export type CandidateUncheckedCreateWithoutManagerInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateCreateOrConnectWithoutManagerInput = {
@@ -1599,8 +1766,258 @@ export type CandidateScalarWhereInput = {
   doNotCallReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
   doNotCallAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   applicationCount?: Prisma.IntFilter<"Candidate"> | number
+  starred?: Prisma.BoolFilter<"Candidate"> | boolean
+  starredAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
+  starredById?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionReason?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectionNote?: Prisma.StringNullableFilter<"Candidate"> | string | null
+  rejectedAt?: Prisma.DateTimeNullableFilter<"Candidate"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Candidate"> | Date | string
+}
+
+export type CandidateCreateWithoutStageEventsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  linkedinUrl?: string | null
+  resumeUrl?: string | null
+  resumeText?: string | null
+  skills?: string | null
+  experience?: string | null
+  status?: $Enums.CandidateStatus
+  stageId?: string | null
+  inPipeline?: boolean
+  source?: string | null
+  notes?: string | null
+  jobAppliedTo?: string | null
+  costOfHire?: number | null
+  hourlyRate?: number | null
+  appliedAt?: Date | string
+  hiredAt?: Date | string | null
+  recruiterId?: string | null
+  backgroundCheckStatus?: string | null
+  backgroundCheckId?: string | null
+  backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
+  backgroundReportFilename?: string | null
+  backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
+  adverseActionLetterSentAt?: Date | string | null
+  offerDocUrl?: string | null
+  offerSentAt?: Date | string | null
+  offerSignedDocUrl?: string | null
+  offerSignedAt?: Date | string | null
+  doNotCall?: boolean
+  doNotCallReason?: string | null
+  doNotCallAt?: Date | string | null
+  applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
+  manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
+  interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
+  signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
+  applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+}
+
+export type CandidateUncheckedCreateWithoutStageEventsInput = {
+  id?: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  linkedinUrl?: string | null
+  resumeUrl?: string | null
+  resumeText?: string | null
+  skills?: string | null
+  experience?: string | null
+  status?: $Enums.CandidateStatus
+  stageId?: string | null
+  inPipeline?: boolean
+  source?: string | null
+  notes?: string | null
+  jobAppliedTo?: string | null
+  costOfHire?: number | null
+  hourlyRate?: number | null
+  appliedAt?: Date | string
+  hiredAt?: Date | string | null
+  positionId?: string | null
+  recruiterId?: string | null
+  managerId?: string | null
+  backgroundCheckStatus?: string | null
+  backgroundCheckId?: string | null
+  backgroundCheckDate?: Date | string | null
+  backgroundCheckOptions?: string | null
+  backgroundReportFilename?: string | null
+  backgroundReportImportedAt?: Date | string | null
+  preAdverseActionStatus?: string | null
+  preAdverseActionSentAt?: Date | string | null
+  preAdverseActionDueAt?: Date | string | null
+  preAdverseActionProviderId?: string | null
+  preAdverseActionError?: string | null
+  adverseActionLetterSentAt?: Date | string | null
+  offerDocUrl?: string | null
+  offerSentAt?: Date | string | null
+  offerSignedDocUrl?: string | null
+  offerSignedAt?: Date | string | null
+  doNotCall?: boolean
+  doNotCallReason?: string | null
+  doNotCallAt?: Date | string | null
+  applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
+  signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
+  applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+}
+
+export type CandidateCreateOrConnectWithoutStageEventsInput = {
+  where: Prisma.CandidateWhereUniqueInput
+  create: Prisma.XOR<Prisma.CandidateCreateWithoutStageEventsInput, Prisma.CandidateUncheckedCreateWithoutStageEventsInput>
+}
+
+export type CandidateUpsertWithoutStageEventsInput = {
+  update: Prisma.XOR<Prisma.CandidateUpdateWithoutStageEventsInput, Prisma.CandidateUncheckedUpdateWithoutStageEventsInput>
+  create: Prisma.XOR<Prisma.CandidateCreateWithoutStageEventsInput, Prisma.CandidateUncheckedCreateWithoutStageEventsInput>
+  where?: Prisma.CandidateWhereInput
+}
+
+export type CandidateUpdateToOneWithWhereWithoutStageEventsInput = {
+  where?: Prisma.CandidateWhereInput
+  data: Prisma.XOR<Prisma.CandidateUpdateWithoutStageEventsInput, Prisma.CandidateUncheckedUpdateWithoutStageEventsInput>
+}
+
+export type CandidateUpdateWithoutStageEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerSignedDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  offerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  doNotCall?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
+  manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
+  interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
+  signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
+  applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+}
+
+export type CandidateUncheckedUpdateWithoutStageEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCandidateStatusFieldUpdateOperationsInput | $Enums.CandidateStatus
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  inPipeline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  source?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobAppliedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costOfHire?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  hourlyRate?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  appliedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  positionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recruiterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundCheckDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  backgroundCheckOptions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundReportFilename?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundReportImportedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionDueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  preAdverseActionProviderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  preAdverseActionError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adverseActionLetterSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  offerSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  offerSignedDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  offerSignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  doNotCall?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
+  signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
+  applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateCreateWithoutApplicationsInput = {
@@ -1645,12 +2062,19 @@ export type CandidateCreateWithoutApplicationsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
   manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateWithoutApplicationsInput = {
@@ -1697,10 +2121,17 @@ export type CandidateUncheckedCreateWithoutApplicationsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateCreateOrConnectWithoutApplicationsInput = {
@@ -1761,12 +2192,19 @@ export type CandidateUpdateWithoutApplicationsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
   manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateWithoutApplicationsInput = {
@@ -1813,10 +2251,17 @@ export type CandidateUncheckedUpdateWithoutApplicationsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateCreateWithoutPositionInput = {
@@ -1861,12 +2306,19 @@ export type CandidateCreateWithoutPositionInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateWithoutPositionInput = {
@@ -1912,11 +2364,18 @@ export type CandidateUncheckedCreateWithoutPositionInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateCreateOrConnectWithoutPositionInput = {
@@ -1987,12 +2446,19 @@ export type CandidateCreateWithoutInterviewsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
   manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
   signingRequests?: Prisma.SigningRequestCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateWithoutInterviewsInput = {
@@ -2039,10 +2505,17 @@ export type CandidateUncheckedCreateWithoutInterviewsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   signingRequests?: Prisma.SigningRequestUncheckedCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateCreateOrConnectWithoutInterviewsInput = {
@@ -2103,12 +2576,19 @@ export type CandidateUpdateWithoutInterviewsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
   manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateWithoutInterviewsInput = {
@@ -2155,10 +2635,17 @@ export type CandidateUncheckedUpdateWithoutInterviewsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateCreateWithoutSigningRequestsInput = {
@@ -2203,12 +2690,19 @@ export type CandidateCreateWithoutSigningRequestsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   position?: Prisma.PositionCreateNestedOneWithoutCandidatesInput
   manager?: Prisma.EmployeeCreateNestedOneWithoutManagedCandidatesInput
   interviews?: Prisma.InterviewCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateUncheckedCreateWithoutSigningRequestsInput = {
@@ -2255,10 +2749,17 @@ export type CandidateUncheckedCreateWithoutSigningRequestsInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   interviews?: Prisma.InterviewUncheckedCreateNestedManyWithoutCandidateInput
   applications?: Prisma.CandidateApplicationUncheckedCreateNestedManyWithoutCandidateInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedCreateNestedManyWithoutCandidateInput
 }
 
 export type CandidateCreateOrConnectWithoutSigningRequestsInput = {
@@ -2319,12 +2820,19 @@ export type CandidateUpdateWithoutSigningRequestsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
   manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateWithoutSigningRequestsInput = {
@@ -2371,10 +2879,17 @@ export type CandidateUncheckedUpdateWithoutSigningRequestsInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateCreateManyManagerInput = {
@@ -2420,6 +2935,12 @@ export type CandidateCreateManyManagerInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2466,12 +2987,19 @@ export type CandidateUpdateWithoutManagerInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   position?: Prisma.PositionUpdateOneWithoutCandidatesNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateWithoutManagerInput = {
@@ -2517,11 +3045,18 @@ export type CandidateUncheckedUpdateWithoutManagerInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateManyWithoutManagerInput = {
@@ -2567,6 +3102,12 @@ export type CandidateUncheckedUpdateManyWithoutManagerInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2614,6 +3155,12 @@ export type CandidateCreateManyPositionInput = {
   doNotCallReason?: string | null
   doNotCallAt?: Date | string | null
   applicationCount?: number
+  starred?: boolean
+  starredAt?: Date | string | null
+  starredById?: string | null
+  rejectionReason?: string | null
+  rejectionNote?: string | null
+  rejectedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -2660,12 +3207,19 @@ export type CandidateUpdateWithoutPositionInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.EmployeeUpdateOneWithoutManagedCandidatesNestedInput
   interviews?: Prisma.InterviewUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateWithoutPositionInput = {
@@ -2711,11 +3265,18 @@ export type CandidateUncheckedUpdateWithoutPositionInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   interviews?: Prisma.InterviewUncheckedUpdateManyWithoutCandidateNestedInput
   signingRequests?: Prisma.SigningRequestUncheckedUpdateManyWithoutCandidateNestedInput
   applications?: Prisma.CandidateApplicationUncheckedUpdateManyWithoutCandidateNestedInput
+  stageEvents?: Prisma.CandidateStageEventUncheckedUpdateManyWithoutCandidateNestedInput
 }
 
 export type CandidateUncheckedUpdateManyWithoutPositionInput = {
@@ -2761,6 +3322,12 @@ export type CandidateUncheckedUpdateManyWithoutPositionInput = {
   doNotCallReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   doNotCallAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   applicationCount?: Prisma.IntFieldUpdateOperationsInput | number
+  starred?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  starredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  starredById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2774,12 +3341,14 @@ export type CandidateCountOutputType = {
   interviews: number
   signingRequests: number
   applications: number
+  stageEvents: number
 }
 
 export type CandidateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   interviews?: boolean | CandidateCountOutputTypeCountInterviewsArgs
   signingRequests?: boolean | CandidateCountOutputTypeCountSigningRequestsArgs
   applications?: boolean | CandidateCountOutputTypeCountApplicationsArgs
+  stageEvents?: boolean | CandidateCountOutputTypeCountStageEventsArgs
 }
 
 /**
@@ -2811,6 +3380,13 @@ export type CandidateCountOutputTypeCountSigningRequestsArgs<ExtArgs extends run
  */
 export type CandidateCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CandidateApplicationWhereInput
+}
+
+/**
+ * CandidateCountOutputType without action
+ */
+export type CandidateCountOutputTypeCountStageEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CandidateStageEventWhereInput
 }
 
 
@@ -2858,6 +3434,12 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   doNotCallReason?: boolean
   doNotCallAt?: boolean
   applicationCount?: boolean
+  starred?: boolean
+  starredAt?: boolean
+  starredById?: boolean
+  rejectionReason?: boolean
+  rejectionNote?: boolean
+  rejectedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -2865,6 +3447,7 @@ export type CandidateSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   interviews?: boolean | Prisma.Candidate$interviewsArgs<ExtArgs>
   signingRequests?: boolean | Prisma.Candidate$signingRequestsArgs<ExtArgs>
   applications?: boolean | Prisma.Candidate$applicationsArgs<ExtArgs>
+  stageEvents?: boolean | Prisma.Candidate$stageEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CandidateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["candidate"]>
 
@@ -2912,6 +3495,12 @@ export type CandidateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   doNotCallReason?: boolean
   doNotCallAt?: boolean
   applicationCount?: boolean
+  starred?: boolean
+  starredAt?: boolean
+  starredById?: boolean
+  rejectionReason?: boolean
+  rejectionNote?: boolean
+  rejectedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -2962,6 +3551,12 @@ export type CandidateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   doNotCallReason?: boolean
   doNotCallAt?: boolean
   applicationCount?: boolean
+  starred?: boolean
+  starredAt?: boolean
+  starredById?: boolean
+  rejectionReason?: boolean
+  rejectionNote?: boolean
+  rejectedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
@@ -3012,17 +3607,24 @@ export type CandidateSelectScalar = {
   doNotCallReason?: boolean
   doNotCallAt?: boolean
   applicationCount?: boolean
+  starred?: boolean
+  starredAt?: boolean
+  starredById?: boolean
+  rejectionReason?: boolean
+  rejectionNote?: boolean
+  rejectedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "stageId" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "preAdverseActionStatus" | "preAdverseActionSentAt" | "preAdverseActionDueAt" | "preAdverseActionProviderId" | "preAdverseActionError" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+export type CandidateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "phone" | "linkedinUrl" | "resumeUrl" | "resumeText" | "skills" | "experience" | "status" | "stageId" | "inPipeline" | "source" | "notes" | "jobAppliedTo" | "costOfHire" | "hourlyRate" | "appliedAt" | "hiredAt" | "positionId" | "recruiterId" | "managerId" | "backgroundCheckStatus" | "backgroundCheckId" | "backgroundCheckDate" | "backgroundCheckOptions" | "backgroundReportFilename" | "backgroundReportImportedAt" | "preAdverseActionStatus" | "preAdverseActionSentAt" | "preAdverseActionDueAt" | "preAdverseActionProviderId" | "preAdverseActionError" | "adverseActionLetterSentAt" | "offerDocUrl" | "offerSentAt" | "offerSignedDocUrl" | "offerSignedAt" | "doNotCall" | "doNotCallReason" | "doNotCallAt" | "applicationCount" | "starred" | "starredAt" | "starredById" | "rejectionReason" | "rejectionNote" | "rejectedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
 export type CandidateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   position?: boolean | Prisma.Candidate$positionArgs<ExtArgs>
   manager?: boolean | Prisma.Candidate$managerArgs<ExtArgs>
   interviews?: boolean | Prisma.Candidate$interviewsArgs<ExtArgs>
   signingRequests?: boolean | Prisma.Candidate$signingRequestsArgs<ExtArgs>
   applications?: boolean | Prisma.Candidate$applicationsArgs<ExtArgs>
+  stageEvents?: boolean | Prisma.Candidate$stageEventsArgs<ExtArgs>
   _count?: boolean | Prisma.CandidateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CandidateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3042,6 +3644,7 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     interviews: Prisma.$InterviewPayload<ExtArgs>[]
     signingRequests: Prisma.$SigningRequestPayload<ExtArgs>[]
     applications: Prisma.$CandidateApplicationPayload<ExtArgs>[]
+    stageEvents: Prisma.$CandidateStageEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3087,6 +3690,12 @@ export type $CandidatePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     doNotCallReason: string | null
     doNotCallAt: Date | null
     applicationCount: number
+    starred: boolean
+    starredAt: Date | null
+    starredById: string | null
+    rejectionReason: string | null
+    rejectionNote: string | null
+    rejectedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["candidate"]>
@@ -3488,6 +4097,7 @@ export interface Prisma__CandidateClient<T, Null = never, ExtArgs extends runtim
   interviews<T extends Prisma.Candidate$interviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Candidate$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   signingRequests<T extends Prisma.Candidate$signingRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Candidate$signingRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SigningRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   applications<T extends Prisma.Candidate$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Candidate$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stageEvents<T extends Prisma.Candidate$stageEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Candidate$stageEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidateStageEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3560,6 +4170,12 @@ export interface CandidateFieldRefs {
   readonly doNotCallReason: Prisma.FieldRef<"Candidate", 'String'>
   readonly doNotCallAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly applicationCount: Prisma.FieldRef<"Candidate", 'Int'>
+  readonly starred: Prisma.FieldRef<"Candidate", 'Boolean'>
+  readonly starredAt: Prisma.FieldRef<"Candidate", 'DateTime'>
+  readonly starredById: Prisma.FieldRef<"Candidate", 'String'>
+  readonly rejectionReason: Prisma.FieldRef<"Candidate", 'String'>
+  readonly rejectionNote: Prisma.FieldRef<"Candidate", 'String'>
+  readonly rejectedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Candidate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Candidate", 'DateTime'>
 }
@@ -4065,6 +4681,30 @@ export type Candidate$applicationsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.CandidateApplicationScalarFieldEnum | Prisma.CandidateApplicationScalarFieldEnum[]
+}
+
+/**
+ * Candidate.stageEvents
+ */
+export type Candidate$stageEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CandidateStageEvent
+   */
+  select?: Prisma.CandidateStageEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CandidateStageEvent
+   */
+  omit?: Prisma.CandidateStageEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CandidateStageEventInclude<ExtArgs> | null
+  where?: Prisma.CandidateStageEventWhereInput
+  orderBy?: Prisma.CandidateStageEventOrderByWithRelationInput | Prisma.CandidateStageEventOrderByWithRelationInput[]
+  cursor?: Prisma.CandidateStageEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CandidateStageEventScalarFieldEnum | Prisma.CandidateStageEventScalarFieldEnum[]
 }
 
 /**

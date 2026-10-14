@@ -6,6 +6,8 @@ import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
 import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
 import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
+import { resolveRejectionUpdate, clearedRejectionIfLeaving, type RejectionInput } from "@/lib/candidate-rejection";
+import { recordStageEvent, currentUserId } from "@/lib/candidate-stage-events";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -627,7 +629,10 @@ export async function updateCandidateStatus(
    * target stage's id when moving on the board so stages that share a base
    * status stay distinguishable; omit/null clears it and the column falls
    * back to `status`. */
-  stageId?: string | null
+  stageId?: string | null,
+  /** Required when moving to REJECTED: a code from REJECTION_REASONS plus an
+   * optional note (mandatory for "Other"). */
+  rejection?: RejectionInput | null
 ) {
   await assertCandidateAccess(id);
   const candidate = await db.candidate.findUnique({ where: { id } });
@@ -635,10 +640,29 @@ export async function updateCandidateStatus(
 
   const previousStatus = candidate.status;
   const previousStageId = candidate.stageId;
-  const data: Record<string, unknown> = { status, stageId: stageId ?? null };
+  const rejectionUpdate = resolveRejectionUpdate({
+    previousStatus,
+    nextStatus: status,
+    rejection,
+    previousRejectedAt: candidate.rejectedAt,
+  });
+  if (!rejectionUpdate.ok) throw new Error(rejectionUpdate.error);
+  const data: Record<string, unknown> = { status, stageId: stageId ?? null, ...rejectionUpdate.data };
   if (status === "HIRED") data.hiredAt = new Date();
 
   const updated = await db.candidate.update({ where: { id }, data });
+
+  await recordStageEvent({
+    candidateId: id,
+    fromStatus: previousStatus,
+    toStatus: status,
+    fromStageId: previousStageId,
+    toStageId: stageId ?? null,
+    reason: rejectionUpdate.reason?.reason ?? null,
+    note: rejectionUpdate.reason?.note ?? null,
+    source: "status",
+    changedById: await currentUserId(),
+  });
 
   // A move between two custom stages that share a base status changes only
   // stageId, so treat that as a stage change too.
@@ -665,6 +689,9 @@ export async function updateCandidateStatus(
         email: candidate.email,
         from: previousStatus,
         to: customStageLabel || status,
+        ...(rejectionUpdate.reason
+          ? { rejectionReason: rejectionUpdate.reason.reason, rejectionNote: rejectionUpdate.reason.note }
+          : {}),
       },
     });
   }
@@ -950,6 +977,9 @@ export async function updateCandidate(
     /** Custom pipeline stage id; null clears it. Only applied when status is
      * also being set (stage moves always carry their base status). */
     stageId?: string | null;
+    /** Required when status moves to REJECTED; optional to edit the reason of
+     * an already-rejected candidate. */
+    rejection?: RejectionInput | null;
   }
 ) {
   await assertCandidateAccess(id);
@@ -957,10 +987,20 @@ export async function updateCandidate(
   const previousStatus = existing?.status;
   const previousRecruiterId = existing?.recruiterId ?? null;
 
-  const { skills, status, stageId, ...rest } = data;
+  const { skills, status, stageId, rejection, ...rest } = data;
   const updateData: Record<string, unknown> = { ...rest };
   if (skills !== undefined) updateData.skills = JSON.stringify(skills);
+  let rejectionChosen: { reason: string; note: string | null } | null = null;
   if (status !== undefined) {
+    const rejectionUpdate = resolveRejectionUpdate({
+      previousStatus,
+      nextStatus: status,
+      rejection,
+      previousRejectedAt: existing?.rejectedAt ?? null,
+    });
+    if (!rejectionUpdate.ok) throw new Error(rejectionUpdate.error);
+    rejectionChosen = rejectionUpdate.reason;
+    Object.assign(updateData, rejectionUpdate.data);
     updateData.status = status;
     updateData.stageId = stageId ?? null;
     if (status === "HIRED") updateData.hiredAt = new Date();
@@ -979,6 +1019,20 @@ export async function updateCandidate(
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const candidate = await db.candidate.update({ where: { id }, data: updateData });
+
+  if (status !== undefined && previousStatus) {
+    await recordStageEvent({
+      candidateId: id,
+      fromStatus: previousStatus,
+      toStatus: status,
+      fromStageId: existing?.stageId ?? null,
+      toStageId: stageId ?? null,
+      reason: rejectionChosen?.reason ?? null,
+      note: rejectionChosen?.note ?? null,
+      source: "edit",
+      changedById: await currentUserId(),
+    });
+  }
 
   // Notify when recruiter changes to a non-null value
   if (
@@ -1002,6 +1056,9 @@ export async function updateCandidate(
         email: candidate.email,
         from: previousStatus,
         to: status,
+        ...(rejectionChosen
+          ? { rejectionReason: rejectionChosen.reason, rejectionNote: rejectionChosen.note }
+          : {}),
       },
     });
   }
@@ -1202,7 +1259,16 @@ async function hireInner(
 
     await db.candidate.update({
       where: { id: candidateId },
-      data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
+      data: { status: "HIRED", inPipeline: false, hiredAt: new Date(), ...clearedRejectionIfLeaving(candidate.status) },
+    });
+    await recordStageEvent({
+      candidateId,
+      fromStatus: candidate.status,
+      toStatus: "HIRED",
+      fromStageId: candidate.stageId,
+      toStageId: candidate.stageId,
+      source: "hire",
+      changedById: await currentUserId(),
     });
 
     // Send NEW_HIRE notification
@@ -1240,7 +1306,16 @@ async function hireInner(
 
   await db.candidate.update({
     where: { id: candidateId },
-    data: { status: "HIRED", inPipeline: false, hiredAt: new Date() },
+    data: { status: "HIRED", inPipeline: false, hiredAt: new Date(), ...clearedRejectionIfLeaving(candidate.status) },
+  });
+  await recordStageEvent({
+    candidateId,
+    fromStatus: candidate.status,
+    toStatus: "HIRED",
+    fromStageId: candidate.stageId,
+    toStageId: candidate.stageId,
+    source: "hire",
+    changedById: await currentUserId(),
   });
 
   // Send NEW_HIRE notification
@@ -1614,14 +1689,30 @@ export async function assignCandidateToPosition(
   await assertCandidateAccess(candidateId);
   const previous = await db.candidate.findUnique({
     where: { id: candidateId },
-    select: { recruiterId: true },
+    select: { recruiterId: true, status: true, stageId: true },
   });
-  const data: Record<string, unknown> = { positionId, inPipeline: true, status: "NEW" };
+  const data: Record<string, unknown> = {
+    positionId,
+    inPipeline: true,
+    status: "NEW",
+    ...clearedRejectionIfLeaving(previous?.status),
+  };
   if (recruiterId) data.recruiterId = recruiterId;
   const candidate = await db.candidate.update({
     where: { id: candidateId },
     data,
   });
+  if (previous) {
+    await recordStageEvent({
+      candidateId,
+      fromStatus: previous.status,
+      toStatus: "NEW",
+      fromStageId: previous.stageId,
+      toStageId: candidate.stageId,
+      source: "assign_position",
+      changedById: await currentUserId(),
+    });
+  }
 
   if (recruiterId && recruiterId !== previous?.recruiterId) {
     await notifyRecruiterAssigned(candidateId);
@@ -1739,9 +1830,14 @@ export async function pullCandidateToRecruitment(
   positionId?: string
 ) {
   await assertCandidateAccess(candidateId);
+  const previous = await db.candidate.findUnique({
+    where: { id: candidateId },
+    select: { status: true, stageId: true },
+  });
   const data: Record<string, unknown> = {
     inPipeline: true,
     status: "NEW",
+    ...clearedRejectionIfLeaving(previous?.status),
   };
   if (positionId) data.positionId = positionId;
 
@@ -1749,6 +1845,67 @@ export async function pullCandidateToRecruitment(
     where: { id: candidateId },
     data,
   });
+  if (previous) {
+    await recordStageEvent({
+      candidateId,
+      fromStatus: previous.status,
+      toStatus: "NEW",
+      fromStageId: previous.stageId,
+      toStageId: candidate.stageId,
+      source: "pull_to_recruitment",
+      changedById: await currentUserId(),
+    });
+  }
   revalidatePath("/cv");
   return candidate;
+}
+
+/**
+ * Star or unstar a candidate. The star is a shared team flag (everyone with
+ * recruitment access sees it). Scoped recruiters can only star candidates
+ * assigned to them.
+ */
+export async function setCandidateStarred(
+  id: string,
+  starred: boolean
+): Promise<{ success: boolean; starred?: boolean; error?: string }> {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  const scope = await getRecruiterScope();
+  const { hasPermission } = await import("@/lib/permissions-server");
+  if (!scope && !(role && (await hasPermission(role, "recruitment")))) {
+    return { success: false, error: "Not authorized" };
+  }
+  try {
+    await assertCandidateAccess(id);
+  } catch {
+    return { success: false, error: "Not authorized" };
+  }
+
+  const existing = await db.candidate.findUnique({
+    where: { id },
+    select: { firstName: true, lastName: true, email: true, starred: true },
+  });
+  if (!existing) return { success: false, error: "Candidate not found" };
+  if (existing.starred === starred) return { success: true, starred };
+
+  await db.candidate.update({
+    where: { id },
+    data: starred
+      ? { starred: true, starredAt: new Date(), starredById: session.user?.id ?? null }
+      : { starred: false, starredAt: null, starredById: null },
+  });
+
+  const { audit } = await import("@/lib/audit");
+  await audit({
+    action: starred ? "candidate.starred" : "candidate.unstarred",
+    entityType: "candidate",
+    entityId: id,
+    details: { name: `${existing.firstName} ${existing.lastName}`, email: existing.email },
+  });
+
+  revalidatePath("/cv");
+  revalidatePath("/my-candidates");
+  return { success: true, starred };
 }

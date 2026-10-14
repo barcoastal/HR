@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireApiAuth } from "@/lib/auth-helpers";
+import { clearedRejectionIfLeaving } from "@/lib/candidate-rejection";
+import { recordStageEvent } from "@/lib/candidate-stage-events";
 import {
   buildProductList,
   createInvitationOrder,
@@ -41,7 +43,17 @@ export async function POST(req: NextRequest) {
         backgroundCheckId: `SBX-${candidateId.slice(0, 8)}`,
         backgroundCheckDate: new Date(),
         backgroundCheckOptions: JSON.stringify(options || {}),
+        ...clearedRejectionIfLeaving(sbxCandidate.status),
       },
+    });
+    await recordStageEvent({
+      candidateId,
+      fromStatus: sbxCandidate.status,
+      toStatus: "BACKGROUND_CHECK",
+      fromStageId: sbxCandidate.stageId,
+      toStageId: sbxCandidate.stageId,
+      source: "background_check",
+      changedById: session.user?.id ?? null,
     });
     console.log(`[sandbox] background check simulated for candidate ${candidateId}`);
     return NextResponse.json({ success: true, sandbox: true, orderId: `SBX-${candidateId.slice(0, 8)}` });
@@ -106,7 +118,17 @@ export async function POST(req: NextRequest) {
       backgroundCheckId: reportKey,
       backgroundCheckDate: new Date(),
       backgroundCheckOptions: JSON.stringify(options || {}),
+      ...clearedRejectionIfLeaving(candidate.status),
     },
+  });
+  await recordStageEvent({
+    candidateId,
+    fromStatus: candidate.status,
+    toStatus: "BACKGROUND_CHECK",
+    fromStageId: candidate.stageId,
+    toStageId: candidate.stageId,
+    source: "background_check",
+    changedById: session.user?.id ?? null,
   });
 
   console.log(`[background-check] Continental invitation sent for ${candidate.email}: invitationID=${invitationId}`);

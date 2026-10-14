@@ -412,6 +412,7 @@ export const ModelName = {
   HRNote: 'HRNote',
   JobTitle: 'JobTitle',
   Candidate: 'Candidate',
+  CandidateStageEvent: 'CandidateStageEvent',
   CandidateApplication: 'CandidateApplication',
   Position: 'Position',
   PositionBoardPosting: 'PositionBoardPosting',
@@ -476,7 +477,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal"
+    modelProps: "department" | "team" | "employee" | "user" | "onboardingChecklist" | "checklistItem" | "checklistOverrideExclusion" | "employeeTask" | "reviewCycle" | "departmentReviewTemplate" | "review" | "feedPost" | "feedPoll" | "feedPollOption" | "feedPollVote" | "eventAttendance" | "feedComment" | "feedReaction" | "postAttachment" | "emergencyAlert" | "notification" | "notificationRule" | "auditLog" | "notificationRecipient" | "document" | "hRNote" | "jobTitle" | "candidate" | "candidateStageEvent" | "candidateApplication" | "position" | "positionBoardPosting" | "recruitmentPlatform" | "platformCostEntry" | "platformSyncLog" | "interview" | "signingRequest" | "outOfOffice" | "trainingGroup" | "trainingGroupMember" | "trainingClass" | "trainingSession" | "timeOffPolicy" | "timeOffBalance" | "timeOffRequest" | "club" | "clubMember" | "anonFeedback" | "pulseSurvey" | "pulseResponse" | "companySettings" | "stageDocument" | "positionDocument" | "emailTemplate" | "emailDelivery" | "rolePermission" | "oAuthState" | "chatWorkspace" | "chatMember" | "channel" | "channelMember" | "message" | "dmThread" | "dmMember" | "reaction" | "chatAttachment" | "mention" | "pinnedMessage" | "savedMessage" | "fileBlob" | "workerHeartbeat" | "hiringPlan" | "oneOnOne" | "gustoConnection" | "importBatch" | "importRow" | "importDuplicateGroup" | "duplicateDismissal"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2549,6 +2550,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.CandidateCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.CandidateCountAggregateOutputType> | number
+        }
+      }
+    }
+    CandidateStageEvent: {
+      payload: Prisma.$CandidateStageEventPayload<ExtArgs>
+      fields: Prisma.CandidateStageEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CandidateStageEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CandidateStageEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        findFirst: {
+          args: Prisma.CandidateStageEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CandidateStageEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        findMany: {
+          args: Prisma.CandidateStageEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>[]
+        }
+        create: {
+          args: Prisma.CandidateStageEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        createMany: {
+          args: Prisma.CandidateStageEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CandidateStageEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>[]
+        }
+        delete: {
+          args: Prisma.CandidateStageEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        update: {
+          args: Prisma.CandidateStageEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.CandidateStageEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CandidateStageEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CandidateStageEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.CandidateStageEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CandidateStageEventPayload>
+        }
+        aggregate: {
+          args: Prisma.CandidateStageEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCandidateStageEvent>
+        }
+        groupBy: {
+          args: Prisma.CandidateStageEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CandidateStageEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CandidateStageEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CandidateStageEventCountAggregateOutputType> | number
         }
       }
     }
@@ -6696,11 +6771,34 @@ export const CandidateScalarFieldEnum = {
   doNotCallReason: 'doNotCallReason',
   doNotCallAt: 'doNotCallAt',
   applicationCount: 'applicationCount',
+  starred: 'starred',
+  starredAt: 'starredAt',
+  starredById: 'starredById',
+  rejectionReason: 'rejectionReason',
+  rejectionNote: 'rejectionNote',
+  rejectedAt: 'rejectedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type CandidateScalarFieldEnum = (typeof CandidateScalarFieldEnum)[keyof typeof CandidateScalarFieldEnum]
+
+
+export const CandidateStageEventScalarFieldEnum = {
+  id: 'id',
+  candidateId: 'candidateId',
+  fromStatus: 'fromStatus',
+  toStatus: 'toStatus',
+  fromStageId: 'fromStageId',
+  toStageId: 'toStageId',
+  reason: 'reason',
+  note: 'note',
+  source: 'source',
+  changedById: 'changedById',
+  createdAt: 'createdAt'
+} as const
+
+export type CandidateStageEventScalarFieldEnum = (typeof CandidateStageEventScalarFieldEnum)[keyof typeof CandidateStageEventScalarFieldEnum]
 
 
 export const CandidateApplicationScalarFieldEnum = {
@@ -8169,6 +8267,7 @@ export type GlobalOmitConfig = {
   hRNote?: Prisma.HRNoteOmit
   jobTitle?: Prisma.JobTitleOmit
   candidate?: Prisma.CandidateOmit
+  candidateStageEvent?: Prisma.CandidateStageEventOmit
   candidateApplication?: Prisma.CandidateApplicationOmit
   position?: Prisma.PositionOmit
   positionBoardPosting?: Prisma.PositionBoardPostingOmit

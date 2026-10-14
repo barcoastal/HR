@@ -8,6 +8,9 @@ import { pullCandidateToRecruitment, updateCandidateNotes } from "@/lib/actions/
 import { useRouter } from "next/navigation";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { Icon } from "@/components/ui/icon";
+import { CandidateStarButton } from "./candidate-star-button";
+import { RejectionReasonTag } from "./rejection-reason";
+import { REJECTION_REASONS, rejectionReasonLabel } from "@/lib/candidate-rejection";
 
 type CandidateItem = {
   id: string;
@@ -31,6 +34,9 @@ type CandidateItem = {
   doNotCall?: boolean;
   doNotCallReason?: string | null;
   applicationCount?: number | null;
+  starred?: boolean;
+  rejectionReason?: string | null;
+  rejectionNote?: string | null;
 };
 
 type Position = { id: string; title: string };
@@ -174,6 +180,13 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
   const [resumeFilter, setResumeFilter] = useState(""); // "", "with", "without"
   const [pipelineFilter, setPipelineFilter] = useState(""); // "", "in", "out"
   const [dncFilter, setDncFilter] = useState(""); // "", "yes", "no"
+  const [starredOnly, setStarredOnly] = useState(false);
+  // The database list is fetched once per tab visit, so remember star toggles
+  // locally until the next fetch.
+  const [starOverrides, setStarOverrides] = useState<Record<string, boolean>>({});
+  const isStarred = (c: CandidateItem) => starOverrides[c.id] ?? !!c.starred;
+  const setStar = (id: string, value: boolean) => setStarOverrides((prev) => ({ ...prev, [id]: value }));
+  const [rejectionFilter, setRejectionFilter] = useState(""); // "", a reason code, or "NONE" (rejected, no reason recorded)
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [colWidths, setColWidths] = useState<Record<string, number>>({
     name: 240,
@@ -246,6 +259,8 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
     setResumeFilter("");
     setPipelineFilter("");
     setDncFilter("");
+    setStarredOnly(false);
+    setRejectionFilter("");
     setExpandedId(focusedCandidateId);
     setHighlightedId(focusedCandidateId);
 
@@ -284,7 +299,10 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
   }, [positions]);
 
   const activeFilterCount =
-    [sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter].filter((x) => x).length;
+    [sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter, rejectionFilter, starredOnly].filter((x) => x).length;
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const starredCount = useMemo(() => candidates.filter(isStarred).length, [candidates, starOverrides]);
 
   const filtered = useMemo(() => {
     const now = Date.now();
@@ -317,6 +335,14 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
       if (dncFilter === "yes" && !c.doNotCall) return false;
       if (dncFilter === "no" && c.doNotCall) return false;
 
+      if (starredOnly && !isStarred(c)) return false;
+
+      if (rejectionFilter === "NONE") {
+        if (c.status !== "REJECTED" || c.rejectionReason) return false;
+      } else if (rejectionFilter && c.rejectionReason !== rejectionFilter) {
+        return false;
+      }
+
       if (search) {
         const q = search.toLowerCase().trim();
         const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
@@ -330,14 +356,16 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
           (c.experience && c.experience.toLowerCase().includes(q)) ||
           (c.jobAppliedTo && c.jobAppliedTo.toLowerCase().includes(q)) ||
           (c.resumeText && c.resumeText.toLowerCase().includes(q)) ||
-          (c.notes && c.notes.toLowerCase().includes(q));
+          (c.notes && c.notes.toLowerCase().includes(q)) ||
+          (c.rejectionReason && (rejectionReasonLabel(c.rejectionReason) ?? "").toLowerCase().includes(q)) ||
+          (c.rejectionNote && c.rejectionNote.toLowerCase().includes(q));
         if (!match) return false;
       }
       return true;
     });
   // positionLookup only used indirectly; filter re-runs when positions or filters change
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [candidates, search, sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter, positions]);
+  }, [candidates, search, sourceFilter, positionFilter, statusFilter, dateFilter, resumeFilter, pipelineFilter, dncFilter, starredOnly, rejectionFilter, starOverrides, positions]);
 
   function clearFilters() {
     setSourceFilter("");
@@ -347,6 +375,8 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
     setResumeFilter("");
     setPipelineFilter("");
     setDncFilter("");
+    setStarredOnly(false);
+    setRejectionFilter("");
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _positionLookup = positionLookup;
@@ -385,7 +415,7 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
           <Icon name="search" size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]" />
           <input
             type="text"
-            placeholder="Search by name, email, phone, skills, experience, position, resume text, notes…"
+            placeholder="Search by name, email, phone, skills, experience, position, notes, rejection reason…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -405,6 +435,22 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
             </button>
           )}
         </div>
+        <button
+          type="button"
+          onClick={() => setStarredOnly((v) => !v)}
+          aria-pressed={starredOnly}
+          title="Show only starred candidates"
+          className={cn(
+            "px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition-colors",
+            starredOnly
+              ? "bg-amber-500/10 text-amber-600 border border-amber-500/30"
+              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)] hover:text-[var(--color-text-primary)]"
+          )}
+        >
+          <Icon name="star" fill={starredOnly} size={16} />
+          <span className="hidden sm:inline">Starred only</span>
+          <span className="text-xs opacity-70">{starredCount}</span>
+        </button>
         <button
           onClick={() => setFiltersOpen((v) => !v)}
           className={cn(
@@ -467,6 +513,18 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
             <option value="yes">Do not call</option>
             <option value="no">Callable</option>
           </select>
+          <select
+            value={rejectionFilter}
+            onChange={(e) => setRejectionFilter(e.target.value)}
+            className={inputClass}
+            aria-label="Rejection reason"
+          >
+            <option value="">Rejection reason: any</option>
+            {REJECTION_REASONS.map((r) => (
+              <option key={r.code} value={r.code}>{r.label}</option>
+            ))}
+            <option value="NONE">Rejected, no reason recorded</option>
+          </select>
         </div>
       )}
 
@@ -498,6 +556,7 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
               data-candidate-record={c.id}
               className={cn(
                 "scroll-mt-28 rounded-xl border bg-[var(--color-surface)] p-4 transition-colors duration-200",
+                isStarred(c) && "border-l-4 border-l-amber-400",
                 highlightedId === c.id
                   ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
                   : "border-[var(--color-border)]"
@@ -509,10 +568,12 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
                     <Icon name="description" size={16} className="text-blue-400" />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <CandidateStarButton candidateId={c.id} starred={isStarred(c)} size={16} onChange={(v) => setStar(c.id, v)} />
                       <p className={cn("text-sm font-medium truncate", c.doNotCall ? "text-red-600" : "text-[var(--color-text-primary)]")}>
                         {c.firstName} {c.lastName}
                       </p>
+                      {c.status === "REJECTED" && <RejectionReasonTag reason={c.rejectionReason} note={c.rejectionNote} />}
                       {c.doNotCall && (
                         <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500 text-white shrink-0" title={c.doNotCallReason || undefined}>
                           DO NOT CALL
@@ -652,6 +713,7 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
                     className={cn(
                       "border-b border-[var(--color-border)] hover:bg-[var(--color-border)]/30 transition-colors cursor-pointer",
                       isExpanded && "bg-[var(--color-border)]/20",
+                      isStarred(c) && "bg-amber-500/5",
                       highlightedId === c.id && "bg-[var(--color-accent)]/10 outline outline-2 outline-[var(--color-accent)] outline-offset-[-2px]"
                     )}
                     onClick={() => setExpandedId(isExpanded ? null : c.id)}
@@ -667,9 +729,11 @@ export function CandidateDatabase({ candidates, positions, focusedCandidateId }:
                           <Icon name="description" size={12} className="text-blue-400" />
                         </div>
                         <div className="flex items-center gap-1.5 min-w-0">
+                          <CandidateStarButton candidateId={c.id} starred={isStarred(c)} size={14} onChange={(v) => setStar(c.id, v)} />
                           <span className={cn("text-sm font-medium truncate", c.doNotCall ? "text-red-600" : "text-[var(--color-text-primary)]")}>
                             {c.firstName} {c.lastName}
                           </span>
+                          {c.status === "REJECTED" && <RejectionReasonTag reason={c.rejectionReason} note={c.rejectionNote} />}
                           {c.doNotCall && (
                             <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500 text-white shrink-0" title={c.doNotCallReason || undefined}>
                               DNC

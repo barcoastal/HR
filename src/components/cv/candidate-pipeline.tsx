@@ -8,6 +8,9 @@ import { useEffect, useMemo, useState } from "react";
 import { CandidateDetailDialog } from "./candidate-detail-dialog";
 import { Icon } from "@/components/ui/icon";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
+import { CandidateStarButton } from "./candidate-star-button";
+import { RejectionReasonDialog, RejectionReasonTag } from "./rejection-reason";
+import type { RejectionInput } from "@/lib/candidate-rejection";
 
 type CandidateItem = {
   id: string;
@@ -43,6 +46,9 @@ type CandidateItem = {
   position: { title: string } | null;
   applicationCount?: number | null;
   stageId?: string | null;
+  starred?: boolean;
+  rejectionReason?: string | null;
+  rejectionNote?: string | null;
 };
 
 type Position = { id: string; title: string };
@@ -119,6 +125,8 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
   const [expandedColumns, setExpandedColumns] = useState<Record<string, boolean>>({});
   const [positionMenuId, setPositionMenuId] = useState<string | null>(null);
   const [highlightedCandidateId, setHighlightedCandidateId] = useState<string | null>(null);
+  const [starredOnly, setStarredOnly] = useState(false);
+  const [pendingReject, setPendingReject] = useState<{ id: string; name: string; status: CandidateStatus; stageId?: string | null } | null>(null);
 
   useEffect(() => {
     if (!focusedCandidateId) return;
@@ -126,6 +134,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     if (!focusedCandidate) return;
 
     setSearch("");
+    setStarredOnly(false);
     const columnKey = columnKeyFor(focusedCandidate);
     if (columnKey) setExpandedColumns((current) => ({ ...current, [columnKey]: true }));
     setHighlightedCandidateId(focusedCandidateId);
@@ -169,6 +178,12 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
       if (c) setSelectedCandidate(c);
       return;
     }
+    if (newStatus === "REJECTED") {
+      // A reason is mandatory — ask for it before moving.
+      const c = candidates.find((c) => c.id === id);
+      setPendingReject({ id, name: c ? `${c.firstName} ${c.lastName}` : "", status: newStatus, stageId });
+      return;
+    }
     setMovingId(id);
     try {
       await updateCandidateStatus(id, newStatus, stageId);
@@ -178,10 +193,26 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
     }
   }
 
+  async function confirmReject(rejection: RejectionInput) {
+    if (!pendingReject) return;
+    const { id, status, stageId } = pendingReject;
+    setMovingId(id);
+    try {
+      await updateCandidateStatus(id, status, stageId, rejection);
+      setPendingReject(null);
+      router.refresh();
+    } finally {
+      setMovingId(null);
+    }
+  }
+
+  const starredCount = useMemo(() => candidates.filter((c) => c.starred).length, [candidates]);
+
   const filteredCandidates = useMemo(() => {
-    if (!search.trim()) return candidates;
+    const pool = starredOnly ? candidates.filter((c) => c.starred) : candidates;
+    if (!search.trim()) return pool;
     const q = search.toLowerCase();
-    return candidates.filter((c) => {
+    return pool.filter((c) => {
       const skills = parseSkills(c.skills).join(" ");
       return (
         c.firstName.toLowerCase().includes(q) ||
@@ -194,33 +225,51 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
         skills.toLowerCase().includes(q)
       );
     });
-  }, [candidates, search]);
+  }, [candidates, search, starredOnly]);
 
   return (
     <>
-      <div className="mb-3 relative">
-        <Icon
-          name="search"
-          size={14}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search this position — name, email, phone, skill, source…"
-          className="w-full pl-9 pr-9 py-2 rounded-lg text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
-        />
-        {search && (
-          <button
-            type="button"
-            onClick={() => setSearch("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
-            title="Clear search"
-          >
-            <Icon name="close" size={14} />
-          </button>
-        )}
+      <div className="mb-3 flex items-center gap-2">
+        <div className="relative flex-1">
+          <Icon
+            name="search"
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)]"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search this position — name, email, phone, skill, source…"
+            className="w-full pl-9 pr-9 py-2 rounded-lg text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/40"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              title="Clear search"
+            >
+              <Icon name="close" size={14} />
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => setStarredOnly((v) => !v)}
+          aria-pressed={starredOnly}
+          className={cn(
+            "shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-medium border transition-colors",
+            starredOnly
+              ? "bg-amber-500/10 text-amber-600 border-amber-500/30"
+              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border-[var(--color-border)] hover:text-[var(--color-text-primary)]"
+          )}
+          title="Show only starred candidates"
+        >
+          <Icon name="star" fill={starredOnly} size={14} />
+          Starred only
+          <span className="opacity-70">· {starredCount}</span>
+        </button>
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4">
@@ -251,6 +300,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                         "group scroll-mt-28 rounded-lg p-2.5 cursor-pointer",
                         "bg-[var(--color-surface)] border border-[var(--color-border)]",
                         "hover:border-[var(--color-accent)]/30 hover:shadow-sm transition-all duration-200",
+                        candidate.starred && "border-l-2 border-l-amber-400",
                         highlightedCandidateId === candidate.id && "border-[var(--color-accent)] bg-[var(--color-accent)]/10 ring-2 ring-[var(--color-accent)]/30"
                       )}
                     >
@@ -260,6 +310,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
+                            <CandidateStarButton candidateId={candidate.id} starred={!!candidate.starred} size={14} />
                             <p className="text-sm font-medium text-[var(--color-text-primary)] truncate leading-tight">
                               {candidate.firstName} {candidate.lastName}
                             </p>
@@ -301,6 +352,9 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
 
                       <div className="flex items-center justify-between mt-2 gap-2">
                         <div className="flex items-center gap-1 min-w-0">
+                          {candidate.status === "REJECTED" && (
+                            <RejectionReasonTag reason={candidate.rejectionReason} note={candidate.rejectionNote} />
+                          )}
                           {candidate.source && (
                             <span className="text-[10px] text-[var(--color-text-muted)] truncate">
                               via {candidate.source}
@@ -379,7 +433,7 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
                 })}
                 {items.length === 0 && (
                   <p className="text-center text-xs text-[var(--color-text-muted)] py-6">
-                    {search ? "No matches" : "No candidates"}
+                    {search || starredOnly ? "No matches" : "No candidates"}
                   </p>
                 )}
                 {overflow > 0 && (
@@ -415,6 +469,13 @@ export function CandidatePipeline({ candidates, positions, employees, recruiters
         trainingEligibleJobTitles={trainingEligibleJobTitles}
         open={!!selectedCandidate}
         onClose={() => setSelectedCandidate(null)}
+      />
+
+      <RejectionReasonDialog
+        open={!!pendingReject}
+        candidateName={pendingReject?.name}
+        onCancel={() => setPendingReject(null)}
+        onConfirm={confirmReject}
       />
     </>
   );
