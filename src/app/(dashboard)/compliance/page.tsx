@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireSuperAdmin } from "@/lib/auth-helpers";
 import { listBackgroundChecks } from "@/lib/actions/background-checks";
-import { listI9Overview } from "@/lib/actions/compliance";
+import { listBackgroundCheckDocuments, listI9Overview } from "@/lib/actions/compliance";
 import { isContinentalConfigured } from "@/lib/continental";
 import { COMPLIANCE_TABS, complianceTab } from "@/lib/compliance";
 import { PageHeader } from "@/components/ui/page-header";
@@ -117,6 +117,63 @@ async function BackgroundChecksSection() {
       ) : (
         <BackgroundChecksView rows={rows} isSuperAdmin canViewReports providerConfigured={providerConfigured} />
       )}
+
+      <BackgroundCheckDocumentsSection />
     </>
+  );
+}
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+/** Files filed in each employee's "Background check" folder on their profile. */
+async function BackgroundCheckDocumentsSection() {
+  const groups = await listBackgroundCheckDocuments();
+  return (
+    <section className="mt-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
+      <div className="border-b border-[var(--color-border)] px-4 py-3">
+        <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Background check documents on employee profiles</h2>
+        <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">
+          Files uploaded to a person&apos;s Background check folder. Upload or remove them from the person&apos;s profile.
+        </p>
+      </div>
+      {groups.length === 0 ? (
+        <p className="px-4 py-8 text-center text-sm text-[var(--color-text-muted)]">
+          No background check documents have been filed on employee profiles.
+        </p>
+      ) : (
+        <ul className="divide-y divide-[var(--color-border)]">
+          {groups.map((g) => (
+            <li key={g.employeeId} className="flex flex-col gap-2 px-4 py-3 md:flex-row md:items-start">
+              <div className="min-w-0 md:w-72 md:shrink-0">
+                <Link
+                  href={`/people/${g.employeeId}`}
+                  className="text-sm font-medium text-[var(--color-text-primary)] hover:text-[var(--color-accent)]"
+                >
+                  {g.name}
+                </Link>
+                <p className="truncate text-xs text-[var(--color-text-muted)]">{g.jobTitle}</p>
+              </div>
+              <div className="flex-1 min-w-0 space-y-1">
+                {g.documents.map((doc) => (
+                  <div key={doc.id} className="flex items-center gap-2 text-sm">
+                    <Icon name="description" size={14} className="text-[var(--color-text-muted)] shrink-0" />
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="truncate text-[var(--color-text-primary)] hover:text-[var(--color-accent)] hover:underline"
+                    >
+                      {doc.name}
+                    </a>
+                    <span className="shrink-0 text-xs text-[var(--color-text-muted)]">{formatDate(doc.uploadedAt)}</span>
+                  </div>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }

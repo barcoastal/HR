@@ -4,15 +4,14 @@ import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
-import { getRecruiterScope, assertCandidateAccess, getSession } from "@/lib/auth-helpers";
-import { redactBackgroundCheck } from "@/lib/document-access";
+import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
 import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
-
-/** Background-check status/results are Super Admin only; blank them for everyone else. */
-async function redactBackgroundChecksForViewer<T extends object>(candidates: T[]): Promise<T[]> {
-  const role = (await getSession())?.user?.role;
-  return candidates.map((candidate) => redactBackgroundCheck(candidate, role));
-}
+// Background-check status/results are Super Admin only; every candidate record
+// returned from here goes through these so the fields are blank for everyone else.
+import {
+  redactCandidateForViewer as redactBackgroundCheckForViewer,
+  redactCandidatesForViewer as redactBackgroundChecksForViewer,
+} from "@/lib/background-checks/viewer-redaction";
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -171,7 +170,7 @@ export async function createCandidate(data: {
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 /**
@@ -704,7 +703,7 @@ export async function updateCandidateStatus(
   }
 
   revalidatePath("/cv");
-  return updated;
+  return redactBackgroundCheckForViewer(updated);
 }
 
 export async function searchCandidates(query: string) {
@@ -1053,7 +1052,7 @@ export async function updateCandidate(
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 export async function updateCandidateNotes(id: string, notes: string) {
@@ -1063,7 +1062,7 @@ export async function updateCandidateNotes(id: string, notes: string) {
     data: { notes },
   });
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 type HireResult =
@@ -1636,7 +1635,7 @@ export async function assignCandidateToPosition(
   }
 
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }
 
 export async function findMatchingCandidates(keywords: string[]) {
@@ -1760,5 +1759,5 @@ export async function pullCandidateToRecruitment(
     data,
   });
   revalidatePath("/cv");
-  return candidate;
+  return redactBackgroundCheckForViewer(candidate);
 }

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
-import { canViewDocument, isBackgroundReportFilename, isSuperAdmin, isSuperAdminOnlyDocument } from "@/lib/document-access";
+import { canViewDocument, isSuperAdminOnlyDocument } from "@/lib/document-access";
+import { isFileBlockedFor } from "@/lib/restricted-files";
 
 export async function GET(
   _request: NextRequest,
@@ -23,9 +24,10 @@ export async function GET(
   const role = session.user?.role;
   const requesterEmployeeId = session.user?.employeeId ?? null;
 
-  // Cached background-check report PDFs are Super Admin only. 404 so the
-  // file's existence isn't confirmed to anyone else.
-  if (isBackgroundReportFilename(filename) && !isSuperAdmin(role)) {
+  // Cached background-check reports, and any file a Document row files as an
+  // I-9 / background check, are Super Admin only. 404 so the file's existence
+  // isn't confirmed to anyone else.
+  if (await isFileBlockedFor(role, { filename })) {
     return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 

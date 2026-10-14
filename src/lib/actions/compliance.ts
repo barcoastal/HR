@@ -40,3 +40,37 @@ export async function listI9Overview(): Promise<{ rows: I9Row[]; missing: number
   }));
   return { rows, ...summarizeI9Coverage(rows) };
 }
+
+export type BackgroundCheckDocumentGroup = {
+  employeeId: string;
+  name: string;
+  jobTitle: string;
+  documents: { id: string; name: string; url: string; uploadedAt: string }[];
+};
+
+/** Files in employees' "Background check" folders, grouped per employee. Super Admin only. */
+export async function listBackgroundCheckDocuments(): Promise<BackgroundCheckDocumentGroup[]> {
+  await requireSuperAdmin();
+  const employees = await db.employee.findMany({
+    where: { documents: { some: { category: "BACKGROUND_CHECK" } } },
+    select: {
+      id: true,
+      firstName: true,
+      preferredName: true,
+      lastName: true,
+      jobTitle: true,
+      documents: {
+        where: { category: "BACKGROUND_CHECK" },
+        select: { id: true, name: true, url: true, uploadedAt: true },
+        orderBy: { uploadedAt: "desc" },
+      },
+    },
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+  });
+  return employees.map((e) => ({
+    employeeId: e.id,
+    name: displayName(e),
+    jobTitle: e.jobTitle,
+    documents: e.documents.map((d) => ({ ...d, uploadedAt: d.uploadedAt.toISOString() })),
+  }));
+}

@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       },
     });
     console.log(`[sandbox] background check simulated for candidate ${candidateId}`);
+    if (!canViewBackgroundChecks(session.user?.role)) return NextResponse.json({ success: true, sandbox: true });
     return NextResponse.json({ success: true, sandbox: true, orderId: `SBX-${candidateId.slice(0, 8)}` });
   }
 
@@ -112,6 +113,8 @@ export async function POST(req: NextRequest) {
 
   console.log(`[background-check] Continental invitation sent for ${candidate.email}: invitationID=${invitationId}`);
 
+  // The provider reference and status are Super Admin only.
+  if (!canViewBackgroundChecks(session.user?.role)) return NextResponse.json({ success: true });
   return NextResponse.json({
     success: true,
     reportKey,

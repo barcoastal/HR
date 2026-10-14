@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { isRestrictedFile } from "@/lib/restricted-files";
 
 // Public endpoint — serves the document for a valid signing token (no auth required)
 export async function GET(
@@ -22,6 +23,11 @@ export async function GET(
   const filename = docUrl.split("/").pop();
   if (!filename || !/^[a-zA-Z0-9-]+\.[a-z]+$/.test(filename)) {
     return NextResponse.json({ error: "Invalid document" }, { status: 400 });
+  }
+
+  // I-9s and background checks are never served through a public signing link.
+  if (await isRestrictedFile({ urls: [docUrl], filename })) {
+    return NextResponse.json({ error: "Invalid document" }, { status: 404 });
   }
 
   const blob = await db.fileBlob.findUnique({

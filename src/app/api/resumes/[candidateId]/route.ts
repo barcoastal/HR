@@ -4,6 +4,7 @@ import { existsSync } from "fs";
 import path from "path";
 import { requireApiAuth, canAccessCandidate } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
+import { isFileBlockedFor } from "@/lib/restricted-files";
 
 const RESUMES_DIR = path.join(process.cwd(), "data", "resumes");
 const JOBING_BASE = "https://api.pro.jobing.com";
@@ -85,6 +86,16 @@ export async function GET(
   // Scoped recruiters: only their own candidates' resumes.
   if (!(await canAccessCandidate(candidateId))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // A resume filed in an I-9 / Background check folder is Super Admin only.
+  if (
+    await isFileBlockedFor(session.user?.role, {
+      urls: [`/api/resumes/${candidateId}`],
+      filename: blobFilename(candidateId),
+    })
+  ) {
+    return NextResponse.json({ error: "File not found" }, { status: 404 });
   }
 
   // 1. FileBlob (persistent — survives Railway redeploys).

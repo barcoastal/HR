@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { isFileBlockedFor } from "@/lib/restricted-files";
 import { ensureValidToken } from "@/lib/actions/platform-sync";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
@@ -65,6 +66,11 @@ export async function GET(request: NextRequest) {
       where: { resumeUrl: url },
       select: { id: true },
     });
+    // A resume filed in an I-9 / Background check folder is Super Admin only.
+    const restrictedUrls = [url, ...(owner ? [`/api/resumes/${owner.id}`] : [])];
+    if (await isFileBlockedFor(session?.user?.role, { urls: restrictedUrls })) {
+      return NextResponse.json({ error: "File not found" }, { status: 404 });
+    }
     if (owner) {
       const blob = await db.fileBlob.findUnique({
         where: { filename: `resume-${owner.id}.pdf` },

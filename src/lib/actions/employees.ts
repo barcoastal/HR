@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { visibleDocumentsWhere } from "@/lib/document-access";
 import type { EmployeeStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
@@ -1081,7 +1082,8 @@ export async function getArchivedEmployees() {
   }
   return db.employee.findMany({
     where: { archivedAt: { not: null } },
-    include: { department: true, _count: { select: { documents: true } } },
+    // Counts follow the viewer's document visibility (I-9s / background checks are Super Admin only).
+    include: { department: true, _count: { select: { documents: { where: visibleDocumentsWhere(session.user?.role) } } } },
     orderBy: { archivedAt: "desc" },
   });
 }

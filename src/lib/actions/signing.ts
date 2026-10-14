@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { randomUUID } from "crypto";
 import { PDFDocument } from "pdf-lib";
 import { revalidatePath } from "next/cache";
+import { redactBackgroundCheck } from "@/lib/document-access";
 
 export async function createSigningRequest(
   employeeTaskId: string,
@@ -96,7 +97,8 @@ export async function createStandaloneSigningRequest(data: {
   }).catch((err) => console.error("[signing] Sign request notification error:", err));
 
   revalidatePath("/documents");
-  return request;
+  // Signing requests never carry background-check data (the sign page is public).
+  return { ...request, candidate: request.candidate ? redactBackgroundCheck(request.candidate, null) : null };
 }
 
 export async function getAllSigningRequests() {
@@ -164,7 +166,8 @@ export async function getSigningRequestByToken(token: string) {
     });
   }
 
-  return request;
+  // Signing requests never carry background-check data (the sign page is public).
+  return { ...request, candidate: request.candidate ? redactBackgroundCheck(request.candidate, null) : null };
 }
 
 export async function submitSignature(
