@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { cn, formatDate } from "@/lib/utils";
 import { requireManagerOrAdmin } from "@/lib/auth-helpers";
 import {
@@ -143,7 +144,12 @@ export default async function AnalyticsPage() {
       {/* Source ROI */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-[var(--color-surface-container-lowest)] rounded-[var(--radius-lg)] p-5">
-          <h3 className="text-sm font-semibold text-[var(--color-text-primary)] mb-4">Source ROI</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-[var(--color-text-primary)]">Source ROI</h3>
+            <Link href="/analytics/recruitment" className="text-xs text-[var(--color-accent)] hover:underline">
+              Filter &amp; export in Recruitment →
+            </Link>
+          </div>
           <div className="min-h-[200px]">
             <SourceROIChart data={sourceROI} />
           </div>

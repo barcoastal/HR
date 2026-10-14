@@ -628,6 +628,19 @@ export default async function GuidePage() {
             platform spend, pipeline, onboarding, reviews, benefits, birthdays, and anniversaries.
           </p>
           <p>
+            <Route>/analytics/recruitment</Route> (the Recruitment tab) filters recruiting numbers by date
+            range (30/90 days, year to date, last 12 months, or custom), position, source, and recruiter.
+            It shows the funnel (applicants, contacted, interviewed, offer, hired) with stage-to-stage
+            conversion, average and median time in each stage, rejection reasons (including No LinkedIn
+            profile), applicants and hires by week or month, source and recruiter tables, and time to hire.
+            The funnel counts people who applied in the range by how far they have got so far; stage history
+            is only recorded from the date shown on the card, so older candidates are counted by their current
+            status and marked approximate. Time in stage uses stage history only. <strong>Export report</strong>{" "}
+            downloads every table for the current filters as one Excel file (one sheet each); each card&apos;s
+            CSV link downloads just that table. Recruiters limited to their own candidates only see and export
+            their own numbers.
+          </p>
+          <p>
             <Route>/analytics/testing</Route> is the expanded metrics workspace. Cards labeled future,
             placeholder, or not yet available are not populated by employee data yet and should not be
             reported as completed analytics.
