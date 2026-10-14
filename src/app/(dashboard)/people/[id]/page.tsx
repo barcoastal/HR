@@ -22,6 +22,9 @@ import { GustoSyncCard, GustoSyncCardSkeleton } from "@/components/people/gusto-
 import { getCurrentOutOfOfficeFor } from "@/lib/actions/out-of-office";
 import { isGustoConnected } from "@/lib/actions/gusto";
 import { Suspense } from "react";
+import { ProfileNavigator } from "@/components/people/profile-navigator";
+import { getProfileNeighbors } from "@/lib/people-neighbors";
+import { viewQueryString } from "@/lib/people-list-order";
 
 const avatarColors = ["bg-indigo-500", "bg-emerald-500", "bg-amber-500", "bg-rose-500", "bg-purple-500", "bg-cyan-500"];
 
@@ -39,13 +42,22 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
   );
 }
 
-export default async function EmployeeProfilePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EmployeeProfilePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string | string[] }>;
+}) {
   const session = await requireAuth();
   const role = session.user?.role;
   const currentEmployeeId = session.user?.employeeId;
   const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
   const isManagerRole = role === "MANAGER";
   const { id } = await params;
+  const { from: rawFrom } = await searchParams;
+  // The People list view this profile was opened from; only list-view params are kept.
+  const from = viewQueryString(typeof rawFrom === "string" ? rawFrom : "");
   const employee = await getEmployeeById(id);
   if (!employee) notFound();
 
@@ -66,7 +78,10 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
       })
     : [];
 
-  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap, gustoConnected] = await Promise.all([
+  // Only people who can open the People list (managers and above) get Previous / Next.
+  const canBrowseList = isAdmin || isManagerRole;
+
+  const [hrNotes, documents, nextOneOnOne, pastOneOnOnes, oooMap, gustoConnected, neighbors] = await Promise.all([
     getHRNotes(id),
     getEmployeeDocuments(id),
     getNextOneOnOneForEmployee(id),
@@ -74,6 +89,9 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
     getCurrentOutOfOfficeFor([id]),
     // Only admins/HR get the Gusto comparison card, so only ask when it could be shown.
     isAdmin ? isGustoConnected() : Promise.resolve(false),
+    canBrowseList
+      ? getProfileNeighbors(id, from, { role, employeeId: currentEmployeeId })
+      : Promise.resolve(null),
   ]);
 
   const currentOoo = oooMap[id];
@@ -103,6 +121,16 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
+      {canBrowseList && (
+        <ProfileNavigator
+          employeeId={employee.id}
+          from={from}
+          prev={neighbors?.prev ?? null}
+          next={neighbors?.next ?? null}
+          position={neighbors?.position ?? null}
+          total={neighbors?.total ?? null}
+        />
+      )}
       <div className={cn("rounded-[var(--radius-lg)] bg-[var(--color-surface-container-lowest)] overflow-hidden mb-6")}>
         <div className="px-6 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">

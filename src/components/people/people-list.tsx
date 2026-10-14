@@ -9,6 +9,17 @@ import {
   bulkApproveAndInviteEmployees,
 } from "@/lib/actions/employees";
 import { Icon } from "@/components/ui/icon";
+import {
+  arrangePeople,
+  groupKeyFor,
+  GROUP_OPTIONS,
+  parseView,
+  profileHref,
+  SORT_OPTIONS,
+  STATUS_LABELS,
+  STATUS_ORDER,
+  viewQueryString,
+} from "@/lib/people-list-order";
 
 type Employee = {
   id: string;
@@ -72,78 +83,9 @@ function StatusLabel({ status }: { status: string }) {
   );
 }
 
-type GroupBy = "jobTitle" | "department" | "manager" | "status" | "none";
-type SortBy = "name" | "startDate" | "jobTitle";
-
-const GROUP_OPTIONS: { value: GroupBy; label: string }[] = [
-  { value: "jobTitle", label: "Job title" },
-  { value: "department", label: "Department" },
-  { value: "manager", label: "Manager" },
-  { value: "status", label: "Status" },
-  { value: "none", label: "None" },
-];
-const SORT_OPTIONS: { value: SortBy; label: string }[] = [
-  { value: "name", label: "Name" },
-  { value: "startDate", label: "Start date" },
-  { value: "jobTitle", label: "Job title" },
-];
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "Pending",
-  ACTIVE: "Active",
-  PRE_ONBOARDING: "Written Offer",
-  TRAINING: "Training",
-  ONBOARDING: "Onboarding",
-  OFFBOARDED: "Offboarded",
-};
-const STATUS_ORDER = ["PENDING", "PRE_ONBOARDING", "TRAINING", "ONBOARDING", "ACTIVE", "OFFBOARDED"];
-
-/** Group label used when a person has no value for the grouping field; sorted last. */
-const EMPTY_GROUP: Record<GroupBy, string> = {
-  jobTitle: "No job title",
-  department: "No department",
-  manager: "No manager",
-  status: "",
-  none: "",
-};
-
 const SEARCH_DEBOUNCE_MS = 250;
-
-function groupKeyFor(emp: Employee, groupBy: GroupBy): string {
-  switch (groupBy) {
-    case "jobTitle":
-      return emp.jobTitle || EMPTY_GROUP.jobTitle;
-    case "department":
-      return emp.department?.name || EMPTY_GROUP.department;
-    case "manager":
-      return emp.manager?.name || EMPTY_GROUP.manager;
-    case "status":
-      return STATUS_LABELS[emp.status] || emp.status;
-    default:
-      return "";
-  }
-}
-
-function parseGroupBy(value: string | null): GroupBy {
-  return GROUP_OPTIONS.some((o) => o.value === value) ? (value as GroupBy) : "jobTitle";
-}
-
-function parseSortBy(value: string | null): SortBy {
-  return SORT_OPTIONS.some((o) => o.value === value) ? (value as SortBy) : "name";
-}
-
-function compareGroupNames(a: string, b: string, groupBy: GroupBy): number {
-  if (groupBy === "status") {
-    const index = (label: string) => {
-      const i = STATUS_ORDER.findIndex((s) => STATUS_LABELS[s] === label);
-      return i === -1 ? STATUS_ORDER.length : i;
-    };
-    return index(a) - index(b) || a.localeCompare(b);
-  }
-  const empty = EMPTY_GROUP[groupBy];
-  if (a === empty) return 1;
-  if (b === empty) return -1;
-  return a.localeCompare(b);
-}
+/** How long the row you came back to stays highlighted. */
+const FOCUS_HIGHLIGHT_MS = 2000;
 
 const selectClass =
   "px-2.5 py-2 rounded-lg text-sm bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30";
@@ -184,11 +126,14 @@ export function PeopleList({
   const searchParams = useSearchParams();
 
   // View state lives in the URL so a view is shareable and survives refresh.
-  const groupBy = parseGroupBy(searchParams.get("group"));
-  const sortBy = parseSortBy(searchParams.get("sort"));
-  const deptFilter = searchParams.get("dept") ?? "";
-  const statusFilter = searchParams.get("status") ?? "";
-  const urlQuery = searchParams.get("q") ?? "";
+  const urlView = parseView(searchParams);
+  const { groupBy, sortBy } = urlView;
+  const deptFilter = urlView.dept;
+  const statusFilter = urlView.status;
+  const urlQuery = urlView.q;
+  // Carried into each profile link so Previous / Next and "Back to list" keep this view.
+  const fromQs = viewQueryString(searchParams);
+  const focusId = searchParams.get("focus");
 
   // The search box keeps a local draft so typing stays responsive; the URL catches up after a
   // short debounce. Once the URL matches the draft we drop it and read from the URL again, so
@@ -261,38 +206,40 @@ export function PeopleList({
     router.refresh();
   }
 
-  // Filter → sort → group.
+  // Filter → sort → group (shared with the profile page's Previous / Next).
   const needle = query.trim().toLowerCase();
-  const filtered = employees.filter((emp) => {
-    if (deptFilter && emp.department?.name !== deptFilter) return false;
-    if (statusFilter && emp.status !== statusFilter) return false;
-    if (needle) {
-      const matches = [displayName(emp), emp.email, emp.jobTitle].some((field) =>
-        field.toLowerCase().includes(needle)
-      );
-      if (!matches) return false;
-    }
-    return true;
-  });
+  const { count: matchCount, groups: orderedGroups } = arrangePeople(employees, { ...urlView, q: query });
 
-  const sorted = [...filtered].sort((a, b) => {
-    if (sortBy === "startDate") {
-      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
-    }
-    if (sortBy === "jobTitle") {
-      return a.jobTitle.localeCompare(b.jobTitle) || displayName(a).localeCompare(displayName(b));
-    }
-    return displayName(a).localeCompare(displayName(b));
-  });
-
-  const groups = new Map<string, Employee[]>();
-  for (const emp of sorted) {
-    const key = groupKeyFor(emp, groupBy);
-    const members = groups.get(key);
-    if (members) members.push(emp);
-    else groups.set(key, [emp]);
+  // Coming back from a profile ("Back to list" adds ?focus=<id>): open that person's group,
+  // scroll their row into view, highlight it briefly, then drop the param.
+  const [highlightId, setHighlightId] = useState<string | null>(null);
+  const focusTarget = focusId ? employees.find((e) => e.id === focusId) : undefined;
+  const focusGroupKey = focusTarget ? `${groupBy}:${groupKeyFor(focusTarget, groupBy)}` : null;
+  if (focusGroupKey && collapsed.has(focusGroupKey)) {
+    const next = new Set(collapsed);
+    next.delete(focusGroupKey);
+    setCollapsed(next);
   }
-  const orderedGroups = Array.from(groups.entries()).sort(([a], [b]) => compareGroupNames(a, b, groupBy));
+  useEffect(() => {
+    if (!focusId) return;
+    const frame = requestAnimationFrame(() => {
+      const row = document.querySelector<HTMLElement>(`[data-person-id="${CSS.escape(focusId)}"]`);
+      if (row) {
+        row.scrollIntoView({ block: "center" });
+        setHighlightId(focusId);
+      }
+      const params = new URLSearchParams(window.location.search);
+      params.delete("focus");
+      const qs = params.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusId, pathname, router]);
+  useEffect(() => {
+    if (!highlightId) return;
+    const timer = setTimeout(() => setHighlightId(null), FOCUS_HIGHLIGHT_MS);
+    return () => clearTimeout(timer);
+  }, [highlightId]);
 
   const hasActiveFilters = Boolean(needle || deptFilter || statusFilter);
 
@@ -303,12 +250,17 @@ export function PeopleList({
     const subline = [preferred ? `Goes by ${preferred}` : null, emp.pronouns].filter(Boolean).join(" · ");
     const ooo = outOfOffice[emp.id];
     const isPending = emp.status === "PENDING";
+    const href = profileHref(emp.id, fromQs);
 
     return (
       <tr
         key={emp.id}
-        onClick={() => router.push(`/people/${emp.id}`)}
-        className="cursor-pointer border-t border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] transition-colors"
+        data-person-id={emp.id}
+        onClick={() => router.push(href)}
+        className={cn(
+          "cursor-pointer border-t border-[var(--color-border)] hover:bg-[var(--color-surface-hover)] transition-colors duration-700",
+          highlightId === emp.id && "bg-[var(--color-primary-fixed)]/40"
+        )}
       >
         <td className="px-4 py-2.5">
           <div className="flex items-center gap-3 min-w-0">
@@ -326,7 +278,7 @@ export function PeopleList({
             )}
             <div className="min-w-0">
               <Link
-                href={`/people/${emp.id}`}
+                href={href}
                 onClick={(e) => e.stopPropagation()}
                 className="block font-medium text-[var(--color-text-primary)] truncate hover:underline"
               >
@@ -440,12 +392,12 @@ export function PeopleList({
         </ToolbarSelect>
 
         <div className="ml-auto text-sm text-[var(--color-on-surface-variant)] font-medium whitespace-nowrap">
-          {sorted.length} {sorted.length === 1 ? "person" : "people"}
+          {matchCount} {matchCount === 1 ? "person" : "people"}
         </div>
       </div>
 
       {/* Grouped list */}
-      {sorted.length === 0 ? (
+      {matchCount === 0 ? (
         <div className="rounded-2xl border border-dashed border-[var(--color-border)] py-16 text-center">
           <p className="text-sm text-[var(--color-text-muted)]">No people match these filters.</p>
           {hasActiveFilters && (

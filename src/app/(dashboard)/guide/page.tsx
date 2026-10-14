@@ -248,6 +248,14 @@ export default async function GuidePage() {
 
           <h3>Employee profile</h3>
           <p>Authorized viewers can see job information, department, manager, employment dates, relevant documents, reviews, 1:1 history, time off, emergency contact, and HR notes according to role.</p>
+          <p>
+            A profile opened from the directory shows <strong>Previous</strong> and <strong>Next</strong>
+            (also <kbd>Alt</kbd>+<kbd>←</kbd> / <kbd>Alt</kbd>+<kbd>→</kbd>) plus its position, such as
+            &ldquo;3 of 42&rdquo;. They step through the people in the same order, filters, and grouping the list
+            showed; a profile opened some other way uses the default list order. Managers step only
+            through themselves and their direct reports. <strong>Back to list</strong> restores the filters
+            and scrolls to the last person you viewed, briefly highlighting their row.
+          </p>
           <ul>
             <li>Admin/HR can edit employment details, manager, department, status, and confidential HR information.</li>
             <li>Promotion records update title/compensation history and appear in analytics.</li>
