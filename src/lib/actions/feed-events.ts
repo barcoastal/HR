@@ -105,9 +105,23 @@ export async function upsertEventAttendance(data: {
       type: true,
       eventOrganizerUserId: true,
       googleCalendarEventId: true,
+      authorId: true,
+      audienceType: true,
+      audienceDeptIds: true,
+      audienceEmployeeIds: true,
+      eventVisibility: true,
     },
   });
   if (!feedPost || feedPost.type !== "EVENT") {
+    throw new Error("Event not found");
+  }
+  // Nobody can answer (and so copy onto their Google Calendar) an event they
+  // are not allowed to see.
+  const { canSeeAudiencePost } = await import("@/lib/event-audience");
+  const viewerEmployee = session.user.employeeId
+    ? await db.employee.findUnique({ where: { id: session.user.employeeId }, select: { departmentId: true } })
+    : null;
+  if (!canSeeAudiencePost(feedPost, { employeeId: session.user.employeeId, departmentId: viewerEmployee?.departmentId, role: session.user.role })) {
     throw new Error("Event not found");
   }
 

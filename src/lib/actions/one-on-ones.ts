@@ -17,6 +17,9 @@ import {
 import { responseFromGoogle, type EventResponse } from "@/lib/event-responses";
 import type { OneOnOneType, UserRole } from "@/generated/prisma/client";
 import { displayName } from "@/lib/utils";
+import { MILESTONE_LABEL, MILESTONE_MEETING_TYPE, parseMilestoneKey } from "@/lib/review-milestones";
+import { notifyOversight } from "@/lib/review-oversight";
+import { formatDateTime } from "@/lib/time-zone";
 
 /**
  * Look up the manager's User and, if they have their own Google Calendar
@@ -287,10 +290,24 @@ export async function listEligibleEmployeesForCreate() {
   return [];
 }
 
+/** True when `managerEmployeeId` is anywhere above `employeeId` in the reporting line. */
+async function isAboveInReportingLine(employeeId: string, managerEmployeeId: string): Promise<boolean> {
+  const seen = new Set<string>([employeeId]);
+  let current = (await db.employee.findUnique({ where: { id: employeeId }, select: { managerId: true } }))?.managerId;
+  while (current && !seen.has(current) && seen.size < 50) {
+    if (current === managerEmployeeId) return true;
+    seen.add(current);
+    current = (await db.employee.findUnique({ where: { id: current }, select: { managerId: true } }))?.managerId;
+  }
+  return false;
+}
+
 export async function createOneOnOne(input: {
   employeeId: string;
   type: OneOnOneType;
   scheduledAt: Date;
+  /** Review milestone (from the calendar) this meeting fulfils. */
+  milestoneKey?: string;
 }) {
   const session = await requireAuth();
   const role = session.user?.role;
@@ -306,10 +323,32 @@ export async function createOneOnOne(input: {
   });
   if (!employee) return { success: false, error: "Employee not found" };
 
-  // Managers can only schedule for their own direct reports.
-  if (!isAdmin(role) && employee.managerId !== myEmployeeId) {
-    return { success: false, error: "You can only schedule 1:1s for your direct reports" };
+  // Managers can schedule for anyone who reports to them, directly or further down.
+  if (
+    !isAdmin(role) &&
+    employee.managerId !== myEmployeeId &&
+    !(myEmployeeId && (await isAboveInReportingLine(employee.id, myEmployeeId)))
+  ) {
+    return { success: false, error: "You can only schedule 1:1s for people who report to you" };
   }
+
+  let type = input.type;
+  let milestoneKey: string | null = null;
+  if (input.milestoneKey) {
+    const milestone = parseMilestoneKey(input.milestoneKey);
+    if (!milestone || milestone.employeeId !== employee.id) {
+      return { success: false, error: "That review milestone does not belong to this employee" };
+    }
+    const alreadyLinked = await db.oneOnOne.findFirst({
+      where: { milestoneKey: input.milestoneKey, status: { not: "CANCELLED" } },
+      select: { id: true },
+    });
+    if (alreadyLinked) return { success: false, error: "This review is already scheduled" };
+    type = MILESTONE_MEETING_TYPE[milestone.kind];
+    milestoneKey = input.milestoneKey;
+  }
+  const scheduledAt = new Date(input.scheduledAt);
+  if (Number.isNaN(scheduledAt.getTime())) return { success: false, error: "Pick a valid date and time" };
 
   // The INITIATOR runs the meeting: they become the meeting's manager, so the
   // calendar event is created on their calendar with them as the organizer
@@ -326,14 +365,30 @@ export async function createOneOnOne(input: {
     data: {
       employeeId: employee.id,
       managerId: meetingManagerId,
-      scheduledAt: input.scheduledAt,
-      type: input.type,
+      scheduledAt,
+      type,
+      milestoneKey,
+    },
+    include: {
+      employee: { select: { firstName: true, lastName: true, preferredName: true } },
+      manager: { select: { firstName: true, lastName: true, preferredName: true } },
     },
   });
 
   await autoCreateGoogleEvent(created.id, { sendIcsFallback: true });
 
+  const milestone = milestoneKey ? parseMilestoneKey(milestoneKey) : null;
+  const what = milestone ? MILESTONE_LABEL[milestone.kind] : TYPE_LABEL[type];
+  await notifyOversight({
+    employeeId: employee.id,
+    subject: `Scheduled: ${displayName(created.employee)} — ${what}`,
+    message: `${displayName(created.manager)} scheduled ${displayName(created.employee)}'s ${what} for ${formatDateTime(scheduledAt)}.`,
+    link: "/calendar",
+    excludeEmployeeIds: [myEmployeeId],
+  });
+
   revalidatePath("/one-on-ones");
+  revalidatePath("/calendar");
   revalidatePath(`/people/${employee.id}`);
   return { success: true, id: created.id };
 }
@@ -434,8 +489,19 @@ export async function markComplete(meetingId: string) {
     where: { id: meetingId },
     data: { status: "COMPLETED", completedAt: new Date() },
     include: {
-      employee: { select: { id: true, anniversaryDate: true, startDate: true, managerId: true } },
+      employee: { select: { id: true, anniversaryDate: true, startDate: true, managerId: true, firstName: true, lastName: true, preferredName: true } },
+      manager: { select: { id: true, firstName: true, lastName: true, preferredName: true } },
     },
+  });
+
+  const completedMilestone = meeting.milestoneKey ? parseMilestoneKey(meeting.milestoneKey) : null;
+  const completedWhat = completedMilestone ? MILESTONE_LABEL[completedMilestone.kind] : TYPE_LABEL[meeting.type];
+  await notifyOversight({
+    employeeId: meeting.employeeId,
+    subject: `Completed: ${displayName(meeting.employee)} — ${completedWhat}`,
+    message: `${displayName(meeting.manager)} completed ${displayName(meeting.employee)}'s ${completedWhat}.`,
+    link: `/one-on-ones/${meeting.id}`,
+    excludeEmployeeIds: [meeting.managerId],
   });
 
   // Auto-create the next ANNUAL on the employee's next anniversary, if they
@@ -468,6 +534,8 @@ export async function markComplete(meetingId: string) {
 
 const TYPE_LABEL: Record<OneOnOneType, string> = {
   THIRTY_DAY: "30-Day Check-In",
+  SIXTY_DAY: "60-Day Review",
+  NINETY_DAY: "90-Day Review",
   QUARTERLY: "Quarterly Review",
   ANNUAL: "Annual Review",
 };

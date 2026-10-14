@@ -79,7 +79,9 @@ export type ReviewStatus = (typeof ReviewStatus)[keyof typeof ReviewStatus]
 export const OneOnOneType = {
   THIRTY_DAY: 'THIRTY_DAY',
   QUARTERLY: 'QUARTERLY',
-  ANNUAL: 'ANNUAL'
+  ANNUAL: 'ANNUAL',
+  SIXTY_DAY: 'SIXTY_DAY',
+  NINETY_DAY: 'NINETY_DAY'
 } as const
 
 export type OneOnOneType = (typeof OneOnOneType)[keyof typeof OneOnOneType]

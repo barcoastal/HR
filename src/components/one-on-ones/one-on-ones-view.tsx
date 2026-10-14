@@ -25,7 +25,7 @@ type Person = {
 
 type Meeting = {
   id: string;
-  type: "THIRTY_DAY" | "QUARTERLY" | "ANNUAL";
+  type: "THIRTY_DAY" | "SIXTY_DAY" | "NINETY_DAY" | "QUARTERLY" | "ANNUAL";
   status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
   scheduledAt: string;
   completedAt: string | null;
@@ -36,12 +36,16 @@ type Meeting = {
 
 const TYPE_LABEL: Record<Meeting["type"], string> = {
   THIRTY_DAY: "30-Day",
+  SIXTY_DAY: "60-Day",
+  NINETY_DAY: "90-Day",
   QUARTERLY: "Quarterly",
   ANNUAL: "Annual",
 };
 
 const TYPE_COLOR: Record<Meeting["type"], string> = {
   THIRTY_DAY: "bg-blue-500/15 text-blue-400",
+  SIXTY_DAY: "bg-cyan-500/15 text-cyan-400",
+  NINETY_DAY: "bg-indigo-500/15 text-indigo-400",
   QUARTERLY: "bg-purple-500/15 text-purple-400",
   ANNUAL: "bg-emerald-500/15 text-emerald-400",
 };
@@ -294,6 +298,8 @@ function NewOneOnOneDialog({ onClose }: { onClose: () => void }) {
               className="w-full px-3 py-2 rounded-lg text-sm bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-text-primary)]"
             >
               <option value="THIRTY_DAY">30-Day Check-In</option>
+              <option value="SIXTY_DAY">60-Day Review</option>
+              <option value="NINETY_DAY">90-Day Review</option>
               <option value="QUARTERLY">Quarterly Review</option>
               <option value="ANNUAL">Annual Review</option>
             </select>

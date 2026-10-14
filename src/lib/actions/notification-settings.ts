@@ -65,3 +65,50 @@ export async function saveNotificationRules(
 
   revalidatePath("/settings");
 }
+
+/** Settings → Notifications: the "Review & 1:1 oversight alerts" rule. */
+export async function getReviewOversightSettings() {
+  const { requireAdmin } = await import("@/lib/auth-helpers");
+  await requireAdmin();
+  const { getOversightRule, OVERSIGHT_GROUP } = await import("@/lib/review-oversight");
+  const [rule, recipients] = await Promise.all([
+    getOversightRule(),
+    db.notificationRecipient.findMany({ where: { group: OVERSIGHT_GROUP }, select: { employeeId: true } }),
+  ]);
+  return { enabled: rule.enabled, departmentIds: rule.departmentIds, recipientIds: recipients.map((r) => r.employeeId) };
+}
+
+export async function saveReviewOversightSettings(input: {
+  enabled: boolean;
+  recipientIds: string[];
+  departmentIds: string[];
+}) {
+  const { requireAuth } = await import("@/lib/auth-helpers");
+  const session = await requireAuth();
+  const role = session.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    return { success: false, error: "Not authorized" };
+  }
+  const { OVERSIGHT_GROUP } = await import("@/lib/review-oversight");
+  const [employees, departments] = await Promise.all([
+    db.employee.findMany({ where: { id: { in: [...new Set(input.recipientIds)] } }, select: { id: true } }),
+    db.department.findMany({ where: { id: { in: [...new Set(input.departmentIds)] } }, select: { id: true } }),
+  ]);
+  const recipientIds = employees.map((e) => e.id);
+  const departmentIds = departments.map((d) => d.id);
+
+  await db.$transaction([
+    db.reviewOversightRule.upsert({
+      where: { id: "singleton" },
+      create: { id: "singleton", enabled: !!input.enabled, departmentIds },
+      update: { enabled: !!input.enabled, departmentIds },
+    }),
+    db.notificationRecipient.deleteMany({ where: { group: OVERSIGHT_GROUP } }),
+    db.notificationRecipient.createMany({
+      data: recipientIds.map((employeeId) => ({ employeeId, group: OVERSIGHT_GROUP })),
+    }),
+  ]);
+  revalidatePath("/settings");
+  revalidatePath("/calendar");
+  return { success: true };
+}

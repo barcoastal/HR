@@ -61,6 +61,8 @@ enum OneOnOneType {
   THIRTY_DAY
   QUARTERLY
   ANNUAL
+  SIXTY_DAY
+  NINETY_DAY
 }
 
 enum OneOnOneStatus {
@@ -542,6 +544,11 @@ model FeedPost {
   eventOrganizerUserId  String?
   googleCalendarEventId String?
   eventCancelledAt      DateTime?
+  // Named palette colour for the calendar chip (see src/lib/calendar-colors.ts).
+  eventColor            String?
+  // Who else may SEE the event besides its invitees and author:
+  // "everyone" (audience rules only) | "managers" | "admins" | "invited".
+  eventVisibility       String    @default("everyone")
 
   // Who can SEE this post (events especially) in the feed and calendar.
   // "all" | "departments" | "employees" — ids stored as JSON string arrays.
@@ -1672,6 +1679,8 @@ model OneOnOne {
   notebookMarkdown String?
   meetingLink      String?
   googleEventId    String?
+  // Computed review milestone this meeting fulfils, e.g. "<employeeId>:SIXTY_DAY:2026-11-30".
+  milestoneKey     String?
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
@@ -1682,6 +1691,38 @@ model OneOnOne {
   @@index([managerId])
   @@index([scheduledAt])
   @@index([status])
+  @@index([milestoneKey])
+}
+
+// One row per review milestone whose "schedule it" reminder has gone out, so
+// the daily job never sends the same reminder twice.
+model ReviewMilestoneReminder {
+  id           String   @id @default(uuid())
+  milestoneKey String   @unique
+  employeeId   String
+  kind         String
+  dueDate      String // YYYY-MM-DD, company zone
+  recipients   Int      @default(0)
+  sentAt       DateTime @default(now())
+
+  @@index([employeeId])
+}
+
+// "Review & 1:1 oversight alerts": the people in NotificationRecipient group
+// REVIEW_OVERSIGHT are emailed about 1:1s and review milestones for employees
+// in these departments (empty = every department). Singleton.
+model ReviewOversightRule {
+  id            String   @id @default("singleton")
+  enabled       Boolean  @default(false)
+  departmentIds String[] @default([])
+  updatedAt     DateTime @updatedAt
+}
+
+// Admin-chosen palette colour per calendar category (missing row = built-in colour).
+model CalendarCategoryColor {
+  category  String   @id
+  color     String
+  updatedAt DateTime @updatedAt
 }
 
 model GustoConnection {

@@ -35,6 +35,7 @@ export type OneOnOneMinAggregateOutputType = {
   notebookMarkdown: string | null
   meetingLink: string | null
   googleEventId: string | null
+  milestoneKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,6 +51,7 @@ export type OneOnOneMaxAggregateOutputType = {
   notebookMarkdown: string | null
   meetingLink: string | null
   googleEventId: string | null
+  milestoneKey: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,6 +67,7 @@ export type OneOnOneCountAggregateOutputType = {
   notebookMarkdown: number
   meetingLink: number
   googleEventId: number
+  milestoneKey: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -82,6 +85,7 @@ export type OneOnOneMinAggregateInputType = {
   notebookMarkdown?: true
   meetingLink?: true
   googleEventId?: true
+  milestoneKey?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -97,6 +101,7 @@ export type OneOnOneMaxAggregateInputType = {
   notebookMarkdown?: true
   meetingLink?: true
   googleEventId?: true
+  milestoneKey?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +117,7 @@ export type OneOnOneCountAggregateInputType = {
   notebookMarkdown?: true
   meetingLink?: true
   googleEventId?: true
+  milestoneKey?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -200,6 +206,7 @@ export type OneOnOneGroupByOutputType = {
   notebookMarkdown: string | null
   meetingLink: string | null
   googleEventId: string | null
+  milestoneKey: string | null
   createdAt: Date
   updatedAt: Date
   _count: OneOnOneCountAggregateOutputType | null
@@ -236,6 +243,7 @@ export type OneOnOneWhereInput = {
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  milestoneKey?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -253,6 +261,7 @@ export type OneOnOneOrderByWithRelationInput = {
   notebookMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   meetingLink?: Prisma.SortOrderInput | Prisma.SortOrder
   googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
+  milestoneKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   employee?: Prisma.EmployeeOrderByWithRelationInput
@@ -273,6 +282,7 @@ export type OneOnOneWhereUniqueInput = Prisma.AtLeast<{
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  milestoneKey?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
@@ -290,6 +300,7 @@ export type OneOnOneOrderByWithAggregationInput = {
   notebookMarkdown?: Prisma.SortOrderInput | Prisma.SortOrder
   meetingLink?: Prisma.SortOrderInput | Prisma.SortOrder
   googleEventId?: Prisma.SortOrderInput | Prisma.SortOrder
+  milestoneKey?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.OneOnOneCountOrderByAggregateInput
@@ -311,6 +322,7 @@ export type OneOnOneScalarWhereWithAggregatesInput = {
   notebookMarkdown?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
   googleEventId?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
+  milestoneKey?: Prisma.StringNullableWithAggregatesFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OneOnOne"> | Date | string
 }
@@ -324,6 +336,7 @@ export type OneOnOneCreateInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsEmployeeInput
@@ -341,6 +354,7 @@ export type OneOnOneUncheckedCreateInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -354,6 +368,7 @@ export type OneOnOneUpdateInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsEmployeeNestedInput
@@ -371,6 +386,7 @@ export type OneOnOneUncheckedUpdateInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -386,6 +402,7 @@ export type OneOnOneCreateManyInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -399,6 +416,7 @@ export type OneOnOneUpdateManyMutationInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -414,6 +432,7 @@ export type OneOnOneUncheckedUpdateManyInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -439,6 +458,7 @@ export type OneOnOneCountOrderByAggregateInput = {
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
+  milestoneKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -454,6 +474,7 @@ export type OneOnOneMaxOrderByAggregateInput = {
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
+  milestoneKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -469,6 +490,7 @@ export type OneOnOneMinOrderByAggregateInput = {
   notebookMarkdown?: Prisma.SortOrder
   meetingLink?: Prisma.SortOrder
   googleEventId?: Prisma.SortOrder
+  milestoneKey?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -574,6 +596,7 @@ export type OneOnOneCreateWithoutEmployeeInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   manager: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsManagerInput
@@ -589,6 +612,7 @@ export type OneOnOneUncheckedCreateWithoutEmployeeInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -612,6 +636,7 @@ export type OneOnOneCreateWithoutManagerInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   employee: Prisma.EmployeeCreateNestedOneWithoutOneOnOnesAsEmployeeInput
@@ -627,6 +652,7 @@ export type OneOnOneUncheckedCreateWithoutManagerInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -671,6 +697,7 @@ export type OneOnOneScalarWhereInput = {
   notebookMarkdown?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   meetingLink?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   googleEventId?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
+  milestoneKey?: Prisma.StringNullableFilter<"OneOnOne"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"OneOnOne"> | Date | string
 }
@@ -701,6 +728,7 @@ export type OneOnOneCreateManyEmployeeInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -715,6 +743,7 @@ export type OneOnOneCreateManyManagerInput = {
   notebookMarkdown?: string | null
   meetingLink?: string | null
   googleEventId?: string | null
+  milestoneKey?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -728,6 +757,7 @@ export type OneOnOneUpdateWithoutEmployeeInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsManagerNestedInput
@@ -743,6 +773,7 @@ export type OneOnOneUncheckedUpdateWithoutEmployeeInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -757,6 +788,7 @@ export type OneOnOneUncheckedUpdateManyWithoutEmployeeInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -770,6 +802,7 @@ export type OneOnOneUpdateWithoutManagerInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutOneOnOnesAsEmployeeNestedInput
@@ -785,6 +818,7 @@ export type OneOnOneUncheckedUpdateWithoutManagerInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -799,6 +833,7 @@ export type OneOnOneUncheckedUpdateManyWithoutManagerInput = {
   notebookMarkdown?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   meetingLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  milestoneKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -816,6 +851,7 @@ export type OneOnOneSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   notebookMarkdown?: boolean
   meetingLink?: boolean
   googleEventId?: boolean
+  milestoneKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -833,6 +869,7 @@ export type OneOnOneSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   notebookMarkdown?: boolean
   meetingLink?: boolean
   googleEventId?: boolean
+  milestoneKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -850,6 +887,7 @@ export type OneOnOneSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   notebookMarkdown?: boolean
   meetingLink?: boolean
   googleEventId?: boolean
+  milestoneKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -867,11 +905,12 @@ export type OneOnOneSelectScalar = {
   notebookMarkdown?: boolean
   meetingLink?: boolean
   googleEventId?: boolean
+  milestoneKey?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OneOnOneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "managerId" | "scheduledAt" | "completedAt" | "type" | "status" | "notebookMarkdown" | "meetingLink" | "googleEventId" | "createdAt" | "updatedAt", ExtArgs["result"]["oneOnOne"]>
+export type OneOnOneOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "employeeId" | "managerId" | "scheduledAt" | "completedAt" | "type" | "status" | "notebookMarkdown" | "meetingLink" | "googleEventId" | "milestoneKey" | "createdAt" | "updatedAt", ExtArgs["result"]["oneOnOne"]>
 export type OneOnOneInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
@@ -902,6 +941,7 @@ export type $OneOnOnePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     notebookMarkdown: string | null
     meetingLink: string | null
     googleEventId: string | null
+    milestoneKey: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["oneOnOne"]>
@@ -1339,6 +1379,7 @@ export interface OneOnOneFieldRefs {
   readonly notebookMarkdown: Prisma.FieldRef<"OneOnOne", 'String'>
   readonly meetingLink: Prisma.FieldRef<"OneOnOne", 'String'>
   readonly googleEventId: Prisma.FieldRef<"OneOnOne", 'String'>
+  readonly milestoneKey: Prisma.FieldRef<"OneOnOne", 'String'>
   readonly createdAt: Prisma.FieldRef<"OneOnOne", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"OneOnOne", 'DateTime'>
 }

@@ -248,6 +248,7 @@ export async function GET(request: Request) {
           audienceType: true,
           audienceDeptIds: true,
           audienceEmployeeIds: true,
+          eventVisibility: true,
           authorId: true,
           author: { select: { firstName: true, preferredName: true, lastName: true } },
         },

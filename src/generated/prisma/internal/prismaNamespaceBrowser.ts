@@ -123,6 +123,9 @@ export const ModelName = {
   WorkerHeartbeat: 'WorkerHeartbeat',
   HiringPlan: 'HiringPlan',
   OneOnOne: 'OneOnOne',
+  ReviewMilestoneReminder: 'ReviewMilestoneReminder',
+  ReviewOversightRule: 'ReviewOversightRule',
+  CalendarCategoryColor: 'CalendarCategoryColor',
   GustoConnection: 'GustoConnection',
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
@@ -384,6 +387,8 @@ export const FeedPostScalarFieldEnum = {
   eventOrganizerUserId: 'eventOrganizerUserId',
   googleCalendarEventId: 'googleCalendarEventId',
   eventCancelledAt: 'eventCancelledAt',
+  eventColor: 'eventColor',
+  eventVisibility: 'eventVisibility',
   audienceType: 'audienceType',
   audienceDeptIds: 'audienceDeptIds',
   audienceEmployeeIds: 'audienceEmployeeIds',
@@ -1267,11 +1272,44 @@ export const OneOnOneScalarFieldEnum = {
   notebookMarkdown: 'notebookMarkdown',
   meetingLink: 'meetingLink',
   googleEventId: 'googleEventId',
+  milestoneKey: 'milestoneKey',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type OneOnOneScalarFieldEnum = (typeof OneOnOneScalarFieldEnum)[keyof typeof OneOnOneScalarFieldEnum]
+
+
+export const ReviewMilestoneReminderScalarFieldEnum = {
+  id: 'id',
+  milestoneKey: 'milestoneKey',
+  employeeId: 'employeeId',
+  kind: 'kind',
+  dueDate: 'dueDate',
+  recipients: 'recipients',
+  sentAt: 'sentAt'
+} as const
+
+export type ReviewMilestoneReminderScalarFieldEnum = (typeof ReviewMilestoneReminderScalarFieldEnum)[keyof typeof ReviewMilestoneReminderScalarFieldEnum]
+
+
+export const ReviewOversightRuleScalarFieldEnum = {
+  id: 'id',
+  enabled: 'enabled',
+  departmentIds: 'departmentIds',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReviewOversightRuleScalarFieldEnum = (typeof ReviewOversightRuleScalarFieldEnum)[keyof typeof ReviewOversightRuleScalarFieldEnum]
+
+
+export const CalendarCategoryColorScalarFieldEnum = {
+  category: 'category',
+  color: 'color',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CalendarCategoryColorScalarFieldEnum = (typeof CalendarCategoryColorScalarFieldEnum)[keyof typeof CalendarCategoryColorScalarFieldEnum]
 
 
 export const GustoConnectionScalarFieldEnum = {

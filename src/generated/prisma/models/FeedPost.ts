@@ -41,6 +41,8 @@ export type FeedPostMinAggregateOutputType = {
   eventOrganizerUserId: string | null
   googleCalendarEventId: string | null
   eventCancelledAt: Date | null
+  eventColor: string | null
+  eventVisibility: string | null
   audienceType: string | null
   audienceDeptIds: string | null
   audienceEmployeeIds: string | null
@@ -66,6 +68,8 @@ export type FeedPostMaxAggregateOutputType = {
   eventOrganizerUserId: string | null
   googleCalendarEventId: string | null
   eventCancelledAt: Date | null
+  eventColor: string | null
+  eventVisibility: string | null
   audienceType: string | null
   audienceDeptIds: string | null
   audienceEmployeeIds: string | null
@@ -91,6 +95,8 @@ export type FeedPostCountAggregateOutputType = {
   eventOrganizerUserId: number
   googleCalendarEventId: number
   eventCancelledAt: number
+  eventColor: number
+  eventVisibility: number
   audienceType: number
   audienceDeptIds: number
   audienceEmployeeIds: number
@@ -118,6 +124,8 @@ export type FeedPostMinAggregateInputType = {
   eventOrganizerUserId?: true
   googleCalendarEventId?: true
   eventCancelledAt?: true
+  eventColor?: true
+  eventVisibility?: true
   audienceType?: true
   audienceDeptIds?: true
   audienceEmployeeIds?: true
@@ -143,6 +151,8 @@ export type FeedPostMaxAggregateInputType = {
   eventOrganizerUserId?: true
   googleCalendarEventId?: true
   eventCancelledAt?: true
+  eventColor?: true
+  eventVisibility?: true
   audienceType?: true
   audienceDeptIds?: true
   audienceEmployeeIds?: true
@@ -168,6 +178,8 @@ export type FeedPostCountAggregateInputType = {
   eventOrganizerUserId?: true
   googleCalendarEventId?: true
   eventCancelledAt?: true
+  eventColor?: true
+  eventVisibility?: true
   audienceType?: true
   audienceDeptIds?: true
   audienceEmployeeIds?: true
@@ -266,6 +278,8 @@ export type FeedPostGroupByOutputType = {
   eventOrganizerUserId: string | null
   googleCalendarEventId: string | null
   eventCancelledAt: Date | null
+  eventColor: string | null
+  eventVisibility: string
   audienceType: string
   audienceDeptIds: string | null
   audienceEmployeeIds: string | null
@@ -312,6 +326,8 @@ export type FeedPostWhereInput = {
   eventOrganizerUserId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   googleCalendarEventId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   eventCancelledAt?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
+  eventColor?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  eventVisibility?: Prisma.StringFilter<"FeedPost"> | string
   audienceType?: Prisma.StringFilter<"FeedPost"> | string
   audienceDeptIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   audienceEmployeeIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
@@ -345,6 +361,8 @@ export type FeedPostOrderByWithRelationInput = {
   eventOrganizerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventCancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventVisibility?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceDeptIds?: Prisma.SortOrderInput | Prisma.SortOrder
   audienceEmployeeIds?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -381,6 +399,8 @@ export type FeedPostWhereUniqueInput = Prisma.AtLeast<{
   eventOrganizerUserId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   googleCalendarEventId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   eventCancelledAt?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
+  eventColor?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  eventVisibility?: Prisma.StringFilter<"FeedPost"> | string
   audienceType?: Prisma.StringFilter<"FeedPost"> | string
   audienceDeptIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   audienceEmployeeIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
@@ -414,6 +434,8 @@ export type FeedPostOrderByWithAggregationInput = {
   eventOrganizerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   googleCalendarEventId?: Prisma.SortOrderInput | Prisma.SortOrder
   eventCancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventVisibility?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceDeptIds?: Prisma.SortOrderInput | Prisma.SortOrder
   audienceEmployeeIds?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -445,6 +467,8 @@ export type FeedPostScalarWhereWithAggregatesInput = {
   eventOrganizerUserId?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
   googleCalendarEventId?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
   eventCancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FeedPost"> | Date | string | null
+  eventColor?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
+  eventVisibility?: Prisma.StringWithAggregatesFilter<"FeedPost"> | string
   audienceType?: Prisma.StringWithAggregatesFilter<"FeedPost"> | string
   audienceDeptIds?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
   audienceEmployeeIds?: Prisma.StringNullableWithAggregatesFilter<"FeedPost"> | string | null
@@ -468,6 +492,8 @@ export type FeedPostCreateInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -501,6 +527,8 @@ export type FeedPostUncheckedCreateInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -530,6 +558,8 @@ export type FeedPostUpdateInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -563,6 +593,8 @@ export type FeedPostUncheckedUpdateInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -594,6 +626,8 @@ export type FeedPostCreateManyInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -617,6 +651,8 @@ export type FeedPostUpdateManyMutationInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -642,6 +678,8 @@ export type FeedPostUncheckedUpdateManyInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -677,6 +715,8 @@ export type FeedPostCountOrderByAggregateInput = {
   eventOrganizerUserId?: Prisma.SortOrder
   googleCalendarEventId?: Prisma.SortOrder
   eventCancelledAt?: Prisma.SortOrder
+  eventColor?: Prisma.SortOrder
+  eventVisibility?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceDeptIds?: Prisma.SortOrder
   audienceEmployeeIds?: Prisma.SortOrder
@@ -702,6 +742,8 @@ export type FeedPostMaxOrderByAggregateInput = {
   eventOrganizerUserId?: Prisma.SortOrder
   googleCalendarEventId?: Prisma.SortOrder
   eventCancelledAt?: Prisma.SortOrder
+  eventColor?: Prisma.SortOrder
+  eventVisibility?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceDeptIds?: Prisma.SortOrder
   audienceEmployeeIds?: Prisma.SortOrder
@@ -727,6 +769,8 @@ export type FeedPostMinOrderByAggregateInput = {
   eventOrganizerUserId?: Prisma.SortOrder
   googleCalendarEventId?: Prisma.SortOrder
   eventCancelledAt?: Prisma.SortOrder
+  eventColor?: Prisma.SortOrder
+  eventVisibility?: Prisma.SortOrder
   audienceType?: Prisma.SortOrder
   audienceDeptIds?: Prisma.SortOrder
   audienceEmployeeIds?: Prisma.SortOrder
@@ -927,6 +971,8 @@ export type FeedPostCreateWithoutAuthorInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -958,6 +1004,8 @@ export type FeedPostUncheckedCreateWithoutAuthorInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -997,6 +1045,8 @@ export type FeedPostCreateWithoutMentionedEmployeeInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1028,6 +1078,8 @@ export type FeedPostUncheckedCreateWithoutMentionedEmployeeInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1088,6 +1140,8 @@ export type FeedPostScalarWhereInput = {
   eventOrganizerUserId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   googleCalendarEventId?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   eventCancelledAt?: Prisma.DateTimeNullableFilter<"FeedPost"> | Date | string | null
+  eventColor?: Prisma.StringNullableFilter<"FeedPost"> | string | null
+  eventVisibility?: Prisma.StringFilter<"FeedPost"> | string
   audienceType?: Prisma.StringFilter<"FeedPost"> | string
   audienceDeptIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
   audienceEmployeeIds?: Prisma.StringNullableFilter<"FeedPost"> | string | null
@@ -1127,6 +1181,8 @@ export type FeedPostCreateWithoutPollInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1159,6 +1215,8 @@ export type FeedPostUncheckedCreateWithoutPollInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1203,6 +1261,8 @@ export type FeedPostUpdateWithoutPollInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1235,6 +1295,8 @@ export type FeedPostUncheckedUpdateWithoutPollInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1263,6 +1325,8 @@ export type FeedPostCreateWithoutAttendeesInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1295,6 +1359,8 @@ export type FeedPostUncheckedCreateWithoutAttendeesInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1339,6 +1405,8 @@ export type FeedPostUpdateWithoutAttendeesInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1371,6 +1439,8 @@ export type FeedPostUncheckedUpdateWithoutAttendeesInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1399,6 +1469,8 @@ export type FeedPostCreateWithoutCommentsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1431,6 +1503,8 @@ export type FeedPostUncheckedCreateWithoutCommentsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1475,6 +1549,8 @@ export type FeedPostUpdateWithoutCommentsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1507,6 +1583,8 @@ export type FeedPostUncheckedUpdateWithoutCommentsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1535,6 +1613,8 @@ export type FeedPostCreateWithoutReactionsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1567,6 +1647,8 @@ export type FeedPostUncheckedCreateWithoutReactionsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1611,6 +1693,8 @@ export type FeedPostUpdateWithoutReactionsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1643,6 +1727,8 @@ export type FeedPostUncheckedUpdateWithoutReactionsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1671,6 +1757,8 @@ export type FeedPostCreateWithoutAttachmentsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1703,6 +1791,8 @@ export type FeedPostUncheckedCreateWithoutAttachmentsInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1747,6 +1837,8 @@ export type FeedPostUpdateWithoutAttachmentsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1779,6 +1871,8 @@ export type FeedPostUncheckedUpdateWithoutAttachmentsInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1807,6 +1901,8 @@ export type FeedPostCreateWithoutEmergencyAlertInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1839,6 +1935,8 @@ export type FeedPostUncheckedCreateWithoutEmergencyAlertInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1883,6 +1981,8 @@ export type FeedPostUpdateWithoutEmergencyAlertInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1915,6 +2015,8 @@ export type FeedPostUncheckedUpdateWithoutEmergencyAlertInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1944,6 +2046,8 @@ export type FeedPostCreateManyAuthorInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1968,6 +2072,8 @@ export type FeedPostCreateManyMentionedEmployeeInput = {
   eventOrganizerUserId?: string | null
   googleCalendarEventId?: string | null
   eventCancelledAt?: Date | string | null
+  eventColor?: string | null
+  eventVisibility?: string
   audienceType?: string
   audienceDeptIds?: string | null
   audienceEmployeeIds?: string | null
@@ -1991,6 +2097,8 @@ export type FeedPostUpdateWithoutAuthorInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2022,6 +2130,8 @@ export type FeedPostUncheckedUpdateWithoutAuthorInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2052,6 +2162,8 @@ export type FeedPostUncheckedUpdateManyWithoutAuthorInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2075,6 +2187,8 @@ export type FeedPostUpdateWithoutMentionedEmployeeInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2106,6 +2220,8 @@ export type FeedPostUncheckedUpdateWithoutMentionedEmployeeInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2136,6 +2252,8 @@ export type FeedPostUncheckedUpdateManyWithoutMentionedEmployeeInput = {
   eventOrganizerUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   googleCalendarEventId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   eventCancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  eventColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventVisibility?: Prisma.StringFieldUpdateOperationsInput | string
   audienceType?: Prisma.StringFieldUpdateOperationsInput | string
   audienceDeptIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   audienceEmployeeIds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2219,6 +2337,8 @@ export type FeedPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   eventOrganizerUserId?: boolean
   googleCalendarEventId?: boolean
   eventCancelledAt?: boolean
+  eventColor?: boolean
+  eventVisibility?: boolean
   audienceType?: boolean
   audienceDeptIds?: boolean
   audienceEmployeeIds?: boolean
@@ -2253,6 +2373,8 @@ export type FeedPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   eventOrganizerUserId?: boolean
   googleCalendarEventId?: boolean
   eventCancelledAt?: boolean
+  eventColor?: boolean
+  eventVisibility?: boolean
   audienceType?: boolean
   audienceDeptIds?: boolean
   audienceEmployeeIds?: boolean
@@ -2280,6 +2402,8 @@ export type FeedPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   eventOrganizerUserId?: boolean
   googleCalendarEventId?: boolean
   eventCancelledAt?: boolean
+  eventColor?: boolean
+  eventVisibility?: boolean
   audienceType?: boolean
   audienceDeptIds?: boolean
   audienceEmployeeIds?: boolean
@@ -2307,6 +2431,8 @@ export type FeedPostSelectScalar = {
   eventOrganizerUserId?: boolean
   googleCalendarEventId?: boolean
   eventCancelledAt?: boolean
+  eventColor?: boolean
+  eventVisibility?: boolean
   audienceType?: boolean
   audienceDeptIds?: boolean
   audienceEmployeeIds?: boolean
@@ -2315,7 +2441,7 @@ export type FeedPostSelectScalar = {
   emailTargetIds?: boolean
 }
 
-export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "mentionedEmployeeId" | "createdAt" | "updatedAt" | "eventDate" | "eventEndDate" | "eventLocation" | "eventDescription" | "eventMeetLink" | "eventOrganizerUserId" | "googleCalendarEventId" | "eventCancelledAt" | "audienceType" | "audienceDeptIds" | "audienceEmployeeIds" | "notifyViaEmail" | "emailTargetType" | "emailTargetIds", ExtArgs["result"]["feedPost"]>
+export type FeedPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "authorId" | "content" | "type" | "pinned" | "mentionedEmployeeId" | "createdAt" | "updatedAt" | "eventDate" | "eventEndDate" | "eventLocation" | "eventDescription" | "eventMeetLink" | "eventOrganizerUserId" | "googleCalendarEventId" | "eventCancelledAt" | "eventColor" | "eventVisibility" | "audienceType" | "audienceDeptIds" | "audienceEmployeeIds" | "notifyViaEmail" | "emailTargetType" | "emailTargetIds", ExtArgs["result"]["feedPost"]>
 export type FeedPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   mentionedEmployee?: boolean | Prisma.FeedPost$mentionedEmployeeArgs<ExtArgs>
@@ -2365,6 +2491,8 @@ export type $FeedPostPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     eventOrganizerUserId: string | null
     googleCalendarEventId: string | null
     eventCancelledAt: Date | null
+    eventColor: string | null
+    eventVisibility: string
     audienceType: string
     audienceDeptIds: string | null
     audienceEmployeeIds: string | null
@@ -2818,6 +2946,8 @@ export interface FeedPostFieldRefs {
   readonly eventOrganizerUserId: Prisma.FieldRef<"FeedPost", 'String'>
   readonly googleCalendarEventId: Prisma.FieldRef<"FeedPost", 'String'>
   readonly eventCancelledAt: Prisma.FieldRef<"FeedPost", 'DateTime'>
+  readonly eventColor: Prisma.FieldRef<"FeedPost", 'String'>
+  readonly eventVisibility: Prisma.FieldRef<"FeedPost", 'String'>
   readonly audienceType: Prisma.FieldRef<"FeedPost", 'String'>
   readonly audienceDeptIds: Prisma.FieldRef<"FeedPost", 'String'>
   readonly audienceEmployeeIds: Prisma.FieldRef<"FeedPost", 'String'>

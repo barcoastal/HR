@@ -12,8 +12,12 @@ import { OutOfOfficeDialog } from "@/components/time-off/out-of-office-dialog";
 import { WhosOutPanel } from "@/components/calendar/whos-out-panel";
 import { getVisibleOutOfOffice, getMyOutOfOffice } from "@/lib/actions/out-of-office";
 import { getTrainingWorkspace, getVisibleTrainingSessions } from "@/lib/actions/training-calendar";
-import { canSeeAudiencePost } from "@/lib/event-audience";
-import { dateKey, formatTime, fromDateOnly, isEndOfDay, isStartOfDay, zonedDate, zonedParts } from "@/lib/time-zone";
+import { canSeeAudiencePost, EVENT_VISIBILITY_LABEL, normalizeEventVisibility } from "@/lib/event-audience";
+import { dateKey, formatTime, fromDateOnly, isEndOfDay, isStartOfDay, zonedDate, zonedDateFromInput, zonedParts } from "@/lib/time-zone";
+import { getCalendarCategoryColors } from "@/lib/actions/calendar-settings";
+import { addDaysToKey, canScheduleEmployeeMilestones, canSeeEmployeeMilestones } from "@/lib/review-milestones";
+import { loadReviewMilestones } from "@/lib/review-milestones-server";
+import { getViewerOversightScope } from "@/lib/review-oversight";
 
 const absenceLabels: Record<string, string> = {
   OUT_OF_OFFICE: "Out of office",
@@ -25,9 +29,18 @@ const absenceLabels: Record<string, string> = {
 
 const oneOnOneLabels: Record<string, string> = {
   THIRTY_DAY: "30-day 1:1",
+  SIXTY_DAY: "60-day review",
+  NINETY_DAY: "90-day review",
   QUARTERLY: "Quarterly 1:1",
   ANNUAL: "Annual 1:1",
 };
+
+function feedEventAudienceLabel(audienceType: string, eventVisibility: string | null) {
+  const visibility = normalizeEventVisibility(eventVisibility);
+  if (visibility === "everyone") return audienceType === "all" ? "everyone" : "selected attendees";
+  if (visibility === "invited") return "invited people only";
+  return `${EVENT_VISIBILITY_LABEL[visibility].replace(/ only$/, "").toLowerCase()} and invited people`;
+}
 
 function audienceLabel(type: string) {
   if (type === "all") return "everyone";
@@ -40,7 +53,7 @@ function audienceLabel(type: string) {
 export default async function CalendarPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ oauth_error?: string; oauth_success?: string }>;
+  searchParams?: Promise<{ oauth_error?: string; oauth_success?: string; milestone?: string }>;
 }) {
   const params = (await searchParams) ?? {};
   const session = await requireAuth();
@@ -91,6 +104,8 @@ export default async function CalendarPage({
     visibleTraining,
     trainingWorkspace,
     companySize,
+    categoryColors,
+    oversightScope,
   ] = await Promise.all([
     db.employee.findMany({
       where: { status: "ACTIVE" },
@@ -106,7 +121,7 @@ export default async function CalendarPage({
       select: {
         id: true, content: true, eventDescription: true, eventDate: true, eventEndDate: true,
         eventLocation: true, eventMeetLink: true, audienceType: true, audienceDeptIds: true,
-        audienceEmployeeIds: true, authorId: true,
+        audienceEmployeeIds: true, authorId: true, eventColor: true, eventVisibility: true,
         author: { select: { firstName: true, lastName: true, preferredName: true } },
       },
     }),
@@ -144,6 +159,8 @@ export default async function CalendarPage({
     getVisibleTrainingSessions(calendarFrom, calendarTo),
     getTrainingWorkspace(),
     db.employee.count({ where: { status: "ACTIVE" } }),
+    getCalendarCategoryColors(),
+    getViewerOversightScope(callerEmployeeId),
   ]);
 
   const myCalendarConnected = !!(viewer?.googleCalendarSyncEnabled && viewer.googleCalendarAccessToken && viewer.googleCalendarRefreshToken);
@@ -207,6 +224,50 @@ export default async function CalendarPage({
     });
   }
 
+  // Review milestones (30/60/90-day, quarterly, yearly): visible only to the
+  // employee's manager chain, admins/HR and oversight recipients. Shown from a
+  // month back (overdue) through the end of the calendar range.
+  if (isManagerOrAbove || oversightScope) {
+    const todayKey = dateKey(new Date());
+    const { employees: milestoneEmployees, managerOf, milestones } = await loadReviewMilestones({
+      fromKey: addDaysToKey(todayKey, -30),
+      toKey: dateKey(calendarTo),
+      todayKey,
+    });
+    const viewer = { role, employeeId: callerEmployeeId, oversightDepartmentIds: oversightScope };
+    const milestoneEmployeeById = new Map(milestoneEmployees.map((employee) => [employee.id, employee]));
+    const visibleCache = new Map<string, { see: boolean; schedule: boolean }>();
+    for (const milestone of milestones) {
+      const employee = milestoneEmployeeById.get(milestone.employeeId);
+      if (!employee) continue;
+      let access = visibleCache.get(employee.id);
+      if (!access) {
+        access = {
+          see: canSeeEmployeeMilestones(viewer, employee, managerOf),
+          schedule: canScheduleEmployeeMilestones(viewer, employee.id, managerOf),
+        };
+        visibleCache.set(employee.id, access);
+      }
+      if (!access.see) continue;
+      const due = zonedDateFromInput(milestone.dueKey);
+      if (!due) continue;
+      const employeeName = displayName(employee);
+      addEvent({
+        id: `milestone-${milestone.key}`, sourceId: milestone.key, sourceKind: "milestone",
+        name: `${milestone.label}: ${employeeName}`, date: due.toISOString(), type: "review-milestone", allDay: true,
+        description: milestone.status === "scheduled" || milestone.status === "completed"
+          ? undefined
+          : "Not scheduled yet. Schedule the meeting so it lands on both calendars.",
+        organizer: employee.managerId ? employeeNameById.get(employee.managerId) : undefined,
+        milestone: {
+          key: milestone.key, employeeId: employee.id, employeeName, kind: milestone.kind, label: milestone.label,
+          status: milestone.status, dueKey: milestone.dueKey, meetingId: milestone.meetingId, meetingKey: milestone.meetingKey,
+          canSchedule: access.schedule,
+        },
+      });
+    }
+  }
+
   for (const feedEvent of feedEvents) {
     if (!canSeeAudiencePost(feedEvent, { employeeId: callerEmployeeId, departmentId: viewerEmployee?.departmentId, role })) continue;
     if (!feedEvent.eventDate) continue;
@@ -219,7 +280,8 @@ export default async function CalendarPage({
       name: feedEvent.content, date: feedEvent.eventDate.toISOString(), endDate: feedEvent.eventEndDate?.toISOString(),
       type: "feed-event", location: feedEvent.eventLocation || undefined, description: feedEvent.eventDescription || undefined,
       meetLink: feedEvent.eventMeetLink, organizer: displayName(feedEvent.author), attendees: attendeeNames,
-      audience: feedEvent.audienceType === "all" ? "everyone" : "selected attendees",
+      audience: feedEventAudienceLabel(feedEvent.audienceType, feedEvent.eventVisibility),
+      color: feedEvent.eventColor, visibility: normalizeEventVisibility(feedEvent.eventVisibility),
       canManage: isAdmin || feedEvent.authorId === callerEmployeeId,
       time: formatTime(feedEvent.eventDate),
     });
@@ -305,7 +367,9 @@ export default async function CalendarPage({
         </div>
       </div>
       <div className="mb-6"><WhosOutPanel entries={outOfOffice} /></div>
-      {myCalendarConnected ? <CalendarGoogleEvents events={events} userId={userId} /> : <CalendarView events={events} />}
+      {myCalendarConnected
+        ? <CalendarGoogleEvents events={events} userId={userId} categoryColors={categoryColors} canCustomizeColors={isAdmin} initialEventId={params.milestone ? `milestone-${params.milestone}` : undefined} />
+        : <CalendarView events={events} categoryColors={categoryColors} canCustomizeColors={isAdmin} initialEventId={params.milestone ? `milestone-${params.milestone}` : undefined} />}
     </div>
   );
 }
