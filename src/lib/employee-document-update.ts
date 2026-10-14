@@ -4,6 +4,7 @@ import {
   type DocumentFolderKey,
   type DocumentVisibilityKey,
 } from "@/lib/document-folders";
+import { isSuperAdmin, isSuperAdminOnlyCategory, isSuperAdminOnlyDocument } from "@/lib/document-access";
 
 type Actor = { role?: string | null } | undefined;
 type Failure = { ok: false; error: string };
@@ -22,8 +23,14 @@ export async function updateDocumentSettings(
 
   const document = await db.document.findUnique({ where: { id: docId } });
   if (!document) return { ok: false, error: "Document not found" };
+  const superAdmin = isSuperAdmin(actor?.role);
+  // Admins and HR must not learn an I-9 / background check exists.
+  if (isSuperAdminOnlyDocument(document) && !superAdmin) return { ok: false, error: "Document not found" };
 
   const category = changes.category ?? document.category;
+  if (isSuperAdminOnlyCategory(category) && !superAdmin) {
+    return { ok: false, error: "Only Super Admins can file I-9s and background checks." };
+  }
   if (category === "MEDICAL" && changes.visibility === "EVERYONE") {
     return { ok: false, error: "Medical documents are always HR only." };
   }

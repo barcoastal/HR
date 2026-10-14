@@ -5,6 +5,7 @@ import { requireApiAuth, getRecruiterScope } from "@/lib/auth-helpers";
 import { canAccessRecruitment } from "@/lib/permissions";
 import { canSeeAudiencePost } from "@/lib/event-audience";
 import { displayName } from "@/lib/utils";
+import { visibleDocumentsWhere } from "@/lib/document-access";
 
 type SearchResultKind = "employee" | "document" | "candidate" | "position" | "update";
 
@@ -147,7 +148,7 @@ export async function GET(request: Request) {
       db.document.findMany({
         where: {
           employee: employeeScope,
-          ...(!isAdmin ? { visibility: "EVERYONE" as const } : {}),
+          ...visibleDocumentsWhere(role),
           AND: tokens.map((token) => ({
             OR: [
               { name: textCondition(token) },

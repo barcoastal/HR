@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
 import { previewExportCount, type ExportOption, type ExportOptions } from "@/lib/actions/exports";
@@ -8,6 +9,7 @@ import {
   EXPORT_BY_KEY,
   EXPORT_ENTITIES,
   defaultColumnKeys,
+  exportColumnsFor,
   type ExportEntityKey,
   type ExportFilter,
   type ExportFormat,
@@ -24,7 +26,9 @@ const FORMATS: { value: ExportFormat; label: string; hint: string }[] = [
 
 export function ExportBuilder({ options }: { options: ExportOptions }) {
   const [entity, setEntity] = useState<ExportEntityKey>("people");
-  const def = EXPORT_BY_KEY[entity];
+  const role = useSession().data?.user?.role;
+  const baseDef = EXPORT_BY_KEY[entity];
+  const def = useMemo(() => ({ ...baseDef, columns: exportColumnsFor(baseDef, role) }), [baseDef, role]);
   const [selected, setSelected] = useState<string[]>(() => defaultColumnKeys(def));
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [format, setFormat] = useState<ExportFormat>("csv");

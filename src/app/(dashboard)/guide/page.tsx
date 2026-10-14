@@ -149,7 +149,7 @@ export default async function GuidePage() {
           <table>
             <thead><tr><th>Role</th><th>Normal scope</th></tr></thead>
             <tbody>
-              <tr><td><Role>SUPER_ADMIN</Role></td><td>Full platform access, including employee archive, recruiter manager, audit log, Help &amp; Guide, permissions, and demo-data cleanup.</td></tr>
+              <tr><td><Role>SUPER_ADMIN</Role></td><td>Full platform access, including employee archive, recruiter manager, audit log, I-9 &amp; Background Checks, Help &amp; Guide, permissions, and demo-data cleanup.</td></tr>
               <tr><td><Role>ADMIN</Role></td><td>Company operations: people, alerts, hiring, onboarding, documents, settings, Gusto, hiring plan, analytics, and countersigning.</td></tr>
               <tr><td><Role>HR</Role></td><td>People and HR workflows, recruitment, onboarding/offboarding, documents, reviews, time off, and analytics. The main Settings link is reserved for Admin and Super Admin.</td></tr>
               <tr><td><Role>MANAGER</Role></td><td>Company directory, their own and direct-report profiles, 1:1s, reviews, approvals, and any recruitment/analytics access granted to the Manager role.</td></tr>
@@ -346,9 +346,9 @@ export default async function GuidePage() {
           <ol>
             <li>Move the candidate to Background Check and choose the screening options. The standard package includes criminal searches and SSN/address history; optional searches can include employment, education, MVR, and 5-, 9-, or 10-panel drug testing.</li>
             <li>Saving sends the candidate a Continental Screening invitation in production. A valid candidate email is required.</li>
-            <li>The status begins as <strong>Awaiting Applicant</strong>, then changes as Continental creates and completes the order. The open dialog polls automatically; <strong>Refresh Status</strong> checks immediately.</li>
-            <li>When complete, authorized HR users can open <strong>View Report</strong>. The report is served through CALATRAVA so provider credentials stay private.</li>
-            <li>Passed/failed completion notifications follow the Settings notification matrix.</li>
+            <li>Status, results, reports and the adverse-action steps are <strong>Super Admin only</strong>. Recruiters, HR and admins can still send the check from the candidate dialog, but afterwards they only see that a check was sent.</li>
+            <li>For Super Admins, the status begins as <strong>Awaiting Applicant</strong>, then changes as Continental creates and completes the order. The open dialog polls automatically; <strong>Refresh Status</strong> checks immediately; <strong>View Report</strong> opens the report through CALATRAVA so provider credentials stay private.</li>
+            <li>Completion notifications follow the Settings notification matrix and say only that the check finished, not the result.</li>
             <li>A flagged result does not automatically reject the candidate. The candidate record guides HR through a pre-adverse notice first, a configurable response period, and then the final adverse-action letter.</li>
             <li>The pre-adverse notice is sent and tracked by CALATRAVA with the report attached. <strong>Open Continental portal</strong> remains available in the same panel as a backup.</li>
           </ol>
@@ -577,6 +577,17 @@ export default async function GuidePage() {
             Admins use <Route>/gusto</Route> after connecting Gusto in Settings. It shows connection
             health, next payroll, pending time-off requests, employee count, payroll data, and mapped
             employees. Gusto-mapped employees use Gusto balances and request submission on Time Off.
+          </p>
+
+          <h3>I-9 &amp; Background Checks</h3>
+          <p>
+            <Route>/compliance</Route> is Super Admin only and is kept apart from the regular HR documents.
+            The <strong>I-9 Forms</strong> tab lists every current employee, flags who is missing an I-9, and lets
+            Super Admins upload, open and delete I-9 files. The <strong>Background Checks</strong> tab is the former
+            Background Checks page (the old address redirects here). I-9s and files in a profile&apos;s
+            <strong> Background check</strong> folder are hidden from admins, HR, managers and the employee
+            themselves — they don&apos;t appear in profiles, My Documents or search, and their links return
+            &ldquo;not found&rdquo;. I-9 uploads, downloads and deletions are recorded in the Audit Log.
           </p>
 
           <h3>Audit Log</h3>

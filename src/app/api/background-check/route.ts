@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireApiAuth } from "@/lib/auth-helpers";
+import { canViewBackgroundChecks } from "@/lib/document-access";
 import {
   buildProductList,
   createInvitationOrder,
@@ -123,6 +124,10 @@ export async function POST(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  // Status and results are Super Admin only (I-9 & Background Checks).
+  if (!canViewBackgroundChecks(session.user?.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const candidateId = req.nextUrl.searchParams.get("candidateId");
 
   if (!candidateId) {
@@ -228,6 +233,9 @@ export async function GET(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const session = await requireApiAuth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!canViewBackgroundChecks(session.user?.role)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const { candidateId, status } = await req.json();
 
   if (!candidateId || !status) {

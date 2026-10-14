@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/db";
 import { requireAuth } from "@/lib/auth-helpers";
+import { visibleDocumentsWhere } from "@/lib/document-access";
 
 export type MyDocument = {
   id: string;
@@ -20,9 +21,9 @@ export async function getMyDocuments(): Promise<MyDocument[]> {
 
   const [documents, signingRequests] = await Promise.all([
     db.document.findMany({
-      // HR_ONLY documents are off-limits to the employee, even on their own
-      // profile.
-      where: { employeeId, visibility: "EVERYONE" },
+      // HR_ONLY documents, I-9s and background checks are off-limits to the
+      // employee, even on their own profile.
+      where: { employeeId, ...visibleDocumentsWhere("EMPLOYEE") },
       orderBy: { uploadedAt: "desc" },
       select: { id: true, name: true, url: true, category: true, uploadedAt: true },
     }),

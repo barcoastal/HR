@@ -279,6 +279,7 @@ export default async function EmployeeProfilePage({ params }: { params: Promise<
                 uploadedAt: d.uploadedAt.toISOString(),
               }))}
               isAdmin={isAdmin}
+              isSuperAdmin={role === "SUPER_ADMIN"}
             />
           )}
 

@@ -187,7 +187,9 @@ export const DocumentCategory = {
   REVIEW: 'REVIEW',
   GENERAL: 'GENERAL',
   FINANCIAL: 'FINANCIAL',
-  MEDICAL: 'MEDICAL'
+  MEDICAL: 'MEDICAL',
+  I9: 'I9',
+  BACKGROUND_CHECK: 'BACKGROUND_CHECK'
 } as const
 
 export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCategory]
@@ -195,7 +197,8 @@ export type DocumentCategory = (typeof DocumentCategory)[keyof typeof DocumentCa
 
 export const DocumentVisibility = {
   EVERYONE: 'EVERYONE',
-  HR_ONLY: 'HR_ONLY'
+  HR_ONLY: 'HR_ONLY',
+  SUPER_ADMIN_ONLY: 'SUPER_ADMIN_ONLY'
 } as const
 
 export type DocumentVisibility = (typeof DocumentVisibility)[keyof typeof DocumentVisibility]

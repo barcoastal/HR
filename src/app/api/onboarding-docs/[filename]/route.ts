@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/auth-helpers";
 import { db } from "@/lib/db";
+import { canViewDocument, isBackgroundReportFilename, isSuperAdmin, isSuperAdminOnlyDocument } from "@/lib/document-access";
 
 export async function GET(
   _request: NextRequest,
@@ -21,12 +22,20 @@ export async function GET(
   // packets) only require an authenticated session.
   const role = session.user?.role;
   const requesterEmployeeId = session.user?.employeeId ?? null;
-  const isAdmin = role === "SUPER_ADMIN" || role === "ADMIN" || role === "HR";
+
+  // Cached background-check report PDFs are Super Admin only. 404 so the
+  // file's existence isn't confirmed to anyone else.
+  if (isBackgroundReportFilename(filename) && !isSuperAdmin(role)) {
+    return NextResponse.json({ error: "File not found" }, { status: 404 });
+  }
 
   const [docRow, blob] = await Promise.all([
     db.document.findFirst({
       where: { url: `/api/onboarding-docs/${filename}` },
       select: {
+        id: true,
+        name: true,
+        category: true,
         visibility: true,
         employeeId: true,
         employee: { select: { managerId: true } },
@@ -39,16 +48,24 @@ export async function GET(
   ]);
 
   if (docRow) {
-    if (docRow.visibility === "HR_ONLY" && !isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const allowed = canViewDocument(
+      { role, employeeId: requesterEmployeeId },
+      { ...docRow, managerId: docRow.employee?.managerId ?? null }
+    );
+    if (!allowed) {
+      // I-9s and background checks answer 404 so their existence isn't leaked.
+      return isSuperAdminOnlyDocument(docRow)
+        ? NextResponse.json({ error: "File not found" }, { status: 404 })
+        : NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    if (docRow.visibility === "EVERYONE" && !isAdmin) {
-      const isOwner = requesterEmployeeId === docRow.employeeId;
-      const isManager =
-        requesterEmployeeId != null && docRow.employee?.managerId === requesterEmployeeId;
-      if (!isOwner && !isManager) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-      }
+    if (isSuperAdminOnlyDocument(docRow) && blob) {
+      const { audit } = await import("@/lib/audit");
+      await audit({
+        action: docRow.category === "I9" ? "i9.downloaded" : "background_check_document.downloaded",
+        entityType: "document",
+        entityId: docRow.id,
+        details: { employeeId: docRow.employeeId, name: docRow.name },
+      });
     }
   }
 

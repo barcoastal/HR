@@ -4,8 +4,15 @@ import { db } from "@/lib/db";
 import type { CandidateStatus } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { sendOnboardingEmail, sendWelcomeEmail } from "@/lib/email";
-import { getRecruiterScope, assertCandidateAccess } from "@/lib/auth-helpers";
+import { getRecruiterScope, assertCandidateAccess, getSession } from "@/lib/auth-helpers";
+import { redactBackgroundCheck } from "@/lib/document-access";
 import { isJobTitleEligibleForTraining } from "@/lib/training-eligibility-server";
+
+/** Background-check status/results are Super Admin only; blank them for everyone else. */
+async function redactBackgroundChecksForViewer<T extends object>(candidates: T[]): Promise<T[]> {
+  const role = (await getSession())?.user?.role;
+  return candidates.map((candidate) => redactBackgroundCheck(candidate, role));
+}
 
 export async function getCandidates(filters?: {
   status?: CandidateStatus;
@@ -38,12 +45,13 @@ export async function getCandidates(filters?: {
   // Pipeline cards never render resumeText content (only a "has resume" badge),
   // and the full position object is over-fetched — title is the only field used.
   // Dropping these turns a multi-MB response into something tiny.
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where,
     omit: { resumeText: true },
     include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function createCandidate(data: {
@@ -712,7 +720,7 @@ export async function searchCandidates(query: string) {
     include: { position: true },
     orderBy: { createdAt: "desc" },
   });
-  return candidates;
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function advancedSearchCandidates(params: {
@@ -774,7 +782,7 @@ export async function advancedSearchCandidates(params: {
     orderBy: { createdAt: "desc" },
   });
 
-  return candidates;
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function bulkImportCandidates(
@@ -1639,7 +1647,7 @@ export async function findMatchingCandidates(keywords: string[]) {
     { resumeText: { contains: kw, mode: "insensitive" as const } },
     { notes: { contains: kw, mode: "insensitive" as const } },
   ]);
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where: {
       inPipeline: false,
       status: { notIn: ["HIRED", "REJECTED"] },
@@ -1649,6 +1657,7 @@ export async function findMatchingCandidates(keywords: string[]) {
     orderBy: { createdAt: "desc" },
     take: 20,
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 export async function getAllCandidatesForDatabase() {
@@ -1657,12 +1666,13 @@ export async function getAllCandidatesForDatabase() {
   // Note: client-side search on resumeText is no longer possible; use
   // advancedSearchCandidates for server-side full-text search if needed.
   const scope = await getRecruiterScope();
-  return db.candidate.findMany({
+  const candidates = await db.candidate.findMany({
     where: scope ? { recruiterId: scope } : undefined,
     omit: { resumeText: true },
     include: { position: { select: { title: true } } },
     orderBy: { createdAt: "desc" },
   });
+  return redactBackgroundChecksForViewer(candidates);
 }
 
 /** Lightweight count for stat cards — avoids loading rows. */

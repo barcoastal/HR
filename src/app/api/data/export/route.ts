@@ -7,6 +7,7 @@ import { loadExportRows } from "@/lib/import-export/export-loaders";
 import {
   EXPORT_BY_KEY,
   defaultColumnKeys,
+  exportColumnsFor,
   filterParamKeys,
   isExportEntityKey,
   isExportFormat,
@@ -46,12 +47,14 @@ export async function GET(req: Request) {
   const requestedKeys = columnsParam
     ? columnsParam.split(",").map((k) => k.trim()).filter(Boolean)
     : defaultColumnKeys(def);
-  const byKey = new Map(def.columns.map((c) => [c.key, c]));
+  // Background-check columns are Super Admin only; for anyone else they don't exist.
+  const allowedColumns = exportColumnsFor(def, session.user?.role);
+  const byKey = new Map(allowedColumns.map((c) => [c.key, c]));
   const unknown = requestedKeys.find((k) => !byKey.has(k));
   if (unknown !== undefined) return NextResponse.json({ error: `Unknown column: ${unknown}` }, { status: 400 });
   // Emit in registry order, de-duplicated, regardless of how the URL listed them.
   const requested = new Set(requestedKeys);
-  const columns: ExportColumn[] = def.columns.filter((c) => requested.has(c.key));
+  const columns: ExportColumn[] = allowedColumns.filter((c) => requested.has(c.key));
   if (columns.length === 0) return NextResponse.json({ error: "Choose at least one column" }, { status: 400 });
 
   const rawFilters: Record<string, string> = {};

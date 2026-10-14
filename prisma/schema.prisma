@@ -136,11 +136,14 @@ enum DocumentCategory {
   GENERAL
   FINANCIAL
   MEDICAL // always HR_ONLY, see resolveDocumentVisibility
+  I9 // always SUPER_ADMIN_ONLY, see resolveDocumentVisibility
+  BACKGROUND_CHECK // always SUPER_ADMIN_ONLY, see resolveDocumentVisibility
 }
 
 enum DocumentVisibility {
   EVERYONE
   HR_ONLY
+  SUPER_ADMIN_ONLY // I-9 and background-check records; see src/lib/document-access.ts
 }
 
 enum CandidateStatus {

@@ -64,7 +64,8 @@ export async function getEmployeeById(id: string) {
       manager: true,
       buddy: true,
       directReports: true,
-      documents: true,
+      // Documents are loaded separately through getEmployeeDocuments, which
+      // applies the HR-only / Super-Admin-only visibility rule.
       reviewsAsEmployee: {
         include: { reviewer: true, cycle: true },
         orderBy: { createdAt: "desc" },
