@@ -5,6 +5,15 @@ import crypto from "crypto";
 import { randomUUID } from "crypto";
 import { PDFDocument } from "pdf-lib";
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/auth-helpers";
+import type { SignaturePlacement } from "@/lib/stage-document-utils";
+import {
+  applyAdminTextValues,
+  getTextBoxFields,
+  missingAdminRequiredFields,
+  resolveTextValuesForSigning,
+} from "@/lib/text-box-fields";
+import { readStoredPlacements, stampPrimaryPlacements } from "@/lib/signing-stamp";
 
 export async function createSigningRequest(
   employeeTaskId: string,
@@ -66,10 +75,15 @@ export async function createStandaloneSigningRequest(data: {
   const recipientEmail = data.signerEmail || request.employee?.email;
   const recipientName = data.signerName || (request.employee ? request.employee.firstName : "there");
 
+  // When HR still has required text boxes to fill (e.g. a stage document sent
+  // automatically on a stage change), hold the email: the recipient could not
+  // sign yet. It goes out once HR saves those fields (saveSigningRequestTextValues).
+  const awaitingHrFields = missingAdminRequiredFields(placementsArray as SignaturePlacement[]).length > 0;
+
   // Send signing request email
   const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
   const signingUrl = `${baseUrl}/sign/${token}`;
-  if (recipientEmail) {
+  if (recipientEmail && !awaitingHrFields) {
     try {
       const { sendSigningRequestEmail } = await import("@/lib/email");
       await sendSigningRequestEmail({
@@ -89,10 +103,16 @@ export async function createStandaloneSigningRequest(data: {
     action: "DOCUMENT_SIGN_REQUEST",
     candidateId: data.candidateId,
     employeeId: data.employeeId,
-    message: `Signing request sent: ${data.documentName}`,
+    message: awaitingHrFields
+      ? `${data.documentName} needs HR's fields filled in before it can be signed (Documents → Fill HR fields)`
+      : `Signing request sent: ${data.documentName}`,
     link: "/documents",
-    emailSubject: `Document Requires Signature: ${data.documentName}`,
-    emailBody: `<p>A document requires your signature: <strong>${data.documentName}</strong>.</p>`,
+    emailSubject: awaitingHrFields
+      ? `HR Fields Needed: ${data.documentName}`
+      : `Document Requires Signature: ${data.documentName}`,
+    emailBody: awaitingHrFields
+      ? `<p><strong>${data.documentName}</strong> has text boxes HR must fill in before it can be signed. Open Documents &amp; Signing and choose <strong>Fill HR fields</strong>; the signing link is emailed once they are saved.</p>`
+      : `<p>A document requires your signature: <strong>${data.documentName}</strong>.</p>`,
   }).catch((err) => console.error("[signing] Sign request notification error:", err));
 
   revalidatePath("/documents");
@@ -116,6 +136,13 @@ export async function resendSigningRequest(id: string) {
     include: { employee: true, candidate: true },
   });
   if (!request || request.status === "SIGNED") return { success: false };
+  const missing = missingAdminRequiredFields(readStoredPlacements(request.signaturePlacements));
+  if (missing.length > 0) {
+    return {
+      success: false,
+      error: `Fill in HR's fields first (${missing.map((f) => f.label).join(", ")}). The link is emailed automatically once they're saved.`,
+    };
+  }
 
   const recipientEmail = request.signerEmail || request.employee?.email;
   const recipientName = request.signerName || (request.employee ? request.employee.firstName : "there");
@@ -135,6 +162,79 @@ export async function resendSigningRequest(id: string) {
     console.error("[signing] Failed to resend email:", e);
   }
   return { success: true };
+}
+
+/**
+ * HR fills in (or edits) the HR / shared text boxes on a request that has not
+ * been signed yet. When this completes the last required HR box on a request
+ * whose email was held back, the recipient's link is emailed now.
+ */
+export async function saveSigningRequestTextValues(
+  id: string,
+  values: Record<string, string>
+): Promise<{ success: boolean; error?: string; emailed?: boolean }> {
+  const session = await getSession();
+  const role = session?.user?.role;
+  if (role !== "SUPER_ADMIN" && role !== "ADMIN" && role !== "HR") {
+    return { success: false, error: "Not authorized" };
+  }
+
+  const request = await db.signingRequest.findUnique({
+    where: { id },
+    include: { employee: true, employeeTask: { select: { documentAction: true } } },
+  });
+  if (!request) return { success: false, error: "Signing request not found" };
+  if (request.status !== "PENDING" && request.status !== "VIEWED") {
+    return { success: false, error: "This document has already been signed or voided." };
+  }
+  if (request.expiresAt < new Date()) return { success: false, error: "This signing link has expired." };
+
+  const placements = readStoredPlacements(request.signaturePlacements);
+  if (!getTextBoxFields(placements).some((f) => f.filledBy !== "signer")) {
+    return { success: false, error: "This document has no HR text boxes." };
+  }
+  const wasBlocked = missingAdminRequiredFields(placements).length > 0;
+  const next = applyAdminTextValues(placements, values ?? {});
+  const stillMissing = missingAdminRequiredFields(next);
+
+  await db.signingRequest.update({
+    where: { id },
+    data: { signaturePlacements: next as object },
+  });
+
+  let emailed = false;
+  if (wasBlocked && stillMissing.length === 0) {
+    const recipientEmail = request.signerEmail || request.employee?.email;
+    const recipientName = request.signerName || (request.employee ? request.employee.firstName : "there");
+    if (recipientEmail) {
+      const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+      try {
+        if (request.employeeTask?.documentAction === "FILL") {
+          const { sendFillRequestEmail } = await import("@/lib/email");
+          await sendFillRequestEmail({
+            to: recipientEmail,
+            firstName: recipientName,
+            documentName: request.documentName,
+            fillUrl: `${baseUrl}/fill/${request.token}`,
+          });
+        } else {
+          const { sendSigningRequestEmail } = await import("@/lib/email");
+          await sendSigningRequestEmail({
+            to: recipientEmail,
+            firstName: recipientName,
+            documentName: request.documentName,
+            signingUrl: `${baseUrl}/sign/${request.token}`,
+          });
+        }
+        emailed = true;
+      } catch (e) {
+        console.error("[signing] Failed to send email after HR fields were completed:", e);
+      }
+    }
+  }
+
+  revalidatePath("/documents");
+  return { success: true, emailed };
 }
 
 export async function voidSigningRequest(id: string) {
@@ -184,6 +284,14 @@ export async function submitSignature(
     return { success: false, error: "Invalid or expired signing request" };
   }
 
+  // Text boxes: HR-only values always come from what HR saved (the recipient
+  // cannot overwrite them), and every required box must end up filled.
+  const placements = readStoredPlacements(request.signaturePlacements);
+  const resolvedText = resolveTextValuesForSigning(placements, fieldValues);
+  if (!resolvedText.ok) {
+    return { success: false, error: resolvedText.error };
+  }
+
   try {
     // Fetch original PDF from database
     const docFilename = request.documentUrl.split("/").pop();
@@ -214,24 +322,7 @@ export async function submitSignature(
     const signDate = signedDate.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     const signTime = signedDate.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
 
-    // If the request has pre-placed signature slots (from the stage-document editor or ad-hoc editor),
-    // stamp each one with the signature image (for kind=signature) or the date string (for kind=signatureDate).
-    // Otherwise fall back to the legacy single-position behavior.
-    type StoredPlacement = {
-      page: number;
-      xPct: number;
-      yPct: number;
-      widthPct: number;
-      heightPct: number;
-      kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText";
-      fieldId?: string;
-      label?: string;
-    };
-    const placements = Array.isArray(request.signaturePlacements)
-      ? (request.signaturePlacements as unknown as StoredPlacement[])
-      : [];
-
-    // Initials image — embedded lazily, reused for every initials box.
+    // Initials image — embedded once, reused for every initials box.
     let initialsImage: Awaited<ReturnType<typeof pdfDoc.embedPng>> | null = null;
     if (initialsBase64) {
       try {
@@ -242,74 +333,17 @@ export async function submitSignature(
       }
     }
 
+    // If the request has pre-placed slots (from the stage-document editor or the
+    // ad-hoc editor), stamp each one. Otherwise fall back to the legacy
+    // single-position behavior.
     if (placements.length > 0) {
-      // Primary signer stamps their own fields (signature, date, initials, free
-      // text). Countersignature placements are stamped later by the countersigner.
-      const primaryKinds = new Set(["signature", "signatureDate", "initials", "freeText"]);
-      for (const p of placements) {
-        if (!primaryKinds.has(p.kind)) continue;
-        const pageIndex = Math.max(0, Math.min(pages.length - 1, p.page - 1));
-        const target = pages[pageIndex];
-        const { width: pageWidth, height: pageHeight } = target.getSize();
-        const boxX = p.xPct * pageWidth;
-        const boxWidth = p.widthPct * pageWidth;
-        const boxHeight = p.heightPct * pageHeight;
-        const boxY = pageHeight - p.yPct * pageHeight - boxHeight;
-
-        if (p.kind === "signature") {
-          const ratio = sigImage.width / sigImage.height;
-          let drawW = boxWidth;
-          let drawH = drawW / ratio;
-          if (drawH > boxHeight) {
-            drawH = boxHeight;
-            drawW = drawH * ratio;
-          }
-          const drawX = boxX + (boxWidth - drawW) / 2;
-          const drawY = boxY + (boxHeight - drawH) / 2;
-          target.drawImage(sigImage, { x: drawX, y: drawY, width: drawW, height: drawH });
-          // Print signer's full name directly below the signature box
-          target.drawText(signerFullName, {
-            x: boxX,
-            y: boxY - 10,
-            size: 8,
-            color: rgb(0.15, 0.15, 0.2),
-          });
-        } else if (p.kind === "initials") {
-          if (initialsImage) {
-            const ratio = initialsImage.width / initialsImage.height;
-            let drawW = boxWidth;
-            let drawH = drawW / ratio;
-            if (drawH > boxHeight) {
-              drawH = boxHeight;
-              drawW = drawH * ratio;
-            }
-            const drawX = boxX + (boxWidth - drawW) / 2;
-            const drawY = boxY + (boxHeight - drawH) / 2;
-            target.drawImage(initialsImage, { x: drawX, y: drawY, width: drawW, height: drawH });
-          }
-        } else if (p.kind === "freeText") {
-          const value = (p.fieldId && fieldValues?.[p.fieldId]) || "";
-          if (value) {
-            const fontSize = Math.min(11, boxHeight * 0.7);
-            target.drawText(value, {
-              x: boxX + 2,
-              y: boxY + (boxHeight - fontSize) / 2 + 1,
-              size: fontSize,
-              color: rgb(0.1, 0.1, 0.15),
-              maxWidth: Math.max(1, boxWidth - 4),
-            });
-          }
-        } else {
-          const dateText = signDate;
-          const fontSize = Math.min(12, boxHeight * 0.7);
-          target.drawText(dateText, {
-            x: boxX + 2,
-            y: boxY + (boxHeight - fontSize) / 2 + 1,
-            size: fontSize,
-            color: rgb(0.1, 0.1, 0.15),
-          });
-        }
-      }
+      stampPrimaryPlacements(pdfDoc, placements, {
+        sigImage,
+        initialsImage,
+        signerName: signerFullName,
+        signDate,
+        textValues: resolvedText.values,
+      });
 
       // Audit trail on the last page
       lastPage.drawText(`Digitally signed: ${signedDate.toISOString()} by ${signerFullName}`, {

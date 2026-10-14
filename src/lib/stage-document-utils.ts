@@ -1,3 +1,5 @@
+import { normalizeFilledBy, type TextBoxFilledBy } from "@/lib/text-box-fields";
+
 export const AVAILABLE_PLACEHOLDERS = [
   { key: "{{firstName}}", description: "Candidate first name" },
   { key: "{{lastName}}", description: "Candidate last name" },
@@ -28,7 +30,7 @@ export const COUNTERSIGNATURE_PLACEHOLDERS = [
 // the recipient at signing and stamped into the final PDF then.
 export const RECIPIENT_FIELD_PLACEHOLDERS = [
   { key: "{{initials}}", description: "Recipient initials (entered once, placed everywhere)" },
-  { key: "{{freeText}}", description: "Free-text box the recipient fills in" },
+  { key: "{{freeText}}", description: "Text box filled in by the recipient, HR, or both" },
 ];
 
 const SIG_KINDS = new Set([
@@ -61,6 +63,10 @@ export type SignaturePlacement = {
   kind: PlacementKind;
   fieldId?: string;    // stable id for free-text fields, maps to the recipient's typed value
   label?: string;      // shown to the recipient above a free-text input
+  // Free-text only. Older placements omit these: recipient-filled + required.
+  filledBy?: TextBoxFilledBy; // who types it: recipient ("signer"), HR ("admin") or both
+  required?: boolean;
+  value?: string;      // HR's value for admin / both boxes
 };
 
 function placeholderToKind(placeholder: string): PlacementKind | null {
@@ -157,6 +163,8 @@ type PlaceholderPosition = {
   placeholder: string;
   fontSize: number;
   label?: string; // for {{freeText}} fields: what the recipient should enter
+  filledBy?: TextBoxFilledBy; // for {{freeText}} fields: recipient, HR or both
+  required?: boolean; // for {{freeText}} fields; defaults to required
 };
 
 export async function fillPdfPlaceholders(
@@ -211,7 +219,14 @@ export async function fillPdfPlaceholders(
         widthPct,
         heightPct,
         kind,
-        ...(kind === "freeText" ? { fieldId: pos.id, label: pos.label?.trim() || "Text" } : {}),
+        ...(kind === "freeText"
+          ? {
+              fieldId: pos.id,
+              label: pos.label?.trim() || "Text",
+              filledBy: normalizeFilledBy(pos.filledBy),
+              required: pos.required !== false,
+            }
+          : {}),
       });
       continue;
     }

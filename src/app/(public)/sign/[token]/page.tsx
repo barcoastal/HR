@@ -1,6 +1,7 @@
 import { getSigningRequestByToken } from "@/lib/actions/signing";
 import { SigningPage } from "@/components/signing/signing-page";
 import { Icon } from "@/components/ui/icon";
+import { readStoredPlacements } from "@/lib/signing-stamp";
 
 export default async function SignPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -23,9 +24,7 @@ export default async function SignPage({ params }: { params: Promise<{ token: st
   const signerName = signingRequest.signerName
     || (signingRequest.employee ? `${signingRequest.employee.firstName} ${signingRequest.employee.lastName}` : "Signer");
 
-  const placements = Array.isArray(signingRequest.signaturePlacements)
-    ? (signingRequest.signaturePlacements as unknown as Array<{ page: number; xPct: number; yPct: number; widthPct: number; heightPct: number; kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText"; fieldId?: string; label?: string }>)
-    : [];
+  const placements = readStoredPlacements(signingRequest.signaturePlacements);
 
   return (
     <SigningPage

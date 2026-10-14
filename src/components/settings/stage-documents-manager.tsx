@@ -14,6 +14,8 @@ import {
 import { AVAILABLE_PLACEHOLDERS, SIGNATURE_PLACEHOLDERS, COUNTERSIGNATURE_PLACEHOLDERS, RECIPIENT_FIELD_PLACEHOLDERS } from "@/lib/stage-document-utils";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { normalizeFilledBy, type TextBoxFilledBy } from "@/lib/text-box-fields";
+import { TextBoxSettingsRow, TextBoxFilledBySelect, textBoxOwnerShortLabel } from "@/components/signatures/text-box-settings";
 
 type PlaceholderPosition = {
   id: string;
@@ -23,6 +25,8 @@ type PlaceholderPosition = {
   placeholder: string; // e.g. "{{firstName}}"
   fontSize: number;
   label?: string; // for {{freeText}} fields: what the recipient should enter
+  filledBy?: TextBoxFilledBy; // for {{freeText}} fields; missing = recipient
+  required?: boolean; // for {{freeText}} fields; missing = required
 };
 
 type StageDoc = {
@@ -229,6 +233,8 @@ export function PdfDocumentEditor({
   const [saving, setSaving] = useState(false);
   const [activePlaceholder, setActivePlaceholder] = useState<string>("{{fullName}}");
   const [freeTextLabel, setFreeTextLabel] = useState<string>("");
+  const [freeTextFilledBy, setFreeTextFilledBy] = useState<TextBoxFilledBy>("signer");
+  const [freeTextRequired, setFreeTextRequired] = useState(true);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageRendering, setPageRendering] = useState(false);
@@ -343,13 +349,19 @@ export function PdfDocumentEditor({
       y,
       placeholder: activePlaceholder,
       fontSize: 12,
-      ...(activePlaceholder === "{{freeText}}" ? { label: freeTextLabel.trim() || "Text" } : {}),
+      ...(activePlaceholder === "{{freeText}}"
+        ? { label: freeTextLabel.trim() || "Text", filledBy: freeTextFilledBy, required: freeTextRequired }
+        : {}),
     };
     setPlaceholders((prev) => [...prev, newPlaceholder]);
   }
 
   function removePlaceholder(id: string) {
     setPlaceholders((prev) => prev.filter((p) => p.id !== id));
+  }
+
+  function updatePlaceholder(id: string, changes: Partial<PlaceholderPosition>) {
+    setPlaceholders((prev) => prev.map((p) => (p.id === id ? { ...p, ...changes } : p)));
   }
 
   async function handleSave() {
@@ -637,14 +649,20 @@ export function PdfDocumentEditor({
               })}
             </div>
             {activePlaceholder === "{{freeText}}" && (
-              <div className="mt-2 flex items-center gap-2">
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <label className="text-[11px] font-medium text-green-700 whitespace-nowrap">Field label:</label>
                 <input
                   value={freeTextLabel}
                   onChange={(e) => setFreeTextLabel(e.target.value)}
                   placeholder="e.g. Emergency contact, Employee ID"
-                  className="flex-1 px-2 py-1 rounded border border-green-300 bg-white text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-green-500"
+                  className="flex-1 min-w-[160px] px-2 py-1 rounded border border-green-300 bg-white text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-green-500"
                 />
+                <label className="text-[11px] font-medium text-green-700 whitespace-nowrap">Filled by:</label>
+                <TextBoxFilledBySelect value={freeTextFilledBy} onChange={setFreeTextFilledBy} />
+                <label className="flex items-center gap-1 text-[11px] text-green-700 whitespace-nowrap">
+                  <input type="checkbox" checked={freeTextRequired} onChange={(e) => setFreeTextRequired(e.target.checked)} className="h-3 w-3" />
+                  Required
+                </label>
                 <span className="text-[10px] text-[var(--color-text-muted)] whitespace-nowrap">applied to the next box you place</span>
               </div>
             )}
@@ -700,7 +718,9 @@ export function PdfDocumentEditor({
               };
               const sigMeta = SIG_MAP[p.placeholder];
               if (sigMeta) {
-                const markerLabel = p.placeholder === "{{freeText}}" ? `✎ ${p.label || "Text"}` : sigMeta.label;
+                const markerLabel = p.placeholder === "{{freeText}}"
+                  ? `✎ ${p.label || "Text"} · ${textBoxOwnerShortLabel(normalizeFilledBy(p.filledBy))}`
+                  : sigMeta.label;
                 const colorClass = {
                   purple: "border-purple-500 bg-purple-500/10",
                   teal: "border-teal-500 bg-teal-500/10",
@@ -801,6 +821,29 @@ export function PdfDocumentEditor({
                   </span>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Text box settings — editable after placing */}
+          {placeholders.some((p) => p.placeholder === "{{freeText}}") && (
+            <div>
+              <p className="text-xs font-medium text-[var(--color-text-primary)] mb-1">Text boxes</p>
+              <div className="space-y-1.5">
+                {placeholders.filter((p) => p.placeholder === "{{freeText}}").map((p) => (
+                  <TextBoxSettingsRow
+                    key={p.id}
+                    label={p.label || ""}
+                    filledBy={normalizeFilledBy(p.filledBy)}
+                    required={p.required !== false}
+                    page={p.page}
+                    onChange={(changes) => updatePlaceholder(p.id, changes)}
+                    onRemove={() => removePlaceholder(p.id)}
+                  />
+                ))}
+              </div>
+              <p className="mt-1 text-[10px] text-[var(--color-text-muted)]">
+                HR boxes are filled in from Documents &amp; Signing → <span className="font-medium">Fill HR fields</span>. When a required HR box is empty, the signing email waits until HR saves it.
+              </p>
             </div>
           )}
         </>

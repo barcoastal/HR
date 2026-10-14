@@ -3,6 +3,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
+import type { SignaturePlacement } from "@/lib/stage-document-utils";
+import { getTextBoxFields, missingAdminRequiredFields, signerCanFill } from "@/lib/text-box-fields";
+import { RecipientTextBoxes, WaitingOnHrNotice } from "@/components/signing/recipient-text-boxes";
 
 type FillingData = {
   fields: { name: string; type: string; value: string; options?: string[] }[];
@@ -11,9 +14,24 @@ type FillingData = {
   documentName: string;
   employeeName: string;
   documentUrl: string;
+  /** Boxes HR placed on the document (signature, date, text boxes). */
+  placements?: SignaturePlacement[];
 };
 
 export function FillingPage({ token, data }: { token: string; data: FillingData }) {
+  const placements = data.placements ?? [];
+  // When HR placed signature boxes, the signature goes there — no tap-to-place step.
+  const hasPlacedSignature = placements.some((p) => p.kind === "signature");
+  const textFields = getTextBoxFields(placements);
+  const editableTextFields = textFields.filter((f) => signerCanFill(f.filledBy));
+  const missingHrFields = missingAdminRequiredFields(placements);
+  const waitingOnHr = missingHrFields.length > 0;
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(editableTextFields.filter((f) => f.value).map((f) => [f.fieldId, f.value]))
+  );
+  const textBoxesOk = !waitingOnHr && editableTextFields.every((f) => !f.required || (fieldValues[f.fieldId] ?? "").trim().length > 0);
+  const submittedFieldValues = () =>
+    Object.fromEntries(editableTextFields.map((f) => [f.fieldId, (fieldValues[f.fieldId] ?? "").trim()]));
   const [step, setStep] = useState<"fill" | "sign" | "place" | "preview" | "done">("fill");
   const [signatureBase64, setSignatureBase64] = useState<string | null>(null);
   const [sigPosition, setSigPosition] = useState<{ page: number; xPercent: number; yPercent: number } | null>(null);
@@ -314,7 +332,12 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
   }
 
   async function handleGoToPlace() {
-    if (!signatureBase64) return;
+    if (!signatureBase64 || !textBoxesOk) return;
+    if (hasPlacedSignature) {
+      // The server stamps the signature in HR's boxes; the position is unused.
+      await handleGoToPreview({ page: 0, xPercent: 0, yPercent: 0 });
+      return;
+    }
     setStep("place");
   }
 
@@ -329,7 +352,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
       const res = await fetch(`/api/fill/${token}/preview`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pageImages, signatureBase64, sigPosition: pos }),
+        body: JSON.stringify({ pageImages, signatureBase64, sigPosition: pos, fieldValues: submittedFieldValues() }),
       });
       if (!res.ok) throw new Error("Preview failed");
       const blob = await res.blob();
@@ -354,7 +377,7 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
       const res = await fetch(`/api/fill/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pageImages: images, signatureBase64, sigPosition }),
+        body: JSON.stringify({ pageImages: images, signatureBase64, sigPosition, fieldValues: submittedFieldValues() }),
       });
       const result = await res.json();
       if (result.success) {
@@ -407,8 +430,8 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
             <p className="text-xs text-gray-500">{data.employeeName}</p>
           </div>
           <div className="flex items-center gap-1 shrink-0">
-            {["Fill", "Sign", "Place", "Preview"].map((label, i) => {
-              const steps = ["fill", "sign", "place", "preview"];
+            {(hasPlacedSignature ? ["Fill", "Sign", "Preview"] : ["Fill", "Sign", "Place", "Preview"]).map((label, i) => {
+              const steps = hasPlacedSignature ? ["fill", "sign", "preview"] : ["fill", "sign", "place", "preview"];
               const current = steps.indexOf(step);
               return (
                 <div key={label} className="flex items-center gap-1">
@@ -462,6 +485,11 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
                 </div>
               )}
             </div>
+            {waitingOnHr && (
+              <div className="px-3 pt-3">
+                <WaitingOnHrNotice labels={missingHrFields.map((f) => f.label)} />
+              </div>
+            )}
             <div ref={pdfContainerRef} className="p-3 space-y-2" />
             <div className="sticky bottom-0 bg-white border-t p-3 shadow-lg">
               <button onClick={handleGoToSign}
@@ -476,6 +504,13 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
         {step === "sign" && (
           <div className="p-4 space-y-4">
             <SignaturePad name={data.employeeName} onSignature={setSignatureBase64} />
+            <RecipientTextBoxes
+              fields={textFields}
+              values={fieldValues}
+              onChange={(fieldId, v) => setFieldValues((prev) => ({ ...prev, [fieldId]: v }))}
+              accent="teal"
+            />
+            {waitingOnHr && <WaitingOnHrNotice labels={missingHrFields.map((f) => f.label)} />}
             {error && (
               <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
                 <Icon name="error" size={16} className="text-red-500 shrink-0" />
@@ -485,11 +520,13 @@ export function FillingPage({ token, data }: { token: string; data: FillingData 
             <div className="flex gap-2">
               <button onClick={() => setStep("fill")}
                 className="px-4 py-3 rounded-xl text-sm font-medium text-gray-500 bg-gray-100 hover:bg-gray-200">Back</button>
-              <button onClick={handleGoToPlace} disabled={!signatureBase64}
+              <button onClick={handleGoToPlace} disabled={!signatureBase64 || !textBoxesOk || submitting}
                 className={cn("flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 shadow-sm",
-                  signatureBase64 ? "bg-teal-600 text-white hover:bg-teal-700" : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  signatureBase64 && textBoxesOk && !submitting ? "bg-teal-600 text-white hover:bg-teal-700" : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 )}>
-                <Icon name="place" size={16} />Place Signature
+                {hasPlacedSignature
+                  ? <><Icon name="fact_check" size={16} />{submitting ? "Preparing preview..." : "Preview"}</>
+                  : <><Icon name="place" size={16} />Place Signature</>}
               </button>
             </div>
           </div>
