@@ -966,6 +966,40 @@ export type EnumImportGroupStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumImportGroupStatusFilter<$PrismaModel>
 }
 
+export type EnumRecruitmentClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassStatus | Prisma.EnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel> | $Enums.RecruitmentClassStatus
+}
+
+export type EnumRecruitmentClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassStatus | Prisma.EnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.RecruitmentClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel>
+}
+
+export type EnumRecruitmentClassColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassColor | Prisma.EnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel> | $Enums.RecruitmentClassColor
+}
+
+export type EnumRecruitmentClassColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassColor | Prisma.EnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassColorWithAggregatesFilter<$PrismaModel> | $Enums.RecruitmentClassColor
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1853,6 +1887,40 @@ export type NestedEnumImportGroupStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumImportGroupStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumImportGroupStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRecruitmentClassStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassStatus | Prisma.EnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel> | $Enums.RecruitmentClassStatus
+}
+
+export type NestedEnumRecruitmentClassStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassStatus | Prisma.EnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassStatus[] | Prisma.ListEnumRecruitmentClassStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassStatusWithAggregatesFilter<$PrismaModel> | $Enums.RecruitmentClassStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRecruitmentClassStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRecruitmentClassColorFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassColor | Prisma.EnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel> | $Enums.RecruitmentClassColor
+}
+
+export type NestedEnumRecruitmentClassColorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RecruitmentClassColor | Prisma.EnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  in?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RecruitmentClassColor[] | Prisma.ListEnumRecruitmentClassColorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRecruitmentClassColorWithAggregatesFilter<$PrismaModel> | $Enums.RecruitmentClassColor
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRecruitmentClassColorFilter<$PrismaModel>
 }
 
 

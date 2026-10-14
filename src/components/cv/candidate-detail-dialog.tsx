@@ -15,6 +15,7 @@ import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
 import { Icon } from "@/components/ui/icon";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
 import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
+import { CandidateClassesPanel } from "@/components/classes/candidate-classes-panel";
 
 type InterviewForDisplay = {
   id: string;
@@ -786,6 +787,8 @@ export function CandidateDetailDialog({
                 {dncBusy ? "..." : localDoNotCall ? "Remove DNC" : "Mark Do Not Call"}
               </button>
             </div>
+
+            {candidate && <CandidateClassesPanel candidateId={candidate.id} />}
 
             {/* Application history */}
             {applications.length > 0 && (

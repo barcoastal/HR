@@ -859,6 +859,7 @@ model Candidate {
   interviews      Interview[]
   signingRequests SigningRequest[]
   applications    CandidateApplication[]
+  classMemberships RecruitmentClassMember[]
 
   @@index([positionId])
   @@index([status])
@@ -911,6 +912,7 @@ model Position {
   applications  CandidateApplication[]
   boardPostings PositionBoardPosting[]
   documents     PositionDocument[]
+  recruitmentClasses RecruitmentClass[]
   createdAt     DateTime               @default(now())
 
   department Department? @relation(fields: [departmentId], references: [id])
@@ -1790,4 +1792,56 @@ model DuplicateDismissal {
   createdAt     DateTime @default(now())
 
   @@unique([employeeAId, employeeBId])
+}
+
+enum RecruitmentClassStatus {
+  UPCOMING
+  STARTED
+  CANCELLED
+}
+
+enum RecruitmentClassColor {
+  RED // Not moving forward
+  YELLOW // In process
+  GREEN // Cleared and ready to start
+}
+
+/// A recruitment class (cohort): a role with a fixed start date and the
+/// candidates expected to start together, e.g. "Openers – Oct 12".
+/// Not to be confused with TrainingClass (employee training sessions).
+model RecruitmentClass {
+  id          String                 @id @default(uuid())
+  name        String
+  role        String
+  positionId  String?
+  startDate   DateTime               @db.Date
+  targetCount Int?
+  notes       String?
+  status      RecruitmentClassStatus @default(UPCOMING)
+  createdById String? // User.id
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  position Position?                @relation(fields: [positionId], references: [id], onDelete: SetNull)
+  members  RecruitmentClassMember[]
+
+  @@index([startDate])
+  @@index([positionId])
+}
+
+model RecruitmentClassMember {
+  id          String                @id @default(uuid())
+  classId     String
+  candidateId String
+  color       RecruitmentClassColor @default(YELLOW)
+  note        String?
+  addedById   String? // User.id
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+
+  class     RecruitmentClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  candidate Candidate        @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, candidateId])
+  @@index([candidateId])
 }

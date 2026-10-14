@@ -311,6 +311,14 @@ export default async function GuidePage() {
             <li>Assigned recruiters get <Route>/my-candidates</Route>, email/in-app assignment notifications, stage filters, candidate contact details, and resumes.</li>
             <li><Route>/recruiter-manager</Route> is Super Admin only and can review workload or move candidates between recruiters.</li>
           </ul>
+
+          <h3>Classes</h3>
+          <ul>
+            <li><Route>/classes</Route> lists start-date classes, such as “Openers – Oct 12”: a role, a start date, an optional linked position, and an optional target headcount. Upcoming classes are sorted by start date and show days until start plus Green / Yellow / Red counts against the target. Past, started, and cancelled classes sit under <strong>Past classes</strong>.</li>
+            <li>Open a class to see each candidate&apos;s current pipeline stage, phone, email, and recruiter, live from their candidate record. Set a color per candidate: <strong>Green</strong> = cleared and ready to start, <strong>Yellow</strong> = in process (the default), <strong>Red</strong> = not moving forward. Add a note, remove someone from the class, filter by color, or export the roster as CSV.</li>
+            <li>The candidate dialog in Recruitment shows the candidate&apos;s classes with their color and an <strong>Add to class</strong> action. A candidate can be in more than one class. Colors are for tracking only; they never change the candidate&apos;s stage.</li>
+            <li>Admins and HR create, edit, and delete classes and manage every roster. Assigned recruiters can add their own candidates and set their colors and notes, and see only their own candidates in a roster. Managers can view classes.</li>
+          </ul>
         </section>
 
         <section id="candidate-workflows">

@@ -346,3 +346,21 @@ export const ImportGroupStatus = {
 } as const
 
 export type ImportGroupStatus = (typeof ImportGroupStatus)[keyof typeof ImportGroupStatus]
+
+
+export const RecruitmentClassStatus = {
+  UPCOMING: 'UPCOMING',
+  STARTED: 'STARTED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RecruitmentClassStatus = (typeof RecruitmentClassStatus)[keyof typeof RecruitmentClassStatus]
+
+
+export const RecruitmentClassColor = {
+  RED: 'RED',
+  YELLOW: 'YELLOW',
+  GREEN: 'GREEN'
+} as const
+
+export type RecruitmentClassColor = (typeof RecruitmentClassColor)[keyof typeof RecruitmentClassColor]

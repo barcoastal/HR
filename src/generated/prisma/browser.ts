@@ -406,3 +406,15 @@ export type ImportDuplicateGroup = Prisma.ImportDuplicateGroupModel
  * Ids are stored in sorted order so each unordered pair has exactly one row.
  */
 export type DuplicateDismissal = Prisma.DuplicateDismissalModel
+/**
+ * Model RecruitmentClass
+ * A recruitment class (cohort): a role with a fixed start date and the
+ * candidates expected to start together, e.g. "Openers – Oct 12".
+ * Not to be confused with TrainingClass (employee training sessions).
+ */
+export type RecruitmentClass = Prisma.RecruitmentClassModel
+/**
+ * Model RecruitmentClassMember
+ * 
+ */
+export type RecruitmentClassMember = Prisma.RecruitmentClassMemberModel

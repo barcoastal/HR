@@ -127,7 +127,9 @@ export const ModelName = {
   ImportBatch: 'ImportBatch',
   ImportRow: 'ImportRow',
   ImportDuplicateGroup: 'ImportDuplicateGroup',
-  DuplicateDismissal: 'DuplicateDismissal'
+  DuplicateDismissal: 'DuplicateDismissal',
+  RecruitmentClass: 'RecruitmentClass',
+  RecruitmentClassMember: 'RecruitmentClassMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1353,6 +1355,37 @@ export const DuplicateDismissalScalarFieldEnum = {
 } as const
 
 export type DuplicateDismissalScalarFieldEnum = (typeof DuplicateDismissalScalarFieldEnum)[keyof typeof DuplicateDismissalScalarFieldEnum]
+
+
+export const RecruitmentClassScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  role: 'role',
+  positionId: 'positionId',
+  startDate: 'startDate',
+  targetCount: 'targetCount',
+  notes: 'notes',
+  status: 'status',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentClassScalarFieldEnum = (typeof RecruitmentClassScalarFieldEnum)[keyof typeof RecruitmentClassScalarFieldEnum]
+
+
+export const RecruitmentClassMemberScalarFieldEnum = {
+  id: 'id',
+  classId: 'classId',
+  candidateId: 'candidateId',
+  color: 'color',
+  note: 'note',
+  addedById: 'addedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecruitmentClassMemberScalarFieldEnum = (typeof RecruitmentClassMemberScalarFieldEnum)[keyof typeof RecruitmentClassMemberScalarFieldEnum]
 
 
 export const SortOrder = {
