@@ -7,6 +7,7 @@
  */
 
 import { EMPLOYEE_STATUS_VALUES } from "./employee-fields";
+import { REJECTION_REASONS } from "@/lib/candidate-rejection";
 
 export type ExportEntityKey = "people" | "candidates" | "departments" | "timeOff" | "reviews" | "interviews";
 
@@ -118,11 +119,30 @@ export const EXPORT_ENTITIES: ExportEntityDef[] = [
       { key: "backgroundCheckDate", label: "Background check date" },
       { key: "hourlyRate", label: "Hourly rate" },
       { key: "linkedinUrl", label: "LinkedIn" },
+      { key: "starred", label: "Starred" },
+      { key: "rejectionReason", label: "Rejection reason" },
+      { key: "rejectionNote", label: "Rejection note" },
+      { key: "rejectedAt", label: "Rejected" },
     ],
     filters: [
       { key: "status", label: "Status", type: "select", options: enumOptions(CANDIDATE_STATUS_VALUES) },
       { key: "position", label: "Position", type: "select", optionsFrom: "positions" },
       { key: "applied", label: "Applied", type: "dateRange" },
+      {
+        key: "rejectionReason",
+        label: "Rejection reason",
+        type: "select",
+        options: REJECTION_REASONS.map((r) => ({ value: r.code, label: r.label })),
+      },
+      {
+        key: "starred",
+        label: "Starred",
+        type: "select",
+        options: [
+          { value: "yes", label: "Starred" },
+          { value: "no", label: "Not starred" },
+        ],
+      },
     ],
   },
   {

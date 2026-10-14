@@ -15,6 +15,9 @@ import { ScheduleInterviewDialog } from "./schedule-interview-dialog";
 import { Icon } from "@/components/ui/icon";
 import { LEGACY_STAGE_ID_BY_STATUS } from "@/lib/pipeline-stage-utils";
 import { isTrainingEligibleJobTitle } from "@/lib/training-eligibility";
+import { validateRejection, type RejectionInput } from "@/lib/candidate-rejection";
+import { CandidateStarButton } from "./candidate-star-button";
+import { DoNotCallDialog, RejectionReasonFields, type RejectionValue } from "./rejection-reason";
 
 type InterviewForDisplay = {
   id: string;
@@ -84,6 +87,9 @@ type CandidateForDialog = {
   doNotCall?: boolean;
   doNotCallReason?: string | null;
   applicationCount?: number | null;
+  starred?: boolean;
+  rejectionReason?: string | null;
+  rejectionNote?: string | null;
 };
 
 type ApplicationForDisplay = {
@@ -387,6 +393,12 @@ export function CandidateDetailDialog({
   const [dncBusy, setDncBusy] = useState(false);
   const [localDoNotCall, setLocalDoNotCall] = useState<boolean>(!!candidate?.doNotCall);
   const [localDncReason, setLocalDncReason] = useState<string | null>(candidate?.doNotCallReason || null);
+  const [dncDialogOpen, setDncDialogOpen] = useState(false);
+  // Do Not Call just moved this candidate to Rejected on the server; the
+  // candidate prop still shows the old status until the list refreshes.
+  const [rejectedViaDnc, setRejectedViaDnc] = useState(false);
+  const [rejection, setRejection] = useState<RejectionValue>({ reason: "", note: "" });
+  const [localStarred, setLocalStarred] = useState<boolean>(!!candidate?.starred);
   const [resumeUploading, setResumeUploading] = useState(false);
   const [resumeUploadError, setResumeUploadError] = useState<string | null>(null);
   const [localResumeUrl, setLocalResumeUrl] = useState<string | null>(candidate?.resumeUrl || null);
@@ -437,28 +449,43 @@ export function CandidateDetailDialog({
       setLocalDoNotCall(!!candidate.doNotCall);
       setLocalDncReason(candidate.doNotCallReason || null);
       setLocalResumeUrl(candidate.resumeUrl || null);
+      setRejectedViaDnc(false);
       setResumeUploadError(null);
     }
   }, [candidate, open, loadInterviews]);
 
   async function handleToggleDnc() {
     if (!candidate) return;
+    if (!localDoNotCall) {
+      setDncDialogOpen(true);
+      return;
+    }
     setDncBusy(true);
     try {
-      if (localDoNotCall) {
-        if (!confirm("Remove the Do Not Call flag? This candidate will become callable again.")) {
-          setDncBusy(false);
-          return;
-        }
-        await unmarkDoNotCall(candidate.id);
-        setLocalDoNotCall(false);
-        setLocalDncReason(null);
-      } else {
-        const reason = prompt("Add a reason (optional — shown on hover):", "");
-        await markDoNotCall(candidate.id, reason || undefined);
-        setLocalDoNotCall(true);
-        setLocalDncReason(reason || null);
+      if (!confirm("Remove the Do Not Call flag? This candidate will become callable again.")) {
+        setDncBusy(false);
+        return;
       }
+      await unmarkDoNotCall(candidate.id);
+      setLocalDoNotCall(false);
+      setLocalDncReason(null);
+      router.refresh();
+    } finally {
+      setDncBusy(false);
+    }
+  }
+
+  async function confirmDoNotCall(reason: string, disposition: RejectionInput | null) {
+    if (!candidate) return;
+    setDncBusy(true);
+    try {
+      await markDoNotCall(candidate.id, reason || undefined, disposition);
+      setLocalDoNotCall(true);
+      setLocalDncReason(reason || null);
+      setDncDialogOpen(false);
+      setRejectedViaDnc(true);
+      setForm((f) => ({ ...f, status: "REJECTED" }));
+      if (disposition?.reason) setRejection({ reason: disposition.reason, note: disposition.note || "" });
       router.refresh();
     } finally {
       setDncBusy(false);
@@ -488,6 +515,8 @@ export function CandidateDetailDialog({
         startDate: new Date().toISOString().split("T")[0],
         requiresTraining: true,
       });
+      setRejection({ reason: candidate.rejectionReason || "", note: candidate.rejectionNote || "" });
+      setLocalStarred(!!candidate.starred);
       setBgCheckStatus(candidate.backgroundCheckStatus || null);
       setHireResult(null);
       setOfferDocUrl(candidate.offerDocUrl || null);
@@ -643,6 +672,20 @@ export function CandidateDetailDialog({
       return;
     }
 
+    // Moving to Rejected needs a standard reason; editing an already-rejected
+    // candidate's reason is optional but must be valid when given.
+    let rejectionPayload: RejectionInput | undefined;
+    const alreadyRejected = candidate.status === "REJECTED" || rejectedViaDnc;
+    if (form.status === "REJECTED" && (!alreadyRejected || rejection.reason)) {
+      const check = validateRejection(rejection);
+      if (!check.ok) {
+        setSaveError(check.error);
+        setSaving(false);
+        return;
+      }
+      rejectionPayload = { reason: check.value.reason, note: check.value.note };
+    }
+
     try {
       await updateCandidate(candidate.id, {
         firstName: form.firstName,
@@ -661,6 +704,7 @@ export function CandidateDetailDialog({
         recruiterId: form.recruiterId || undefined,
         status: form.status,
         stageId: form.stageId || null,
+        rejection: rejectionPayload,
       });
       setSaving(false);
       router.refresh();
@@ -749,6 +793,12 @@ export function CandidateDetailDialog({
       ) : (
         <>
           <div className="space-y-3 max-h-[60vh] overflow-y-auto">
+            {/* Shared team star */}
+            <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+              <CandidateStarButton candidateId={candidate.id} starred={localStarred} size={18} onChange={setLocalStarred} />
+              <span>{localStarred ? "Starred for the team" : "Star this candidate so the team can find them quickly"}</span>
+            </div>
+
             {/* Do Not Call banner */}
             <div className={cn(
               "rounded-lg border p-3 flex items-start gap-3",
@@ -864,6 +914,18 @@ export function CandidateDetailDialog({
                 })}
               </div>
             </div>
+
+            {/* Rejection reason — required when moving to Rejected */}
+            {form.status === "REJECTED" && (
+              <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-3">
+                <RejectionReasonFields value={rejection} onChange={setRejection} idPrefix="candidate-rejection" />
+                {candidate.status === "REJECTED" && !candidate.rejectionReason && (
+                  <p className="text-[11px] text-[var(--color-text-muted)] mt-1.5">
+                    This candidate was rejected before reasons were tracked. Pick one to record it.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Offer Letter — shown when in OFFER stage */}
             {(form.status === "OFFER" || candidate.status === "OFFER") && (
@@ -1665,6 +1727,13 @@ export function CandidateDetailDialog({
         }}
       />
     )}
+
+    <DoNotCallDialog
+      open={dncDialogOpen}
+      candidateName={`${candidate.firstName} ${candidate.lastName}`}
+      onCancel={() => setDncDialogOpen(false)}
+      onConfirm={confirmDoNotCall}
+    />
   </>
   );
 }

@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { requireAuth, assertCandidateAccess } from "@/lib/auth-helpers";
 import { revalidatePath } from "next/cache";
 import type { CandidateStatus } from "@/generated/prisma/client";
+import { validateRejection, type RejectionInput, type ValidatedRejection } from "@/lib/candidate-rejection";
+import { recordStageEvent, recordStageEvents, currentUserId } from "@/lib/candidate-stage-events";
 
 /**
  * Returns the DNC-flagged candidate that matches the given phone or email,
@@ -142,15 +144,36 @@ export async function updateApplicationStatus(
   return true;
 }
 
-export async function markDoNotCall(candidateId: string, reason?: string) {
+/**
+ * Flag a candidate Do Not Call (and move them to REJECTED). `reason` is the
+ * free-text DNC reason. `disposition` optionally records a standard rejection
+ * reason too; DNC never requires one, but a supplied one must be valid.
+ */
+export async function markDoNotCall(
+  candidateId: string,
+  reason?: string,
+  disposition?: RejectionInput | null,
+) {
   await assertCandidateAccess(candidateId);
   const before = await db.candidate.findUnique({
     where: { id: candidateId },
-    select: { firstName: true, lastName: true, email: true, phone: true, status: true },
+    select: { firstName: true, lastName: true, email: true, phone: true, status: true, stageId: true },
   });
   if (!before) return;
 
+  let chosen: ValidatedRejection | null = null;
+  if (disposition?.reason) {
+    const v = validateRejection(disposition);
+    if (!v.ok) throw new Error(v.error);
+    chosen = v.value;
+  }
+
   const now = new Date();
+  const rejectionData = chosen
+    ? { rejectionReason: chosen.reason, rejectionNote: chosen.note, rejectedAt: now }
+    : before.status !== "REJECTED"
+      ? { rejectedAt: now }
+      : {};
   await db.candidate.update({
     where: { id: candidateId },
     data: {
@@ -158,7 +181,20 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
       doNotCallReason: reason || null,
       doNotCallAt: now,
       status: "REJECTED",
+      ...rejectionData,
     },
+  });
+  const changedById = await currentUserId();
+  await recordStageEvent({
+    candidateId,
+    fromStatus: before.status,
+    toStatus: "REJECTED",
+    fromStageId: before.stageId,
+    toStageId: before.stageId,
+    reason: chosen?.reason ?? null,
+    note: chosen?.note ?? reason ?? null,
+    source: "do_not_call",
+    changedById,
   });
 
   const { audit } = await import("@/lib/audit");
@@ -173,6 +209,7 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
       to: "REJECTED",
       via: "mark_do_not_call",
       reason: reason ?? null,
+      ...(chosen ? { rejectionReason: chosen.reason, rejectionNote: chosen.note } : {}),
     },
   });
 
@@ -193,7 +230,7 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
         phone: { contains: last4 },
         doNotCall: false,
       },
-      select: { id: true, firstName: true, lastName: true, email: true, status: true, phone: true },
+      select: { id: true, firstName: true, lastName: true, email: true, status: true, stageId: true, phone: true },
     });
     const sameNameSamePhone = phoneRows.filter(
       (r) => (r.phone || "").replace(/\D/g, "").slice(-10) === normPhone,
@@ -207,8 +244,22 @@ export async function markDoNotCall(candidateId: string, reason?: string) {
           doNotCallReason: reason || `Auto-propagated from duplicate ${before.firstName} ${before.lastName}`,
           doNotCallAt: now,
           status: "REJECTED",
+          ...(chosen ? { rejectionReason: chosen.reason, rejectionNote: chosen.note, rejectedAt: now } : {}),
         },
       });
+      await recordStageEvents(
+        sameNameSamePhone.map((d) => ({
+          candidateId: d.id,
+          fromStatus: d.status,
+          toStatus: "REJECTED" as const,
+          fromStageId: d.stageId,
+          toStageId: d.stageId,
+          reason: chosen?.reason ?? null,
+          note: chosen?.note ?? null,
+          source: "do_not_call_propagated",
+          changedById,
+        })),
+      );
       for (const d of sameNameSamePhone) {
         await audit({
           action: "candidate.status.changed",

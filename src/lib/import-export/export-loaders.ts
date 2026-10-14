@@ -21,6 +21,7 @@ import type {
 } from "@/generated/prisma/client";
 import { db } from "@/lib/db";
 import { sanitizeExportFilters, type ExportEntityKey } from "./export-registry";
+import { rejectionReasonLabel } from "@/lib/candidate-rejection";
 
 export type ExportRow = Record<string, string | number | null>;
 
@@ -127,6 +128,8 @@ function candidatesWhere(f: Filters): Prisma.CandidateWhereInput {
     status: (f.status as CandidateStatus | undefined) ?? undefined,
     positionId: f.position || undefined,
     appliedAt: dateRange(f, "applied"),
+    rejectionReason: f.rejectionReason || undefined,
+    starred: f.starred === "yes" ? true : f.starred === "no" ? false : undefined,
   };
 }
 
@@ -163,6 +166,10 @@ const candidates: EntityLoader = {
       backgroundCheckDate: date(c.backgroundCheckDate),
       hourlyRate: num(c.hourlyRate),
       linkedinUrl: text(c.linkedinUrl),
+      starred: c.starred ? "Yes" : "No",
+      rejectionReason: rejectionReasonLabel(c.rejectionReason),
+      rejectionNote: text(c.rejectionNote),
+      rejectedAt: date(c.rejectedAt),
     }));
   },
 };

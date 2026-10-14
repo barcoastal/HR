@@ -5,6 +5,7 @@ import { requireApiAuth, getRecruiterScope } from "@/lib/auth-helpers";
 import { canAccessRecruitment } from "@/lib/permissions";
 import { canSeeAudiencePost } from "@/lib/event-audience";
 import { displayName } from "@/lib/utils";
+import { rejectionReasonLabel, rejectionReasonsMatchingToken } from "@/lib/candidate-rejection";
 
 type SearchResultKind = "employee" | "document" | "candidate" | "position" | "update";
 
@@ -59,6 +60,7 @@ function employeeTokenFilter(token: string): Prisma.EmployeeWhereInput {
 
 function candidateTokenFilter(token: string): Prisma.CandidateWhereInput {
   const statuses = matchingStatuses(CANDIDATE_STATUSES, token);
+  const rejectionReasons = rejectionReasonsMatchingToken(token);
   return {
     OR: [
       { firstName: textCondition(token) },
@@ -70,6 +72,7 @@ function candidateTokenFilter(token: string): Prisma.CandidateWhereInput {
       { skills: textCondition(token) },
       { position: { title: textCondition(token) } },
       ...(statuses.length ? [{ status: { in: statuses } }] : []),
+      ...(rejectionReasons.length ? [{ rejectionReason: { in: rejectionReasons } }] : []),
     ],
   };
 }
@@ -205,6 +208,8 @@ export async function GET(request: Request) {
               email: true,
               phone: true,
               status: true,
+              rejectionReason: true,
+              starred: true,
               inPipeline: true,
               position: { select: { id: true, title: true } },
             },
@@ -299,7 +304,10 @@ export async function GET(request: Request) {
         title: `${candidate.firstName} ${candidate.lastName}`,
         subtitle: candidate.position?.title || "Candidate",
         detail: [candidate.email, candidate.phone].filter(Boolean).join(" · "),
-        status: readableStatus(candidate.status),
+        status:
+          candidate.status === "REJECTED" && candidate.rejectionReason
+            ? `Rejected · ${rejectionReasonLabel(candidate.rejectionReason)}`
+            : `${readableStatus(candidate.status)}${candidate.starred ? " · Starred" : ""}`,
         href: recruiterScope
           ? `/my-candidates?candidateId=${candidate.id}`
           : candidate.inPipeline

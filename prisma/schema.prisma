@@ -851,6 +851,15 @@ model Candidate {
   doNotCallReason            String?
   doNotCallAt                DateTime?
   applicationCount           Int             @default(1)
+  // Shared team flag — anyone with recruitment access sees the same star.
+  starred                    Boolean         @default(false)
+  starredAt                  DateTime?
+  starredById                String? // User.id of whoever starred it (no relation, like recruiterId)
+  // Standard disposition code from src/lib/candidate-rejection.ts; required
+  // whenever a candidate is moved to REJECTED. Cleared when they leave REJECTED.
+  rejectionReason            String?
+  rejectionNote              String?
+  rejectedAt                 DateTime?
   createdAt                  DateTime        @default(now())
   updatedAt                  DateTime        @updatedAt
 
@@ -859,6 +868,7 @@ model Candidate {
   interviews      Interview[]
   signingRequests SigningRequest[]
   applications    CandidateApplication[]
+  stageEvents     CandidateStageEvent[]
 
   @@index([positionId])
   @@index([status])
@@ -869,6 +879,31 @@ model Candidate {
   @@index([doNotCall])
   @@index([createdAt])
   @@index([inPipeline, status])
+  @@index([starred])
+  @@index([rejectionReason])
+}
+
+// Append-only history of every status / pipeline-stage move. Powers funnel
+// metrics (time in stage, conversion, rejection reasons by stage).
+model CandidateStageEvent {
+  id          String           @id @default(uuid())
+  candidateId String
+  fromStatus  CandidateStatus?
+  toStatus    CandidateStatus
+  fromStageId String?
+  toStageId   String?
+  reason      String? // rejection disposition code when toStatus = REJECTED
+  note        String?
+  source      String? // which code path made the move, e.g. "status", "edit", "do_not_call"
+  changedById String? // User.id; null for system moves
+  createdAt   DateTime         @default(now())
+
+  candidate Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+
+  @@index([candidateId])
+  @@index([createdAt])
+  @@index([candidateId, createdAt])
+  @@index([toStatus])
 }
 
 // One row per application a candidate makes to a specific position.

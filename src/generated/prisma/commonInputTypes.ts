@@ -548,6 +548,23 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
+export type EnumCandidateStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.CandidateStatus | Prisma.EnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel> | $Enums.CandidateStatus | null
+}
+
+export type EnumCandidateStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CandidateStatus | Prisma.EnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCandidateStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.CandidateStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel>
+}
+
 export type EnumPositionStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.PositionStatus | Prisma.EnumPositionStatusFieldRefInput<$PrismaModel>
   in?: $Enums.PositionStatus[] | Prisma.ListEnumPositionStatusFieldRefInput<$PrismaModel>
@@ -1473,6 +1490,23 @@ export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumCandidateStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.CandidateStatus | Prisma.EnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel> | $Enums.CandidateStatus | null
+}
+
+export type NestedEnumCandidateStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CandidateStatus | Prisma.EnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.CandidateStatus[] | Prisma.ListEnumCandidateStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumCandidateStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.CandidateStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCandidateStatusNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumPositionStatusFilter<$PrismaModel = never> = {

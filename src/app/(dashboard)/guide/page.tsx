@@ -300,7 +300,10 @@ export default async function GuidePage() {
             <li>Add a new candidate manually, parse an uploaded resume, or assign an existing database candidate to a position.</li>
             <li>CSV import maps source columns and skips exact duplicates.</li>
             <li>Bulk Resume Upload accepts position folders, extracts PDFs with AI, and merges by email.</li>
-            <li>Candidate Database filters by name, source, position, stage, dates, resume status, pipeline status, and Do Not Call.</li>
+            <li>Candidate Database filters by name, source, position, stage, dates, resume status, pipeline status, Do Not Call, rejection reason, and <strong>Starred only</strong>.</li>
+            <li><strong>Star</strong> a candidate from a pipeline card, a Candidate Database row, My Candidates, or the candidate dialog. Stars are shared: everyone with recruitment access sees the same starred candidates, and each list has a Starred only toggle.</li>
+            <li>Moving a candidate to <strong>Rejected</strong>, from the pipeline or the candidate dialog, asks for a rejection reason: No-show, Failed interview, Withdrew, Not qualified, Salary mismatch, Failed background check, Went with another candidate, No LinkedIn profile, or Other. Other needs a short note. The reason shows as a red tag on the candidate, can be searched, and is included in candidate exports. Do Not Call can also record a reason, but doesn&apos;t require one. The adverse-action letter records Failed background check on its own.</li>
+            <li>Every stage change is saved with the date and the person who made it, so funnel reporting can be built on it later.</li>
             <li><Route>/cv/duplicates</Route> detects likely duplicates by normalized email, phone, or name. Merging preserves applications, interviews, and signed documents but deletes the duplicate rows, so review the primary record carefully.</li>
             <li>The DNC List contains candidates marked Do Not Call and allows authorized users to remove that flag.</li>
           </ul>
