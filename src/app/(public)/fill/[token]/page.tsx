@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { FillingPage } from "@/components/filling/filling-page";
 import { Icon } from "@/components/ui/icon";
+import { readStoredPlacements } from "@/lib/signing-stamp";
 
 export default async function FillPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
@@ -45,6 +46,7 @@ export default async function FillPage({ params }: { params: Promise<{ token: st
         documentUrl: `/api/fill/${token}/document`,
         documentName: request.documentName,
         employeeName,
+        placements: readStoredPlacements(request.signaturePlacements),
       }}
     />
   );

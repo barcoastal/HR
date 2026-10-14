@@ -3,17 +3,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
-
-type SignaturePlacement = {
-  page: number;
-  xPct: number;
-  yPct: number;
-  widthPct: number;
-  heightPct: number;
-  kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "initials" | "freeText";
-  fieldId?: string;
-  label?: string;
-};
+import type { SignaturePlacement } from "@/lib/stage-document-utils";
+import { getTextBoxFields, missingAdminRequiredFields, signerCanFill } from "@/lib/text-box-fields";
+import { RecipientTextBoxes, WaitingOnHrNotice } from "@/components/signing/recipient-text-boxes";
 
 type SigningData = {
   documentUrl: string;
@@ -33,15 +25,14 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
   const hasPrePlaced = (data.signaturePlacements?.length ?? 0) > 0;
   const allPlacements = data.signaturePlacements ?? [];
   const initialsPlacements = allPlacements.filter((p) => p.kind === "initials");
-  // De-duplicate free-text fields by fieldId — one input per distinct field, even
-  // if the same field is placed in multiple spots.
-  const freeTextFields = Array.from(
-    new Map(
-      allPlacements
-        .filter((p) => p.kind === "freeText" && p.fieldId)
-        .map((p) => [p.fieldId as string, p.label || "Text"] as const)
-    ).entries()
-  ).map(([fieldId, label]) => ({ fieldId, label }));
+  // One entry per distinct text box (the same field can be placed in several
+  // spots). HR-only boxes are shown read-only; shared boxes start with HR's value.
+  const textFields = getTextBoxFields(allPlacements);
+  const editableTextFields = textFields.filter((f) => signerCanFill(f.filledBy));
+  // Required HR-only boxes HR hasn't filled yet — signing waits for them (the
+  // server enforces this too).
+  const missingHrFields = missingAdminRequiredFields(allPlacements);
+  const waitingOnHr = missingHrFields.length > 0;
   const [step, setStep] = useState<"review" | "place" | "sign" | "confirm" | "done">("review");
   const [agreed, setAgreed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -56,7 +47,9 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
   const initialsCanvasRef = useRef<HTMLCanvasElement>(null);
   const isDrawingInitials = useRef(false);
   const [hasInitials, setHasInitials] = useState(false);
-  const [fieldValues, setFieldValues] = useState<Record<string, string>>({});
+  const [fieldValues, setFieldValues] = useState<Record<string, string>>(() =>
+    Object.fromEntries(editableTextFields.filter((f) => f.value).map((f) => [f.fieldId, f.value]))
+  );
 
   const startDraw = useCallback((e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -153,9 +146,9 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
     }
   };
 
-  const allTextFilled = freeTextFields.every((f) => (fieldValues[f.fieldId] ?? "").trim().length > 0);
+  const allTextFilled = editableTextFields.every((f) => !f.required || (fieldValues[f.fieldId] ?? "").trim().length > 0);
   const initialsOk = initialsPlacements.length === 0 || hasInitials;
-  const extraFieldsOk = allTextFilled && initialsOk;
+  const extraFieldsOk = allTextFilled && initialsOk && !waitingOnHr;
 
   const handleSubmit = async () => {
     const canvas = canvasRef.current;
@@ -177,7 +170,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
         ? initialsCanvasRef.current.toDataURL("image/png")
         : undefined;
       const trimmedValues: Record<string, string> = {};
-      for (const f of freeTextFields) trimmedValues[f.fieldId] = (fieldValues[f.fieldId] ?? "").trim();
+      for (const f of editableTextFields) trimmedValues[f.fieldId] = (fieldValues[f.fieldId] ?? "").trim();
       const res = await fetch(`/api/sign/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -186,7 +179,7 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
           signaturePosition: sigPosition || undefined,
           typedName: typedName.trim(),
           initialsBase64,
-          fieldValues: freeTextFields.length > 0 ? trimmedValues : undefined,
+          fieldValues: editableTextFields.length > 0 ? trimmedValues : undefined,
         }),
       });
       const result = await res.json();
@@ -499,31 +492,14 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
               </div>
             )}
 
-            {/* Free-text fields the recipient fills in */}
-            {freeTextFields.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <div className="px-5 py-3 bg-gray-50 border-b">
-                  <h2 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                    <Icon name="text_fields" size={16} className="text-green-600" />
-                    Fill in the following
-                  </h2>
-                </div>
-                <div className="p-5 space-y-4">
-                  {freeTextFields.map((f) => (
-                    <div key={f.fieldId}>
-                      <label className="block text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">{f.label}</label>
-                      <input
-                        type="text"
-                        value={fieldValues[f.fieldId] ?? ""}
-                        onChange={(e) => setFieldValues((prev) => ({ ...prev, [f.fieldId]: e.target.value }))}
-                        placeholder={`Enter ${f.label.toLowerCase()}`}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-300 text-gray-900 text-base focus:outline-none focus:ring-2 focus:ring-green-500/40 focus:border-green-500"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Text boxes: HR-only (read-only), shared (prefilled, editable), recipient */}
+            <RecipientTextBoxes
+              fields={textFields}
+              values={fieldValues}
+              onChange={(fieldId, v) => setFieldValues((prev) => ({ ...prev, [fieldId]: v }))}
+            />
+
+            {waitingOnHr && <WaitingOnHrNotice labels={missingHrFields.map((f) => f.label)} />}
 
             {/* Agreement + Submit */}
             <div className="bg-white rounded-xl shadow-sm border p-5 space-y-4">
@@ -591,9 +567,15 @@ export function SigningPage({ token, data, testMode }: { token: string; data: Si
                 </div>
               </div>
             )}
+            {waitingOnHr && (
+              <div className="mb-3">
+                <WaitingOnHrNotice labels={missingHrFields.map((f) => f.label)} />
+              </div>
+            )}
             <button
               onClick={() => setStep(hasPrePlaced ? "sign" : "place")}
-              className="w-full py-3.5 rounded-xl bg-[#4C3ACF] text-white font-semibold text-base hover:bg-[#3d2ea6] transition-all flex items-center justify-center gap-2.5 shadow-sm active:scale-[0.99]"
+              disabled={waitingOnHr}
+              className="w-full py-3.5 rounded-xl bg-[#4C3ACF] text-white font-semibold text-base hover:bg-[#3d2ea6] transition-all flex items-center justify-center gap-2.5 shadow-sm active:scale-[0.99] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <Icon name="draw" size={18} />
               Continue to Sign

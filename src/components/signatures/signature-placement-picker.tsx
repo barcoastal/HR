@@ -3,34 +3,62 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { normalizeFilledBy, type TextBoxFilledBy } from "@/lib/text-box-fields";
+import { TextBoxFilledBySelect, TextBoxSettingsRow, textBoxOwnerShortLabel } from "@/components/signatures/text-box-settings";
 
 export type PickerPlacement = {
   id: string;
   page: number;        // 1-indexed
   xPct: number;        // 0..1 center-x of placed box
   yPct: number;        // 0..1 center-y of placed box
-  kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate";
+  kind: "signature" | "signatureDate" | "countersignature" | "countersignatureDate" | "freeText";
+  // Text box only
+  label?: string;
+  filledBy?: TextBoxFilledBy;
+  required?: boolean;
 };
 
-const FIELDS: Array<{ key: PickerPlacement["kind"]; label: string; color: "purple" | "teal" | "amber" | "orange"; icon: string }> = [
+type FieldColor = "purple" | "teal" | "amber" | "orange" | "green";
+
+const FIELDS: Array<{ key: PickerPlacement["kind"]; label: string; color: FieldColor; icon: string }> = [
   { key: "signature", label: "Recipient signature", color: "purple", icon: "draw" },
   { key: "signatureDate", label: "Recipient date", color: "teal", icon: "event" },
+  { key: "freeText", label: "Text box", color: "green", icon: "text_fields" },
   { key: "countersignature", label: "Our signature", color: "amber", icon: "verified" },
   { key: "countersignatureDate", label: "Our date", color: "orange", icon: "event" },
 ];
 
-const BOX_SIZE: Record<PickerPlacement["kind"], { w: number; h: number; label: string }> = {
+/** Box sizes as % of the page; shared with the send dialog that stores them. */
+export const PICKER_BOX_SIZE: Record<PickerPlacement["kind"], { w: number; h: number; label: string }> = {
   signature: { w: 26, h: 8, label: "✍ signature" },
   signatureDate: { w: 18, h: 4, label: "📅 date" },
   countersignature: { w: 26, h: 8, label: "✍ countersign" },
   countersignatureDate: { w: 18, h: 4, label: "📅 countersign date" },
+  freeText: { w: 24, h: 5, label: "✎ text" },
 };
 
-const COLOR_CLASS: Record<string, string> = {
+const COLOR_OF: Record<PickerPlacement["kind"], FieldColor> = {
+  signature: "purple",
+  signatureDate: "teal",
+  countersignature: "amber",
+  countersignatureDate: "orange",
+  freeText: "green",
+};
+
+const COLOR_CLASS: Record<FieldColor, string> = {
   purple: "border-purple-500 bg-purple-500/10 text-purple-700",
   teal: "border-teal-500 bg-teal-500/10 text-teal-700",
   amber: "border-amber-500 bg-amber-500/10 text-amber-700",
   orange: "border-orange-500 bg-orange-500/10 text-orange-700",
+  green: "border-green-500 bg-green-500/10 text-green-700",
+};
+
+const BUTTON_CLASS: Record<FieldColor, { active: string; idle: string }> = {
+  purple: { active: "bg-purple-600 text-white", idle: "bg-purple-500/10 text-purple-700 hover:bg-purple-500/20" },
+  teal: { active: "bg-teal-600 text-white", idle: "bg-teal-500/10 text-teal-700 hover:bg-teal-500/20" },
+  amber: { active: "bg-amber-600 text-white", idle: "bg-amber-500/10 text-amber-700 hover:bg-amber-500/20" },
+  orange: { active: "bg-orange-600 text-white", idle: "bg-orange-500/10 text-orange-700 hover:bg-orange-500/20" },
+  green: { active: "bg-green-600 text-white", idle: "bg-green-500/10 text-green-700 hover:bg-green-500/20" },
 };
 
 export function SignaturePlacementPicker({
@@ -45,6 +73,9 @@ export function SignaturePlacementPicker({
   onChange: (placements: PickerPlacement[]) => void;
 }) {
   const [activeKind, setActiveKind] = useState<PickerPlacement["kind"]>("signature");
+  const [textLabel, setTextLabel] = useState("");
+  const [textFilledBy, setTextFilledBy] = useState<TextBoxFilledBy>("signer");
+  const [textRequired, setTextRequired] = useState(true);
   const [pageCount, setPageCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -100,7 +131,7 @@ export function SignaturePlacementPicker({
   // When countersign is turned off, strip any countersign placements
   useEffect(() => {
     if (!showCountersign) {
-      const filtered = value.filter((p) => p.kind === "signature" || p.kind === "signatureDate");
+      const filtered = value.filter((p) => p.kind !== "countersignature" && p.kind !== "countersignatureDate");
       if (filtered.length !== value.length) onChange(filtered);
       if (activeKind === "countersignature" || activeKind === "countersignatureDate") {
         setActiveKind("signature");
@@ -121,6 +152,9 @@ export function SignaturePlacementPicker({
       xPct,
       yPct,
       kind: activeKind,
+      ...(activeKind === "freeText"
+        ? { label: textLabel.trim() || "Text", filledBy: textFilledBy, required: textRequired }
+        : {}),
     };
     onChange([...value, next]);
   }
@@ -128,6 +162,12 @@ export function SignaturePlacementPicker({
   function removePlacement(id: string) {
     onChange(value.filter((p) => p.id !== id));
   }
+
+  function updatePlacement(id: string, changes: Partial<PickerPlacement>) {
+    onChange(value.map((p) => (p.id === id ? { ...p, ...changes } : p)));
+  }
+
+  const textBoxes = value.filter((p) => p.kind === "freeText");
 
   const visibleFields = FIELDS.filter((f) => showCountersign || (f.key !== "countersignature" && f.key !== "countersignatureDate"));
   const currentPagePlacements = value.filter((p) => p.page === currentPage);
@@ -146,15 +186,7 @@ export function SignaturePlacementPicker({
               onClick={() => setActiveKind(f.key)}
               className={cn(
                 "px-2 py-1 rounded text-xs font-medium transition-colors flex items-center gap-1",
-                activeKind === f.key
-                  ? f.color === "purple" ? "bg-purple-600 text-white"
-                  : f.color === "teal" ? "bg-teal-600 text-white"
-                  : f.color === "amber" ? "bg-amber-600 text-white"
-                  : "bg-orange-600 text-white"
-                  : f.color === "purple" ? "bg-purple-500/10 text-purple-700 hover:bg-purple-500/20"
-                  : f.color === "teal" ? "bg-teal-500/10 text-teal-700 hover:bg-teal-500/20"
-                  : f.color === "amber" ? "bg-amber-500/10 text-amber-700 hover:bg-amber-500/20"
-                  : "bg-orange-500/10 text-orange-700 hover:bg-orange-500/20"
+                activeKind === f.key ? BUTTON_CLASS[f.color].active : BUTTON_CLASS[f.color].idle
               )}
             >
               <Icon name={f.icon} size={10} />
@@ -162,6 +194,23 @@ export function SignaturePlacementPicker({
             </button>
           ))}
         </div>
+        {activeKind === "freeText" && (
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <label className="text-[11px] font-medium text-green-700 whitespace-nowrap">Label:</label>
+            <input
+              value={textLabel}
+              onChange={(e) => setTextLabel(e.target.value)}
+              placeholder="e.g. Emergency contact"
+              className="flex-1 min-w-[140px] px-2 py-1 rounded border border-green-300 bg-white text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-green-500"
+            />
+            <label className="text-[11px] font-medium text-green-700 whitespace-nowrap">Filled by:</label>
+            <TextBoxFilledBySelect value={textFilledBy} onChange={setTextFilledBy} />
+            <label className="flex items-center gap-1 text-[11px] text-green-700 whitespace-nowrap">
+              <input type="checkbox" checked={textRequired} onChange={(e) => setTextRequired(e.target.checked)} className="h-3 w-3" />
+              Required
+            </label>
+          </div>
+        )}
       </div>
 
       {pageCount > 1 && (
@@ -203,8 +252,11 @@ export function SignaturePlacementPicker({
             className="w-full cursor-crosshair"
           />
           {currentPagePlacements.map((p) => {
-            const meta = BOX_SIZE[p.kind];
-            const colorKey = p.kind === "signature" ? "purple" : p.kind === "signatureDate" ? "teal" : p.kind === "countersignature" ? "amber" : "orange";
+            const meta = PICKER_BOX_SIZE[p.kind];
+            const colorKey = COLOR_OF[p.kind];
+            const boxLabel = p.kind === "freeText"
+              ? `✎ ${p.label || "Text"} · ${textBoxOwnerShortLabel(normalizeFilledBy(p.filledBy))}`
+              : meta.label;
             return (
               <div
                 key={p.id}
@@ -216,8 +268,8 @@ export function SignaturePlacementPicker({
                   height: `${meta.h}%`,
                 }}
               >
-                <div className={cn("w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm", COLOR_CLASS[colorKey])}>
-                  <span className="text-[10px] font-mono font-bold whitespace-nowrap">{meta.label}</span>
+                <div className={cn("w-full h-full rounded border-2 border-dashed flex items-center justify-center shadow-sm overflow-hidden", COLOR_CLASS[colorKey])}>
+                  <span className="text-[10px] font-mono font-bold whitespace-nowrap truncate px-1">{boxLabel}</span>
                 </div>
                 <button
                   type="button"
@@ -227,6 +279,23 @@ export function SignaturePlacementPicker({
               </div>
             );
           })}
+        </div>
+      )}
+
+      {textBoxes.length > 0 && (
+        <div className="space-y-1.5">
+          <p className="text-[11px] font-medium text-[var(--color-text-primary)]">Text boxes</p>
+          {textBoxes.map((p) => (
+            <TextBoxSettingsRow
+              key={p.id}
+              label={p.label || ""}
+              filledBy={normalizeFilledBy(p.filledBy)}
+              required={p.required !== false}
+              page={p.page}
+              onChange={(changes) => updatePlacement(p.id, changes)}
+              onRemove={() => removePlacement(p.id)}
+            />
+          ))}
         </div>
       )}
 

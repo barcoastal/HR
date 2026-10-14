@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { PDFDocument, rgb } from "pdf-lib";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
+import { hasPlacedSignature, readStoredPlacements, stampFillSignature } from "@/lib/signing-stamp";
+import { resolveTextValuesForSigning } from "@/lib/text-box-fields";
 
 export type PdfFormField = {
   name: string;
@@ -287,8 +289,17 @@ export async function submitFilledForm(
       }
     }
 
-    // Add signature if provided
-    if (signatureBase64) {
+    // Add signature if provided — in HR's placed signature boxes when there are
+    // any, otherwise at the old default spot.
+    const placements = readStoredPlacements(request.signaturePlacements);
+    if (signatureBase64 && hasPlacedSignature(placements)) {
+      const resolvedText = resolveTextValuesForSigning(placements, undefined);
+      await stampFillSignature(pdfDoc, placements, {
+        signatureBase64,
+        signerName: request.signerName || (request.employee ? `${request.employee.firstName} ${request.employee.lastName}` : "Signer"),
+        textValues: resolvedText.values,
+      });
+    } else if (signatureBase64) {
       const sigImageBytes = Buffer.from(signatureBase64.replace(/^data:image\/png;base64,/, ""), "base64");
       const sigImage = await pdfDoc.embedPng(sigImageBytes);
 

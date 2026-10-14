@@ -149,6 +149,15 @@ export async function sendDocForFilling(
     },
   });
 
+  // Hold the email while HR's required text boxes are empty; it goes out when
+  // HR saves them (Documents → Fill HR fields).
+  const { missingAdminRequiredFields } = await import("@/lib/text-box-fields");
+  if (missingAdminRequiredFields(placementsArray).length > 0) {
+    revalidatePath(`/people/${employeeId}`);
+    revalidatePath("/onboarding");
+    return { success: true };
+  }
+
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
   const { sendFillRequestEmail } = await import("@/lib/email");
   await sendFillRequestEmail({

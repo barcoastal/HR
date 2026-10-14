@@ -6,11 +6,25 @@ import { Dialog } from "@/components/ui/dialog";
 import {
   createStandaloneSigningRequest,
   resendSigningRequest,
+  saveSigningRequestTextValues,
   voidSigningRequest,
 } from "@/lib/actions/signing";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
-import { SignaturePlacementPicker, type PickerPlacement } from "@/components/signatures/signature-placement-picker";
+import { SignaturePlacementPicker, PICKER_BOX_SIZE, type PickerPlacement } from "@/components/signatures/signature-placement-picker";
+import { AdminTextBoxInputs } from "@/components/signatures/text-box-settings";
+import type { SignaturePlacement } from "@/lib/stage-document-utils";
+import {
+  adminCanFill,
+  applyAdminTextValues,
+  getTextBoxFields,
+  missingAdminRequiredFields,
+  normalizeFilledBy,
+} from "@/lib/text-box-fields";
+
+function readPlacements(request: { signaturePlacements?: unknown }): SignaturePlacement[] {
+  return Array.isArray(request.signaturePlacements) ? (request.signaturePlacements as SignaturePlacement[]) : [];
+}
 
 type SigningRequest = {
   id: string;
@@ -32,6 +46,7 @@ type SigningRequest = {
   message: string | null;
   employeeTaskId: string | null;
   employeeTask?: { documentAction: string | null } | null;
+  signaturePlacements?: unknown;
 };
 
 type Props = {
@@ -132,6 +147,17 @@ export function DocumentSigningManager({ signingRequests, employees, departments
   const [requiresCountersign, setRequiresCountersign] = useState(false);
   const [countersignerId, setCountersignerId] = useState("");
   const [placements, setPlacements] = useState<PickerPlacement[]>([]);
+  // HR's values for HR / shared text boxes, keyed by placement id (= fieldId)
+  const [adminTextValues, setAdminTextValues] = useState<Record<string, string>>({});
+  const sendDialogHrFields = useMemo(
+    () => getTextBoxFields(placements.map((p) => ({ kind: p.kind, fieldId: p.id, label: p.label, filledBy: p.filledBy, required: p.required })))
+      .filter((f) => adminCanFill(f.filledBy)),
+    [placements]
+  );
+  // Pending request whose HR text boxes are being filled in
+  const [hrFieldsRequest, setHrFieldsRequest] = useState<SigningRequest | null>(null);
+  const [hrFieldValues, setHrFieldValues] = useState<Record<string, string>>({});
+  const [savingHrFields, setSavingHrFields] = useState(false);
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [voidingId, setVoidingId] = useState<string | null>(null);
   const [confirmVoidId, setConfirmVoidId] = useState<string | null>(null);
@@ -221,18 +247,19 @@ export function DocumentSigningManager({ signingRequests, employees, departments
       alert("Please place at least one countersignature field (for HR/management) on the document.");
       return;
     }
+    const missingHr = sendDialogHrFields.filter(
+      (f) => f.filledBy === "admin" && f.required && !(adminTextValues[f.fieldId] ?? "").trim()
+    );
+    if (missingHr.length > 0) {
+      alert(`Please fill in your part first: ${missingHr.map((f) => f.label).join(", ")}`);
+      return;
+    }
     setSending(true);
     setBulkProgress(recipientIds.length > 1 ? { done: 0, total: recipientIds.length } : null);
     try {
       const effectiveCountersignerId = requiresCountersign ? countersignerId : null;
-      const SIZES: Record<PickerPlacement["kind"], { w: number; h: number }> = {
-        signature: { w: 0.26, h: 0.08 },
-        signatureDate: { w: 0.18, h: 0.04 },
-        countersignature: { w: 0.26, h: 0.08 },
-        countersignatureDate: { w: 0.18, h: 0.04 },
-      };
-      const storedPlacements = placements.map((p) => {
-        const s = SIZES[p.kind];
+      const storedPlacements = applyAdminTextValues(placements.map((p): SignaturePlacement => {
+        const s = { w: PICKER_BOX_SIZE[p.kind].w / 100, h: PICKER_BOX_SIZE[p.kind].h / 100 };
         return {
           page: p.page,
           xPct: Math.max(0, Math.min(1 - s.w, p.xPct - s.w / 2)),
@@ -240,8 +267,16 @@ export function DocumentSigningManager({ signingRequests, employees, departments
           widthPct: s.w,
           heightPct: s.h,
           kind: p.kind,
+          ...(p.kind === "freeText"
+            ? {
+                fieldId: p.id,
+                label: p.label?.trim() || "Text",
+                filledBy: normalizeFilledBy(p.filledBy),
+                required: p.required !== false,
+              }
+            : {}),
         };
-      });
+      }), adminTextValues);
 
       const errors: string[] = [];
       // Concurrent dispatch in chunks of 5 so many employees don't crush the API
@@ -294,13 +329,40 @@ export function DocumentSigningManager({ signingRequests, employees, departments
     setRequiresCountersign(false);
     setCountersignerId("");
     setPlacements([]);
+    setAdminTextValues({});
+  }
+
+  function openHrFields(request: SigningRequest) {
+    const fields = getTextBoxFields(readPlacements(request)).filter((f) => adminCanFill(f.filledBy));
+    setHrFieldValues(Object.fromEntries(fields.map((f) => [f.fieldId, f.value])));
+    setHrFieldsRequest(request);
+  }
+
+  async function handleSaveHrFields() {
+    if (!hrFieldsRequest) return;
+    setSavingHrFields(true);
+    try {
+      const res = await saveSigningRequestTextValues(hrFieldsRequest.id, hrFieldValues);
+      if (!res.success) {
+        alert(res.error || "Failed to save. Please try again.");
+        return;
+      }
+      if (res.emailed) alert("Saved. The signing link has been emailed to the recipient.");
+      setHrFieldsRequest(null);
+      router.refresh();
+    } catch {
+      alert("Failed to save. Please try again.");
+    } finally {
+      setSavingHrFields(false);
+    }
   }
 
   // Resend
   async function handleResend(id: string) {
     setResendingId(id);
     try {
-      await resendSigningRequest(id);
+      const res = await resendSigningRequest(id);
+      if (!res.success && "error" in res && res.error) alert(res.error);
       router.refresh();
     } catch {
       alert("Failed to resend. Please try again.");
@@ -438,6 +500,9 @@ export function DocumentSigningManager({ signingRequests, employees, departments
             const canVoid = effectiveStatus !== "SIGNED";
             const isSigned = effectiveStatus === "SIGNED";
             const isFillRequest = request.employeeTask?.documentAction === "FILL";
+            const requestPlacements = readPlacements(request);
+            const hasHrFields = getTextBoxFields(requestPlacements).some((f) => adminCanFill(f.filledBy));
+            const waitingOnHr = canResend && missingAdminRequiredFields(requestPlacements).length > 0;
 
             return (
               <div
@@ -468,6 +533,12 @@ export function DocumentSigningManager({ signingRequests, employees, departments
                         </h3>
                         <StatusBadge status={effectiveStatus} />
                         <SourceBadge isOnboarding={!!request.employeeTaskId} />
+                        {waitingOnHr && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border bg-amber-500/10 border-amber-500/20 text-amber-600">
+                            <Icon name="hourglass_top" size={12} />
+                            Needs HR fields
+                          </span>
+                        )}
                       </div>
                       <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
                         {request.employee
@@ -524,6 +595,21 @@ export function DocumentSigningManager({ signingRequests, employees, departments
                     >
                       <Icon name="description" size={16} />
                     </a>
+                    {isAdmin && canResend && hasHrFields && (
+                      <button
+                        onClick={() => openHrFields(request)}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors",
+                          waitingOnHr
+                            ? "bg-amber-500 text-white hover:bg-amber-600"
+                            : "text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-primary)]"
+                        )}
+                        title="Fill in HR's text boxes on this document"
+                      >
+                        <Icon name="edit_note" size={12} />
+                        Fill HR fields
+                      </button>
+                    )}
                     {isAdmin && canResend && (
                       <button
                         onClick={() => handleResend(request.id)}
@@ -707,6 +793,20 @@ export function DocumentSigningManager({ signingRequests, employees, departments
               />
             </div>
           )}
+          {sendDialogHrFields.length > 0 && (
+            <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-3">
+              <p className="text-sm font-medium text-[var(--color-text-primary)]">Fill in your part</p>
+              <p className="text-[11px] text-[var(--color-text-muted)] mt-0.5 mb-3">
+                These text boxes are filled by HR. The recipient sees your answers on the document when they sign.
+              </p>
+              <AdminTextBoxInputs
+                fields={sendDialogHrFields}
+                values={adminTextValues}
+                onChange={(fieldId, v) => setAdminTextValues((prev) => ({ ...prev, [fieldId]: v }))}
+                inputClassName={inputClass}
+              />
+            </div>
+          )}
           {uploadedDoc && !uploadedDoc.url.toLowerCase().endsWith(".pdf") && (
             <div className="flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200">
               <Icon name="warning" size={16} className="text-amber-600 mt-0.5 shrink-0" />
@@ -801,6 +901,53 @@ export function DocumentSigningManager({ signingRequests, employees, departments
             </button>
           </div>
         </div>
+      </Dialog>
+
+      {/* Fill HR fields on an already-sent request */}
+      <Dialog
+        open={!!hrFieldsRequest}
+        onClose={() => setHrFieldsRequest(null)}
+        title="Fill HR fields"
+      >
+        {hrFieldsRequest && (() => {
+          const fields = getTextBoxFields(readPlacements(hrFieldsRequest)).filter((f) => adminCanFill(f.filledBy));
+          const blocked = missingAdminRequiredFields(readPlacements(hrFieldsRequest)).length > 0;
+          const recipient = hrFieldsRequest.employee
+            ? `${hrFieldsRequest.employee.firstName} ${hrFieldsRequest.employee.lastName}`
+            : hrFieldsRequest.signerName || "the recipient";
+          return (
+            <div className="space-y-4">
+              <p className="text-sm text-[var(--color-text-muted)]">
+                <span className="font-medium text-[var(--color-text-primary)]">{hrFieldsRequest.documentName}</span> for {recipient}.
+                {blocked
+                  ? " They can't sign until the required HR boxes are filled — we'll email them the link as soon as you save."
+                  : " Changes show up on the document the next time they open the link."}
+              </p>
+              <AdminTextBoxInputs
+                fields={fields}
+                values={hrFieldValues}
+                onChange={(fieldId, v) => setHrFieldValues((prev) => ({ ...prev, [fieldId]: v }))}
+                inputClassName={inputClass}
+              />
+              <div className="flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setHrFieldsRequest(null)}
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveHrFields}
+                  disabled={savingHrFields}
+                  className={cn(accentButtonClass, "flex items-center gap-2")}
+                >
+                  {savingHrFields && <Icon name="progress_activity" size={16} className="animate-material-spin" />}
+                  {savingHrFields ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </div>
+          );
+        })()}
       </Dialog>
 
       {/* Void Confirmation Dialog */}

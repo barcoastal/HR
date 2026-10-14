@@ -409,6 +409,26 @@ export default async function GuidePage() {
           </ul>
           <p>Typical statuses are Pending, Viewed, Awaiting Countersign, Signed, Declined, Expired, or Voided.</p>
 
+          <h3>Text boxes HR and the recipient fill in</h3>
+          <p>
+            Text boxes (the <strong>Text box</strong> field when sending, or <code>{"{{freeText}}"}</code> on a
+            stage document in Settings) each have a label, a <strong>Filled by</strong> setting and a
+            <strong> Required</strong> checkbox:
+          </p>
+          <ul>
+            <li><strong>Recipient</strong>: the person signing types it in (older text boxes work this way).</li>
+            <li><strong>HR</strong>: HR fills it in; the recipient sees it on the signing page but can&apos;t change it.</li>
+            <li><strong>Both</strong>: HR can pre-fill it and the recipient can edit it.</li>
+          </ul>
+          <p>
+            When sending a document yourself, fill in HR&apos;s boxes under <strong>Fill in your part</strong> in the
+            send dialog. Stage documents go out automatically, so use <strong>Fill HR fields</strong> on the request in
+            Documents &amp; Signing. If a required HR box is still empty, the request shows <em>Needs HR fields</em>,
+            the signing email waits, and it goes out automatically once you save. Every text value is printed in its
+            box on the signed PDF. On documents sent for filling, the signature now goes in the signature boxes HR
+            placed; the recipient only picks a spot when no signature box was placed.
+          </p>
+
           <h3>My Documents</h3>
           <p>
             <Route>/my-documents</Route> combines documents on file with personal signing tasks. Open a

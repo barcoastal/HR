@@ -377,6 +377,14 @@ async function sendStageDocumentsEmail(
         return false;
       }
 
+      // Still waiting on HR's text boxes — the link goes out once HR saves them.
+      const { missingAdminRequiredFields } = await import("@/lib/text-box-fields");
+      const { readStoredPlacements } = await import("@/lib/signing-stamp");
+      if (missingAdminRequiredFields(readStoredPlacements(existingTask.signingRequest.signaturePlacements)).length > 0) {
+        console.log(`[stage-docs] Not resending "${documentName}" — waiting on HR fields`);
+        return true;
+      }
+
       if (documentAction === "SIGN") {
         const { sendSigningRequestEmail } = await import("@/lib/email");
         await sendSigningRequestEmail({
@@ -497,6 +505,23 @@ async function sendStageDocumentsEmail(
         },
       });
 
+      // Hold the email while HR still has required text boxes to fill; it is
+      // sent when HR saves them (Documents → Fill HR fields).
+      const { missingAdminRequiredFields } = await import("@/lib/text-box-fields");
+      if (missingAdminRequiredFields(signaturePlacements).length > 0) {
+        console.log(`[stage-docs] Created fill request for "${doc.name}" — waiting on HR fields before emailing`);
+        const { sendNotifications } = await import("@/lib/notifications/send");
+        sendNotifications({
+          action: "DOCUMENT_SIGN_REQUEST",
+          candidateId: employeeId ? undefined : candidate.id,
+          employeeId: employeeId || undefined,
+          message: `${doc.name} needs HR's fields filled in before it can be sent (Documents → Fill HR fields)`,
+          link: "/documents",
+          emailSubject: `HR Fields Needed: ${doc.name}`,
+          emailBody: `<p><strong>${doc.name}</strong> has text boxes HR must fill in. Open Documents &amp; Signing and choose <strong>Fill HR fields</strong>; the link is emailed once they are saved.</p>`,
+        }).catch((err) => console.error("[stage-docs] HR fields notification error:", err));
+        continue;
+      }
       const { sendFillRequestEmail } = await import("@/lib/email");
       await sendFillRequestEmail({
         to: candidate.email,
